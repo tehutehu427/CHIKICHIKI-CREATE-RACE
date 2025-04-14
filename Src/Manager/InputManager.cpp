@@ -30,6 +30,19 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_N);
 	InputManager::GetInstance().Add(KEY_INPUT_Z);
 
+	//プレイヤー操作関連
+	//---------------------------------------------------
+	//移動キー
+	InputManager::GetInstance().Add(KEY_INPUT_W);
+	InputManager::GetInstance().Add(KEY_INPUT_A);
+	InputManager::GetInstance().Add(KEY_INPUT_S);
+	InputManager::GetInstance().Add(KEY_INPUT_D);
+
+	//ダッシュ
+	InputManager::GetInstance().Add(KEY_INPUT_LSHIFT);
+	//ジャンプ
+	InputManager::GetInstance().Add(KEY_INPUT_E);
+	//---------------------------------------------------
 
 
 	InputManager::MouseInfo info;

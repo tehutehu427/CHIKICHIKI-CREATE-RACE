@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include"../Object/Player/Player.h"
 #include "SceneBase.h"
 
 
@@ -34,5 +35,8 @@ private:
 	//デバッグ処理
 	void DebagUpdate(void);
 	void DebagDraw(void);
+
+	//プレイヤー
+	std::unique_ptr<Player>player_;
 
 };
