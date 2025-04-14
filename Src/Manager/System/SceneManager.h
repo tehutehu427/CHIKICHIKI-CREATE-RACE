@@ -66,7 +66,7 @@ public:
 	void ChangeScene(SCENE_ID nextId);
 	
 	// フェード開始
-	inline void StartFadeIn(void) { fader_->SetFade(Fader::STATE::FADE_IN); }
+	void StartFadeIn(void);
 
 	// シーンIDの取得
 	inline SCENE_ID GetSceneID(void) const { return sceneId_; }

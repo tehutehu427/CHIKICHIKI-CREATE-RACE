@@ -36,7 +36,7 @@ void SceneManager::Init(void)
 	camera_ = std::make_shared<Camera>();
 	camera_->Init();
 
-	isSceneChanging_ = false;
+	isSceneChanging_ = true;
 
 	// デルタタイム
 	preTime_ = std::chrono::system_clock::now();
@@ -49,7 +49,6 @@ void SceneManager::Init(void)
 
 	// 初期シーンの設定
 	DoChangeScene(SCENE_ID::TITLE);
-
 }
 
 void SceneManager::Init3D(void)
@@ -95,10 +94,9 @@ void SceneManager::Update(void)
 	{
 		Fade();
 	}
-	else
-	{
-		scene_->Update();
-	}
+	
+	//シーンごとの更新
+	scene_->Update();
 
 	// カメラ更新
 	camera_->Update();
@@ -193,6 +191,15 @@ void SceneManager::ChangeScene(SCENE_ID nextId)
 
 }
 
+void SceneManager::StartFadeIn(void)
+{
+	//フェードを明ける
+	fader_->SetFade(Fader::STATE::FADE_IN);
+
+	//シーンチェンジ
+	isSceneChanging_ = false;
+}
+
 SceneManager::SceneManager(void)
 {
 
@@ -263,7 +270,7 @@ void SceneManager::Fade(void)
 		{
 			// 明転が終了したら、フェード処理終了
 			fader_->SetFade(Fader::STATE::NONE);
-			isSceneChanging_ = false;
+			//isSceneChanging_ = false;
 		}
 		break;
 	case Fader::STATE::FADE_OUT:
@@ -273,7 +280,8 @@ void SceneManager::Fade(void)
 			// 完全に暗転してからシーン遷移
 			DoChangeScene(waitSceneId_);
 			// 暗転から明転へ
-			fader_->SetFade(Fader::STATE::FADE_IN);
+			//fader_->SetFade(Fader::STATE::FADE_IN);
+			fader_->SetFade(Fader::STATE::NONE);
 		}
 		break;
 	}
