@@ -6,6 +6,7 @@ class SceneManager;
 
 class ObjectBase
 {
+	//‰¼
 
 public:
 
