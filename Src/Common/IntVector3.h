@@ -1,6 +1,6 @@
 #pragma once
 
-class IntVector3
+struct IntVector3
 {
 public:
 
@@ -10,10 +10,8 @@ public:
 
 	// コンストラクタ
 	IntVector3(void);
-
 	// コンストラクタ
 	IntVector3(int vX, int vY, int vZ);
-
 	// デストラクタ
 	~IntVector3(void);
 
