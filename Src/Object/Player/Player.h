@@ -4,7 +4,7 @@
 #include <functional>
 #include "../Common/AnimationController.h"
 #include "../Common/Capsule.h"
-#include "../../Manager/Camera.h"
+#include "../../Manager/System/Camera.h"
 #include"./Process/PMove.h"
 #include"./Process/PJump.h"
 #include "../ObjectBase.h"

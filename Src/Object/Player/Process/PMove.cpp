@@ -1,7 +1,7 @@
 #include "../Player.h"
-#include "../../../Manager/InputManager.h"
-#include "../../../Manager/SceneManager.h"
-#include "../../../Manager/Camera.h"
+#include "../../../Manager/System/InputManager.h"
+#include "../../../Manager/System/SceneManager.h"
+#include "../../../Manager/System/Camera.h"
 #include "../../../Utility/Utility.h"
 #include "PMove.h"
 

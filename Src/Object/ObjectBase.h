@@ -1,5 +1,6 @@
 #pragma once
 #include "Common/Transform.h"
+#include "../Common/IntVector3.h"
 
 class ResourceManager;
 class SceneManager;

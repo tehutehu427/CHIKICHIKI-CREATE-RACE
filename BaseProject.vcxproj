@@ -24,7 +24,7 @@
     <ClCompile Include="Src\Manager\Game\MapEditer.cpp" />
     <ClCompile Include="Src\Common\IntVector3.cpp" />
     <ClCompile Include="Src\FpsControl\FpsControl.cpp" />
-    <ClCompile Include="Src\Manager\GravityManager.cpp" />
+    <ClCompile Include="Src\Manager\Game\GravityManager.cpp" />
     <ClCompile Include="Src\Object\ObjectBase.cpp" />
     <ClCompile Include="Src\Application.cpp" />
     <ClCompile Include="Src\Common\Fader.cpp" />
@@ -54,7 +54,7 @@
     <ClInclude Include="Src\Manager\Game\MapEditer.h" />
     <ClInclude Include="Src\Common\IntVector3.h" />
     <ClInclude Include="Src\FpsControl\FpsControl.h" />
-    <ClInclude Include="Src\Manager\GravityManager.h" />
+    <ClInclude Include="Src\Manager\Game\GravityManager.h" />
     <ClInclude Include="Src\Object\ObjectBase.h" />
     <ClInclude Include="Src\Application.h" />
     <ClInclude Include="Src\Common\Fader.h" />

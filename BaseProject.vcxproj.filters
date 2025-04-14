@@ -126,7 +126,7 @@
     <ClCompile Include="Src\Object\Player\Process\PMove.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Manager\GravityManager.cpp">
+    <ClCompile Include="Src\Manager\Game\GravityManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Manager\Game\MapEditer.cpp">
@@ -212,7 +212,7 @@
     <ClInclude Include="Src\Object\Player\Process\PMove.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Manager\GravityManager.h">
+    <ClInclude Include="Src\Manager\Game\GravityManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Manager\Game\MapEditer.h">

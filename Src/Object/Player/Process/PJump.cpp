@@ -1,7 +1,7 @@
-#include"../../../Manager/InputManager.h"
+#include"../../../Manager/System/InputManager.h"
 #include"../../../Utility/Utility.h"
-#include"../../../Manager/SceneManager.h"
-#include"../../../Manager/GravityManager.h"
+#include"../../../Manager/System/SceneManager.h"
+#include"../../../Manager/Game/GravityManager.h"
 #include "PJump.h"
 
 PJump::PJump(void)

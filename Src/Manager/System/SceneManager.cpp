@@ -1,8 +1,8 @@
 #include <chrono>
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
-#include "../Scene/TitleScene.h"
-#include "../Scene/GameScene.h"
+#include "../../Scene/TitleScene.h"
+#include "../../Scene/GameScene.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
