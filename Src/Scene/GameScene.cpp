@@ -5,6 +5,7 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/Camera.h"
 #include "../Manager/System/InputManager.h"
+#include "../Object/Player/Player.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -25,15 +26,21 @@ void GameScene::Load(void)
 	//フォントの登録
 	resMng_.Load(ResourceManager::SRC::DOT_FONT);
 	buttnFontHandle_ = CreateFontToHandle("ベストテンDOT", FONT_SIZE, 0);
+
+	player_ = std::make_unique<Player>();
+	player_->Load();
 }
 
 void GameScene::Init(void)
 {
-
+	player_->Init();
 }
 
 void GameScene::NormalUpdate(void)
 {
+	//プレイヤー
+	player_->Update();
+
 	//デバッグ処理
 	DebagUpdate();
 }
@@ -42,6 +49,9 @@ void GameScene::NormalDraw(void)
 {
 	//デバッグ処理
 	DebagDraw();
+
+	//プレイヤー
+	player_->Draw();
 }
 
 void GameScene::ChangeNormal(void)
