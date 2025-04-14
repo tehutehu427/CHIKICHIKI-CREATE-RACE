@@ -1,5 +1,5 @@
-#include "../Manager/ResourceManager.h"
-#include "../Manager/SceneManager.h"
+#include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/SceneManager.h"
 #include "ObjectBase.h"
 
 ObjectBase::ObjectBase(void)
