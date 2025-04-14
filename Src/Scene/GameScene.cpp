@@ -5,6 +5,8 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/Camera.h"
 #include "../Manager/System/InputManager.h"
+#include "../Manager/Game/ItemManager.h"
+#include "../Manager/Game/MapEditer.h"
 #include "../Object/Player/Player.h"
 #include "GameScene.h"
 
@@ -34,6 +36,8 @@ void GameScene::Load(void)
 void GameScene::Init(void)
 {
 	player_->Init();
+	MapEditer::CreateInstance();
+	ItemManager::CreateInstance();
 }
 
 void GameScene::NormalUpdate(void)
