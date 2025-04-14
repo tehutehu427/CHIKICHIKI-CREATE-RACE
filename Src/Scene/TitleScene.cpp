@@ -2,9 +2,9 @@
 #include <DxLib.h>
 #include "../Application.h"
 #include "../Utility/Utility.h"
-#include "../Manager/SceneManager.h"
-#include "../Manager/ResourceManager.h"
-#include "../Manager/InputManager.h"
+#include "../Manager/System/SceneManager.h"
+#include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/InputManager.h"
 #include "TitleScene.h"
 
 TitleScene::TitleScene(void)

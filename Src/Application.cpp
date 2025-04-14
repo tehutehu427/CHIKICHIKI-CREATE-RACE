@@ -1,8 +1,8 @@
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
-#include "Manager/InputManager.h"
-#include "Manager/ResourceManager.h"
-#include "Manager/SceneManager.h"
+#include "Manager/System/InputManager.h"
+#include "Manager/System/ResourceManager.h"
+#include "Manager/System/SceneManager.h"
 #include "FpsControl/FpsControl.h"
 #include "Application.h"
 

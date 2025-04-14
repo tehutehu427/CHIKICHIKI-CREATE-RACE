@@ -1,10 +1,10 @@
 #include <DxLib.h>
 #include "../Application.h"
 #include "../Utility/Utility.h"
-#include "../Manager/SceneManager.h"
-#include "../Manager/ResourceManager.h"
-#include "../Manager/Camera.h"
-#include "../Manager/InputManager.h"
+#include "../Manager/System/SceneManager.h"
+#include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/Camera.h"
+#include "../Manager/System/InputManager.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
