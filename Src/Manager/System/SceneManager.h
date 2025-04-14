@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <chrono>
-#include "../Common/Fader.h"
+#include "../../Common/Fader.h"
 
 // „§‚µ‚Ü‚¹‚ñ‚ªA‚Ç‚¤‚µ‚Ä‚àg‚¢‚½‚¢•û‚Í
 #define mainCamera SceneManager::GetInstance().GetCamera().lock()

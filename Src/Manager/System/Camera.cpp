@@ -1,8 +1,8 @@
 #include <math.h>
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
-#include "../Utility/Utility.h"
-#include "../Object/Common/Transform.h"
+#include "../../Utility/Utility.h"
+#include "../../Object/Common/Transform.h"
 #include "Camera.h"
 
 Camera::Camera(void)
