@@ -11,6 +11,14 @@ class ObjectBase
 
 public:
 
+	//ステータス
+	struct Status
+	{
+		bool isBreak;
+		bool isGravity;
+		IntVector3 size;
+	};
+
 	// コンストラクタ
 	ObjectBase(void);
 
