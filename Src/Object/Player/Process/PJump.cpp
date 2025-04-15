@@ -12,8 +12,7 @@ PJump::PJump(void)
 	dirDown_ = Utility::VECTOR_ZERO;
 	dirUp_ = Utility::VECTOR_ZERO;
 	isEndLanding_ = true;
-	gravity_ = std::make_shared<GravityManager>();
-	gravity_->Init();
+	jumpDeceralation_ = POW_JUMP;
 	
 }
 
@@ -28,7 +27,8 @@ void PJump::Update(const VECTOR& _dirUp,const VECTOR& _dirDown,const bool& _isEn
 	dirDown_ = _dirDown;
 	isEndLanding_ = _isEndLanding;
 	Jump();
-	gravity_->CalcGravity(dirDown_, jumpPow_);
+	GravityManager::GetInstance()->CalcGravity(dirDown_, jumpPow_);
+	//gravity_->CalcGravity(dirDown_, jumpPow_);
 }
 
 void PJump::DrawDebug(void)
@@ -57,13 +57,20 @@ void PJump::Jump(void)
 		stepJump_ += deltaTime;
 		if (stepJump_ < TIME_JUMP_IN)
 		{
-			jumpPow_ = VScale(dirUp_, POW_JUMP);
+			jumpDeceralation_ -= stepJump_* TIME_JUMP_IN;
+			jumpPow_ = VScale(dirUp_, jumpDeceralation_);
 		}
+		else 
+		{
+			int i = 0;
+		}
+
 	}
 	// ボタンを離したらジャンプ力に加算しない
 	if (!isHit)
 	{
 		stepJump_ = TIME_JUMP_IN;
+		jumpDeceralation_ = POW_JUMP;
 	}
 }
 

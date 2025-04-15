@@ -109,8 +109,8 @@ void Player::UpdatePlay(void)
 	// Õ“Ë”»’è
 	Collision();
 
-	Quaternion playerRotY = pMove_->GetPlayerRotY();
-	transform_.quaRot = transform_.quaRot.Mult(playerRotY);
+	//Quaternion playerRotY = pMove_->GetPlayerRotY();
+	//transform_.quaRot = transform_.quaRot.Mult(playerRotY);
 }
 
 void Player::CalcGravityPow(void)
