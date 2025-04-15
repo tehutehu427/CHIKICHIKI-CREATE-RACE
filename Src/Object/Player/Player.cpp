@@ -62,6 +62,10 @@ void Player::Draw(void)
 
 }
 
+void Player::Release(void)
+{
+}
+
 #ifdef DEBUG_ON
 void Player::DrawDebug(void)
 {
