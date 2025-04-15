@@ -14,9 +14,9 @@ public:
 	//ステータス
 	struct Status
 	{
-		bool isBreak;
-		bool isGravity;
-		IntVector3 size;
+		bool isBreak;		//破壊可能か(true:破壊可能)
+		bool isGravity;		//重力影響を受けるか(true:受ける)
+		IntVector3 size;	//大きさ(グリッド基準)
 	};
 
 	// コンストラクタ
@@ -30,7 +30,11 @@ public:
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
 
+	//モデル情報の取得
 	inline const Transform& GetTransform(void) const { return transform_; }
+
+	//ステータスの取得
+	inline const Status GetStatus(void)const { return status_; }
 
 protected:
 
@@ -41,5 +45,7 @@ protected:
 	// モデル制御の基本情報
 	Transform transform_;
 
+	//ステータス
+	Status status_;
 };
 
