@@ -24,11 +24,21 @@ void MapEditer::Init(void)
 		{
 			for (int k = 0;i < MAP_SIZE.z;i++)
 			{
-				isMapPosObject_[i][j][k] = 0;
+				isMapPosItem_[i][j][k] = 0;
 			}
 		}
 	}
-	objectNom_ = 1;
+	itemNom_ = 1;
+}
+
+void MapEditer::AddItem(VECTOR mapPos)
+{
+
+}
+
+void MapEditer::DeleteItem(VECTOR mapPos)
+{
+
 }
 
 MapEditer::MapEditer(void)
