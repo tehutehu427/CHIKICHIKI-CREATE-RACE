@@ -31,12 +31,12 @@ void MapEditer::Init(void)
 	itemNom_ = 1;
 }
 
-void MapEditer::AddItem(VECTOR mapPos)
+void MapEditer::AddItem(IntVector3 mapPos)
 {
 
 }
 
-void MapEditer::DeleteItem(VECTOR mapPos)
+void MapEditer::DeleteItem(IntVector3 mapPos)
 {
 
 }

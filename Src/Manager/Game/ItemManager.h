@@ -1,6 +1,7 @@
 #pragma once
 #include <DxLib.h>
 #include <vector>
+#include <map>
 #include "../../Common/Quaternion.h"
 #include "../../Common/IntVector3.h"
 #include "../../Object/Item/ItemBase.h"
@@ -25,7 +26,7 @@ protected:
 private:
 	static ItemManager* instance_;
 
-	std::vector<ItemBase*> items_;
+	std::map<int/*アイテムを置いた順番*/, ItemBase*/*置いたアイテム*/> items_;
 
 
 	ItemManager(void);

@@ -5,6 +5,7 @@ ItemManager* ItemManager::instance_ = nullptr;
 
 void ItemManager::Init(void)
 {
+
 }
 
 void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type)

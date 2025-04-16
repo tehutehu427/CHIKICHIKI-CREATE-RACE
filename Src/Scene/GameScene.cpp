@@ -9,6 +9,7 @@
 #include "../Manager/Game/MapEditer.h"
 #include "../Manager/Game/GravityManager.h"
 #include "../Object/Player/Player.h"
+#include "../Object/Grid.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -32,6 +33,8 @@ void GameScene::Load(void)
 
 	player_ = std::make_unique<Player>();
 	player_->Load();
+
+	grid_ = std::make_unique<Grid>();
 }
 
 void GameScene::Init(void)
@@ -40,6 +43,7 @@ void GameScene::Init(void)
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
+	grid_->Init();
 }
 
 void GameScene::NormalUpdate(void)
@@ -56,6 +60,7 @@ void GameScene::NormalDraw(void)
 	//デバッグ処理
 	DebagDraw();
 
+	grid_->Draw();
 	//プレイヤー
 	player_->Draw();
 }
@@ -84,13 +89,13 @@ void GameScene::DebagDraw(void)
 		0,
 		Application::SCREEN_SIZE_X,
 		Application::SCREEN_SIZE_Y,
-		0x00ff00,
+		0x000000,
 		true
 	);
 
 	DrawFormatString(
 		0, 0,
-		0x000000,
+		0xff0000,
 		"GameScene"
 	);
 }
