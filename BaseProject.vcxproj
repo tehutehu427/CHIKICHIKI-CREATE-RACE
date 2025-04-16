@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Item\Floor.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
     <ClCompile Include="Src\Manager\Game\ItemManager.cpp" />
     <ClCompile Include="Src\Manager\Game\EditController.cpp" />
@@ -50,6 +51,7 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Item\Floor.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
     <ClInclude Include="Src\Manager\Game\ItemManager.h" />
     <ClInclude Include="Src\Manager\Game\EditController.h" />
