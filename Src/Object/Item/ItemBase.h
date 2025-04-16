@@ -5,6 +5,7 @@ class ItemBase : public ObjectBase
 public:
 	enum class ITEM_TYPE	//アイテムの種類
 	{
+		NONE,
 		START,				//スタート
 		GOAL,				//ゴール
 		FLOOR,				//床
@@ -32,6 +33,9 @@ public:
 	virtual void Draw(void)override = 0;
 	//解放
 	virtual void Release(void)override = 0;
+
+	//アイテムの種類取得
+	inline const ITEM_TYPE GetItemType(void)const { return type_; }
 
 protected:
 

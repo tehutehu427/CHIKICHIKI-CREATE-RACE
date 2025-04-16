@@ -121,5 +121,19 @@ public:
 	//待機時間
 	static bool IsTimeOver(float& totalTime, const float& waitTime);
 
+	//文字の描画
+	//str : 表示する文字　int : そろえるライン　int : y軸座標　int : 色
+	static void DrawStringCenter(std::string str, int centerLine, int posY, int color);	//中央ぞろえ
+	static void DrawStringLeft(std::string str, int leftLiine, int posY, int color);	//左揃え
+	static void DrawStringRight(std::string str, int rightLine, int posY, int color);	//右揃え
+
+	/// <summary>
+	/// とある点からとある点までの移動ベクトルを返す
+	/// </summary>
+	/// <param name="_start">狙う側</param>
+	/// <param name="_goal">向かう先</param>
+	/// <param name="_speed">設定速度(未設定だと、方向ベクトルのみを返す)</param>
+	/// <returns>向かう先までの移動ベクトル</returns>
+	const VECTOR GetMoveVec(const VECTOR _start, const VECTOR _goal, const float _speed = 1.0f);
 };
 

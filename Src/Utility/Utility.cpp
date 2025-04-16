@@ -562,3 +562,38 @@ bool Utility::IsTimeOver(float& totalTime, const float& waitTime)
 
     return false;
 }
+
+void Utility::DrawStringCenter(std::string str, int centerLine, int posY, int color)
+{
+    int width = GetDrawStringWidth(str.c_str(), strlen(str.c_str()));
+    DrawString(centerLine - width / 2, posY, str.c_str(), color);
+}
+
+void Utility::DrawStringLeft(std::string str, int leftLiine, int posY, int color)
+{
+    int width = GetDrawStringWidth(str.c_str(), strlen(str.c_str()));
+    DrawString(leftLiine, posY, str.c_str(), color);
+}
+
+void Utility::DrawStringRight(std::string str, int rightLine, int posY, int color)
+{
+    int width = GetDrawStringWidth(str.c_str(), strlen(str.c_str()));
+    DrawString(rightLine - width, posY, str.c_str(), color);
+}
+
+const VECTOR Utility::GetMoveVec(const VECTOR _start, const VECTOR _goal, const float _speed)
+{
+    //標的への方向ベクトルを取得
+    VECTOR targetVec = VSub(_goal, _start);
+
+    //正規化
+    targetVec = VNorm(targetVec);
+
+    //Y座標は必要ないので要素を消す
+    targetVec = { targetVec.x,0.0f,targetVec.z };
+
+    //移動量を求める
+    VECTOR ret = VScale(targetVec, _speed);
+
+    return ret;
+}
