@@ -5,6 +5,7 @@ class ItemBase : public ObjectBase
 public:
 	enum class ITEM_TYPE	//アイテムの種類
 	{
+		NONE,
 		START,				//スタート
 		GOAL,				//ゴール
 		FLOOR,				//床
