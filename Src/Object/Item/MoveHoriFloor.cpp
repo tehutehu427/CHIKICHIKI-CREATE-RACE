@@ -5,6 +5,7 @@
 
 MoveHoriFloor::MoveHoriFloor()
 {
+	startPos_ = Utility::VECTOR_ZERO;
 }
 
 MoveHoriFloor::~MoveHoriFloor()
@@ -19,6 +20,9 @@ void MoveHoriFloor::Init(void)
 {
 	//個々の設定
 	SetParam();
+
+	//初期位置設定
+	startPos_ = transform_.pos;
 }
 
 void MoveHoriFloor::SetParam(void)
@@ -47,15 +51,12 @@ void MoveHoriFloor::Release(void)
 
 void MoveHoriFloor::Move(void)
 {
-	static float step = 0.0f;
-	step += SceneManager::GetInstance().GetDeltaTime();
-
-	transform_.pos.x = transform_.pos.x + (size_.x * MOVE_X * 100 * sinf(step));
-
-	VECTOR startPos = transform_.pos;
 	VECTOR movePos = transform_.quaRot.PosAxis(VGet(size_.x * MOVE_X * 100,0.0f,0.0f));
-	VECTOR goalPos = VAdd(startPos, movePos);
+	VECTOR goalPos = VAdd(startPos_, movePos);
 
 	//移動ベクトル
-	VECTOR movePow = Utility::GetMoveVec(startPos, goalPos, SPEED);
+	VECTOR movePow = Utility::GetMoveVec(startPos_, goalPos, SPEED);
+
+	//移動
+	transform_.pos = VAdd(transform_.pos, movePow);
 }

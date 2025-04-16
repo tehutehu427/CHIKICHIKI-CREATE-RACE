@@ -34,6 +34,9 @@ public:
 
 private:
 
+	//İ’uˆÊ’u
+	VECTOR startPos_;
+
 	//ˆÚ“®
 	void Move(void);
 
