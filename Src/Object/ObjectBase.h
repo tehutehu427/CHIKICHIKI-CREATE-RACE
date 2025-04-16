@@ -11,14 +11,6 @@ class ObjectBase
 
 public:
 
-	//ステータス
-	struct Status
-	{
-		bool isBreak;		//破壊可能か(true:破壊可能)
-		bool isGravity;		//重力影響を受けるか(true:受ける)
-		IntVector3 size;	//大きさ(グリッド基準)
-	};
-
 	// コンストラクタ
 	ObjectBase(void);
 
@@ -39,8 +31,8 @@ public:
 	//モデル情報の取得
 	inline const Transform& GetTransform(void) const { return transform_; }
 
-	//ステータスの取得
-	inline const Status GetStatus(void)const { return status_; }
+	//サイズの取得
+	inline const IntVector3 GetSize(void)const { return size_; }
 
 protected:
 
@@ -51,7 +43,7 @@ protected:
 	// モデル制御の基本情報
 	Transform transform_;
 
-	//ステータス
-	Status status_;
+	//大きさ(グリッド基準)
+	IntVector3 size_;
 };
 
