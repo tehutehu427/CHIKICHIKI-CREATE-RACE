@@ -3,6 +3,9 @@
 #include <EffekseerForDXLib.h>
 #include "../../Utility/Utility.h"
 #include "../../Object/Common/Transform.h"
+#include "../../Manager/Game/GravityManager.h"
+#include "../../Manager/System/InputManager.h"
+#include "../../Application.h"
 #include "Camera.h"
 
 Camera::Camera(void)
@@ -43,6 +46,12 @@ void Camera::SetBeforeDraw(void)
 		break;
 	case Camera::MODE::FOLLOW:
 		SetBeforeDrawFollow();
+		break;
+	case Camera::MODE::SELF_SHOT:
+		SetBeforeDrawSelfShot();
+		break;
+	case Camera::MODE::FPS:
+		SetBeforeDrawFPS();
 		break;
 	}
 
@@ -169,8 +178,77 @@ void Camera::SyncFollow(void)
 
 }
 
+void Camera::SyncFollowFPS(void)
+{
+	auto& gIns = GravityManager::GetInstance();
+
+	// 同期先の位置
+	VECTOR pos = followTransform_->pos;
+
+	// 重力の方向制御に従う
+	//Quaternion gRot = gIns.GetTransform().quaRot;
+
+	// 正面から設定されたY軸分、回転させる
+	//rotOutX_ = gRot.Mult(Quaternion::AngleAxis(angles_.y, Utility::AXIS_Y));
+
+	// 正面から設定されたX軸分、回転させる
+	rot_ = rotOutX_.Mult(Quaternion::AngleAxis(angles_.x, Utility::AXIS_X));
+
+	VECTOR localPos;
+
+	// 注視点(通常重力でいうところのY値を追従対象と同じにする)
+	//localPos = rotOutX_.PosAxis(LOCAL_F2T_POS);
+	localPos = rot_.PosAxis(FPS_LOCAL_F2T_POS);
+	targetPos_ = VAdd(pos, localPos);
+
+	// カメラ位置
+	localPos = rotOutX_.PosAxis(FPS_LOCAL_F2C_POS);
+	pos_ = VAdd(pos, localPos);
+
+	// カメラの上方向
+	cameraUp_ = rot_.GetUp();
+}
+
 void Camera::ProcessRot(void)
 {
+	auto& ins = InputManager::GetInstance();
+	float rotPow = Utility::Deg2RadF(SPEED);
+	if (ins.IsNew(KEY_INPUT_RIGHT)) { angles_.y += rotPow; }
+	if (ins.IsNew(KEY_INPUT_LEFT)) { angles_.y -= rotPow; }
+	if (ins.IsNew(KEY_INPUT_UP)) { angles_.x += rotPow; }
+	if (ins.IsNew(KEY_INPUT_DOWN)) { angles_.x -= rotPow; }
+
+
+
+	if (angles_.x >= LIMIT_X_UP_RAD)
+	{
+		angles_.x = LIMIT_X_UP_RAD;
+	}
+	else if (angles_.x <= LIMIT_X_DW_RAD)
+	{
+		angles_.x = LIMIT_X_DW_RAD;
+	}
+}
+
+void Camera::ProcessRotMause(float* x_m, float* y_m, const float fov_per)
+{
+	int x_t, y_t;
+	GetMousePoint(&x_t, &y_t);
+	*x_m += float(std::clamp(x_t - Application::SCREEN_SIZE_X / 2, -120, 120)) * fov_per / GetFPS();
+	*y_m += float(std::clamp(y_t - Application::SCREEN_SIZE_Y / 2, -120, 120)) * fov_per / GetFPS();
+	SetMousePoint(Application::SCREEN_SIZE_X / 2, Application::SCREEN_SIZE_Y / 2);
+
+	// マウスを表示状態にする
+	SetMouseDispFlag(FALSE);
+
+	if (angles_.x <= FPS_LIMIT_X_UP_RAD)
+	{
+		angles_.x = FPS_LIMIT_X_UP_RAD;
+	}
+	if (angles_.x >= FPS_LIMIT_X_DW_RAD)
+	{
+		angles_.x = FPS_LIMIT_X_DW_RAD;
+	}
 }
 
 void Camera::SetBeforeDrawFixedPoint(void)
@@ -191,4 +269,33 @@ void Camera::SetBeforeDrawFollow(void)
 
 void Camera::SetBeforeDrawSelfShot(void)
 {
+	auto& gIns = GravityManager::GetInstance();
+
+	// 同期先の位置
+	VECTOR pos = followTransform_->pos;
+
+
+	// 正面から設定されたX軸分、回転させる
+	rot_ = rotOutX_.Mult(Quaternion::AngleAxis(angles_.x, Utility::AXIS_X));
+
+	VECTOR localPos;
+
+	// 注視点(通常重力でいうところのY値を追従対象と同じにする)
+	localPos = rotOutX_.PosAxis(LOCAL_F2T_POS);
+	targetPos_ = VAdd(pos, localPos);
+
+	// カメラ位置
+	localPos = rot_.PosAxis(LOCAL_F2C_POS);
+	pos_ = VAdd(pos, localPos);
+
+
+}
+
+void Camera::SetBeforeDrawFPS(void)
+{
+	//マウスでのカメラ操作
+	ProcessRotMause(&angles_.y, &angles_.x, 0.2f);
+
+	// 追従対象との相対位置を同期
+	SyncFollowFPS();
 }
