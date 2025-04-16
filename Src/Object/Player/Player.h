@@ -49,7 +49,7 @@ public:
 	};
 	//******************************************
 	// コンストラクタ
-	Player(void);
+	Player(int _playerNum);
 
 	// デストラクタ
 	~Player(void) = default;
@@ -62,6 +62,7 @@ public:
 
 	//ゲッタ
 	const std::shared_ptr<Camera> GetCamera(void)const { return camera_; }
+	const int GetPlayerNum(void)const { return playerNum_; }
 
 private:
 	//******************************************
@@ -92,6 +93,10 @@ private:
 	//操作関連
 	std::shared_ptr<PMove> pMove_;
 	std::shared_ptr<PJump> pJump_;
+
+	//プレイヤー番号
+	int playerNum_;
+
 	//--------------------------------------------
 	//******************************************
 	//メンバ関数

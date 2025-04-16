@@ -2,7 +2,7 @@
 #include "../../Manager/Game/GravityManager.h"
 #include "Player.h"
 
-Player::Player(void)
+Player::Player(int _playerNum):playerNum_(_playerNum)
 {
 	animationController_ = nullptr;
 	state_ = STATE::NONE;
@@ -131,7 +131,7 @@ void Player::Collision(void)
 	movedPos_ = VAdd(transform_.pos, movePow);
 	movedPos_ = VAdd(movedPos_, jumpPow);
 #ifdef DEBUG_ON
-	if (movedPos_.y < GravityManager::GRAVITY_POW)
+	if (movedPos_.y < 0.0f)
 	{
 		movedPos_.y = 0.0f;
 		pJump_->SetIsJump(false);
