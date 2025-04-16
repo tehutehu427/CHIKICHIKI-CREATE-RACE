@@ -53,7 +53,7 @@ public:
 	//アイテムの個別設定
 	virtual void SetParam(void) = 0;
 	//初期化
-	virtual void Init(IntVector3 _mapPos);
+	virtual void Init(IntVector3 _mapPos ,Quaternion _quaRot);
 	virtual void Init()override=0;
 	//更新
 	virtual void Update(void)override = 0;

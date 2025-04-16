@@ -12,6 +12,8 @@ public:
 
 
 	void Init(void);
+	void Update(void);
+	void Draw(void);
 
 	void AddItem(IntVector3 mapPos,Quaternion rot,ItemBase::ITEM_TYPE type);				//アイテム追加　ステータス
 	void DeleteItem(VECTOR mapPos, int range);	//アイテム消去　消去の中心地, 消去の範囲
@@ -26,8 +28,11 @@ protected:
 private:
 	static ItemManager* instance_;
 
+	//アイテム
 	std::map<int/*アイテムを置いた順番*/, ItemBase*/*置いたアイテム*/> items_;
 
+	//現在存在するアイテム数用のカウンタ
+	int itemNum_;
 
 	ItemManager(void);
 	ItemManager(const ItemManager& instance_) = default;

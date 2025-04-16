@@ -1,4 +1,6 @@
 #include "../Utility/Utility.h"
+#include "../Common/Quaternion.h"
+#include "../Manager/System/SceneManager.h"
 #include "MoveHoriFloor.h"
 
 MoveHoriFloor::MoveHoriFloor()
@@ -30,11 +32,13 @@ void MoveHoriFloor::SetParam(void)
 
 void MoveHoriFloor::Update(void)
 {
-	
+	//à⁄ìÆèàóù
+	Move();
 }
 
 void MoveHoriFloor::Draw(void)
 {
+	DrawSphere3D(transform_.pos, 5, 10, 0xffffff, 0xffffff, true);
 }
 
 void MoveHoriFloor::Release(void)
@@ -43,5 +47,15 @@ void MoveHoriFloor::Release(void)
 
 void MoveHoriFloor::Move(void)
 {
-	VECTOR movePow = Utility::GetMoveVec(transform_.pos, VAdd(transform_.pos, VGet(size_.x * 100, size_.y * 100, size_.z * 100)));
+	static float step = 0.0f;
+	step += SceneManager::GetInstance().GetDeltaTime();
+
+	transform_.pos.x = transform_.pos.x + (size_.x * MOVE_X * 100 * sinf(step));
+
+	VECTOR startPos = transform_.pos;
+	VECTOR movePos = transform_.quaRot.PosAxis(VGet(size_.x * MOVE_X * 100,0.0f,0.0f));
+	VECTOR goalPos = VAdd(startPos, movePos);
+
+	//à⁄ìÆÉxÉNÉgÉã
+	VECTOR movePow = Utility::GetMoveVec(startPos, goalPos, SPEED);
 }

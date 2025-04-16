@@ -11,6 +11,9 @@ public:
 	//横移動距離
 	static constexpr int MOVE_X = 8;
 
+	//速度
+	static constexpr float SPEED = 5.0f;
+
 	//コンストラクタ
 	MoveHoriFloor();
 	//デストラクタ

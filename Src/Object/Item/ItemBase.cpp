@@ -12,9 +12,10 @@ ItemBase::~ItemBase()
 {
 }
 
-void ItemBase::Init(IntVector3 _mapPos)
+void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot)
 {
-	//transform_.pos = _mapPos;
+	transform_.pos = VGet(_mapPos.x * 100 , _mapPos.y * 100, _mapPos.z * 100);
+	transform_.quaRot = _quaRot;
 	Init();
 }
 
