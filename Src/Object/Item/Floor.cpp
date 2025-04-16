@@ -10,14 +10,24 @@ Floor::~Floor()
 
 void Floor::Load(void)
 {
+	//ƒ‚ƒfƒ‹‚ÌŠî–{İ’è
+	//transform_.SetModel(resMng_.LoadModelDuplicate(
+	//	ResourceManager::SRC::FLOOR));
 }
 
 void Floor::Init(void)
 {
+	//ŒÂlİ’è
+	SetParam();
 }
 
 void Floor::SetParam(void)
 {
+	size_ = MAP_SIZE;
+	status_.isBreak = true;
+	status_.isGravity = false;
+	status_.itemType = ITEM_TYPE::FLOOR;
+	status_.effType = EFFECT_TYPE::INSTALLATION;
 }
 
 void Floor::Update(void)
