@@ -121,5 +121,10 @@ public:
 	//待機時間
 	static bool IsTimeOver(float& totalTime, const float& waitTime);
 
+	//文字の描画
+	//str : 表示する文字　int : そろえるライン　int : y軸座標　int : 色
+	static void DrawStringCenter(std::string str, int centerLine, int posY, int color);	//中央ぞろえ
+	static void DrawStringLeft(std::string str, int leftLiine, int posY, int color);	//左揃え
+	static void DrawStringRight(std::string str, int rightLine, int posY, int color);	//右揃え
 };
 

@@ -562,3 +562,21 @@ bool Utility::IsTimeOver(float& totalTime, const float& waitTime)
 
     return false;
 }
+
+void Utility::DrawStringCenter(std::string str, int centerLine, int posY, int color)
+{
+    int width = GetDrawStringWidth(str.c_str(), strlen(str.c_str()));
+    DrawString(centerLine - width / 2, posY, str.c_str(), color);
+}
+
+void Utility::DrawStringLeft(std::string str, int leftLiine, int posY, int color)
+{
+    int width = GetDrawStringWidth(str.c_str(), strlen(str.c_str()));
+    DrawString(leftLiine, posY, str.c_str(), color);
+}
+
+void Utility::DrawStringRight(std::string str, int rightLine, int posY, int color)
+{
+    int width = GetDrawStringWidth(str.c_str(), strlen(str.c_str()));
+    DrawString(rightLine - width, posY, str.c_str(), color);
+}
