@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Item\MoveHoriFloor.cpp" />
     <ClCompile Include="Src\Object\Item\Floor.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
     <ClCompile Include="Src\Manager\Game\ItemManager.cpp" />
@@ -51,6 +52,7 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Item\MoveHoriFloor.h" />
     <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\byte_container_with_subtype.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\detail\abi_macros.hpp" />
