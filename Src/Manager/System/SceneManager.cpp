@@ -5,6 +5,7 @@
 #include "../../Scene/GameScene.h"
 #include "Camera.h"
 #include "ResourceManager.h"
+#include "DateBank.h"
 #include "SceneManager.h"
 
 SceneManager* SceneManager::instance_ = nullptr;
@@ -40,6 +41,8 @@ void SceneManager::Init(void)
 
 	// デルタタイム
 	preTime_ = std::chrono::system_clock::now();
+
+	DateBank::CreateInstance();
 
 	//ウィンドウがアクティブ状態でなくとも処理を行う
 	SetAlwaysRunFlag(true);
