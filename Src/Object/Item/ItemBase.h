@@ -50,6 +50,8 @@ public:
 
 	//読み込み
 	virtual void Load(void)override = 0;
+	//アイテムの個別設定
+	virtual void SetParam(void) = 0;
 	//初期化
 	virtual void Init(void)override = 0;
 	//更新
