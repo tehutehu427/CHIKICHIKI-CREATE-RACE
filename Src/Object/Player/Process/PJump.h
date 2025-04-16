@@ -52,6 +52,9 @@ private:
 	//ジャンプ減衰量
 	float jumpDeceralation_;
 
+	//落下カウント
+	float fallCnt_;
+
 	//オブジェクトの上方向
 	VECTOR dirUp_;
 	//オブジェクトの下方向

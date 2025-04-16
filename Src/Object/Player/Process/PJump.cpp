@@ -53,7 +53,7 @@ void PJump::Jump(void)
 			// この後、いくつかのジャンプパターンを試します
 		}
 		isJump_ = true;
-		// ジャンプの入力受付時間をヘラス
+		// ジャンプの入力受付時間を減らす
 		stepJump_ += deltaTime;
 		if (stepJump_ < TIME_JUMP_IN)
 		{
@@ -62,7 +62,8 @@ void PJump::Jump(void)
 		}
 		else 
 		{
-			int i = 0;
+			jumpDeceralation_ += (TIME_JUMP_IN - stepJump_) * TIME_JUMP_IN;
+			jumpPow_ = VScale(dirUp_, jumpDeceralation_);
 		}
 
 	}
@@ -71,6 +72,7 @@ void PJump::Jump(void)
 	{
 		stepJump_ = TIME_JUMP_IN;
 		jumpDeceralation_ = POW_JUMP;
+		fallCnt_ = 0.0f;
 	}
 }
 
