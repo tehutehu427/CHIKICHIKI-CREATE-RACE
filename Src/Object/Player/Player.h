@@ -58,6 +58,7 @@ public:
 	void Init(void)override;
 	void Update(void)override;
 	void Draw(void)override;
+	void Release(void)override;
 
 	//ƒQƒbƒ^
 	const std::shared_ptr<Camera> GetCamera(void)const { return camera_; }

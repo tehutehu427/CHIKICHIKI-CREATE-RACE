@@ -7,6 +7,14 @@ void ItemManager::Init(void)
 {
 }
 
+void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type)
+{
+}
+
+void ItemManager::DeleteItem(VECTOR mapPos, int range)
+{
+}
+
 void ItemManager::CreateInstance(void)
 {
 	if (instance_ == nullptr)

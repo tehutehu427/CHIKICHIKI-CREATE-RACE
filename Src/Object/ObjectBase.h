@@ -11,18 +11,36 @@ class ObjectBase
 
 public:
 
+	//ステータス
+	struct Status
+	{
+		bool isBreak;		//破壊可能か(true:破壊可能)
+		bool isGravity;		//重力影響を受けるか(true:受ける)
+		IntVector3 size;	//大きさ(グリッド基準)
+	};
+
 	// コンストラクタ
 	ObjectBase(void);
 
 	// デストラクタ
 	virtual ~ObjectBase(void);
 
+	//読み込み
 	virtual void Load(void) = 0;
+	//初期化
 	virtual void Init(void) = 0;
+	//更新
 	virtual void Update(void) = 0;
+	//描画
 	virtual void Draw(void) = 0;
+	//解放
+	virtual void Release(void) = 0;
 
+	//モデル情報の取得
 	inline const Transform& GetTransform(void) const { return transform_; }
+
+	//ステータスの取得
+	inline const Status GetStatus(void)const { return status_; }
 
 protected:
 
@@ -33,5 +51,7 @@ protected:
 	// モデル制御の基本情報
 	Transform transform_;
 
+	//ステータス
+	Status status_;
 };
 

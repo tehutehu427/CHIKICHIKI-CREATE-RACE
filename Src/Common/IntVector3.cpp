@@ -1,22 +1,22 @@
 #include "IntVector3.h"
 
-IntVector3::IntVector3(void)
-{
-	x = 0;
-	y = 0;
-	z = 0;
-}
-
-IntVector3::IntVector3(int vX, int vY, int vZ)
-{
-	x = vX;
-	y = vY;
-	z = vZ;
-}
-
-IntVector3::~IntVector3(void)
-{
-}
+//IntVector3::IntVector3(void)
+//{
+//	x = 0;
+//	y = 0;
+//	z = 0;
+//}
+//
+//IntVector3::IntVector3(int vX, int vY, int vZ)
+//{
+//	x = vX;
+//	y = vY;
+//	z = vZ;
+//}
+//
+//IntVector3::~IntVector3(void)
+//{
+//}
 
 const IntVector3 IntVector3::operator+(const IntVector3 _value)const
 {
