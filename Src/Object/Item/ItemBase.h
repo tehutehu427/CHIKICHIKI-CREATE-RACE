@@ -33,6 +33,9 @@ public:
 	//解放
 	virtual void Release(void)override = 0;
 
+	//アイテムの種類取得
+	inline const ITEM_TYPE GetItemType(void)const { return type_; }
+
 protected:
 
 	//アイテムの種類
