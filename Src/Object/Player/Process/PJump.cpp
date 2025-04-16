@@ -38,7 +38,7 @@ void PJump::DrawDebug(void)
 
 void PJump::Jump(void)
 {
-	bool isHit = InputManager::GetInstance().IsNew(KEY_INPUT_E);
+	bool isHit = InputManager::GetInstance().IsTrgDown(KEY_INPUT_E);
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 	// ジャンプ
 	if (isHit && (isJump_ || isEndLanding_))
@@ -70,9 +70,9 @@ void PJump::Jump(void)
 	// ボタンを離したらジャンプ力に加算しない
 	if (!isHit)
 	{
-		stepJump_ = TIME_JUMP_IN;
-		jumpDeceralation_ = POW_JUMP;
-		fallCnt_ = 0.0f;
+		//stepJump_ = TIME_JUMP_IN;
+		//jumpDeceralation_ = POW_JUMP;
+		//fallCnt_ = 0.0f;
 	}
 }
 
