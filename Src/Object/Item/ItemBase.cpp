@@ -11,3 +11,13 @@ ItemBase::ItemBase()
 ItemBase::~ItemBase()
 {
 }
+
+void ItemBase::Init(IntVector3 _mapPos)
+{
+	//transform_.pos = _mapPos;
+	Init();
+}
+
+void ItemBase::Init()
+{
+}
