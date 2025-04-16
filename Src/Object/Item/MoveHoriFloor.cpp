@@ -43,5 +43,5 @@ void MoveHoriFloor::Release(void)
 
 void MoveHoriFloor::Move(void)
 {
-	//VECTOR movePow = Utility::GetMoveVec(transform_.pos, VAdd(transform_.pos, VGet(size_.x * 100, size_.y * 100, size_.z * 100)));
+	VECTOR movePow = Utility::GetMoveVec(transform_.pos, VAdd(transform_.pos, VGet(size_.x * 100, size_.y * 100, size_.z * 100)));
 }
