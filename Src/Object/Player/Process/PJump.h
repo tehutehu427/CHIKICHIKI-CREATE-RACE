@@ -42,14 +42,18 @@ private:
 	//**************************************
 	//メンバ変数
 	//**************************************
-	//重力計算
-	std::shared_ptr<GravityManager> gravity_;
 	// ジャンプ判定
 	bool isJump_;
 	// ジャンプの入力受付時間
 	float stepJump_;
 	// ジャンプ量
 	VECTOR jumpPow_;
+
+	//ジャンプ減衰量
+	float jumpDeceralation_;
+
+	//落下カウント
+	float fallCnt_;
 
 	//オブジェクトの上方向
 	VECTOR dirUp_;
