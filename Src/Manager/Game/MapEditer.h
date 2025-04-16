@@ -24,9 +24,18 @@ public:
 
 	void Init(void);
 
-	int GetItemNom(void) { return itemNom_; }
+	//アイテムナンバーを返す
+	inline int GetItemNom(void) { return itemNom_; }
+
+	//アイテムを追加
 	void AddItem(IntVector3 mapPos);
+
+	//アイテムを削除
 	void DeleteItem(IntVector3 mapPos);
+
+	//種類ごとの配置情報を返す
+	inline std::vector<IntVector3> GetItemsPos(const ItemBase::ITEM_TYPE _type) { return itemsPos_[_type]; }
+
 protected:
 
 private:
@@ -35,8 +44,10 @@ private:
 	 int isMapPosItem_[(MAP_SIZE.x)][(MAP_SIZE.y)][(MAP_SIZE.z)];	//アイテム番号を入力 0はアイテムなし
 	 int itemNom_;
 
+	 //配置したアイテムの座標を管理
+	 std::map<ItemBase::ITEM_TYPE ,std::vector<IntVector3> > itemsPos_;
+
 	MapEditer(void);
 	MapEditer(const MapEditer& instance_) = default;
 	~MapEditer(void) = default;
 };
-

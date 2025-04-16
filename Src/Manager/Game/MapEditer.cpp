@@ -43,4 +43,7 @@ void MapEditer::DeleteItem(IntVector3 mapPos)
 
 MapEditer::MapEditer(void)
 {
+	itemNom_ = -1;
+	itemsPos_.clear();
+	isMapPosItem_[(MAP_SIZE.x)][(MAP_SIZE.y)][(MAP_SIZE.z)] = {};
 }
