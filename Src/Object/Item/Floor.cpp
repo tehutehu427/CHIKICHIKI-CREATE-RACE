@@ -10,6 +10,9 @@ Floor::~Floor()
 
 void Floor::Load(void)
 {
+	//ƒ‚ƒfƒ‹‚ÌŠî–{İ’è
+	//transform_.SetModel(resMng_.LoadModelDuplicate(
+	//	ResourceManager::SRC::FLOOR));
 }
 
 void Floor::Init(void)
