@@ -22,6 +22,7 @@
     <ClCompile Include="Src\Manager\System\DateBank.cpp" />
     <ClCompile Include="Src\Object\Item\MoveHoriFloor.cpp" />
     <ClCompile Include="Src\Object\Item\Floor.cpp" />
+    <ClCompile Include="Src\Object\Grid.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
     <ClCompile Include="Src\Manager\Game\ItemManager.cpp" />
     <ClCompile Include="Src\Manager\Game\EditController.cpp" />
@@ -53,7 +54,6 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Manager\System\DateBank.h" />
     <ClInclude Include="Src\Object\Item\MoveHoriFloor.h" />
     <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\byte_container_with_subtype.hpp" />
@@ -102,6 +102,8 @@
     <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
     <ClInclude Include="Src\Object\Item\Floor.h" />
+    <ClInclude Include="Src\Manager\System\DateBank.h" />
+    <ClInclude Include="Src\Object\Grid.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
     <ClInclude Include="Src\Manager\Game\ItemManager.h" />
     <ClInclude Include="Src\Manager\Game\EditController.h" />
@@ -221,6 +223,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DXLIB_DIR);$(ProjectDir)Src/Lib/</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
