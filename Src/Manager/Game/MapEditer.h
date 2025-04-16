@@ -2,11 +2,13 @@
 #include<DxLib.h>
 #include"ItemManager.h"
 #include"../../Common/Quaternion.h"
+#include"../../Common/IntVector3.h"
 class MapEditer
 {
 public:
 
-	static constexpr VECTOR MAP_SIZE = { 30,15,30 };
+	static constexpr IntVector3 MAP_SIZE = { 50,5,40 };
+	static constexpr int GRID_SIZE = 50;
 
 	struct STATUS
 	{
@@ -23,14 +25,14 @@ public:
 	void Init(void);
 
 	int GetItemNom(void) { return itemNom_; }
-	void AddItem(VECTOR mapPos);
-	void DeleteItem(VECTOR mapPos);
+	void AddItem(IntVector3 mapPos);
+	void DeleteItem(IntVector3 mapPos);
 protected:
 
 private:
 	static MapEditer* instance_;
 
-	 int isMapPosItem_[static_cast<int>(MAP_SIZE.x)][static_cast<int>(MAP_SIZE.y)][static_cast<int>(MAP_SIZE.z)];	//アイテム番号を入力 0はアイテムなし
+	 int isMapPosItem_[(MAP_SIZE.x)][(MAP_SIZE.y)][(MAP_SIZE.z)];	//アイテム番号を入力 0はアイテムなし
 	 int itemNom_;
 
 	MapEditer(void);
