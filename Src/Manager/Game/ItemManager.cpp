@@ -8,7 +8,7 @@ void ItemManager::Init(void)
 
 }
 
-void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type)
+void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type, int itemNom)
 {
 }
 
