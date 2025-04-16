@@ -49,7 +49,7 @@ public:
 	};
 	//******************************************
 	// コンストラクタ
-	Player(int _playerNum);
+	Player(int _playerNum,Transform _trans);
 
 	// デストラクタ
 	~Player(void) = default;
@@ -61,8 +61,13 @@ public:
 	void Release(void)override;
 
 	//ゲッタ
+	//******************************************
 	const std::shared_ptr<Camera> GetCamera(void)const { return camera_; }
 	const int GetPlayerNum(void)const { return playerNum_; }
+	//******************************************
+	//モデル情報をマネージャからセット
+	void SetTrans(const Transform _trans) { transform_ = _trans; }
+
 
 private:
 	//******************************************

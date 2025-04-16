@@ -10,9 +10,14 @@ public:
 	//**************************************
 	//定数
 	//**************************************
-	static constexpr int PLAYER_NUM = 4;
+
+	//プレイヤー１の座標
+	static constexpr float PLAYER_ONE_POS_X = -20.0f;
+
+	//座標の間隔
+	static constexpr float DISTANCE_POS = 20.0f;
 	
-	enum class PLAYER_NUM
+	enum class PLAYER
 	{
 		PLAYER_ONE,
 		PLAYER_TWO,
@@ -56,7 +61,9 @@ private:
 	//*****************************************
 	//メンバ関数
 	//*****************************************
-	Transform SetTrans(int _playerNum);
+
+	//プレイヤー番号ごとでモデル情報を決定する
+	Transform FixTrans(int _playerNum);
 	
 
 };

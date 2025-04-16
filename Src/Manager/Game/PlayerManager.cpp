@@ -1,3 +1,5 @@
+#include"../../Utility/Utility.h"
+#include"../../Manager/System/ResourceManager.h"
 #include "PlayerManager.h"
 std::unique_ptr<PlayerManager> PlayerManager::instance_ = nullptr;
 PlayerManager::PlayerManager(int _playerNum)
@@ -24,8 +26,10 @@ void PlayerManager::Init(void)
 	for (int i = 0; i < playerNum_; i++)
 	{
 		std::shared_ptr<Player> player;
-		player = std::make_shared<Player>(i);
+		Transform trans=FixTrans(i);
+		player = std::make_shared<Player>(i,trans);
 		player->Init();
+		//player->SetTrans(trans);
 		players_.push_back(player);
 	}
 }
@@ -54,8 +58,22 @@ void PlayerManager::Release(void)
 	}
 }
 
-Transform PlayerManager::SetTrans(int _playerNum)
+Transform PlayerManager::FixTrans(int _playerNum)
 {
 	Transform trans = Transform();
-	PLAYER_NUM num = static_cast<PLAYER_NUM>(_playerNum);
+	//”Ô†‚Åƒ‚ƒfƒ‹‚ğ•Ï‚¦‚é
+	PLAYER num = static_cast<PLAYER>(_playerNum);
+	float x = 0.0f;
+	trans.quaRot = Quaternion();
+	trans.scl = Utility::VECTOR_ONE;
+	trans.quaRotLocal =
+		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
+	
+	x = -PLAYER_ONE_POS_X + DISTANCE_POS * _playerNum;
+
+	//ƒ‚ƒfƒ‹‚Å‚«‚½‚ç”Ô†‚²‚Æ‚Åİ’è‚·‚é
+	//trans.modelId=trans.SetModel(ResourceManager::SRC::PLAYER1)
+	
+	trans.pos = { x,0.0f,0.0f };
+	return trans;
 }

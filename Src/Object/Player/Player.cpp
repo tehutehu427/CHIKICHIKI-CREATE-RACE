@@ -1,13 +1,14 @@
 #include "../../Utility/Utility.h"
 #include "../../Manager/Game/GravityManager.h"
+#include "../../Manager/System/ResourceManager.h"
 #include "Player.h"
 
-Player::Player(int _playerNum):playerNum_(_playerNum)
+Player::Player(int _playerNum,Transform _trans):playerNum_(_playerNum)
 {
 	animationController_ = nullptr;
 	state_ = STATE::NONE;
 	movedPos_ = Utility::VECTOR_ZERO;
-
+	transform_ = _trans;
 	//オブジェクト生成
 	//操作関連
 	pMove_ = std::make_shared<PMove>();
@@ -32,11 +33,12 @@ void Player::Load(void)
 
 void Player::Init(void)
 {
-	transform_.scl = Utility::VECTOR_ONE;
-	transform_.pos = { 0.0f, 0.0f, 0.0f };
-	transform_.quaRot = Quaternion();
-	transform_.quaRotLocal =
-		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
+	//transform_.modelId = transform_.SetModel(resMng_.GetInstance().LoadModelDuplicate(ResourceManager::SRC::)
+	//transform_.scl = Utility::VECTOR_ONE;
+	//transform_.pos = { 0.0f, 0.0f, 0.0f };
+	//transform_.quaRot = Quaternion();
+	//transform_.quaRotLocal =
+	//	Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
 	transform_.Update();
 
 	// 初期状態
