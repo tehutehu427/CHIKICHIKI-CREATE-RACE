@@ -44,6 +44,7 @@ void GameScene::Init(void)
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
 	grid_->Init();
+	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
 }
 
 void GameScene::NormalUpdate(void)

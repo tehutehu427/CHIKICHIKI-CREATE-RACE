@@ -53,6 +53,9 @@ void Camera::SetBeforeDraw(void)
 	case Camera::MODE::FPS:
 		SetBeforeDrawFPS();
 		break;
+	case Camera::MODE::FREE_CONTROLL:
+		SetBeforeDrawFreeControll();
+		break;
 	}
 
 	// カメラの設定(位置と注視点による制御)
@@ -256,6 +259,7 @@ void Camera::SetBeforeDrawFixedPoint(void)
 	// 何もしない
 }
 
+
 void Camera::SetBeforeDrawFollow(void)
 {
 
@@ -298,4 +302,47 @@ void Camera::SetBeforeDrawFPS(void)
 
 	// 追従対象との相対位置を同期
 	SyncFollowFPS();
+}
+
+void Camera::SetBeforeDrawFreeControll(void)
+{
+	auto& ins = InputManager::GetInstance();
+	float rotPow = Utility::Deg2RadF(SPEED);
+	if (ins.IsNew(KEY_INPUT_E)) { angles_.y += rotPow; }
+	if (ins.IsNew(KEY_INPUT_Q)) { angles_.y -= rotPow; }
+	if (ins.IsNew(KEY_INPUT_LSHIFT)) { angles_.x -= rotPow; }
+	if (ins.IsNew(KEY_INPUT_LCONTROL)) { angles_.x += rotPow; }
+
+	if (angles_.x <= FPS_LIMIT_X_UP_RAD)
+	{
+		angles_.x = FPS_LIMIT_X_UP_RAD;
+	}
+	if (angles_.x >= FPS_LIMIT_X_DW_RAD)
+	{
+		angles_.x = FPS_LIMIT_X_DW_RAD;
+	}
+	if (ins.IsNew(KEY_INPUT_W)) 
+	{
+		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), 3.0f));
+	}
+	if (ins.IsNew(KEY_INPUT_A)) 
+	{
+		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetLeft(), 3.0f));
+	}
+	if (ins.IsNew(KEY_INPUT_S)) 
+	{
+		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetBack(), 3.0f));
+	}
+	if (ins.IsNew(KEY_INPUT_D)) 
+	{
+		pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetRight(), 3.0f));
+	}
+
+	VECTOR localPos;
+	rot_ =(Quaternion::Quaternion(angles_));
+	// 注視点(通常重力でいうところのY値を追従対象と同じにする)
+	localPos = rot_.PosAxis(LOCAL_F2T_POS);
+	targetPos_ = VAdd(pos_, localPos);
+
+
 }

@@ -49,6 +49,7 @@ public:
 		FOLLOW,
 		SELF_SHOT,
 		FPS,
+		FREE_CONTROLL,
 	};
 
 	Camera(void);
@@ -79,6 +80,8 @@ public:
 	// ’Ç]‘ÎÛ‚Ìİ’è
 	void SetFollow(const Transform* follow);
 
+	void SetPos(VECTOR pos) { pos_ = pos; }
+	void SetAngles_(VECTOR angles) { angles_ = angles; }
 private:
 
 	// ƒJƒƒ‰‚ª’Ç]‘ÎÛ‚Æ‚·‚éTransform
@@ -123,5 +126,6 @@ private:
 	void SetBeforeDrawFollow(void);
 	void SetBeforeDrawSelfShot(void);
 	void SetBeforeDrawFPS(void);
+	void SetBeforeDrawFreeControll(void);
 };
 
