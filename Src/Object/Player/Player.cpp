@@ -1,4 +1,5 @@
 #include "../../Utility/Utility.h"
+#include "../../Manager/Game/GravityManager.h"
 #include "Player.h"
 
 Player::Player(void)
@@ -130,7 +131,7 @@ void Player::Collision(void)
 	movedPos_ = VAdd(transform_.pos, movePow);
 	movedPos_ = VAdd(movedPos_, jumpPow);
 #ifdef DEBUG_ON
-	if (movedPos_.y < 0.0f)
+	if (movedPos_.y < GravityManager::GRAVITY_POW)
 	{
 		movedPos_.y = 0.0f;
 		pJump_->SetIsJump(false);

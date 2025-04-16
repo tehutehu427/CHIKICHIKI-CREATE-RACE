@@ -53,27 +53,30 @@ void PJump::Jump(void)
 			// この後、いくつかのジャンプパターンを試します
 		}
 		isJump_ = true;
-		// ジャンプの入力受付時間を減らす
-		stepJump_ += deltaTime;
-		if (stepJump_ < TIME_JUMP_IN)
-		{
-			jumpDeceralation_ -= stepJump_* TIME_JUMP_IN;
-			jumpPow_ = VScale(dirUp_, jumpDeceralation_);
-		}
-		else 
-		{
-			jumpDeceralation_ += (TIME_JUMP_IN - stepJump_) * TIME_JUMP_IN;
-			jumpPow_ = VScale(dirUp_, jumpDeceralation_);
-		}
 
+		if (isJump_)
+		{
+			// ジャンプの入力受付時間を減らす
+			stepJump_ += deltaTime;
+			if (stepJump_ < TIME_JUMP_IN)
+			{
+				jumpDeceralation_ -= stepJump_ * TIME_JUMP_IN;
+				jumpPow_ = VScale(dirUp_, jumpDeceralation_);
+			}
+			else
+			{
+				jumpDeceralation_ += (TIME_JUMP_IN - stepJump_) * TIME_JUMP_IN;
+				jumpPow_ = VScale(dirUp_, jumpDeceralation_);
+			}
+		}
 	}
-	// ボタンを離したらジャンプ力に加算しない
-	if (!isHit)
-	{
-		//stepJump_ = TIME_JUMP_IN;
-		//jumpDeceralation_ = POW_JUMP;
-		//fallCnt_ = 0.0f;
-	}
+	//// ボタンを離したらジャンプ力に加算しない
+	//if (!isHit)
+	//{
+	//	//stepJump_ = TIME_JUMP_IN;
+	//	//jumpDeceralation_ = POW_JUMP;
+	//	//fallCnt_ = 0.0f;
+	//}
 }
 
 void PJump::CalcGravity(void)
