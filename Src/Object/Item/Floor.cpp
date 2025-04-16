@@ -17,10 +17,17 @@ void Floor::Load(void)
 
 void Floor::Init(void)
 {
+	//å¬êlê›íË
+	SetParam();
 }
 
 void Floor::SetParam(void)
 {
+	size_ = MAP_SIZE;
+	status_.isBreak = true;
+	status_.isGravity = false;
+	status_.itemType = ITEM_TYPE::FLOOR;
+	status_.effType = EFFECT_TYPE::INSTALLATION;
 }
 
 void Floor::Update(void)
