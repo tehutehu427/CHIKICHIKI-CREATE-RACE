@@ -13,6 +13,8 @@ public:
 	void Load(void)override;
 	//‰Šú‰»
 	void Init(void)override;
+	//ŒÂlİ’è
+	void SetParam(void)override;
 	//XV
 	void Update(void)override;
 	//•`‰æ

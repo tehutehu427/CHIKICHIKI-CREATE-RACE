@@ -16,6 +16,10 @@ void Floor::Init(void)
 {
 }
 
+void Floor::SetParam(void)
+{
+}
+
 void Floor::Update(void)
 {
 }
