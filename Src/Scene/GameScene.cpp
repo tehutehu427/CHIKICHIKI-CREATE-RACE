@@ -41,7 +41,7 @@ void GameScene::Init(void)
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
-	PlayerManager::CreateInstance(14);
+	PlayerManager::CreateInstance(4);
 }
 
 void GameScene::NormalUpdate(void)
