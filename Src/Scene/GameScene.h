@@ -3,6 +3,7 @@
 #include"../Object/Player/Player.h"
 #include "SceneBase.h"
 
+class Grid;
 
 class GameScene : public SceneBase
 {
@@ -42,4 +43,5 @@ private:
 	//ƒvƒŒƒCƒ„[
 	std::shared_ptr<Player>player_;
 
+	std::unique_ptr<Grid>grid_;
 };

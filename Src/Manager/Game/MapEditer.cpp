@@ -31,12 +31,15 @@ void MapEditer::Init(void)
 	itemNom_ = 1;
 }
 
-void MapEditer::AddItem(VECTOR mapPos)
+void MapEditer::AddItem(STATUS status)
 {
+	ItemManager::GetInstance().AddItem(status.mapPos,status.rotate,status.type,itemNom_);
+	isMapPosItem_[status.mapPos.x][status.mapPos.y][status.mapPos.z] = itemNom_++;
 
+	itemNom_++;
 }
 
-void MapEditer::DeleteItem(VECTOR mapPos)
+void MapEditer::DeleteItem(IntVector3 mapPos)
 {
 
 }

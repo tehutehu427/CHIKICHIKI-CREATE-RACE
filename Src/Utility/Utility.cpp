@@ -589,9 +589,6 @@ const VECTOR Utility::GetMoveVec(const VECTOR _start, const VECTOR _goal, const 
     //正規化
     targetVec = VNorm(targetVec);
 
-    //Y座標は必要ないので要素を消す
-    targetVec = { targetVec.x,0.0f,targetVec.z };
-
     //移動量を求める
     VECTOR ret = VScale(targetVec, _speed);
 

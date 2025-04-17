@@ -10,6 +10,7 @@
 #include "../Manager/Game/GravityManager.h"
 #include "../Manager/Game/PlayerManager.h"
 #include "../Object/Player/Player.h"
+#include "../Object/Grid.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -59,6 +60,7 @@ void GameScene::NormalDraw(void)
 	//デバッグ処理
 	DebagDraw();
 
+	grid_->Draw();
 	//プレイヤー
 	//player_->Draw();
 	PlayerManager::GetInstance()->Draw();
@@ -88,13 +90,13 @@ void GameScene::DebagDraw(void)
 		0,
 		Application::SCREEN_SIZE_X,
 		Application::SCREEN_SIZE_Y,
-		0x00ff00,
+		0x000000,
 		true
 	);
 
 	DrawFormatString(
 		0, 0,
-		0x000000,
+		0xff0000,
 		"GameScene"
 	);
 }
