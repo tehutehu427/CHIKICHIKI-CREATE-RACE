@@ -1,3 +1,4 @@
+
 #include "ItemBase.h"
 
 ItemBase::ItemBase()
@@ -21,4 +22,9 @@ void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot)
 
 void ItemBase::Init()
 {
+}
+
+void ItemBase::Draw(void)
+{
+	MV1DrawModel(transform_.modelId);
 }

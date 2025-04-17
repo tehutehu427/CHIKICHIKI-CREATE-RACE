@@ -20,8 +20,6 @@ public:
 	void SetParam(void)override;
 	//XV
 	void Update(void)override;
-	//•`‰æ
-	void Draw(void)override;
 	//‰ğ•ú
 	void Release(void)override;
 

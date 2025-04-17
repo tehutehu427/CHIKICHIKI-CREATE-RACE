@@ -96,6 +96,15 @@ void Resource::Load(void)
 		break;
 	}
 
+	//リソースが読み込めたか確認
+	if (type_ != Resource::TYPE::IMGS) {
+		assert(handleId_ != -1);
+	}
+	else {
+		for (int i = 0; i < numX_ * numY_; i++) {
+			assert(handleIds_[i] != -1); // 各スプライトの読み込みが成功してるか確認
+		}
+	}
 }
 
 void Resource::Release(void)

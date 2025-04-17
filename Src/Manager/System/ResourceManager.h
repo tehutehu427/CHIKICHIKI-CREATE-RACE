@@ -19,6 +19,12 @@ public:
 		PENGS_FONT,
 		BOKUTACHI_FONT,
 		HANAZOME_FONT,
+
+		//アイテムモデル
+		FLOOR,
+		MOVE_FLOOR,
+		BOMB,
+		CANNON,
 	};
 
 	// 明示的にインステンスを生成する

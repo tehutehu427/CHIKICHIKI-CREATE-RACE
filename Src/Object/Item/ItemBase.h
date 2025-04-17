@@ -58,7 +58,7 @@ public:
 	//XV
 	virtual void Update(void)override = 0;
 	//•`‰æ
-	virtual void Draw(void)override = 0;
+	virtual void Draw(void)override;
 	//‰ğ•ú
 	virtual void Release(void)override = 0;
 

@@ -11,8 +11,11 @@ public:
 	//横移動距離
 	static constexpr int MOVE_X = 8;
 
-	//速度
-	static constexpr float SPEED = 5.0f;
+	//1地点移動するのにかかる秒数
+	static constexpr float ONE_POINT_SEC = 5.0f;
+
+	//ルート数
+	static constexpr int ROUTE = 2;
 
 	//コンストラクタ
 	MoveHoriFloor();
@@ -34,11 +37,19 @@ public:
 
 private:
 
-	//設置位置
-	VECTOR startPos_;
+	//ルート
+	VECTOR route_[ROUTE];
+	int routeNum_;
+
+	//移動速度
+	float speed_;
+	//移動秒数用カウンタ
+	float cnt_;
 
 	//移動
 	void Move(void);
 
+	//ルート設定
+	void SetRoute(void);
 };
 

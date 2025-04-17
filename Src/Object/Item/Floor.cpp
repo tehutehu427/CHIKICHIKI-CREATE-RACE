@@ -1,3 +1,4 @@
+#include "../../Manager/System/ResourceManager.h"
 #include "Floor.h"
 
 Floor::Floor()
@@ -10,13 +11,14 @@ Floor::~Floor()
 
 void Floor::Load(void)
 {
-	//モデルの基本設定
-	//transform_.SetModel(resMng_.LoadModelDuplicate(
-	//	ResourceManager::SRC::FLOOR));
+	
 }
 
 void Floor::Init(void)
 {
+	//モデルの基本設定
+	transform_.SetModel(resMng_.LoadModelDuplicate(
+		ResourceManager::SRC::FLOOR));
 	//個人設定
 	SetParam();
 }
@@ -31,10 +33,6 @@ void Floor::SetParam(void)
 }
 
 void Floor::Update(void)
-{
-}
-
-void Floor::Draw(void)
 {
 }
 
