@@ -39,6 +39,22 @@ int DateBank::GetPlayerNum(void)
 	return playerNum_;
 }
 
+DateBank::TYPE DateBank::GetType(void)
+{
+	TYPE type;
+	if (GetPlayerNum() == 1)
+	{
+		type = TYPE::KEY_BORD;
+	}
+	if (GetPlayerNum() == 0)
+	{
+		type = TYPE::ERORE;
+	}
+	type = TYPE::CONTROLLER;
+
+	return type;
+}
+
 DateBank::DateBank(void)
 {
 }

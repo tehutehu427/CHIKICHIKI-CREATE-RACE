@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <functional>
 #include"../Object/Player/Player.h"
 #include "SceneBase.h"
 
@@ -9,7 +10,12 @@ class GameScene : public SceneBase
 {
 
 public:
-	
+	enum class PHASE
+	{
+		EDIT_PHASE,
+		ACTION_PHASE
+	};
+
 	//プレイヤー人数(のちにデータバンクで持ってくる)
 	static constexpr int PLAYER_NUM = 2;
 
@@ -40,6 +46,20 @@ private:
 	void DebagUpdate(void);
 	void DebagDraw(void);
 
+	//フェーズ管理
+	PHASE phase_;
+	//フェーズ管理(遷移時の初期処理)
+	std::map<PHASE, std::function<void(void)>> phaseChanges_;
+	//フェーズ管理(更新ステップ)
+	std::function<void(void)> phaseUpdate_;
+
+	// フェーズ遷移
+	void ChangePhase(PHASE phase);
+	void ChangePhaseEdit(void);
+	void ChangePhaseAction(void);
+	// 更新ステップ
+	void UpdateEdit(void);
+	void UpdateAction(void);
 	//プレイヤー
 	std::shared_ptr<Player>player_;
 

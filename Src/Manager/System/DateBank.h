@@ -2,6 +2,14 @@
 class DateBank
 {
 public:
+	enum class TYPE
+	{
+		KEY_BORD,	//キーボード操作		ソロ用
+		CONTROLLER,	//コントローラー操作	マルチ用
+		ERORE		//プレイヤー人数がerore
+	};
+
+
 	// 明示的にインステンスを生成する
 	static void CreateInstance(void);
 
@@ -13,6 +21,8 @@ public:
 	bool SetPlayerNum(int num);
 
 	int GetPlayerNum(void);
+
+	TYPE GetType(void);
 protected:
 
 private:
