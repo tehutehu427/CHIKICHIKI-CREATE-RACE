@@ -40,24 +40,24 @@ void MapDataIO::Update()
 
 void MapDataIO::ExportJsonFile(const std::string _fileName)
 {
-	json j;
-	MapEditer& map = MapEditer::GetInstance();
+	//json j;
+	//MapEditer& map = MapEditer::GetInstance();
 
-	//各アイテムの配置情報を格納
-	for (const auto& [type, positions] : grouped) {
-		for (const auto& pos : positions) {
-			output[type].push_back({ {"x", pos.x}, {"y", pos.y} });
-		}
-	}
+	////各アイテムの配置情報を格納
+	//for (const auto& [type, positions] : grouped) {
+	//	for (const auto& pos : positions) {
+	//		output[type].push_back({ {"x", pos.x}, {"y", pos.y} });
+	//	}
+	//}
 
-	std::ofstream file(filename + ".json");
-	if (file.is_open()) {
-		file << j.dump(4); // インデント付きで出力
-		file.close();
-	}
-	else {
-		MessageBoxA(NULL, "JSONファイルの保存に失敗しました", "エラー", MB_OK);
-	}
+	//std::ofstream file(filename + ".json");
+	//if (file.is_open()) {
+	//	file << j.dump(4); // インデント付きで出力
+	//	file.close();
+	//}
+	//else {
+	//	MessageBoxA(NULL, "JSONファイルの保存に失敗しました", "エラー", MB_OK);
+	//}
 }
 
 void MapDataIO::ImportJsonFile()

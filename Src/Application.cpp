@@ -71,7 +71,6 @@ void Application::Init(void)
 void Application::Run(void)
 {
 	LONGLONG time = GetNowHiPerformanceCount();
-	LONGLONG temp_time;
 
 	auto& inputManager = InputManager::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();

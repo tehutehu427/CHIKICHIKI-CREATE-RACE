@@ -31,14 +31,15 @@ void MapEditer::Init(void)
 	itemNom_ = 1;
 }
 
-void MapEditer::AddItem(IntVector3 mapPos)
+void MapEditer::AddItem(const ItemBase::ITEM_TYPE& _type, const IntVector3& mapPos)
 {
-
+	//À•W‚ğ’Ç‰Á
+	itemsPos_[_type].push_back(mapPos);
 }
 
-void MapEditer::DeleteItem(IntVector3 mapPos)
+void MapEditer::DeleteItem(const ItemBase::ITEM_TYPE& _type, const IntVector3& mapPos)
 {
-
+	//À•W‚ğíœ
 }
 
 MapEditer::MapEditer(void)

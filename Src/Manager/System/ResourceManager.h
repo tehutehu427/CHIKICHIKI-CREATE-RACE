@@ -19,6 +19,10 @@ public:
 		PENGS_FONT,
 		BOKUTACHI_FONT,
 		HANAZOME_FONT,
+
+		//画像
+		PALETTE,
+		SCROLL_ARROW_ICON,
 	};
 
 	// 明示的にインステンスを生成する

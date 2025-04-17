@@ -38,6 +38,19 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::HANAZOME_FONT, std::move(res));
 #pragma endregion 
 
+#pragma region ‰æ‘œ
+	std::string path_EditUi = Application::PATH_IMAGE + "EditUI/";
+	std::string path_PlayUi = Application::PATH_IMAGE + "PlayUI/";
+	std::string path_RezaltUi = Application::PATH_IMAGE + "RezaltUI/";
+	std::string path_Title = Application::PATH_IMAGE + "Title/";
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "ScrollArrowIcon.png");
+	resourcesMap_.emplace(SRC::SCROLL_ARROW_ICON, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "Palette.png");
+	resourcesMap_.emplace(SRC::PALETTE, std::move(res));
+#pragma endregion 
+
 }
 
 void ResourceManager::Release(void)

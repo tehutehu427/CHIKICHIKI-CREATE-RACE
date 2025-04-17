@@ -28,10 +28,10 @@ public:
 	inline int GetItemNom(void) { return itemNom_; }
 
 	//アイテムを追加
-	void AddItem(IntVector3 mapPos);
+	void AddItem(const ItemBase::ITEM_TYPE &_type,const IntVector3 & mapPos);
 
 	//アイテムを削除
-	void DeleteItem(IntVector3 mapPos);
+	void DeleteItem(const ItemBase::ITEM_TYPE &_type,const IntVector3 & mapPos);
 
 	//種類ごとの配置情報を返す
 	inline std::vector<IntVector3> GetItemsPos(const ItemBase::ITEM_TYPE _type) { return itemsPos_[_type]; }
