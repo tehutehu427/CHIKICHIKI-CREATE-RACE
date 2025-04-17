@@ -33,7 +33,7 @@ void MapEditer::Init(void)
 
 void MapEditer::AddItem(STATUS status)
 {
-	ItemManager::GetInstance().AddItem(status.mapPos,status.rotate,status.type,itemNom_);
+	ItemManager::GetInstance().AddItem(status.mapPos,status.rotate,status.type);
 	isMapPosItem_[status.mapPos.x][status.mapPos.y][status.mapPos.z] = itemNom_++;
 
 	itemNom_++;

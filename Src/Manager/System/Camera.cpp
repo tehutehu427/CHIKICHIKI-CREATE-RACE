@@ -56,6 +56,9 @@ void Camera::SetBeforeDraw(void)
 	case Camera::MODE::FREE_CONTROLL:
 		SetBeforeDrawFreeControll();
 		break;
+	case Camera::MODE::FIXED_UP:
+		SetBeforeDrawFixedUp();
+		break;
 	}
 
 	// ÉJÉÅÉâÇÃê›íË(à íuÇ∆íçéãì_Ç…ÇÊÇÈêßå‰)
@@ -345,4 +348,11 @@ void Camera::SetBeforeDrawFreeControll(void)
 	targetPos_ = VAdd(pos_, localPos);
 
 
+}
+
+void Camera::SetBeforeDrawFixedUp(void)
+{
+	targetPos_ = VAdd(pos_, FIXED_LOCAL_P2T_POS);
+	rot_ = Quaternion::Quaternion(angles_);
+	cameraUp_ = rot_.GetUp();
 }
