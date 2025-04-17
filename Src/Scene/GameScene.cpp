@@ -8,6 +8,7 @@
 #include "../Manager/Game/ItemManager.h"
 #include "../Manager/Game/MapEditer.h"
 #include "../Manager/Game/GravityManager.h"
+#include "../Manager/Game/PlayerManager.h"
 #include "../Object/Player/Player.h"
 #include "../Object/Grid.h"
 #include "GameScene.h"
@@ -31,27 +32,25 @@ void GameScene::Load(void)
 	resMng_.Load(ResourceManager::SRC::DOT_FONT);
 	buttnFontHandle_ = CreateFontToHandle("ベストテンDOT", FONT_SIZE, 0);
 
-	player_ = std::make_unique<Player>();
-	player_->Load();
-
-	grid_ = std::make_unique<Grid>();
+	//player_ = std::make_unique<Player>();
+	//player_->Load();
 }
 
 void GameScene::Init(void)
 {
-	player_->Init();
+	//player_->Init();
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
-	grid_->Init();
-	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
+	PlayerManager::CreateInstance(1);
 }
 
 void GameScene::NormalUpdate(void)
 {
 	//プレイヤー
-	player_->Update();
+	//player_->Update();
 
+	PlayerManager::GetInstance()->Update();
 	//デバッグ処理
 	DebagUpdate();
 }
@@ -63,7 +62,8 @@ void GameScene::NormalDraw(void)
 
 	grid_->Draw();
 	//プレイヤー
-	player_->Draw();
+	//player_->Draw();
+	PlayerManager::GetInstance()->Draw();
 }
 
 void GameScene::ChangeNormal(void)

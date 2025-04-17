@@ -6,7 +6,7 @@ public:
 	GravityManager(void);
 	~GravityManager(void)=default;
 	//重力
-	static constexpr float GRAVITY_POW = 10.0f;
+	static constexpr float GRAVITY_POW = 15.0f;
 
 	//静的にインスタンス生成
 	static void CreateInstance(void);
