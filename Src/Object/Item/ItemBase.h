@@ -3,19 +3,44 @@
 class ItemBase : public ObjectBase
 {
 public:
-	enum class ITEM_TYPE	//アイテムの種類
+
+	//アイテムの種類
+	enum class ITEM_TYPE	
 	{
 		NONE,
+
+		//固定オブジェ
 		START,				//スタート
 		GOAL,				//ゴール
+
+		//設置オブジェ
 		FLOOR,				//床
 		MOVE_HORI_FLOOR,	//水平(横)方向移動床
 		MOVE_VER_FLOOT,		//垂直(縦)方向移動床
 		FENCE,				//柵
 		CANNON,				//大砲
 		SPIKY,				//とげ
+
+		//破壊オブジェ
 		BOMB_SMALL,			//爆弾(小)
 		BOMB_BIG,			//爆弾(大)
+	};
+
+	//アイテムの効果
+	enum class EFFECT_TYPE
+	{
+		FIXED,			//固定
+		INSTALLATION,	//設置物
+		DESTROYER,		//破壊物
+	};
+
+	//ステータス
+	struct Status
+	{
+		bool isBreak;				//破壊可能か(true:破壊可能)
+		bool isGravity;				//重力影響を受けるか(true:受ける)
+		ITEM_TYPE itemType;			//アイテムの種類
+		EFFECT_TYPE effType;		//アイテムの効果
 	};
 
 	//コンストラクタ
@@ -34,13 +59,13 @@ public:
 	//解放
 	virtual void Release(void)override = 0;
 
-	//アイテムの種類取得
-	inline const ITEM_TYPE GetItemType(void)const { return type_; }
+	//アイテムのステータス取得
+	inline const Status GetStatus(void)const { return status_; }
 
 protected:
 
-	//アイテムの種類
-	ITEM_TYPE type_;
+	//ステータス
+	Status status_;
 
 private:
 };
