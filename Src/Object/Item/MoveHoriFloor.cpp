@@ -42,7 +42,7 @@ void MoveHoriFloor::Update(void)
 
 void MoveHoriFloor::Draw(void)
 {
-	DrawSphere3D(transform_.pos, 5, 10, 0xffffff, 0xffffff, true);
+	DrawSphere3D(transform_.pos, 50, 10, 0xffffff, 0xffffff, true);
 }
 
 void MoveHoriFloor::Release(void)
