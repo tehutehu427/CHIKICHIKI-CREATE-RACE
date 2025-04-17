@@ -1,16 +1,23 @@
 #pragma once
 #include "ItemBase.h"
-class Floor : public ItemBase
+
+class MoveHoriFloor : public ItemBase
 {
 public:
 
 	//マップサイズ
 	static constexpr IntVector3 MAP_SIZE = { 4,1,4 };
 
+	//横移動距離
+	static constexpr int MOVE_X = 8;
+
+	//速度
+	static constexpr float SPEED = 5.0f;
+
 	//コンストラクタ
-	Floor();
+	MoveHoriFloor();
 	//デストラクタ
-	~Floor()override;
+	~MoveHoriFloor()override;
 
 	//読み込み
 	void Load(void)override;
@@ -26,5 +33,9 @@ public:
 	void Release(void)override;
 
 private:
+
+	//移動
+	void Move(void);
+
 };
 

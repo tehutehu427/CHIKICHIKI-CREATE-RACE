@@ -50,8 +50,11 @@ public:
 
 	//読み込み
 	virtual void Load(void)override = 0;
+	//アイテムの個別設定
+	virtual void SetParam(void) = 0;
 	//初期化
-	virtual void Init(void)override = 0;
+	virtual void Init(IntVector3 _mapPos ,Quaternion _quaRot);
+	virtual void Init()override=0;
 	//更新
 	virtual void Update(void)override = 0;
 	//描画
