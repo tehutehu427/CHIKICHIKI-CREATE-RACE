@@ -9,6 +9,9 @@ class GameScene : public SceneBase
 
 public:
 	
+	//プレイヤー人数(のちにデータバンクで持ってくる)
+	static constexpr int PLAYER_NUM = 2;
+
 	// コンストラクタ
 	GameScene(void);
 
@@ -37,6 +40,6 @@ private:
 	void DebagDraw(void);
 
 	//プレイヤー
-	std::unique_ptr<Player>player_;
+	std::shared_ptr<Player>player_;
 
 };

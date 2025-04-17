@@ -34,7 +34,10 @@ public:
 	/// <param name="playerNum">データバンクから人数を持ってくる</param>
 	PlayerManager(int _playerNum);
 	~PlayerManager(void)=default;
-	//静的にインスタンス生成
+	/// <summary>
+	/// 静的にインスタンス生成
+	/// </summary>
+	/// <param name="_playerNum">プレイヤー人数</param>
 	static void CreateInstance(int _playerNum);
 
 	//静的にインスタンスを取得する

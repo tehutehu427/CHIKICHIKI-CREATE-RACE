@@ -29,7 +29,6 @@ void PlayerManager::Init(void)
 		Transform trans=FixTrans(i);
 		player = std::make_shared<Player>(i,trans);
 		player->Init();
-		//player->SetTrans(trans);
 		players_.push_back(player);
 	}
 }
@@ -69,7 +68,7 @@ Transform PlayerManager::FixTrans(int _playerNum)
 	trans.quaRotLocal =
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
 	
-	x = -PLAYER_ONE_POS_X + DISTANCE_POS * _playerNum;
+	x = PLAYER_ONE_POS_X + DISTANCE_POS * _playerNum;
 
 	//ƒ‚ƒfƒ‹‚Å‚«‚½‚ç”Ô†‚²‚Æ‚Åİ’è‚·‚é
 	//trans.modelId=trans.SetModel(ResourceManager::SRC::PLAYER1)
