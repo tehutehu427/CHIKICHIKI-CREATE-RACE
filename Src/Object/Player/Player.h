@@ -6,6 +6,7 @@
 #include "../Common/Capsule.h"
 #include "../../Manager/System/Camera.h"
 #include"./Process/PMove.h"
+#include"./Process/PlayerInput.h"
 #include"./Process/PJump.h"
 #include "../ObjectBase.h"
 
@@ -28,11 +29,16 @@ public:
 	{
 		NONE,
 		PLAY,
-		WARP_RESERVE,
-		WARP_MOVE,
 		DEAD,
-		VICTORY,
 		END
+	};
+
+	enum class ATK_ACT
+	{
+		NONE,
+		MOVE,
+		PUNCH,
+		JUMP
 	};
 
 	// アニメーション種別
@@ -49,7 +55,7 @@ public:
 	};
 	//******************************************
 	// コンストラクタ
-	Player(int _playerNum,Transform _trans);
+	Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl);
 
 	// デストラクタ
 	~Player(void) = default;
@@ -83,6 +89,12 @@ private:
 	//--------------------------------------------
 	// 移動後の座標
 	VECTOR movedPos_;
+
+	//入力デバイス
+	PlayerInput::CNTL cntl_;
+
+	//ゲームパッド番号
+	InputManager::JOYPAD_NO padNum_;
 
 	//オブジェクト関連
 	//--------------------------------------------

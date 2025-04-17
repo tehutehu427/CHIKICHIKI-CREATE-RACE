@@ -1,13 +1,15 @@
 #include "../../Utility/Utility.h"
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "./Process/PlayerInput.h"
 #include "Player.h"
 
-Player::Player(int _playerNum,Transform _trans):playerNum_(_playerNum)
+Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNum_(_playerNum), cntl_(_cntl)
 {
 	animationController_ = nullptr;
 	state_ = STATE::NONE;
 	movedPos_ = Utility::VECTOR_ZERO;
+	padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_);
 	transform_ = _trans;
 	//オブジェクト生成
 	//操作関連
@@ -44,6 +46,9 @@ void Player::Init(void)
 	// 初期状態
 	ChangeState(STATE::PLAY);
 
+	//入力
+	PlayerInput::CreateInstance();
+
 	//操作関連
 	pMove_->Init();
 	pJump_->Init();
@@ -53,6 +58,9 @@ void Player::Update(void)
 {
 	// 更新ステップ
 	stateUpdate_();
+
+	//入力更新
+	PlayerInput::GetInstance().Update(padNum_,cntl_);
 
 	transform_.Update();
 }

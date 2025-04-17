@@ -2,6 +2,7 @@
 #include "../../../Manager/System/InputManager.h"
 #include "../../../Manager/System/SceneManager.h"
 #include "../../../Manager/System/Camera.h"
+#include "./PlayerInput.h"
 #include "../../../Utility/Utility.h"
 #include "PMove.h"
 
@@ -25,12 +26,17 @@ void PMove::Update(const std::shared_ptr<Camera>& _camera, bool& _isJump )
 	auto& ins = InputManager::GetInstance();
 	movePow_ = Utility::VECTOR_ZERO;
 	VECTOR dir = Utility::VECTOR_ZERO;
-
+	float deg = PlayerInput::GetInstance().GetMoveDeg();
 	//プレイヤーの周囲にあるステージポリゴンの取得
 	//MV1_COLL_RESULT_POLY_DIM hitDim[STAGECOLLOBJ_MAXNUM + 1];
 	Quaternion cameraRot = _camera->GetQuaRotOutX();
 
-	//カメラ方向に移動したい
+	////カメラ方向に移動したい
+	//if (PlayerInput::GetInstance().CheckAct(PlayerInput::ACT_CNTL::MOVE))
+	//{
+	//	dir= cameraRot.GetForward();
+	//	SetGoalRotate(Utility::Deg2RadD(deg), _camera);
+	//}
 	if (ins.IsNew(KEY_INPUT_W))
 	{
 		dir = cameraRot.GetForward();
@@ -55,17 +61,8 @@ void PMove::Update(const std::shared_ptr<Camera>& _camera, bool& _isJump )
 
 	if (!Utility::EqualsVZero(dir) /*&& (_isJump || IsEndLanding())*/)
 	{
-		//入力でスピードを変える
-		if (ins.IsNew(KEY_INPUT_LSHIFT))
-		{
-			speed_ = SPEED_RUN;
-			//animationController_->Play((int)ANIM_TYPE::FAST_RUN);
-		}
-		else
-		{
-			speed_ = SPEED_MOVE;
-			//animationController_->Play((int)ANIM_TYPE::RUN);
-		}
+		speed_ = SPEED_MOVE;
+		//animationController_->Play((int)ANIM_TYPE::RUN);
 
 		//if ((!_isJump && IsEndLanding()))
 		//{

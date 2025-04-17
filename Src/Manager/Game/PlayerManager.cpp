@@ -1,7 +1,9 @@
 #include"../../Utility/Utility.h"
 #include"../../Manager/System/ResourceManager.h"
 #include "PlayerManager.h"
-std::unique_ptr<PlayerManager> PlayerManager::instance_ = nullptr;
+PlayerManager* PlayerManager::instance_ = nullptr;
+
+
 PlayerManager::PlayerManager(int _playerNum)
 {
 	playerNum_ = _playerNum;
@@ -11,23 +13,24 @@ void PlayerManager::CreateInstance(int _playerNum)
 {
 	if (instance_ == nullptr)
 	{
-		instance_ = std::make_unique<PlayerManager>(_playerNum);
+		instance_ = new PlayerManager(_playerNum);
 	}
 	instance_->Init();
 }
 
-std::unique_ptr<PlayerManager>& PlayerManager::GetInstance(void)
+PlayerManager& PlayerManager::GetInstance(void)
 {
-	return instance_;
+	return *instance_;
 }
 
 void PlayerManager::Init(void)
 {
+	if (playerNum_ > PLAYER_SINGLE) { cntl_ = PlayerInput::CNTL::PAD; }
 	for (int i = 0; i < playerNum_; i++)
 	{
 		std::shared_ptr<Player> player;
 		Transform trans=FixTrans(i);
-		player = std::make_shared<Player>(i,trans);
+		player = std::make_shared<Player>(i,trans,cntl_);
 		player->Init();
 		players_.push_back(player);
 	}

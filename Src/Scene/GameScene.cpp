@@ -42,7 +42,7 @@ void GameScene::Init(void)
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
-	PlayerManager::CreateInstance(4);
+	PlayerManager::CreateInstance(1);
 }
 
 void GameScene::NormalUpdate(void)
@@ -50,7 +50,7 @@ void GameScene::NormalUpdate(void)
 	//プレイヤー
 	//player_->Update();
 
-	PlayerManager::GetInstance()->Update();
+	PlayerManager::GetInstance().Update();
 	//デバッグ処理
 	DebagUpdate();
 }
@@ -63,7 +63,7 @@ void GameScene::NormalDraw(void)
 	grid_->Draw();
 	//プレイヤー
 	//player_->Draw();
-	PlayerManager::GetInstance()->Draw();
+	PlayerManager::GetInstance().Draw();
 }
 
 void GameScene::ChangeNormal(void)
