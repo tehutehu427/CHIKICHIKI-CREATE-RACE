@@ -40,10 +40,7 @@ private:
 	static ItemManager* instance_;
 
 	//アイテム[アイテムを置いた順番][置いたアイテム]
-	std::map<int, std::unique_ptr<ItemBase>> items_;
-
-	//現在存在するアイテムの順番用カウンタ
-	int itemNum_;
+	std::vector<std::unique_ptr<ItemBase>> items_;
 
 	ItemManager(void);
 	ItemManager(const ItemManager& instance_) = default;

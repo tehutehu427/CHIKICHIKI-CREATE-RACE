@@ -12,17 +12,17 @@ void ItemManager::Init(void)
 
 void ItemManager::Update(void)
 {
-	for (int i = 0; i < itemNum_; i++)
+	for (auto& item : items_)
 	{
-		items_[i]->Update();
+		item->Update();
 	}
 }
 
 void ItemManager::Draw(void)
 {
-	for (int i = 0; i < itemNum_; i++)
+	for (auto& item : items_)
 	{
-		items_[i]->Draw();
+		item->Draw();
 	}
 }
 
@@ -62,16 +62,12 @@ void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE
 	item->Init(mapPos,rot);
 
 	//配列に追加
-	items_.emplace(itemNum_, std::move(item));
-
-	//最後にアイテムのカウンタを増やす
-	itemNum_++;
+	items_.emplace_back(std::move(item));
 }
 
 void ItemManager::DeleteItem(VECTOR mapPos, int range)
 {
-	//最後にアイテムのカウンタを減らす
-	itemNum_--;
+
 }
 
 void ItemManager::CreateInstance(void)
@@ -90,5 +86,5 @@ ItemManager& ItemManager::GetInstance(void)
 
 ItemManager::ItemManager(void)
 {
-	itemNum_ = 0;
+
 }
