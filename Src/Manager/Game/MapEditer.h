@@ -8,13 +8,13 @@ class MapEditer
 public:
 
 	static constexpr IntVector3 MAP_SIZE = { 50,5,40 };
-	static constexpr int GRID_SIZE = 50;
+	static constexpr int GRID_SIZE = 100;
 
 	struct STATUS
 	{
-		VECTOR mapPos;
+		IntVector3 mapPos;
 		Quaternion rotate;
-		int itemNom;
+		ItemBase::ITEM_TYPE type;
 	};
 	// 明示的にインステンスを生成する
 	static void CreateInstance(void);
@@ -25,7 +25,7 @@ public:
 	void Init(void);
 
 	int GetItemNom(void) { return itemNom_; }
-	void AddItem(IntVector3 mapPos);
+	void AddItem(STATUS status);
 	void DeleteItem(IntVector3 mapPos);
 protected:
 
