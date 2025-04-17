@@ -8,7 +8,9 @@
 #include "../Manager/Game/ItemManager.h"
 #include "../Manager/Game/MapEditer.h"
 #include "../Manager/Game/GravityManager.h"
+#include "../Manager/Game/PlayerManager.h"
 #include "../Object/Player/Player.h"
+#include "../Object/Grid.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -30,23 +32,25 @@ void GameScene::Load(void)
 	resMng_.Load(ResourceManager::SRC::DOT_FONT);
 	buttnFontHandle_ = CreateFontToHandle("ベストテンDOT", FONT_SIZE, 0);
 
-	player_ = std::make_unique<Player>();
-	player_->Load();
+	//player_ = std::make_unique<Player>();
+	//player_->Load();
 }
 
 void GameScene::Init(void)
 {
-	player_->Init();
+	//player_->Init();
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
+	PlayerManager::CreateInstance(1);
 }
 
 void GameScene::NormalUpdate(void)
 {
 	//プレイヤー
-	player_->Update();
+	//player_->Update();
 
+	PlayerManager::GetInstance()->Update();
 	//デバッグ処理
 	DebagUpdate();
 }
@@ -56,8 +60,10 @@ void GameScene::NormalDraw(void)
 	//デバッグ処理
 	DebagDraw();
 
+	grid_->Draw();
 	//プレイヤー
-	player_->Draw();
+	//player_->Draw();
+	PlayerManager::GetInstance()->Draw();
 }
 
 void GameScene::ChangeNormal(void)
@@ -84,13 +90,13 @@ void GameScene::DebagDraw(void)
 		0,
 		Application::SCREEN_SIZE_X,
 		Application::SCREEN_SIZE_Y,
-		0x00ff00,
+		0x000000,
 		true
 	);
 
 	DrawFormatString(
 		0, 0,
-		0x000000,
+		0xff0000,
 		"GameScene"
 	);
 }

@@ -56,7 +56,7 @@ void PMove::Update(const std::shared_ptr<Camera>& _camera, bool& _isJump )
 	if (!Utility::EqualsVZero(dir) /*&& (_isJump || IsEndLanding())*/)
 	{
 		//入力でスピードを変える
-		if (ins.IsNew(KEY_INPUT_RSHIFT))
+		if (ins.IsNew(KEY_INPUT_LSHIFT))
 		{
 			speed_ = SPEED_RUN;
 			//animationController_->Play((int)ANIM_TYPE::FAST_RUN);

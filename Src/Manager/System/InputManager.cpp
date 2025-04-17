@@ -37,9 +37,12 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_A);
 	InputManager::GetInstance().Add(KEY_INPUT_S);
 	InputManager::GetInstance().Add(KEY_INPUT_D);
+	InputManager::GetInstance().Add(KEY_INPUT_Q);
 
 	//ダッシュ
 	InputManager::GetInstance().Add(KEY_INPUT_LSHIFT);
+
+	InputManager::GetInstance().Add(KEY_INPUT_LCONTROL);
 	//ジャンプ
 	InputManager::GetInstance().Add(KEY_INPUT_E);
 	//---------------------------------------------------

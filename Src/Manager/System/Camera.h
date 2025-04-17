@@ -23,12 +23,23 @@ public:
 	// 追従位置からカメラ位置までの相対座標
 	static constexpr VECTOR LOCAL_F2C_POS = { 0.0f, 50.0f, -400.0f };
 
+	//FPSの時の相対座標
+	static constexpr VECTOR FPS_LOCAL_F2C_POS = { 0.0f, 130.0f, 20.0f };
+
+	//FPS用
+	static constexpr VECTOR FPS_LOCAL_F2T_POS = { 0.0f, 0.0f, 2000.0f };
+
 	// 追従位置から注視点までの相対座標
 	static constexpr VECTOR LOCAL_F2T_POS = { 0.0f, 0.0f, 500.0f };
 
 	// カメラのX回転上限度角
 	static constexpr float LIMIT_X_UP_RAD = 40.0f * (DX_PI_F / 180.0f);
 	static constexpr float LIMIT_X_DW_RAD = 15.0f * (DX_PI_F / 180.0f);
+
+	//FPSの上限角
+	static constexpr float FPS_LIMIT_X_UP_RAD = -80.0f * (DX_PI_F / 180.0f);
+	static constexpr float FPS_LIMIT_X_DW_RAD = 70.0f * (DX_PI_F / 180.0f);
+
 	
 	// カメラモード
 	enum class MODE
@@ -36,7 +47,9 @@ public:
 		NONE,
 		FIXED_POINT,
 		FOLLOW,
-		SELF_SHOT
+		SELF_SHOT,
+		FPS,
+		FREE_CONTROLL,
 	};
 
 	Camera(void);
@@ -67,6 +80,8 @@ public:
 	// 追従対象の設定
 	void SetFollow(const Transform* follow);
 
+	void SetPos(VECTOR pos) { pos_ = pos; }
+	void SetAngles_(VECTOR angles) { angles_ = angles; }
 private:
 
 	// カメラが追従対象とするTransform
@@ -99,13 +114,18 @@ private:
 	// 追従対象との位置同期を取る
 	void SyncFollow(void);
 
+	//FPS用の位置同期
+	void SyncFollowFPS(void);
+
 	// カメラ操作
 	void ProcessRot(void);
-
+	//マウスでのカメラ操作
+	void ProcessRotMause(float* x_m, float* y_m, const float fov_per = 1.0f);
 	// モード別更新ステップ
 	void SetBeforeDrawFixedPoint(void);
 	void SetBeforeDrawFollow(void);
 	void SetBeforeDrawSelfShot(void);
-
+	void SetBeforeDrawFPS(void);
+	void SetBeforeDrawFreeControll(void);
 };
 
