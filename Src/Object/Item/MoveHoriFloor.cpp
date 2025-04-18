@@ -73,10 +73,24 @@ void MoveHoriFloor::Move(void)
 	//カウンタ
 	cnt_ += SceneManager::GetInstance().GetDeltaTime();
 
+	//指定秒数経ったか
+	if (cnt_ >= ONE_POINT_SEC)
+	{
+		//地点用ナンバー増加
+		routeNum_++;
+
+		if (routeNum_ >= ROUTE)routeNum_ = 0;
+
+		//初期化
+		cnt_ = 0.0f;
+	}
+
 	//開始地点
 	VECTOR startRoute = route_[routeNum_];
 	//終了地点のナンバー
-	int goalRouteNum = routeNum_ == ROUTE ? 0 : routeNum_ + 1;
+	int goalRouteNum = routeNum_ + 1;
+	if(goalRouteNum >= ROUTE)goalRouteNum = 0;
+
 	//終了地点
 	VECTOR goalRoute = route_[goalRouteNum];
 
@@ -85,16 +99,6 @@ void MoveHoriFloor::Move(void)
 
 	//移動
 	transform_.pos = VAdd(transform_.pos, movePow);
-
-	//指定秒数経ったか
-	if (cnt_ >= ONE_POINT_SEC)
-	{
-		//地点用ナンバー増加
-		routeNum_ = routeNum_ >= ROUTE ? 0 : routeNum_++;
-
-		//初期化
-		cnt_ = 0.0f;
-	}
 }
 
 void MoveHoriFloor::SetRoute(void)
@@ -112,5 +116,5 @@ void MoveHoriFloor::SetRoute(void)
 	double distance = Utility::Distance(route_[routeNum_], route_[routeNum_ + 1]);
 
 	//速度設定
-	speed_ = distance / ONE_POINT_SEC;
+	speed_ = distance / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
 }

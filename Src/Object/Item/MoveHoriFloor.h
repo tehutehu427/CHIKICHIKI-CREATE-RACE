@@ -12,7 +12,7 @@ public:
 	static constexpr int MOVE_X = 8;
 
 	//1地点移動するのにかかる秒数
-	static constexpr float ONE_POINT_SEC = 5.0f;
+	static constexpr float ONE_POINT_SEC = 10.0f;
 
 	//ルート数
 	static constexpr int ROUTE = 2;

@@ -43,6 +43,9 @@ void GameScene::Init(void)
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
 	PlayerManager::CreateInstance(1);
+
+	//アイテム生成
+	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
 }
 
 void GameScene::NormalUpdate(void)
@@ -51,6 +54,8 @@ void GameScene::NormalUpdate(void)
 	//player_->Update();
 
 	PlayerManager::GetInstance()->Update();
+
+	ItemManager::GetInstance().Update();
 	//デバッグ処理
 	DebagUpdate();
 }
@@ -64,6 +69,8 @@ void GameScene::NormalDraw(void)
 	//プレイヤー
 	//player_->Draw();
 	PlayerManager::GetInstance()->Draw();
+
+	ItemManager::GetInstance().Draw();
 }
 
 void GameScene::ChangeNormal(void)
