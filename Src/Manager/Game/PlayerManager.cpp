@@ -26,6 +26,7 @@ PlayerManager& PlayerManager::GetInstance(void)
 void PlayerManager::Init(void)
 {
 	if (playerNum_ > PLAYER_SINGLE) { cntl_ = PlayerInput::CNTL::PAD; }
+	else { cntl_ = PlayerInput::CNTL::KEYBOARD; }
 	for (int i = 0; i < playerNum_; i++)
 	{
 		std::shared_ptr<Player> player;

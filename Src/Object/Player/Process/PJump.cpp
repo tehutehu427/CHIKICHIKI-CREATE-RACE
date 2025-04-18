@@ -3,6 +3,7 @@
 #include"../../../Manager/System/SceneManager.h"
 #include"../../../Manager/Game/GravityManager.h"
 #include"../../../FpsControl/FpsControl.h"
+#include"./PlayerInput.h"
 #include "PJump.h"
 
 PJump::PJump(void)
@@ -38,7 +39,7 @@ void PJump::DrawDebug(void)
 
 void PJump::Jump(void)
 {
-	bool isHit = InputManager::GetInstance().IsTrgDown(KEY_INPUT_E);
+	bool isHit = PlayerInput::GetInstance().CheckAct(PlayerInput::ACT_CNTL::JUMP);
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 	// ƒWƒƒƒ“ƒv
 	if (isHit && (isJump_ || isEndLanding_))

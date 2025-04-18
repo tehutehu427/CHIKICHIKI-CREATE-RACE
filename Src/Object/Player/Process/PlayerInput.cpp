@@ -38,9 +38,12 @@ void PlayerInput::InputKeyBoard(void)
 	auto& ins = InputManager::GetInstance();
 	using ATK_ACT = Player::ATK_ACT;
 	actCntl_ = ACT_CNTL::NONE;
-	VECTOR dir = Utility::VECTOR_ZERO;
 	//ˆÚ“®(‚¢‚¸‚ê‚©‚ÌˆÚ“®ƒL[‚ğ‰Ÿ‚µ‚Ä‚¢‚½‚ç)
-	if (ins.IsNew(MOVE_FRONT_KEY) || ins.IsNew(MOVE_BACK_KEY) || ins.IsNew(MOVE_LEFT_KEY) || ins.IsNew(MOVE_RIGHT_KEY)) { actCntl_ = ACT_CNTL::MOVE; }
+	if (ins.IsNew(MOVE_FRONT_KEY) || ins.IsNew(MOVE_BACK_KEY)
+		|| ins.IsNew(MOVE_LEFT_KEY) || ins.IsNew(MOVE_RIGHT_KEY)) 
+	{
+		actCntl_ = ACT_CNTL::MOVE; 
+	}
 
 	//ˆÚ“®Šp“x‚ğŒˆ‚ß‚é
 	if (ins.IsNew(PlayerInput::MOVE_FRONT_KEY))

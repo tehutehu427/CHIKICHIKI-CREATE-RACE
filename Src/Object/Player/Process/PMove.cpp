@@ -21,7 +21,7 @@ void PMove::Init(void)
 {
 }
 
-void PMove::Update(const std::shared_ptr<Camera>& _camera, bool& _isJump )
+void PMove::Update(const std::shared_ptr<Camera>& _camera, bool& _isJump, Transform& _trans)
 {
 	auto& ins = InputManager::GetInstance();
 	movePow_ = Utility::VECTOR_ZERO;
@@ -30,32 +30,12 @@ void PMove::Update(const std::shared_ptr<Camera>& _camera, bool& _isJump )
 	//プレイヤーの周囲にあるステージポリゴンの取得
 	//MV1_COLL_RESULT_POLY_DIM hitDim[STAGECOLLOBJ_MAXNUM + 1];
 	Quaternion cameraRot = _camera->GetQuaRotOutX();
-
-	////カメラ方向に移動したい
-	//if (PlayerInput::GetInstance().CheckAct(PlayerInput::ACT_CNTL::MOVE))
-	//{
-	//	dir= cameraRot.GetForward();
-	//	SetGoalRotate(Utility::Deg2RadD(deg), _camera);
-	//}
-	if (ins.IsNew(KEY_INPUT_W))
+	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
+	//カメラ方向に移動したい
+	if (PlayerInput::GetInstance().CheckAct(PlayerInput::ACT_CNTL::MOVE))
 	{
-		dir = cameraRot.GetForward();
-		SetGoalRotate(Utility::Deg2RadD(0.0),_camera);
-	}
-	if (ins.IsNew(KEY_INPUT_A))
-	{
-		dir = cameraRot.GetLeft();
-		SetGoalRotate(Utility::Deg2RadD(270.0), _camera);
-	}
-	if (ins.IsNew(KEY_INPUT_S))
-	{
-		dir = cameraRot.GetBack();
-		SetGoalRotate(Utility::Deg2RadD(180.0), _camera);
-	}
-	if (ins.IsNew(KEY_INPUT_D))
-	{
-		dir = cameraRot.GetRight();
-		SetGoalRotate(Utility::Deg2RadD(90.0), _camera);
+		dir = Quaternion::PosAxis(Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y),cameraRot.GetForward());
+		SetGoalRotate(Utility::Deg2RadD(deg), _camera);
 	}
 
 

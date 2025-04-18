@@ -118,7 +118,7 @@ void Player::UpdatePlay(void)
 {
 	bool isJump = pJump_->GetIsJump();
 	//ˆÚ“®ŠÖ˜A
-	pMove_->Update(camera_,isJump);
+	pMove_->Update(camera_,isJump,transform_);
 	pJump_->Update(transform_.GetUp(),transform_.GetDown(),IsEndLanding());
 
 	// Õ“Ë”»’è
