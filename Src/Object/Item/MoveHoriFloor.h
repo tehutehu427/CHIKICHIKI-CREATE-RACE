@@ -45,6 +45,8 @@ private:
 	float speed_;
 	//移動秒数用カウンタ
 	float cnt_;
+	//ルートまでの距離
+	double distance_;
 
 	//移動
 	void Move(void);

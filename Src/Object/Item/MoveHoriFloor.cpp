@@ -13,6 +13,7 @@ MoveHoriFloor::MoveHoriFloor()
 	}
 	speed_ = 0.0f;
 	cnt_ = 0.0f;
+	distance_ = 0.0;
 }
 
 MoveHoriFloor::~MoveHoriFloor()
@@ -113,8 +114,8 @@ void MoveHoriFloor::SetRoute(void)
 	route_[routeNum_ + 1] = goalPos;
 
 	//ãóó£ÇéÊìæ
-	double distance = Utility::Distance(route_[routeNum_], route_[routeNum_ + 1]);
+	distance_ = Utility::Distance(route_[routeNum_], route_[routeNum_ + 1]);
 
 	//ë¨ìxê›íË
-	speed_ = distance / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
+	speed_ = distance_ / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
 }
