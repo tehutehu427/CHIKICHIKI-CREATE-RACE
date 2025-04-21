@@ -51,7 +51,6 @@ IntVector3 MapEditer::WorldToMapPos(VECTOR worldPos)
 
 MapEditer::MapEditer(void)
 {
-	itemNom_ = -1;
 	itemsPos_.clear();
 	isMapPosItem_[(MAP_SIZE.x)][(MAP_SIZE.y)][(MAP_SIZE.z)] = {};
 }
