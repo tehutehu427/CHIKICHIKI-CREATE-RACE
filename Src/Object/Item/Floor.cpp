@@ -1,3 +1,4 @@
+#include "../../Manager/System/ResourceManager.h"
 #include "Floor.h"
 
 Floor::Floor()
@@ -8,33 +9,19 @@ Floor::~Floor()
 {
 }
 
-void Floor::Load(void)
-{
-	//モデルの基本設定
-	//transform_.SetModel(resMng_.LoadModelDuplicate(
-	//	ResourceManager::SRC::FLOOR));
-}
-
-void Floor::Init(void)
-{
-	//個人設定
-	SetParam();
-}
-
 void Floor::SetParam(void)
 {
+	//モデルの基本設定
+	transform_.SetModel(resMng_.LoadModelDuplicate(
+		ResourceManager::SRC::FLOOR));
+
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
 	status_.isGravity = false;
-	status_.itemType = ITEM_TYPE::FLOOR;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
 }
 
 void Floor::Update(void)
-{
-}
-
-void Floor::Draw(void)
 {
 }
 

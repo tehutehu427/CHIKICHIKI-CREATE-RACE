@@ -19,6 +19,13 @@ public:
 		PENGS_FONT,
 		BOKUTACHI_FONT,
 		HANAZOME_FONT,
+
+		//アイテムモデル
+		FLOOR,				//足場
+		MOVE_FLOOR,			//動く足場
+		BOMB,				//爆弾
+		CANNON_BARREL,		//砲身
+		CANNON_TURRET,		//砲台
 	};
 
 	// 明示的にインステンスを生成する

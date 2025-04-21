@@ -45,6 +45,9 @@ void GameScene::Init(void)
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
 	PlayerManager::CreateInstance(1);
+
+	//アイテム生成
+	ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
 	ChangePhase(PHASE::EDIT_PHASE);
 }
 
@@ -56,6 +59,8 @@ void GameScene::NormalUpdate(void)
 	PlayerManager::GetInstance()->Update();
 
 	phaseUpdate_();
+
+	ItemManager::GetInstance().Update();
 	//デバッグ処理
 	DebagUpdate();
 }
@@ -69,6 +74,8 @@ void GameScene::NormalDraw(void)
 	//プレイヤー
 	//player_->Draw();
 	PlayerManager::GetInstance()->Draw();
+
+	ItemManager::GetInstance().Draw();
 }
 
 void GameScene::ChangeNormal(void)

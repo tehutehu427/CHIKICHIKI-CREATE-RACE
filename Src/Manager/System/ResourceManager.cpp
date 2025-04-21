@@ -38,6 +38,23 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::HANAZOME_FONT, std::move(res));
 #pragma endregion 
 
+#pragma region ƒ‚ƒfƒ‹
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Floor.mv1");
+	resourcesMap_.emplace(SRC::FLOOR, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "MoveFloor.mv1");
+	resourcesMap_.emplace(SRC::MOVE_FLOOR, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Bomb.mv1");
+	resourcesMap_.emplace(SRC::BOMB, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "CannonBarrel.mv1");
+	resourcesMap_.emplace(SRC::CANNON_BARREL, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "CannonTurret.mv1");
+	resourcesMap_.emplace(SRC::CANNON_TURRET, std::move(res));
+#pragma endregion 
+
 }
 
 void ResourceManager::Release(void)

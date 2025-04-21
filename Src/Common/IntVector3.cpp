@@ -65,3 +65,48 @@ void IntVector3::operator/=(const int _value)
 	y /= _value;
 	z /= _value;
 }
+
+const bool IntVector3::operator==(const IntVector3 _value)
+{
+	bool diffX = x == _value.x;
+	bool diffY = y == _value.y;
+	bool diffZ = z == _value.z;
+
+	return diffX && diffY && diffZ;
+}
+
+const bool IntVector3::operator<(const IntVector3 _value)
+{
+	bool diffX = x < _value.x;
+	bool diffY = y < _value.y;
+	bool diffZ = z < _value.z;
+
+	return diffX && diffY && diffZ;
+}
+
+const bool IntVector3::operator<=(const IntVector3 _value)
+{
+	bool diffX = x <= _value.x;
+	bool diffY = y <= _value.y;
+	bool diffZ = z <= _value.z;
+
+	return diffX && diffY && diffZ;
+}
+
+const bool IntVector3::operator>(const IntVector3 _value)
+{
+	bool diffX = x > _value.x;
+	bool diffY = y > _value.y;
+	bool diffZ = z > _value.z;
+
+	return diffX && diffY && diffZ;
+}
+
+const bool IntVector3::operator>=(const IntVector3 _value)
+{
+	bool diffX = x >= _value.x;
+	bool diffY = y >= _value.y;
+	bool diffZ = z >= _value.z;
+
+	return diffX && diffY && diffZ;
+}

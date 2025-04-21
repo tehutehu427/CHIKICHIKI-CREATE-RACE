@@ -22,5 +22,12 @@ struct IntVector3
 	void operator*=(const int _value);
 	const IntVector3 operator/(const int _value)const;
 	void operator/=(const int _value);
+
+	//î‰är
+	const bool operator==(const IntVector3 _value);
+	const bool operator<(const IntVector3 _value);
+	const bool operator<=(const IntVector3 _value);
+	const bool operator>(const IntVector3 _value);
+	const bool operator>=(const IntVector3 _value);
 };
 
