@@ -32,7 +32,6 @@ void MoveHoriFloor::SetParam(void)
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
 	status_.isGravity = false;
-	status_.itemType = ITEM_TYPE::FLOOR;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
 
 	//ÉãÅ[Égê›íË

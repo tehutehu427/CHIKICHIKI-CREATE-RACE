@@ -13,10 +13,11 @@ ItemBase::~ItemBase()
 {
 }
 
-void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot)
+void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot, ITEM_TYPE _itemType)
 {
 	transform_.pos = VGet(_mapPos.x * 100 , _mapPos.y * 100, _mapPos.z * 100);
 	transform_.quaRot = _quaRot;
+	status_.itemType = _itemType;
 	Init();
 }
 

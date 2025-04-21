@@ -1,6 +1,7 @@
 #include "../Object/Item/Floor.h"
 #include "../Object/Item/MoveHoriFloor.h"
 #include "../Object/Item/MoveVerFloor.h"
+#include "../Object/Item/Fence.h"
 #include "ItemManager.h"
 
 
@@ -49,6 +50,7 @@ void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE
 		item = std::make_unique<MoveVerFloor>();
 		break;
 	case ItemBase::ITEM_TYPE::FENCE:
+		item = std::make_unique<Fence>();
 		break;
 	case ItemBase::ITEM_TYPE::CANNON:
 		break;
@@ -61,7 +63,7 @@ void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE
 	}
 
 	//‰Šú‰»
-	item->Init(mapPos,rot);
+	item->Init(mapPos,rot, type);
 
 	//”z—ñ‚É’Ç‰Á
 	items_.emplace_back(std::move(item));
