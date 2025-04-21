@@ -34,8 +34,10 @@ private:
 
 	 ItemBase::ITEM_TYPE isMapPosItem_[(MAP_SIZE.x)][(MAP_SIZE.y)][(MAP_SIZE.z)];	//アイテム番号を入力 0はアイテムなし
 
+	 //配置したアイテムの座標を管理
+	 std::map<ItemBase::ITEM_TYPE ,std::vector<IntVector3> > itemsPos_;
+
 	MapEditer(void);
 	MapEditer(const MapEditer& instance_) = default;
 	~MapEditer(void) = default;
 };
-

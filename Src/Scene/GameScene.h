@@ -4,6 +4,8 @@
 #include"../Object/Player/Player.h"
 #include "SceneBase.h"
 
+class EditerPaletteBase;
+
 class Grid;
 
 class GameScene : public SceneBase
@@ -61,7 +63,7 @@ private:
 	void UpdateEdit(void);
 	void UpdateAction(void);
 	//ÉvÉåÉCÉÑÅ[
-	std::shared_ptr<Player>player_;
+	std::unique_ptr<EditerPaletteBase> palette_;
 
 	std::unique_ptr<Grid>grid_;
 };

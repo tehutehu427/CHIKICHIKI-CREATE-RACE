@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include <wingdi.h>
+#include <cassert>
 #include <EffekseerForDXLib.h>
 #include "Resource.h"
 

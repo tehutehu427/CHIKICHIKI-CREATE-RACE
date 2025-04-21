@@ -20,6 +20,11 @@ public:
 		BOKUTACHI_FONT,
 		HANAZOME_FONT,
 
+		//画像
+		PALETTE,
+		SCROLL_ARROW_ICON,
+		PALETTE_ICONS,
+
 		//アイテムモデル
 		FLOOR,				//足場
 		MOVE_FLOOR,			//動く足場

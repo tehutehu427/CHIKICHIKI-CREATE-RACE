@@ -10,6 +10,7 @@
 #include "../Manager/Game/GravityManager.h"
 #include "../Manager/Game/PlayerManager.h"
 #include "../Object/Player/Player.h"
+#include "../Object/Editer/Palette/EditerPaletteBase.h"
 #include "../Object/Grid.h"
 #include "GameScene.h"
 
@@ -19,6 +20,8 @@ GameScene::GameScene(void)
 	updataFunc_ = std::bind(&GameScene::LoadingUpdate, this);
 	//描画関数のセット
 	drawFunc_ = std::bind(&GameScene::LoadingDraw, this);
+
+	palette_ = nullptr;
 	phaseChanges_.emplace(PHASE::EDIT_PHASE, std::bind(&GameScene::ChangePhaseEdit, this));
 	phaseChanges_.emplace(PHASE::ACTION_PHASE, std::bind(&GameScene::ChangePhaseAction, this));
 }
@@ -36,11 +39,14 @@ void GameScene::Load(void)
 
 	//player_ = std::make_unique<Player>();
 	//player_->Load();
+
+	palette_ = std::make_unique<EditerPaletteBase>();
+	palette_->Load();
 }
 
 void GameScene::Init(void)
 {
-	//player_->Init();
+	palette_->Init();
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
@@ -55,6 +61,9 @@ void GameScene::NormalUpdate(void)
 {
 	//プレイヤー
 	//player_->Update();
+
+	//パレット
+	palette_->Update();
 
 	PlayerManager::GetInstance()->Update();
 
@@ -72,6 +81,8 @@ void GameScene::NormalDraw(void)
 
 	grid_->Draw();
 	//プレイヤー
+
+	palette_->Draw();
 	//player_->Draw();
 	PlayerManager::GetInstance()->Draw();
 
@@ -115,6 +126,8 @@ void GameScene::DebagDraw(void)
 		0xff0000,
 		"GameScene"
 	);
+
+	palette_->DebagDraw();
 }
 void GameScene::ChangePhase(PHASE phase)
 {

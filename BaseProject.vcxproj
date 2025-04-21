@@ -25,6 +25,8 @@
     <ClCompile Include="Src\Manager\Game\PlayerManager.cpp" />
     <ClCompile Include="Src\Manager\System\DateBank.cpp" />
     <ClCompile Include="Src\Object\Item\MoveHoriFloor.cpp" />
+    <ClCompile Include="Src\Object\Editer\Palette\EditerPaletteBase.cpp" />
+    <ClCompile Include="Src\Object\Editer\MapDataIO.cpp" />
     <ClCompile Include="Src\Object\Item\Floor.cpp" />
     <ClCompile Include="Src\Object\Grid.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
@@ -63,6 +65,9 @@
     <ClInclude Include="Src\Object\Item\MoveVerFloor.h" />
     <ClInclude Include="Src\Manager\Game\PlayerManager.h" />
     <ClInclude Include="Src\Object\Item\MoveHoriFloor.h" />
+    <ClInclude Include="Src\Object\Editer\Palette\EditerPaletteBase.h" />
+    <ClInclude Include="Src\Manager\System\DateBank.h" />
+    <ClInclude Include="Src\Object\Editer\MapDataIO.h" />
     <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\byte_container_with_subtype.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\detail\abi_macros.hpp" />
@@ -110,7 +115,6 @@
     <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
     <ClInclude Include="Src\Object\Item\Floor.h" />
-    <ClInclude Include="Src\Manager\System\DateBank.h" />
     <ClInclude Include="Src\Object\Grid.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
     <ClInclude Include="Src\Manager\Game\ItemManager.h" />

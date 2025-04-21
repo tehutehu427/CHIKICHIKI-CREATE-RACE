@@ -35,7 +35,7 @@ void MapEditer::AddItem(STATUS status)
 	ItemManager::GetInstance().AddItem(status.mapPos,status.rotate,status.type);
 }
 
-void MapEditer::DeleteItem(IntVector3 mapPos)
+void MapEditer::DeleteItem(const ItemBase::ITEM_TYPE& _type, const IntVector3& mapPos)
 {
 
 }
@@ -51,4 +51,7 @@ IntVector3 MapEditer::WorldToMapPos(VECTOR worldPos)
 
 MapEditer::MapEditer(void)
 {
+	itemNom_ = -1;
+	itemsPos_.clear();
+	isMapPosItem_[(MAP_SIZE.x)][(MAP_SIZE.y)][(MAP_SIZE.z)] = {};
 }
