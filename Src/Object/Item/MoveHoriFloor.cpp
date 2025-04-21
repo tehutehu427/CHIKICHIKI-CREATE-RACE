@@ -11,9 +11,12 @@ MoveHoriFloor::MoveHoriFloor()
 	{
 		route = Utility::VECTOR_ZERO;
 	}
+	startRoute_ = Utility::VECTOR_ZERO;
+	goalRoute_ = Utility::VECTOR_ZERO;
 	speed_ = 0.0f;
-	cnt_ = 0.0f;
 	distance_ = 0.0;
+	moveVec_ = Utility::VECTOR_ZERO;
+	movePow_ = Utility::VECTOR_ZERO;
 }
 
 MoveHoriFloor::~MoveHoriFloor()
@@ -34,7 +37,7 @@ void MoveHoriFloor::Init(void)
 	SetParam();
 
 	//ルート設定
-	SetRoute();
+	InitRoute();
 
 	//モデルの更新
 	transform_.Update();
@@ -63,6 +66,7 @@ void MoveHoriFloor::Draw(void)
 	DrawLine3D(route_[0], route_[1], 0xffffff);
 	DrawSphere3D(transform_.pos, 50, 10, 0xffffff, 0xffffff, true);
 	MV1DrawModel(transform_.modelId);
+	DrawFormatString(0, 16, 0xffffff, "%.2f,%.2f,%.2f", transform_.pos.x, transform_.pos.y, transform_.pos.z);
 }
 
 void MoveHoriFloor::Release(void)
@@ -71,38 +75,21 @@ void MoveHoriFloor::Release(void)
 
 void MoveHoriFloor::Move(void)
 {
-	//カウンタ
-	cnt_ += SceneManager::GetInstance().GetDeltaTime();
-
-	//指定秒数経ったか
-	if (cnt_ >= ONE_POINT_SEC)
+	//指定ルートを超えたか
+	if(IsBeyondRoute())
 	{
-		//地点用ナンバー増加
-		routeNum_++;
+		//現在位置の補正
+		transform_.pos = route_[routeNum_];
 
-		if (routeNum_ >= ROUTE)routeNum_ = 0;
-
-		//初期化
-		cnt_ = 0.0f;
+		//ルートの再設定
+		SetRoute();
 	}
 
-	//開始地点
-	VECTOR startRoute = route_[routeNum_];
-	//終了地点のナンバー
-	int goalRouteNum = routeNum_ + 1;
-	if(goalRouteNum >= ROUTE)goalRouteNum = 0;
-
-	//終了地点
-	VECTOR goalRoute = route_[goalRouteNum];
-
-	//移動ベクトル
-	VECTOR movePow = Utility::GetMoveVec(startRoute, goalRoute, speed_);
-
 	//移動
-	transform_.pos = VAdd(transform_.pos, movePow);
+	transform_.pos = VAdd(transform_.pos, movePow_);
 }
 
-void MoveHoriFloor::SetRoute(void)
+void MoveHoriFloor::InitRoute(void)
 {
 	//初期位置保存
 	route_[routeNum_] = transform_.pos;
@@ -118,4 +105,43 @@ void MoveHoriFloor::SetRoute(void)
 
 	//速度設定
 	speed_ = distance_ / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
+
+	//初期ルート設定
+	SetRoute();
+}
+
+void MoveHoriFloor::SetRoute(void)
+{
+	//開始地点
+	startRoute_ = route_[routeNum_];
+	
+	//地点用ナンバー増加
+	routeNum_++;
+	if (routeNum_ >= ROUTE)routeNum_ = 0;
+	
+	//終了地点
+	goalRoute_ = route_[routeNum_];
+
+	//方向ベクトル保存
+	moveVec_ = Utility::GetMoveVec(startRoute_, goalRoute_);
+
+	//移動量
+	movePow_ = Utility::GetMoveVec(startRoute_, goalRoute_, speed_);
+}
+
+bool MoveHoriFloor::IsBeyondRoute(void)
+{
+	bool beyondX;
+	if (moveVec_.x >= 0.0f)beyondX = transform_.pos.x >= route_[routeNum_].x + moveVec_.x;
+	else beyondX = transform_.pos.x < route_[routeNum_].x + moveVec_.x;
+
+	bool beyondY;
+	if (moveVec_.y >= 0.0f)beyondY = transform_.pos.y >= route_[routeNum_].y + moveVec_.y;
+	else beyondY = transform_.pos.y < route_[routeNum_].y + moveVec_.y;
+
+	bool beyondZ;
+	if (moveVec_.z >= 0.0f)beyondZ = transform_.pos.z >= route_[routeNum_].z + moveVec_.z;
+	else beyondZ = transform_.pos.z < route_[routeNum_].z + moveVec_.z;
+
+	return beyondX && beyondY && beyondZ;
 }

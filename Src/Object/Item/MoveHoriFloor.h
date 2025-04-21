@@ -12,7 +12,7 @@ public:
 	static constexpr int MOVE_X = 8;
 
 	//1地点移動するのにかかる秒数
-	static constexpr float ONE_POINT_SEC = 10.0f;
+	static constexpr float ONE_POINT_SEC = 5.0f;
 
 	//ルート数
 	static constexpr int ROUTE = 2;
@@ -39,19 +39,29 @@ private:
 
 	//ルート
 	VECTOR route_[ROUTE];
+	VECTOR startRoute_;
+	VECTOR goalRoute_;
 	int routeNum_;
 
 	//移動速度
 	float speed_;
-	//移動秒数用カウンタ
-	float cnt_;
 	//ルートまでの距離
 	double distance_;
+	//移動方向
+	VECTOR moveVec_;
+	//移動量
+	VECTOR movePow_;
 
 	//移動
 	void Move(void);
 
+	//ルート初期化
+	void InitRoute(void);
+
 	//ルート設定
 	void SetRoute(void);
+
+	//ルートを超えたかの判定
+	bool IsBeyondRoute(void);
 };
 

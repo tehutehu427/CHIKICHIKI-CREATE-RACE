@@ -16,7 +16,7 @@ public:
 		//設置オブジェ
 		FLOOR,				//床
 		MOVE_HORI_FLOOR,	//水平(横)方向移動床
-		MOVE_VER_FLOOT,		//垂直(縦)方向移動床
+		MOVE_VER_FLOOR,		//垂直(縦)方向移動床
 		FENCE,				//柵
 		CANNON,				//大砲
 		SPIKY,				//とげ
