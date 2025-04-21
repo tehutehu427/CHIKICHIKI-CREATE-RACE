@@ -3,6 +3,8 @@
 #include<vector>
 #include"../../Object/Common/Transform.h"
 #include"../../Object/Player/Player.h"
+#include"../../Object/Player/Process/PlayerInput.h"
+#include"../../Object/Common/Capsule.h"
 class Player;
 class PlayerManager
 {
@@ -16,6 +18,9 @@ public:
 
 	//座標の間隔
 	static constexpr float DISTANCE_POS = 20.0f;
+
+	//プレイヤー1人
+	static constexpr int PLAYER_SINGLE = 1;
 	
 	enum class PLAYER
 	{
@@ -28,12 +33,7 @@ public:
 
 	//**************************************
 	
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="playerNum">データバンクから人数を持ってくる</param>
-	PlayerManager(int _playerNum);
-	~PlayerManager(void)=default;
+
 	/// <summary>
 	/// 静的にインスタンス生成
 	/// </summary>
@@ -41,15 +41,21 @@ public:
 	static void CreateInstance(int _playerNum);
 
 	//静的にインスタンスを取得する
-	static std::unique_ptr<PlayerManager>& GetInstance(void);
+	static PlayerManager& GetInstance(void);
 
 	void Init(void);
 	void Update(void);
 	void Draw(void);
 	void Release(void);
+
+	void PlayersCollision(void);
+
+	bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
 private:
+
+
 	//静的インスタンス
-	static std::unique_ptr<PlayerManager> instance_;
+	static PlayerManager* instance_;
 
 	//*****************************************
 	//メンバ変数
@@ -60,6 +66,9 @@ private:
 	//プレイヤー人数
 	int playerNum_;
 
+	//コントロール関数
+	PlayerInput::CNTL cntl_;
+
 	//*****************************************
 	//*****************************************
 	//メンバ関数
@@ -67,6 +76,14 @@ private:
 
 	//プレイヤー番号ごとでモデル情報を決定する
 	Transform FixTrans(int _playerNum);
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="playerNum">データバンクから人数を持ってくる</param>
+	PlayerManager(int _playerNum);
+	PlayerManager(const PlayerManager& instance_) = default;
+	~PlayerManager(void) = default;
 	
 
 };
