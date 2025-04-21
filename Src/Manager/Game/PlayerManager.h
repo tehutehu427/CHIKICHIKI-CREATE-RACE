@@ -4,6 +4,7 @@
 #include"../../Object/Common/Transform.h"
 #include"../../Object/Player/Player.h"
 #include"../../Object/Player/Process/PlayerInput.h"
+#include"../../Object/Common/Capsule.h"
 class Player;
 class PlayerManager
 {
@@ -46,6 +47,10 @@ public:
 	void Update(void);
 	void Draw(void);
 	void Release(void);
+
+	void PlayersCollision(void);
+
+	bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
 private:
 
 

@@ -24,6 +24,8 @@ public:
 	static constexpr float SPEED_MOVE = 5.0f;
 	static constexpr float SPEED_RUN = 10.0f;
 
+	//プレイヤーの中心からの
+
 	// 状態
 	enum class STATE
 	{
@@ -68,11 +70,22 @@ public:
 
 	//ゲッタ
 	//******************************************
+	//カメラ
 	const std::shared_ptr<Camera> GetCamera(void)const { return camera_; }
+
+	//プレイヤー番号
 	const int GetPlayerNum(void)const { return playerNum_; }
+
+	//カプセル情報
+	const std::shared_ptr<Capsule> GetCapsule(void)const { return capsule_; }
+	//******************************************
+	//セッタ
 	//******************************************
 	//モデル情報をマネージャからセット
 	void SetTrans(const Transform _trans) { transform_ = _trans; }
+
+	//当たり判定
+	void SetCollision(const bool _isCol) { isCol_ = _isCol; }
 
 
 private:
@@ -111,8 +124,12 @@ private:
 	std::shared_ptr<PMove> pMove_;
 	std::shared_ptr<PJump> pJump_;
 
+	//プレイヤー単体が持っているもの
 	//プレイヤー番号
 	int playerNum_;
+
+	//他プレイヤーとの当たりフラグ　true:当たっている
+	bool isCol_;
 
 	//--------------------------------------------
 	//******************************************

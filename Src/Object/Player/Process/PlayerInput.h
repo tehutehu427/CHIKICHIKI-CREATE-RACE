@@ -24,6 +24,14 @@ public:
     static constexpr int JUMP_KEY = KEY_INPUT_E;
     static constexpr InputManager::JOYPAD_BTN JUMP_BTN = InputManager::JOYPAD_BTN::RIGHT;
 
+    static constexpr float STICK_MARGIN_DEG = 90.0f;
+
+    //Šp“xŠÖ˜A
+    static constexpr float FLONT_DEG = 0.0f;
+    static constexpr float LEFT_DEG = 270.0f;
+    static constexpr float BACK_DEG = 180.0f;
+    static constexpr float RIGHT_DEG = 90.0f;
+
 
     ////‰ñ”ð
     //static constexpr int DODGE_KEY = KEY_INPUT_N;

@@ -1,6 +1,7 @@
 #include "../../Utility/Utility.h"
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Object/Common/Capsule.h"
 #include "./Process/PlayerInput.h"
 #include "Player.h"
 
@@ -16,8 +17,16 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	pMove_ = std::make_shared<PMove>();
 	pJump_ = std::make_shared<PJump>();
 
-	//カメラ(後でゲームシーンに書く)
+	//カメラ
 	camera_ = std::make_shared<Camera>();
+
+	isCol_ = false;
+
+
+	capsule_ = std::make_shared<Capsule>(transform_);
+	capsule_->SetLocalPosTop({ 0.0f, 110.0f, 0.0f });
+	capsule_->SetLocalPosDown({ 0.0f, 0.0f, 0.0f });
+	capsule_->SetRadius(20.0f);
 
 	//状態管理
 	stateChanges_.emplace(STATE::NONE, std::bind(&Player::ChangeStateNone, this));
@@ -80,7 +89,10 @@ void Player::Release(void)
 #ifdef DEBUG_ON
 void Player::DrawDebug(void)
 {
-	DrawSphere3D(transform_.pos, 10.0f, 10, 0xff0000, 0xff0000, true);
+	unsigned int color = 0xffffff;
+	if (isCol_) { color = 0xff0000; }
+	DrawSphere3D(transform_.pos, 10.0f, 10, color, color, true);
+	capsule_->Draw();
 	pJump_->DrawDebug();
 }
 #endif // DEBUG_ON

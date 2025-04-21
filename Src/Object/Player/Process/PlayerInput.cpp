@@ -48,25 +48,25 @@ void PlayerInput::InputKeyBoard(void)
 	//移動角度を決める
 	if (ins.IsNew(PlayerInput::MOVE_FRONT_KEY))
 	{ 
-		moveDeg_ = 0.0f;
+		moveDeg_ = FLONT_DEG;
 	}
 	else if (ins.IsNew(PlayerInput::MOVE_LEFT_KEY)) 
 	{ 
-		moveDeg_ = 270.0f; 
+		moveDeg_ = LEFT_DEG; 
 	}
 	else if (ins.IsNew(PlayerInput::MOVE_BACK_KEY))
 	{ 
-		moveDeg_ = 180.0f; 
+		moveDeg_ = BACK_DEG; 
 	}
 	else if (ins.IsNew(PlayerInput::MOVE_RIGHT_KEY))
 	{
-		moveDeg_ = 90.0f; 
+		moveDeg_ = RIGHT_DEG; 
 	}
 
 	//通常攻撃
 	if (ins.IsTrgDown(PUNCH_KEY)) { actCntl_ = ACT_CNTL::PUNCH; }
 
-	//スキル短押し
+	//ジャンプキー
 	if (ins.IsTrgDown(JUMP_KEY)) { actCntl_ = ACT_CNTL::JUMP; }
 
 }
