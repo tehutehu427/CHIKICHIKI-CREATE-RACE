@@ -36,7 +36,9 @@ void Cannon::SetParam(void)
 
 void Cannon::Update(void)
 {
-	barrelTrans_.quaRot = barrelTrans_.quaRot.Mult(barrelTrans_.quaRot.AngleAxis(Utility::Deg2RadF(30.0f), Utility::AXIS_X));
+	barrelTrans_.pos = VAdd(barrelTrans_.pos, barrelTrans_.quaRot.PosAxis({ size_.x * 100.0f / 2.0f, size_.y * 100.0f / 2.0f, size_.z * 100.0f / 2.0f }));
+	barrelTrans_.quaRot = barrelTrans_.quaRot.Mult(barrelTrans_.quaRot.AngleAxis(Utility::Deg2RadF(30.0f), Utility::AXIS_Y));
+	barrelTrans_.pos = VSub(barrelTrans_.pos, barrelTrans_.quaRot.PosAxis({ size_.x * 100.0f / 2.0f, size_.y * 100.0f / 2.0f, size_.z * 100.0f / 2.0f }));
 
 	//ëÂñCÇÃèâä˙çXêV
 	transform_.Update();

@@ -6,7 +6,7 @@ class Cannon : public ItemBase
 public:
 
 	//マップサイズ
-	static constexpr IntVector3 MAP_SIZE = { 4,1,4 };
+	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };
 
 	//狙う範囲半径
 	static constexpr float  AIM_RADIUS = 200.0f;

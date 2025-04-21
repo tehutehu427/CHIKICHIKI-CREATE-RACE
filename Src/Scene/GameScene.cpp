@@ -40,20 +40,20 @@ void GameScene::Load(void)
 	//player_ = std::make_unique<Player>();
 	//player_->Load();
 
-	palette_ = std::make_unique<EditerPaletteBase>();
-	palette_->Load();
+	//palette_ = std::make_unique<EditerPaletteBase>();
+	//palette_->Load();
 }
 
 void GameScene::Init(void)
 {
-	palette_->Init();
+	//palette_->Init();
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
-	PlayerManager::CreateInstance(1);
+	PlayerManager::CreateInstance(2);
 
 	//アイテム生成
-	ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
+	ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
 	ChangePhase(PHASE::EDIT_PHASE);
 }
 
@@ -63,9 +63,9 @@ void GameScene::NormalUpdate(void)
 	//player_->Update();
 
 	//パレット
-	palette_->Update();
+	//palette_->Update();
 
-	PlayerManager::GetInstance()->Update();
+	PlayerManager::GetInstance().Update();
 
 	phaseUpdate_();
 
@@ -82,9 +82,9 @@ void GameScene::NormalDraw(void)
 	grid_->Draw();
 	//プレイヤー
 
-	palette_->Draw();
-	//player_->Draw();
-	PlayerManager::GetInstance()->Draw();
+	//palette_->Draw();
+
+	PlayerManager::GetInstance().Draw();
 
 	ItemManager::GetInstance().Draw();
 }
@@ -127,7 +127,7 @@ void GameScene::DebagDraw(void)
 		"GameScene"
 	);
 
-	palette_->DebagDraw();
+	//palette_->DebagDraw();
 }
 void GameScene::ChangePhase(PHASE phase)
 {
@@ -143,6 +143,7 @@ void GameScene::ChangePhaseEdit(void)
 	VECTOR pos;
 	IntVector3 mPos = MapEditer::MAP_SIZE;
 	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
+	pos = { 0.0f,250.0f,-500.0f };
 	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
 }
 
