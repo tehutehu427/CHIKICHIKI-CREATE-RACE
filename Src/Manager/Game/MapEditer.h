@@ -23,17 +23,16 @@ public:
 	static MapEditer& GetInstance(void);
 
 	void Init(void);
-
-	int GetItemNom(void) { return itemNom_; }
+	ItemBase::ITEM_TYPE GetItemType(IntVector3 mapPos) { return isMapPosItem_[mapPos.x][mapPos.y][mapPos.z]; }
 	void AddItem(STATUS status);
 	void DeleteItem(IntVector3 mapPos);
+	IntVector3 WorldToMapPos(VECTOR worldPos);
 protected:
 
 private:
 	static MapEditer* instance_;
 
-	 int isMapPosItem_[(MAP_SIZE.x)][(MAP_SIZE.y)][(MAP_SIZE.z)];	//アイテム番号を入力 0はアイテムなし
-	 int itemNom_;
+	 ItemBase::ITEM_TYPE isMapPosItem_[(MAP_SIZE.x)][(MAP_SIZE.y)][(MAP_SIZE.z)];	//アイテム番号を入力 0はアイテムなし
 
 	MapEditer(void);
 	MapEditer(const MapEditer& instance_) = default;
