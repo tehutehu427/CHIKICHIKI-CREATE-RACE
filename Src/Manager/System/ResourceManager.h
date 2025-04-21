@@ -23,6 +23,7 @@ public:
 		//画像
 		PALETTE,
 		SCROLL_ARROW_ICON,
+		PALETTE_ICONS,
 	};
 
 	// 明示的にインステンスを生成する

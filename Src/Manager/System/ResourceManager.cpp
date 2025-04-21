@@ -49,6 +49,9 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "Palette.png");
 	resourcesMap_.emplace(SRC::PALETTE, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "PaletteIcons.png");
+	resourcesMap_.emplace(SRC::PALETTE_ICONS, std::move(res));
 #pragma endregion 
 
 }

@@ -24,7 +24,12 @@ public:
 		//破壊オブジェ
 		BOMB_SMALL,			//爆弾(小)
 		BOMB_BIG,			//爆弾(大)
+
+		//最大(NONEがあるから-1すること)
+		MAX,
 	};
+
+	static constexpr int ITEM_NUM_MAX = static_cast<int>(ITEM_TYPE::MAX) - 1;
 
 	//アイテムの効果
 	enum class EFFECT_TYPE

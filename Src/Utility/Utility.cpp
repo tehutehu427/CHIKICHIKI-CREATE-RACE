@@ -594,3 +594,10 @@ const VECTOR Utility::GetMoveVec(const VECTOR _start, const VECTOR _goal, const 
 
     return ret;
 }
+
+bool Utility::IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vector2 rightBotm)
+{
+    //Žw’è‚Ì”ÍˆÍ“à‚ÉÀ•W‚ª‚ ‚é‚©’²‚×‚é
+    return pos.x > leftTop.x && pos.x < rightBotm.x &&
+            pos.y > leftTop.y && pos.y < rightBotm.y;
+}
