@@ -23,7 +23,7 @@ public:
 	static MapEditer& GetInstance(void);
 
 	void Init(void);
-
+	ItemBase::ITEM_TYPE GetItemType(IntVector3 mapPos) { return isMapPosItem_[mapPos.x][mapPos.y][mapPos.z]; }
 	void AddItem(STATUS status);
 	void DeleteItem(IntVector3 mapPos);
 	IntVector3 WorldToMapPos(VECTOR worldPos);

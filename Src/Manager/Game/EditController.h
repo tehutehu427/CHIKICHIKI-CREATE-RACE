@@ -27,6 +27,7 @@ private:
 	Vector2 mousePos_;	//2Dのマウス座標
 	VECTOR mapPos_;	//3Dのマップ座標
 	MODE mode_;	//モード
+	bool isClickObject_;	//オブジェクトをクリックしたか
 	//モード管理(遷移時の初期処理)
 	std::map<MODE, std::function<void(void)>> modeChanges_;
 	//モード管理(更新ステップ)

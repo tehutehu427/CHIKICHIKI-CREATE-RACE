@@ -89,11 +89,12 @@ void EditController::RotateObjectDraw(void)
 
 void EditController::ItemNotSelect(void)
 {
-	IntVector3 errorMapPos = {-1,-1,-1};
-	//if (NearObjectPos() == errorMapPos  )
-	if (NearObjectPos().x == errorMapPos.x
-		&& NearObjectPos().y == errorMapPos.y
-		&& NearObjectPos().z == errorMapPos.z)
+	IntVector3 NearPos = NearObjectPos();
+	if (isClickObject_ == true)
+	{
+
+	}
+	else
 	{
 		//選択解除
 		ChengeMode(MODE::ITEM_SELECT);
@@ -102,6 +103,7 @@ void EditController::ItemNotSelect(void)
 
 IntVector3 EditController::NearObjectPos(void)
 {
+	isClickObject_ = false;
 	IntVector3 mapPos = {-1,-1,-1};
 	VECTOR mousePosNear3D = { mousePos_.x, mousePos_.y, 0.0f };
 	VECTOR nearWorldPos = ConvScreenPosToWorldPos(mousePosNear3D);	//近いほうのワールド座標
@@ -114,6 +116,21 @@ IntVector3 EditController::NearObjectPos(void)
 		farWorldPos.z < 0.0f || farWorldPos.z > MapEditer::MAP_SIZE.z * MapEditer::GRID_SIZE)
 	{
 		farWorldPos = VSub(farWorldPos, normalmousePos3D);
+	}
+	for (float t = 0.0f; t < 1.0f; t += 0.01f)
+	{
+		VECTOR lerp = Utility::Lerp(nearWorldPos, farWorldPos, t);
+		IntVector3 mapPosTemp = MapEditer::GetInstance().WorldToMapPos(lerp);
+		if (MapEditer::GetInstance().GetItemType(mapPosTemp) != ItemBase::ITEM_TYPE::NONE)
+		{
+			mapPos = mapPosTemp;
+			isClickObject_ = true;
+			break;
+		}
+		else
+		{
+			mapPos = mapPosTemp;
+		}
 	}
 	return mapPos;
 }
