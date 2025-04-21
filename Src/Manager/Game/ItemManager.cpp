@@ -2,6 +2,7 @@
 #include "../Object/Item/MoveHoriFloor.h"
 #include "../Object/Item/MoveVerFloor.h"
 #include "../Object/Item/Fence.h"
+#include "../Object/Item/Cannon.h"
 #include "ItemManager.h"
 
 
@@ -53,6 +54,7 @@ void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE
 		item = std::make_unique<Fence>();
 		break;
 	case ItemBase::ITEM_TYPE::CANNON:
+		item = std::make_unique<Cannon>();
 		break;
 	case ItemBase::ITEM_TYPE::SPIKY:
 		break;

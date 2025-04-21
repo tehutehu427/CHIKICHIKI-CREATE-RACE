@@ -48,8 +48,11 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Bomb.mv1");
 	resourcesMap_.emplace(SRC::BOMB, std::move(res));
 
-	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Cannon.mv1");
-	resourcesMap_.emplace(SRC::CANNON, std::move(res));
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "CannonBarrel.mv1");
+	resourcesMap_.emplace(SRC::CANNON_BARREL, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "CannonTurret.mv1");
+	resourcesMap_.emplace(SRC::CANNON_TURRET, std::move(res));
 #pragma endregion 
 
 }
