@@ -22,6 +22,11 @@ void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot)
 
 void ItemBase::Init()
 {
+	//個々の設定
+	SetParam();
+
+	//モデルの更新
+	transform_.Update();
 }
 
 void ItemBase::Draw(void)

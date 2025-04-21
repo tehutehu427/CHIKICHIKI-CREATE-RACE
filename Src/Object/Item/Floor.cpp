@@ -9,22 +9,12 @@ Floor::~Floor()
 {
 }
 
-void Floor::Load(void)
-{
-	
-}
-
-void Floor::Init(void)
+void Floor::SetParam(void)
 {
 	//ƒ‚ƒfƒ‹‚ÌŠî–{İ’è
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::FLOOR));
-	//ŒÂlİ’è
-	SetParam();
-}
 
-void Floor::SetParam(void)
-{
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
 	status_.isGravity = false;

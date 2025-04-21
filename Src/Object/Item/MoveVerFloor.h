@@ -1,7 +1,7 @@
 #pragma once
-#include "ItemBase.h"
+#include"ItemBase.h"
 
-class MoveHoriFloor : public ItemBase
+class MoveVerFloor : public ItemBase
 {
 public:
 
@@ -9,7 +9,7 @@ public:
 	static constexpr IntVector3 MAP_SIZE = { 4,1,4 };
 
 	//横移動距離
-	static constexpr int MOVE_X = 8;
+	static constexpr int MOVE_Y = 4;
 
 	//1地点移動するのにかかる秒数
 	static constexpr float ONE_POINT_SEC = 5.0f;
@@ -18,9 +18,9 @@ public:
 	static constexpr int ROUTE = 2;
 
 	//コンストラクタ
-	MoveHoriFloor();
+	MoveVerFloor();
 	//デストラクタ
-	~MoveHoriFloor()override;
+	~MoveVerFloor()override;
 
 	//個人設定
 	void SetParam(void)override;
@@ -65,5 +65,6 @@ private:
 	/// </summary>
 	/// <param name="_hitTrans">当たった物のTransform</param>
 	void HitObject(Transform& _hitTrans);
+
 };
 

@@ -22,15 +22,6 @@ Player::Player(int _playerNum,Transform _trans):playerNum_(_playerNum)
 	stateChanges_.emplace(STATE::PLAY, std::bind(&Player::ChangeStatePlay, this));
 }
 
-
-void Player::Load(void)
-{
-	//ƒ‚ƒfƒ‹‚ÌŠî–{İ’è
-	//transform_.SetModel(resMng_.LoadModelDuplicate(
-	//	ResourceManager::SRC::PLAYER));
-
-}
-
 void Player::Init(void)
 {
 	//transform_.modelId = transform_.SetModel(resMng_.GetInstance().LoadModelDuplicate(ResourceManager::SRC::)

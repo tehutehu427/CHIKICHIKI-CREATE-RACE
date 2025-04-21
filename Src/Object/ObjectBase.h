@@ -17,8 +17,6 @@ public:
 	// デストラクタ
 	virtual ~ObjectBase(void);
 
-	//読み込み
-	virtual void Load(void) = 0;
 	//初期化
 	virtual void Init(void) = 0;
 	//更新

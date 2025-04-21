@@ -45,7 +45,7 @@ void GameScene::Init(void)
 	PlayerManager::CreateInstance(1);
 
 	//ÉAÉCÉeÉÄê∂ê¨
-	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
+	ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
 }
 
 void GameScene::NormalUpdate(void)

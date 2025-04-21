@@ -2,9 +2,9 @@
 #include "../Common/Quaternion.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
-#include "MoveHoriFloor.h"
+#include "MoveVerFloor.h"
 
-MoveHoriFloor::MoveHoriFloor()
+MoveVerFloor::MoveVerFloor()
 {
 	routeNum_ = 0;
 	for (auto& route : route_)
@@ -19,11 +19,11 @@ MoveHoriFloor::MoveHoriFloor()
 	movePow_ = Utility::VECTOR_ZERO;
 }
 
-MoveHoriFloor::~MoveHoriFloor()
+MoveVerFloor::~MoveVerFloor()
 {
 }
 
-void MoveHoriFloor::SetParam(void)
+void MoveVerFloor::SetParam(void)
 {
 	//モデルの基本設定
 	transform_.SetModel(resMng_.LoadModelDuplicate(
@@ -39,7 +39,7 @@ void MoveHoriFloor::SetParam(void)
 	InitRoute();
 }
 
-void MoveHoriFloor::Update(void)
+void MoveVerFloor::Update(void)
 {
 	//移動処理
 	Move();
@@ -48,20 +48,20 @@ void MoveHoriFloor::Update(void)
 	transform_.Update();
 }
 
-void MoveHoriFloor::Draw(void)
+void MoveVerFloor::Draw(void)
 {
 	DrawLine3D(route_[0], route_[1], 0xffffff);
 	MV1DrawModel(transform_.modelId);
 }
 
-void MoveHoriFloor::Release(void)
+void MoveVerFloor::Release(void)
 {
 }
 
-void MoveHoriFloor::Move(void)
+void MoveVerFloor::Move(void)
 {
 	//指定ルートを超えたか
-	if(IsBeyondRoute())
+	if (IsBeyondRoute())
 	{
 		//現在位置の補正
 		transform_.pos = route_[routeNum_];
@@ -74,12 +74,12 @@ void MoveHoriFloor::Move(void)
 	transform_.pos = VAdd(transform_.pos, movePow_);
 }
 
-void MoveHoriFloor::InitRoute(void)
+void MoveVerFloor::InitRoute(void)
 {
 	//初期位置保存
 	route_[routeNum_] = transform_.pos;
 
-	VECTOR movePos = transform_.quaRot.PosAxis(VGet(size_.x * MOVE_X * 100, 0.0f, 0.0f));
+	VECTOR movePos = transform_.quaRot.PosAxis(VGet(0.0f, size_.y * MOVE_Y * 100, 0.0f));
 	VECTOR goalPos = VAdd(route_[routeNum_], movePos);
 
 	//次の位置保存
@@ -95,15 +95,15 @@ void MoveHoriFloor::InitRoute(void)
 	SetRoute();
 }
 
-void MoveHoriFloor::SetRoute(void)
+void MoveVerFloor::SetRoute(void)
 {
 	//開始地点
 	startRoute_ = route_[routeNum_];
-	
+
 	//地点用ナンバー増加
 	routeNum_++;
 	if (routeNum_ >= ROUTE)routeNum_ = 0;
-	
+
 	//終了地点
 	goalRoute_ = route_[routeNum_];
 
@@ -114,7 +114,7 @@ void MoveHoriFloor::SetRoute(void)
 	movePow_ = Utility::GetMoveVec(startRoute_, goalRoute_, speed_);
 }
 
-bool MoveHoriFloor::IsBeyondRoute(void)
+bool MoveVerFloor::IsBeyondRoute(void)
 {
 	bool beyondX;
 	if (moveVec_.x >= 0.0f)beyondX = transform_.pos.x >= route_[routeNum_].x + moveVec_.x;
@@ -131,7 +131,7 @@ bool MoveHoriFloor::IsBeyondRoute(void)
 	return beyondX && beyondY && beyondZ;
 }
 
-void MoveHoriFloor::HitObject(Transform& _hitTrans)
+void MoveVerFloor::HitObject(Transform& _hitTrans)
 {
 	_hitTrans.pos = VAdd(_hitTrans.pos, movePow_);
 }

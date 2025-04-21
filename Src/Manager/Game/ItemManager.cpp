@@ -1,5 +1,6 @@
 #include "../Object/Item/Floor.h"
 #include "../Object/Item/MoveHoriFloor.h"
+#include "../Object/Item/MoveVerFloor.h"
 #include "ItemManager.h"
 
 
@@ -44,7 +45,8 @@ void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE
 	case ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR:
 		item = std::make_unique<MoveHoriFloor>();
 		break;
-	case ItemBase::ITEM_TYPE::MOVE_VER_FLOOT:
+	case ItemBase::ITEM_TYPE::MOVE_VER_FLOOR:
+		item = std::make_unique<MoveVerFloor>();
 		break;
 	case ItemBase::ITEM_TYPE::FENCE:
 		break;

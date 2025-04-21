@@ -12,10 +12,6 @@ public:
 	//デストラクタ
 	~Floor()override;
 
-	//読み込み
-	void Load(void)override;
-	//初期化
-	void Init(void)override;
 	//個人設定
 	void SetParam(void)override;
 	//更新
