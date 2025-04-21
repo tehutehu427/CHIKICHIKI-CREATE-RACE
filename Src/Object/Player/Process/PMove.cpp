@@ -26,6 +26,7 @@ void PMove::Update(const std::shared_ptr<Camera>& _camera, bool& _isJump, Transf
 	auto& ins = InputManager::GetInstance();
 	movePow_ = Utility::VECTOR_ZERO;
 	VECTOR dir = Utility::VECTOR_ZERO;
+	VECTOR getDir = PlayerInput::GetInstance().GetDir();
 	float deg = PlayerInput::GetInstance().GetMoveDeg();
 	//プレイヤーの周囲にあるステージポリゴンの取得
 	//MV1_COLL_RESULT_POLY_DIM hitDim[STAGECOLLOBJ_MAXNUM + 1];
@@ -34,8 +35,9 @@ void PMove::Update(const std::shared_ptr<Camera>& _camera, bool& _isJump, Transf
 	//カメラ方向に移動したい
 	if (PlayerInput::GetInstance().CheckAct(PlayerInput::ACT_CNTL::MOVE))
 	{
-		dir = Quaternion::PosAxis(Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y),cameraRot.GetForward());
-		SetGoalRotate(Utility::Deg2RadD(deg), _camera);
+		//dir = Quaternion::PosAxis(Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y),cameraRot.GetForward());
+		dir = cameraRot.PosAxis(getDir);
+		SetGoalRotate(deg, _camera);
 	}
 
 
@@ -72,8 +74,9 @@ void PMove::SetGoalRotate(double rotRad, const std::shared_ptr<Camera>& _camera)
 {
 	VECTOR cameraRot = _camera->GetAngles();
 	Quaternion axis =
-		Quaternion::AngleAxis(
-			(double)cameraRot.y + rotRad, Utility::AXIS_Y);
+		//Quaternion::AngleAxis(
+		//	(double)cameraRot.y + rotRad, Utility::AXIS_Y);
+		Quaternion::
 	// 現在設定されている回転との角度差を取る
 	double angleDiff = Quaternion::Angle(axis, goalQuaRot_);
 	// しきい値

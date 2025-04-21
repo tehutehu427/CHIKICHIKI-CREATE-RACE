@@ -32,6 +32,9 @@ public:
     static constexpr float BACK_DEG = 180.0f;
     static constexpr float RIGHT_DEG = 90.0f;
 
+    //デルタタイム
+    static constexpr float DELTA_TIME = 1.0f / 60.0f;
+
 
     ////回避
     //static constexpr int DODGE_KEY = KEY_INPUT_N;
@@ -71,6 +74,7 @@ public:
     ACT_CNTL GetAct(void) { return actCntl_; }
     float GetStickDeg(void){ return stickDeg_; }
     float GetMoveDeg(void) { return moveDeg_; }
+    VECTOR GetDir(void) { return moveDir_; }
 
 private:
     //メンバ関数
@@ -89,6 +93,7 @@ private:
     float leftStickY_;
     float stickDeg_;            //パッドのスティックの角度
     float moveDeg_;             //移動方向
+    VECTOR moveDir_;            //移動方向
 
     //シングルトン化するために外部で生成されないようにする
     PlayerInput(void);

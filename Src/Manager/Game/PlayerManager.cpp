@@ -44,7 +44,7 @@ void PlayerManager::Update(void)
 	//{
 	//	p->Update();
 	//}
-	players_[1]->Update();
+	players_[0]->Update();
 	PlayersCollision();
 }
 

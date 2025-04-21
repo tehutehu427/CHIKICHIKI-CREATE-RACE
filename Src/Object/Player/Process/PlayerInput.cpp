@@ -49,18 +49,22 @@ void PlayerInput::InputKeyBoard(void)
 	if (ins.IsNew(PlayerInput::MOVE_FRONT_KEY))
 	{ 
 		moveDeg_ = FLONT_DEG;
+		moveDir_ = Utility::DIR_F;
 	}
 	else if (ins.IsNew(PlayerInput::MOVE_LEFT_KEY)) 
 	{ 
 		moveDeg_ = LEFT_DEG; 
+		moveDir_ = Utility::DIR_L;
 	}
 	else if (ins.IsNew(PlayerInput::MOVE_BACK_KEY))
 	{ 
 		moveDeg_ = BACK_DEG; 
+		moveDir_ = Utility::DIR_B;
 	}
 	else if (ins.IsNew(PlayerInput::MOVE_RIGHT_KEY))
 	{
 		moveDeg_ = RIGHT_DEG; 
+		moveDir_ = Utility::DIR_R;
 	}
 
 	//通常攻撃
@@ -91,7 +95,7 @@ void PlayerInput::InputPad(InputManager::JOYPAD_NO _padNum)
 
 	//スティックの角度によって移動方向を決める
 	moveDeg_ = stickDeg_;
-
+	moveDir_ = { leftStickX_ ,0.0f,leftStickX_ };
 
 	if (ins.IsPadBtnTrgDown(_padNum, PUNCH_BTN)) { actCntl_ = ACT_CNTL::PUNCH; }
 	if(ins.IsPadBtnTrgDown(_padNum, JUMP_BTN)){ actCntl_ = ACT_CNTL::JUMP; }

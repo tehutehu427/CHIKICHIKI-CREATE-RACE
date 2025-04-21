@@ -16,7 +16,8 @@ public:
 	~PMove(void);
 	void Init(void);
 	void Update(const std::shared_ptr<Camera>& _camera,bool& _isJump,Transform& _trans);
-
+	//‰ñ“]
+	void Rotate(void);
 	//ƒQƒbƒ^
 	//-----------------------------------------
 	//ˆÚ“®—Ê
@@ -52,8 +53,6 @@ private:
 	//**********************************************
 	//ŠJ“XŒã‚ÌŠp“xŽæ“¾
 	void SetGoalRotate(double rotRad, const std::shared_ptr<Camera>& _camera);
-	//‰ñ“]
-	void Rotate(void);
 	
 
 

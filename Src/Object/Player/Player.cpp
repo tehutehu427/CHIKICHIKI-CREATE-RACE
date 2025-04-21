@@ -14,8 +14,13 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	transform_ = _trans;
 	//オブジェクト生成
 	//操作関連
+	//---------------------------------
+	//移動
 	pMove_ = std::make_shared<PMove>();
+	//ジャンプ
 	pJump_ = std::make_shared<PJump>();
+	//パンチ
+	pPunch_ = std::make_shared<PPunch>();
 
 	//カメラ
 	camera_ = std::make_shared<Camera>();
@@ -52,6 +57,7 @@ void Player::Init(void)
 	//操作関連
 	pMove_->Init();
 	pJump_->Init();
+	pPunch_->Init();
 }
 
 void Player::Update(void)
@@ -85,6 +91,7 @@ void Player::DrawDebug(void)
 	DrawSphere3D(transform_.pos, 10.0f, 10, color, color, true);
 	capsule_->Draw();
 	pJump_->DrawDebug();
+	pPunch_->DrawDebug();
 }
 #endif // DEBUG_ON
 
@@ -123,12 +130,13 @@ void Player::UpdatePlay(void)
 	//移動関連
 	pMove_->Update(camera_,isJump,transform_);
 	pJump_->Update(transform_.GetUp(),transform_.GetDown(),IsEndLanding());
-
+	pPunch_->Update(transform_);
 	// 衝突判定
 	Collision();
 
-	//Quaternion playerRotY = pMove_->GetPlayerRotY();
-	//transform_.quaRot = transform_.quaRot.Mult(playerRotY);
+	pMove_->Rotate();
+	Quaternion playerRotY = pMove_->GetPlayerRotY();
+	transform_.quaRot = transform_.quaRot.Mult(playerRotY);
 }
 
 void Player::CalcGravityPow(void)

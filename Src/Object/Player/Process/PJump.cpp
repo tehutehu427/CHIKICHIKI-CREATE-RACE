@@ -59,7 +59,7 @@ void PJump::Jump(void)
 	if (isJump_)
 	{
 		// ƒWƒƒƒ“ƒv‚Ì“ü—ÍŽó•tŽžŠÔ‚ðŒ¸‚ç‚·
-		stepJump_ += DELTA_TIME;
+		stepJump_ += PlayerInput::DELTA_TIME;
 		if (stepJump_ < TIME_JUMP_IN)
 		{
 			jumpDeceralation_ -= stepJump_ * TIME_JUMP_IN;

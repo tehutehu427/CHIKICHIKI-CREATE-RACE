@@ -8,12 +8,14 @@
 #include"./Process/PMove.h"
 #include"./Process/PlayerInput.h"
 #include"./Process/PJump.h"
+#include"./Process/PPunch.h"
 #include "../ObjectBase.h"
 
 #define DEBUG_ON
 class Camera;
 class PMove;
 class PJump;
+class PPunch;
 class Player :public ObjectBase
 {
 public:
@@ -120,8 +122,12 @@ private:
 	std::shared_ptr<Camera> camera_;
 
 	//操作関連
+	//移動
 	std::shared_ptr<PMove> pMove_;
+	//ジャンプ
 	std::shared_ptr<PJump> pJump_;
+	//パンチ
+	std::shared_ptr<PPunch> pPunch_;
 
 	//プレイヤー単体が持っているもの
 	//プレイヤー番号
