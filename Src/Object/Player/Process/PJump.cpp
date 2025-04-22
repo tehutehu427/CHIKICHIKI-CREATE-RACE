@@ -2,6 +2,8 @@
 #include"../../../Utility/Utility.h"
 #include"../../../Manager/System/SceneManager.h"
 #include"../../../Manager/Game/GravityManager.h"
+#include"../../../FpsControl/FpsControl.h"
+#include"./PlayerInput.h"
 #include "PJump.h"
 
 PJump::PJump(void)
@@ -28,7 +30,6 @@ void PJump::Update(const VECTOR& _dirUp,const VECTOR& _dirDown,const bool& _isEn
 	isEndLanding_ = _isEndLanding;
 	Jump();
 	GravityManager::GetInstance()->CalcGravity(dirDown_, jumpPow_);
-	//gravity_->CalcGravity(dirDown_, jumpPow_);
 }
 
 void PJump::DrawDebug(void)
@@ -38,7 +39,7 @@ void PJump::DrawDebug(void)
 
 void PJump::Jump(void)
 {
-	bool isHit = InputManager::GetInstance().IsTrgDown(KEY_INPUT_E);
+	bool isHit = PlayerInput::GetInstance().CheckAct(PlayerInput::ACT_CNTL::JUMP);
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 	// ジャンプ
 	if (isHit && (isJump_ || isEndLanding_))
@@ -53,26 +54,29 @@ void PJump::Jump(void)
 			// この後、いくつかのジャンプパターンを試します
 		}
 		isJump_ = true;
+	}
+
+	if (isJump_)
+	{
 		// ジャンプの入力受付時間を減らす
-		stepJump_ += deltaTime;
+		stepJump_ += DELTA_TIME;
 		if (stepJump_ < TIME_JUMP_IN)
 		{
-			jumpDeceralation_ -= stepJump_* TIME_JUMP_IN;
+			jumpDeceralation_ -= stepJump_ * TIME_JUMP_IN;
 			jumpPow_ = VScale(dirUp_, jumpDeceralation_);
 		}
-		else 
+		else
 		{
 			jumpDeceralation_ += (TIME_JUMP_IN - stepJump_) * TIME_JUMP_IN;
 			jumpPow_ = VScale(dirUp_, jumpDeceralation_);
 		}
-
 	}
 	// ボタンを離したらジャンプ力に加算しない
-	if (!isHit)
+	else
 	{
-		//stepJump_ = TIME_JUMP_IN;
-		//jumpDeceralation_ = POW_JUMP;
-		//fallCnt_ = 0.0f;
+		stepJump_ = TIME_JUMP_IN;
+		jumpDeceralation_ = POW_JUMP;
+		fallCnt_ = 0.0f;
 	}
 }
 

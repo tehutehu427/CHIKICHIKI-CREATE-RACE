@@ -16,7 +16,7 @@ public:
 		//設置オブジェ
 		FLOOR,				//床
 		MOVE_HORI_FLOOR,	//水平(横)方向移動床
-		MOVE_VER_FLOOT,		//垂直(縦)方向移動床
+		MOVE_VER_FLOOR,		//垂直(縦)方向移動床
 		FENCE,				//柵
 		CANNON,				//大砲
 		SPIKY,				//とげ
@@ -53,14 +53,15 @@ public:
 	//デストラクタ
 	virtual ~ItemBase()override;
 
-	//読み込み
-	virtual void Load(void)override = 0;
+	//アイテムの個別設定
+	virtual void SetParam(void) = 0;
 	//初期化
-	virtual void Init(void)override = 0;
+	virtual void Init(IntVector3 _mapPos ,Quaternion _quaRot, ITEM_TYPE _itemType);
+	virtual void Init()override;
 	//更新
 	virtual void Update(void)override = 0;
 	//描画
-	virtual void Draw(void)override = 0;
+	virtual void Draw(void)override;
 	//解放
 	virtual void Release(void)override = 0;
 

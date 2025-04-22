@@ -1,3 +1,4 @@
+#include "../../Manager/System/ResourceManager.h"
 #include "Floor.h"
 
 Floor::Floor()
@@ -8,19 +9,19 @@ Floor::~Floor()
 {
 }
 
-void Floor::Load(void)
+void Floor::SetParam(void)
 {
-}
+	//ÉÇÉfÉãÇÃäÓñ{ê›íË
+	transform_.SetModel(resMng_.LoadModelDuplicate(
+		ResourceManager::SRC::FLOOR));
 
-void Floor::Init(void)
-{
+	size_ = MAP_SIZE;
+	status_.isBreak = true;
+	status_.isGravity = false;
+	status_.effType = EFFECT_TYPE::INSTALLATION;
 }
 
 void Floor::Update(void)
-{
-}
-
-void Floor::Draw(void)
 {
 }
 

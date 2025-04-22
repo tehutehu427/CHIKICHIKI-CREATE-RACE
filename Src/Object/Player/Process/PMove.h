@@ -15,7 +15,7 @@ public:
 	PMove(void);
 	~PMove(void);
 	void Init(void);
-	void Update(const std::shared_ptr<Camera>& _camera,bool& _isJump);
+	void Update(const std::shared_ptr<Camera>& _camera,bool& _isJump,Transform& _trans);
 
 	//ƒQƒbƒ^
 	//-----------------------------------------

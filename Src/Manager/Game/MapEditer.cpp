@@ -24,27 +24,33 @@ void MapEditer::Init(void)
 		{
 			for (int k = 0;i < MAP_SIZE.z;i++)
 			{
-				isMapPosItem_[i][j][k] = 0;
+				isMapPosItem_[i][j][k] = ItemBase::ITEM_TYPE::NONE;
 			}
 		}
 	}
-	itemNom_ = 1;
 }
 
-void MapEditer::AddItem(const ItemBase::ITEM_TYPE& _type, const IntVector3& mapPos)
+void MapEditer::AddItem(STATUS status)
 {
-	//À•W‚ð’Ç‰Á
-	itemsPos_[_type].push_back(mapPos);
+	ItemManager::GetInstance().AddItem(status.mapPos,status.rotate,status.type);
 }
 
 void MapEditer::DeleteItem(const ItemBase::ITEM_TYPE& _type, const IntVector3& mapPos)
 {
-	//À•W‚ðíœ
+
+}
+
+IntVector3 MapEditer::WorldToMapPos(VECTOR worldPos)
+{
+	IntVector3 mapPos;
+	mapPos.x = static_cast<int>(worldPos.x / GRID_SIZE);
+	mapPos.y = static_cast<int>(worldPos.y / GRID_SIZE);
+	mapPos.z = static_cast<int>(worldPos.z / GRID_SIZE);
+	return mapPos;
 }
 
 MapEditer::MapEditer(void)
 {
-	itemNom_ = -1;
 	itemsPos_.clear();
 	isMapPosItem_[(MAP_SIZE.x)][(MAP_SIZE.y)][(MAP_SIZE.z)] = {};
 }

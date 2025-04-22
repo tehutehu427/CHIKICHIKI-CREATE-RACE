@@ -7,10 +7,13 @@ public:
 	~PJump(void) = default;
 
 	//ジャンプ力
-	static constexpr float POW_JUMP = 16.0f;
+	static constexpr float POW_JUMP = 22.0f;
 
-	//ジャンプ受付時間
-	static constexpr float TIME_JUMP_IN = 0.5f;
+	//ジャンプ加速の倍率
+	static constexpr float TIME_JUMP_IN = 4.0f;
+
+	//デルタタイム
+	static constexpr float DELTA_TIME = 1.0f / 60.0f;
 
 	void Init(void);
 	void Update(const VECTOR& _dirUp,const VECTOR& _dirDown,const bool& _isEndLanding);

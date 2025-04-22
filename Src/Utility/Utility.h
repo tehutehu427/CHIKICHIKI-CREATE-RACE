@@ -134,7 +134,7 @@ public:
 	/// <param name="_goal">向かう先</param>
 	/// <param name="_speed">設定速度(未設定だと、方向ベクトルのみを返す)</param>
 	/// <returns>向かう先までの移動ベクトル</returns>
-	const VECTOR GetMoveVec(const VECTOR _start, const VECTOR _goal, const float _speed = 1.0f);
+	static const VECTOR GetMoveVec(const VECTOR _start, const VECTOR _goal, const float _speed = 1.0f);
 
 	//特定の範囲内に座標が含まれてるか調べる
 	static bool IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vector2 rightBotm);
