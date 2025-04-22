@@ -1,0 +1,127 @@
+#pragma once
+#include "EditerPaletteBase.h"
+
+
+class PaletteIcon
+{
+public:
+	enum class STATE
+	{
+		NONE,
+		SCR_UP,
+		SCR_DOWN,
+		SELCT,
+	};
+
+	enum class SCROLL
+	{
+		UP,
+		DOWWN,
+		MAX,
+	};
+
+	//パレットアイコン移動量
+	static constexpr int ICONS_MOVE = 10;
+
+	//描画数
+	static constexpr int ICON_NUM = ItemBase::ITEM_NUM_MAX;
+	static constexpr int SCROLL_ICON_NUM = static_cast<int>(SCROLL::MAX);
+
+	//スクロールアイコン下の回転角度
+	static constexpr float SCR_ICON_DEG = 180.0f;
+	
+	//拡大率
+	static constexpr float ICON_RATE = 1.0f;
+	static constexpr float SCR_ICON_RATE = 1.0f;
+
+	//大きさ
+	static constexpr int ICON_SIZE = 128;
+	static constexpr int SCR_ICON_SIZE = 128;
+
+	//マスクサイズ
+	static constexpr int MASK_SIZE_X = 720;
+	static constexpr int MASK_SIZE_Y = 510;
+
+	//アイコン位置
+	static constexpr int COL = 4;	//列
+	static constexpr int ICON_POS_X = Application::SCREEN_HALF_X - static_cast<int>(ICON_SIZE * ICON_RATE * 2);
+	static constexpr int ICON_POS_Y = Application::SCREEN_HALF_Y - static_cast<int>(ICON_SIZE * ICON_RATE * 1.5f) + 60;
+
+	//アイコン描画用間隔
+	static constexpr int INTERVAL_X = static_cast<int>(ICON_SIZE * 1.3f);
+	static constexpr int INTERVAL_Y = static_cast<int>(ICON_SIZE * 1.5f);
+
+	//スクロールアイコン位置
+	static constexpr int SCR_ICON_POS_X = Application::SCREEN_HALF_X;
+	static constexpr int SCR_ICON_POS_Y[SCROLL_ICON_NUM] = {
+		80,
+		Application::SCREEN_SIZE_Y - 80 };
+
+	//マスク位置(画像の左上位置)
+	static constexpr int MASK_POS_X = Application::SCREEN_HALF_X - MASK_SIZE_X / 2;
+	static constexpr int MASK_POS_Y = Application::SCREEN_HALF_Y - MASK_SIZE_Y / 2;
+
+	//スクロールに制限をかける
+	static constexpr int SCROLL_LIMIT_LINE = ICON_NUM % COL -1;
+
+
+	PaletteIcon();
+	~PaletteIcon();
+
+	void Load();
+	void Init();
+	void Update();
+	void Draw();
+
+	//デバッグ用描画
+	void DebagDraw();
+
+	//状態遷移
+	void ChangeState(const STATE _state);
+
+private:
+
+	//状態変更処理の管理
+	std::map<STATE, std::function<void(void)>> stateChanges_;
+
+	//更新処理管理
+	std::function<void(void)> stateUpdate_;
+
+	//状態
+	STATE state_;
+
+	//画像
+	int imgScrIcon_;	//スクロール用アイコン
+	int mskPal_;		//マスク画像
+	//int* imgIcons_;	//アイコン画像
+	int imgIcons_;
+
+	//スクロールの制限用ライン
+	int scrLimitLine_;
+
+	//座標のバックアップ
+	Vector2 prePos_;
+
+	//アイコン
+	EditerPaletteBase::ImgInfo icons_[ICON_NUM];
+
+	//スクロールアイコン
+	EditerPaletteBase::ImgInfo scrIcon_[SCROLL_ICON_NUM];
+
+	//状態変更処理
+	void ChangeStateNone();
+	void ChangeStateScrollUp();
+	void ChangeStateScrollDown();
+	void ChangeStateSelect();
+
+	//状態別更新処理
+	void UpdateNone();
+	void UpdateScrollUp();
+	void UpdateScrollDown();
+	void UpdateSelect();
+
+	//クリック位置が特定の範囲か調べる
+	void CheackClickPosition(const Vector2 _mPos);
+
+};
+

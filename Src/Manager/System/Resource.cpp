@@ -66,6 +66,11 @@ void Resource::Load(void)
 			&handleIds_[0]);
 		break;
 
+	case Resource::TYPE::MASK:
+		// ‰æ‘œ
+		handleId_ = LoadMask(path_.c_str());
+		break;
+
 	case Resource::TYPE::MODEL:
 		// ƒ‚ƒfƒ‹
 		handleId_ = MV1LoadModel(path_.c_str());
@@ -126,6 +131,10 @@ void Resource::Release(void)
 		}
 		delete[] handleIds_;
 	}
+		break;
+
+	case Resource::TYPE::MASK:
+		DeleteMask(handleId_);
 		break;
 
 	case Resource::TYPE::MODEL:

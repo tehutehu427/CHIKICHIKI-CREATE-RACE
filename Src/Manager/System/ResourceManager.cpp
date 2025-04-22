@@ -54,6 +54,12 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::PALETTE_ICONS, std::move(res));
 #pragma endregion 
 
+#pragma region ƒ}ƒXƒN‰æ‘œ
+	std::string path_Mask = Application::PATH_IMAGE + "Mask/";
+	res = std::make_unique<Resource>(Resource::TYPE::MASK, path_Mask + "PaletteMask.png");
+	resourcesMap_.emplace(SRC::PALETTE_MASK, std::move(res));
+#pragma endregion 
+
 }
 
 void ResourceManager::Release(void)

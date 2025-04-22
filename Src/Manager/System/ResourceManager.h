@@ -24,6 +24,7 @@ public:
 		PALETTE,
 		SCROLL_ARROW_ICON,
 		PALETTE_ICONS,
+		PALETTE_MASK,
 	};
 
 	// 明示的にインステンスを生成する

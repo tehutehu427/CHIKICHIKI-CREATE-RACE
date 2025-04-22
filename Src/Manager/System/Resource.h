@@ -13,6 +13,7 @@ public:
 		NONE,
 		IMG,
 		IMGS,
+		MASK,
 		MODEL,
 		SOUND,
 		FONT,

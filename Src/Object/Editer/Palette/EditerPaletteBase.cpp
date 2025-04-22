@@ -3,6 +3,7 @@
 #include "../../../Manager/System/InputManager.h"
 #include "../../../Utility/Utility.h"
 #include "EditerPaletteBase.h"
+#include "PaletteIcon.h"
 
 EditerPaletteBase::EditerPaletteBase()
 {
@@ -12,11 +13,9 @@ EditerPaletteBase::EditerPaletteBase()
 	stateChanges_.emplace(STATE::OPEN, std::bind(&EditerPaletteBase::ChangeStateOpen, this));
 	stateChanges_.emplace(STATE::SELECT, std::bind(&EditerPaletteBase::ChangeStateSelect, this));
 
+	imgPalette_ = -1;
 	pal_ = {};
-	imgScrIcon_ = -1;
-	imgIcons_ = -1;
-	ic_ = {};
-	//for (Icon& i : icons_) { i = {}; }
+	palIcon_ = nullptr;
 	state_ = STATE::NONE;
 }
 
@@ -26,10 +25,13 @@ EditerPaletteBase::~EditerPaletteBase()
 
 void EditerPaletteBase::Load()
 {
+	//リソースの読み込み
 	ResourceManager& res = ResourceManager::GetInstance();
-	pal_.img = res.Load(ResourceManager::SRC::PALETTE).handleId_;
-	imgScrIcon_ = res.Load(ResourceManager::SRC::SCROLL_ARROW_ICON).handleId_;
-	imgIcons_ = res.Load(ResourceManager::SRC::PALETTE_ICONS).handleId_;
+	imgPalette_ = res.Load(ResourceManager::SRC::PALETTE).handleId_;
+
+	//パレットアイコン
+	palIcon_ = std::make_unique<PaletteIcon>();
+	palIcon_->Load();
 }
 
 void EditerPaletteBase::Init()
@@ -41,11 +43,7 @@ void EditerPaletteBase::Init()
 		static_cast<int>(static_cast<float>(PALETTE_SIZE_X) * pal_.rate),
 		static_cast<int>(static_cast<float>(PALETTE_SIZE_Y) * pal_.rate) };
 
-	ic_.pos = {
-		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y
-	};
-	ic_.rate = ICON_RATE;
+	palIcon_->Init();
 
 	//初期状態
 	ChangeState(STATE::WAIT);
@@ -63,22 +61,13 @@ void EditerPaletteBase::Draw()
 		pal_.pos.x,
 		pal_.pos.y,
 		pal_.rate,
-		0.0f,
-		pal_.img,
+		pal_.angle,
+		imgPalette_,
 		true,
 		false);
 
-	if (state_ == STATE::SELECT) {
-		DrawRotaGraph(
-			ic_.pos.x,
-			ic_.pos.y,
-			ic_.rate,
-			0.0f,
-			imgIcons_,
-			true,
-			false
-		);
-	}
+	//選択描画
+	palIcon_->Draw();
 }
 
 void EditerPaletteBase::DebagDraw()
@@ -123,6 +112,9 @@ void EditerPaletteBase::ChangeStateWait()
 void EditerPaletteBase::ChangeStateClose()
 {
 	stateUpdate_ = std::bind(&EditerPaletteBase::UpdateClose, this);
+
+	//パレットアイコンの状態をNONEにする
+	palIcon_->ChangeState(PaletteIcon::STATE::NONE);
 }
 
 void EditerPaletteBase::ChangeStateOpen()
@@ -133,6 +125,9 @@ void EditerPaletteBase::ChangeStateOpen()
 void EditerPaletteBase::ChangeStateSelect()
 {
 	stateUpdate_ = std::bind(&EditerPaletteBase::UpdateSelect, this);
+
+	//パレットアイコンの状態をSELECTにする
+	palIcon_->ChangeState(PaletteIcon::STATE::SELCT);
 }
 
 void EditerPaletteBase::UpdateNone()
@@ -175,19 +170,19 @@ void EditerPaletteBase::UpdateOpen()
 }
 
 void EditerPaletteBase::UpdateSelect()
-{
-	//使うアイテムを選ぶ処理
-	//アイテムをクリックしたときそのアイテムのアイコンを発光させる
-	//使うアイテムをダブルクリックしたらパレットを閉じる
-	
-	//パレット外をクリックしたときパレットを閉じる
+{	
 	InputManager& ins = InputManager::GetInstance();
-	Vector2 leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
-	Vector2 rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
+	Vector2 leftTop = {};		//画像左上
+	Vector2 rightBotm = {};		//画像右下
 
+	//パレット外をクリックしたときパレットを閉じる
+	leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
+	rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
 	if (ins.IsClickMouseLeft() &&
-		!Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBotm))
-	{
+		!Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBotm)) {
 		ChangeState(STATE::CLOSE);
 	}
+
+	//パレットアイコンに関する処理
+	palIcon_->Update();
 }

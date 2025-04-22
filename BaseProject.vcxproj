@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Editer\Palette\PaletteIcon.cpp" />
     <ClCompile Include="Src\Object\Editer\Palette\EditerPaletteBase.cpp" />
     <ClCompile Include="Src\Manager\System\DateBank.cpp" />
     <ClCompile Include="Src\Object\Editer\MapDataIO.cpp" />
@@ -54,6 +55,7 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Editer\Palette\PaletteIcon.h" />
     <ClInclude Include="Src\Object\Editer\Palette\EditerPaletteBase.h" />
     <ClInclude Include="Src\Manager\System\DateBank.h" />
     <ClInclude Include="Src\Object\Editer\MapDataIO.h" />
