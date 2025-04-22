@@ -32,7 +32,7 @@ public:
 	static constexpr float PALETTE_RATE = 1.8f;
 
 	//•Â‚¶‚Ä‚é‚ÌˆÊ’u
-	static constexpr int CLOSE_POS_X = Application::SCREEN_SIZE_X;
+	static constexpr int CLOSE_POS_X = Application::SCREEN_SIZE_X + 200;
 	static constexpr int CLOSE_POS_Y = Application::SCREEN_HALF_Y;
 
 	//ŠJ‚¢‚Ä‚é‚ÌˆÊ’u
@@ -62,6 +62,9 @@ public:
 
 	//ó‘Ô‘JˆÚ
 	void ChangeState(const STATE _state);
+
+	//ó‘Ô‚ğ•Ô‚·
+	inline const STATE GetState()const { return state_; }
 
 private:
 	

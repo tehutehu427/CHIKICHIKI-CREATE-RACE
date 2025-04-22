@@ -1,3 +1,4 @@
+#include <cassert>
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../../Manager/System/InputManager.h"
 #include "../../../Utility/Utility.h"
@@ -62,7 +63,8 @@ void PaletteIcon::Init()
 	scrLimitLine_ = 0;
 
 	//マスクスクリーンの作成
-	CreateMaskScreen();
+	int ret = CreateMaskScreen();
+	assert(ret != -1);
 
 	//マスク領域の描画
 	DrawMask(0, 0, mskPal_, DX_MASKTRANS_BLACK);

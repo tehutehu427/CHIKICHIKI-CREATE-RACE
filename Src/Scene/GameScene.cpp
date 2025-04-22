@@ -50,7 +50,7 @@ void GameScene::Init(void)
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
-	PlayerManager::CreateInstance(1);
+	PlayerManager::CreateInstance(2);
 
 	//アイテム生成
 	ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
@@ -65,7 +65,7 @@ void GameScene::NormalUpdate(void)
 	//パレット
 	palette_->Update();
 
-	PlayerManager::GetInstance()->Update();
+	PlayerManager::GetInstance().Update();
 
 	phaseUpdate_();
 
@@ -84,7 +84,7 @@ void GameScene::NormalDraw(void)
 
 	palette_->Draw();
 	//player_->Draw();
-	PlayerManager::GetInstance()->Draw();
+	PlayerManager::GetInstance().Draw();
 
 	ItemManager::GetInstance().Draw();
 }
