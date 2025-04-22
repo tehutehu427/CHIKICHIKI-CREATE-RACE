@@ -89,6 +89,7 @@ void Player::DrawDebug(void)
 	unsigned int color = 0xffffff;
 	if (isCol_) { color = 0xff0000; }
 	DrawSphere3D(transform_.pos, 10.0f, 10, color, color, true);
+	DrawFormatString(0, 16, 0xffffff, "Šp“x(%.2f,%.2f,%.2f)", transform_.rot.x, transform_.rot.y, transform_.rot.z);
 	capsule_->Draw();
 	pJump_->DrawDebug();
 	pPunch_->DrawDebug();
@@ -136,7 +137,8 @@ void Player::UpdatePlay(void)
 
 	pMove_->Rotate();
 	Quaternion playerRotY = pMove_->GetPlayerRotY();
-	transform_.quaRot = transform_.quaRot.Mult(playerRotY);
+	//transform_.quaRot = transform_.quaRot.Mult(playerRotY);
+	transform_.quaRot = playerRotY;
 }
 
 void Player::CalcGravityPow(void)

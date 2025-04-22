@@ -45,6 +45,9 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_LCONTROL);
 	//ジャンプ
 	InputManager::GetInstance().Add(KEY_INPUT_E);
+
+	//パンチキー
+	InputManager::GetInstance().Add(KEY_INPUT_RETURN);
 	//---------------------------------------------------
 
 

@@ -27,7 +27,7 @@ void PMove::Update(const std::shared_ptr<Camera>& _camera, bool& _isJump, Transf
 	movePow_ = Utility::VECTOR_ZERO;
 	VECTOR dir = Utility::VECTOR_ZERO;
 	VECTOR getDir = PlayerInput::GetInstance().GetDir();
-	float deg = PlayerInput::GetInstance().GetMoveDeg();
+	float deg = 0;
 	//プレイヤーの周囲にあるステージポリゴンの取得
 	//MV1_COLL_RESULT_POLY_DIM hitDim[STAGECOLLOBJ_MAXNUM + 1];
 	Quaternion cameraRot = _camera->GetQuaRotOutX();
@@ -35,11 +35,9 @@ void PMove::Update(const std::shared_ptr<Camera>& _camera, bool& _isJump, Transf
 	//カメラ方向に移動したい
 	if (PlayerInput::GetInstance().CheckAct(PlayerInput::ACT_CNTL::MOVE))
 	{
-		//dir = Quaternion::PosAxis(Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y),cameraRot.GetForward());
 		dir = cameraRot.PosAxis(getDir);
-		SetGoalRotate(deg, _camera);
+		deg = PlayerInput::GetInstance().GetMoveDeg();
 	}
-
 
 	if (!Utility::EqualsVZero(dir) /*&& (_isJump || IsEndLanding())*/)
 	{
@@ -55,7 +53,7 @@ void PMove::Update(const std::shared_ptr<Camera>& _camera, bool& _isJump, Transf
 		moveDir_ = dir;
 		//移動量
 		movePow_ = VScale(moveDir_, speed_);
-
+		SetGoalRotate(Utility::Deg2RadF(deg), _camera);
 
 	}
 	else
@@ -70,13 +68,11 @@ void PMove::Update(const std::shared_ptr<Camera>& _camera, bool& _isJump, Transf
 	}
 }
 
-void PMove::SetGoalRotate(double rotRad, const std::shared_ptr<Camera>& _camera)
+void PMove::SetGoalRotate(double _deg, const std::shared_ptr<Camera>& _camera)
 {
 	VECTOR cameraRot = _camera->GetAngles();
-	Quaternion axis =
-		//Quaternion::AngleAxis(
-		//	(double)cameraRot.y + rotRad, Utility::AXIS_Y);
-		Quaternion::
+	Quaternion axis = Quaternion::AngleAxis(
+		(double)cameraRot.y + _deg, Utility::AXIS_Y);
 	// 現在設定されている回転との角度差を取る
 	double angleDiff = Quaternion::Angle(axis, goalQuaRot_);
 	// しきい値
@@ -89,7 +85,7 @@ void PMove::SetGoalRotate(double rotRad, const std::shared_ptr<Camera>& _camera)
 
 void PMove::Rotate(void)
 {
-	stepRotTime_ -= SceneManager::GetInstance().GetDeltaTime();
+	stepRotTime_ -= PlayerInput::DELTA_TIME;
 	// 回転の球面補間
 	playerRotY_ = Quaternion::Slerp(
 		playerRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);

@@ -17,14 +17,22 @@ void PPunch::Init(void)
 void PPunch::Update(Transform& _trans)
 {
 	auto& input = PlayerInput::GetInstance();
-	VECTOR localPos = { 0.0f,50.0f,130.0f };
+	//’Ç]‘ÎÛ‚ÌˆÊ’u
 	VECTOR followPos = _trans.pos;
+
+	//’Ç]‘ÎÛ‚ÌŒü‚«
 	Quaternion followRot = _trans.quaRot;
+
+	//‘Š‘ÎÀ•W
+	VECTOR localPos = { 0.0f,50.0f,40.0f };
+	
+	
 	VECTOR addPos = followRot.PosAxis(localPos);
 	pos_ = VAdd(_trans.pos, addPos);
 	if (cnt_ > PUNCH_TIME_MAX)
 	{
 		cnt_ = 0.0f;
+		isPunch_ = false;
 		return;
 	}
 	if (input.CheckAct(PlayerInput::ACT_CNTL::PUNCH))

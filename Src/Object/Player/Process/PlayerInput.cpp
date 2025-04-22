@@ -55,7 +55,7 @@ void PlayerInput::InputKeyBoard(void)
 	{ 
 		moveDeg_ = LEFT_DEG; 
 		moveDir_ = Utility::DIR_L;
-	}
+	} 
 	else if (ins.IsNew(PlayerInput::MOVE_BACK_KEY))
 	{ 
 		moveDeg_ = BACK_DEG; 
@@ -87,7 +87,6 @@ void PlayerInput::InputPad(InputManager::JOYPAD_NO _padNum)
 	auto stickRad = static_cast<float>(atan2(static_cast<double>(leftStickY_), static_cast<double>(leftStickX_)));
 	stickDeg_ = static_cast<float>(Utility::DegIn360(Utility::Rad2DegF(stickRad) + 90.0f));
 
-
 	if (leftStickX_ != 0.0f || leftStickY_ != 0.0f)
 	{ 
 		actCntl_ = ACT_CNTL::MOVE; 
@@ -95,6 +94,7 @@ void PlayerInput::InputPad(InputManager::JOYPAD_NO _padNum)
 
 	//スティックの角度によって移動方向を決める
 	moveDeg_ = stickDeg_;
+	VECTOR stickDir = { leftStickX_ ,0.0f,-leftStickY_ };
 	moveDir_ = { leftStickX_ ,0.0f,leftStickX_ };
 
 	if (ins.IsPadBtnTrgDown(_padNum, PUNCH_BTN)) { actCntl_ = ACT_CNTL::PUNCH; }

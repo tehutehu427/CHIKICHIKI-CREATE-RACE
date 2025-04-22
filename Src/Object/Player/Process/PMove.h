@@ -52,7 +52,7 @@ private:
 	//ƒƒ“ƒoŠÖ”
 	//**********************************************
 	//ŠJ“XŒã‚ÌŠp“xæ“¾
-	void SetGoalRotate(double rotRad, const std::shared_ptr<Camera>& _camera);
+	void SetGoalRotate(double _deg, const std::shared_ptr<Camera>& _camera);
 	
 
 
