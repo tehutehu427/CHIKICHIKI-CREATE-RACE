@@ -1,6 +1,7 @@
 #pragma once
-#include "EditerPaletteBase.h"
+#include "EditorPaletteBase.h"
 
+class ItemName;
 
 class PaletteIcon
 {
@@ -24,7 +25,8 @@ public:
 	static constexpr int ICONS_MOVE = 10;
 
 	//描画数
-	static constexpr int ICON_NUM = ItemBase::ITEM_NUM_MAX;
+	static constexpr int EXCLUSION = 3;//NONE,START,GOALはいらないため除外する
+	static constexpr int ICON_NUM = ItemBase::ITEM_NUM_MAX - EXCLUSION;	//除外分減らす
 	static constexpr int SCROLL_ICON_NUM = static_cast<int>(SCROLL::MAX);
 
 	//スクロールアイコン下の回転角度
@@ -62,7 +64,7 @@ public:
 	static constexpr int MASK_POS_Y = Application::SCREEN_HALF_Y - MASK_SIZE_Y / 2;
 
 	//スクロールに制限をかける
-	static constexpr int SCROLL_LIMIT_LINE = ICON_NUM % COL -1;
+	static constexpr int SCROLL_LIMIT_LINE = 0; //ICON_NUM / COL -1;
 
 
 	PaletteIcon();
@@ -78,6 +80,12 @@ public:
 
 	//状態遷移
 	void ChangeState(const STATE _state);
+
+	//生成するかを返す
+	inline const bool IsCreate()const { return isCreate_; }
+
+	//選択したアイテムの種類を返す
+	inline const ItemBase::ITEM_TYPE GetSelectType()const { return selectType_; }
 
 private:
 
@@ -99,14 +107,24 @@ private:
 	//スクロールの制限用ライン
 	int scrLimitLine_;
 
+	//生成判定
+	bool isCreate_;
+
 	//座標のバックアップ
 	Vector2 prePos_;
 
 	//アイコン
-	EditerPaletteBase::ImgInfo icons_[ICON_NUM];
+	EditorPaletteBase::ImgInfo icons_[ICON_NUM];
 
 	//スクロールアイコン
-	EditerPaletteBase::ImgInfo scrIcon_[SCROLL_ICON_NUM];
+	EditorPaletteBase::ImgInfo scrIcon_[SCROLL_ICON_NUM];
+
+	//選択してるアイテム
+	int sleCnt_;
+	ItemBase::ITEM_TYPE selectType_;
+
+	//アイテムの名前
+	std::unique_ptr<ItemName> name_;
 
 	//状態変更処理
 	void ChangeStateNone();
@@ -120,8 +138,11 @@ private:
 	void UpdateScrollDown();
 	void UpdateSelect();
 
+	//タイプを割り当てる
+	void AssignType();
+
 	//クリック位置が特定の範囲か調べる
-	void CheackClickPosition(const Vector2 _mPos);
+	void CheckClickPosition(const Vector2 _mPos);
 
 };
 

@@ -25,7 +25,7 @@ public:
 		BOMB_SMALL,			//ФЪТe(Пђ)
 		BOMB_BIG,			//ФЪТe(Се)
 
-		//Н≈Се(NONEВ™В†ВйВ©Вз-1ВЈВйВ±В∆)
+		//Н≈Се
 		MAX,
 	};
 

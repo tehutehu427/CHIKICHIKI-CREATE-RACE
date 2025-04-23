@@ -2,6 +2,7 @@
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../../Manager/System/InputManager.h"
 #include "../../../Utility/Utility.h"
+#include "../../Item/ItemName.h"
 #include "PaletteIcon.h"
 
 PaletteIcon::PaletteIcon()
@@ -11,14 +12,18 @@ PaletteIcon::PaletteIcon()
 	stateChanges_.emplace(STATE::SCR_DOWN, std::bind(&PaletteIcon::ChangeStateScrollDown, this));
 	stateChanges_.emplace(STATE::SELCT, std::bind(&PaletteIcon::ChangeStateSelect, this));
 
+	isCreate_ = false;
+	name_ = nullptr;
 	state_ = STATE::NONE;
 	imgScrIcon_ = -1;
 	imgIcons_ = -1;
 	mskPal_ = -1;
 	scrLimitLine_ = -1;
+	sleCnt_ = -1;
 	prePos_ = {};
-	for (EditerPaletteBase::ImgInfo& i : icons_) { i = {}; }
-	for (EditerPaletteBase::ImgInfo& s : scrIcon_) { s = {}; }
+	selectType_ = ItemBase::ITEM_TYPE::NONE;
+	for (EditorPaletteBase::ImgInfo& i : icons_) { i = {}; }
+	for (EditorPaletteBase::ImgInfo& s : scrIcon_) { s = {}; }
 }
 
 PaletteIcon::~PaletteIcon()
@@ -33,6 +38,9 @@ void PaletteIcon::Load()
 	imgScrIcon_ = res.Load(ResourceManager::SRC::SCROLL_ARROW_ICON).handleId_;
 	imgIcons_ = res.Load(ResourceManager::SRC::PALETTE_ICONS).handleId_;
 	mskPal_ = res.Load(ResourceManager::SRC::PALETTE_MASK).handleId_;
+
+	//アイテムネーム
+	name_ = std::make_unique<ItemName>();
 }
 
 void PaletteIcon::Init()
@@ -62,6 +70,12 @@ void PaletteIcon::Init()
 	//スクロール制限初期値
 	scrLimitLine_ = 0;
 
+	//タイプの割り当て
+	AssignType();
+
+	//アイテムネーム
+	name_->Init();
+
 	//マスクスクリーンの作成
 	int ret = CreateMaskScreen();
 	assert(ret != -1);
@@ -87,7 +101,7 @@ void PaletteIcon::Draw()
 
 	//アイコンの描画のみマスク処理
 	SetUseMaskScreenFlag(true);
-	for (EditerPaletteBase::ImgInfo& i : icons_)
+	for (EditorPaletteBase::ImgInfo& i : icons_)
 	{
 		DrawRotaGraph(
 			i.pos.x,
@@ -101,7 +115,7 @@ void PaletteIcon::Draw()
 	SetUseMaskScreenFlag(false);
 
 	//スクロール用アイコン
-	for (EditerPaletteBase::ImgInfo& s : scrIcon_)
+	for (EditorPaletteBase::ImgInfo& s : scrIcon_)
 	{
 		DrawRotaGraph(
 			s.pos.x,
@@ -112,10 +126,39 @@ void PaletteIcon::Draw()
 			true,
 			false);
 	}
+
+#ifdef _DEBUG
+	EditorPaletteBase::ImgInfo& ic = icons_[sleCnt_];
+	Vector2 leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
+	Vector2 rightBotm = { ic.pos.x + ic.size.x / 2, ic.pos.y + ic.size.y / 2 };
+	DrawBox(
+		leftTop.x,
+		leftTop.y,
+		rightBotm.x,
+		rightBotm.y,
+		0xff0000,
+		false);
+
+	DrawFormatString(0, Application::SCREEN_SIZE_Y - 20, 0xffffff, name_->GetItemName(selectType_).c_str());
+#endif 
 }
 
 void PaletteIcon::DebagDraw()
 {
+#ifdef _DEBUG
+	EditorPaletteBase::ImgInfo& ic = icons_[static_cast<int>(selectType_)];
+	Vector2 leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
+	Vector2 rightBotm = { ic.pos.x + ic.size.x / 2, ic.pos.y + ic.size.y / 2 };
+	DrawBox(
+		leftTop.x,
+		leftTop.y,
+		rightBotm.x,
+		rightBotm.y,
+		0xff0000,
+		false);
+
+	DrawFormatString(0,Application::SCREEN_SIZE_Y - 20, 0xffffff, name_->GetItemName(selectType_).c_str());
+#endif 
 }
 
 void PaletteIcon::ChangeState(const STATE _state)
@@ -137,6 +180,8 @@ void PaletteIcon::ChangeStateNone()
 	//座標を初期位置に指定
 	for (int i = 0; i < ICON_NUM; i++) { icons_[i].pos = { ICON_POS_X + (i % COL) * INTERVAL_X,ICON_POS_Y + (i / COL) * INTERVAL_Y }; }
 	for (int i = 0; i < SCROLL_ICON_NUM; i++) { scrIcon_[i].pos = { SCR_ICON_POS_X, SCR_ICON_POS_Y[i] }; }
+	isCreate_ = false;
+	sleCnt_ = 0;
 
 	//制限も初期化しておく
 	scrLimitLine_ = 0;
@@ -169,7 +214,7 @@ void PaletteIcon::UpdateNone()
 
 void PaletteIcon::UpdateScrollUp()
 {
-	for (EditerPaletteBase::ImgInfo& i : icons_)
+	for (EditorPaletteBase::ImgInfo& i : icons_)
 	{
 		i.pos.y -= ICONS_MOVE;
 	}
@@ -183,7 +228,7 @@ void PaletteIcon::UpdateScrollUp()
 
 void PaletteIcon::UpdateScrollDown()
 {
-	for (EditerPaletteBase::ImgInfo& i : icons_)
+	for (EditorPaletteBase::ImgInfo& i : icons_)
 	{
 		i.pos.y += ICONS_MOVE;
 	}
@@ -200,13 +245,31 @@ void PaletteIcon::UpdateSelect()
 	InputManager& ins = InputManager::GetInstance();
 
 	//クリックしたか調べる
-	if (ins.IsClickMouseLeft()) {
+	if (ins.IsTrgMouseLeft()) {
 		//特定の範囲をクリックしたか調べる
-		CheackClickPosition(ins.GetMousePos());
+		CheckClickPosition(ins.GetMousePos());
 	}
 }
 
-void PaletteIcon::CheackClickPosition(const Vector2 _mPos)
+void PaletteIcon::AssignType()
+{
+	//種類を割り与える
+	for (int i = 0; i < static_cast<int>(ItemBase::ITEM_TYPE::MAX); i++)
+	{
+		//種類
+		ItemBase::ITEM_TYPE type = static_cast<ItemBase::ITEM_TYPE>(i);
+		
+		icons_[i].num_ = i + EXCLUSION;
+
+		//用意するアイコン分設定できたら
+		if (i - 1 == ICON_NUM)
+		{
+			break;	//for文を抜ける
+		}
+	}
+}
+
+void PaletteIcon::CheckClickPosition(const Vector2 _mPos)
 {	
 	Vector2 leftTop = {};		//画像左上
 	Vector2 rightBotm = {};		//画像右下
@@ -214,7 +277,7 @@ void PaletteIcon::CheackClickPosition(const Vector2 _mPos)
 	//アイテムパレットをスクロールする処理
 	for (int i = 0; i < SCROLL_ICON_NUM; i ++)
 	{
-		EditerPaletteBase::ImgInfo& s = scrIcon_[i];
+		EditorPaletteBase::ImgInfo& s = scrIcon_[i];
 		leftTop = { s.pos.x - s.size.x / 2, s.pos.y - s.size.y / 2 };
 		rightBotm = { s.pos.x + s.size.x / 2, s.pos.y + s.size.y / 2 };
 		//上
@@ -233,5 +296,33 @@ void PaletteIcon::CheackClickPosition(const Vector2 _mPos)
 			ChangeState(STATE::SCR_UP);
 			scrLimitLine_++;
 		}
+	}
+
+	//選択タイプのパックアップ
+	ItemBase::ITEM_TYPE preType = selectType_;
+
+	//アイテムの種類の確認
+	for (int i = 0; i < ICON_NUM; i++)
+	{
+		EditorPaletteBase::ImgInfo& ic = icons_[i];
+		leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
+		rightBotm = { ic.pos.x + ic.size.x / 2, ic.pos.y + ic.size.y / 2 };
+		//位置の確認
+		if (Utility::IsPointInRect(_mPos, leftTop, rightBotm))
+		{
+			selectType_ = static_cast<ItemBase::ITEM_TYPE>(ic.num_);
+			sleCnt_ = i;
+		}
+	}
+
+	//選択したアイテムをクリックしたとき
+	EditorPaletteBase::ImgInfo& ic = icons_[sleCnt_];
+	leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
+	rightBotm = { ic.pos.x + ic.size.x / 2, ic.pos.y + ic.size.y / 2 };
+	if (Utility::IsPointInRect(_mPos, leftTop, rightBotm) &&
+		selectType_ == preType) //1クリックで生成するのを防ぐ
+	{
+		//生成開始する
+		isCreate_ = true;
 	}
 }

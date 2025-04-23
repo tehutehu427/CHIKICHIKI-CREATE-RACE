@@ -8,7 +8,7 @@
 
 class PaletteIcon;
 
-class EditerPaletteBase
+class EditorPaletteBase
 {
 public:
 
@@ -49,8 +49,8 @@ public:
 		Vector2 size;
 	};
 
-	EditerPaletteBase();
-	~EditerPaletteBase();
+	EditorPaletteBase();
+	~EditorPaletteBase();
 
 	virtual void Load();
 	virtual void Init();

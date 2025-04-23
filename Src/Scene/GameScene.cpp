@@ -10,7 +10,7 @@
 #include "../Manager/Game/GravityManager.h"
 #include "../Manager/Game/PlayerManager.h"
 #include "../Object/Player/Player.h"
-#include "../Object/Editer/Palette/EditerPaletteBase.h"
+#include "../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../Object/Grid.h"
 #include "GameScene.h"
 
@@ -40,7 +40,7 @@ void GameScene::Load(void)
 	//player_ = std::make_unique<Player>();
 	//player_->Load();
 
-	palette_ = std::make_unique<EditerPaletteBase>();
+	palette_ = std::make_unique<EditorPaletteBase>();
 	palette_->Load();
 }
 

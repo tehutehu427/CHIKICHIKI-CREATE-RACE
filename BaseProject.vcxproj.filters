@@ -147,10 +147,10 @@
     <ClCompile Include="Src\Object\Item\Floor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Editer\MapDataIO.cpp">
+    <ClCompile Include="Src\Object\Editor\MapDataIO.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Editer\Palette\EditerPaletteBase.cpp">
+    <ClCompile Include="Src\Object\Editor\Palette\EditorPaletteBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Item\MoveHoriFloor.cpp">
@@ -180,7 +180,10 @@
     <ClCompile Include="Src\Object\Player\Process\PPunch.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Editer\Palette\PaletteIcon.cpp">
+    <ClCompile Include="Src\Object\Editor\Palette\PaletteIcon.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Item\ItemName.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -416,13 +419,13 @@
     <ClInclude Include="Src\Object\Item\Floor.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Editer\MapDataIO.h">
+    <ClInclude Include="Src\Object\Editor\MapDataIO.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Manager\System\DateBank.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Editer\Palette\EditerPaletteBase.h">
+    <ClInclude Include="Src\Object\Editor\Palette\EditorPaletteBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Item\MoveHoriFloor.h">
@@ -449,7 +452,10 @@
     <ClInclude Include="Src\Object\Player\Process\PPunch.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Editer\Palette\PaletteIcon.h">
+    <ClInclude Include="Src\Object\Editor\Palette\PaletteIcon.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Item\ItemName.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,17 +1,18 @@
 #include <DxLib.h>
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../../Manager/System/InputManager.h"
+#include "../../../Manager/Game/ItemManager.h"
 #include "../../../Utility/Utility.h"
-#include "EditerPaletteBase.h"
+#include "EditorPaletteBase.h"
 #include "PaletteIcon.h"
 
-EditerPaletteBase::EditerPaletteBase()
+EditorPaletteBase::EditorPaletteBase()
 {
-	stateChanges_.emplace(STATE::NONE, std::bind(&EditerPaletteBase::ChangeStateNone, this));
-	stateChanges_.emplace(STATE::WAIT, std::bind(&EditerPaletteBase::ChangeStateWait, this));
-	stateChanges_.emplace(STATE::CLOSE, std::bind(&EditerPaletteBase::ChangeStateClose, this));
-	stateChanges_.emplace(STATE::OPEN, std::bind(&EditerPaletteBase::ChangeStateOpen, this));
-	stateChanges_.emplace(STATE::SELECT, std::bind(&EditerPaletteBase::ChangeStateSelect, this));
+	stateChanges_.emplace(STATE::NONE, std::bind(&EditorPaletteBase::ChangeStateNone, this));
+	stateChanges_.emplace(STATE::WAIT, std::bind(&EditorPaletteBase::ChangeStateWait, this));
+	stateChanges_.emplace(STATE::CLOSE, std::bind(&EditorPaletteBase::ChangeStateClose, this));
+	stateChanges_.emplace(STATE::OPEN, std::bind(&EditorPaletteBase::ChangeStateOpen, this));
+	stateChanges_.emplace(STATE::SELECT, std::bind(&EditorPaletteBase::ChangeStateSelect, this));
 
 	imgPalette_ = -1;
 	pal_ = {};
@@ -19,11 +20,11 @@ EditerPaletteBase::EditerPaletteBase()
 	state_ = STATE::NONE;
 }
 
-EditerPaletteBase::~EditerPaletteBase()
+EditorPaletteBase::~EditorPaletteBase()
 {
 }
 
-void EditerPaletteBase::Load()
+void EditorPaletteBase::Load()
 {
 	//リソースの読み込み
 	ResourceManager& res = ResourceManager::GetInstance();
@@ -34,7 +35,7 @@ void EditerPaletteBase::Load()
 	palIcon_->Load();
 }
 
-void EditerPaletteBase::Init()
+void EditorPaletteBase::Init()
 {
 	//初期化
 	pal_.pos = { CLOSE_POS_X,CLOSE_POS_Y };
@@ -49,12 +50,12 @@ void EditerPaletteBase::Init()
 	ChangeState(STATE::WAIT);
 }
 
-void EditerPaletteBase::Update()
+void EditorPaletteBase::Update()
 {
 	stateUpdate_();
 }
 
-void EditerPaletteBase::Draw()
+void EditorPaletteBase::Draw()
 {
 	//描画処理
 	DrawRotaGraph(
@@ -70,7 +71,7 @@ void EditerPaletteBase::Draw()
 	palIcon_->Draw();
 }
 
-void EditerPaletteBase::DebagDraw()
+void EditorPaletteBase::DebagDraw()
 {
 #ifdef _DEBUG
 	Vector2 leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
@@ -84,10 +85,12 @@ void EditerPaletteBase::DebagDraw()
 		0x00ffff,
 		false
 	);
+
+	palIcon_->DebagDraw();
 #endif 
 }
 
-void EditerPaletteBase::ChangeState(const STATE _state)
+void EditorPaletteBase::ChangeState(const STATE _state)
 {
 	//同じ状態だったら処理しない
 	if (state_ == _state)return;
@@ -99,42 +102,42 @@ void EditerPaletteBase::ChangeState(const STATE _state)
 	stateChanges_[state_]();
 }
 
-void EditerPaletteBase::ChangeStateNone()
+void EditorPaletteBase::ChangeStateNone()
 {
-	stateUpdate_ = std::bind(&EditerPaletteBase::UpdateNone, this);
+	stateUpdate_ = std::bind(&EditorPaletteBase::UpdateNone, this);
 }
 
-void EditerPaletteBase::ChangeStateWait()
+void EditorPaletteBase::ChangeStateWait()
 {
-	stateUpdate_ = std::bind(&EditerPaletteBase::UpdateWait, this);
+	stateUpdate_ = std::bind(&EditorPaletteBase::UpdateWait, this);
 }
 
-void EditerPaletteBase::ChangeStateClose()
+void EditorPaletteBase::ChangeStateClose()
 {
-	stateUpdate_ = std::bind(&EditerPaletteBase::UpdateClose, this);
+	stateUpdate_ = std::bind(&EditorPaletteBase::UpdateClose, this);
 
 	//パレットアイコンの状態をNONEにする
 	palIcon_->ChangeState(PaletteIcon::STATE::NONE);
 }
 
-void EditerPaletteBase::ChangeStateOpen()
+void EditorPaletteBase::ChangeStateOpen()
 {
-	stateUpdate_ = std::bind(&EditerPaletteBase::UpdateOpen, this);
+	stateUpdate_ = std::bind(&EditorPaletteBase::UpdateOpen, this);
 }
 
-void EditerPaletteBase::ChangeStateSelect()
+void EditorPaletteBase::ChangeStateSelect()
 {
-	stateUpdate_ = std::bind(&EditerPaletteBase::UpdateSelect, this);
+	stateUpdate_ = std::bind(&EditorPaletteBase::UpdateSelect, this);
 
 	//パレットアイコンの状態をSELECTにする
 	palIcon_->ChangeState(PaletteIcon::STATE::SELCT);
 }
 
-void EditerPaletteBase::UpdateNone()
+void EditorPaletteBase::UpdateNone()
 {
 }
 
-void EditerPaletteBase::UpdateWait()
+void EditorPaletteBase::UpdateWait()
 {
 	InputManager& ins = InputManager::GetInstance();
 	Vector2 leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
@@ -147,7 +150,7 @@ void EditerPaletteBase::UpdateWait()
 	}
 }
 
-void EditerPaletteBase::UpdateClose()
+void EditorPaletteBase::UpdateClose()
 {
 	pal_.pos.x += PALETTE_MOVE;
 
@@ -158,7 +161,7 @@ void EditerPaletteBase::UpdateClose()
 	}
 }
 
-void EditerPaletteBase::UpdateOpen()
+void EditorPaletteBase::UpdateOpen()
 {
 	pal_.pos.x -= PALETTE_MOVE;
 
@@ -169,7 +172,7 @@ void EditerPaletteBase::UpdateOpen()
 	}
 }
 
-void EditerPaletteBase::UpdateSelect()
+void EditorPaletteBase::UpdateSelect()
 {	
 	InputManager& ins = InputManager::GetInstance();
 	Vector2 leftTop = {};		//画像左上
@@ -185,4 +188,15 @@ void EditerPaletteBase::UpdateSelect()
 
 	//パレットアイコンに関する処理
 	palIcon_->Update();
+
+	//生成開始
+	if (palIcon_->IsCreate())
+	{
+		//アイテムを追加
+		ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), palIcon_->GetSelectType());
+
+		//状態変更
+		ChangeState(STATE::CLOSE);
+		palIcon_->ChangeState(PaletteIcon::STATE::NONE);
+	}
 }

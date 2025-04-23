@@ -19,16 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Item\ItemName.cpp" />
     <ClCompile Include="Src\Object\Item\Cannon.cpp" />
     <ClCompile Include="Src\Object\Item\Fence.cpp" />
     <ClCompile Include="Src\Object\Item\MoveVerFloor.cpp" />
     <ClCompile Include="Src\Object\Player\Process\PPunch.cpp" />
     <ClCompile Include="Src\Manager\Game\PlayerManager.cpp" />
-    <ClCompile Include="Src\Object\Editer\Palette\PaletteIcon.cpp" />
-    <ClCompile Include="Src\Object\Editer\Palette\EditerPaletteBase.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\PaletteIcon.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\EditorPaletteBase.cpp" />
     <ClCompile Include="Src\Manager\System\DateBank.cpp" />
     <ClCompile Include="Src\Object\Item\MoveHoriFloor.cpp" />
-    <ClCompile Include="Src\Object\Editer\MapDataIO.cpp" />
+    <ClCompile Include="Src\Object\Editor\MapDataIO.cpp" />
     <ClCompile Include="Src\Object\Item\Floor.cpp" />
     <ClCompile Include="Src\Object\Grid.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
@@ -63,16 +64,17 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Item\ItemName.h" />
     <ClInclude Include="Src\Object\Item\Cannon.h" />
     <ClInclude Include="Src\Object\Item\Fence.h" />
     <ClInclude Include="Src\Object\Item\MoveVerFloor.h" />
     <ClInclude Include="Src\Manager\Game\PlayerManager.h" />
     <ClInclude Include="Src\Object\Player\Process\PPunch.h" />
     <ClInclude Include="Src\Object\Item\MoveHoriFloor.h" />
-    <ClInclude Include="Src\Object\Editer\Palette\PaletteIcon.h" />
-    <ClInclude Include="Src\Object\Editer\Palette\EditerPaletteBase.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\PaletteIcon.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\EditorPaletteBase.h" />
     <ClInclude Include="Src\Manager\System\DateBank.h" />
-    <ClInclude Include="Src\Object\Editer\MapDataIO.h" />
+    <ClInclude Include="Src\Object\Editor\MapDataIO.h" />
     <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\byte_container_with_subtype.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\detail\abi_macros.hpp" />

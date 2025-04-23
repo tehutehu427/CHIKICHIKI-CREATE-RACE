@@ -1,6 +1,7 @@
 #include "MapDataIO.h"
 #include "../../Lib/nlohmann/json.hpp"
 #include "../../Manager/System/InputManager.h"
+#include "../../Manager/Game/ItemManager.h"
 
 using json = nlohmann::json;
 
