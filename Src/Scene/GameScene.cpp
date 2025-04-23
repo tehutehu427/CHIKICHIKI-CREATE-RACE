@@ -40,13 +40,16 @@ void GameScene::Load(void)
 	//player_ = std::make_unique<Player>();
 	//player_->Load();
 
-	//palette_ = std::make_unique<EditerPaletteBase>();
-	//palette_->Load();
+	palette_ = std::make_unique<EditerPaletteBase>();
+	palette_->Load();
+
+	editController_ = std::make_shared<EditController>();
 }
 
 void GameScene::Init(void)
 {
-	//palette_->Init();
+	palette_->Init();
+	editController_->Init();
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
@@ -62,8 +65,6 @@ void GameScene::NormalUpdate(void)
 	//プレイヤー
 	//player_->Update();
 
-	//パレット
-	//palette_->Update();
 
 	PlayerManager::GetInstance().Update();
 
@@ -81,12 +82,11 @@ void GameScene::NormalDraw(void)
 
 	grid_->Draw();
 	//プレイヤー
-
-	//palette_->Draw();
-
+	palette_->Draw();
 	PlayerManager::GetInstance().Draw();
 
 	ItemManager::GetInstance().Draw();
+	editController_->Draw();
 }
 
 void GameScene::ChangeNormal(void)
@@ -163,6 +163,9 @@ void GameScene::ChangePhaseAction(void)
 
 void GameScene::UpdateEdit(void)
 {
+	//パレット
+	palette_->Update();
+	editController_->Update();
 }
 
 void GameScene::UpdateAction(void)
