@@ -1,4 +1,4 @@
-
+#include"../Manager/Game/MapEditer.h"
 #include "ItemBase.h"
 
 ItemBase::ItemBase()

@@ -1,9 +1,13 @@
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SceneManager.h"
 #include "../../Utility/Utility.h"
 #include "Cannon.h"
 
 Cannon::Cannon()
 {
+	targetPos_ = Utility::VECTOR_ZERO;
+	turretAddRot_ = Utility::VECTOR_ZERO;
+	barrelAddRot_ = Utility::VECTOR_ZERO;
 }
 
 Cannon::~Cannon()
@@ -20,37 +24,54 @@ void Cannon::SetParam(void)
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
 
-	//ˆÊ’u•âŠÔ
-	transform_.pos = VSub(transform_.pos, transform_.quaRot.PosAxis({ size_.x * 100.0f / 2.0f, size_.y * 100.0f / 2.0f, size_.z * 100.0f / 2.0f }));
-
 	//–Cg‚ğ–C‘ä‚É‡‚í‚¹‚Ä‚¨‚­
-	barrelTrans_ = transform_;
+	barrelTrans_.pos = VAdd(transform_.pos,BARREL_LOCAL_POS);
 	
 	//–Cg‚Ìƒ‚ƒfƒ‹İ’è
 	barrelTrans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_BARREL));
-
-	//–Cg‚Ì‰ŠúXV
-	barrelTrans_.Update();
 }
 
 void Cannon::Update(void)
 {
-	barrelTrans_.pos = VAdd(barrelTrans_.pos, barrelTrans_.quaRot.PosAxis({ size_.x * 100.0f / 2.0f, size_.y * 100.0f / 2.0f, size_.z * 100.0f / 2.0f }));
-	barrelTrans_.quaRot = barrelTrans_.quaRot.Mult(barrelTrans_.quaRot.AngleAxis(Utility::Deg2RadF(30.0f), Utility::AXIS_Y));
-	barrelTrans_.pos = VSub(barrelTrans_.pos, barrelTrans_.quaRot.PosAxis({ size_.x * 100.0f / 2.0f, size_.y * 100.0f / 2.0f, size_.z * 100.0f / 2.0f }));
+	auto delta = SceneManager::GetInstance().GetDeltaTime();
 
-	//‘å–C‚Ì‰ŠúXV
-	transform_.Update();
-	barrelTrans_.Update();
+	//–C‘ä‚Ì‰ñ“]—Ê
+	//turretAddRot_.y += 1.0f * delta;
+	//–C‘ä‰ñ“]
+	Rotate(transform_, turretAddRot_);
+
+	//–Cg‚Ì‰ñ“]—Ê
+	barrelAddRot_.x += 1.0f * delta;
+	//–Cg‰ñ“]
+	Rotate(barrelTrans_, VAdd(barrelAddRot_ ,turretAddRot_));
 }
 
 void Cannon::Draw(void)
 {
 	MV1DrawModel(transform_.modelId);
 	MV1DrawModel(barrelTrans_.modelId);
+
+	DrawFormatString(0, 32, 0xffffff, "%.2f,%.2f,%.2f", barrelTrans_.pos.x, barrelTrans_.pos.y, barrelTrans_.pos.z);
 }
 
 void Cannon::Release(void)
 {
+}
+
+void Cannon::Rotate(Transform& _trans, VECTOR _addAxis, const VECTOR _relativePos)const
+{
+	//‰ñ“]
+	Quaternion rot = Quaternion::Identity();
+
+	//‰ñ“]‚ğ‰Á‚¦‚é
+	rot = rot.Mult(Quaternion::Euler(_addAxis));
+
+	//”½‰f
+	_trans.pos = VSub(_trans.pos,_trans.quaRot.PosAxis(_relativePos));
+	_trans.quaRot = rot;
+	_trans.pos = VAdd(_trans.pos, _trans.quaRot.PosAxis(_relativePos));
+
+	//Šî–{î•ñXV
+	_trans.Update();
 }
