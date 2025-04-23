@@ -15,7 +15,7 @@ public:
 	PMove(void);
 	~PMove(void);
 	void Init(void);
-	void Update(const std::shared_ptr<Camera>& _camera,bool& _isJump,Transform& _trans);
+	void Update(const std::weak_ptr<Camera>& _camera,bool& _isJump,Transform& _trans);
 	//回転
 	void Rotate(void);
 	//ゲッタ
@@ -28,7 +28,7 @@ public:
 	//-----------------------------------------
 	//セッタ
 	//-----------------------------------------
-	 
+	const void SetMovePow(VECTOR _vec) { movePow_ = _vec; };
 	//-----------------------------------------
 
 private:
@@ -52,7 +52,7 @@ private:
 	//メンバ関数
 	//**********************************************
 	//開店後の角度取得
-	void SetGoalRotate(double _deg, const std::shared_ptr<Camera>& _camera);
+	void SetGoalRotate(double _deg, const std::weak_ptr<Camera> _camera);
 	
 
 

@@ -17,7 +17,7 @@ public:
 	static constexpr float PLAYER_ONE_POS_X = -20.0f;
 
 	//座標の間隔
-	static constexpr float DISTANCE_POS = 20.0f;
+	static constexpr float DISTANCE_POS = 50.0f;
 
 	//プレイヤー1人
 	static constexpr int PLAYER_SINGLE = 1;
@@ -48,9 +48,18 @@ public:
 	void Draw(void);
 	void Release(void);
 
+	//プレイヤー同士の当たり判定
 	void PlayersCollision(void);
 
+	//カプセル同士の当たり判定(完全ではない)
 	bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
+
+	/// <summary>
+	/// プレイヤー同士の押し出し処理
+	/// </summary>
+	/// <param name="_pNum1">当たったプレイヤー1人目</param>
+	/// <param name="_pNum2">当たったプレイヤー2人目</param>
+	void P2PPush(int _pNum1, int _pNum2);
 private:
 
 
@@ -61,7 +70,7 @@ private:
 	//メンバ変数
 	//*****************************************
 	//プレイヤー
-	std::vector<std::shared_ptr<Player>> players_;
+	std::vector<std::unique_ptr<Player>> players_;
 
 	//プレイヤー人数
 	int playerNum_;

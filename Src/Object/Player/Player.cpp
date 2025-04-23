@@ -1,6 +1,7 @@
 #include "../../Utility/Utility.h"
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SceneManager.h"
 #include "../../Object/Common/Capsule.h"
 #include "./Process/PlayerInput.h"
 #include "Player.h"
@@ -10,21 +11,23 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	animationController_ = nullptr;
 	state_ = STATE::NONE;
 	movedPos_ = Utility::VECTOR_ZERO;
-	padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_);
+
+	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
+	padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_ + 1);
 	transform_ = _trans;
 	//オブジェクト生成
 	//操作関連
 	//---------------------------------
 	//移動
-	pMove_ = std::make_shared<PMove>();
+	pMove_ = std::make_unique<PMove>();
+
 	//ジャンプ
-	pJump_ = std::make_shared<PJump>();
+	pJump_ = std::make_unique<PJump>();
+
 	//パンチ
-	pPunch_ = std::make_shared<PPunch>();
+	pPunch_ = std::make_unique<PPunch>();
 
-	//カメラ
-	camera_ = std::make_shared<Camera>();
-
+	//当たり判定
 	isCol_ = false;
 
 
@@ -87,6 +90,10 @@ void Player::Release(void)
 void Player::DrawDebug(void)
 {
 	unsigned int color = 0xffffff;
+	if (playerNum_ == 0) { color = 0xffffff; }
+	else if (playerNum_ == 1) { color = 0x550000; }
+	else if (playerNum_ == 2) { color = 0x00ff00; }
+	else if (playerNum_ == 3) { color = 0x0000ff; }
 	if (isCol_) { color = 0xff0000; }
 	DrawSphere3D(transform_.pos, 10.0f, 10, color, color, true);
 	DrawFormatString(0, 16, 0xffffff, "角度(%.2f,%.2f,%.2f)", transform_.rot.x, transform_.rot.y, transform_.rot.z);
@@ -129,15 +136,15 @@ void Player::UpdatePlay(void)
 {
 	bool isJump = pJump_->GetIsJump();
 	//移動関連
-	pMove_->Update(camera_,isJump,transform_);
+	pMove_->Update(scnMng_.GetCamera(), isJump, transform_);
 	pJump_->Update(transform_.GetUp(),transform_.GetDown(),IsEndLanding());
 	pPunch_->Update(transform_);
-	// 衝突判定
+
+	//衝突判定
 	Collision();
 
 	pMove_->Rotate();
 	Quaternion playerRotY = pMove_->GetPlayerRotY();
-	//transform_.quaRot = transform_.quaRot.Mult(playerRotY);
 	transform_.quaRot = playerRotY;
 }
 

@@ -1,3 +1,4 @@
+#include<cmath>
 #include"../../Utility/Utility.h"
 #include"../../Manager/System/ResourceManager.h"
 #include"../../Utility/Utility.h"
@@ -30,29 +31,50 @@ void PlayerManager::Init(void)
 	//else { cntl_ = PlayerInput::CNTL::KEYBOARD; }
 	for (int i = 0; i < playerNum_; i++)
 	{
-		std::shared_ptr<Player> player;
+#ifdef DEBUG_ON
+#endif // DEBUG_ON
+		std::unique_ptr<Player> player;
 		Transform trans=FixTrans(i);
-		player = std::make_shared<Player>(i,trans, PlayerInput::CNTL::KEYBOARD);
+		player = std::make_unique<Player>(i,trans, cntl_);
 		player->Init();
-		players_.push_back(player);
+		players_.push_back(std::move(player));
 	}
 }
 
 void PlayerManager::Update(void)
 {
-	//for (auto& p : players_)
-	//{
-	//	p->Update();
-	//}
-	players_[0]->Update();
+	//players_[0]->SetCntl(PlayerInput::CNTL::PAD);
+	//players_[1]->SetCntl(PlayerInput::CNTL::PAD);
+	//players_[2]->SetCntl(PlayerInput::CNTL::PAD);
+	//players_[3]->SetCntl(PlayerInput::CNTL::KEYBOARD);
+	for (auto& p : players_)
+	{
+		p->Update();
+	}
+	//players_[]
+	//players_[0]->Update();
+	//players_[1]->Update();
+	//players_[2]->Update();
+	//players_[3]->Update();
 	PlayersCollision();
+	
 }
 
 void PlayerManager::Draw(void)
 {
-	for (auto& p : players_)
+	//for (auto& p : players_)
+	//{
+	//	p->Draw();
+	//}
+	for (int i = 0; i < playerNum_; i++)
 	{
-		p->Draw();
+		players_[i]->Draw();
+		DrawFormatString(0, i * 20 + 80, 0xffffff, "%d,PPos(%f,%f,%f),pNum(%d),Cntl(%d)"
+			, i,players_[i]->GetTransform().pos.x
+			, players_[i]->GetTransform().pos.y
+			, players_[i]->GetTransform().pos.z
+			,players_[i]->GetPlayerNum()
+			,static_cast<int>(players_[i]->GetCntl()));
 	}
 }
 
@@ -66,19 +88,29 @@ void PlayerManager::Release(void)
 
 void PlayerManager::PlayersCollision(void)
 {
-	bool isCol = false;
 	for (int i = 0; i < playerNum_; i++)
 	{
-		for (int j = 0; j < playerNum_; j++)
+		for (int j = i; j < playerNum_; j++)
 		{
+			//同じプレイヤー番号の時jを進める
 			if (i == j)continue;
+
+			//各プレイヤーに当たっていることを伝える
 			if (IsHitCapsules(players_[i]->GetCapsule(), players_[j]->GetCapsule()))
 			{
-				isCol = true;
+				players_[i]->SetCollision(true);
+				players_[j]->SetCollision(true);
+				//P2PPush(i, j);
+				return;
 			}
-			players_[i]->SetCollision(isCol);
-			players_[j]->SetCollision(isCol);
+			else
+			{
+				players_[i]->SetCollision(false);
+				players_[j]->SetCollision(false);
+				continue;
+			}
 		}
+		
 	}
 }
 
@@ -121,6 +153,30 @@ bool PlayerManager::IsHitCapsules(const std::weak_ptr<Capsule> cap1, const std::
 	//return false;
 
 
+}
+
+void PlayerManager::P2PPush(int _pNum1,int _pNum2)
+{
+	//同じプレイヤー番号なら抜ける
+	if (_pNum1 == _pNum2)return;
+	//プレイヤー1の情報
+	VECTOR pos1 = players_[_pNum1]->GetTransform().pos;
+	std::weak_ptr<Capsule>p1Cap = players_[_pNum1]->GetCapsule();
+
+	//プレイヤー2の情報
+	VECTOR pos2 = players_[_pNum2]->GetTransform().pos;
+	std::weak_ptr<Capsule>p2Cap = players_[_pNum2]->GetCapsule();
+
+	VECTOR vec = VSub(players_[_pNum2]->GetTransform().pos
+		, players_[_pNum1]->GetTransform().pos);
+	float len = sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+	float overlap = p1Cap.lock()->GetRadius() + p2Cap.lock()->GetRadius() - len;
+	float weight = 0.5f;
+	//大きさを1にする
+	vec = VNorm(vec);
+	players_[_pNum1]->SetMovePow(VScale(vec, overlap * weight));
+	players_[_pNum2]->SetMovePow(VScale(vec, overlap * (1.0-weight)));
+		
 }
 
 Transform PlayerManager::FixTrans(int _playerNum)

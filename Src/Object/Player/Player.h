@@ -5,6 +5,7 @@
 #include "../Common/AnimationController.h"
 #include "../Common/Capsule.h"
 #include "../../Manager/System/Camera.h"
+#include"../Item/MoveHoriFloor.h"
 #include"./Process/PMove.h"
 #include"./Process/PlayerInput.h"
 #include"./Process/PJump.h"
@@ -72,13 +73,15 @@ public:
 	//ゲッタ
 	//******************************************
 	//カメラ
-	const std::shared_ptr<Camera> GetCamera(void)const { return camera_; }
+	//const std::shared_ptr<Camera> GetCamera(void)const { return camera_; }
 
 	//プレイヤー番号
 	const int GetPlayerNum(void)const { return playerNum_; }
 
 	//カプセル情報
-	const std::shared_ptr<Capsule> GetCapsule(void)const { return capsule_; }
+	const std::weak_ptr<Capsule> GetCapsule(void)const { return capsule_; }
+
+	const PlayerInput::CNTL GetCntl(void) { return cntl_; }
 	//******************************************
 	//セッタ
 	//******************************************
@@ -88,6 +91,15 @@ public:
 	//当たり判定
 	void SetCollision(const bool _isCol) { isCol_ = _isCol; }
 
+	//移動量セット(マネージャ用)
+	void SetMovePow(const VECTOR _vec) { pMove_->SetMovePow(_vec); }
+
+#ifdef DEBUG_ON
+	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
+	const int PlayerNum(void) { return playerNum_; }
+#endif // DEBUG_ON
+
+	
 
 private:
 	//******************************************
@@ -119,15 +131,15 @@ private:
 	std::shared_ptr<Capsule> capsule_;
 
 	//カメラ
-	std::shared_ptr<Camera> camera_;
+	//std::shared_ptr<Camera> camera_;
 
 	//操作関連
 	//移動
-	std::shared_ptr<PMove> pMove_;
+	std::unique_ptr<PMove> pMove_;
 	//ジャンプ
-	std::shared_ptr<PJump> pJump_;
+	std::unique_ptr<PJump> pJump_;
 	//パンチ
-	std::shared_ptr<PPunch> pPunch_;
+	std::unique_ptr<PPunch> pPunch_;
 
 	//プレイヤー単体が持っているもの
 	//プレイヤー番号
