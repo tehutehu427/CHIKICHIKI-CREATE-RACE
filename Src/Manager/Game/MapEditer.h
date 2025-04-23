@@ -27,6 +27,7 @@ public:
 	void AddItem(STATUS status);
 	void DeleteItem(const ItemBase::ITEM_TYPE& _type, const IntVector3& mapPos);
 	IntVector3 WorldToMapPos(VECTOR worldPos);
+	VECTOR MapToWorldPos(IntVector3 mapPos);
 protected:
 
 private:
