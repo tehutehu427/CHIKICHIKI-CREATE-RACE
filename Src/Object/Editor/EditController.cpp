@@ -1,38 +1,41 @@
 #include "../../Utility/Utility.h"
-#include "../System/InputManager.h"
-#include "MapEditer.h"
+#include "../../Manager/System/InputManager.h"
+#include "../../Manager/Game/MapEditer.h"
 #include "EditController.h"
 
 EditController::EditController()
 {
+	//変数初期化
 	mousePos_ = Vector2();
 	mapPos_ = Utility::VECTOR_ZERO;
+
 	//モード管理(遷移時の初期処理)
 	modeChanges_.emplace(MODE::ITEM_SELECT, std::bind(&EditController::ChengeModeItemSelect, this));
 	modeChanges_.emplace(MODE::MOVE, std::bind(&EditController::ChengeModeMove, this));
 	modeChanges_.emplace(MODE::ROTATE, std::bind(&EditController::ChengeModeRotate, this));
-	ChengeMode(MODE::ITEM_SELECT);
 }
 
 void EditController::Init(void)
 {
+	//モード変更
 	ChengeMode(MODE::ITEM_SELECT);
 }
 
 void EditController::Update(void)
 {
+	//マウス位置取得
 	mousePos_ = InputManager::GetInstance().GetMousePos();
+
+	//モード別更新処理
 	modeUpdate_();
+
+
 	ItemNotSelect();
 }
 
 void EditController::Draw(void)
 {
 	modeDraw_();
-}
-
-void EditController::Release(void)
-{
 }
 
 void EditController::ChengeMode(MODE mode)

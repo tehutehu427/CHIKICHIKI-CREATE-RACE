@@ -34,7 +34,7 @@
     <ClCompile Include="Src\Object\Grid.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
     <ClCompile Include="Src\Manager\Game\ItemManager.cpp" />
-    <ClCompile Include="Src\Manager\Game\EditController.cpp" />
+    <ClCompile Include="Src\Object\Editor\EditController.cpp" />
     <ClCompile Include="Src\Manager\Game\MapEditer.cpp" />
     <ClCompile Include="Src\Common\IntVector3.cpp" />
     <ClCompile Include="Src\FpsControl\FpsControl.cpp" />
@@ -125,7 +125,7 @@
     <ClInclude Include="Src\Object\Grid.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
     <ClInclude Include="Src\Manager\Game\ItemManager.h" />
-    <ClInclude Include="Src\Manager\Game\EditController.h" />
+    <ClInclude Include="Src\Object\Editor\EditController.h" />
     <ClInclude Include="Src\Manager\Game\MapEditer.h" />
     <ClInclude Include="Src\Common\IntVector3.h" />
     <ClInclude Include="Src\FpsControl\FpsControl.h" />
