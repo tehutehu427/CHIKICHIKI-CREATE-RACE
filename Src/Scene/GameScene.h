@@ -2,7 +2,7 @@
 #include <memory>
 #include <functional>
 #include"../Object/Player/Player.h"
-#include"../Manager/Game/EditController.h"
+#include"../Object/Editor/EditController.h"
 #include "SceneBase.h"
 
 class EditorPaletteBase;

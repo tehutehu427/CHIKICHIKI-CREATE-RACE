@@ -7,7 +7,7 @@ EditController::EditController()
 {
 	//•Ï”‰Šú‰»
 	mousePos_ = Vector2();
-	mapPos_ = Utility::VECTOR_ZERO;
+	mapPos_ = {};
 
 	//ƒ‚[ƒhŠÇ—(‘JˆÚ‚Ì‰Šúˆ—)
 	modeChanges_.emplace(MODE::ITEM_SELECT, std::bind(&EditController::ChengeModeItemSelect, this));
