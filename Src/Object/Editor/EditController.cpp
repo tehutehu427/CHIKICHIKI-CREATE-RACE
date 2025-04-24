@@ -35,6 +35,7 @@ void EditController::Update(void)
 
 void EditController::Draw(void)
 {
+
 	modeDraw_();
 }
 
@@ -45,6 +46,17 @@ void EditController::ChengeMode(MODE mode)
 		mode_ = mode;
 		modeChanges_[mode_]();
 	}
+}
+
+void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
+{
+	itemType_ = itemType;
+	if (itemType_ == ItemBase::ITEM_TYPE::NONE)
+	{
+		return;
+	}
+	//アイテムを追加
+	IntVector3 mapPos = NearObjectPos();
 }
 
 void EditController::ChengeModeItemSelect(void)
@@ -67,6 +79,7 @@ void EditController::ChengeModeRotate(void)
 
 void EditController::ItemSelectUpdate(void)
 {
+	ItemNotSelect();
 }
 
 void EditController::MoveObjectUpdate(void)
@@ -84,6 +97,17 @@ void EditController::ItemSelectDraw(void)
 
 void EditController::MoveObjectDraw(void)
 {
+	if (mapPos_ != IntVector3{-1,-1,-1})
+	{
+		VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
+		worldPos = VAdd(worldPos,{MapEditer::GRID_SIZE /2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
+		DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_R,MOVE_ARROW_LENGTH)), 0x0000ff);	//X軸の線
+		DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE,32, 0x0000ff, 0x0000ff,true);	//X軸の先端
+		DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), 0x00ff00);	//Y軸の線
+		DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE, 32, 0x00ff00, 0x00ff00, true);	//Y軸の先端
+		DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), 0xff0000);	//Z軸の線
+		DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE, 32, 0xff0000, 0xff0000, true);	//Z軸の先端
+	}
 }
 
 void EditController::RotateObjectDraw(void)
@@ -92,15 +116,20 @@ void EditController::RotateObjectDraw(void)
 
 void EditController::ItemNotSelect(void)
 {
-	IntVector3 NearPos = NearObjectPos();
-	if (isClickObject_ == true)
+	if (InputManager::GetInstance().IsClickMouseLeft() == true)
 	{
-
-	}
-	else
-	{
-		//選択解除
-		ChengeMode(MODE::ITEM_SELECT);
+		IntVector3 NearPos = NearObjectPos();
+		if (isClickObject_ == true)
+		{
+			itemType_ = MapEditer::GetInstance().GetItemType(NearPos);
+			ChengeMode(MODE::MOVE);
+		}
+		else
+		{
+			itemType_ = ItemBase::ITEM_TYPE::NONE;
+			//選択解除
+			ChengeMode(MODE::ITEM_SELECT);
+		}
 	}
 }
 
@@ -136,5 +165,55 @@ IntVector3 EditController::NearObjectPos(void)
 		}
 	}
 	return mapPos;
+}
+
+EditController::MOVE_DIR EditController::GetMoveDir(void)
+{
+	MOVE_DIR moveDir = MOVE_DIR::NONE;
+	if (InputManager::GetInstance().IsClickMouseLeft() == false)
+	{
+		return moveDir;
+	}
+	if (itemType_ == ItemBase::ITEM_TYPE::NONE)
+	{
+		return moveDir;
+	}
+	Vector2 mousePos = InputManager::GetInstance().GetMousePos();
+	VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
+	worldPos = VAdd(worldPos, { MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
+	VECTOR x = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)));
+	VECTOR y = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)));
+	VECTOR z = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)));
+	//X軸移動の球をクリックした場合
+	if (x.z > 0.0f || x.z < 1.0f)
+	{
+		Vector2 x2D = { static_cast<int>(x.x),static_cast<int>( x.y) };
+		if (Utility::Distance(mousePos, x2D) < DELAY_MOVE_ARROW)
+		{
+			moveDir = MOVE_DIR::X;
+			return moveDir;
+		}
+	}
+	//Y軸移動の球をクリックした場合
+	if (y.z > 0.0f || y.z < 1.0f)
+	{
+		Vector2 y2D = {static_cast<int>( y.x),static_cast<int>( y.y )};
+		if (Utility::Distance(mousePos, y2D) < DELAY_MOVE_ARROW)
+		{
+			moveDir = MOVE_DIR::Y;
+			return moveDir;
+		}
+	}
+	//Z軸移動の球をクリックした場合
+	if (z.z > 0.0f || z.z < 1.0f)
+	{
+		Vector2 z2D = {static_cast<int>( z.x),static_cast<int>( z.y )};
+		if (Utility::Distance(mousePos, z2D) < DELAY_MOVE_ARROW)
+		{
+			moveDir = MOVE_DIR::Z;
+			return moveDir;
+		}
+	}
+	return moveDir;
 }
 

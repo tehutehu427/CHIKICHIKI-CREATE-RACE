@@ -2,6 +2,7 @@
 #include <memory>
 #include <functional>
 #include"../Object/Player/Player.h"
+#include"../Manager/Game/EditController.h"
 #include "SceneBase.h"
 
 class EditorPaletteBase;
@@ -66,4 +67,6 @@ private:
 	std::unique_ptr<EditorPaletteBase> palette_;
 
 	std::unique_ptr<Grid>grid_;
+
+	std::shared_ptr<EditController> editController_;
 };

@@ -49,6 +49,15 @@ IntVector3 MapEditer::WorldToMapPos(VECTOR worldPos)
 	return mapPos;
 }
 
+VECTOR MapEditer::MapToWorldPos(IntVector3 mapPos)
+{
+	VECTOR worldPos;
+	worldPos.x = static_cast<float>(mapPos.x * GRID_SIZE);
+	worldPos.y = static_cast<float>(mapPos.y * GRID_SIZE);
+	worldPos.z = static_cast<float>(mapPos.z * GRID_SIZE);
+	return worldPos;
+}
+
 MapEditer::MapEditer(void)
 {
 	itemsPos_.clear();
