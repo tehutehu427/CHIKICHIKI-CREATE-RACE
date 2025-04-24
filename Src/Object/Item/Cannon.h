@@ -11,10 +11,10 @@ public:
 	//狙う範囲半径
 	static constexpr float  AIM_RADIUS = 200.0f;
 
-	//砲台の角度調整用補間座標
-	//static constexpr VECTOR TURRET_RELATIVE_POS = { 55.0f,0.0f,110.0f };
-	//砲身の相対座標補間用
-	//static constexpr VECTOR BARREL_RELATIVE_POS = { 0.0f, 85.0f, 135.0f };
+	//対象に向く速度
+	static constexpr float AIM_SPEED = 0.5f;
+
+	//砲身の相対座標
 	static constexpr VECTOR BARREL_LOCAL_POS = { 0.0f, 75.0f, -0.0f };
 
 	//コンストラクタ
@@ -47,6 +47,15 @@ private:
 
 	//狙う対象の位置情報
 	VECTOR targetPos_;
+
+	//狙う対象に対しての方向ベクトル
+	VECTOR targetVec_;
+
+	//対象を狙う
+	void Aim(void);
+
+	//狙うベクトルへの補間
+	//void AimLeap()
 
 	/// <summary>
 	/// 回転

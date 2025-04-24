@@ -1,13 +1,16 @@
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/InputManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Utility/Utility.h"
+#include "../../FpsControl/FpsControl.h"
 #include "Cannon.h"
 
 Cannon::Cannon()
 {
-	targetPos_ = Utility::VECTOR_ZERO;
+	targetPos_ = { 0.0f,0.0f,0.0f };
 	turretAddRot_ = Utility::VECTOR_ZERO;
 	barrelAddRot_ = Utility::VECTOR_ZERO;
+	targetVec_ = Utility::VECTOR_ZERO;
 }
 
 Cannon::~Cannon()
@@ -34,15 +37,37 @@ void Cannon::SetParam(void)
 
 void Cannon::Update(void)
 {
-	auto delta = SceneManager::GetInstance().GetDeltaTime();
+	auto& ins = InputManager::GetInstance();
+	if (ins.IsNew(KEY_INPUT_UP))targetPos_.z++;
+	if (ins.IsNew(KEY_INPUT_RIGHT))targetPos_.x++;
+	if (ins.IsNew(KEY_INPUT_DOWN))targetPos_.z--;
+	if (ins.IsNew(KEY_INPUT_LEFT))targetPos_.x--;
+	if (ins.IsNew(KEY_INPUT_RSHIFT))targetPos_.y++;
+	if (ins.IsNew(KEY_INPUT_RCONTROL))targetPos_.y--;
+
+	auto delta = FRAME_RATE;
+
+	//ëŒè€Çë_Ç§
+	Aim();
 
 	//ñCë‰ÇÃâÒì]ó 
-	//turretAddRot_.y += 1.0f * delta;
+	VECTOR turretAddRot = VSub(targetVec_, turretAddRot_);
+	turretAddRot.x = 0.0f;
+	turretAddRot.z = 0.0f;
+	turretAddRot = VNorm(turretAddRot);
+
+	turretAddRot_ = VScale(turretAddRot, delta);
+
 	//ñCë‰âÒì]
 	Rotate(transform_, turretAddRot_);
 
 	//ñCêgÇÃâÒì]ó 
-	barrelAddRot_.x += 1.0f * delta;
+	VECTOR barrelAddRot = VSub(targetVec_, barrelAddRot_);
+	barrelAddRot.y = 0.0f;
+	barrelAddRot.z = 0.0f;
+	barrelAddRot = VNorm(barrelAddRot);
+
+	barrelAddRot_.x += barrelAddRot.x * delta;
 	//ñCêgâÒì]
 	Rotate(barrelTrans_, VAdd(barrelAddRot_ ,turretAddRot_));
 }
@@ -53,10 +78,19 @@ void Cannon::Draw(void)
 	MV1DrawModel(barrelTrans_.modelId);
 
 	DrawFormatString(0, 32, 0xffffff, "%.2f,%.2f,%.2f", barrelTrans_.pos.x, barrelTrans_.pos.y, barrelTrans_.pos.z);
+	DrawFormatString(0, 348, 0xffffff, "%.2f,%.2f,%.2f", turretAddRot_.x, turretAddRot_.y, turretAddRot_.z);
+
+	DrawSphere3D(targetPos_, 10.0, 20, 0xffffff, 0xffffff, true);
 }
 
 void Cannon::Release(void)
 {
+}
+
+void Cannon::Aim(void)
+{
+	//ëŒè€Ç÷ÇÃï˚å¸ÉxÉNÉgÉãéÊìæ
+	targetVec_ = Utility::GetMoveVec(barrelTrans_.pos, targetPos_);
 }
 
 void Cannon::Rotate(Transform& _trans, VECTOR _addAxis, const VECTOR _relativePos)const
