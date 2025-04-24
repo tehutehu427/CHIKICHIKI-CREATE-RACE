@@ -42,8 +42,11 @@ private:
 	//アイテム[アイテムを置いた順番][置いたアイテム]
 	std::vector<std::unique_ptr<ItemBase>> items_;
 
+	//外部でのコンストラクタ作成禁止
 	ItemManager(void);
-	ItemManager(const ItemManager& instance_) = default;
+	//コピーコンストラクタ及び代入演算の禁止
+	ItemManager(const ItemManager& instance_) = delete;
+	void operator= (const ItemManager& instance_) = delete;
 	~ItemManager(void) = default;
 };
 

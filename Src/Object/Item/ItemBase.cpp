@@ -1,4 +1,4 @@
-
+#include"../Manager/Game/MapEditer.h"
 #include "ItemBase.h"
 
 ItemBase::ItemBase()
@@ -15,7 +15,7 @@ ItemBase::~ItemBase()
 
 void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot, ITEM_TYPE _itemType)
 {
-	transform_.pos = VGet(_mapPos.x * 100 , _mapPos.y * 100, _mapPos.z * 100);
+	transform_.pos = MapEditer::GetInstance().MapToWorldPos(_mapPos);
 	transform_.quaRot = _quaRot;
 	status_.itemType = _itemType;
 	Init();
