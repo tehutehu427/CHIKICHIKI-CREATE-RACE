@@ -65,11 +65,12 @@ void Player::Init(void)
 
 void Player::Update(void)
 {
+	//入力更新
+	PlayerInput::GetInstance().Update(padNum_, cntl_);
+
 	// 更新ステップ
 	stateUpdate_();
 
-	//入力更新
-	PlayerInput::GetInstance().Update(padNum_,cntl_);
 
 	transform_.Update();
 }

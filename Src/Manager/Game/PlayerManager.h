@@ -12,7 +12,7 @@ public:
 	//**************************************
 	//定数
 	//**************************************
-
+	static constexpr int PLAYER_NUM = 4;
 	//プレイヤー１の座標
 	static constexpr float PLAYER_ONE_POS_X = -20.0f;
 
@@ -71,6 +71,9 @@ private:
 	//*****************************************
 	//プレイヤー
 	std::vector<std::unique_ptr<Player>> players_;
+
+	Player* play_[PLAYER_NUM];
+
 
 	//プレイヤー人数
 	int playerNum_;
