@@ -49,18 +49,24 @@ public:
 		Vector2 size;
 	};
 
+	//コンストラクタ
 	EditorPaletteBase();
+
+	//デストラクタ
 	~EditorPaletteBase();
 
-	virtual void Load();
-	virtual void Init();
-	virtual void Update();
-	virtual void Draw();
+	virtual void Load();	//読み込み
+	virtual void Init();	//初期化
+	virtual void Update();	//更新
+	virtual void Draw();	//描画
 
 	//デバッグ用描画
 	void DebagDraw();
 
-	//状態遷移
+	/// <summary>
+	/// 状態変更
+	/// </summary>
+	/// <param name="_state"></param>変更先の状態
 	void ChangeState(const STATE _state);
 
 	//状態を返す

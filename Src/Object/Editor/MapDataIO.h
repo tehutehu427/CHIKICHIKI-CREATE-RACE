@@ -6,12 +6,15 @@ class MapDataIO
 {
 public:
 
+	//コンストラクタ
 	MapDataIO();
+
+	//デストラクタ
 	~MapDataIO();
 
-	void Load();
-	void Init();
-	void Update();
+	void Load();	//読み込み
+	void Init();	//初期化
+	void Update();	//更新
 
 private:
 

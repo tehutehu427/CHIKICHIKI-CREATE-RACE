@@ -66,19 +66,24 @@ public:
 	//スクロールに制限をかける
 	static constexpr int SCROLL_LIMIT_LINE = 0; //ICON_NUM / COL -1;
 
-
+	//コンストラクタ
 	PaletteIcon();
+
+	//デストラクタ
 	~PaletteIcon();
 
-	void Load();
-	void Init();
-	void Update();
-	void Draw();
+	void Load();	//読み込み
+	void Init();	//初期化
+	void Update();	//更新
+	void Draw();	//描画
 
 	//デバッグ用描画
 	void DebagDraw();
 
-	//状態遷移
+	/// <summary>
+	/// 状態変更
+	/// </summary>
+	/// <param name="_state"></param>変更先の状態
 	void ChangeState(const STATE _state);
 
 	//生成するかを返す
