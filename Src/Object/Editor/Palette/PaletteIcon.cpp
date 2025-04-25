@@ -245,7 +245,7 @@ void PaletteIcon::UpdateSelect()
 	InputManager& ins = InputManager::GetInstance();
 
 	//クリックしたか調べる
-	if (ins.IsTrgMouseLeft()) {
+	if (ins.IsTrgDownMouseLeft()) {
 		//特定の範囲をクリックしたか調べる
 		CheckClickPosition(ins.GetMousePos());
 	}
