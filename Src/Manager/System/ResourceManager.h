@@ -31,6 +31,12 @@ public:
 		BOMB,				//爆弾
 		CANNON_BARREL,		//砲身
 		CANNON_TURRET,		//砲台
+		START_CUBE,			//スタート
+		GOAL_CUBE,			//ゴール
+		SPRING,				//ばね
+		SPIKE,				//とげ
+		SLIME_FLOOR,		//スライム床
+		FAN,				//扇風機
 	};
 
 	// 明示的にインステンスを生成する
