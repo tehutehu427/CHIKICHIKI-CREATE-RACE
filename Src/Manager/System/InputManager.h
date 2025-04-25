@@ -102,10 +102,16 @@ public:
 	bool IsClickMouseRight(void) const;
 
 	// マウスが左クリックされたか(押しっぱなしはNG)
-	bool IsTrgMouseLeft(void) const;
+	bool IsTrgDownMouseLeft(void) const;
 
 	// マウスが右クリックされたか(押しっぱなしはNG)
-	bool IsTrgMouseRight(void) const;
+	bool IsTrgDownMouseRight(void) const;
+
+	// マウスが左クリック離されたか(押しっぱなしはNG)
+	bool IsTrgUpMouseLeft(void) const;
+
+	// マウスが右クリック離されたか(押しっぱなしはNG)
+	bool IsTrgUpMouseRight(void) const;
 
 	// コントローラの入力情報を取得する
 	JOYPAD_IN_STATE GetJPadInputState(JOYPAD_NO no);
