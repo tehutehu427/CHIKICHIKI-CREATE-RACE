@@ -34,13 +34,23 @@ public:
 
 	// 静的インスタンスの取得
 	static ItemManager& GetInstance(void);
+
+
+	/// <summary>
+	/// 指定した種類のアイテム配列を返す
+	/// </summary>
+	/// <param name="_type">種類</param>
+	/// <returns>指定したアイテム配列のポインタ。存在しなければ nullptr</returns>
+	const std::vector<std::unique_ptr<ItemBase>>* GetItems(const ItemBase::ITEM_TYPE _type)const;
+	
+
 protected:
 
 private:
 	static ItemManager* instance_;
 
-	//アイテム[アイテムを置いた順番][置いたアイテム]
-	std::vector<std::unique_ptr<ItemBase>> items_;
+	//種類ごとにアイテムを管理
+	std::map<ItemBase::ITEM_TYPE, std::vector<std::unique_ptr<ItemBase>>> items_;
 
 	//外部でのコンストラクタ作成禁止
 	ItemManager(void);

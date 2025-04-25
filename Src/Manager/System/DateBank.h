@@ -1,4 +1,7 @@
 #pragma once
+#include <string>
+#include "../Object/Item/ItemBase.h"
+
 class DateBank
 {
 public:
@@ -23,6 +26,10 @@ public:
 	int GetPlayerNum(void);
 
 	TYPE GetType(void);
+
+	//名前を返す
+	inline const std::string GetItemName(const ItemBase::ITEM_TYPE _type)const { return itemNames_[static_cast<int>(_type)]; }
+
 protected:
 
 private:
@@ -32,5 +39,8 @@ private:
 	~DateBank(void) = default;
 	int playerNum_;		//プレイヤーの人数
 	int maxPlayerNum_;	//コントローラー数よりプレイヤー人数が多くならないようにする
+
+	//種類ごとの名前
+	std::string itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::MAX)];
 };
 

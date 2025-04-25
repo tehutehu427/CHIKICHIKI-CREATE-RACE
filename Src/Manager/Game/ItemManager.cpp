@@ -15,17 +15,23 @@ void ItemManager::Init(void)
 
 void ItemManager::Update(void)
 {
-	for (auto& item : items_)
-	{
-		item->Update();
+	for (auto& [type, itemList] : items_) {
+		for (auto& item : itemList) {
+			if (item) {
+				item->Update(); 
+			}
+		}
 	}
 }
 
 void ItemManager::Draw(void)
 {
-	for (auto& item : items_)
-	{
-		item->Draw();
+	for (auto& [type, itemList] : items_) {
+		for (auto& item : itemList) {
+			if (item) {
+				item->Draw();
+			}
+		}
 	}
 }
 
@@ -68,7 +74,7 @@ void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE
 	item->Init(mapPos,rot, type);
 
 	//”z—ñ‚É’Ç‰Á
-	items_.emplace_back(std::move(item));
+	items_[type].emplace_back(std::move(item));
 }
 
 void ItemManager::DeleteItem(VECTOR mapPos, int range)
@@ -88,6 +94,16 @@ void ItemManager::CreateInstance(void)
 ItemManager& ItemManager::GetInstance(void)
 {
 	return *instance_;
+}
+
+const std::vector<std::unique_ptr<ItemBase>>* ItemManager::GetItems(const ItemBase::ITEM_TYPE _type) const
+{
+	auto it = items_.find(_type);
+	if (it != items_.end()) 
+	{
+		return &it->second;
+	}
+	return nullptr;
 }
 
 ItemManager::ItemManager(void)
