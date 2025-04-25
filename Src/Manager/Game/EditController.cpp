@@ -92,7 +92,12 @@ void EditController::ItemSelectUpdate(void)
 
 void EditController::MoveObjectUpdate(void)
 {
-
+	moveDir_ = GetMoveDir();
+	if (moveDir_ == MOVE_DIR::NONE)
+	{
+		return;
+	}
+	MoveItem();
 }
 
 void EditController::RotateObjectUpdate(void)
@@ -124,7 +129,7 @@ void EditController::RotateObjectDraw(void)
 
 void EditController::ItemNotSelect(void)
 {
-	if (InputManager::GetInstance().IsClickMouseLeft() == true)
+	if (InputManager::GetInstance().IsTrgDownMouseLeft() == true)
 	{
 		IntVector3 NearPos = NearObjectPos();
 		if (isClickObject_ == true)
@@ -176,18 +181,105 @@ IntVector3 EditController::NearObjectPos(void)
 	return mapPos;
 }
 
+void EditController::MoveItem(void)
+{
+	IntVector3 nullWallMapPosNear = { 0,0,0 };	//透明な壁を置く
+	IntVector3 nullWallMapPosFar = MapEditer::MAP_SIZE;	//透明な壁を置く
+	switch (moveDir_)
+	{
+	case EditController::MOVE_DIR::NONE:
+		return;
+		break;
+	case EditController::MOVE_DIR::X:
+	case EditController::MOVE_DIR::Y:
+		nullWallMapPosNear.z = mapPos_.z;	//Z軸固定の壁を置く
+		nullWallMapPosFar.z = mapPos_.z + 1;	//Z軸固定の壁を置く
+		break;
+	case EditController::MOVE_DIR::Z:
+		nullWallMapPosNear.x = mapPos_.x;
+		nullWallMapPosFar.x = mapPos_.x + 1;
+		break;
+	case EditController::MOVE_DIR::XY:
+		break;
+	case EditController::MOVE_DIR::XZ:
+		break;
+	case EditController::MOVE_DIR::YZ:
+		break;
+	default:
+		break;
+	}
+	VECTOR mousePosNear3D = { mousePos_.x, mousePos_.y, 0.0f };
+	VECTOR nearWorldPos = ConvScreenPosToWorldPos(mousePosNear3D);	//近いほうのワールド座標
+	VECTOR mousePosFar3D = { mousePos_.x, mousePos_.y, 1.0f };
+	VECTOR farWorldPos = ConvScreenPosToWorldPos(mousePosFar3D);	//遠いほうのワールド座標
+	VECTOR normalmousePos3D = VNorm(VSub(farWorldPos, nearWorldPos));
+	VECTOR wallWorldPosNear = MapEditer::GetInstance().MapToWorldPos(nullWallMapPosNear);
+	VECTOR wallWorldPosFar = MapEditer::GetInstance().MapToWorldPos(nullWallMapPosFar);
+	//遠いほうを壁に当たる中に入れる
+	farWorldPos = VSub(farWorldPos, normalmousePos3D);
+	switch (moveDir_)
+	{
+	case EditController::MOVE_DIR::NONE:
+		return;
+		break;
+	case EditController::MOVE_DIR::X:
+		while (farWorldPos.z < wallWorldPosNear.z || farWorldPos.z > wallWorldPosFar.z)
+		{
+			farWorldPos = VSub(farWorldPos, normalmousePos3D);
+		}
+		mapPos_.x = MapEditer::GetInstance().WorldToMapPos(farWorldPos).x;
+		break;
+	case EditController::MOVE_DIR::Y:
+		while (farWorldPos.z < wallWorldPosNear.z || farWorldPos.z > wallWorldPosFar.z)
+		{
+			farWorldPos = VSub(farWorldPos, normalmousePos3D);
+		}
+		mapPos_.y = MapEditer::GetInstance().WorldToMapPos(farWorldPos).y;
+		break;
+	case EditController::MOVE_DIR::Z:
+		while (farWorldPos.x < wallWorldPosNear.x || farWorldPos.x > wallWorldPosFar.x)
+		{
+			farWorldPos = VSub(farWorldPos, normalmousePos3D);
+		}
+		mapPos_.z = MapEditer::GetInstance().WorldToMapPos(farWorldPos).z;
+		break;
+	case EditController::MOVE_DIR::XY:
+		break;
+	case EditController::MOVE_DIR::XZ:
+		break;
+	case EditController::MOVE_DIR::YZ:
+		break;
+	default:
+		break;
+	}
+	ItemManager::GetInstance().DummyItemSetMapPos(mapPos_, playerNum_);
+
+}
+
 EditController::MOVE_DIR EditController::GetMoveDir(void)
 {
 	MOVE_DIR moveDir = MOVE_DIR::NONE;
-	if (InputManager::GetInstance().IsClickMouseLeft() == false)
+	InputManager& ins = InputManager::GetInstance();
+	if (moveDir_ == MOVE_DIR::NONE)
+	{
+		if (ins.IsClickMouseLeft() == false)
+		{
+			return moveDir;
+		}
+		if (itemType_ == ItemBase::ITEM_TYPE::NONE)
+		{
+			return moveDir;
+		}
+	}
+	else if (ins.IsTrgUpMouseLeft() == true)
 	{
 		return moveDir;
 	}
-	if (itemType_ == ItemBase::ITEM_TYPE::NONE)
+	else
 	{
-		return moveDir;
+		return moveDir_;
 	}
-	Vector2 mousePos = InputManager::GetInstance().GetMousePos();
+	Vector2 mousePos = ins.GetMousePos();
 	VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
 	worldPos = VAdd(worldPos, { MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
 	VECTOR x = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)));
@@ -238,7 +330,8 @@ void EditController::DebugDraw(void)
 {
 	DrawFormatString(0, 0, 0xffffff, "%d", static_cast<int>(mode_));
 	DrawFormatString(0, 20, 0xffffff, "%d", static_cast<int>(itemType_));
-	DrawFormatString(0, 40, 0xffffff, "%d,%d,%d", static_cast<int>(mapPos_.x,mapPos_.y,mapPos_.z));
+	DrawFormatString(0, 40, 0xffffff, "%d,%d,%d",mapPos_.x,mapPos_.y,mapPos_.z);
+	DrawFormatString(0, 60, 0xffffff, "%d", static_cast<int>(GetMoveDir()));
 
 }
 

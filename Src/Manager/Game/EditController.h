@@ -69,6 +69,7 @@ private:
 
 	void ItemNotSelect(void);		//アイテム選択解除
 	IntVector3 NearObjectPos(void);	//近くのオブジェクトの座標を取得
+	void  MoveItem(void);			//移動するアイテムの座標を取得
 	MOVE_DIR GetMoveDir(void);			//移動方向を取得
 
 	void DebugUpdate(void);	//デバッグ用更新

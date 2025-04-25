@@ -39,6 +39,13 @@ public:
 
 	ItemBase::Status GetDummyItemStatus(int playerNum);
 	IntVector3 GetDummyObjectSize(int playerNum);
+
+	/// <summary>
+	/// ダミーアイテムの座標設定
+	/// </summary>
+	/// <param name="mapPos"></param>
+	/// <param name="playerNum"></param>
+	void DummyItemSetMapPos(IntVector3 mapPos, int playerNum);
 	/// <summary>
 	/// ダミーアイテムをアイテムに追加
 	/// </summary>
