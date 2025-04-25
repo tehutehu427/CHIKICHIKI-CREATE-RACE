@@ -31,8 +31,7 @@ public:
 	};
 
 	//コンストラクタ
-	EditController();
-
+	EditController(int playerNum);
 	//デストラクタ
 	~EditController() = default;
 
@@ -46,7 +45,7 @@ public:
 protected:
 
 private:
-
+	int playerNum_;	//プレイヤー番号
 	Vector2 mousePos_;	//2Dのマウス座標
 	IntVector3 mapPos_;	//3Dのマップ座標
 	MODE mode_;	//モード
@@ -86,6 +85,9 @@ private:
 	
 	//移動方向を取得
 	MOVE_DIR GetMoveDir(void);			
+
+	void DebugUpdate(void);	//デバッグ用更新
+	void DebugDraw(void);	//デバッグ用描画
 
 };
 

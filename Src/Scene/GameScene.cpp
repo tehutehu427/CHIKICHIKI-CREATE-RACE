@@ -5,6 +5,7 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/Camera.h"
 #include "../Manager/System/InputManager.h"
+#include "../Manager/System/DateBank.h"
 #include "../Manager/Game/ItemManager.h"
 #include "../Manager/Game/MapEditer.h"
 #include "../Manager/Game/GravityManager.h"
@@ -44,8 +45,12 @@ void GameScene::Load(void)
 
 	palette_ = std::make_unique<EditorPaletteBase>();
 	palette_->Load();
-
-	editController_ = std::make_shared<EditController>();
+	//for (int i = 0; i < DateBank::GetInstance().GetPlayerNum();i++)
+	//{
+	// 
+	//	editController_ = std::make_shared<EditController>(i);
+	//}
+	editController_ = std::make_shared<EditController>(0);
 
 	sky_ = std::make_unique<SkyDome>();
 	sky_->Load();
