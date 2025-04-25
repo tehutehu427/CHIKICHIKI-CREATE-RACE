@@ -34,10 +34,6 @@ void ItemBase::Init()
 	transform_.Update();
 }
 
-void ItemBase::Load(void)
-{
-}
-
 void ItemBase::Draw(void)
 {
 	MV1DrawModel(transform_.modelId);
