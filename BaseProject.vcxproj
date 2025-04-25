@@ -58,6 +58,7 @@
     <ClCompile Include="Src\Object\Player\Process\PlayerInput.cpp" />
     <ClCompile Include="Src\Object\Player\Process\PJump.cpp" />
     <ClCompile Include="Src\Object\Player\Process\PMove.cpp" />
+    <ClCompile Include="Src\Object\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Src\Scene\GameScene.cpp" />
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="Src\Object\Player\Process\PlayerInput.h" />
     <ClInclude Include="Src\Object\Player\Process\PJump.h" />
     <ClInclude Include="Src\Object\Player\Process\PMove.h" />
+    <ClInclude Include="Src\Object\SkyDome\SkyDome.h" />
     <ClInclude Include="Src\Scene\GameScene.h" />
     <ClInclude Include="Src\Scene\SceneBase.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />

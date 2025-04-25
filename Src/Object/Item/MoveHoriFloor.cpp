@@ -53,10 +53,6 @@ void MoveHoriFloor::Draw(void)
 	MV1DrawModel(transform_.modelId);
 }
 
-void MoveHoriFloor::Release(void)
-{
-}
-
 void MoveHoriFloor::Move(void)
 {
 	//w’èƒ‹[ƒg‚ğ’´‚¦‚½‚©

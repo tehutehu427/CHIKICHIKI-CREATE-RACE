@@ -83,10 +83,6 @@ void Cannon::Draw(void)
 	DrawSphere3D(targetPos_, 10.0, 20, 0xffffff, 0xffffff, true);
 }
 
-void Cannon::Release(void)
-{
-}
-
 void Cannon::Aim(void)
 {
 	//‘ÎÛ‚Ö‚Ì•ûŒüƒxƒNƒgƒ‹æ“¾

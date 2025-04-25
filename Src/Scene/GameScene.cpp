@@ -12,6 +12,7 @@
 #include "../Object/Player/Player.h"
 #include "../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../Object/Grid.h"
+#include "../Object/SkyDome/SkyDome.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -21,6 +22,7 @@ GameScene::GameScene(void)
 	//描画関数のセット
 	drawFunc_ = std::bind(&GameScene::LoadingDraw, this);
 
+	sky_ = nullptr;
 	palette_ = nullptr;
 	phaseChanges_.emplace(PHASE::EDIT_PHASE, std::bind(&GameScene::ChangePhaseEdit, this));
 	phaseChanges_.emplace(PHASE::ACTION_PHASE, std::bind(&GameScene::ChangePhaseAction, this));
@@ -44,12 +46,16 @@ void GameScene::Load(void)
 	palette_->Load();
 
 	editController_ = std::make_shared<EditController>();
+
+	sky_ = std::make_unique<SkyDome>();
+	sky_->Load();
 }
 
 void GameScene::Init(void)
 {
 	palette_->Init();
 	editController_->Init();
+	sky_->Init();
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
@@ -72,6 +78,9 @@ void GameScene::NormalUpdate(void)
 	phaseUpdate_();
 
 	ItemManager::GetInstance().Update();
+
+	sky_->Update();
+
 	//デバッグ処理
 	DebagUpdate();
 }
@@ -80,6 +89,8 @@ void GameScene::NormalDraw(void)
 {
 	//デバッグ処理
 	DebagDraw();
+
+	sky_->Draw();
 
 	grid_->Draw();
 	//プレイヤー

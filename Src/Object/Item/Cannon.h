@@ -28,8 +28,6 @@ public:
 	void Update(void)override;
 	//•`‰æ
 	void Draw(void)override;
-	//‰ğ•ú
-	void Release(void)override;
 
 	//‘_‚¤‘ÎÛ‚Ìİ’è
 	void SetTargetPos(const VECTOR _targetPos) { targetPos_ = _targetPos; }

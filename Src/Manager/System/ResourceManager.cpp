@@ -61,6 +61,7 @@ void ResourceManager::Init(void)
 #pragma endregion 
 
 #pragma region ƒ‚ƒfƒ‹
+	std::string path_Sky = PATH_MDL + "SkyDome/";
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Floor.mv1");
 	resourcesMap_.emplace(SRC::FLOOR, std::move(res));
 
@@ -75,6 +76,9 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "CannonTurret.mv1");
 	resourcesMap_.emplace(SRC::CANNON_TURRET, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, path_Sky + "SkyDome.mv1");
+	resourcesMap_.emplace(SRC::SKY_DOME, std::move(res));
 #pragma endregion 
 
 }

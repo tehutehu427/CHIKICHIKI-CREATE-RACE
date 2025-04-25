@@ -32,6 +32,9 @@ public:
 		BOMB,				//爆弾
 		CANNON_BARREL,		//砲身
 		CANNON_TURRET,		//砲台
+
+		//スカイドーム
+		SKY_DOME,
 	};
 
 	// 明示的にインステンスを生成する

@@ -6,8 +6,8 @@
 #include "SceneBase.h"
 
 class EditorPaletteBase;
-
 class Grid;
+class SkyDome;
 
 class GameScene : public SceneBase
 {
@@ -69,4 +69,6 @@ private:
 	std::unique_ptr<Grid>grid_;
 
 	std::shared_ptr<EditController> editController_;
+
+	std::unique_ptr<SkyDome> sky_;
 };

@@ -25,6 +25,3 @@ void Floor::Update(void)
 {
 }
 
-void Floor::Release(void)
-{
-}

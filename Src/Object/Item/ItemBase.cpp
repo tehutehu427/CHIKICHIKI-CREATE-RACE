@@ -13,6 +13,10 @@ ItemBase::~ItemBase()
 {
 }
 
+void ItemBase::Load()
+{
+}
+
 void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot, ITEM_TYPE _itemType)
 {
 	transform_.pos = MapEditer::GetInstance().MapToWorldPos(_mapPos);
