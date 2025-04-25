@@ -29,7 +29,3 @@ void Fence::Draw(void)
 {
 	DrawCube3D({ -100,-50,-50 }, { 100,50,50 }, 0xffffff, 0xffffff, true);
 }
-
-void Fence::Release(void)
-{
-}

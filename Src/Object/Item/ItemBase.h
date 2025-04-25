@@ -55,6 +55,8 @@ public:
 
 	//アイテムの個別設定
 	virtual void SetParam(void) = 0;
+	//読み込み
+	void Load(void)override;
 	//初期化
 	virtual void Init(IntVector3 _mapPos ,Quaternion _quaRot, ITEM_TYPE _itemType);
 	virtual void Init()override;
@@ -62,8 +64,6 @@ public:
 	virtual void Update(void)override = 0;
 	//描画
 	virtual void Draw(void)override;
-	//解放
-	virtual void Release(void)override = 0;
 
 	//アイテムのステータス取得
 	inline const Status GetStatus(void)const { return status_; }
