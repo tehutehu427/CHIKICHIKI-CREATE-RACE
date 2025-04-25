@@ -29,7 +29,11 @@ void Cannon::SetParam(void)
 
 	//–Cg‚ğ–C‘ä‚É‡‚í‚¹‚Ä‚¨‚­
 	barrelTrans_.pos = VAdd(transform_.pos,BARREL_LOCAL_POS);
-	barrelTrans_.quaRotLocal = Quaternion::Euler({Utility::Deg2RadF(30.0f),0.0f,0.0f});
+	//Šp“x‚à‚Ü‚Á‚·‚®‚É
+	barrelTrans_.quaRotLocal = Quaternion::Euler(
+		Utility::Deg2RadF(BARREL_LOCAL_ROT.x), 
+		Utility::Deg2RadF(BARREL_LOCAL_ROT.y),
+		Utility::Deg2RadF(BARREL_LOCAL_ROT.z));
 	
 	//–Cg‚Ìƒ‚ƒfƒ‹İ’è
 	barrelTrans_.SetModel(resMng_.LoadModelDuplicate(
@@ -59,9 +63,8 @@ void Cannon::Update(void)
 	turretVecDiff.y = 0.0f;
 	//–C‘ä‚Ì‰ñ“]—Ê
 	Quaternion turQuaRot = Quaternion::LookRotation(turretVecDiff);
-
 	turretAddRot_ =turQuaRot.ToEuler();
-	
+
 	//–C‘ä‰ñ“]
 	Rotate(transform_, turretAddRot_);
 
