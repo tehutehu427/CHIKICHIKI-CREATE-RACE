@@ -21,50 +21,9 @@ void PMove::Init(void)
 {
 }
 
-void PMove::Update(const std::weak_ptr<Camera>& _camera, bool& _isJump, Transform& _trans)
+void PMove::Update(const std::weak_ptr<Camera>& _camera, bool& _isJump)
 {
-	movePow_ = Utility::VECTOR_ZERO;
-	VECTOR dir = Utility::VECTOR_ZERO;
-	VECTOR getDir = input_.lock()->GetDir();
-	float deg = 0;
-	//プレイヤーの周囲にあるステージポリゴンの取得
-	//MV1_COLL_RESULT_POLY_DIM hitDim[STAGECOLLOBJ_MAXNUM + 1];
-	Quaternion cameraRot = _camera.lock()->GetQuaRotOutX();
-	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
-	//カメラ方向に移動したい
-	if (input_.lock()->CheckAct(PlayerInput::ACT_CNTL::MOVE))
-	{
-		dir = cameraRot.PosAxis(getDir);
-		deg = input_.lock()->GetMoveDeg();
-	}
 
-	if (!Utility::EqualsVZero(dir) /*&& (_isJump || IsEndLanding())*/)
-	{
-		speed_ = SPEED_MOVE;
-		//animationController_->Play((int)ANIM_TYPE::RUN);
-
-		//if ((!_isJump && IsEndLanding()))
-		//{
-	
-
-		//}
-
-		moveDir_ = dir;
-		//移動量
-		movePow_ = VScale(moveDir_, speed_);
-		SetGoalRotate(Utility::Deg2RadF(deg), _camera);
-
-	}
-	else
-	{
-		speed_ = 0.0f;
-		//animationController_->Play((int)ANIM_TYPE::IDLE);
-		
-		//if (!_isJump && IsEndLanding())
-		//{
-
-		//}
-	}
 }
 
 void PMove::SetGoalRotate(double _deg, const std::weak_ptr<Camera> _camera)
@@ -84,8 +43,5 @@ void PMove::SetGoalRotate(double _deg, const std::weak_ptr<Camera> _camera)
 
 void PMove::Rotate(void)
 {
-	stepRotTime_ -= PlayerInput::DELTA_TIME;
-	// 回転の球面補間
-	playerRotY_ = Quaternion::Slerp(
-		playerRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);
+
 }

@@ -35,11 +35,6 @@ public:
     //デルタタイム
     static constexpr float DELTA_TIME = 1.0f / 60.0f;
 
-
-    ////回避
-    //static constexpr int DODGE_KEY = KEY_INPUT_N;
-    //static constexpr InputManager::JOYPAD_BTN DODGE_BTN = InputManager::JOYPAD_BTN::LEFT;
-
     //アクションボタンの種類
     enum class ACT_CNTL
     {

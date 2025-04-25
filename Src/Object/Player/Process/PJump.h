@@ -6,30 +6,22 @@ public:
 	PJump(std::weak_ptr<PlayerInput>_input);
 	~PJump(void) = default;
 
-	//ジャンプ力
-	static constexpr float POW_JUMP = 22.0f;
-
-	//ジャンプ加速の倍率
-	static constexpr float TIME_JUMP_IN = 4.0f;
-
-	//デルタタイム
-	static constexpr float DELTA_TIME = 1.0f / 60.0f;
 
 	void Init(void);
 	void Update(const VECTOR& _dirUp,const VECTOR& _dirDown,const bool& _isEndLanding);
 	void DrawDebug(void);
 
-	//ゲッタ
-	//--------------------------------------
-	const bool GetIsJump(void)const  { return isJump_; }
-	const VECTOR GetJumpPow(void)const { return jumpPow_; }
-	
-	//--------------------------------------
-	
-	//セッタ
-	//--------------------------------------
-	void SetIsJump(const bool _isJump) { isJump_ = _isJump; }
-	void SetStepJump(const float _step) { stepJump_ = _step; }
+	////ゲッタ
+	////--------------------------------------
+	//const bool GetIsJump(void)const  { return isJump_; }
+	//const VECTOR GetJumpPow(void)const { return jumpPow_; }
+	//
+	////--------------------------------------
+	//
+	////セッタ
+	////--------------------------------------
+	//void SetIsJump(const bool _isJump) { isJump_ = _isJump; }
+	//void SetStepJump(const float _step) { stepJump_ = _step; }
 
 
 	//--------------------------------------
@@ -50,18 +42,7 @@ private:
 
 
 
-	// ジャンプ判定
-	bool isJump_;
-	// ジャンプの入力受付時間
-	float stepJump_;
-	// ジャンプ量
-	VECTOR jumpPow_;
 
-	//ジャンプ減衰量
-	float jumpDeceralation_;
-
-	//落下カウント
-	float fallCnt_;
 
 	//オブジェクトの上方向
 	VECTOR dirUp_;

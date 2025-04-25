@@ -47,49 +47,14 @@ void PlayerManager::Init(void)
 		player->Init();
 		players_.push_back(std::move(player));
 	}
-
-//	for (int i = 0; i < PLAYER_NUM; i++)
-//	{
-//#ifdef DEBUG_ON
-//		if (i == 0)
-//		{
-//			cntl_ = PlayerInput::CNTL::KEYBOARD;
-//		}
-//		else
-//		{
-//			cntl_ = PlayerInput::CNTL::PAD;
-//		}
-//#endif // DEBUG_ON
-//		Transform trans = FixTrans(i);
-//		play_[i] = new Player(i, trans, cntl_);
-//		//player = std::make_unique<Player>(i, trans, cntl_);
-//		//play_[i] = std::move(player);
-//		play_[i]->Init();
-//		
-//	}
 }
 
 void PlayerManager::Update(void)
 {
-	//players_[0]->SetCntl(PlayerInput::CNTL::PAD);
-	//players_[1]->SetCntl(PlayerInput::CNTL::PAD);
-	//players_[2]->SetCntl(PlayerInput::CNTL::PAD);
-	//players_[3]->SetCntl(PlayerInput::CNTL::KEYBOARD);
 	for (auto& p : players_)
 	{
 		p->Update();
 	}
-	//for (int i = 0; i < PLAYER_NUM; i++)
-	//{
-	//	play_[i]->Update();
-	//}
-	//players_[]
-	//players_[0]->Update();
-	//players_[1]->Update();
-	//players_[2]->Update();
-	//players_[3]->Update();
-	PlayersCollision();
-	
 }
 
 void PlayerManager::Draw(void)
@@ -98,25 +63,6 @@ void PlayerManager::Draw(void)
 	{
 		p->Draw();
 	}
-	//for (int i = 0; i < playerNum_; i++)
-	//{
-	//	players_[i]->Draw();
-	//	//play_[i]->Draw();
-	//	DrawFormatString(0, i * 20 + 80, 0xffffff, "%d,PPos(%f,%f,%f),pNum(%d),Cntl(%d)"
-	//		, i,players_[i]->GetTransform().pos.x
-	//		, players_[i]->GetTransform().pos.y
-	//		, players_[i]->GetTransform().pos.z
-	//		,players_[i]->GetPlayerNum()
-	//		,static_cast<int>(players_[i]->GetCntl()));
-
-	//	//DrawFormatString(0, i * 20 + 80, 0xffffff, "%d,PPos(%f,%f,%f),pNum(%d),Cntl(%d)"
-	//	//	, i, play_[i]->GetTransform().pos.x
-	//	//	, play_[i]->GetTransform().pos.y
-	//	//	, play_[i]->GetTransform().pos.z
-	//	//	, play_[i]->GetPlayerNum()
-	//	//	, static_cast<int>(play_[i]->GetCntl()));
-
-	//}
 }
 
 void PlayerManager::Release(void)

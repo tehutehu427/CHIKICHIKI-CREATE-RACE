@@ -24,11 +24,34 @@ public:
 	//******************************************
 	//定数
 	//******************************************
+	//移動
+	//----------------------------------
 	//スピード
 	static constexpr float SPEED_MOVE = 5.0f;
-	static constexpr float SPEED_RUN = 10.0f;
 
-	//プレイヤーの中心からの
+	//----------------------------------
+	//ジャンプ
+	//----------------------------------
+	//ジャンプ力
+	static constexpr float POW_JUMP = 22.0f;
+
+	//ジャンプ加速の倍率
+	static constexpr float TIME_JUMP_IN = 4.0f;
+
+	//デルタタイム
+	static constexpr float DELTA_TIME = 1.0f / 60.0f;
+	//----------------------------------
+	//パンチ
+	//----------------------------------
+	//パンチ有効時間
+	static constexpr float PUNCH_TIME_MAX = 1.5f;
+
+	// 回転完了までの時間
+	static constexpr float TIME_ROT = 1.0f;
+
+	//パンチのローカル座標
+	static constexpr VECTOR PUNCH_LOCAL_POS = { 0.0f,50.0f,40.0f };
+
 
 	// 状態
 	enum class STATE
@@ -69,7 +92,7 @@ public:
 	void Init(void)override;
 	void Update(void)override;
 	void Draw(void)override;
-	void Release(void)override;
+	void Release(void)override{}
 
 	//ゲッタ
 	//******************************************
@@ -148,11 +171,38 @@ private:
 	std::unique_ptr<PPunch> pPunch_;
 
 	//プレイヤー単体が持っているもの
-	//プレイヤー番号
-	int playerNum_;
+	int playerNum_;			//プレイヤー番号
 
 	//他プレイヤーとの当たりフラグ　true:当たっている
 	bool isCol_;
+
+	//アクション関係
+	//----------------------------------------
+	//移動
+	//------------------------
+	float speed_;			// 移動スピード
+	VECTOR moveDir_;		// 移動方向
+	VECTOR movePow_;		// 移動量
+
+	//回転
+	Quaternion playerRotY_;
+	Quaternion goalQuaRot_;
+	float stepRotTime_;
+
+	//ジャンプ
+	//-----------------------
+	bool isJump_;			// ジャンプ判定
+	float stepJump_;		// ジャンプの入力受付時間
+	VECTOR jumpPow_;		// ジャンプ量
+	float jumpDeceralation_;	//ジャンプ減衰量
+	float fallCnt_;			//落下カウント
+
+	//パンチ
+	//-----------------------
+	bool isPunch_;			//パンチ中フラグ
+	float cnt_;				//パンチカウント
+	VECTOR punchPos_;			//攻撃座標
+
 
 	//--------------------------------------------
 	//******************************************
@@ -161,6 +211,32 @@ private:
 #ifdef DEBUG_ON
 	void DrawDebug(void);
 #endif // DEBUG_ON
+	//アクション関係
+	//------------------------------
+	//移動
+	void Move(void);
+
+	//回転
+	void Rotate(void);
+
+	//最終的に動かしたい角度の設定
+	void SetGoalRotate(double _deg);
+
+	//ジャンプ
+	void Jump(void);
+
+	//パンチ
+	void Punch(void);
+	//------------------------------
+	
+	/// <summary>
+	/// 座標を足して回転
+	/// </summary>
+	/// <param name="_followPos">追従対象の座標</param>
+	/// <param name="_followRot">追従対象の角度</param>
+	/// <param name="_localPos">相対座標</param>
+	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot,VECTOR _localPos);
+
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -179,6 +255,8 @@ private:
 
 	// 着地モーション終了
 	bool IsEndLanding(void);
+
+
 
 };
 

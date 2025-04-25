@@ -7,8 +7,6 @@ class PPunch
 public:
 	//定数
 	//*************************************
-	//パンチ有効時間
-	static constexpr float PUNCH_TIME_MAX = 1.5f;
 	PPunch(std::weak_ptr<PlayerInput>_input);
 	~PPunch(void)=default;
 
@@ -35,14 +33,7 @@ private:
 	//操作
 	std::weak_ptr<PlayerInput>input_;
 
-	//パンチ中フラグ
-	bool isPunch_;
 
-	//パンチカウント
-	float cnt_;
-
-	//攻撃座標
-	VECTOR pos_;
 
 
 

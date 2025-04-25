@@ -17,7 +17,7 @@ public:
 	PMove(std::weak_ptr<PlayerInput> _input);
 	~PMove(void);
 	void Init(void);
-	void Update(const std::weak_ptr<Camera>& _camera,bool& _isJump,Transform& _trans);
+	void Update(const std::weak_ptr<Camera>& _camera,bool& _isJump);
 	//‰ñ“]
 	void Rotate(void);
 	//ƒQƒbƒ^
