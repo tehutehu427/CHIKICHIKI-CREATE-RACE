@@ -55,16 +55,11 @@ public:
         KEYBOARD,
         PAD
     };
+    //シングルトン化するために外部で生成されないようにする
+    PlayerInput(InputManager::JOYPAD_NO _padNum, CNTL _cntl);
+    ~PlayerInput(void) = default;
 
-    //インスタンスの生成
-    static void CreateInstance(void);
-    static PlayerInput& GetInstance(void);
-
-    
-    void Update(InputManager::JOYPAD_NO _padNum,CNTL _cntl);
-
-
-
+    void Update(void);
 
     //コントロール判定
     bool CheckAct(ACT_CNTL _actCntl) { return actCntl_ == _actCntl ? true : false; }
@@ -78,26 +73,23 @@ public:
 
 private:
     //メンバ関数
-    void InputKeyBoard();
-    void InputPad(InputManager::JOYPAD_NO _padNum);
+    void InputKeyBoard(void);
+    void InputPad(void);
 
     //メンバ変数
     //-----------------------------------------------------------------------
     //操作管理用
     ACT_CNTL actCntl_;
 
-    //静的インスタンス生成
-    static PlayerInput* playerInput_;
-
-    float leftStickX_;
-    float leftStickY_;
+    float leftStickX_;          //スティックの角度X
+    float leftStickY_;          //スティックの角度Y
     float stickDeg_;            //パッドのスティックの角度
     float moveDeg_;             //移動方向
     VECTOR moveDir_;            //移動方向
 
-    //シングルトン化するために外部で生成されないようにする
-    PlayerInput(void);
-    PlayerInput(const PlayerInput& instance_) = default;
-    ~PlayerInput(void) = default;
+    CNTL cntl_;                 //入力デバイス
+    InputManager::JOYPAD_NO padNum_;                //パッド番号
+
+
 };
 

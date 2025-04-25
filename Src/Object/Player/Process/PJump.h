@@ -3,7 +3,7 @@ class GravityManager;
 class PJump
 {
 public:
-	PJump(void);
+	PJump(std::weak_ptr<PlayerInput>_input);
 	~PJump(void) = default;
 
 	//ジャンプ力
@@ -45,6 +45,11 @@ private:
 	//**************************************
 	//メンバ変数
 	//**************************************
+	//操作
+	std::weak_ptr<PlayerInput>input_;
+
+
+
 	// ジャンプ判定
 	bool isJump_;
 	// ジャンプの入力受付時間

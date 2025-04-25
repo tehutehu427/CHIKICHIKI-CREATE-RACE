@@ -6,7 +6,7 @@
 #include"./PlayerInput.h"
 #include "PJump.h"
 
-PJump::PJump(void)
+PJump::PJump(std::weak_ptr<PlayerInput>_input):input_(_input)
 {
 	isJump_ = false;
 	stepJump_ = 0.0f;
@@ -39,7 +39,7 @@ void PJump::DrawDebug(void)
 
 void PJump::Jump(void)
 {
-	bool isHit = PlayerInput::GetInstance().CheckAct(PlayerInput::ACT_CNTL::JUMP);
+	bool isHit = input_.lock()->CheckAct(PlayerInput::ACT_CNTL::JUMP);
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 	// ƒWƒƒƒ“ƒv
 	if (isHit && (isJump_ || isEndLanding_))

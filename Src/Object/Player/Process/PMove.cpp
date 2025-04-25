@@ -6,7 +6,7 @@
 #include "../../../Utility/Utility.h"
 #include "PMove.h"
 
-PMove::PMove(void)
+PMove::PMove(std::weak_ptr<PlayerInput>_input):input_(_input)
 {
 	speed_ = 0.0f;
 	moveDir_ = Utility::VECTOR_ZERO;
@@ -23,20 +23,19 @@ void PMove::Init(void)
 
 void PMove::Update(const std::weak_ptr<Camera>& _camera, bool& _isJump, Transform& _trans)
 {
-	auto& ins = InputManager::GetInstance();
 	movePow_ = Utility::VECTOR_ZERO;
 	VECTOR dir = Utility::VECTOR_ZERO;
-	VECTOR getDir = PlayerInput::GetInstance().GetDir();
+	VECTOR getDir = input_.lock()->GetDir();
 	float deg = 0;
 	//プレイヤーの周囲にあるステージポリゴンの取得
 	//MV1_COLL_RESULT_POLY_DIM hitDim[STAGECOLLOBJ_MAXNUM + 1];
 	Quaternion cameraRot = _camera.lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
 	//カメラ方向に移動したい
-	if (PlayerInput::GetInstance().CheckAct(PlayerInput::ACT_CNTL::MOVE))
+	if (input_.lock()->CheckAct(PlayerInput::ACT_CNTL::MOVE))
 	{
 		dir = cameraRot.PosAxis(getDir);
-		deg = PlayerInput::GetInstance().GetMoveDeg();
+		deg = input_.lock()->GetMoveDeg();
 	}
 
 	if (!Utility::EqualsVZero(dir) /*&& (_isJump || IsEndLanding())*/)

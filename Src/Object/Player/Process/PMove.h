@@ -1,4 +1,6 @@
 #pragma once
+#include"./PlayerInput.h"
+class PlayerInput;
 class PMove
 {
 public:
@@ -12,7 +14,7 @@ public:
 	// 回転完了までの時間
 	static constexpr float TIME_ROT = 1.0f;
 	//**********************************************
-	PMove(void);
+	PMove(std::weak_ptr<PlayerInput> _input);
 	~PMove(void);
 	void Init(void);
 	void Update(const std::weak_ptr<Camera>& _camera,bool& _isJump,Transform& _trans);
@@ -35,6 +37,10 @@ private:
 	//**********************************************
 	//メンバ変数
 	//**********************************************
+	//操作入力
+	std::weak_ptr<PlayerInput>input_;
+
+
 	// 移動スピード
 	float speed_;
 	// 移動方向

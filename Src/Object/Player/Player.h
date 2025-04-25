@@ -17,6 +17,7 @@ class Camera;
 class PMove;
 class PJump;
 class PPunch;
+class PlayerInput;
 class Player :public ObjectBase
 {
 public:
@@ -82,6 +83,9 @@ public:
 	const std::weak_ptr<Capsule> GetCapsule(void)const { return capsule_; }
 
 	const PlayerInput::CNTL GetCntl(void) { return cntl_; }
+
+	//入力
+	const std::weak_ptr<PlayerInput> GetInput(void)const { return input_; }
 	//******************************************
 	//セッタ
 	//******************************************
@@ -134,6 +138,8 @@ private:
 	//std::shared_ptr<Camera> camera_;
 
 	//操作関連
+	//操作入力
+	std::shared_ptr<PlayerInput> input_;
 	//移動
 	std::unique_ptr<PMove> pMove_;
 	//ジャンプ

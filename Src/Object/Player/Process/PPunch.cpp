@@ -3,7 +3,7 @@
 #include"./PlayerInput.h"
 #include "PPunch.h"
 
-PPunch::PPunch(void)
+PPunch::PPunch(std::weak_ptr<PlayerInput>_input):input_(_input)
 {
 	isPunch_ = false;
 	cnt_ = 0.0f;
@@ -16,7 +16,6 @@ void PPunch::Init(void)
 
 void PPunch::Update(Transform& _trans)
 {
-	auto& input = PlayerInput::GetInstance();
 	//�Ǐ]�Ώۂ̈ʒu
 	VECTOR followPos = _trans.pos;
 
@@ -35,7 +34,7 @@ void PPunch::Update(Transform& _trans)
 		isPunch_ = false;
 		return;
 	}
-	if (input.CheckAct(PlayerInput::ACT_CNTL::PUNCH))
+	if (input_.lock()->CheckAct(PlayerInput::ACT_CNTL::PUNCH))
 	{
 		isPunch_ = true;
 	}

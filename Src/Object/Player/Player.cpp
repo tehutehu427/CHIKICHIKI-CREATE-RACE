@@ -18,14 +18,17 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	//オブジェクト生成
 	//操作関連
 	//---------------------------------
+	//入力
+	input_ = std::make_shared<PlayerInput>(padNum_, cntl_);
+
 	//移動
-	pMove_ = std::make_unique<PMove>();
+	pMove_ = std::make_unique<PMove>(input_);
 
 	//ジャンプ
-	pJump_ = std::make_unique<PJump>();
+	pJump_ = std::make_unique<PJump>(input_);
 
 	//パンチ
-	pPunch_ = std::make_unique<PPunch>();
+	pPunch_ = std::make_unique<PPunch>(input_);
 
 	//当たり判定
 	isCol_ = false;
@@ -54,9 +57,6 @@ void Player::Init(void)
 	// 初期状態
 	ChangeState(STATE::PLAY);
 
-	//入力
-	PlayerInput::CreateInstance();
-
 	//操作関連
 	pMove_->Init();
 	pJump_->Init();
@@ -66,11 +66,10 @@ void Player::Init(void)
 void Player::Update(void)
 {
 	//入力更新
-	PlayerInput::GetInstance().Update(padNum_, cntl_);
+	input_->Update();
 
 	// 更新ステップ
 	stateUpdate_();
-
 
 	transform_.Update();
 }
