@@ -66,6 +66,7 @@ void GameScene::NormalUpdate(void)
 	//player_->Update();
 
 
+
 	PlayerManager::GetInstance().Update();
 
 	phaseUpdate_();
