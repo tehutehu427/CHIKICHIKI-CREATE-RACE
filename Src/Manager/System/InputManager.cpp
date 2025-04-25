@@ -162,14 +162,24 @@ bool InputManager::IsClickMouseRight(void) const
 	return mouseInput_ == MOUSE_INPUT_RIGHT;
 }
 
-bool InputManager::IsTrgMouseLeft(void) const
+bool InputManager::IsTrgDownMouseLeft(void) const
 {
 	return FindMouse(MOUSE_INPUT_LEFT).keyTrgDown;
 }
 
-bool InputManager::IsTrgMouseRight(void) const
+bool InputManager::IsTrgDownMouseRight(void) const
 {
 	return FindMouse(MOUSE_INPUT_RIGHT).keyTrgDown;
+}
+
+bool InputManager::IsTrgUpMouseLeft(void) const
+{
+	return FindMouse(MOUSE_INPUT_LEFT).keyTrgUp;
+}
+
+bool InputManager::IsTrgUpMouseRight(void) const
+{
+	return FindMouse(MOUSE_INPUT_RIGHT).keyTrgUp;;
 }
 
 InputManager::InputManager(void)
