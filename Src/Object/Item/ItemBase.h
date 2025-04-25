@@ -55,6 +55,7 @@ public:
 
 	//ƒAƒCƒeƒ€‚ÌŒÂ•Êİ’è
 	virtual void SetParam(void) = 0;
+
 	//“Ç‚İ‚İ
 	void Load(void)override;
 	//‰Šú‰»
