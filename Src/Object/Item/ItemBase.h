@@ -57,8 +57,7 @@ public:
 	virtual void SetParam(void) = 0;
 
 	//“Ç‚İ‚İ
-	virtual void Load();
-
+	void Load(void)override;
 	//‰Šú‰»
 	virtual void Init(IntVector3 _mapPos ,Quaternion _quaRot, ITEM_TYPE _itemType);
 	virtual void Init()override;
