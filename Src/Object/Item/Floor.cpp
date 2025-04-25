@@ -24,7 +24,3 @@ void Floor::SetParam(void)
 void Floor::Update(void)
 {
 }
-
-void Floor::Release(void)
-{
-}

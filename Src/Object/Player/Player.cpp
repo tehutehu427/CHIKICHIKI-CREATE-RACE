@@ -33,6 +33,10 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	stateChanges_.emplace(STATE::PLAY, std::bind(&Player::ChangeStatePlay, this));
 }
 
+void Player::Load(void)
+{
+}
+
 void Player::Init(void)
 {
 	//transform_.modelId = transform_.SetModel(resMng_.GetInstance().LoadModelDuplicate(ResourceManager::SRC::)
@@ -71,10 +75,6 @@ void Player::Draw(void)
 	DrawDebug();
 #endif // DEBUG_ON
 
-}
-
-void Player::Release(void)
-{
 }
 
 #ifdef DEBUG_ON

@@ -53,10 +53,6 @@ void MoveVerFloor::Draw(void)
 	MV1DrawModel(transform_.modelId);
 }
 
-void MoveVerFloor::Release(void)
-{
-}
-
 void MoveVerFloor::Move(void)
 {
 	//w’èƒ‹[ƒg‚ğ’´‚¦‚½‚©

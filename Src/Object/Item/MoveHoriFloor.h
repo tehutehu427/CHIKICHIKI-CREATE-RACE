@@ -28,8 +28,6 @@ public:
 	void Update(void)override;
 	//•`‰æ
 	void Draw(void)override;
-	//‰ð•ú
-	void Release(void)override;
 
 private:
 

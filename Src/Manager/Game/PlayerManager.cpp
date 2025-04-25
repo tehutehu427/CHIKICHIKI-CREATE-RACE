@@ -58,10 +58,6 @@ void PlayerManager::Draw(void)
 
 void PlayerManager::Release(void)
 {
-	for (auto& p : players_)
-	{
-		p->Release();
-	}
 }
 
 void PlayerManager::PlayersCollision(void)
