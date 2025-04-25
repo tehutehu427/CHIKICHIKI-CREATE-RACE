@@ -30,7 +30,7 @@ public:
 		YZ,		//YZ平面
 	};
 
-	EditController();
+	EditController(int playerNum);
 	~EditController() = default;
 
 	void Init(void);
@@ -43,7 +43,7 @@ public:
 protected:
 
 private:
-
+	int playerNum_;	//プレイヤー番号
 	Vector2 mousePos_;	//2Dのマウス座標
 	IntVector3 mapPos_;	//3Dのマップ座標
 	MODE mode_;	//モード
@@ -70,6 +70,9 @@ private:
 	void ItemNotSelect(void);		//アイテム選択解除
 	IntVector3 NearObjectPos(void);	//近くのオブジェクトの座標を取得
 	MOVE_DIR GetMoveDir(void);			//移動方向を取得
+
+	void DebugUpdate(void);	//デバッグ用更新
+	void DebugDraw(void);	//デバッグ用描画
 
 };
 

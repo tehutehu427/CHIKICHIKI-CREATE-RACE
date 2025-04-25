@@ -29,6 +29,7 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_SPACE);
 	InputManager::GetInstance().Add(KEY_INPUT_N);
 	InputManager::GetInstance().Add(KEY_INPUT_Z);
+	InputManager::GetInstance().Add(KEY_INPUT_X);
 
 	//プレイヤー操作関連
 	//---------------------------------------------------
