@@ -3,8 +3,9 @@
 #include "MapEditer.h"
 #include "EditController.h"
 
-EditController::EditController()
+EditController::EditController(int playerNum)
 {
+	playerNum_ = playerNum;
 	mousePos_ = Vector2();
 	mapPos_ = {-1,-1,-1};
 	itemType_ = ItemBase::ITEM_TYPE::NONE;
@@ -24,6 +25,7 @@ void EditController::Init(void)
 void EditController::Update(void)
 {
 	mousePos_ = InputManager::GetInstance().GetMousePos();
+	DebugUpdate();
 	modeUpdate_();
 	if (moveDir_ == MOVE_DIR::NONE)
 	{
@@ -33,7 +35,7 @@ void EditController::Update(void)
 
 void EditController::Draw(void)
 {
-
+	DebugDraw();
 	modeDraw_();
 }
 
@@ -59,6 +61,10 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	}
 	//アイテムを追加
 	IntVector3 mapPos = NearObjectPos();
+	Quaternion rot = {};
+	ItemManager::GetInstance().CreateDummyItem(mapPos, rot, itemType_, playerNum_);
+	mapPos_ = mapPos;
+	ChengeMode(MODE::MOVE);
 }
 
 void EditController::ChengeModeItemSelect(void)
@@ -129,6 +135,7 @@ void EditController::ItemNotSelect(void)
 		else
 		{
 			itemType_ = ItemBase::ITEM_TYPE::NONE;
+			ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 			//選択解除
 			ChengeMode(MODE::ITEM_SELECT);
 		}
@@ -217,5 +224,21 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 		}
 	}
 	return moveDir;
+}
+
+void EditController::DebugUpdate(void)
+{
+	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_X))
+	{
+		SetItemType(ItemBase::ITEM_TYPE::FLOOR);
+	}
+}
+
+void EditController::DebugDraw(void)
+{
+	DrawFormatString(0, 0, 0xffffff, "%d", static_cast<int>(mode_));
+	DrawFormatString(0, 20, 0xffffff, "%d", static_cast<int>(itemType_));
+	DrawFormatString(0, 40, 0xffffff, "%d,%d,%d", static_cast<int>(mapPos_.x,mapPos_.y,mapPos_.z));
+
 }
 
