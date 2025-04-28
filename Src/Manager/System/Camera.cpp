@@ -324,21 +324,23 @@ void Camera::SetBeforeDrawFreeControll(void)
 	{
 		angles_.x = FPS_LIMIT_X_DW_RAD;
 	}
-	if (ins.IsNew(KEY_INPUT_W)) 
-	{
-		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), 3.0f));
-	}
-	if (ins.IsNew(KEY_INPUT_A)) 
+	//if (ins.IsNew(KEY_INPUT_W)) 
+	//{
+	//	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), 3.0f));
+	//}
+	//if (ins.IsNew(KEY_INPUT_S))
+	//{
+	//	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetBack(), moveSpeed));
+	//}
+	float moveSpeed = 10.0f;
+	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), GetMouseWheelRotVolF() * moveSpeed));
+	if (ins.IsNew(KEY_INPUT_A))
 	{
 		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetLeft(), 3.0f));
 	}
-	if (ins.IsNew(KEY_INPUT_S)) 
-	{
-		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetBack(), 3.0f));
-	}
 	if (ins.IsNew(KEY_INPUT_D)) 
 	{
-		pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetRight(), 3.0f));
+		pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetRight(), moveSpeed));
 	}
 
 	VECTOR localPos;
