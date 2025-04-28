@@ -22,7 +22,6 @@
     <ClCompile Include="Src\Object\Item\Cannon.cpp" />
     <ClCompile Include="Src\Object\Item\Fence.cpp" />
     <ClCompile Include="Src\Object\Item\MoveVerFloor.cpp" />
-    <ClCompile Include="Src\Object\Player\Process\PPunch.cpp" />
     <ClCompile Include="Src\Manager\Game\PlayerManager.cpp" />
     <ClCompile Include="Src\Manager\System\DateBank.cpp" />
     <ClCompile Include="Src\Object\Item\MoveHoriFloor.cpp" />
@@ -54,8 +53,6 @@
     <ClCompile Include="Src\Object\Common\Transform.cpp" />
     <ClCompile Include="Src\Object\Player\Player.cpp" />
     <ClCompile Include="Src\Object\Player\Process\PlayerInput.cpp" />
-    <ClCompile Include="Src\Object\Player\Process\PJump.cpp" />
-    <ClCompile Include="Src\Object\Player\Process\PMove.cpp" />
     <ClCompile Include="Src\Scene\GameScene.cpp" />
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
@@ -66,7 +63,6 @@
     <ClInclude Include="Src\Object\Item\Fence.h" />
     <ClInclude Include="Src\Object\Item\MoveVerFloor.h" />
     <ClInclude Include="Src\Manager\Game\PlayerManager.h" />
-    <ClInclude Include="Src\Object\Player\Process\PPunch.h" />
     <ClInclude Include="Src\Object\Item\MoveHoriFloor.h" />
     <ClInclude Include="Src\Object\Editer\Palette\EditerPaletteBase.h" />
     <ClInclude Include="Src\Manager\System\DateBank.h" />
@@ -143,8 +139,6 @@
     <ClInclude Include="Src\Object\Common\Transform.h" />
     <ClInclude Include="Src\Object\Player\Player.h" />
     <ClInclude Include="Src\Object\Player\Process\PlayerInput.h" />
-    <ClInclude Include="Src\Object\Player\Process\PJump.h" />
-    <ClInclude Include="Src\Object\Player\Process\PMove.h" />
     <ClInclude Include="Src\Scene\GameScene.h" />
     <ClInclude Include="Src\Scene\SceneBase.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
