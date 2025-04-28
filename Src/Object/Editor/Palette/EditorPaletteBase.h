@@ -6,6 +6,7 @@
 #include "../../../Common/Vector2.h"
 #include "../../Item/ItemBase.h"
 
+class EditController;
 class PaletteIcon;
 
 class EditorPaletteBase
@@ -53,7 +54,7 @@ public:
 	};
 
 	//コンストラクタ
-	EditorPaletteBase();
+	EditorPaletteBase(EditController & _controller);
 
 	//デストラクタ
 	~EditorPaletteBase();
@@ -94,6 +95,9 @@ private:
 
 	//パレットアイコン
 	std::unique_ptr<PaletteIcon> palIcon_;
+
+	//エディットコントローラー(参照)
+	EditController& ediCon_;
 
 	//状態変更
 	void ChangeStateNone();

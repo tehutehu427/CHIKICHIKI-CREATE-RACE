@@ -8,6 +8,14 @@ class MapDataIO
 {
 public:
 
+	enum class STATE
+	{
+		NONE,
+		WAIT,
+		CHECK_IMPORT,
+		CHECK_EXPORT,
+	};
+
 	//コンストラクタ
 	MapDataIO();
 

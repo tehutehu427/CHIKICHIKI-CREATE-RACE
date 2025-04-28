@@ -42,10 +42,10 @@ void GameScene::Load(void)
 	//player_ = std::make_unique<Player>();
 	//player_->Load();
 
-	palette_ = std::make_unique<EditorPaletteBase>();
-	palette_->Load();
-
 	editController_ = std::make_shared<EditController>();
+
+	palette_ = std::make_unique<EditorPaletteBase>(*editController_);
+	palette_->Load();
 
 	sky_ = std::make_unique<SkyDome>();
 	sky_->Load();
