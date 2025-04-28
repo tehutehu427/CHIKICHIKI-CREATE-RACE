@@ -601,3 +601,13 @@ bool Utility::IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vect
     return pos.x > leftTop.x && pos.x < rightBotm.x &&
             pos.y > leftTop.y && pos.y < rightBotm.y;
 }
+
+int Utility::GetSign(float f)
+{
+    return f == 0 ? 0 : f < 0 ? -1 : 1;
+}
+
+int Utility::GetSign(int f)
+{
+    return f == 0 ? 0 : f < 0 ? -1 : 1;
+}

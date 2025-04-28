@@ -162,6 +162,13 @@ IntVector3 EditController::NearObjectPos(void)
 		farWorldPos.z < 0.0f || farWorldPos.z > MapEditer::MAP_SIZE.z * MapEditer::GRID_SIZE)
 	{
 		farWorldPos = VSub(farWorldPos, normalmousePos3D);
+		VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
+		if (Utility::GetSign(normalmousePos.x) != Utility::GetSign(normalmousePos3D.x) ||
+			Utility::GetSign(normalmousePos.y) != Utility::GetSign(normalmousePos3D.y) ||
+			Utility::GetSign(normalmousePos.z) != Utility::GetSign(normalmousePos3D.z))
+		{
+			return mapPos;
+		}
 	}
 	for (float t = 0.0f; t < 1.0f; t += 0.01f)
 	{
@@ -226,22 +233,46 @@ void EditController::MoveItem(void)
 		while (farWorldPos.z < wallWorldPosNear.z || farWorldPos.z > wallWorldPosFar.z)
 		{
 			farWorldPos = VSub(farWorldPos, normalmousePos3D);
+			VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
+			if (Utility::GetSign(normalmousePos.x) != Utility::GetSign(normalmousePos3D.x) ||
+				Utility::GetSign(normalmousePos.y) != Utility::GetSign(normalmousePos3D.y) ||
+				Utility::GetSign(normalmousePos.z) != Utility::GetSign(normalmousePos3D.z))
+			{
+				return;
+			}
 		}
 		mapPos_.x = MapEditer::GetInstance().WorldToMapPos(farWorldPos).x;
+		mapPos_.x = mapPos_.x < 0 ? 0 : mapPos_.x >= MapEditer::MAP_SIZE.x ? MapEditer::MAP_SIZE.x : mapPos_.x;
 		break;
 	case EditController::MOVE_DIR::Y:
 		while (farWorldPos.z < wallWorldPosNear.z || farWorldPos.z > wallWorldPosFar.z)
 		{
 			farWorldPos = VSub(farWorldPos, normalmousePos3D);
+			VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
+			if (Utility::GetSign(normalmousePos.x) != Utility::GetSign(normalmousePos3D.x) ||
+				Utility::GetSign(normalmousePos.y) != Utility::GetSign(normalmousePos3D.y) ||
+				Utility::GetSign(normalmousePos.z) != Utility::GetSign(normalmousePos3D.z))
+			{
+				return;
+			}
 		}
 		mapPos_.y = MapEditer::GetInstance().WorldToMapPos(farWorldPos).y;
+		mapPos_.y = mapPos_.y < 0 ? 0 : mapPos_.y >= MapEditer::MAP_SIZE.y ? MapEditer::MAP_SIZE.y : mapPos_.y;
 		break;
 	case EditController::MOVE_DIR::Z:
 		while (farWorldPos.x < wallWorldPosNear.x || farWorldPos.x > wallWorldPosFar.x)
 		{
 			farWorldPos = VSub(farWorldPos, normalmousePos3D);
+			VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
+			if (Utility::GetSign(normalmousePos.x) != Utility::GetSign(normalmousePos3D.x) ||
+				Utility::GetSign(normalmousePos.y) != Utility::GetSign(normalmousePos3D.y) ||
+				Utility::GetSign(normalmousePos.z) != Utility::GetSign(normalmousePos3D.z))
+			{
+				return;
+			}
 		}
 		mapPos_.z = MapEditer::GetInstance().WorldToMapPos(farWorldPos).z;
+		mapPos_.z = mapPos_.z < 0 ? 0 : mapPos_.z >= MapEditer::MAP_SIZE.z ? MapEditer::MAP_SIZE.z : mapPos_.z;
 		break;
 	case EditController::MOVE_DIR::XY:
 		break;
