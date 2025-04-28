@@ -21,6 +21,10 @@ public:
 	//******************************************
 	//定数
 	//******************************************
+	//プレイヤー情報
+	static constexpr VECTOR CAPSULE_TOP = { 0.0f, 110.0f, 0.0f };
+	static constexpr VECTOR CAPSULE_DOWN = { 0.0f, 0.0f, 0.0f };
+	static constexpr float RADIUS = 20.0f;
 	//移動
 	//----------------------------------
 	//スピード
@@ -119,6 +123,11 @@ public:
 #ifdef DEBUG_ON
 	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
 	const int PlayerNum(void) { return playerNum_; }
+
+	//デバッグキューブのサイズ
+	static constexpr float CUBE_W = 100.0F;
+	static constexpr float CUBE_H = 10.0F;
+	static constexpr float CUBE_D = 100.0F;
 #endif // DEBUG_ON
 
 	
@@ -180,6 +189,12 @@ private:
 	float cnt_;				//パンチカウント
 	VECTOR punchPos_;			//攻撃座標
 
+#ifdef DEBUG_ON
+	VECTOR cubeMovePos_;
+	VECTOR cubePos_;
+#endif // DEBUG_ON
+
+
 
 	//--------------------------------------------
 	//******************************************
@@ -223,7 +238,10 @@ private:
 	// 着地モーション終了
 	bool IsEndLanding(void);
 
-
+#ifdef DEBUG_ON
+	void CubeMove(void);
+	bool CollCube(void);
+#endif // DEBUG_ON
 
 };
 

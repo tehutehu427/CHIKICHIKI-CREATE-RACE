@@ -8,6 +8,11 @@
 
 Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNum_(_playerNum), cntl_(_cntl)
 {
+#ifdef DEBUG_ON
+	cubeMovePos_=Utility::VECTOR_ZERO;
+	cubePos_=Utility::VECTOR_ZERO;
+#endif // DEBUG_ON
+
 	animationController_ = nullptr;
 	movedPos_ = Utility::VECTOR_ZERO;
 
@@ -23,15 +28,15 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	//当たり判定
 	isCol_ = false;
 
+	isJump_ = false;
+	stepJump_ = 0.0f;
+	jumpPow_ = Utility::VECTOR_ZERO;
+	jumpDeceralation_ = POW_JUMP;
 
 	capsule_ = std::make_shared<Capsule>(transform_);
-	capsule_->SetLocalPosTop({ 0.0f, 110.0f, 0.0f });
-	capsule_->SetLocalPosDown({ 0.0f, 0.0f, 0.0f });
+	capsule_->SetLocalPosTop(CAPSULE_TOP);
+	capsule_->SetLocalPosDown(CAPSULE_DOWN);
 	capsule_->SetRadius(20.0f);
-
-	////状態管理
-	//stateChanges_.emplace(STATE::NONE, std::bind(&Player::ChangeStateNone, this));
-	//stateChanges_.emplace(STATE::PLAY, std::bind(&Player::ChangeStatePlay, this));
 }
 
 void Player::Init(void)
@@ -43,17 +48,25 @@ void Player::Update(void)
 {
 	//入力更新
 	input_->Update();
-
 	//アクション関係
 	Move();
 	Jump();
 	Punch();
 	Rotate();
 
+	VECTOR dirDown = transform_.GetDown();
+	//重力
+	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_);
+
 	//衝突判定
 	Collision();
 	//回転の同期
 	transform_.quaRot = playerRotY_;
+
+#ifdef DEBUG_ON
+	CubeMove();
+#endif // DEBUG_ON
+
 
 	transform_.Update();
 }
@@ -80,6 +93,9 @@ void Player::DrawDebug(void)
 	capsule_->Draw();
 
 	DrawSphere3D(punchPos_, 10.0f, 4, 0xff0000, 0xff0000, isPunch_);
+	DrawSphere3D(cubePos_, 10.0f, 4, 0xff0000, 0xff0000, true);
+
+	DrawCube3D(VAdd(cubePos_, { -CUBE_W / 2, -CUBE_H / 2,-CUBE_D / 2 }), VAdd(cubePos_, { CUBE_W / 2, 0.0f, CUBE_D / 2 }), 0xffffff, 0xffffff, true);
 }
 void Player::Move(void)
 {
@@ -224,6 +240,7 @@ VECTOR Player::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _lo
 
 void Player::CalcGravityPow(void)
 {
+
 }
 
 void Player::Collision(void)
@@ -231,6 +248,11 @@ void Player::Collision(void)
 	// 現在座標を起点に移動後座標を決める
 	movedPos_ = VAdd(transform_.pos, movePow_);
 	movedPos_ = VAdd(movedPos_, jumpPow_);
+	if (CollCube()) 
+	{ 
+		movedPos_=VAdd(movedPos_, cubeMovePos_); 
+		movedPos_.y = cubePos_.y;
+	}
 #ifdef DEBUG_ON
 	if (movedPos_.y < 0.0f)
 	{
@@ -247,5 +269,29 @@ void Player::Collision(void)
 
 bool Player::IsEndLanding(void)
 {
+	return true;
+}
+
+void Player::CubeMove(void)
+{
+	auto& input = InputManager::GetInstance();
+	const float SPD = 3.0f;
+	cubeMovePos_ = Utility::VECTOR_ZERO;
+	if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.y += SPD;
+	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.y -= SPD;
+	if (input.IsNew(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
+	if (input.IsNew(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
+	cubePos_=VAdd(cubePos_, cubeMovePos_);
+}
+
+bool Player::CollCube(void)
+{
+	VECTOR diff = VSub(cubePos_, transform_.pos);
+	if(fabsf(diff.x)>CUBE_W/2+RADIUS
+		||fabsf(diff.y)>CUBE_H/2+RADIUS
+		|| fabsf(diff.z) > CUBE_D / 2 + RADIUS)
+	{
+		return false;
+	}
 	return true;
 }
