@@ -11,8 +11,7 @@ EditController::EditController(int playerNum)
 	moveDir_ = MOVE_DIR::NONE;
 	//ÉÇÅ[Éhä«óù(ëJà⁄éûÇÃèâä˙èàóù)
 	modeChanges_.emplace(MODE::ITEM_SELECT, std::bind(&EditController::ChengeModeItemSelect, this));
-	modeChanges_.emplace(MODE::MOVE, std::bind(&EditController::ChengeModeMove, this));
-	modeChanges_.emplace(MODE::ROTATE, std::bind(&EditController::ChengeModeRotate, this));
+	modeChanges_.emplace(MODE::MOVE_ROTATE, std::bind(&EditController::ChengeModeMove, this));
 }
 
 void EditController::Init(void)
@@ -63,7 +62,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	Quaternion rot = {};
 	ItemManager::GetInstance().CreateDummyItem(mapPos, rot, itemType_, playerNum_);
 	mapPos_ = mapPos;
-	ChengeMode(MODE::MOVE);
+	ChengeMode(MODE::MOVE_ROTATE);
 }
 
 void EditController::ChengeModeItemSelect(void)
@@ -74,14 +73,8 @@ void EditController::ChengeModeItemSelect(void)
 
 void EditController::ChengeModeMove(void)
 {
-	modeUpdate_ = std::bind(&EditController::MoveObjectUpdate, this);
-	modeDraw_ = std::bind(&EditController::MoveObjectDraw, this);
-}
-
-void EditController::ChengeModeRotate(void)
-{
-	modeUpdate_ = std::bind(&EditController::RotateObjectUpdate, this);
-	modeDraw_ = std::bind(&EditController::RotateObjectDraw, this);
+	modeUpdate_ = std::bind(&EditController::MoveRotateObjectUpdate, this);
+	modeDraw_ = std::bind(&EditController::MoveRotateObjectDraw, this);
 }
 
 void EditController::ItemSelectUpdate(void)
@@ -89,8 +82,9 @@ void EditController::ItemSelectUpdate(void)
 	ItemNotSelect();
 }
 
-void EditController::MoveObjectUpdate(void)
+void EditController::MoveRotateObjectUpdate(void)
 {
+	RotateObject();
 	moveDir_ = GetMoveDir();
 	if (moveDir_ == MOVE_DIR::NONE)
 	{
@@ -99,15 +93,11 @@ void EditController::MoveObjectUpdate(void)
 	MoveItem();
 }
 
-void EditController::RotateObjectUpdate(void)
-{
-}
-
 void EditController::ItemSelectDraw(void)
 {
 }
 
-void EditController::MoveObjectDraw(void)
+void EditController::MoveRotateObjectDraw(void)
 {
 	if (mapPos_ != IntVector3{-1,-1,-1})
 	{
@@ -122,10 +112,6 @@ void EditController::MoveObjectDraw(void)
 	}
 }
 
-void EditController::RotateObjectDraw(void)
-{
-}
-
 void EditController::ItemNotSelect(void)
 {
 	if (InputManager::GetInstance().IsTrgDownMouseLeft() == true)
@@ -134,7 +120,7 @@ void EditController::ItemNotSelect(void)
 		if (isClickObject_ == true)
 		{
 			itemType_ = MapEditer::GetInstance().GetItemType(NearPos);
-			ChengeMode(MODE::MOVE);
+			ChengeMode(MODE::MOVE_ROTATE);
 		}
 		else
 		{
@@ -352,7 +338,7 @@ void EditController::DebugUpdate(void)
 {
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_X))
 	{
-		SetItemType(ItemBase::ITEM_TYPE::FLOOR);
+		SetItemType(ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
 	}
 }
 
@@ -363,5 +349,18 @@ void EditController::DebugDraw(void)
 	DrawFormatString(0, 40, 0x000000, "%d,%d,%d",mapPos_.x,mapPos_.y,mapPos_.z);
 	DrawFormatString(0, 60, 0x000000, "%d", static_cast<int>(GetMoveDir()));
 
+}
+
+void EditController::RotateObject(void)
+{
+	InputManager& ins = InputManager::GetInstance();
+	if (ins.IsTrgDown(KEY_INPUT_R))
+	{
+		Quaternion rot = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
+		float rotScale = Utility::Deg2RadF(90.0f);
+		rot = Quaternion::Mult(rot, Quaternion::AngleAxis(rotScale,Utility::AXIS_Y));
+		ItemManager::GetInstance().DummyItemSetRotate(rot, playerNum_);
+		ItemManager::GetInstance().ResetDummyItem(playerNum_, itemType_,mapPos_);
+	}
 }
 

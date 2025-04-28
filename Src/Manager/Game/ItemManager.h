@@ -39,6 +39,8 @@ public:
 
 	ItemBase::Status GetDummyItemStatus(int playerNum);
 	IntVector3 GetDummyObjectSize(int playerNum);
+	Transform GetDummyItemTransform(int playerNum);
+	void ResetDummyItem(int playerNum,ItemBase::ITEM_TYPE type,IntVector3 mapPos);
 
 	/// <summary>
 	/// ダミーアイテムの座標設定
@@ -46,6 +48,12 @@ public:
 	/// <param name="mapPos"></param>
 	/// <param name="playerNum"></param>
 	void DummyItemSetMapPos(IntVector3 mapPos, int playerNum);
+	/// <summary>
+	/// ダミーアイテムの回転を設定
+	/// </summary>
+	/// <param name="rot"></param>
+	/// <param name="playerNum"></param>
+	void DummyItemSetRotate(Quaternion rot, int playerNum);
 	/// <summary>
 	/// ダミーアイテムをアイテムに追加
 	/// </summary>

@@ -70,6 +70,7 @@ public:
 	inline const Status GetStatus(void)const { return status_; }
 
 	void SetPos(IntVector3 mapPos);
+	void SetRotate(Quaternion rot);
 
 protected:
 

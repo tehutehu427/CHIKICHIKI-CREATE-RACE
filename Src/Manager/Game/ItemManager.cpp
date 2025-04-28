@@ -3,6 +3,7 @@
 #include "../Object/Item/MoveVerFloor.h"
 #include "../Object/Item/Fence.h"
 #include "../Object/Item/Cannon.h"
+#include "MapEditer.h"
 #include "ItemManager.h"
 
 
@@ -164,11 +165,84 @@ IntVector3 ItemManager::GetDummyObjectSize(int playerNum)
 	return size;
 }
 
+Transform ItemManager::GetDummyItemTransform(int playerNum)
+{
+	Transform transform;
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		transform = dummyItems_[playerNum]->GetTransform();
+	}
+	else
+	{
+		transform = Transform();
+	}
+	return transform;
+}
+
+void ItemManager::ResetDummyItem(int playerNum, ItemBase::ITEM_TYPE type,IntVector3 mapPos)
+{
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		Transform transform = dummyItems_[playerNum]->GetTransform();
+		std::shared_ptr<ItemBase> dummy;
+		switch (type)
+		{
+		case ItemBase::ITEM_TYPE::NONE:
+			return;
+			break;
+		case ItemBase::ITEM_TYPE::START:
+			break;
+		case ItemBase::ITEM_TYPE::GOAL:
+			break;
+		case ItemBase::ITEM_TYPE::FLOOR:
+			dummy = std::make_shared<Floor>();
+			break;
+		case ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR:
+			dummy = std::make_shared<MoveHoriFloor>();
+			break;
+		case ItemBase::ITEM_TYPE::MOVE_VER_FLOOR:
+			dummy = std::make_shared<MoveVerFloor>();
+			break;
+		case ItemBase::ITEM_TYPE::FENCE:
+			dummy = std::make_shared<Fence>();
+			break;
+		case ItemBase::ITEM_TYPE::CANNON:
+			dummy = std::make_shared<Cannon>();
+			break;
+		case ItemBase::ITEM_TYPE::SPIKY:
+			break;
+		case ItemBase::ITEM_TYPE::BOMB_SMALL:
+			break;
+		case ItemBase::ITEM_TYPE::BOMB_BIG:
+			break;
+		case ItemBase::ITEM_TYPE::MAX:
+			break;
+		default:
+			break;
+		}
+		dummy->Init(mapPos, transform.quaRot, dummyItems_[playerNum]->GetStatus().itemType);
+		dummyItems_.erase(playerNum);
+		dummyItems_[playerNum] = dummy;
+	}
+}
+
 void ItemManager::DummyItemSetMapPos(IntVector3 mapPos, int playerNum)
 {
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
 		dummyItems_[playerNum]->SetPos(mapPos);
+	}
+	else
+	{
+		return;
+	}
+}
+
+void ItemManager::DummyItemSetRotate(Quaternion rot, int playerNum)
+{
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		dummyItems_[playerNum]->SetRotate(rot);
 	}
 	else
 	{

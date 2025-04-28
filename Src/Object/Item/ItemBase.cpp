@@ -44,3 +44,9 @@ void ItemBase::SetPos(IntVector3 mapPos)
 	transform_.pos = MapEditer::GetInstance().MapToWorldPos(mapPos);
 	transform_.Update();
 }
+
+void ItemBase::SetRotate(Quaternion rot)
+{
+	transform_.quaRot = rot;
+	transform_.Update();
+}
