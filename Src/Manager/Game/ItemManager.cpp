@@ -158,6 +158,18 @@ IntVector3 ItemManager::GetDummyObjectSize(int playerNum)
 	return size;
 }
 
+void ItemManager::DummyItemSetMapPos(IntVector3 mapPos, int playerNum)
+{
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		dummyItems_[playerNum]->SetPos(mapPos);
+	}
+	else
+	{
+		return;
+	}
+}
+
 void ItemManager::DummyItemAddItems(int playerNum)
 {
 	if (dummyItems_.find(playerNum) != dummyItems_.end())

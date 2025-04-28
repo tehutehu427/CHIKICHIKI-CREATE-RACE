@@ -38,3 +38,9 @@ void ItemBase::Draw(void)
 {
 	MV1DrawModel(transform_.modelId);
 }
+
+void ItemBase::SetPos(IntVector3 mapPos)
+{
+	transform_.pos = MapEditer::GetInstance().MapToWorldPos(mapPos);
+	transform_.Update();
+}

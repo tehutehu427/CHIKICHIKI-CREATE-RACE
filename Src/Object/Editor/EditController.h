@@ -83,6 +83,9 @@ private:
 	//近くのオブジェクトの座標を取得
 	IntVector3 NearObjectPos(void);	
 	
+	//移動するアイテムの座標を取得
+	void  MoveItem(void);			
+
 	//移動方向を取得
 	MOVE_DIR GetMoveDir(void);			
 

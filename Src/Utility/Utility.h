@@ -138,5 +138,9 @@ public:
 
 	//“Á’è‚Ì”ÍˆÍ“à‚ÉÀ•W‚ªŠÜ‚Ü‚ê‚Ä‚é‚©’²‚×‚é
 	static bool IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vector2 rightBotm);
+
+	//•„†‚ğ•Ô‚·
+	static int GetSign(float f);
+	static int GetSign(int f);
 };
 
