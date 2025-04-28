@@ -9,7 +9,6 @@
 Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNum_(_playerNum), cntl_(_cntl)
 {
 	animationController_ = nullptr;
-	state_ = STATE::NONE;
 	movedPos_ = Utility::VECTOR_ZERO;
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
@@ -30,23 +29,14 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	capsule_->SetLocalPosDown({ 0.0f, 0.0f, 0.0f });
 	capsule_->SetRadius(20.0f);
 
-	//状態管理
-	stateChanges_.emplace(STATE::NONE, std::bind(&Player::ChangeStateNone, this));
-	stateChanges_.emplace(STATE::PLAY, std::bind(&Player::ChangeStatePlay, this));
+	////状態管理
+	//stateChanges_.emplace(STATE::NONE, std::bind(&Player::ChangeStateNone, this));
+	//stateChanges_.emplace(STATE::PLAY, std::bind(&Player::ChangeStatePlay, this));
 }
 
 void Player::Init(void)
 {
-	//transform_.modelId = transform_.SetModel(resMng_.GetInstance().LoadModelDuplicate(ResourceManager::SRC::)
-	//transform_.scl = Utility::VECTOR_ONE;
-	//transform_.pos = { 0.0f, 0.0f, 0.0f };
-	//transform_.quaRot = Quaternion();
-	//transform_.quaRotLocal =
-	//	Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
 	transform_.Update();
-
-	// 初期状態
-	ChangeState(STATE::PLAY);
 }
 
 void Player::Update(void)
@@ -65,11 +55,6 @@ void Player::Update(void)
 	//回転の同期
 	transform_.quaRot = playerRotY_;
 
-
-
-	// 更新ステップ
-	stateUpdate_();
-
 	transform_.Update();
 }
 
@@ -78,7 +63,6 @@ void Player::Draw(void)
 #ifdef DEBUG_ON
 	DrawDebug();
 #endif // DEBUG_ON
-
 }
 
 
@@ -94,8 +78,6 @@ void Player::DrawDebug(void)
 	DrawSphere3D(transform_.pos, 10.0f, 10, color, color, true);
 	DrawFormatString(0, 16, 0xffffff, "角度(%.2f,%.2f,%.2f)", transform_.rot.x, transform_.rot.y, transform_.rot.z);
 	capsule_->Draw();
-	//pJump_->DrawDebug();
-	//pPunch_->DrawDebug();
 
 	DrawSphere3D(punchPos_, 10.0f, 4, 0xff0000, 0xff0000, isPunch_);
 }
@@ -135,7 +117,7 @@ void Player::Move(void)
 	}
 	else
 	{
-		speed_ = 0.0f;
+		//speed_ = 0.0f;
 		//animationController_->Play((int)ANIM_TYPE::IDLE);
 
 		//if (!_isJump && IsEndLanding())
@@ -237,38 +219,6 @@ VECTOR Player::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _lo
 
 	//足したものを返す
 	return VAdd(_followPos, addPos);
-
-}
-
-void Player::ChangeState(STATE _state)
-{
-	//同じ状態だったら処理しない
-	if (state_ == _state)return;
-
-	//状態変更
-	state_ = _state;
-
-	//各状態への初期処理
-	stateChanges_[state_]();
-}
-
-void Player::ChangeStateNone(void)
-{
-	stateUpdate_ = std::bind(&Player::UpdateNone,this);
-}
-
-void Player::ChangeStatePlay(void)
-{
-	stateUpdate_ = std::bind(&Player::UpdatePlay, this);
-}
-
-void Player::UpdateNone(void)
-{
-
-}
-
-void Player::UpdatePlay(void)
-{
 
 }
 

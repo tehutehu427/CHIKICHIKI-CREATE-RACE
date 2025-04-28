@@ -55,6 +55,7 @@ void PlayerManager::Update(void)
 	{
 		p->Update();
 	}
+	PlayersCollision();
 }
 
 void PlayerManager::Draw(void)
@@ -77,24 +78,17 @@ void PlayerManager::PlayersCollision(void)
 {
 	for (int i = 0; i < playerNum_; i++)
 	{
-		for (int j = i; j < playerNum_; j++)
+		players_[i]->SetCollision(false);
+		for (int j = 0; j < playerNum_; j++)
 		{
 			//同じプレイヤー番号の時jを進める
 			if (i == j)continue;
-
 			//各プレイヤーに当たっていることを伝える
 			if (IsHitCapsules(players_[i]->GetCapsule(), players_[j]->GetCapsule()))
 			{
 				players_[i]->SetCollision(true);
 				players_[j]->SetCollision(true);
-				//P2PPush(i, j);
-				return;
-			}
-			else
-			{
-				players_[i]->SetCollision(false);
-				players_[j]->SetCollision(false);
-				continue;
+				P2PPush(i, j);
 			}
 		}
 		

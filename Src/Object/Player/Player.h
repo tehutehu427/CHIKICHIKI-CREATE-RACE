@@ -96,9 +96,6 @@ public:
 
 	//ゲッタ
 	//******************************************
-	//カメラ
-	//const std::shared_ptr<Camera> GetCamera(void)const { return camera_; }
-
 	//プレイヤー番号
 	const int GetPlayerNum(void)const { return playerNum_; }
 
@@ -107,6 +104,7 @@ public:
 
 	const PlayerInput::CNTL GetCntl(void) { return cntl_; }
 
+	const VECTOR GetMovePow(void) { return movePow_; }
 	//入力
 	const std::weak_ptr<PlayerInput> GetInput(void)const { return input_; }
 	//******************************************
@@ -119,7 +117,7 @@ public:
 	void SetCollision(const bool _isCol) { isCol_ = _isCol; }
 
 	//移動量セット(マネージャ用)
-	void SetMovePow(const VECTOR _vec) { pMove_->SetMovePow(_vec); }
+	void SetMovePow(const VECTOR _vec) { movePow_ = _vec; }
 
 #ifdef DEBUG_ON
 	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
@@ -132,14 +130,6 @@ private:
 	//******************************************
 	//メンバ変数
 	//******************************************
-	//状態管理
-	//----------------------------------------------
-	STATE state_;
-	// 状態管理(状態遷移時初期処理)
-	std::map<STATE, std::function<void(void)>> stateChanges_;
-	// 状態管理(更新ステップ)
-	std::function<void(void)> stateUpdate_;
-	//--------------------------------------------
 	// 移動後の座標
 	VECTOR movedPos_;
 
@@ -157,18 +147,8 @@ private:
 	//カプセル
 	std::shared_ptr<Capsule> capsule_;
 
-	//カメラ
-	//std::shared_ptr<Camera> camera_;
-
-	//操作関連
 	//操作入力
 	std::shared_ptr<PlayerInput> input_;
-	//移動
-	std::unique_ptr<PMove> pMove_;
-	//ジャンプ
-	std::unique_ptr<PJump> pJump_;
-	//パンチ
-	std::unique_ptr<PPunch> pPunch_;
 
 	//プレイヤー単体が持っているもの
 	int playerNum_;			//プレイヤー番号
@@ -236,16 +216,6 @@ private:
 	/// <param name="_followRot">追従対象の角度</param>
 	/// <param name="_localPos">相対座標</param>
 	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot,VECTOR _localPos);
-
-
-	// 状態遷移
-	void ChangeState(STATE state);
-	void ChangeStateNone(void);
-	void ChangeStatePlay(void);
-
-	//更新ステップ
-	void UpdateNone(void);
-	void UpdatePlay(void);
 
 	//重力による移動量
 	void CalcGravityPow(void);
