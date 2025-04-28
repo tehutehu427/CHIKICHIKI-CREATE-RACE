@@ -97,7 +97,7 @@ void ItemManager::DeleteItem(VECTOR mapPos, int range)
 void ItemManager::CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type,int playerNum)
 {
 	//アイテム
-	std::unique_ptr<ItemBase> item;
+	std::shared_ptr<ItemBase> item;
 
 	//生成
 	switch (type)
@@ -107,19 +107,19 @@ void ItemManager::CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::I
 	case ItemBase::ITEM_TYPE::GOAL:
 		break;
 	case ItemBase::ITEM_TYPE::FLOOR:
-		item = std::make_unique<Floor>();
+		item = std::make_shared<Floor>();
 		break;
 	case ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR:
-		item = std::make_unique<MoveHoriFloor>();
+		item = std::make_shared<MoveHoriFloor>();
 		break;
 	case ItemBase::ITEM_TYPE::MOVE_VER_FLOOR:
-		item = std::make_unique<MoveVerFloor>();
+		item = std::make_shared<MoveVerFloor>();
 		break;
 	case ItemBase::ITEM_TYPE::FENCE:
-		item = std::make_unique<Fence>();
+		item = std::make_shared<Fence>();
 		break;
 	case ItemBase::ITEM_TYPE::CANNON:
-		item = std::make_unique<Cannon>();
+		item = std::make_shared<Cannon>();
 		break;
 	case ItemBase::ITEM_TYPE::SPIKY:
 		break;
@@ -133,7 +133,7 @@ void ItemManager::CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::I
 	item->Init(mapPos, rot, type);
 
 	//配列に追加
-	dummyItems_[playerNum] = std::move(item);
+	dummyItems_[playerNum] = item;
 }
 
 ItemBase::Status ItemManager::GetDummyItemStatus(int playerNum)
@@ -180,12 +180,8 @@ void ItemManager::DummyItemAddItems(int playerNum)
 {
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
-		items_[dummyItems_[playerNum]->GetStatus().itemType].emplace_back(std::move(dummyItems_[playerNum]));
+		items_[dummyItems_[playerNum]->GetStatus().itemType].emplace_back(dummyItems_[playerNum]);
 		dummyItems_.erase(playerNum);
-	}
-	else
-	{
-		return;
 	}
 }
 
@@ -203,7 +199,7 @@ ItemManager& ItemManager::GetInstance(void)
 	return *instance_;
 }
 
-const std::vector<std::unique_ptr<ItemBase>>* ItemManager::GetItems(const ItemBase::ITEM_TYPE _type) const
+const std::vector<std::shared_ptr<ItemBase>>* ItemManager::GetItems(const ItemBase::ITEM_TYPE _type) const
 {
 	auto it = items_.find(_type);
 	if (it != items_.end()) 

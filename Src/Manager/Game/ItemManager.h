@@ -64,7 +64,7 @@ public:
 	/// </summary>
 	/// <param name="_type">種類</param>
 	/// <returns>指定したアイテム配列のポインタ。存在しなければ nullptr</returns>
-	const std::vector<std::unique_ptr<ItemBase>>* GetItems(const ItemBase::ITEM_TYPE _type)const;
+	const std::vector<std::shared_ptr<ItemBase>>* GetItems(const ItemBase::ITEM_TYPE _type)const;
 	
 
 protected:
@@ -73,7 +73,7 @@ private:
 	static ItemManager* instance_;
 
 	//種類ごとにアイテムを管理
-	std::map<ItemBase::ITEM_TYPE, std::vector<std::unique_ptr<ItemBase>>> items_;
+	std::map<ItemBase::ITEM_TYPE, std::vector<std::shared_ptr<ItemBase>>> items_;
 	//配置中のアイテム[プレイヤー番号][アイテムの種類]
 	std::map<int,std::shared_ptr<ItemBase>> dummyItems_;
 	ItemManager(void);
