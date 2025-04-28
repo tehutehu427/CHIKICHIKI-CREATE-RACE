@@ -180,7 +180,7 @@ void ItemManager::DummyItemAddItems(int playerNum)
 {
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
-		items_.emplace_back(std::move(dummyItems_[playerNum]));
+		items_[dummyItems_[playerNum]->GetStatus().itemType].emplace_back(std::move(dummyItems_[playerNum]));
 		dummyItems_.erase(playerNum);
 	}
 	else

@@ -72,8 +72,8 @@ protected:
 private:
 	static ItemManager* instance_;
 
-	//アイテム[アイテムを置いた順番][置いたアイテム]
-	std::vector<std::shared_ptr<ItemBase>> items_;
+	//種類ごとにアイテムを管理
+	std::map<ItemBase::ITEM_TYPE, std::vector<std::unique_ptr<ItemBase>>> items_;
 	//配置中のアイテム[プレイヤー番号][アイテムの種類]
 	std::map<int,std::shared_ptr<ItemBase>> dummyItems_;
 	ItemManager(void);
