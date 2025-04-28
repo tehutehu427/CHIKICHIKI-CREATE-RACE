@@ -313,8 +313,8 @@ void Camera::SetBeforeDrawFreeControll(void)
 	float rotPow = Utility::Deg2RadF(SPEED);
 	if (ins.IsNew(KEY_INPUT_E)) { angles_.y += rotPow; }
 	if (ins.IsNew(KEY_INPUT_Q)) { angles_.y -= rotPow; }
-	if (ins.IsNew(KEY_INPUT_LSHIFT)) { angles_.x -= rotPow; }
-	if (ins.IsNew(KEY_INPUT_LCONTROL)) { angles_.x += rotPow; }
+	if (ins.IsNew(KEY_INPUT_W)) { angles_.x -= rotPow; }
+	if (ins.IsNew(KEY_INPUT_S)) { angles_.x += rotPow; }
 
 	if (angles_.x <= FPS_LIMIT_X_UP_RAD)
 	{
