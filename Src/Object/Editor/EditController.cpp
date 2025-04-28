@@ -8,7 +8,7 @@ EditController::EditController(int playerNum)
 	playerNum_ = playerNum;
 	mousePos_ = Vector2();
 	mapPos_ = {};
-
+	moveDir_ = MOVE_DIR::NONE;
 	//モード管理(遷移時の初期処理)
 	modeChanges_.emplace(MODE::ITEM_SELECT, std::bind(&EditController::ChengeModeItemSelect, this));
 	modeChanges_.emplace(MODE::MOVE, std::bind(&EditController::ChengeModeMove, this));
@@ -29,9 +29,11 @@ void EditController::Update(void)
 
 	//モード別更新処理
 	modeUpdate_();
-
-
-	ItemNotSelect();
+	
+	if (moveDir_ == MOVE_DIR::NONE)
+	{
+		ItemNotSelect();
+	}
 }
 
 void EditController::Draw(void)
@@ -356,10 +358,10 @@ void EditController::DebugUpdate(void)
 
 void EditController::DebugDraw(void)
 {
-	DrawFormatString(0, 0, 0xffffff, "%d", static_cast<int>(mode_));
-	DrawFormatString(0, 20, 0xffffff, "%d", static_cast<int>(itemType_));
-	DrawFormatString(0, 40, 0xffffff, "%d,%d,%d",mapPos_.x,mapPos_.y,mapPos_.z);
-	DrawFormatString(0, 60, 0xffffff, "%d", static_cast<int>(GetMoveDir()));
+	DrawFormatString(0, 0, 0x000000, "%d", static_cast<int>(mode_));
+	DrawFormatString(0, 20, 0x000000, "%d", static_cast<int>(itemType_));
+	DrawFormatString(0, 40, 0x000000, "%d,%d,%d",mapPos_.x,mapPos_.y,mapPos_.z);
+	DrawFormatString(0, 60, 0x000000, "%d", static_cast<int>(GetMoveDir()));
 
 }
 
