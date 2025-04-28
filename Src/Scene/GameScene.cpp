@@ -93,7 +93,7 @@ void GameScene::NormalUpdate(void)
 void GameScene::NormalDraw(void)
 {
 	//デバッグ処理
-	DebagDraw();
+	//DebagDraw();
 
 	sky_->Draw();
 
