@@ -1,9 +1,13 @@
 #pragma once
 #include "ItemBase.h"
 
+class CannonShot;
+
 class Cannon : public ItemBase
 {
 public:
+	//弾の生成数
+	static constexpr int SHOT_MAX = 3;
 
 	//マップサイズ
 	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };
@@ -37,6 +41,9 @@ public:
 
 private:
 
+	//弾
+	std::unique_ptr<CannonShot> shot_[SHOT_MAX];
+
 	//砲身用モデル情報
 	Transform barrelTrans_;
 
@@ -65,5 +72,11 @@ private:
 	/// <param name="_addAxis">加える回転情報</param>
 	/// <param name="_relativePos">モデル自体の相対座標</param>
 	void Rotate(Transform& _trans, const VECTOR _addAxis, const VECTOR _relativePos = {0.0f,0.0f,0.0f})const;
+
+	//弾の生成
+	void CreateShot(void);
+
+	//弾の配列管理
+	std::unique_ptr<CannonShot>GetValidShot(void);
 };
 

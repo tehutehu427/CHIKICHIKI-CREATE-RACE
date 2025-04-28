@@ -3,6 +3,7 @@
 #include "../../Manager/System/SceneManager.h"
 #include "../../Utility/Utility.h"
 #include "../../FpsControl/FpsControl.h"
+#include "CannonShot.h"
 #include "Cannon.h"
 
 Cannon::Cannon()
@@ -105,7 +106,7 @@ void Cannon::Aim(void)
 	targetVec_ = Utility::GetMoveVec(barrelTrans_.pos, targetPos_);
 }
 
-void Cannon::Rotate(Transform& _trans, VECTOR _addAxis, const VECTOR _relativePos)const
+void Cannon::Rotate(Transform& _trans, const VECTOR _addAxis, const VECTOR _relativePos)const
 {
 	//âÒì]
 	Quaternion rot = Quaternion::Identity();
@@ -120,4 +121,14 @@ void Cannon::Rotate(Transform& _trans, VECTOR _addAxis, const VECTOR _relativePo
 
 	//äÓñ{èÓïÒçXêV
 	_trans.Update();
+}
+
+void Cannon::CreateShot(void)
+{
+	std::unique_ptr<CannonShot> shot = GetValidShot();
+}
+
+std::unique_ptr<CannonShot> Cannon::GetValidShot(void)
+{
+	return std::unique_ptr<CannonShot>();
 }

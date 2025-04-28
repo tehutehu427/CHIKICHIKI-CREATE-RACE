@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Item\CannonShot.cpp" />
+    <ClCompile Include="Src\Object\Item\Fan.cpp" />
+    <ClCompile Include="Src\Object\Item\Spiky.cpp" />
     <ClCompile Include="Src\Object\Item\ItemName.cpp" />
     <ClCompile Include="Src\Object\Item\Cannon.cpp" />
     <ClCompile Include="Src\Object\Item\Fence.cpp" />
@@ -65,6 +68,9 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Item\CannonShot.h" />
+    <ClInclude Include="Src\Object\Item\Fan.h" />
+    <ClInclude Include="Src\Object\Item\Spiky.h" />
     <ClInclude Include="Src\Object\Item\ItemName.h" />
     <ClInclude Include="Src\Object\Item\Cannon.h" />
     <ClInclude Include="Src\Object\Item\Fence.h" />

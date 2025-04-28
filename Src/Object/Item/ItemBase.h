@@ -20,6 +20,10 @@ public:
 		FENCE,				//柵
 		CANNON,				//大砲
 		SPIKY,				//とげ
+		FAN,				//扇風機
+		FERRIS_WHEEL,		//観覧車
+		SLIME_FLOOR,		//スライム床
+		SPRING,				//ばね(ジャンプ台)
 
 		//破壊オブジェ
 		BOMB_SMALL,			//爆弾(小)
