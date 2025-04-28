@@ -6,10 +6,7 @@
 #include "../Common/Capsule.h"
 #include "../../Manager/System/Camera.h"
 #include"../Item/MoveHoriFloor.h"
-#include"./Process/PMove.h"
 #include"./Process/PlayerInput.h"
-#include"./Process/PJump.h"
-#include"./Process/PPunch.h"
 #include "../ObjectBase.h"
 
 #define DEBUG_ON
