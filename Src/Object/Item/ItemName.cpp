@@ -2,7 +2,7 @@
 
 ItemName::ItemName()
 {
-	for (std::string& n : names_) { n = ""; }
+
 }
 
 void ItemName::Init()

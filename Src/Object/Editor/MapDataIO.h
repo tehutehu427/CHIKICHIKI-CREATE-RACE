@@ -2,6 +2,8 @@
 #include <string>
 #include "../../Manager/Game/MapEditer.h"
 
+class ItemName;
+
 class MapDataIO
 {
 public:
@@ -17,6 +19,9 @@ public:
 	void Update();	//更新
 
 private:
+
+	//アイテムの名前
+
 
 	//JSONファイルで出力する
 	void ExportJsonFile(const std::string _fileName);

@@ -1,7 +1,12 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <string>
 #include "MapDataIO.h"
 #include "../../Lib/nlohmann/json.hpp"
 #include "../../Manager/System/InputManager.h"
 #include "../../Manager/Game/ItemManager.h"
+#include "../../Manager/System/DateBank.h"
 
 using json = nlohmann::json;
 
@@ -41,28 +46,44 @@ void MapDataIO::Update()
 
 void MapDataIO::ExportJsonFile(const std::string _fileName)
 {
-	//json j;
-	//MapEditer& map = MapEditer::GetInstance();
+    json j;
 
-	////各アイテムの配置情報を格納
-	//for (const auto& [type, positions] : grouped) {
-	//	for (const auto& pos : positions) {
-	//		output[type].push_back({ {"x", pos.x}, {"y", pos.y} });
-	//	}
-	//}
+    for (int i = 0; ItemBase::ITEM_NUM_MAX; i++) {
+        //アイテムの種類
+        ItemBase::ITEM_TYPE type = static_cast<ItemBase::ITEM_TYPE>(i);
 
-	//std::ofstream file(filename + ".json");
-	//if (file.is_open()) {
-	//	file << j.dump(4); // インデント付きで出力
-	//	file.close();
-	//}
-	//else {
-	//	MessageBoxA(NULL, "JSONファイルの保存に失敗しました", "エラー", MB_OK);
-	//}
+        //指定されたアイテムの配列
+        const auto& items = ItemManager::GetInstance().GetItems(type);
+
+        //配列の中身がカラじゃない場合
+        if (items && !items->empty()) {
+            nlohmann::json positions = nlohmann::json::array();
+
+            //配置情報の格納
+            for (const auto& item : *items) {
+                VECTOR pos = item->GetTransform().pos;
+                positions.push_back({
+                    {"x", pos.x},
+                    {"y", pos.y},
+                    {"z", pos.z}
+                });
+            }
+            std::string typeName = DateBank::GetInstance().GetItemName(type);
+            j[typeName] = positions;
+        }
+    }
+
+    std::ofstream outFile(_fileName);
+    if (outFile.is_open()) {
+        outFile << j.dump(4); // インデント付きで出力
+        outFile.close();
+        std::cout << "アイテムを " << _fileName << " に出力しました。\n";
+    }
+    else {
+        std::cerr << "ファイルを開けませんでした: " << _fileName << "\n";
+    }
 }
 
 void MapDataIO::ImportJsonFile()
 {
 }
-
-
