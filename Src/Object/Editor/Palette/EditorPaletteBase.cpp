@@ -1,7 +1,11 @@
 #include <DxLib.h>
+#include "../../../Manager/System/SceneManager.h"
+#include "../../../Manager/System/Camera.h"
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../../Manager/System/InputManager.h"
 #include "../../../Manager/Game/ItemManager.h"
+#include "../../../Manager/Game/MapEditer.h"
+#include "../../../Common/IntVector3.h"
 #include "../../../Utility/Utility.h"
 #include "EditorPaletteBase.h"
 #include "PaletteIcon.h"
@@ -175,6 +179,8 @@ void EditorPaletteBase::UpdateOpen()
 void EditorPaletteBase::UpdateSelect()
 {	
 	InputManager& ins = InputManager::GetInstance();
+	ItemManager & itemMng = ItemManager::GetInstance();
+	auto camera = SceneManager::GetInstance().GetCamera();
 	Vector2 leftTop = {};		//画像左上
 	Vector2 rightBotm = {};		//画像右下
 
@@ -192,8 +198,17 @@ void EditorPaletteBase::UpdateSelect()
 	//生成開始
 	if (palIcon_->IsCreate())
 	{
+		//生成位置を調整
+		VECTOR createPos = Utility::GetWorldPosAtScreen(
+			{ Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y },
+			DISTANCE,
+			camera.lock()->GetPos(),
+			camera.lock()->GetForward());
+
+		IntVector3 createMapPos = MapEditer::GetInstance().WorldToMapPos(createPos);
+
 		//アイテムを追加
-		ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), palIcon_->GetSelectType());
+		itemMng.AddItem(createMapPos, Quaternion(), palIcon_->GetSelectType());
 
 		//状態変更
 		ChangeState(STATE::CLOSE);

@@ -136,7 +136,15 @@ public:
 	/// <returns>向かう先までの移動ベクトル</returns>
 	static const VECTOR GetMoveVec(const VECTOR _start, const VECTOR _goal, const float _speed = 1.0f);
 
-	//特定の範囲内に座標が含まれてるか調べる
+	/// <summary>
+	/// 特定の範囲内に座標が含まれてるか調べる
+	/// </summary>
+	/// <param name="pos"></param>調べたい座標
+	/// <param name="leftTop"></param>範囲左上
+	/// <param name="rightBotm"></param>範囲右下
+	/// <returns></returns>判定結果を返す
 	static bool IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vector2 rightBotm);
+
+	static VECTOR GetWorldPosAtScreen(const Vector2 screenPos, const float distance, const VECTOR cameraPos, const VECTOR cameraDir);
 };
 

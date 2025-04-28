@@ -128,9 +128,6 @@ private:
 	int sleCnt_;
 	ItemBase::ITEM_TYPE selectType_;
 
-	//アイテムの名前
-	std::unique_ptr<ItemName> name_;
-
 	//状態変更処理
 	void ChangeStateNone();
 	void ChangeStateScrollUp();

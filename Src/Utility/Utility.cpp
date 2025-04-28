@@ -601,3 +601,18 @@ bool Utility::IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vect
     return pos.x > leftTop.x && pos.x < rightBotm.x &&
             pos.y > leftTop.y && pos.y < rightBotm.y;
 }
+
+VECTOR Utility::GetWorldPosAtScreen(const Vector2 screenPos, const float distance, const VECTOR cameraPos, const VECTOR cameraDir)
+{
+    // スクリーン中心の方向ベクトルを取得 (depth = 0.5で中間点)
+    VECTOR sPos = VGet(screenPos.x, screenPos.y, 0.5f);
+    VECTOR screenDir = ConvScreenPosToWorldPos(sPos);
+
+    // カメラ位置から見たスクリーン中心方向へのベクトルを作成
+    VECTOR dir = VSub(screenDir, cameraPos);
+    dir = VNorm(dir); // 正規化して単位ベクトルにする
+
+    // 指定距離だけ進めた座標
+    VECTOR ret = VAdd(cameraPos, VScale(dir, distance));
+    return ret;
+}

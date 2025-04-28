@@ -39,6 +39,9 @@ public:
 	static constexpr int OPEN_POS_X = Application::SCREEN_HALF_X;
 	static constexpr int OPEN_POS_Y = Application::SCREEN_HALF_Y;
 
+	//İ’uêŠ‹——£
+	static constexpr float DISTANCE = 500.0f;
+
 	//‰æ‘œ•`‰æ‚ÉŠÖ‚·‚éî•ñ
 	struct ImgInfo
 	{
