@@ -5,6 +5,7 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/Camera.h"
 #include "../Manager/System/InputManager.h"
+#include "../Manager/System/DateBank.h"
 #include "../Manager/Game/ItemManager.h"
 #include "../Manager/Game/MapEditer.h"
 #include "../Manager/Game/GravityManager.h"
@@ -44,7 +45,12 @@ void GameScene::Load(void)
 	//player_ = std::make_unique<Player>();
 	//player_->Load();
 
-	editController_ = std::make_shared<EditController>();
+	//for (int i = 0; i < DateBank::GetInstance().GetPlayerNum();i++)
+	//{
+	// 
+	//	editController_ = std::make_shared<EditController>(i);
+	//}
+	editController_ = std::make_shared<EditController>(0);
 
 	palette_ = std::make_unique<EditorPaletteBase>(*editController_);
 	palette_->Load();
@@ -98,7 +104,7 @@ void GameScene::NormalUpdate(void)
 void GameScene::NormalDraw(void)
 {
 	//デバッグ処理
-	DebagDraw();
+	//DebagDraw();
 
 	sky_->Draw();
 
@@ -167,7 +173,7 @@ void GameScene::ChangePhaseEdit(void)
 	VECTOR pos;
 	IntVector3 mPos = MapEditer::MAP_SIZE;
 	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
-	pos = { 0.0f,250.0f,-500.0f };
+	//pos = { 0.0f,250.0f,-500.0f };
 	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
 }
 

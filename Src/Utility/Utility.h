@@ -146,5 +146,9 @@ public:
 	static bool IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vector2 rightBotm);
 
 	static VECTOR GetWorldPosAtScreen(const Vector2 screenPos, const float distance, const VECTOR cameraPos, const VECTOR cameraDir);
+
+	//ïÑçÜÇï‘Ç∑
+	static int GetSign(float f);
+	static int GetSign(int f);
 };
 

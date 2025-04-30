@@ -22,6 +22,10 @@ void ItemManager::Update(void)
 			}
 		}
 	}
+	for (auto& item : dummyItems_)
+	{
+		item.second->Update();
+	}
 }
 
 void ItemManager::Draw(void)
@@ -32,6 +36,14 @@ void ItemManager::Draw(void)
 				item->Draw();
 			}
 		}
+	}
+	for (auto& item : dummyItems_)
+	{
+		if (item.second == nullptr)
+		{
+			continue;
+		}
+		item.second->Draw();
 	}
 }
 
@@ -82,6 +94,97 @@ void ItemManager::DeleteItem(VECTOR mapPos, int range)
 
 }
 
+void ItemManager::CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type,int playerNum)
+{
+	//アイテム
+	std::shared_ptr<ItemBase> item;
+
+	//生成
+	switch (type)
+	{
+	case ItemBase::ITEM_TYPE::START:
+		break;
+	case ItemBase::ITEM_TYPE::GOAL:
+		break;
+	case ItemBase::ITEM_TYPE::FLOOR:
+		item = std::make_shared<Floor>();
+		break;
+	case ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR:
+		item = std::make_shared<MoveHoriFloor>();
+		break;
+	case ItemBase::ITEM_TYPE::MOVE_VER_FLOOR:
+		item = std::make_shared<MoveVerFloor>();
+		break;
+	case ItemBase::ITEM_TYPE::FENCE:
+		item = std::make_shared<Fence>();
+		break;
+	case ItemBase::ITEM_TYPE::CANNON:
+		item = std::make_shared<Cannon>();
+		break;
+	case ItemBase::ITEM_TYPE::SPIKY:
+		break;
+	case ItemBase::ITEM_TYPE::BOMB_SMALL:
+		break;
+	case ItemBase::ITEM_TYPE::BOMB_BIG:
+		break;
+	}
+
+	//初期化
+	item->Init(mapPos, rot, type);
+
+	//配列に追加
+	dummyItems_[playerNum] = item;
+}
+
+ItemBase::Status ItemManager::GetDummyItemStatus(int playerNum)
+{
+	ItemBase::Status status;
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		status = dummyItems_[playerNum]->GetStatus();
+	}
+	else
+	{
+		status = ItemBase::Status();
+	}
+	return status;
+}
+
+IntVector3 ItemManager::GetDummyObjectSize(int playerNum)
+{
+	IntVector3 size;
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		size = dummyItems_[playerNum]->GetSize();
+	}
+	else
+	{
+		size = {-1,-1,-1};
+	}
+	return size;
+}
+
+void ItemManager::DummyItemSetMapPos(IntVector3 mapPos, int playerNum)
+{
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		dummyItems_[playerNum]->SetPos(mapPos);
+	}
+	else
+	{
+		return;
+	}
+}
+
+void ItemManager::DummyItemAddItems(int playerNum)
+{
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		items_[dummyItems_[playerNum]->GetStatus().itemType].emplace_back(dummyItems_[playerNum]);
+		dummyItems_.erase(playerNum);
+	}
+}
+
 void ItemManager::CreateInstance(void)
 {
 	if (instance_ == nullptr)
@@ -96,7 +199,7 @@ ItemManager& ItemManager::GetInstance(void)
 	return *instance_;
 }
 
-const std::vector<std::unique_ptr<ItemBase>>* ItemManager::GetItems(const ItemBase::ITEM_TYPE _type) const
+const std::vector<std::shared_ptr<ItemBase>>* ItemManager::GetItems(const ItemBase::ITEM_TYPE _type) const
 {
 	auto it = items_.find(_type);
 	if (it != items_.end()) 

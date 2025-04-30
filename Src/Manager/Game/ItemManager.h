@@ -29,6 +29,29 @@ public:
 	/// <param name="range">消去範囲</param>
 	void DeleteItem(VECTOR mapPos, int range);
 
+	/// <summary>
+	/// ダミーアイテム追加
+	/// </summary>
+	/// <param name="mapPos">生成させるマップ座標</param>
+	/// <param name="rot">生成させる時の回転情報</param>
+	/// <param name="type">アイテムの種類</param>
+	void CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type, int playerNum);
+
+	ItemBase::Status GetDummyItemStatus(int playerNum);
+	IntVector3 GetDummyObjectSize(int playerNum);
+
+	/// <summary>
+	/// ダミーアイテムの座標設定
+	/// </summary>
+	/// <param name="mapPos"></param>
+	/// <param name="playerNum"></param>
+	void DummyItemSetMapPos(IntVector3 mapPos, int playerNum);
+	/// <summary>
+	/// ダミーアイテムをアイテムに追加
+	/// </summary>
+	/// <param name="playerNum"></param>
+	void DummyItemAddItems(int playerNum);
+
 	// 明示的にインステンスを生成する
 	static void CreateInstance(void);
 
@@ -41,7 +64,7 @@ public:
 	/// </summary>
 	/// <param name="_type">種類</param>
 	/// <returns>指定したアイテム配列のポインタ。存在しなければ nullptr</returns>
-	const std::vector<std::unique_ptr<ItemBase>>* GetItems(const ItemBase::ITEM_TYPE _type)const;
+	const std::vector<std::shared_ptr<ItemBase>>* GetItems(const ItemBase::ITEM_TYPE _type)const;
 	
 
 protected:
@@ -50,9 +73,9 @@ private:
 	static ItemManager* instance_;
 
 	//種類ごとにアイテムを管理
-	std::map<ItemBase::ITEM_TYPE, std::vector<std::unique_ptr<ItemBase>>> items_;
-
-	//外部でのコンストラクタ作成禁止
+	std::map<ItemBase::ITEM_TYPE, std::vector<std::shared_ptr<ItemBase>>> items_;
+	//配置中のアイテム[プレイヤー番号][アイテムの種類]
+	std::map<int,std::shared_ptr<ItemBase>> dummyItems_;
 	ItemManager(void);
 	//コピーコンストラクタ及び代入演算の禁止
 	ItemManager(const ItemManager& instance_) = delete;
