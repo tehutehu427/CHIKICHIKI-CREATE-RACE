@@ -149,7 +149,7 @@ void EditorPaletteBase::UpdateWait()
 	Vector2 leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
 	Vector2 rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
 
-	if(ins.IsTrgMouseLeft() &&
+	if(ins.IsTrgDownMouseLeft() &&
 		Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBotm))
 	{
 		ChangeState(STATE::OPEN);

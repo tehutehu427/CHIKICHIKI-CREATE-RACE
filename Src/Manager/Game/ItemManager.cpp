@@ -94,6 +94,11 @@ void ItemManager::DeleteItem(VECTOR mapPos, int range)
 
 }
 
+void ItemManager::AllDeleteItem()
+{
+	items_.clear();
+}
+
 void ItemManager::CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type,int playerNum)
 {
 	//ƒAƒCƒeƒ€

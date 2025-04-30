@@ -104,6 +104,8 @@ void MapDataIO::ExportJsonFile(const std::string _fileName)
 
 void MapDataIO::ImportJsonFile()
 {
+    ItemManager& itemMng = ItemManager::GetInstance();
+
     std::string filepath = OpenFileDialog();
     if (filepath.empty()) 
     {
@@ -111,6 +113,10 @@ void MapDataIO::ImportJsonFile()
         return;
     }
 
+    //今あるオブジェクトを削除
+    itemMng.AllDeleteItem();
+
+    //読み込み
     auto items = LoadItemsFromJson(filepath);
 
     // 読み込んだアイテムを確認
@@ -122,7 +128,7 @@ void MapDataIO::ImportJsonFile()
             IntVector3 mapPos = MapEditer::GetInstance().WorldToMapPos(pos);
 
             //格納
-            ItemManager::GetInstance().AddItem(mapPos, Quaternion(), type);
+            itemMng.AddItem(mapPos, Quaternion(), type);
         }
     }
 }
@@ -167,13 +173,16 @@ std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItem
 
         if (j.contains(typeName))
         {
+            std::vector<VECTOR> positions;
             for (auto& pos : j[typeName])
             {
                 VECTOR position;
                 position.x = pos["x"].get<float>();
                 position.y = pos["y"].get<float>();
-                position.z = pos["z"].get<float>();
+                position.z = pos["z"].get<float>();  
+                positions.push_back(position);
             }
+            items[type] = positions;
         }
     }
 

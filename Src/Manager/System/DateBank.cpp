@@ -24,16 +24,16 @@ void DateBank::Init(void)
 
 	//ñºëOÇÃäiî[
 	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::NONE)] = "";
-	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::BOMB_BIG)] = "îöíeëÂ";
-	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::BOMB_SMALL)] = "îöíeè¨";
-	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::CANNON)] = "ëÂñC";
-	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::FENCE)] = "çÚ";
-	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::FLOOR)] = "è∞";
-	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::GOAL)] = "ÉSÅ[Éã";
-	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR)] = "â°à⁄ìÆè∞";
-	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::MOVE_VER_FLOOR)] = "ècà⁄ìÆè∞";
-	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::SPIKY)] = "Ç∆Ç∞è∞";
-	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::START)] = "ÉXÉ^Å[Ég";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::BOMB_BIG)] = "BombBig";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::BOMB_SMALL)] = "BombSmall";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::CANNON)] = "Cannon";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::FENCE)] = "Fence";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::FLOOR)] = "Floor";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::GOAL)] = "Goal";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR)] = "LateralMoveFloor";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::MOVE_VER_FLOOR)] = "VerticalMoveFloor";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::SPIKY)] = "Spiky";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::START)] = "Start";
 }
 
 bool DateBank::SetPlayerNum(int num)
