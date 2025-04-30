@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Item\SlimeFloor.cpp" />
     <ClCompile Include="Src\Object\Item\Cannon.cpp" />
     <ClCompile Include="Src\Object\Item\Fence.cpp" />
     <ClCompile Include="Src\Object\Item\MoveVerFloor.cpp" />
@@ -61,6 +62,7 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Item\SlimeFloor.h" />
     <ClInclude Include="Src\Object\Item\Cannon.h" />
     <ClInclude Include="Src\Object\Item\Fence.h" />
     <ClInclude Include="Src\Object\Item\MoveVerFloor.h" />

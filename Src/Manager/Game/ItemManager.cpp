@@ -3,6 +3,7 @@
 #include "../Object/Item/MoveVerFloor.h"
 #include "../Object/Item/Fence.h"
 #include "../Object/Item/Cannon.h"
+#include "../Object/Item/SlimeFloor.h"
 #include "ItemManager.h"
 
 
@@ -76,6 +77,9 @@ void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE
 		break;
 	case ItemBase::ITEM_TYPE::SPIKY:
 		break;
+	case ItemBase::ITEM_TYPE::SLIME_FLOOR:
+		item = std::make_unique<SlimeFloor>();
+		break;
 	case ItemBase::ITEM_TYPE::BOMB_SMALL:
 		break;
 	case ItemBase::ITEM_TYPE::BOMB_BIG:
@@ -127,6 +131,9 @@ void ItemManager::CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::I
 		item = std::make_shared<Cannon>();
 		break;
 	case ItemBase::ITEM_TYPE::SPIKY:
+		break;
+	case ItemBase::ITEM_TYPE::SLIME_FLOOR:
+		item = std::make_shared<SlimeFloor>();
 		break;
 	case ItemBase::ITEM_TYPE::BOMB_SMALL:
 		break;
