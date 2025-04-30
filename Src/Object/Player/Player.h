@@ -45,13 +45,16 @@ public:
 	static constexpr float PUNCH_TIME_MAX = 1.5f;
 
 	//パンチクールタイム
-	static constexpr float PUNCH_COOL_TIME = 0.5;
+	static constexpr float PUNCH_COOL_TIME = 0.5f;
 
 	// 回転完了までの時間
 	static constexpr float TIME_ROT = 1.0f;
 
 	//パンチのローカル座標
 	static constexpr VECTOR PUNCH_LOCAL_POS = { 0.0f,50.0f,40.0f };
+
+	//パンチの範囲
+	static constexpr float PUNCH_RADIUS = 10.0f;
 
 
 	enum class FLOOR_COL
@@ -115,6 +118,12 @@ public:
 	const VECTOR GetMovePow(void) { return movePow_; }
 	//入力
 	const std::weak_ptr<PlayerInput> GetInput(void)const { return input_; }
+
+	//パンチ中ゲッタ
+	const bool GetIsPunch(void) { return isPunch_; }
+
+	//パンチ座標
+	const VECTOR GetPunchPos(void) { return punchPos_; }
 	//******************************************
 	//セッタ
 	//******************************************
@@ -196,6 +205,7 @@ private:
 	float punchCnt_;				//パンチカウント
 	float punchCoolCnt_;			//パンチクールタイム
 	VECTOR punchPos_;			//攻撃座標
+	bool isPunched_;			//他プレイヤーからのパンチを受けたか
 
 #ifdef DEBUG_ON
 	VECTOR cubeMovePos_;

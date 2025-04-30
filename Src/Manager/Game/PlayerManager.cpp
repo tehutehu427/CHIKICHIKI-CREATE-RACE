@@ -82,8 +82,10 @@ void PlayerManager::PlayersCollision(void)
 				players_[j]->SetCollision(true);
 				P2PPush(i, j);
 			}
+
+			if (!players_[i]->GetIsPunch() && !players_[j]->GetIsPunch())return;
+			//if(Utility::IsHitSphereCapsule(players_[i]->GetPunchPos(),Player::PUNCH_RADIUS))
 		}
-		
 	}
 }
 

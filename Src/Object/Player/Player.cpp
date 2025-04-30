@@ -38,6 +38,7 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	punchCoolCnt_ = 0.0f;
 	isPunch_ = false;
 	punchPos_ = Utility::VECTOR_ZERO;
+	isPunched_ = false;
 
 	capsule_ = std::make_shared<Capsule>(transform_);
 	capsule_->SetLocalPosTop(CAPSULE_TOP);
@@ -100,7 +101,7 @@ void Player::DrawDebug(void)
 	DrawFormatString(0, 16, 0xffffff, "Šp“x(%.2f,%.2f,%.2f)", transform_.rot.x, transform_.rot.y, transform_.rot.z);
 	capsule_->Draw();
 
-	DrawSphere3D(punchPos_, 10.0f, 4, 0xff0000, 0xff0000, isPunch_);
+	DrawSphere3D(punchPos_, PUNCH_RADIUS, 4, 0xff0000, 0xff0000, isPunch_);
 
 
 	//DrawSphere3D(cube_.centerPos, 7.0f, 4, 0xff0000, 0xff0000, true);
