@@ -33,6 +33,12 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	jumpPow_ = Utility::VECTOR_ZERO;
 	jumpDeceralation_ = POW_JUMP;
 
+	//パンチ関係の初期化
+	punchCnt_ = 0.0f;
+	punchCoolCnt_ = 0.0f;
+	isPunch_ = false;
+	punchPos_ = Utility::VECTOR_ZERO;
+
 	capsule_ = std::make_shared<Capsule>(transform_);
 	capsule_->SetLocalPosTop(CAPSULE_TOP);
 	capsule_->SetLocalPosDown(CAPSULE_DOWN);
@@ -49,23 +55,20 @@ void Player::Update(void)
 	//入力更新
 	input_->Update();
 	//アクション関係
-	Move();
-	Jump();
-	Punch();
-	Rotate();
+	Action();
 
 	VECTOR dirDown = transform_.GetDown();
 	//重力
 	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_);
 
+#ifdef DEBUG_ON
+	CubeMove();
+#endif // DEBUG_ON
+
 	//衝突判定
 	Collision();
 	//回転の同期
 	transform_.quaRot = playerRotY_;
-
-#ifdef DEBUG_ON
-	CubeMove();
-#endif // DEBUG_ON
 
 
 	transform_.Update();
@@ -93,10 +96,28 @@ void Player::DrawDebug(void)
 	capsule_->Draw();
 
 	DrawSphere3D(punchPos_, 10.0f, 4, 0xff0000, 0xff0000, isPunch_);
-	DrawSphere3D(cubePos_, 10.0f, 4, 0xff0000, 0xff0000, true);
 
-	DrawCube3D(VAdd(cubePos_, { -CUBE_W / 2, -CUBE_H / 2,-CUBE_D / 2 }), VAdd(cubePos_, { CUBE_W / 2, 0.0f, CUBE_D / 2 }), 0xffffff, 0xffffff, true);
+
+	//DrawSphere3D(cube_.centerPos, 7.0f, 4, 0xff0000, 0xff0000, true);
+	//DrawSphere3D(cube_.leftPos, 7.0f, 4, 0xff0000, 0xff0000, true);
+	//DrawSphere3D(cube_.rightPos, 7.0f, 4, 0xff0000, 0xff0000, true);
+	//DrawSphere3D(cube_.upPos, 7.0f, 4, 0xff0000, 0xff0000, true);
+	//DrawSphere3D(cube_.downPos, 7.0f, 4, 0xff0000, 0xff0000, true);
+
+	//DrawCube3D(VAdd(cube_.centerPos, { -CUBE_W / 2, -CUBE_H / 2,-CUBE_D / 2 }), VAdd(cube_.centerPos, { CUBE_W / 2, CUBE_H / 2, CUBE_D / 2 })
+	//	, 0xffffff, 0xffffff, true);
 }
+void Player::Action(void)
+{
+	Rotate();
+	if (!isPunch_)
+	{
+		Jump();
+		Move();
+	}
+	Punch();
+}
+
 void Player::Move(void)
 {
 	movePow_ = Utility::VECTOR_ZERO;
@@ -116,7 +137,7 @@ void Player::Move(void)
 
 	if (!Utility::EqualsVZero(dir) /*&& (_isJump || IsEndLanding())*/)
 	{
-		speed_ = SPEED_MOVE;
+		speed_ = MOVE_SPEED;
 		//animationController_->Play((int)ANIM_TYPE::RUN);
 
 		//if ((!_isJump && IsEndLanding()))
@@ -185,7 +206,7 @@ void Player::Jump(void)
 	if (isJump_)
 	{
 		// ジャンプの入力受付時間を減らす
-		stepJump_ += PlayerInput::DELTA_TIME;
+		stepJump_ += scnMng_.GetDeltaTime();
 		if (stepJump_ < TIME_JUMP_IN)
 		{
 			jumpDeceralation_ -= stepJump_ * TIME_JUMP_IN;
@@ -203,26 +224,28 @@ void Player::Jump(void)
 		stepJump_ = TIME_JUMP_IN;
 		jumpDeceralation_ = POW_JUMP;
 		fallCnt_ = 0.0f;
+		jumpPow_ = Utility::VECTOR_ZERO;
 	} 
 }
 void Player::Punch(void)
 {
 	//座標を足す
 	punchPos_ = AddPosRotate(transform_.pos, transform_.quaRot, PUNCH_LOCAL_POS);
-	if (cnt_ > PUNCH_TIME_MAX)
+	if (!isJump_ && punchCoolCnt_ >= 0.0f)
 	{
-		cnt_ = 0.0f;
-		isPunch_ = false;
+		punchCoolCnt_ -= scnMng_.GetDeltaTime();
 		return;
 	}
-	if (input_->CheckAct(PlayerInput::ACT_CNTL::PUNCH))
+	auto isHit = input_->CheckAct(PlayerInput::ACT_CNTL::PUNCH);
+	if (punchCnt_ > PUNCH_TIME_MAX)
 	{
-		isPunch_ = true;
+		punchCnt_ = 0.0f;
+		isPunch_ = false;
+		punchCoolCnt_ = PUNCH_COOL_TIME;
+		return;
 	}
-	if (isPunch_)
-	{
-		cnt_ += PlayerInput::DELTA_TIME;
-	}
+	if (isHit){isPunch_ = true;}
+	if (isPunch_){punchCnt_ += PlayerInput::DELTA_TIME;}
 }
 #endif // DEBUG_ON
 
@@ -245,14 +268,8 @@ void Player::CalcGravityPow(void)
 
 void Player::Collision(void)
 {
-	// 現在座標を起点に移動後座標を決める
 	movedPos_ = VAdd(transform_.pos, movePow_);
 	movedPos_ = VAdd(movedPos_, jumpPow_);
-	if (CollCube()) 
-	{ 
-		movedPos_=VAdd(movedPos_, cubeMovePos_); 
-		movedPos_.y = cubePos_.y;
-	}
 #ifdef DEBUG_ON
 	if (movedPos_.y < 0.0f)
 	{
@@ -265,6 +282,8 @@ void Player::Collision(void)
 	//moveDiff_ = VSub(movedPos_, transform_.pos);
 	// 移動
 	transform_.pos = movedPos_;
+	// 現在座標を起点に移動後座標を決める
+
 }
 
 bool Player::IsEndLanding(void)
@@ -281,12 +300,17 @@ void Player::CubeMove(void)
 	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.y -= SPD;
 	if (input.IsNew(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
 	if (input.IsNew(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
-	cubePos_=VAdd(cubePos_, cubeMovePos_);
+	cube_.centerPos=VAdd(cube_.centerPos, cubeMovePos_);
 }
 
 bool Player::CollCube(void)
 {
-	VECTOR diff = VSub(cubePos_, transform_.pos);
+	cube_.leftPos = VAdd(cube_.centerPos, { -(CUBE_W / 2.0f),0.0f,0.0f });
+	cube_.rightPos = VAdd(cube_.centerPos, { CUBE_W / 2.0f,0.0f,0.0f });
+	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H / 2.0f,0.0f });
+	cube_.downPos = VAdd(cube_.centerPos, { 0.0f,-(CUBE_H / 2.0f),0.0f });
+
+	VECTOR diff = VSub(cube_.centerPos, transform_.pos);
 	if(fabsf(diff.x)>CUBE_W/2+RADIUS
 		||fabsf(diff.y)>CUBE_H/2+RADIUS
 		|| fabsf(diff.z) > CUBE_D / 2 + RADIUS)

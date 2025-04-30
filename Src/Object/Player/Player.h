@@ -28,24 +28,24 @@ public:
 	//移動
 	//----------------------------------
 	//スピード
-	static constexpr float SPEED_MOVE = 5.0f;
+	static constexpr float MOVE_SPEED = 10.0f;
 
 	//----------------------------------
 	//ジャンプ
 	//----------------------------------
 	//ジャンプ力
-	static constexpr float POW_JUMP = 22.0f;
+	static constexpr float POW_JUMP = 30.0f;
 
 	//ジャンプ加速の倍率
 	static constexpr float TIME_JUMP_IN = 4.0f;
-
-	//デルタタイム
-	static constexpr float DELTA_TIME = 1.0f / 60.0f;
 	//----------------------------------
 	//パンチ
 	//----------------------------------
 	//パンチ有効時間
 	static constexpr float PUNCH_TIME_MAX = 1.5f;
+
+	//パンチクールタイム
+	static constexpr float PUNCH_COOL_TIME = 0.5;
 
 	// 回転完了までの時間
 	static constexpr float TIME_ROT = 1.0f;
@@ -54,13 +54,11 @@ public:
 	static constexpr VECTOR PUNCH_LOCAL_POS = { 0.0f,50.0f,40.0f };
 
 
-	// 状態
-	enum class STATE
+	enum class FLOOR_COL
 	{
-		NONE,
-		PLAY,
-		DEAD,
-		END
+		NONE
+		,SIDE
+		,TOP
 	};
 
 	enum class ATK_ACT
@@ -82,6 +80,15 @@ public:
 		FLY,
 		FALLING,
 		VICTORY
+	};
+
+	struct CUBE
+	{
+		VECTOR centerPos;
+		VECTOR leftPos;
+		VECTOR rightPos;
+		VECTOR upPos;
+		VECTOR downPos;
 	};
 	//******************************************
 	// コンストラクタ
@@ -126,7 +133,7 @@ public:
 
 	//デバッグキューブのサイズ
 	static constexpr float CUBE_W = 100.0F;
-	static constexpr float CUBE_H = 10.0F;
+	static constexpr float CUBE_H = 100.0F;
 	static constexpr float CUBE_D = 100.0F;
 #endif // DEBUG_ON
 
@@ -186,12 +193,14 @@ private:
 	//パンチ
 	//-----------------------
 	bool isPunch_;			//パンチ中フラグ
-	float cnt_;				//パンチカウント
+	float punchCnt_;				//パンチカウント
+	float punchCoolCnt_;			//パンチクールタイム
 	VECTOR punchPos_;			//攻撃座標
 
 #ifdef DEBUG_ON
 	VECTOR cubeMovePos_;
 	VECTOR cubePos_;
+	CUBE cube_;
 #endif // DEBUG_ON
 
 
@@ -205,6 +214,7 @@ private:
 #endif // DEBUG_ON
 	//アクション関係
 	//------------------------------
+	void Action(void);
 	//移動
 	void Move(void);
 
