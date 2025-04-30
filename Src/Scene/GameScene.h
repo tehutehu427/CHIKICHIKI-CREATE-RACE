@@ -8,6 +8,7 @@
 class EditorPaletteBase;
 class Grid;
 class SkyDome;
+class MapDataIO;
 
 class GameScene : public SceneBase
 {
@@ -71,4 +72,6 @@ private:
 	std::shared_ptr<EditController> editController_;
 
 	std::unique_ptr<SkyDome> sky_;
+
+	std::unique_ptr<MapDataIO> mapIO_;
 };

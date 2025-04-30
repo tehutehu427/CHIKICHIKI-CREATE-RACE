@@ -30,6 +30,8 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_N);
 	InputManager::GetInstance().Add(KEY_INPUT_Z);
 
+	InputManager::GetInstance().Add(KEY_INPUT_B);
+
 	//プレイヤー操作関連
 	//---------------------------------------------------
 	//移動キー
