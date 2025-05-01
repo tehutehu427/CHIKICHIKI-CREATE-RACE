@@ -103,31 +103,24 @@ void Player::DrawDebug(void)
 
 	DrawSphere3D(punchPos_, PUNCH_RADIUS, 4, 0xff0000, 0xff0000, isPunch_);
 
-
-	//DrawSphere3D(cube_.centerPos, 7.0f, 4, 0xff0000, 0xff0000, true);
-	//DrawSphere3D(cube_.leftPos, 7.0f, 4, 0xff0000, 0xff0000, true);
-	//DrawSphere3D(cube_.rightPos, 7.0f, 4, 0xff0000, 0xff0000, true);
-	//DrawSphere3D(cube_.upPos, 7.0f, 4, 0xff0000, 0xff0000, true);
-	//DrawSphere3D(cube_.downPos, 7.0f, 4, 0xff0000, 0xff0000, true);
-
-	//DrawCube3D(VAdd(cube_.centerPos, { -CUBE_W / 2, -CUBE_H / 2,-CUBE_D / 2 }), VAdd(cube_.centerPos, { CUBE_W / 2, CUBE_H / 2, CUBE_D / 2 })
-	//	, 0xffffff, 0xffffff, true);
 }
 void Player::Action(void)
 {
 	Rotate();
-	if (!isPunch_)
-	{
-		Jump();
-		Move();
-	}
 	Punch();
+	if (isPunch_)return;
+	Jump();
+	Move();
+	
 }
 
 void Player::Move(void)
 {
 	movePow_ = Utility::VECTOR_ZERO;
-	VECTOR dir = Utility::VECTOR_ZERO;
+	if (!isPunched_)
+	{
+		dir_ = Utility::VECTOR_ZERO;
+	}
 	VECTOR getDir = input_->GetDir();
 	float deg = 0;
 	//プレイヤーの周囲にあるステージポリゴンの取得
@@ -137,13 +130,24 @@ void Player::Move(void)
 	//カメラ方向に移動したい
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
 	{
-		dir = cameraRot.PosAxis(getDir);
+		dir_ = cameraRot.PosAxis(getDir);
 		deg = input_->GetMoveDeg();
 	}
 
-	if (!Utility::EqualsVZero(dir) /*&& (_isJump || IsEndLanding())*/)
+	if (!Utility::EqualsVZero(dir_) /*&& (_isJump || IsEndLanding())*/)
 	{
-		speed_ = MOVE_SPEED;
+		//パンチされてぶっ飛んでる時と通常の移動の時のスピード
+		if (isPunched_)
+		{
+			speed_ = FLY_AWAY_SPEED;
+		}
+		else
+		{
+			speed_ = MOVE_SPEED;
+		}
+		//isPunched_? speed_ = FLY_AWAY_SPEED: speed_ = MOVE_SPEED;
+
+
 		//animationController_->Play((int)ANIM_TYPE::RUN);
 
 		//if ((!_isJump && IsEndLanding()))
@@ -152,7 +156,7 @@ void Player::Move(void)
 
 		//}
 
-		moveDir_ = dir;
+		moveDir_ = dir_;
 		//移動量
 		movePow_ = VScale(moveDir_, speed_);
 		SetGoalRotate(Utility::Deg2RadF(deg));

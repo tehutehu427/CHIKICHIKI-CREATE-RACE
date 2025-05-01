@@ -27,8 +27,11 @@ public:
 	static constexpr float RADIUS = 20.0f;
 	//移動
 	//----------------------------------
-	//スピード
+	//移動スピード
 	static constexpr float MOVE_SPEED = 10.0f;
+
+	//ぶっ飛ぶスピード
+	static constexpr float FLY_AWAY_SPEED = 30.0f;
 
 	//----------------------------------
 	//ジャンプ
@@ -54,7 +57,7 @@ public:
 	static constexpr VECTOR PUNCH_LOCAL_POS = { 0.0f,50.0f,40.0f };
 
 	//パンチの範囲
-	static constexpr float PUNCH_RADIUS = 10.0f;
+	static constexpr float PUNCH_RADIUS = 40.0f;
 
 
 	enum class FLOOR_COL
@@ -124,6 +127,9 @@ public:
 
 	//パンチ座標
 	const VECTOR GetPunchPos(void) { return punchPos_; }
+
+	//プレイヤー座標
+	const VECTOR GetPos(void)const { return transform_.pos; }
 	//******************************************
 	//セッタ
 	//******************************************
@@ -135,6 +141,12 @@ public:
 
 	//移動量セット(マネージャ用)
 	void SetMovePow(const VECTOR _vec) { movePow_ = _vec; }
+
+	//パンチされたフラグ
+	void SetIsPunched(const bool _isPunched) { isPunched_ = _isPunched; }
+
+	//方向
+	void SetDir(const VECTOR _dir) { dir_ = _dir; }
 
 #ifdef DEBUG_ON
 	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
@@ -185,6 +197,7 @@ private:
 	float speed_;			// 移動スピード
 	VECTOR moveDir_;		// 移動方向
 	VECTOR movePow_;		// 移動量
+	VECTOR dir_;
 
 	//回転
 	Quaternion playerRotY_;
