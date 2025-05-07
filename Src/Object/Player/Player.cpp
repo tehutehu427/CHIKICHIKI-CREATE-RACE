@@ -108,7 +108,7 @@ void Player::Action(void)
 {
 	Rotate();
 	Punch();
-	if (isPunch_)return;
+	if (isPunch_||isPunched_)return;
 	Jump();
 	Move();
 	

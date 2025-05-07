@@ -91,10 +91,15 @@ void PlayerManager::PlayersCollision(void)
 			}
 
 			//どちらがパンチ中かで吹っ飛ばす対象を決める
-			if(players_[i]->GetIsPunch())PunchPlayersColl(i, j);
-			if(players_[j]->GetIsPunch())PunchPlayersColl(j, i);
-
-			
+			if (players_[i]->GetIsPunch())
+			{
+				PunchPlayersColl(i, j);
+			}
+				
+			//if (players_[j]->GetIsPunch())
+			//{
+			//	PunchPlayersColl(j, i);
+			//}	
 		}
 	}
 }
@@ -187,15 +192,15 @@ Transform PlayerManager::FixTrans(int _playerNum)
 void PlayerManager::PunchPlayersColl(int p1, int p2)
 {
 	//どちらもパンチしていなかったら処理しない
-	if (!players_[p1]->GetIsPunch() && !players_[p2]->GetIsPunch())return;
+	//if (!players_[p1]->GetIsPunch() && !players_[p2]->GetIsPunch())return;
 
 	//それぞれのカプセル
-	auto p1Cap = players_[p1]->GetCapsule().lock();
+	//auto p1Cap = players_[p1]->GetCapsule().lock();
 	auto p2Cap = players_[p2]->GetCapsule().lock();
 
 	//当たった時の処理
 	if (Utility::IsHitSphereCapsule(players_[p1]->GetPunchPos(), Player::PUNCH_RADIUS
-		, p2Cap->GetLocalPosTop(), p2Cap->GetLocalPosDown(), p2Cap->GetRadius()))
+		, p2Cap->GetPosTop(), p2Cap->GetPosDown(), p2Cap->GetRadius()))
 	{
 		players_[p2]->SetDir(Utility::GetMoveVec(players_[p1]->GetPos(), players_[p2]->GetPos()));
 		players_[p2]->SetIsPunched(true);
