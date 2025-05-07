@@ -59,6 +59,9 @@ public:
 	//パンチの範囲
 	static constexpr float PUNCH_RADIUS = 40.0f;
 
+	//吹き飛び効果時間
+	static constexpr float PUNCHED_TIME = 0.2f;
+
 
 	enum class FLOOR_COL
 	{
@@ -219,6 +222,7 @@ private:
 	float punchCoolCnt_;			//パンチクールタイム
 	VECTOR punchPos_;			//攻撃座標
 	bool isPunched_;			//他プレイヤーからのパンチを受けたか
+	float punchedCnt_;			//パンチ効果時間カウント
 
 #ifdef DEBUG_ON
 	VECTOR cubeMovePos_;

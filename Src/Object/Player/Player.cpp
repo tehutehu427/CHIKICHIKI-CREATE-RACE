@@ -39,6 +39,7 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	isPunch_ = false;
 	punchPos_ = Utility::VECTOR_ZERO;
 	isPunched_ = false;
+	punchedCnt_ = PUNCHED_TIME;
 
 	capsule_ = std::make_shared<Capsule>(transform_);
 	capsule_->SetLocalPosTop(CAPSULE_TOP);
@@ -108,9 +109,19 @@ void Player::Action(void)
 {
 	Rotate();
 	Punch();
-	if (isPunch_||isPunched_)return;
+	if (isPunch_)return;
 	Jump();
 	Move();
+	if (isPunched_)
+	{
+		punchCnt_ -= scnMng_.GetDeltaTime();
+	}
+	if (punchCnt_ < 0.0f)
+	{
+		isPunched_ = false;
+		punchCnt_ = PUNCHED_TIME;
+	}
+
 	
 }
 
@@ -127,8 +138,8 @@ void Player::Move(void)
 	//MV1_COLL_RESULT_POLY_DIM hitDim[STAGECOLLOBJ_MAXNUM + 1];
 	Quaternion cameraRot = scnMng_.GetCamera().lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
-	//ƒJƒƒ‰•ûŒü‚ÉˆÚ“®‚µ‚½‚¢
-	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
+	//‚«”ò‚Ñ’†‚Å‚È‚©‚Á‚½‚çƒJƒƒ‰•ûŒü‚ÉˆÚ“®‚µ‚½‚¢
+	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE)&&!isPunched_)
 	{
 		dir_ = cameraRot.PosAxis(getDir);
 		deg = input_->GetMoveDeg();
