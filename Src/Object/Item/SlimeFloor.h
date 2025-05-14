@@ -9,19 +9,28 @@ public:
 	//マップサイズ
 	static constexpr IntVector3 MAP_SIZE = { 4,1,4 };
 
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	SlimeFloor(void);
 
-	//デストラクタ
-	~SlimeFloor(void)override;
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	~SlimeFloor(void)override = default;
 
-	//個人設定
+	/// <summary>
+	/// パラメーター設定
+	/// </summary>
+	/// <param name=""></param>
 	void SetParam(void)override;
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void)override;
-
-private:
-
 };
 

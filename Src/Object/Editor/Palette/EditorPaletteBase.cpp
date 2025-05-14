@@ -88,7 +88,7 @@ void EditorPaletteBase::DebagDraw()
 		leftTop.y,
 		rightBotm.x,
 		rightBotm.y,
-		0x00ffff,
+		Utility::RED,
 		false
 	);
 

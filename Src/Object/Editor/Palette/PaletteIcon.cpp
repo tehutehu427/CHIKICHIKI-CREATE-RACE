@@ -132,11 +132,11 @@ void PaletteIcon::DebagDraw()
 		leftTop.y,
 		rightBotm.x,
 		rightBotm.y,
-		0xff0000,
+		Utility::YELLOW,
 		false);
 
 	std::string name = DateBank::GetInstance().GetItemName(selectType_);
-	DrawFormatString(0, Application::SCREEN_SIZE_Y - 20, 0xffffff, name.c_str());
+	DrawFormatString(0, Application::SCREEN_SIZE_Y - 20, Utility::BLACK, name.c_str());
 #endif 
 }
 

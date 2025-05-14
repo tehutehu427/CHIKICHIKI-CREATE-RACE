@@ -32,6 +32,20 @@ public:
 	static constexpr VECTOR DIR_U = { 0.0f, 1.0f, 0.0f };
 	static constexpr VECTOR DIR_D = { 0.0f, -1.0f, 0.0f };
 
+	//カラーコード
+	static constexpr int BLACK = 0x000000;	//黒
+	static constexpr int RED = 0xFF0000;	//赤
+	static constexpr int BLUE = 0x0000FF;	//青
+	static constexpr int YELLOW = 0xFFFF00;	//黄色
+	static constexpr int GREEN = 0x00FF00;	//緑
+	static constexpr int CYAN = 0x00FFFF;	//水色
+	static constexpr int PINK = 0xFFC0CB;	//桃色
+	static constexpr int ORANGE = 0xFFA500;	//オレンジ
+	static constexpr int LIME = 0xADFF2F;	//黄緑
+	static constexpr int PURPLE = 0x800080;	//紫
+	static constexpr int WHITE = 0xFFFFFF;	//白
+	static constexpr int BROWN = 0x8B4513;	//茶色
+
 	static constexpr float kEpsilonNormalSqrt = 1e-15F;
 
 	// 四捨五入

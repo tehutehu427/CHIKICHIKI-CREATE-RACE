@@ -2,8 +2,9 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <functional>
+#include <map>
 #include "../Item/ItemBase.h"
-#include "../../Manager/Game/MapEditer.h"
 
 class ItemName;
 
@@ -11,6 +12,7 @@ class MapDataIO
 {
 public:
 
+	//状態
 	enum class STATE
 	{
 		NONE,
@@ -19,19 +21,77 @@ public:
 		CHECK_EXPORT,
 	};
 
-	//コンストラクタ
+	//確認
+	enum class CHECK_LIST
+	{
+		YES,
+		NO,
+		MAX
+	};
+	
+	// 状態ごとの構造体（更新と描画を分けて保持）
+	struct StateFuncs
+	{
+		std::function<void()> updateFunc;
+		std::function<void()> drawFunc;
+	};
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	MapDataIO();
 
-	//デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~MapDataIO();
 
-	void Load();	//読み込み
-	void Init();	//初期化
-	void Update();	//更新
+	/// <summary>
+	/// 読みこみ
+	/// </summary>
+	void Load();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Init();
 
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update();
+	
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw();
 
 private:
+
+	//入出力確認用ステップ
+	int checkStep_;
+
+	//状態
+	STATE state_;
+
+	//状態変更処理の管理
+	std::map<STATE, StateFuncs> stateMap_;
+
+	//状態の処理を登録
+	void RegisterState(const STATE _state, std::function<void()> _update, std::function<void()> _draw);
+
+	//状態変更処理
+	inline void ChangeState(const STATE _state) { state_ = _state; }
+
+	//状態別更新
+	void UpdateWait();
+	void UpdateCheckExport();
+	void UpdateCheckImport();
+
+	//状態別描画
+	void DrawWait();
+	void DrawCheckExport();
+	void DrawCheckImport();
 
 	//JSONファイルで出力する
 	void ExportJsonFile(const std::string _fileName);
@@ -47,7 +107,12 @@ private:
 	/// </summary>
 	/// <param name="filepath"></param>ファイルネームを返す
 	/// <returns></returns>読み込んだ種類別配置情報を返す
-	std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> LoadItemsFromJson(const std::string& filepath);
+	std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> LoadItemsFromJson(const std::string& _filepath);
+
+	//確認画面の背景
+	void DrawCheckBackBox();
+
+	//確認画面のコマンドの描画
+	void DrawCheckCommand();
 
 };
-

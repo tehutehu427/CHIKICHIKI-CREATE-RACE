@@ -116,7 +116,7 @@ void GameScene::NormalDraw(void)
 	ItemManager::GetInstance().Draw();
 	editController_->Draw();
 
-	//mapIO_->Draw();
+	mapIO_->Draw();
 }
 
 void GameScene::ChangeNormal(void)
