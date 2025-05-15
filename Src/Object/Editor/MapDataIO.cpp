@@ -1,8 +1,6 @@
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include <string>
 #include "MapDataIO.h"
+#include <iostream>
+#include <fstream>
 #include "../../Application.h"
 #include "../../Utility/Utility.h"
 #include "../../Lib/nlohmann/json.hpp"
@@ -26,6 +24,12 @@ MapDataIO::MapDataIO()
 {
     checkStep_ = 0;
     state_ = STATE::NONE;
+    selectFile_ = "";
+
+    //状態ごとの処理を登録
+    RegisterState(STATE::WAIT, [&]() { UpdateWait(); }, [&]() { DrawWait(); });
+    RegisterState(STATE::CHECK_EXPORT, [&]() { UpdateCheckExport(); }, [&]() { DrawCheckExport(); });
+    RegisterState(STATE::CHECK_IMPORT, [&]() { UpdateCheckImport(); }, [&]() { DrawCheckImport(); });
 }
 
 MapDataIO::~MapDataIO()
@@ -38,11 +42,6 @@ void MapDataIO::Load()
 
 void MapDataIO::Init()
 {
-    //状態ごとの処理を登録
-    RegisterState(STATE::WAIT, [&]() { UpdateWait(); }, [&]() { DrawWait(); });
-    RegisterState(STATE::CHECK_EXPORT, [&]() { UpdateCheckExport(); }, [&]() { DrawCheckExport(); });
-    RegisterState(STATE::CHECK_IMPORT, [&]() { UpdateCheckImport(); }, [&]() { DrawCheckImport(); });
-    
     //最初の状態を設定
     ChangeState(STATE::WAIT); 
 }
@@ -130,18 +129,11 @@ void MapDataIO::ImportJsonFile()
 {
     ItemManager& itemMng = ItemManager::GetInstance();
 
-    std::string filepath = OpenFileDialog();
-    if (filepath.empty()) 
-    {
-        std::cout << "ファイルが選択されませんでした。\n";
-        return;
-    }
-
     //今あるオブジェクトを削除
     itemMng.AllDeleteItem();
 
     //読み込み
-    auto items = LoadItemsFromJson(filepath);
+    auto items = LoadItemsFromJson(selectFile_);
 
     // 読み込んだアイテムを確認
     for (const auto& [type, positions] : items)
@@ -155,24 +147,6 @@ void MapDataIO::ImportJsonFile()
             itemMng.AddItem(mapPos, Quaternion(), type);
         }
     }
-}
-
-std::string MapDataIO::OpenFileDialog()
-{
-    char filename[MAX_PATH] = "";
-
-    OPENFILENAMEA ofn = {};
-    ofn.lStructSize = sizeof(OPENFILENAMEA);
-    ofn.lpstrFile = filename;
-    ofn.nMaxFile = sizeof(filename);
-    ofn.lpstrFilter = "JSON Files\0*.json\0All Files\0*.*\0";
-    ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
-
-    if (GetOpenFileNameA(&ofn))
-    {
-        return std::string(filename);
-    }
-    return ""; // キャンセルされた場合
 }
 
 std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItemsFromJson(const std::string& _filepath)
@@ -192,6 +166,7 @@ std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItem
     {
         //アイテムの種類
         ItemBase::ITEM_TYPE type = static_cast<ItemBase::ITEM_TYPE>(i);
+
         //アイテムの名前を取得
         std::string typeName = DateBank::GetInstance().GetItemName(type);
 
@@ -273,11 +248,21 @@ void MapDataIO::UpdateWait()
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (ins.IsTrgDown(KEY_INPUT_B))
     {
+        //確認へ移る
         ChangeState(STATE::CHECK_EXPORT);
+        return;
     }
 
     else if (ins.IsTrgDown(KEY_INPUT_N))
     {
+        //ファイルを読み込む
+        if (!ReadFileBool(selectFile_))
+        {
+            //読み込まない場合処理を終える
+            return;
+        }
+
+        //確認へ移る
         ChangeState(STATE::CHECK_IMPORT);
     }
 }
@@ -408,4 +393,18 @@ void MapDataIO::DrawCheckImport()
 
     //確認コマンドの描画
     DrawCheckCommand();
+}
+
+bool MapDataIO::ReadFileBool(std::string &_file)
+{
+    //エクスプローラーからファイルを読み込む
+    _file = Utility::OpenFileDialog();
+
+    //ファイルが空の場合
+    if (_file.empty())
+    {
+        std::cout << "ファイルが選択されませんでした。\n";
+        return false;   //失敗判定を返す
+    }
+    return true;
 }

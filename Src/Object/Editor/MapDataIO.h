@@ -3,7 +3,6 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
-#include <map>
 #include "../Item/ItemBase.h"
 
 class ItemName;
@@ -74,8 +73,11 @@ private:
 	//状態
 	STATE state_;
 
+	//選択したファイル
+	std::string selectFile_;
+
 	//状態変更処理の管理
-	std::map<STATE, StateFuncs> stateMap_;
+	std::unordered_map<STATE, StateFuncs> stateMap_;
 
 	//状態の処理を登録
 	void RegisterState(const STATE _state, std::function<void()> _update, std::function<void()> _draw);
@@ -93,14 +95,14 @@ private:
 	void DrawCheckExport();
 	void DrawCheckImport();
 
+	//ファイルを読み込んでboolで返す
+	bool ReadFileBool(std::string &_file);
+
 	//JSONファイルで出力する
 	void ExportJsonFile(const std::string _fileName);
 
 	//JSONファイルを読み込む
 	void ImportJsonFile();
-
-	//エクスプローラーからファイルを開く
-	std::string OpenFileDialog();
 
 	/// <summary>
 	/// JSONからアイテム種類ごとに座標を読み込む

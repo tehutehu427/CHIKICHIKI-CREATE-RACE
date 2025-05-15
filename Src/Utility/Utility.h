@@ -164,5 +164,8 @@ public:
 	//符号を返す
 	static int GetSign(float f);
 	static int GetSign(int f);
+
+	//エクスプローラーからファイルを開く
+	static std::string OpenFileDialog();
 };
 

@@ -626,3 +626,21 @@ int Utility::GetSign(int f)
 {
     return f == 0 ? 0 : f < 0 ? -1 : 1;
 }
+
+std::string Utility::OpenFileDialog()
+{
+    char filename[MAX_PATH] = "";
+
+    OPENFILENAMEA ofn = {};
+    ofn.lStructSize = sizeof(OPENFILENAMEA);
+    ofn.lpstrFile = filename;
+    ofn.nMaxFile = sizeof(filename);
+    ofn.lpstrFilter = "JSON Files\0*.json\0All Files\0*.*\0";
+    ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
+
+    if (GetOpenFileNameA(&ofn))
+    {
+        return std::string(filename);
+    }
+    return ""; // ƒLƒƒƒ“ƒZƒ‹‚³‚ê‚½ê‡
+}
