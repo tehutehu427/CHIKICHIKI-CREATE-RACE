@@ -26,6 +26,9 @@ public:
 		PALETTE_ICONS,
 		PALETTE_MASK,
 
+		//セレクトシーン用画像
+		ARC,
+
 		//アイテムモデル
 		FLOOR,				//足場
 		MOVE_FLOOR,			//動く足場

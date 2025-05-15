@@ -43,6 +43,7 @@ void ResourceManager::Init(void)
 	std::string path_PlayUi = Application::PATH_IMAGE + "PlayUI/";
 	std::string path_RezaltUi = Application::PATH_IMAGE + "RezaltUI/";
 	std::string path_Title = Application::PATH_IMAGE + "Title/";
+	std::string path_Select = Application::PATH_IMAGE + "Select/";
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "ScrollArrowIcon.png");
 	resourcesMap_.emplace(SRC::SCROLL_ARROW_ICON, std::move(res));
@@ -52,6 +53,9 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "PaletteIcons.png");
 	resourcesMap_.emplace(SRC::PALETTE_ICONS, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "Arc.png");
+	resourcesMap_.emplace(SRC::ARC, std::move(res));
 #pragma endregion 
 
 #pragma region ƒ}ƒXƒN‰æ‘œ

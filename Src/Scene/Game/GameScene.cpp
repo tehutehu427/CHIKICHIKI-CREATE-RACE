@@ -1,20 +1,20 @@
 #include <DxLib.h>
-#include "../Application.h"
-#include "../Utility/Utility.h"
-#include "../Manager/System/SceneManager.h"
-#include "../Manager/System/ResourceManager.h"
-#include "../Manager/System/Camera.h"
-#include "../Manager/System/InputManager.h"
-#include "../Manager/System/DateBank.h"
-#include "../Manager/Game/ItemManager.h"
-#include "../Manager/Game/MapEditer.h"
-#include "../Manager/Game/GravityManager.h"
-#include "../Manager/Game/PlayerManager.h"
-#include "../Object/Player/Player.h"
-#include "../Object/Editor/Palette/EditorPaletteBase.h"
-#include "../Object/Grid.h"
-#include "../Object/SkyDome/SkyDome.h"
-#include "../Object/Editor/MapDataIO.h"
+#include "../../Application.h"
+#include "../../Utility/Utility.h"
+#include "../../Manager/System/SceneManager.h"
+#include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/Camera.h"
+#include "../../Manager/System/InputManager.h"
+#include "../../Manager/System/DateBank.h"
+#include "../../Manager/Game/ItemManager.h"
+#include "../../Manager/Game/MapEditer.h"
+#include "../../Manager/Game/GravityManager.h"
+#include "../../Manager/Game/PlayerManager.h"
+#include "../../Object/Player/Player.h"
+#include "../../Object/Editor/Palette/EditorPaletteBase.h"
+#include "../../Object/Grid.h"
+#include "../../Object/SkyDome/SkyDome.h"
+#include "../../Object/Editor/MapDataIO.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -103,19 +103,30 @@ void GameScene::NormalUpdate(void)
 
 void GameScene::NormalDraw(void)
 {
-	//デバッグ処理
+	//モデルを先に描画させて、UIや2D系の描画を後から描画する
+
+	//デバッグ描画
 	//DebagDraw();
 
+	//スカイドーム
 	sky_->Draw();
 
+	//グリッド
 	grid_->Draw();
+
 	//プレイヤー
-	palette_->Draw();
 	PlayerManager::GetInstance().Draw();
 
+	//アイテム
 	ItemManager::GetInstance().Draw();
-	editController_->Draw();
 
+	//エディットコントローラー
+	editController_->Draw();
+	
+	//パレット
+	palette_->Draw();
+
+	//データの入出力
 	mapIO_->Draw();
 }
 

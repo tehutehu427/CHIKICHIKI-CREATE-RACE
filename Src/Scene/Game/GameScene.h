@@ -3,7 +3,7 @@
 #include <functional>
 #include"../Object/Player/Player.h"
 #include"../Object/Editor/EditController.h"
-#include "SceneBase.h"
+#include "../SceneBase.h"
 
 class EditorPaletteBase;
 class Grid;
@@ -14,26 +14,42 @@ class GameScene : public SceneBase
 {
 
 public:
+
+	/// <summary>
+	/// フェーズ
+	/// </summary>
 	enum class PHASE
 	{
-		EDIT_PHASE,
-		ACTION_PHASE
+		EDIT_PHASE,		//エディット
+		ACTION_PHASE,	//アクション
 	};
 
-	//プレイヤー人数(のちにデータバンクで持ってくる)
+	//プレイヤー人数(のちにデータバンクで持ってくる
 	static constexpr int PLAYER_NUM = 2;
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	GameScene(void);
 
-	// デストラクタ
-	~GameScene(void);
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	virtual ~GameScene(void);
 
-	//読み込み処理
-	void Load(void) override;
+	/// <summary>
+	/// 読み込み処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void Load(void) override;
 
-	//初期化処理
-	void Init(void) override;
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void Init(void) override;
 
 private:
 
@@ -47,13 +63,15 @@ private:
 	void ChangeNormal(void) override;
 	
 	//デバッグ処理
-	void DebagUpdate(void);
-	void DebagDraw(void);
+	virtual void DebagUpdate(void);	//更新
+	virtual void DebagDraw(void);	//描画
 
 	//フェーズ管理
 	PHASE phase_;
+
 	//フェーズ管理(遷移時の初期処理)
 	std::map<PHASE, std::function<void(void)>> phaseChanges_;
+
 	//フェーズ管理(更新ステップ)
 	std::function<void(void)> phaseUpdate_;
 
@@ -61,17 +79,23 @@ private:
 	void ChangePhase(PHASE phase);
 	void ChangePhaseEdit(void);
 	void ChangePhaseAction(void);
+
 	// 更新ステップ
 	void UpdateEdit(void);
 	void UpdateAction(void);
+
 	//プレイヤー
 	std::unique_ptr<EditorPaletteBase> palette_;
 
+	//グリッド
 	std::unique_ptr<Grid>grid_;
 
+	//エディットコントローラー
 	std::shared_ptr<EditController> editController_;
 
+	//スカイドーム
 	std::unique_ptr<SkyDome> sky_;
 
+	//データの入出力
 	std::unique_ptr<MapDataIO> mapIO_;
 };
