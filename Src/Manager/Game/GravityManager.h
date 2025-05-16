@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include"../Object/Common/Transform.h"
 class GravityManager
 {
 public:
@@ -33,5 +34,7 @@ public:
 
 private:
 	static std::unique_ptr<GravityManager> instance_;
+
+	Transform trans_;
 };
 
