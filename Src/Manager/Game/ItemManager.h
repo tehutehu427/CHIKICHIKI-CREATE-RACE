@@ -10,6 +10,9 @@ class ItemManager
 {
 public:
 
+	static constexpr float DUMMY_ITEM_OPACITY_RATE = 0.5f;	//ダミーアイテムの半透明度
+	static constexpr float DEFAULT_OPACITY_RATE = 1.0f;		//デフォルトの半透明度
+
 	void Init(void);
 	void Update(void);
 	void Draw(void);
@@ -44,6 +47,14 @@ public:
 
 	ItemBase::Status GetDummyItemStatus(int playerNum);
 	IntVector3 GetDummyObjectSize(int playerNum);
+	Transform GetDummyItemTransform(int playerNum);
+	/// <summary>
+	/// ダミーアイテムを置き換える
+	/// </summary>
+	/// <param name="playerNum"></param>
+	/// <param name="type"></param>
+	/// <param name="mapPos"></param>
+	void ResetDummyItem(int playerNum,ItemBase::ITEM_TYPE type,IntVector3 mapPos);
 
 	/// <summary>
 	/// ダミーアイテムの座標設定
@@ -51,6 +62,12 @@ public:
 	/// <param name="mapPos"></param>
 	/// <param name="playerNum"></param>
 	void DummyItemSetMapPos(IntVector3 mapPos, int playerNum);
+	/// <summary>
+	/// ダミーアイテムの回転を設定
+	/// </summary>
+	/// <param name="rot"></param>
+	/// <param name="playerNum"></param>
+	void DummyItemSetRotate(Quaternion rot, int playerNum);
 	/// <summary>
 	/// ダミーアイテムをアイテムに追加
 	/// </summary>
@@ -71,6 +88,7 @@ public:
 	/// <returns>指定したアイテム配列のポインタ。存在しなければ nullptr</returns>
 	const std::vector<std::shared_ptr<ItemBase>>* GetItems(const ItemBase::ITEM_TYPE _type)const;
 	
+	void ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos , int playerNum);
 
 protected:
 
@@ -86,5 +104,7 @@ private:
 	ItemManager(const ItemManager& instance_) = delete;
 	void operator= (const ItemManager& instance_) = delete;
 	~ItemManager(void) = default;
+	//アイテムの生成
+	std::shared_ptr<ItemBase> CreateItem(ItemBase::ITEM_TYPE type, IntVector3 mapPos, Quaternion rot);
 };
 

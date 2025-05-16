@@ -20,9 +20,9 @@ void MapEditer::Init(void)
 {
 	for (int i = 0;i < MAP_SIZE.x;i++)
 	{
-		for (int j = 0;i < MAP_SIZE.y;i++)
+		for (int j = 0;j < MAP_SIZE.y;j++)
 		{
-			for (int k = 0;i < MAP_SIZE.z;i++)
+			for (int k = 0;k < MAP_SIZE.z;k++)
 			{
 				isMapPosItem_[i][j][k] = ItemBase::ITEM_TYPE::NONE;
 			}
@@ -30,14 +30,27 @@ void MapEditer::Init(void)
 	}
 }
 
-void MapEditer::AddItem(STATUS status)
+
+void MapEditer::AddItem(STATUS status, IntVector3 size)
 {
-	ItemManager::GetInstance().AddItem(status.mapPos,status.rotate,status.type);
+	//アイテムの配置
+	for (int i = 0; i < size.x; i++)
+	{
+		for (int j = 0; j < size.y; j++)
+		{
+			for (int k = 0; k < size.z; k++)
+			{
+				IntVector3 mapPos = { status.mapPos.x + i,status.mapPos.y + j,status.mapPos.z + k };
+				isMapPosItem_[mapPos.x][mapPos.y][mapPos.z] = status.type;
+				itemsPos_[status.type].emplace_back(mapPos);
+			}
+		}
+	}
 }
 
 void MapEditer::DeleteItem(const ItemBase::ITEM_TYPE& _type, const IntVector3& mapPos)
 {
-
+	
 }
 
 IntVector3 MapEditer::WorldToMapPos(VECTOR worldPos)

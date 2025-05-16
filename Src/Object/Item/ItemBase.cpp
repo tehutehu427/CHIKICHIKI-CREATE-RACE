@@ -28,6 +28,9 @@ void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot, ITEM_TYPE _itemType)
 	//アイテムの種類
 	status_.itemType = _itemType;
 
+	//初期位置保存
+	InitMapPos_ = _mapPos;
+
 	//基本初期化
 	Init();
 }
@@ -50,5 +53,11 @@ void ItemBase::Draw(void)
 void ItemBase::SetPos(IntVector3 mapPos)
 {
 	transform_.pos = MapEditer::GetInstance().MapToWorldPos(mapPos);
+	transform_.Update();
+}
+
+void ItemBase::SetRotate(Quaternion rot)
+{
+	transform_.quaRot = rot;
 	transform_.Update();
 }
