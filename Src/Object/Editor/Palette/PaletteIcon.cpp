@@ -1,8 +1,8 @@
 #include <cassert>
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../../Manager/System/InputManager.h"
+#include "../../../Manager/System/DateBank.h"
 #include "../../../Utility/Utility.h"
-#include "../../Item/ItemName.h"
 #include "PaletteIcon.h"
 
 PaletteIcon::PaletteIcon()
@@ -13,7 +13,6 @@ PaletteIcon::PaletteIcon()
 	stateChanges_.emplace(STATE::SELCT, std::bind(&PaletteIcon::ChangeStateSelect, this));
 
 	isCreate_ = false;
-	name_ = nullptr;
 	state_ = STATE::NONE;
 	imgScrIcon_ = -1;
 	imgIcons_ = -1;
@@ -38,9 +37,6 @@ void PaletteIcon::Load()
 	imgScrIcon_ = res.Load(ResourceManager::SRC::SCROLL_ARROW_ICON).handleId_;
 	imgIcons_ = res.Load(ResourceManager::SRC::PALETTE_ICONS).handleId_;
 	mskPal_ = res.Load(ResourceManager::SRC::PALETTE_MASK).handleId_;
-
-	//アイテムネーム
-	name_ = std::make_unique<ItemName>();
 }
 
 void PaletteIcon::Init()
@@ -72,9 +68,6 @@ void PaletteIcon::Init()
 
 	//タイプの割り当て
 	AssignType();
-
-	//アイテムネーム
-	name_->Init();
 
 	//マスクスクリーンの作成
 	int ret = CreateMaskScreen();
@@ -126,7 +119,10 @@ void PaletteIcon::Draw()
 			true,
 			false);
 	}
+}
 
+void PaletteIcon::DebagDraw()
+{
 #ifdef _DEBUG
 	EditorPaletteBase::ImgInfo& ic = icons_[sleCnt_];
 	Vector2 leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
@@ -136,28 +132,11 @@ void PaletteIcon::Draw()
 		leftTop.y,
 		rightBotm.x,
 		rightBotm.y,
-		0xff0000,
+		Utility::YELLOW,
 		false);
 
-	DrawFormatString(0, Application::SCREEN_SIZE_Y - 20, 0xffffff, name_->GetItemName(selectType_).c_str());
-#endif 
-}
-
-void PaletteIcon::DebagDraw()
-{
-#ifdef _DEBUG
-	EditorPaletteBase::ImgInfo& ic = icons_[static_cast<int>(selectType_)];
-	Vector2 leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
-	Vector2 rightBotm = { ic.pos.x + ic.size.x / 2, ic.pos.y + ic.size.y / 2 };
-	DrawBox(
-		leftTop.x,
-		leftTop.y,
-		rightBotm.x,
-		rightBotm.y,
-		0xff0000,
-		false);
-
-	DrawFormatString(0,Application::SCREEN_SIZE_Y - 20, 0xffffff, name_->GetItemName(selectType_).c_str());
+	std::string name = DateBank::GetInstance().GetItemName(selectType_);
+	DrawFormatString(0, Application::SCREEN_SIZE_Y - 20, Utility::BLACK, name.c_str());
 #endif 
 }
 

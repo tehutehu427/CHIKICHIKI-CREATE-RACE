@@ -25,7 +25,7 @@ public:
 	virtual void Draw(void) = 0;
 
 	//モデル情報の取得
-	inline const Transform& GetTransform(void) const { return transform_; }
+	inline const Transform& GetTransform(void) const { return trans_; }
 
 	//サイズの取得
 	inline const IntVector3 GetSize(void)const { return size_; }
@@ -37,7 +37,7 @@ protected:
 	SceneManager& scnMng_;
 
 	// モデル制御の基本情報
-	Transform transform_;
+	Transform trans_;
 
 	//大きさ(グリッド基準)
 	IntVector3 size_;

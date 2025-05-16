@@ -33,6 +33,20 @@ public:
 	static constexpr VECTOR DIR_U = { 0.0f, 1.0f, 0.0f };
 	static constexpr VECTOR DIR_D = { 0.0f, -1.0f, 0.0f };
 
+	//カラーコード
+	static constexpr int BLACK = 0x000000;	//黒
+	static constexpr int RED = 0xFF0000;	//赤
+	static constexpr int BLUE = 0x0000FF;	//青
+	static constexpr int YELLOW = 0xFFFF00;	//黄色
+	static constexpr int GREEN = 0x00FF00;	//緑
+	static constexpr int CYAN = 0x00FFFF;	//水色
+	static constexpr int PINK = 0xFFC0CB;	//桃色
+	static constexpr int ORANGE = 0xFFA500;	//オレンジ
+	static constexpr int LIME = 0xADFF2F;	//黄緑
+	static constexpr int PURPLE = 0x800080;	//紫
+	static constexpr int WHITE = 0xFFFFFF;	//白
+	static constexpr int BROWN = 0x8B4513;	//茶色
+
 	static constexpr float kEpsilonNormalSqrt = 1e-15F;
 
 	//値を反転させる溜めのスケール
@@ -140,12 +154,23 @@ public:
 	/// <returns>向かう先までの移動ベクトル</returns>
 	static const VECTOR GetMoveVec(const VECTOR _start, const VECTOR _goal, const float _speed = 1.0f);
 
-	//特定の範囲内に座標が含まれてるか調べる
-	static bool IsPointInRect(const Vector2 _pos, const Vector2 _leftTop, const Vector2 rightBotm);
+	/// <summary>
+	/// 特定の範囲内に座標が含まれてるか調べる
+	/// </summary>
+	/// <param name="pos"></param>調べたい座標
+	/// <param name="leftTop"></param>範囲左上
+	/// <param name="rightBotm"></param>範囲右下
+	/// <returns></returns>判定結果を返す
+	static bool IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vector2 rightBotm);
+
+	static VECTOR GetWorldPosAtScreen(const Vector2 screenPos, const float distance, const VECTOR cameraPos, const VECTOR cameraDir);
 
 	//符号を返す
 	static int GetSign(float f);
 	static int GetSign(int f);
+
+	//エクスプローラーからファイルを開く
+	static std::string OpenFileDialog();
 
 	//数値の反転
 	static VECTOR ReverseValue(const VECTOR _vec);

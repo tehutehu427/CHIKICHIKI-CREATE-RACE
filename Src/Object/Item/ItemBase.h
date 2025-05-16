@@ -20,6 +20,10 @@ public:
 		FENCE,				//柵
 		CANNON,				//大砲
 		SPIKY,				//とげ
+		FAN,				//扇風機
+		FERRIS_WHEEL,		//観覧車
+		SLIME_FLOOR,		//スライム床
+		SPRING,				//ばね(ジャンプ台)
 
 		//破壊オブジェ
 		BOMB_SMALL,			//爆弾(小)
@@ -69,12 +73,17 @@ public:
 	//アイテムのステータス取得
 	inline const Status GetStatus(void)const { return status_; }
 
+	//座標の設定
 	void SetPos(IntVector3 mapPos);
+	void SetRotate(Quaternion rot);
+	
+	IntVector3 GetInitMapPos(void)const { return InitMapPos_; }	//初期マップ座標の取得
 
 protected:
 
 	//ステータス
 	Status status_;
+	IntVector3 InitMapPos_;	//初期マップ座標
 
 private:
 };

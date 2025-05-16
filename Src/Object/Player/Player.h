@@ -132,12 +132,12 @@ public:
 	const VECTOR GetPunchPos(void) { return punchPos_; }
 
 	//プレイヤー座標
-	const VECTOR GetPos(void)const { return transform_.pos; }
+	const VECTOR GetPos(void)const { return trans_.pos; }
 	//******************************************
 	//セッタ
 	//******************************************
 	//モデル情報をマネージャからセット
-	void SetTrans(const Transform _trans) { transform_ = _trans; }
+	void SetTrans(const Transform _trans) { trans_ = _trans; }
 
 	//当たり判定
 	void SetCollision(const bool _isCol) { isCol_ = _isCol; }

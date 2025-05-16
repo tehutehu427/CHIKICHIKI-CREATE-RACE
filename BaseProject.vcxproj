@@ -19,7 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\Object\Item\ItemName.cpp" />
+    <ClCompile Include="Src\Object\Item\CannonShot.cpp" />
+    <ClCompile Include="Src\Object\Item\Fan.cpp" />
+    <ClCompile Include="Src\Object\Item\Spiky.cpp" />
+    <ClCompile Include="Src\Scene\SelectScene.cpp" />
+    <ClCompile Include="Src\Scene\Game\MultiParty.cpp" />
+    <ClCompile Include="Src\Scene\Game\SoloChallenge.cpp" />
+    <ClCompile Include="Src\Scene\Game\FreePlay.cpp" />
+    <ClCompile Include="Src\Object\Item\SlimeFloor.cpp" />
     <ClCompile Include="Src\Object\Item\Cannon.cpp" />
     <ClCompile Include="Src\Object\Item\Fence.cpp" />
     <ClCompile Include="Src\Object\Item\MoveVerFloor.cpp" />
@@ -56,13 +63,20 @@
     <ClCompile Include="Src\Object\Player\Player.cpp" />
     <ClCompile Include="Src\Object\Player\Process\PlayerInput.cpp" />
     <ClCompile Include="Src\Object\SkyDome\SkyDome.cpp" />
-    <ClCompile Include="Src\Scene\GameScene.cpp" />
+    <ClCompile Include="Src\Scene\Game\GameScene.cpp" />
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Object\Item\ItemName.h" />
+    <ClInclude Include="Src\Object\Item\CannonShot.h" />
+    <ClInclude Include="Src\Object\Item\Fan.h" />
+    <ClInclude Include="Src\Object\Item\Spiky.h" />
+    <ClInclude Include="Src\Scene\SelectScene.h" />
+    <ClInclude Include="Src\Scene\Game\MultiParty.h" />
+    <ClInclude Include="Src\Scene\Game\SoloChallenge.h" />
+    <ClInclude Include="Src\Scene\Game\FreePlay.h" />
+    <ClInclude Include="Src\Object\Item\SlimeFloor.h" />
     <ClInclude Include="Src\Object\Item\Cannon.h" />
     <ClInclude Include="Src\Object\Item\Fence.h" />
     <ClInclude Include="Src\Object\Item\MoveVerFloor.h" />
@@ -145,7 +159,7 @@
     <ClInclude Include="Src\Object\Player\Player.h" />
     <ClInclude Include="Src\Object\Player\Process\PlayerInput.h" />
     <ClInclude Include="Src\Object\SkyDome\SkyDome.h" />
-    <ClInclude Include="Src\Scene\GameScene.h" />
+    <ClInclude Include="Src\Scene\Game\GameScene.h" />
     <ClInclude Include="Src\Scene\SceneBase.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Utility\Utility.h" />

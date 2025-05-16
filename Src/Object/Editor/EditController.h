@@ -15,8 +15,7 @@ public:
 	enum class MODE
 	{
 		ITEM_SELECT,	//アイテム選択
-		MOVE,			//オブジェクト移動
-		ROTATE,			//オブジェクト回転
+		MOVE_ROTATE,	//オブジェクト移動,回転
 	};
 
 	enum class MOVE_DIR
@@ -41,6 +40,7 @@ public:
 
 	//モード変更
 	void ChengeMode(MODE mode);
+	//アイテム設定
 	void SetItemType(ItemBase::ITEM_TYPE itemType);
 protected:
 
@@ -65,17 +65,14 @@ private:
 	//モード別変更処理
 	void ChengeModeItemSelect(void);
 	void ChengeModeMove(void);
-	void ChengeModeRotate(void);
 
 	//モード別更新処理
-	void ItemSelectUpdate(void);	//アイテム選択
-	void MoveObjectUpdate(void);	//オブジェクト移動
-	void RotateObjectUpdate(void);	//オブジェクト回転
+	void ItemSelectUpdate(void);		//アイテム選択
+	void MoveRotateObjectUpdate(void);	//オブジェクト移動回転
 
 	//モード別描画処理
-	void ItemSelectDraw(void);		//アイテム選択
-	void MoveObjectDraw(void);		//オブジェクト移動
-	void RotateObjectDraw(void);	//オブジェクト回転
+	void ItemSelectDraw(void);			//アイテム選択
+	void MoveRotateObjectDraw(void);	//オブジェクト移動回転
 
 	//アイテム選択解除
 	void ItemNotSelect(void);		
@@ -87,10 +84,11 @@ private:
 	void  MoveItem(void);			
 
 	//移動方向を取得
-	MOVE_DIR GetMoveDir(void);			
+	MOVE_DIR GetMoveDir(void) const;			
 
 	void DebugUpdate(void);	//デバッグ用更新
 	void DebugDraw(void);	//デバッグ用描画
 
+	void RotateObject(void) const;	//オブジェクト回転
 };
 

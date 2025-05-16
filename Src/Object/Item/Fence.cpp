@@ -1,4 +1,5 @@
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/Game./MapEditer.h"
 #include "Fence.h"
 
 Fence::Fence()
@@ -15,6 +16,7 @@ void Fence::SetParam(void)
 	//transform_.SetModel(resMng_.LoadModelDuplicate(
 	//	ResourceManager::SRC::FLOOR));
 
+	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
 	status_.isGravity = false;
@@ -27,5 +29,11 @@ void Fence::Update(void)
 
 void Fence::Draw(void)
 {
-	DrawCube3D({ -100,-50,-50 }, { 100,50,50 }, 0xffffff, 0xffffff, true);
+	//マップエディタ
+	auto& map = MapEditer::GetInstance();
+
+	//四角描画
+	DrawCube3D(VSub(trans_.pos, VScale(map.MapToWorldPos(size_), 0.5f)),
+		VAdd(trans_.pos, VScale(map.MapToWorldPos(size_), 0.5f)), 
+			0xffffff, 0xffffff, true);
 }

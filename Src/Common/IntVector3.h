@@ -31,3 +31,11 @@ struct IntVector3
 	const bool operator>=(const IntVector3 _value);
 };
 
+//IntVector3ÇÃèâä˙âªóp
+static constexpr IntVector3 INT_VECTOR_ZERO = { 0,0,0 };
+static constexpr IntVector3 INT_VECTOR_ONE = { 1,1,1 };
+
+//IntVector3ÇÃVECTORïœä∑
+VECTOR IntVectorToVECTOR(IntVector3 _iv); 
+//VECTORÇÃIntVector3ïœä∑
+IntVector3 VECTORToIntVector(VECTOR _v);

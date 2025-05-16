@@ -26,12 +26,16 @@ public:
 		PALETTE_ICONS,
 		PALETTE_MASK,
 
+		//セレクトシーン用画像
+		ARC,
+
 		//アイテムモデル
 		FLOOR,				//足場
 		MOVE_FLOOR,			//動く足場
 		BOMB,				//爆弾
 		CANNON_BARREL,		//砲身
 		CANNON_TURRET,		//砲台
+		CANNON_SHOT,		//大砲の弾
 		START_CUBE,			//スタート
 		GOAL_CUBE,			//ゴール
 		SPRING,				//ばね

@@ -38,6 +38,8 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_RSHIFT);
 	InputManager::GetInstance().Add(KEY_INPUT_RCONTROL);
 
+	InputManager::GetInstance().Add(KEY_INPUT_B);
+
 	//プレイヤー操作関連
 	//---------------------------------------------------
 	//移動キー
@@ -46,7 +48,7 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_S);
 	InputManager::GetInstance().Add(KEY_INPUT_D);
 	InputManager::GetInstance().Add(KEY_INPUT_Q);
-
+	InputManager::GetInstance().Add(KEY_INPUT_R);
 	//ダッシュ
 	InputManager::GetInstance().Add(KEY_INPUT_LSHIFT);
 
@@ -56,6 +58,7 @@ void InputManager::Init(void)
 
 	//パンチキー
 	InputManager::GetInstance().Add(KEY_INPUT_RETURN);
+
 	//---------------------------------------------------
 
 
