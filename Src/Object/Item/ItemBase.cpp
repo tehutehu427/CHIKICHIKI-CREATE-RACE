@@ -20,10 +20,10 @@ void ItemBase::Load()
 void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot, ITEM_TYPE _itemType)
 {
 	//マップ座標をワールド座標に変換して配置
-	transform_.pos = MapEditer::GetInstance().MapToWorldPos(_mapPos);
+	trans_.pos = MapEditer::GetInstance().MapToWorldPos(_mapPos);
 	
 	//回転
-	transform_.quaRot = _quaRot;
+	trans_.quaRot = _quaRot;
 	
 	//アイテムの種類
 	status_.itemType = _itemType;
@@ -41,23 +41,23 @@ void ItemBase::Init()
 	SetParam();
 
 	//モデルの更新
-	transform_.Update();
+	trans_.Update();
 }
 
 void ItemBase::Draw(void)
 {
 	//モデル描画
-	MV1DrawModel(transform_.modelId);
+	MV1DrawModel(trans_.modelId);
 }
 
 void ItemBase::SetPos(IntVector3 mapPos)
 {
-	transform_.pos = MapEditer::GetInstance().MapToWorldPos(mapPos);
-	transform_.Update();
+	trans_.pos = MapEditer::GetInstance().MapToWorldPos(mapPos);
+	trans_.Update();
 }
 
 void ItemBase::SetRotate(Quaternion rot)
 {
-	transform_.quaRot = rot;
-	transform_.Update();
+	trans_.quaRot = rot;
+	trans_.Update();
 }

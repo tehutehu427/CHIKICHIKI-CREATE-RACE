@@ -18,7 +18,7 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
 	padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_ + 1);
-	transform_ = _trans;
+	trans_ = _trans;
 	//オブジェクト生成
 	//操作関連
 	//---------------------------------
@@ -41,7 +41,7 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	isPunched_ = false;
 	punchedCnt_ = PUNCHED_TIME;
 
-	capsule_ = std::make_shared<Capsule>(transform_);
+	capsule_ = std::make_shared<Capsule>(trans_);
 	capsule_->SetLocalPosTop(CAPSULE_TOP);
 	capsule_->SetLocalPosDown(CAPSULE_DOWN);
 	capsule_->SetRadius(20.0f);
@@ -54,7 +54,7 @@ void Player::Load(void)
 
 void Player::Init(void)
 {
-	transform_.Update();
+	trans_.Update();
 }
 
 void Player::Update(void)
@@ -64,7 +64,7 @@ void Player::Update(void)
 	//アクション関係
 	Action();
 
-	VECTOR dirDown = transform_.GetDown();
+	VECTOR dirDown = trans_.GetDown();
 	//重力
 	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_);
 
@@ -75,10 +75,10 @@ void Player::Update(void)
 	//衝突判定
 	Collision();
 	//回転の同期
-	transform_.quaRot = playerRotY_;
+	trans_.quaRot = playerRotY_;
 
 
-	transform_.Update();
+	trans_.Update();
 }
 
 void Player::Draw(void)
@@ -98,8 +98,8 @@ void Player::DrawDebug(void)
 	else if (playerNum_ == 2) { color = 0x00ff00; }
 	else if (playerNum_ == 3) { color = 0x0000ff; }
 	if (isCol_) { color = 0xff0000; }
-	DrawSphere3D(transform_.pos, 10.0f, 10, color, color, true);
-	DrawFormatString(0, 16, 0xffffff, "角度(%.2f,%.2f,%.2f)", transform_.rot.x, transform_.rot.y, transform_.rot.z);
+	DrawSphere3D(trans_.pos, 10.0f, 10, color, color, true);
+	DrawFormatString(0, 16, 0xffffff, "角度(%.2f,%.2f,%.2f)", trans_.rot.x, trans_.rot.y, trans_.rot.z);
 	capsule_->Draw();
 
 	DrawSphere3D(punchPos_, PUNCH_RADIUS, 4, 0xff0000, 0xff0000, isPunch_);
@@ -231,12 +231,12 @@ void Player::Jump(void)
 		if (stepJump_ < TIME_JUMP_IN)
 		{
 			jumpDeceralation_ -= stepJump_ * TIME_JUMP_IN;
-			jumpPow_ = VScale(transform_.GetUp(), jumpDeceralation_);
+			jumpPow_ = VScale(trans_.GetUp(), jumpDeceralation_);
 		}
 		else
 		{
 			jumpDeceralation_ += (TIME_JUMP_IN - stepJump_) * TIME_JUMP_IN;
-			jumpPow_ = VScale(transform_.GetUp(), jumpDeceralation_);
+			jumpPow_ = VScale(trans_.GetUp(), jumpDeceralation_);
 		}
 	}
 	// ボタンを離したらジャンプ力に加算しない
@@ -251,7 +251,7 @@ void Player::Jump(void)
 void Player::Punch(void)
 {
 	//座標を足す
-	punchPos_ = AddPosRotate(transform_.pos, transform_.quaRot, PUNCH_LOCAL_POS);
+	punchPos_ = AddPosRotate(trans_.pos, trans_.quaRot, PUNCH_LOCAL_POS);
 	if (!isJump_ && punchCoolCnt_ >= 0.0f)
 	{
 		punchCoolCnt_ -= scnMng_.GetDeltaTime();
@@ -289,7 +289,7 @@ void Player::CalcGravityPow(void)
 
 void Player::Collision(void)
 {
-	movedPos_ = VAdd(transform_.pos, movePow_);
+	movedPos_ = VAdd(trans_.pos, movePow_);
 	movedPos_ = VAdd(movedPos_, jumpPow_);
 #ifdef DEBUG_ON
 	if (movedPos_.y < 0.0f)
@@ -302,7 +302,7 @@ void Player::Collision(void)
 	//移動前の座標を格納する
 	//moveDiff_ = VSub(movedPos_, transform_.pos);
 	// 移動
-	transform_.pos = movedPos_;
+	trans_.pos = movedPos_;
 	// 現在座標を起点に移動後座標を決める
 
 }
@@ -331,7 +331,7 @@ bool Player::CollCube(void)
 	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H / 2.0f,0.0f });
 	cube_.downPos = VAdd(cube_.centerPos, { 0.0f,-(CUBE_H / 2.0f),0.0f });
 
-	VECTOR diff = VSub(cube_.centerPos, transform_.pos);
+	VECTOR diff = VSub(cube_.centerPos, trans_.pos);
 	if(fabsf(diff.x)>CUBE_W/2+RADIUS
 		||fabsf(diff.y)>CUBE_H/2+RADIUS
 		|| fabsf(diff.z) > CUBE_D / 2 + RADIUS)

@@ -12,7 +12,7 @@ Floor::~Floor()
 void Floor::SetParam(void)
 {
 	//モデルの基本設定
-	transform_.SetModel(resMng_.LoadModelDuplicate(
+	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::FLOOR));
 
 	//ステータス初期化

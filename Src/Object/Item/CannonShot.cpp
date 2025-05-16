@@ -7,8 +7,8 @@
 CannonShot::CannonShot(VECTOR _pos, Quaternion _quaRot)
 {
 	size_ = INT_VECTOR_ZERO;
-	transform_.pos = _pos;
-	transform_.quaRot = _quaRot;
+	trans_.pos = _pos;
+	trans_.quaRot = _quaRot;
 	isAlive_ = false;
 	movePow_ = Utility::VECTOR_ZERO;
 	cnt_ = 0.0f;
@@ -21,13 +21,13 @@ CannonShot::~CannonShot()
 void CannonShot::SetParam(void)
 {
 	//弾モデル
-	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::CANNON_SHOT));
+	trans_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::CANNON_SHOT));
 
 	//大きさ
-	transform_.scl = { SCALE,SCALE,SCALE };
+	trans_.scl = { SCALE,SCALE,SCALE };
 
 	//移動量
-	movePow_ = VScale(transform_.quaRot.GetForward(), SPEED);
+	movePow_ = VScale(trans_.quaRot.GetForward(), SPEED);
 
 	//生存判定
 	isAlive_ = true;
@@ -52,7 +52,7 @@ void CannonShot::Update(void)
 	Move();
 
 	//モデル情報更新
-	transform_.Update();
+	trans_.Update();
 }
 
 void CannonShot::Draw(void)
@@ -61,7 +61,7 @@ void CannonShot::Draw(void)
 	if (!isAlive_)return;
 
 	//モデル描画
-	MV1DrawModel(transform_.modelId);
+	MV1DrawModel(trans_.modelId);
 }
 
 void CannonShot::Hit(void)
@@ -72,5 +72,5 @@ void CannonShot::Hit(void)
 
 void CannonShot::Move(void)
 {
-	transform_.pos = VAdd(transform_.pos, movePow_);
+	trans_.pos = VAdd(trans_.pos, movePow_);
 }

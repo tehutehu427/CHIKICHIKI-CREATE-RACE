@@ -33,7 +33,7 @@ void Fence::Draw(void)
 	auto& map = MapEditer::GetInstance();
 
 	//ŽlŠp•`‰æ
-	DrawCube3D(VSub(transform_.pos, VScale(map.MapToWorldPos(size_), 0.5f)),
-		VAdd(transform_.pos, VScale(map.MapToWorldPos(size_), 0.5f)), 
+	DrawCube3D(VSub(trans_.pos, VScale(map.MapToWorldPos(size_), 0.5f)),
+		VAdd(trans_.pos, VScale(map.MapToWorldPos(size_), 0.5f)), 
 			0xffffff, 0xffffff, true);
 }

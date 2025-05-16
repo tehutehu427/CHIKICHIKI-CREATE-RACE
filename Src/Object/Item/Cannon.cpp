@@ -23,7 +23,7 @@ Cannon::~Cannon()
 void Cannon::SetParam(void)
 {
 	//ƒ‚ƒfƒ‹‚ÌŠî–{İ’è
-	transform_.SetModel(resMng_.LoadModelDuplicate(
+	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_TURRET));
 
 	//ƒXƒe[ƒ^ƒX‰Šú‰»
@@ -33,7 +33,7 @@ void Cannon::SetParam(void)
 	status_.effType = EFFECT_TYPE::INSTALLATION;
 
 	//–Cg‚ğ–C‘ä‚É‡‚í‚¹‚Ä‚¨‚­
-	barrelTrans_.pos = VAdd(transform_.pos,BARREL_LOCAL_POS);
+	barrelTrans_.pos = VAdd(trans_.pos,BARREL_LOCAL_POS);
 	//Šp“x‚à‚Ü‚Á‚·‚®‚É
 	barrelTrans_.quaRotLocal = Quaternion::Euler(
 		Utility::Deg2RadF(BARREL_LOCAL_ROT.x), 
@@ -85,7 +85,7 @@ void Cannon::Update(void)
 void Cannon::Draw(void)
 {
 	//–C‘ä‚Ì•`‰æ
-	MV1DrawModel(transform_.modelId);
+	MV1DrawModel(trans_.modelId);
 	//–Cg‚Ì•`‰æ
 	MV1DrawModel(barrelTrans_.modelId);
 
@@ -98,7 +98,7 @@ void Cannon::Draw(void)
 	DrawLine3D(barrelTrans_.pos, targetPos_, 0x666666);
 	DrawLine3D(barrelTrans_.pos, VScale(barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal).GetForward(),1000.0f), 0x666666);
 
-	DrawSphere3D(transform_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
+	DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
 
 	//’eŠÖŒW
 	for (auto& shot : shots_)
@@ -120,7 +120,7 @@ void Cannon::Aim(void)
 void Cannon::RotateTurret(void)
 {
 	//–C‘ä‚Æ•W“I‚ÌƒxƒNƒgƒ‹‚Ì·ˆÙ
-	VECTOR turretVecDiff = VSub(targetVec_, transform_.pos);
+	VECTOR turretVecDiff = VSub(targetVec_, trans_.pos);
 
 	//³‹K‰»
 	turretVecDiff = VNorm(turretVecDiff);
@@ -135,7 +135,7 @@ void Cannon::RotateTurret(void)
 	turretAddRot_ = turQuaRot.ToEuler();
 
 	//–C‘ä‰ñ“]
-	Rotate(transform_, turretAddRot_);
+	Rotate(trans_, turretAddRot_);
 }
 
 void Cannon::RotateBarrel(void)

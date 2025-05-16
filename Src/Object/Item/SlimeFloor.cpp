@@ -11,7 +11,7 @@ SlimeFloor::SlimeFloor(void)
 void SlimeFloor::SetParam(void)
 {
 	//ƒ‚ƒfƒ‹‚ÌŠî–{İ’è
-	transform_.SetModel(resMng_.LoadModelDuplicate(
+	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::SLIME_FLOOR));
 
 	size_ = MAP_SIZE;
