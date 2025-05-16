@@ -62,6 +62,10 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 	IntVector3 mapPos = NearObjectPos();
 	Quaternion rot = {};
+	if (mapPos == ERROR_POS)
+	{
+		return;
+	}
 	ItemManager::GetInstance().CreateDummyItem(mapPos, rot, itemType_, playerNum_);
 	mapPos_ = mapPos;
 	ChengeMode(MODE::MOVE_ROTATE);
