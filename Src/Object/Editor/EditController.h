@@ -84,11 +84,11 @@ private:
 	void  MoveItem(void);			
 
 	//移動方向を取得
-	MOVE_DIR GetMoveDir(void);			
+	MOVE_DIR GetMoveDir(void) const;			
 
 	void DebugUpdate(void);	//デバッグ用更新
 	void DebugDraw(void);	//デバッグ用描画
 
-	void RotateObject(void);	//オブジェクト回転
+	void RotateObject(void) const;	//オブジェクト回転
 };
 

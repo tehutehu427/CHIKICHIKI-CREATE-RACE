@@ -10,6 +10,9 @@ class ItemManager
 {
 public:
 
+	static constexpr float DUMMY_ITEM_OPACITY_RATE = 0.5f;	//ダミーアイテムの半透明度
+	static constexpr float DEFAULT_OPACITY_RATE = 1.0f;		//デフォルトの半透明度
+
 	void Init(void);
 	void Update(void);
 	void Draw(void);

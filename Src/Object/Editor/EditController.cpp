@@ -282,7 +282,7 @@ void EditController::MoveItem(void)
 
 }
 
-EditController::MOVE_DIR EditController::GetMoveDir(void)
+EditController::MOVE_DIR EditController::GetMoveDir(void) const
 {
 	MOVE_DIR moveDir = MOVE_DIR::NONE;
 	InputManager& ins = InputManager::GetInstance();
@@ -361,7 +361,7 @@ void EditController::DebugDraw(void)
 
 }
 
-void EditController::RotateObject(void)
+void EditController::RotateObject(void) const
 {
 	InputManager& ins = InputManager::GetInstance();
 	if (ins.IsTrgDown(KEY_INPUT_R))

@@ -42,13 +42,16 @@ void ItemManager::Draw(void)
 			}
 		}
 	}
+
 	for (auto& item : dummyItems_)
 	{
 		if (item.second == nullptr)
 		{
 			continue;
 		}
+		MV1SetOpacityRate(item.second->GetTransform().modelId, DUMMY_ITEM_OPACITY_RATE);
 		item.second->Draw();
+		MV1SetOpacityRate(item.second->GetTransform().modelId, DEFAULT_OPACITY_RATE);
 	}
 }
 
