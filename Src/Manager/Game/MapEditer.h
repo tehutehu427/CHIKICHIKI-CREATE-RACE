@@ -23,7 +23,18 @@ public:
 	static MapEditer& GetInstance(void);
 
 	void Init(void);
+	/// <summary>
+	/// 指定のマップ座標のアイテムの種類を判別する
+	/// </summary>
+	/// <param name="mapPos"></param>
+	/// <returns></returns>
 	ItemBase::ITEM_TYPE GetItemType(IntVector3 mapPos) { return isMapPosItem_[mapPos.x][mapPos.y][mapPos.z]; }
+	/// <summary>
+	/// 指定のマップ座標にオブジェクトがあるか
+	/// </summary>
+	/// <param name="mapPos"></param>
+	/// <returns></returns>
+	bool IsObjectAtMapPos(IntVector3 mapPos);
 	void AddItem(STATUS status,IntVector3 size);
 	void DeleteItem(const ItemBase::ITEM_TYPE& _type, const IntVector3& mapPos);
 	IntVector3 WorldToMapPos(VECTOR worldPos);

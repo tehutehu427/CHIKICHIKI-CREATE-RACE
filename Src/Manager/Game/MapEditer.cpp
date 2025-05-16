@@ -31,6 +31,11 @@ void MapEditer::Init(void)
 }
 
 
+bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos)
+{
+	return GetItemType(mapPos) != ItemBase::ITEM_TYPE::NONE;
+}
+
 void MapEditer::AddItem(STATUS status, IntVector3 size)
 {
 	//アイテムの配置

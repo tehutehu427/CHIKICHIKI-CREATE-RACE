@@ -135,7 +135,6 @@ void ItemManager::ResetDummyItem(int playerNum, ItemBase::ITEM_TYPE type,IntVect
 		Transform transform = dummyItems_[playerNum]->GetTransform();
 		std::shared_ptr<ItemBase> dummy;
 		dummy = CreateItem(type, mapPos, transform.quaRot);
-		//dummy->Init(mapPos, transform.quaRot, dummyItems_[playerNum]->GetStatus().itemType);
 		dummyItems_.erase(playerNum);
 		dummyItems_[playerNum] = dummy;
 	}

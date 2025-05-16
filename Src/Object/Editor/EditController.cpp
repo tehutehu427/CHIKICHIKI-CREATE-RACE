@@ -57,16 +57,23 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	{
 		return;
 	}
+	auto& itemMIns = ItemManager::GetInstance();
 	//アイテムを追加
 	//ダミーアイテムを変更する
-	ItemManager::GetInstance().DummyItemAddItems(playerNum_);
+	MapEditer::STATUS status;
+	status.mapPos = mapPos_;
+	status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
+	status.type = itemType_;
+	MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyObjectSize(playerNum_));
+	itemMIns.DummyItemAddItems(playerNum_);
+	itemMIns.CreateDummyItem({}, {}, itemType, playerNum_);
 	IntVector3 mapPos = NearObjectPos();
 	Quaternion rot = {};
 	if (mapPos == ERROR_POS)
 	{
 		return;
 	}
-	ItemManager::GetInstance().CreateDummyItem(mapPos, rot, itemType_, playerNum_);
+	itemMIns.CreateDummyItem(mapPos, rot, itemType_, playerNum_);
 	mapPos_ = mapPos;
 	ChengeMode(MODE::MOVE_ROTATE);
 }
@@ -105,7 +112,7 @@ void EditController::ItemSelectDraw(void)
 
 void EditController::MoveRotateObjectDraw(void)
 {
-	if (mapPos_ != IntVector3{-1,-1,-1})
+	if (mapPos_ != ERROR_POS)
 	{
 		VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
 		worldPos = VAdd(worldPos,{MapEditer::GRID_SIZE /2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
@@ -148,7 +155,7 @@ void EditController::ItemNotSelect(void)
 IntVector3 EditController::NearObjectPos(void)
 {
 	isClickObject_ = false;
-	IntVector3 mapPos = {-1,-1,-1};
+	IntVector3 mapPos = ERROR_POS;
 	VECTOR mousePosNear3D = { mousePos_.x, mousePos_.y, 0.0f };
 	VECTOR nearWorldPos = ConvScreenPosToWorldPos(mousePosNear3D);	//近いほうのワールド座標
 	VECTOR mousePosFar3D = { mousePos_.x, mousePos_.y, 1.0f };
@@ -168,20 +175,48 @@ IntVector3 EditController::NearObjectPos(void)
 			return mapPos;
 		}
 	}
+	auto size = ItemManager::GetInstance().GetDummyObjectSize(playerNum_);
+	//線形補間で当たり判定をする
 	for (float t = 0.0f; t < 1.0f; t += 0.01f)
 	{
 		VECTOR lerp = Utility::Lerp(nearWorldPos, farWorldPos, t);
 		IntVector3 mapPosTemp = MapEditer::GetInstance().WorldToMapPos(lerp);
-		if (MapEditer::GetInstance().GetItemType(mapPosTemp) != ItemBase::ITEM_TYPE::NONE)
+		if (size == ERROR_POS)
 		{
-			mapPos = mapPosTemp;
-			isClickObject_ = true;
-			break;
+			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPosTemp))
+			{
+				//mapPos = mapPosTemp;
+				isClickObject_ = true;
+				return mapPos;
+			}
 		}
 		else
 		{
-			mapPos = mapPosTemp;
+			//サイズ分の大きさを検査する
+			for (int x = 0;x < size.x;x++)
+			{
+				for (int y = 0;y < size.y;y++)
+				{
+					for (int z = 0;z < size.z;z++)
+					{
+						IntVector3 sizeRoop = { x,y,z };
+						if (MapEditer::GetInstance().IsObjectAtMapPos(mapPosTemp + sizeRoop))
+						{
+							//mapPos = mapPosTemp;
+							if (mapPos.x < 0 || mapPos.x > MapEditer::MAP_SIZE.x - size.x ||
+								mapPos.y < 0 || mapPos.y > MapEditer::MAP_SIZE.y - size.y ||
+								mapPos.z < 0 || mapPos.z > MapEditer::MAP_SIZE.z - size.z)
+							{
+								return ERROR_POS;
+							}
+							isClickObject_ = true;
+							return mapPos;
+						}
+					}
+				}
+			}
 		}
+		mapPos = mapPosTemp;
 	}
 	return mapPos;
 }
@@ -222,6 +257,7 @@ void EditController::MoveItem(void)
 	VECTOR wallWorldPosFar = MapEditer::GetInstance().MapToWorldPos(nullWallMapPosFar);
 	//遠いほうを壁に当たる中に入れる
 	farWorldPos = VSub(farWorldPos, normalmousePos3D);
+	auto size = ItemManager::GetInstance().GetDummyObjectSize(playerNum_);
 	switch (moveDir_)
 	{
 	case EditController::MOVE_DIR::NONE:
@@ -240,7 +276,7 @@ void EditController::MoveItem(void)
 			}
 		}
 		mapPos_.x = MapEditer::GetInstance().WorldToMapPos(farWorldPos).x;
-		mapPos_.x = mapPos_.x < 0 ? 0 : mapPos_.x >= MapEditer::MAP_SIZE.x ? MapEditer::MAP_SIZE.x : mapPos_.x;
+		mapPos_.x = mapPos_.x < 0 ? 0 : mapPos_.x >= MapEditer::MAP_SIZE.x - size.x ? MapEditer::MAP_SIZE.x - size.x : mapPos_.x;
 		break;
 	case EditController::MOVE_DIR::Y:
 		while (farWorldPos.z < wallWorldPosNear.z || farWorldPos.z > wallWorldPosFar.z)
@@ -255,7 +291,7 @@ void EditController::MoveItem(void)
 			}
 		}
 		mapPos_.y = MapEditer::GetInstance().WorldToMapPos(farWorldPos).y;
-		mapPos_.y = mapPos_.y < 0 ? 0 : mapPos_.y >= MapEditer::MAP_SIZE.y ? MapEditer::MAP_SIZE.y : mapPos_.y;
+		mapPos_.y = mapPos_.y < 0 ? 0 : mapPos_.y >= MapEditer::MAP_SIZE.y - size.y ? MapEditer::MAP_SIZE.y - size.y: mapPos_.y;
 		break;
 	case EditController::MOVE_DIR::Z:
 		while (farWorldPos.x < wallWorldPosNear.x || farWorldPos.x > wallWorldPosFar.x)
@@ -270,7 +306,7 @@ void EditController::MoveItem(void)
 			}
 		}
 		mapPos_.z = MapEditer::GetInstance().WorldToMapPos(farWorldPos).z;
-		mapPos_.z = mapPos_.z < 0 ? 0 : mapPos_.z >= MapEditer::MAP_SIZE.z ? MapEditer::MAP_SIZE.z : mapPos_.z;
+		mapPos_.z = mapPos_.z < 0 ? 0 : mapPos_.z >= MapEditer::MAP_SIZE.z - size.z? MapEditer::MAP_SIZE.z - size.z: mapPos_.z;
 		break;
 	case EditController::MOVE_DIR::XY:
 		break;
@@ -352,7 +388,11 @@ void EditController::DebugUpdate(void)
 {
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_X))
 	{
-		SetItemType(ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
+		SetItemType(ItemBase::ITEM_TYPE::FLOOR);
+	}
+	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_RETURN))
+	{
+		ChengeMode(MODE::ITEM_SELECT);
 	}
 }
 
