@@ -6,6 +6,7 @@
 #include <math.h>
 #include <DxLib.h>
 #include "../Common/Vector2.h"
+#include "../Common/IntVector3.h"
 #include "../Common/Quaternion.h"
 class Utility
 {
@@ -125,10 +126,10 @@ public:
 	static bool IsTimeOver(float& totalTime, const float& waitTime);
 
 	//文字の描画
-	//str : 表示する文字　int : そろえるライン　int : y軸座標　int : 色
-	static void DrawStringCenter(std::string str, int centerLine, int posY, int color);	//中央ぞろえ
-	static void DrawStringLeft(std::string str, int leftLiine, int posY, int color);	//左揃え
-	static void DrawStringRight(std::string str, int rightLine, int posY, int color);	//右揃え
+	//_str : 表示する文字　int : そろえるライン　int : y軸座標　int : 色
+	static void DrawStringCenter(std::string _str, int centerLine, int posY, int color);	//中央ぞろえ
+	static void DrawStringLeft(std::string _str, int leftLiine, int posY, int color);	//左揃え
+	static void DrawStringRight(std::string _str, int rightLine, int posY, int color);	//右揃え
 
 	/// <summary>
 	/// とある点からとある点までの移動ベクトルを返す
@@ -140,10 +141,16 @@ public:
 	static const VECTOR GetMoveVec(const VECTOR _start, const VECTOR _goal, const float _speed = 1.0f);
 
 	//特定の範囲内に座標が含まれてるか調べる
-	static bool IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vector2 rightBotm);
+	static bool IsPointInRect(const Vector2 _pos, const Vector2 _leftTop, const Vector2 rightBotm);
 
 	//符号を返す
 	static int GetSign(float f);
 	static int GetSign(int f);
+
+	//数値の反転
+	static VECTOR ReverseValue(const VECTOR _vec);
+	static  int ReverseValue(const int _i);
+	static float ReverseValue(const float _f);
+	static IntVector3 ReverseValue(const IntVector3 _iv);
 };
 

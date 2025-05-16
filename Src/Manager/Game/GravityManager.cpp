@@ -56,6 +56,8 @@ void GravityManager::Calculate(void)
 	//d—Í•ûŒü
 	VECTOR dirGravity = Utility::DIR_D;
 	//d—Í‚Ì‹t•ûŒü
-	VECTOR dirUpGravity = VScale(dirGravity, -1.0f);
+	VECTOR dirUpGravity = VScale(dirGravity, Utility::REVERSE_SCALE);
+
+
 
 }

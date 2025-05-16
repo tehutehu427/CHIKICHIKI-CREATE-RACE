@@ -611,3 +611,23 @@ int Utility::GetSign(int f)
 {
     return f == 0 ? 0 : f < 0 ? -1 : 1;
 }
+
+VECTOR Utility::ReverseValue(VECTOR _vec)
+{
+    return VScale(_vec, REVERSE_SCALE);
+}
+
+int Utility::ReverseValue(int _i)
+{
+    return static_cast<int>(_i * REVERSE_SCALE);
+}
+
+float Utility::ReverseValue(float _f)
+{
+    return _f * REVERSE_SCALE;
+}
+
+IntVector3 Utility::ReverseValue(IntVector3 _iv)
+{
+    return _iv * REVERSE_SCALE;
+}
