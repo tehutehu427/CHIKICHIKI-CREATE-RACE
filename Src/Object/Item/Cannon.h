@@ -9,6 +9,9 @@ public:
 	//弾の生成数
 	static constexpr int SHOT_MAX = 3;
 
+	//弾の生成感覚
+	static constexpr float SHOT_INTERVAL = 5.0f;
+
 	//マップサイズ
 	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };
 
@@ -22,7 +25,7 @@ public:
 	static constexpr VECTOR BARREL_LOCAL_POS = { 0.0f, 75.0f, -0.0f };
 
 	//砲身の相対回転
-	static constexpr VECTOR BARREL_LOCAL_ROT = { 30.0f, 0.0f, 0.0f };
+	static constexpr VECTOR BARREL_LOCAL_ROT = { 18.0f, 0.0f, 0.0f };
 
 	//コンストラクタ
 	Cannon();
@@ -42,7 +45,13 @@ public:
 private:
 
 	//弾
-	std::unique_ptr<CannonShot> shot_[SHOT_MAX];
+	std::unique_ptr<CannonShot> shots_[SHOT_MAX];
+
+	//弾の数
+	int shotNum_;
+
+	//弾の生成間隔カウンタ
+	float shotCreateCnt_;
 
 	//砲身用モデル情報
 	Transform barrelTrans_;
@@ -65,6 +74,12 @@ private:
 	//狙うベクトルへの補間
 	//void AimLeap()
 
+	//砲台の回転
+	void RotateTurret(void);
+
+	//砲身の回転
+	void RotateBarrel(void);
+
 	/// <summary>
 	/// 回転
 	/// </summary>
@@ -76,7 +91,7 @@ private:
 	//弾の生成
 	void CreateShot(void);
 
-	//弾の配列管理
-	std::unique_ptr<CannonShot>GetValidShot(void);
+	//弾の削除
+	void DeleteShot(void);
 };
 

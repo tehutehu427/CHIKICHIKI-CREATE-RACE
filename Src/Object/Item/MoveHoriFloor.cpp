@@ -1,5 +1,6 @@
 #include "../Utility/Utility.h"
 #include "../Common/Quaternion.h"
+#include "../Manager/Game/MapEditer.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
 #include "MoveHoriFloor.h"
@@ -29,6 +30,7 @@ void MoveHoriFloor::SetParam(void)
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::MOVE_FLOOR));
 
+	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
 	status_.isGravity = false;
@@ -74,7 +76,13 @@ void MoveHoriFloor::InitRoute(void)
 	//初期位置保存
 	route_[routeNum_] = transform_.pos;
 
-	VECTOR movePos = transform_.quaRot.PosAxis(VGet(size_.x * MOVE_X * 100, 0.0f, 0.0f));
+	//マップ座標をワールド座標に
+	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ size_.x + MOVE_X, 0, 0 });
+	
+	//移動量
+	VECTOR movePos = transform_.quaRot.PosAxis(intPos);
+	
+	//目標地点
 	VECTOR goalPos = VAdd(route_[routeNum_], movePos);
 
 	//次の位置保存
@@ -111,14 +119,17 @@ void MoveHoriFloor::SetRoute(void)
 
 bool MoveHoriFloor::IsBeyondRoute(void)
 {
+	//Xの比較
 	bool beyondX;
 	if (moveVec_.x >= 0.0f)beyondX = transform_.pos.x >= route_[routeNum_].x + moveVec_.x;
 	else beyondX = transform_.pos.x < route_[routeNum_].x + moveVec_.x;
 
+	//Yの比較
 	bool beyondY;
 	if (moveVec_.y >= 0.0f)beyondY = transform_.pos.y >= route_[routeNum_].y + moveVec_.y;
 	else beyondY = transform_.pos.y < route_[routeNum_].y + moveVec_.y;
 
+	//Zの比較
 	bool beyondZ;
 	if (moveVec_.z >= 0.0f)beyondZ = transform_.pos.z >= route_[routeNum_].z + moveVec_.z;
 	else beyondZ = transform_.pos.z < route_[routeNum_].z + moveVec_.z;
@@ -128,5 +139,6 @@ bool MoveHoriFloor::IsBeyondRoute(void)
 
 void MoveHoriFloor::HitObject(Transform& _hitTrans)
 {
+	//当たったオブジェクトに同じだけ移動させる
 	_hitTrans.pos = VAdd(_hitTrans.pos, movePow_);
 }

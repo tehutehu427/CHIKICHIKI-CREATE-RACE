@@ -1,3 +1,4 @@
+#include <DxLib.h>
 #include "IntVector3.h"
 
 //IntVector3::IntVector3(void)
@@ -109,4 +110,20 @@ const bool IntVector3::operator>=(const IntVector3 _value)
 	bool diffZ = z >= _value.z;
 
 	return diffX && diffY && diffZ;
+}
+
+VECTOR IntVectorToVECTOR(IntVector3 _iv)
+{
+	return VGet(_iv.x, _iv.y, _iv.z);
+}
+
+IntVector3 VECTORToIntVector(VECTOR _v)
+{
+	IntVector3 intVec;
+
+	intVec.x = static_cast<int>(_v.x);
+	intVec.y = static_cast<int>(_v.y);
+	intVec.z = static_cast<int>(_v.z);
+
+	return intVec;
 }

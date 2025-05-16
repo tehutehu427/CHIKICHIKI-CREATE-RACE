@@ -15,6 +15,7 @@ void Floor::SetParam(void)
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::FLOOR));
 
+	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
 	status_.isGravity = false;
