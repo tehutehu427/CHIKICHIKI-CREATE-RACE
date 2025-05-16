@@ -32,6 +32,7 @@ GameScene::GameScene(void)
 GameScene::~GameScene(void)
 {
 	//インスタンスの削除
+	PlayerManager::GetInstance().Destroy();
 }
 
 void GameScene::Load(void)
@@ -64,10 +65,10 @@ void GameScene::Init(void)
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
-	PlayerManager::CreateInstance(2);
+	PlayerManager::CreateInstance(4);
 
 	//アイテム生成
-	ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
+	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
 	ChangePhase(PHASE::EDIT_PHASE);
 }
 

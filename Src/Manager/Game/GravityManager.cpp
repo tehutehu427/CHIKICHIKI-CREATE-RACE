@@ -1,4 +1,5 @@
 #include<DxLib.h>
+#include"../Utility/Utility.h"
 #include "GravityManager.h"
 
 std::unique_ptr<GravityManager> GravityManager::instance_ = nullptr;
@@ -48,4 +49,13 @@ void GravityManager::CalcGravity(VECTOR& _dir, VECTOR& _pow, float _per)
 	//	//重力方向と反対方向(マイナス)でなければ、ジャンプ力を無くす
 	//	_pow = gravity;
 	//}
+}
+
+void GravityManager::Calculate(void)
+{
+	//重力方向
+	VECTOR dirGravity = Utility::DIR_D;
+	//重力の逆方向
+	VECTOR dirUpGravity = VScale(dirGravity, -1.0f);
+
 }

@@ -95,11 +95,6 @@ void PlayerManager::PlayersCollision(void)
 			{
 				PunchPlayersColl(i, j);
 			}
-				
-			//if (players_[j]->GetIsPunch())
-			//{
-			//	PunchPlayersColl(j, i);
-			//}	
 		}
 	}
 }

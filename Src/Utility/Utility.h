@@ -34,6 +34,9 @@ public:
 
 	static constexpr float kEpsilonNormalSqrt = 1e-15F;
 
+	//値を反転させる溜めのスケール
+	static constexpr float REVERSE_SCALE = -1.0f;
+
 	// 四捨五入
 	static int Round(float v);
 
