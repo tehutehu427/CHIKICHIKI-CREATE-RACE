@@ -40,6 +40,9 @@ public:
 	/// <param name="_playerNum">プレイヤー人数</param>
 	static void CreateInstance(int _playerNum);
 
+	//解放
+	void Destroy(void);
+
 	//静的にインスタンスを取得する
 	static PlayerManager& GetInstance(void);
 
@@ -87,6 +90,13 @@ private:
 
 	//プレイヤー番号ごとでモデル情報を決定する
 	Transform FixTrans(int _playerNum);
+
+	/// <summary>
+	/// パンチの当たり判定
+	/// </summary>
+	/// <param name="p1">判定したい1人目のプレイヤ</param>
+	/// <param name="p2">判定したい2人目のプレイヤ</param>
+	void PunchPlayersColl(int p1,int p2);
 
 	/// <summary>
 	/// コンストラクタ

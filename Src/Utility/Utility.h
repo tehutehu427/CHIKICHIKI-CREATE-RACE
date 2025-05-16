@@ -6,6 +6,7 @@
 #include <math.h>
 #include <DxLib.h>
 #include "../Common/Vector2.h"
+#include "../Common/IntVector3.h"
 #include "../Common/Quaternion.h"
 class Utility
 {
@@ -47,6 +48,9 @@ public:
 	static constexpr int BROWN = 0x8B4513;	//茶色
 
 	static constexpr float kEpsilonNormalSqrt = 1e-15F;
+
+	//値を反転させる溜めのスケール
+	static constexpr float REVERSE_SCALE = -1.0f;
 
 	// 四捨五入
 	static int Round(float v);
@@ -136,10 +140,10 @@ public:
 	static bool IsTimeOver(float& totalTime, const float& waitTime);
 
 	//文字の描画
-	//str : 表示する文字　int : そろえるライン　int : y軸座標　int : 色
-	static void DrawStringCenter(std::string str, int centerLine, int posY, int color);	//中央ぞろえ
-	static void DrawStringLeft(std::string str, int leftLiine, int posY, int color);	//左揃え
-	static void DrawStringRight(std::string str, int rightLine, int posY, int color);	//右揃え
+	//_str : 表示する文字　int : そろえるライン　int : y軸座標　int : 色
+	static void DrawStringCenter(std::string _str, int centerLine, int posY, int color);	//中央ぞろえ
+	static void DrawStringLeft(std::string _str, int leftLiine, int posY, int color);	//左揃え
+	static void DrawStringRight(std::string _str, int rightLine, int posY, int color);	//右揃え
 
 	/// <summary>
 	/// とある点からとある点までの移動ベクトルを返す
@@ -167,5 +171,11 @@ public:
 
 	//エクスプローラーからファイルを開く
 	static std::string OpenFileDialog();
+
+	//数値の反転
+	static VECTOR ReverseValue(const VECTOR _vec);
+	static  int ReverseValue(const int _i);
+	static float ReverseValue(const float _f);
+	static IntVector3 ReverseValue(const IntVector3 _iv);
 };
 

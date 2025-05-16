@@ -27,8 +27,11 @@ public:
 	static constexpr float RADIUS = 20.0f;
 	//移動
 	//----------------------------------
-	//スピード
+	//移動スピード
 	static constexpr float MOVE_SPEED = 10.0f;
+
+	//ぶっ飛ぶスピード
+	static constexpr float FLY_AWAY_SPEED = 30.0f;
 
 	//----------------------------------
 	//ジャンプ
@@ -45,13 +48,19 @@ public:
 	static constexpr float PUNCH_TIME_MAX = 1.5f;
 
 	//パンチクールタイム
-	static constexpr float PUNCH_COOL_TIME = 0.5;
+	static constexpr float PUNCH_COOL_TIME = 0.5f;
 
 	// 回転完了までの時間
 	static constexpr float TIME_ROT = 1.0f;
 
 	//パンチのローカル座標
 	static constexpr VECTOR PUNCH_LOCAL_POS = { 0.0f,50.0f,40.0f };
+
+	//パンチの範囲
+	static constexpr float PUNCH_RADIUS = 40.0f;
+
+	//吹き飛び効果時間
+	static constexpr float PUNCHED_TIME = 0.2f;
 
 
 	enum class FLOOR_COL
@@ -115,6 +124,15 @@ public:
 	const VECTOR GetMovePow(void) { return movePow_; }
 	//入力
 	const std::weak_ptr<PlayerInput> GetInput(void)const { return input_; }
+
+	//パンチ中ゲッタ
+	const bool GetIsPunch(void) { return isPunch_; }
+
+	//パンチ座標
+	const VECTOR GetPunchPos(void) { return punchPos_; }
+
+	//プレイヤー座標
+	const VECTOR GetPos(void)const { return transform_.pos; }
 	//******************************************
 	//セッタ
 	//******************************************
@@ -126,6 +144,12 @@ public:
 
 	//移動量セット(マネージャ用)
 	void SetMovePow(const VECTOR _vec) { movePow_ = _vec; }
+
+	//パンチされたフラグ
+	void SetIsPunched(const bool _isPunched) { isPunched_ = _isPunched; }
+
+	//方向
+	void SetDir(const VECTOR _dir) { dir_ = _dir; }
 
 #ifdef DEBUG_ON
 	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
@@ -176,6 +200,7 @@ private:
 	float speed_;			// 移動スピード
 	VECTOR moveDir_;		// 移動方向
 	VECTOR movePow_;		// 移動量
+	VECTOR dir_;
 
 	//回転
 	Quaternion playerRotY_;
@@ -196,6 +221,8 @@ private:
 	float punchCnt_;				//パンチカウント
 	float punchCoolCnt_;			//パンチクールタイム
 	VECTOR punchPos_;			//攻撃座標
+	bool isPunched_;			//他プレイヤーからのパンチを受けたか
+	float punchedCnt_;			//パンチ効果時間カウント
 
 #ifdef DEBUG_ON
 	VECTOR cubeMovePos_;

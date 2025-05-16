@@ -20,13 +20,16 @@ public:
 
 
 	/// <summary>
-	///重力計算
+	///重力計算(ジャンプ行動など)
 	/// </summary>
 	/// <param name="dir">重力方向</param>
 	/// <param name="pow">重力計算に使う変数</param>
 	/// <param name="per">重力倍率</param>
 	/// <param name="per">重力倍率</param>
 	void CalcGravity(VECTOR& _dir, VECTOR& _pow,float _per = 100.0f);
+
+	//重力計算
+	void Calculate(void);
 
 private:
 	static std::unique_ptr<GravityManager> instance_;

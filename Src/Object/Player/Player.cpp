@@ -38,6 +38,8 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	punchCoolCnt_ = 0.0f;
 	isPunch_ = false;
 	punchPos_ = Utility::VECTOR_ZERO;
+	isPunched_ = false;
+	punchedCnt_ = PUNCHED_TIME;
 
 	capsule_ = std::make_shared<Capsule>(transform_);
 	capsule_->SetLocalPosTop(CAPSULE_TOP);
@@ -100,49 +102,63 @@ void Player::DrawDebug(void)
 	DrawFormatString(0, 16, 0xffffff, "角度(%.2f,%.2f,%.2f)", transform_.rot.x, transform_.rot.y, transform_.rot.z);
 	capsule_->Draw();
 
-	DrawSphere3D(punchPos_, 10.0f, 4, 0xff0000, 0xff0000, isPunch_);
+	DrawSphere3D(punchPos_, PUNCH_RADIUS, 4, 0xff0000, 0xff0000, isPunch_);
 
-
-	//DrawSphere3D(cube_.centerPos, 7.0f, 4, 0xff0000, 0xff0000, true);
-	//DrawSphere3D(cube_.leftPos, 7.0f, 4, 0xff0000, 0xff0000, true);
-	//DrawSphere3D(cube_.rightPos, 7.0f, 4, 0xff0000, 0xff0000, true);
-	//DrawSphere3D(cube_.upPos, 7.0f, 4, 0xff0000, 0xff0000, true);
-	//DrawSphere3D(cube_.downPos, 7.0f, 4, 0xff0000, 0xff0000, true);
-
-	//DrawCube3D(VAdd(cube_.centerPos, { -CUBE_W / 2, -CUBE_H / 2,-CUBE_D / 2 }), VAdd(cube_.centerPos, { CUBE_W / 2, CUBE_H / 2, CUBE_D / 2 })
-	//	, 0xffffff, 0xffffff, true);
 }
 void Player::Action(void)
 {
 	Rotate();
-	if (!isPunch_)
-	{
-		Jump();
-		Move();
-	}
 	Punch();
+	if (isPunch_)return;
+	Jump();
+	Move();
+	if (isPunched_)
+	{
+		punchCnt_ -= scnMng_.GetDeltaTime();
+	}
+	if (punchCnt_ < 0.0f)
+	{
+		isPunched_ = false;
+		punchCnt_ = PUNCHED_TIME;
+	}
+
+	
 }
 
 void Player::Move(void)
 {
 	movePow_ = Utility::VECTOR_ZERO;
-	VECTOR dir = Utility::VECTOR_ZERO;
+	if (!isPunched_)
+	{
+		dir_ = Utility::VECTOR_ZERO;
+	}
 	VECTOR getDir = input_->GetDir();
 	float deg = 0;
 	//プレイヤーの周囲にあるステージポリゴンの取得
 	//MV1_COLL_RESULT_POLY_DIM hitDim[STAGECOLLOBJ_MAXNUM + 1];
 	Quaternion cameraRot = scnMng_.GetCamera().lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
-	//カメラ方向に移動したい
-	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
+	//吹き飛び中でなかったらカメラ方向に移動したい
+	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE)&&!isPunched_)
 	{
-		dir = cameraRot.PosAxis(getDir);
+		dir_ = cameraRot.PosAxis(getDir);
 		deg = input_->GetMoveDeg();
 	}
 
-	if (!Utility::EqualsVZero(dir) /*&& (_isJump || IsEndLanding())*/)
+	if (!Utility::EqualsVZero(dir_) /*&& (_isJump || IsEndLanding())*/)
 	{
-		speed_ = MOVE_SPEED;
+		//パンチされてぶっ飛んでる時と通常の移動の時のスピード
+		if (isPunched_)
+		{
+			speed_ = FLY_AWAY_SPEED;
+		}
+		else
+		{
+			speed_ = MOVE_SPEED;
+		}
+		//isPunched_? speed_ = FLY_AWAY_SPEED: speed_ = MOVE_SPEED;
+
+
 		//animationController_->Play((int)ANIM_TYPE::RUN);
 
 		//if ((!_isJump && IsEndLanding()))
@@ -151,7 +167,7 @@ void Player::Move(void)
 
 		//}
 
-		moveDir_ = dir;
+		moveDir_ = dir_;
 		//移動量
 		movePow_ = VScale(moveDir_, speed_);
 		SetGoalRotate(Utility::Deg2RadF(deg));
