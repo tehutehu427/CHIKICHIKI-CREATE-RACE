@@ -24,30 +24,62 @@ AnimationController::~AnimationController(void)
 	}
 }
 
-void AnimationController::Add(int type, const std::string& path, float speed)
+//void AnimationController::Add(int type, const std::string& path, float speed)
+//{
+//	Animation anim;
+//	anim.model = MV1LoadModel(path.c_str());
+//	anim.animIndex = type;
+//	anim.speed = speed;
+//
+//	if (animations_.count(type) == 0)
+//	{
+//		// 入れ替え
+//		animations_.emplace(type, anim);
+//	}
+//	else
+//	{
+//		// 追加
+//		animations_[type].model = anim.model;
+//		animations_[type].animIndex = anim.animIndex;
+//		animations_[type].attachNo = anim.attachNo;
+//		animations_[type].totalTime = anim.totalTime;
+//	}
+//
+//}
+
+void AnimationController::Add(int type, const float speed, int modelId)
 {
-
 	Animation anim;
-
-	anim.model = MV1LoadModel(path.c_str());
-	anim.animIndex = type;
-	anim.speed = speed;
-
-	if (animations_.count(type) == 0)
+	if (modelId != -1)
 	{
-		// 入れ替え
-		animations_.emplace(type, anim);
+		//リソースマネージャでロードしたものを使う
+		anim.model=modelId;
 	}
 	else
 	{
-		// 追加
+		//持ち主のモデル
+		anim.model = modelId_;
+	}
+	anim.animIndex = type;
+	anim.speed = speed;
+
+	//指定番号の配列にアニメーションが存在しない場合
+	if (animations_.count(type) == 0)
+	{
+		//追加
+		animations_.emplace(type, anim);
+	}
+	//存在する場合
+	else
+	{
+		//上書き
 		animations_[type].model = anim.model;
 		animations_[type].animIndex = anim.animIndex;
 		animations_[type].attachNo = anim.attachNo;
 		animations_[type].totalTime = anim.totalTime;
 	}
-
 }
+
 
 void AnimationController::Play(int type, bool isLoop, 
 	float startStep, float endStep, bool isStop, bool isForce)

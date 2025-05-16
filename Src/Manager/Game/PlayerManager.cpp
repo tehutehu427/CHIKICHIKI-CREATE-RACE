@@ -83,7 +83,8 @@ void PlayerManager::PlayersCollision(void)
 			if (i == j)continue;
 
 			//各プレイヤーに当たっていることを伝える
-			if (IsHitCapsules(players_[i]->GetCapsule(), players_[j]->GetCapsule()))
+			if (Utility::IsHitSpheres(players_[i]->GetPos(),Player::RADIUS
+				,players_[j]->GetPos(),Player::RADIUS))
 			{
 				players_[i]->SetCollision(true);
 				players_[j]->SetCollision(true);
@@ -167,19 +168,19 @@ void PlayerManager::P2PPush(int _pNum1,int _pNum2)
 Transform PlayerManager::FixTrans(int _playerNum)
 {
 	Transform trans = Transform();
+	//モデルできたら番号ごとで設定する
+	ResourceManager& resIns = ResourceManager::GetInstance();
+	trans.SetModel(resIns.LoadModelDuplicate(ResourceManager::SRC::CHICKEN));
 	//番号でモデルを変える
 	PLAYER num = static_cast<PLAYER>(_playerNum);
 	float x = 0.0f;
 	trans.quaRot = Quaternion();
-	trans.scl = Utility::VECTOR_ONE;
+	trans.scl = MODEL_SCL;
 	trans.quaRotLocal =
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
 	
 	x = PLAYER_ONE_POS_X + DISTANCE_POS * _playerNum;
 
-	//モデルできたら番号ごとで設定する
-	//trans.modelId=trans.SetModel(ResourceManager::SRC::PLAYER1)
-	
 	trans.pos = { x,0.0f,0.0f };
 	return trans;
 }

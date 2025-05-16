@@ -62,6 +62,11 @@ public:
 	//吹き飛び効果時間
 	static constexpr float PUNCHED_TIME = 0.2f;
 
+	//***********************************
+	//アニメーション関連
+	//***********************************
+	static constexpr float DEFAULT_SPD = 60.0f;
+
 
 	enum class FLOOR_COL
 	{
@@ -81,14 +86,13 @@ public:
 	// アニメーション種別
 	enum class ANIM_TYPE
 	{
-		IDLE,
-		RUN,
-		FAST_RUN,
-		JUMP,
-		WARP_PAUSE,
-		FLY,
-		FALLING,
-		VICTORY
+		NONE=0,
+		IDLE=1,
+		WALK=2,
+		DAMAGE = 8,
+		PUNCH = 11,
+		JUMP = 12,
+		LAND=13,
 	};
 
 	struct CUBE
@@ -99,6 +103,9 @@ public:
 		VECTOR upPos;
 		VECTOR downPos;
 	};
+
+	
+
 	//******************************************
 	// コンストラクタ
 	Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl);
@@ -156,9 +163,9 @@ public:
 	const int PlayerNum(void) { return playerNum_; }
 
 	//デバッグキューブのサイズ
-	static constexpr float CUBE_W = 100.0F;
-	static constexpr float CUBE_H = 100.0F;
-	static constexpr float CUBE_D = 100.0F;
+	static constexpr float CUBE_W = 200.0F;
+	static constexpr float CUBE_H = 10.0F;
+	static constexpr float CUBE_D = 200.0F;
 #endif // DEBUG_ON
 
 	
@@ -228,6 +235,7 @@ private:
 	VECTOR cubeMovePos_;
 	VECTOR cubePos_;
 	CUBE cube_;
+	std::function<int(ANIM_TYPE)> cast_;
 #endif // DEBUG_ON
 
 

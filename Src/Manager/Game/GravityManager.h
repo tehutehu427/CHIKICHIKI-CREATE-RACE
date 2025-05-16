@@ -35,6 +35,10 @@ public:
 private:
 	static std::unique_ptr<GravityManager> instance_;
 
+	//‰ñ“]—p
 	Transform trans_;
+
+	//‰ñ“]—Í
+	float slerpPow_;
 };
 

@@ -19,6 +19,7 @@ public :
 		float step = 0.0f;
 	};
 
+
 	// コンストラクタ
 	AnimationController(int modelId);
 	// デストラクタ
@@ -27,7 +28,17 @@ public :
 	// アニメーション追加
 	void Add(int type, const std::string& path, float speed);
 
-	// アニメーション再生
+	void Add(int type, const float speed,int modelId = -1);
+
+	/// <summary>
+	/// アニメーションプレイ
+	/// </summary>
+	/// <param name="type">アニメーション番号</param>
+	/// <param name="isLoop">ループするか</param>
+	/// <param name="startStep">再生開始フレーム</param>
+	/// <param name="endStep">再生終了フレーム</param>
+	/// <param name="isStop">アニメーションを止める</param>
+	/// <param name="isForce">同じアニメーションを再生したい場合はtrue</param>
 	void Play(int type, bool isLoop = true, 
 		float startStep = 0.0f, float endStep = -1.0f, bool isStop = false, bool isForce = false);
 

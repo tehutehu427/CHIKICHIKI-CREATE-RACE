@@ -3,6 +3,7 @@
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Object/Common/Capsule.h"
+#include "../../Object/Common/AnimationController.h"
 #include "./Process/PlayerInput.h"
 #include "Player.h"
 
@@ -11,20 +12,27 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 #ifdef DEBUG_ON
 	cubeMovePos_=Utility::VECTOR_ZERO;
 	cubePos_=Utility::VECTOR_ZERO;
+	cast_ = { [this](ANIM_TYPE type){return static_cast<int>(type); }};
 #endif // DEBUG_ON
 
-	animationController_ = nullptr;
+	trans_ = _trans;
+
+	animationController_ = std::make_shared<AnimationController>(trans_.modelId);
+	animationController_->Add(cast_(ANIM_TYPE::IDLE), DEFAULT_SPD);
+	animationController_->Add(cast_(ANIM_TYPE::WALK), DEFAULT_SPD);
+	animationController_->Add(cast_(ANIM_TYPE::JUMP), DEFAULT_SPD);
+	animationController_->Add(cast_(ANIM_TYPE::LAND), DEFAULT_SPD);
+	animationController_->Add(cast_(ANIM_TYPE::PUNCH), DEFAULT_SPD);
 	movedPos_ = Utility::VECTOR_ZERO;
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
 	padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_ + 1);
-	trans_ = _trans;
+	
 	//オブジェクト生成
 	//操作関連
 	//---------------------------------
 	//入力
 	input_ = std::make_shared<PlayerInput>(padNum_, cntl_);
-
 	//当たり判定
 	isCol_ = false;
 
@@ -61,12 +69,15 @@ void Player::Update(void)
 {
 	//入力更新
 	input_->Update();
+	animationController_->Update();
 	//アクション関係
 	Action();
 
+	//animationController_->Play()
+
 	VECTOR dirDown = trans_.GetDown();
 	//重力
-	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_);
+	//GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_);
 
 #ifdef DEBUG_ON
 	CubeMove();
@@ -83,6 +94,7 @@ void Player::Update(void)
 
 void Player::Draw(void)
 {
+	MV1DrawModel(trans_.modelId);
 #ifdef DEBUG_ON
 	DrawDebug();
 #endif // DEBUG_ON
@@ -93,6 +105,8 @@ void Player::Draw(void)
 void Player::DrawDebug(void)
 {
 	unsigned int color = 0xffffff;
+	const int HIGH = 10;
+	const int WIDTH = 200;
 	if (playerNum_ == 0) { color = 0xffffff; }
 	else if (playerNum_ == 1) { color = 0x550000; }
 	else if (playerNum_ == 2) { color = 0x00ff00; }
@@ -104,25 +118,19 @@ void Player::DrawDebug(void)
 
 	DrawSphere3D(punchPos_, PUNCH_RADIUS, 4, 0xff0000, 0xff0000, isPunch_);
 
+	DrawCube3D({ cube_.centerPos.x - CUBE_W,cube_.centerPos.y - CUBE_H,cube_.centerPos.z - CUBE_W }
+	, { cube_.centerPos.x + CUBE_W,cube_.centerPos.y + CUBE_H,cube_.centerPos.z + CUBE_W }, 0xff0000, 0xff0000, true);
+
 }
 void Player::Action(void)
 {
+	animationController_->Play(cast_(ANIM_TYPE::WALK));
 	Rotate();
 	Punch();
 	if (isPunch_)return;
 	Jump();
 	Move();
-	if (isPunched_)
-	{
-		punchCnt_ -= scnMng_.GetDeltaTime();
-	}
-	if (punchCnt_ < 0.0f)
-	{
-		isPunched_ = false;
-		punchCnt_ = PUNCHED_TIME;
-	}
 
-	
 }
 
 void Player::Move(void)
@@ -235,8 +243,8 @@ void Player::Jump(void)
 		}
 		else
 		{
-			jumpDeceralation_ += (TIME_JUMP_IN - stepJump_) * TIME_JUMP_IN;
-			jumpPow_ = VScale(trans_.GetUp(), jumpDeceralation_);
+			//jumpDeceralation_ += (TIME_JUMP_IN - stepJump_) * TIME_JUMP_IN;
+			//jumpPow_ = VScale(trans_.GetUp(), jumpDeceralation_);
 		}
 	}
 	// ボタンを離したらジャンプ力に加算しない
@@ -267,6 +275,17 @@ void Player::Punch(void)
 	}
 	if (isHit){isPunch_ = true;}
 	if (isPunch_){punchCnt_ += PlayerInput::DELTA_TIME;}
+
+
+	if (isPunched_)
+	{
+		punchedCnt_ -= scnMng_.GetDeltaTime();
+	}
+	if (punchedCnt_ < 0.0f)
+	{
+		isPunched_ = false;
+		punchedCnt_ = PUNCHED_TIME;
+	}
 }
 #endif // DEBUG_ON
 
@@ -279,7 +298,6 @@ VECTOR Player::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _lo
 
 	//足したものを返す
 	return VAdd(_followPos, addPos);
-
 }
 
 void Player::CalcGravityPow(void)
@@ -289,10 +307,16 @@ void Player::CalcGravityPow(void)
 
 void Player::Collision(void)
 {
+
 	movedPos_ = VAdd(trans_.pos, movePow_);
+	if (CollCube())
+	{
+		movedPos_ = VAdd(movedPos_, cube_.centerPos);
+	}
 	movedPos_ = VAdd(movedPos_, jumpPow_);
 #ifdef DEBUG_ON
-	if (movedPos_.y < 0.0f)
+
+	if (movedPos_.y < 0.0f||!CollCube())
 	{
 		movedPos_.y = 0.0f;
 		isJump_ = false;
@@ -304,7 +328,6 @@ void Player::Collision(void)
 	// 移動
 	trans_.pos = movedPos_;
 	// 現在座標を起点に移動後座標を決める
-
 }
 
 bool Player::IsEndLanding(void)
