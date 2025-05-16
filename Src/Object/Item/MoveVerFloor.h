@@ -29,12 +29,21 @@ public:
 	//描画
 	void Draw(void)override;
 
+	/// <summary>
+	/// 当たった物にも同じ移動量を与える
+	/// </summary>
+	/// <param name="_hitTrans">当たった物のTransform</param>
+	void HitObject(Transform& _hitTrans);
+
 private:
 
 	//ルート
 	VECTOR route_[ROUTE];
+	//開始ルート
 	VECTOR startRoute_;
+	//終了ルート
 	VECTOR goalRoute_;
+	//現在のルートナンバー
 	int routeNum_;
 
 	//移動速度
@@ -57,12 +66,6 @@ private:
 
 	//ルートを超えたかの判定
 	bool IsBeyondRoute(void);
-
-	/// <summary>
-	/// 当たった物にも同じ移動量を与える
-	/// </summary>
-	/// <param name="_hitTrans">当たった物のTransform</param>
-	void HitObject(Transform& _hitTrans);
 
 };
 

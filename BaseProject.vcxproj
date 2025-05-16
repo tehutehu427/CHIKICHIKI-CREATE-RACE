@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Item\CannonShot.cpp" />
+    <ClCompile Include="Src\Object\Item\Fan.cpp" />
+    <ClCompile Include="Src\Object\Item\Spiky.cpp" />
     <ClCompile Include="Src\Scene\SelectScene.cpp" />
     <ClCompile Include="Src\Scene\Game\MultiParty.cpp" />
     <ClCompile Include="Src\Scene\Game\SoloChallenge.cpp" />
@@ -66,6 +69,9 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Item\CannonShot.h" />
+    <ClInclude Include="Src\Object\Item\Fan.h" />
+    <ClInclude Include="Src\Object\Item\Spiky.h" />
     <ClInclude Include="Src\Scene\SelectScene.h" />
     <ClInclude Include="Src\Scene\Game\MultiParty.h" />
     <ClInclude Include="Src\Scene\Game\SoloChallenge.h" />

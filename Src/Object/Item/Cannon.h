@@ -1,9 +1,16 @@
 #pragma once
 #include "ItemBase.h"
 
+class CannonShot;
+
 class Cannon : public ItemBase
 {
 public:
+	//弾の生成数
+	static constexpr int SHOT_MAX = 3;
+
+	//弾の生成感覚
+	static constexpr float SHOT_INTERVAL = 5.0f;
 
 	//マップサイズ
 	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };
@@ -18,7 +25,7 @@ public:
 	static constexpr VECTOR BARREL_LOCAL_POS = { 0.0f, 75.0f, -0.0f };
 
 	//砲身の相対回転
-	static constexpr VECTOR BARREL_LOCAL_ROT = { 30.0f, 0.0f, 0.0f };
+	static constexpr VECTOR BARREL_LOCAL_ROT = { 18.0f, 0.0f, 0.0f };
 
 	//コンストラクタ
 	Cannon();
@@ -36,6 +43,15 @@ public:
 	void SetTargetPos(const VECTOR _targetPos) { targetPos_ = _targetPos; }
 
 private:
+
+	//弾
+	std::unique_ptr<CannonShot> shots_[SHOT_MAX];
+
+	//弾の数
+	int shotNum_;
+
+	//弾の生成間隔カウンタ
+	float shotCreateCnt_;
 
 	//砲身用モデル情報
 	Transform barrelTrans_;
@@ -58,6 +74,12 @@ private:
 	//狙うベクトルへの補間
 	//void AimLeap()
 
+	//砲台の回転
+	void RotateTurret(void);
+
+	//砲身の回転
+	void RotateBarrel(void);
+
 	/// <summary>
 	/// 回転
 	/// </summary>
@@ -65,5 +87,11 @@ private:
 	/// <param name="_addAxis">加える回転情報</param>
 	/// <param name="_relativePos">モデル自体の相対座標</param>
 	void Rotate(Transform& _trans, const VECTOR _addAxis, const VECTOR _relativePos = {0.0f,0.0f,0.0f})const;
+
+	//弾の生成
+	void CreateShot(void);
+
+	//弾の削除
+	void DeleteShot(void);
 };
 

@@ -35,6 +35,7 @@ public:
 		BOMB,				//爆弾
 		CANNON_BARREL,		//砲身
 		CANNON_TURRET,		//砲台
+		CANNON_SHOT,		//大砲の弾
 		START_CUBE,			//スタート
 		GOAL_CUBE,			//ゴール
 		SPRING,				//ばね
