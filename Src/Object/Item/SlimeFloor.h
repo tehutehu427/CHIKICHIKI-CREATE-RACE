@@ -6,8 +6,8 @@ class SlimeFloor : public ItemBase
 {
 public:
 
-	//マップサイズ
-	static constexpr IntVector3 MAP_SIZE = { 4,1,4 };
+	//マップ
+	static constexpr IntVector3 MAP_SIZE = { 4,1,4 };	//マップサイズ
 
 	/// <summary>
 	/// コンストラクタ

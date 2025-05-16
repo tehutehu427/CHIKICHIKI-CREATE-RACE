@@ -8,9 +8,9 @@
 MoveVerFloor::MoveVerFloor()
 {
 	routeNum_ = 0;
-	for (auto& route : route_)
+	for (int i = 0; i < ROUTE; i++)
 	{
-		route = Utility::VECTOR_ZERO;
+		route_[i] = Utility::VECTOR_ZERO;
 	}
 	startRoute_ = Utility::VECTOR_ZERO;
 	goalRoute_ = Utility::VECTOR_ZERO;

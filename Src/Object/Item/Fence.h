@@ -5,8 +5,8 @@ class Fence : public ItemBase
 {
 public:
 
-	//マップサイズ
-	static constexpr IntVector3 MAP_SIZE = { 2,1,1 };
+	//マップ
+	static constexpr IntVector3 MAP_SIZE = { 2,1,1 };	//マップサイズ
 
 	//コンストラクタ
 	Fence();

@@ -5,14 +5,10 @@ class CannonShot : public ItemBase
 {
 public:
 
-	//生存時間
-	static constexpr float ALIVE_TIME = 5.0f;
-	
-	//弾の速度
-	static constexpr float SPEED = 5.0f;
-
-	//弾の大きさ
-	static constexpr float SCALE = 0.3f;
+	//ステータス
+	static constexpr float ALIVE_TIME = 5.0f;	//生存時間	
+	static constexpr float SPEED = 5.0f;		//弾の速度
+	static constexpr float SCALE = 0.3f;		//弾の大きさ
 
 	//コンストラクタ
 	CannonShot(VECTOR _pos, Quaternion _quaRot);
@@ -34,14 +30,9 @@ public:
 
 private:
 
-	//生存カウンタ
-	float cnt_;
-
-	//生存判定
-	bool isAlive_;
-
-	//移動量
-	VECTOR movePow_;
+	float cnt_;			//生存カウンタ
+	bool isAlive_;		//生存判定
+	VECTOR movePow_;	//移動量
 
 	//移動処理
 	void Move(void);

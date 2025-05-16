@@ -5,8 +5,8 @@ class Fan :
 {
 public:
 
-	//マップサイズ
-	static constexpr IntVector3 MAP_SIZE = { 4,3,4 };
+	//マップ
+	static constexpr IntVector3 MAP_SIZE = { 4,3,4 };	//マップサイズ
 
 	//コンストラクタ
 	Fan();

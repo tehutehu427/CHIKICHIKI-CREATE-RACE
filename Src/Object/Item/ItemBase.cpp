@@ -19,8 +19,14 @@ void ItemBase::Load()
 
 void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot, ITEM_TYPE _itemType)
 {
+
+	MapEditer& map = MapEditer::GetInstance();
+
 	//マップ座標をワールド座標に変換して配置
-	trans_.pos = MapEditer::GetInstance().MapToWorldPos(_mapPos);
+	trans_.pos = map.MapToWorldPos(_mapPos);
+	
+	//グリッドと合わせるためにモデルサイズの半径分ずらす
+	//trans_.localPos = ;
 	
 	//回転
 	trans_.quaRot = _quaRot;

@@ -5,8 +5,8 @@ class Spiky :
 {
 public:
 
-	//マップサイズ
-	static constexpr IntVector3 MAP_SIZE = { 1,1,1 };
+	//マップ
+	static constexpr IntVector3 MAP_SIZE = { 1,1,1 };	//マップサイズ
 
 	//コンストラクタ
 	Spiky();

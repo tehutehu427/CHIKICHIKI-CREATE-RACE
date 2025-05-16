@@ -6,26 +6,22 @@ class CannonShot;
 class Cannon : public ItemBase
 {
 public:
-	//弾の生成数
-	static constexpr int SHOT_MAX = 3;
 
-	//弾の生成感覚
-	static constexpr float SHOT_INTERVAL = 5.0f;
+	//弾
+	static constexpr int SHOT_MAX = 3;				//弾の生成数
+	static constexpr float SHOT_INTERVAL = 5.0f;	//弾の生成感覚
 
-	//マップサイズ
-	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };
+	//マップ
+	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };	//マップサイズ
 
-	//狙う範囲半径
-	static constexpr float  AIM_RADIUS = 200.0f;
+	//エイム
+	static constexpr float  AIM_RADIUS = 200.0f;	//狙う範囲半径
+	static constexpr float AIM_SPEED = 0.5f;		//対象に向く速度
 
-	//対象に向く速度
-	static constexpr float AIM_SPEED = 0.5f;
+	//砲身
+	static constexpr VECTOR BARREL_LOCAL_POS = { 0.0f, 75.0f, -0.0f };	//砲身の相対座標
+	static constexpr VECTOR BARREL_LOCAL_ROT = { 18.0f, 0.0f, 0.0f };	//砲身の相対回転
 
-	//砲身の相対座標
-	static constexpr VECTOR BARREL_LOCAL_POS = { 0.0f, 75.0f, -0.0f };
-
-	//砲身の相対回転
-	static constexpr VECTOR BARREL_LOCAL_ROT = { 18.0f, 0.0f, 0.0f };
 
 	//コンストラクタ
 	Cannon();
@@ -44,29 +40,20 @@ public:
 
 private:
 
-	//弾
-	std::unique_ptr<CannonShot> shots_[SHOT_MAX];
+	//弾関係
+	std::unique_ptr<CannonShot> shots_[SHOT_MAX];		//弾
+	int shotNum_;										//弾の数
+	float shotCreateCnt_;								//弾の生成間隔カウンタ
+	
+	//モデル関係
+	Transform barrelTrans_;	//砲身用モデル情報
+	VECTOR turretAddRot_;	//砲台の回転量
+	VECTOR barrelAddRot_;	//砲身の回転量
 
-	//弾の数
-	int shotNum_;
+	//対象
+	VECTOR targetPos_;		//狙う対象の位置情報
+	VECTOR targetVec_;		//狙う対象に対しての方向ベクトル
 
-	//弾の生成間隔カウンタ
-	float shotCreateCnt_;
-
-	//砲身用モデル情報
-	Transform barrelTrans_;
-
-	//砲台の回転量
-	VECTOR turretAddRot_;
-
-	//砲身の回転量
-	VECTOR barrelAddRot_;
-
-	//狙う対象の位置情報
-	VECTOR targetPos_;
-
-	//狙う対象に対しての方向ベクトル
-	VECTOR targetVec_;
 
 	//対象を狙う
 	void Aim(void);
