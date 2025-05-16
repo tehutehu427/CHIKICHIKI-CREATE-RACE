@@ -30,6 +30,11 @@ public:
 	void DeleteItem(VECTOR mapPos, int range);
 
 	/// <summary>
+	/// すべてのアイテムを削除
+	/// </summary>
+	void AllDeleteItem();
+
+	/// <summary>
 	/// ダミーアイテム追加
 	/// </summary>
 	/// <param name="mapPos">生成させるマップ座標</param>

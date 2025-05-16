@@ -1,12 +1,18 @@
 #include <DxLib.h>
+#include "../../../Manager/System/SceneManager.h"
+#include "../../../Manager/System/Camera.h"
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../../Manager/System/InputManager.h"
 #include "../../../Manager/Game/ItemManager.h"
+#include "../../../Manager/Game/MapEditer.h"
+#include "../../../Common/IntVector3.h"
 #include "../../../Utility/Utility.h"
+#include "../EditController.h"
 #include "EditorPaletteBase.h"
 #include "PaletteIcon.h"
 
-EditorPaletteBase::EditorPaletteBase()
+EditorPaletteBase::EditorPaletteBase(EditController& _controller) 
+	: ediCon_(_controller)
 {
 	stateChanges_.emplace(STATE::NONE, std::bind(&EditorPaletteBase::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::WAIT, std::bind(&EditorPaletteBase::ChangeStateWait, this));
@@ -82,7 +88,7 @@ void EditorPaletteBase::DebagDraw()
 		leftTop.y,
 		rightBotm.x,
 		rightBotm.y,
-		0x00ffff,
+		Utility::RED,
 		false
 	);
 
@@ -143,7 +149,7 @@ void EditorPaletteBase::UpdateWait()
 	Vector2 leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
 	Vector2 rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
 
-	if(ins.IsClickMouseLeft() &&
+	if(ins.IsTrgDownMouseLeft() &&
 		Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBotm))
 	{
 		ChangeState(STATE::OPEN);
@@ -175,6 +181,8 @@ void EditorPaletteBase::UpdateOpen()
 void EditorPaletteBase::UpdateSelect()
 {	
 	InputManager& ins = InputManager::GetInstance();
+	ItemManager & itemMng = ItemManager::GetInstance();
+	auto camera = SceneManager::GetInstance().GetCamera();
 	Vector2 leftTop = {};		//画像左上
 	Vector2 rightBotm = {};		//画像右下
 
@@ -192,8 +200,20 @@ void EditorPaletteBase::UpdateSelect()
 	//生成開始
 	if (palIcon_->IsCreate())
 	{
-		//アイテムを追加
-		ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), palIcon_->GetSelectType());
+		////生成位置を調整
+		//VECTOR createPos = Utility::GetWorldPosAtScreen(
+		//	{ Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y },
+		//	DISTANCE,
+		//	camera.lock()->GetPos(),
+		//	camera.lock()->GetForward());
+
+		//IntVector3 createMapPos = MapEditer::GetInstance().WorldToMapPos(createPos);
+
+		////アイテムを追加
+		//itemMng.AddItem(createMapPos, Quaternion(), palIcon_->GetSelectType());
+
+		//コントローラに設定
+		ediCon_.SetItemType(palIcon_->GetSelectType());
 
 		//状態変更
 		ChangeState(STATE::CLOSE);

@@ -20,6 +20,7 @@ public:
 		FENCE,				//柵
 		CANNON,				//大砲
 		SPIKY,				//とげ
+		SLIME_FLOOR,		//スライム床
 
 		//破壊オブジェ
 		BOMB_SMALL,			//爆弾(小)

@@ -2,7 +2,8 @@
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "../../Scene/TitleScene.h"
-#include "../../Scene/GameScene.h"
+#include "../../Scene/SelectScene.h"
+#include "../../Scene/Game/GameScene.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "DateBank.h"
@@ -248,6 +249,11 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	case SCENE_ID::TITLE:
 		scene_ = std::make_unique<TitleScene>();
 		break;
+
+	case SCENE_ID::SELECT:
+		scene_ = std::make_unique<SelectScene>();
+		break;
+
 	case SCENE_ID::GAME:
 		scene_ = std::make_unique<GameScene>();
 		break;

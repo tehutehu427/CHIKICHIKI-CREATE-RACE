@@ -38,6 +38,8 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_RSHIFT);
 	InputManager::GetInstance().Add(KEY_INPUT_RCONTROL);
 
+	InputManager::GetInstance().Add(KEY_INPUT_B);
+
 	//プレイヤー操作関連
 	//---------------------------------------------------
 	//移動キー

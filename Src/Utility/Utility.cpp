@@ -602,6 +602,21 @@ bool Utility::IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vect
             pos.y > leftTop.y && pos.y < rightBotm.y;
 }
 
+VECTOR Utility::GetWorldPosAtScreen(const Vector2 screenPos, const float distance, const VECTOR cameraPos, const VECTOR cameraDir)
+{
+    // スクリーン中心の方向ベクトルを取得 (depth = 0.5で中間点)
+    VECTOR sPos = VGet(screenPos.x, screenPos.y, 0.5f);
+    VECTOR screenDir = ConvScreenPosToWorldPos(sPos);
+
+    // カメラ位置から見たスクリーン中心方向へのベクトルを作成
+    VECTOR dir = VSub(screenDir, cameraPos);
+    dir = VNorm(dir); // 正規化して単位ベクトルにする
+
+    // 指定距離だけ進めた座標
+    VECTOR ret = VAdd(cameraPos, VScale(dir, distance));
+    return ret;
+}
+
 int Utility::GetSign(float f)
 {
     return f == 0 ? 0 : f < 0 ? -1 : 1;
@@ -610,4 +625,22 @@ int Utility::GetSign(float f)
 int Utility::GetSign(int f)
 {
     return f == 0 ? 0 : f < 0 ? -1 : 1;
+}
+
+std::string Utility::OpenFileDialog()
+{
+    char filename[MAX_PATH] = "";
+
+    OPENFILENAMEA ofn = {};
+    ofn.lStructSize = sizeof(OPENFILENAMEA);
+    ofn.lpstrFile = filename;
+    ofn.nMaxFile = sizeof(filename);
+    ofn.lpstrFilter = "JSON Files\0*.json\0All Files\0*.*\0";
+    ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
+
+    if (GetOpenFileNameA(&ofn))
+    {
+        return std::string(filename);
+    }
+    return ""; // キャンセルされた場合
 }

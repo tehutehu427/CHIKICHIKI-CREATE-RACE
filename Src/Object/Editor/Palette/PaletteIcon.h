@@ -6,6 +6,8 @@ class ItemName;
 class PaletteIcon
 {
 public:
+
+	//状態
 	enum class STATE
 	{
 		NONE,
@@ -14,6 +16,7 @@ public:
 		SELCT,
 	};
 
+	//スクロール
 	enum class SCROLL
 	{
 		UP,
@@ -66,18 +69,39 @@ public:
 	//スクロールに制限をかける
 	static constexpr int SCROLL_LIMIT_LINE = 0; //ICON_NUM / COL -1;
 
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	PaletteIcon();
 
-	//デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~PaletteIcon();
+	
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	void Load();	
 
-	void Load();	//読み込み
-	void Init();	//初期化
-	void Update();	//更新
-	void Draw();	//描画
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Init();	
 
-	//デバッグ用描画
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update();	
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw();	
+
+	/// <summary>
+	/// デバッグ描画
+	/// </summary>
 	void DebagDraw();
 
 	/// <summary>
@@ -86,19 +110,25 @@ public:
 	/// <param name="_state"></param>変更先の状態
 	void ChangeState(const STATE _state);
 
-	//生成するかを返す
+	/// <summary>
+	/// 生成判定を返す
+	/// </summary>
+	/// <returns></returns>生成判定
 	inline const bool IsCreate()const { return isCreate_; }
 
-	//選択したアイテムの種類を返す
+	/// <summary>
+	/// 選択した種類を返す
+	/// </summary>
+	/// <returns></returns>選択した種類
 	inline const ItemBase::ITEM_TYPE GetSelectType()const { return selectType_; }
 
 private:
 
 	//状態変更処理の管理
-	std::map<STATE, std::function<void(void)>> stateChanges_;
+	std::map<STATE, std::function<void()>> stateChanges_;
 
 	//更新処理管理
-	std::function<void(void)> stateUpdate_;
+	std::function<void()> stateUpdate_;
 
 	//状態
 	STATE state_;
@@ -127,9 +157,6 @@ private:
 	//選択してるアイテム
 	int sleCnt_;
 	ItemBase::ITEM_TYPE selectType_;
-
-	//アイテムの名前
-	std::unique_ptr<ItemName> name_;
 
 	//状態変更処理
 	void ChangeStateNone();

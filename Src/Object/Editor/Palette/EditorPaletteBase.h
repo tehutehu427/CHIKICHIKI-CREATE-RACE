@@ -6,12 +6,14 @@
 #include "../../../Common/Vector2.h"
 #include "../../Item/ItemBase.h"
 
+class EditController;
 class PaletteIcon;
 
 class EditorPaletteBase
 {
 public:
 
+	//状態
 	enum class STATE
 	{
 		NONE,	
@@ -39,6 +41,9 @@ public:
 	static constexpr int OPEN_POS_X = Application::SCREEN_HALF_X;
 	static constexpr int OPEN_POS_Y = Application::SCREEN_HALF_Y;
 
+	//設置場所距離
+	static constexpr float DISTANCE = 500.0f;
+
 	//画像描画に関する情報
 	struct ImgInfo
 	{
@@ -50,17 +55,34 @@ public:
 	};
 
 	//コンストラクタ
-	EditorPaletteBase();
+	EditorPaletteBase(EditController & _controller);
 
 	//デストラクタ
 	~EditorPaletteBase();
+	
+	/// <summary>
+	/// 読みこみ
+	/// </summary>
+	virtual void Load();	
 
-	virtual void Load();	//読み込み
-	virtual void Init();	//初期化
-	virtual void Update();	//更新
-	virtual void Draw();	//描画
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	virtual void Init();	
 
-	//デバッグ用描画
+	/// <summary>
+	/// 更新
+	/// </summary>
+	virtual void Update();	
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	virtual void Draw();
+
+	/// <summary>
+	/// デバッグ描画
+	/// </summary>
 	void DebagDraw();
 
 	/// <summary>
@@ -69,16 +91,19 @@ public:
 	/// <param name="_state"></param>変更先の状態
 	void ChangeState(const STATE _state);
 
-	//状態を返す
+	/// <summary>
+	/// 状態を返す
+	/// </summary>
+	/// <returns></returns>状態
 	inline const STATE GetState()const { return state_; }
 
 private:
 	
 	//状態変更処理の管理
-	std::map<STATE, std::function<void(void)>> stateChanges_;
+	std::map<STATE, std::function<void()>> stateChanges_;
 
 	//更新処理管理
-	std::function<void(void)> stateUpdate_;
+	std::function<void()> stateUpdate_;
 
 	//画像
 	int imgPalette_;	//パレット	
@@ -91,6 +116,9 @@ private:
 
 	//パレットアイコン
 	std::unique_ptr<PaletteIcon> palIcon_;
+
+	//エディットコントローラー(参照)
+	EditController& ediCon_;
 
 	//状態変更
 	void ChangeStateNone();
