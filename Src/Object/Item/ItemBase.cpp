@@ -22,6 +22,7 @@ void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot, ITEM_TYPE _itemType)
 	transform_.pos = MapEditer::GetInstance().MapToWorldPos(_mapPos);
 	transform_.quaRot = _quaRot;
 	status_.itemType = _itemType;
+	InitMapPos_ = _mapPos;
 	Init();
 }
 

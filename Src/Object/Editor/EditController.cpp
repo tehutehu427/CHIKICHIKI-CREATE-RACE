@@ -58,6 +58,8 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 		return;
 	}
 	//アイテムを追加
+	//ダミーアイテムを変更する
+	ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 	IntVector3 mapPos = NearObjectPos();
 	Quaternion rot = {};
 	ItemManager::GetInstance().CreateDummyItem(mapPos, rot, itemType_, playerNum_);
@@ -124,8 +126,15 @@ void EditController::ItemNotSelect(void)
 		}
 		else
 		{
+			//アイテムを追加
+			MapEditer::STATUS status;
+			status.mapPos = mapPos_;
+			status.rotate = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
+			status.type = itemType_;
+			MapEditer::GetInstance().AddItem(status,ItemManager::GetInstance().GetDummyObjectSize(playerNum_));
 			itemType_ = ItemBase::ITEM_TYPE::NONE;
 			ItemManager::GetInstance().DummyItemAddItems(playerNum_);
+			ItemManager::GetInstance().ItemsAddDummyItems(status.type,status.mapPos,playerNum_);
 			//選択解除
 			ChengeMode(MODE::ITEM_SELECT);
 		}
@@ -269,6 +278,7 @@ void EditController::MoveItem(void)
 		break;
 	}
 	ItemManager::GetInstance().DummyItemSetMapPos(mapPos_, playerNum_);
+	ItemManager::GetInstance().ResetDummyItem(playerNum_,itemType_,mapPos_);
 
 }
 
@@ -338,7 +348,7 @@ void EditController::DebugUpdate(void)
 {
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_X))
 	{
-		SetItemType(ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
+		SetItemType(ItemBase::ITEM_TYPE::FLOOR);
 	}
 }
 

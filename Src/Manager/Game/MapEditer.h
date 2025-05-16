@@ -24,7 +24,7 @@ public:
 
 	void Init(void);
 	ItemBase::ITEM_TYPE GetItemType(IntVector3 mapPos) { return isMapPosItem_[mapPos.x][mapPos.y][mapPos.z]; }
-	void AddItem(STATUS status);
+	void AddItem(STATUS status,IntVector3 size);
 	void DeleteItem(const ItemBase::ITEM_TYPE& _type, const IntVector3& mapPos);
 	IntVector3 WorldToMapPos(VECTOR worldPos);
 	VECTOR MapToWorldPos(IntVector3 mapPos);

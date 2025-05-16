@@ -71,11 +71,14 @@ public:
 
 	void SetPos(IntVector3 mapPos);
 	void SetRotate(Quaternion rot);
+	
+	IntVector3 GetInitMapPos(void)const { return InitMapPos_; }	//初期マップ座標の取得
 
 protected:
 
 	//ステータス
 	Status status_;
+	IntVector3 InitMapPos_;	//初期マップ座標
 
 private:
 };

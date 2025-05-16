@@ -40,6 +40,12 @@ public:
 	ItemBase::Status GetDummyItemStatus(int playerNum);
 	IntVector3 GetDummyObjectSize(int playerNum);
 	Transform GetDummyItemTransform(int playerNum);
+	/// <summary>
+	/// ダミーアイテムを置き換える
+	/// </summary>
+	/// <param name="playerNum"></param>
+	/// <param name="type"></param>
+	/// <param name="mapPos"></param>
 	void ResetDummyItem(int playerNum,ItemBase::ITEM_TYPE type,IntVector3 mapPos);
 
 	/// <summary>
@@ -74,6 +80,7 @@ public:
 	/// <returns>指定したアイテム配列のポインタ。存在しなければ nullptr</returns>
 	const std::vector<std::shared_ptr<ItemBase>>* GetItems(const ItemBase::ITEM_TYPE _type)const;
 	
+	void ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos , int playerNum);
 
 protected:
 
@@ -89,5 +96,7 @@ private:
 	ItemManager(const ItemManager& instance_) = delete;
 	void operator= (const ItemManager& instance_) = delete;
 	~ItemManager(void) = default;
+	//アイテムの生成
+	std::shared_ptr<ItemBase> CreateItem(ItemBase::ITEM_TYPE type, IntVector3 mapPos, Quaternion rot);
 };
 
