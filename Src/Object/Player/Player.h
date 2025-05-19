@@ -28,7 +28,7 @@ public:
 	//移動
 	//----------------------------------
 	//移動スピード
-	static constexpr float MOVE_SPEED = 10.0f;
+	static constexpr float MOVE_SPEED = 3.0f;
 
 	//ぶっ飛ぶスピード
 	static constexpr float FLY_AWAY_SPEED = 30.0f;
@@ -37,10 +37,13 @@ public:
 	//ジャンプ
 	//----------------------------------
 	//ジャンプ力
-	static constexpr float POW_JUMP = 30.0f;
+	static constexpr float POW_JUMP = 10.0f;
 
 	//ジャンプ加速の倍率
-	static constexpr float TIME_JUMP_IN = 4.0f;
+	static constexpr float TIME_JUMP_SCALE = 1.0f;
+
+	//ジャンプ時間
+	static constexpr float TIME_JUMP = 3.0f;
 	//----------------------------------
 	//パンチ
 	//----------------------------------
@@ -177,6 +180,9 @@ private:
 	// 移動後の座標
 	VECTOR movedPos_;
 
+	//移動座標
+	VECTOR moveDiff_;
+
 	//入力デバイス
 	PlayerInput::CNTL cntl_;
 
@@ -235,7 +241,7 @@ private:
 	VECTOR cubeMovePos_;
 	VECTOR cubePos_;
 	CUBE cube_;
-	std::function<int(ANIM_TYPE)> cast_;
+	//std::function<int(ANIM_TYPE)> cast_;
 #endif // DEBUG_ON
 
 

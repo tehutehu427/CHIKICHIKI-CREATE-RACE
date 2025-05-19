@@ -68,7 +68,4 @@ void GravityManager::Calculate(void)
 
 	// ‹‚ß‚½‰ñ“]—Ê‚ÅAŒ»İ‚Ìd—Í§Œä‚ğ‰ñ“]‚³‚¹‚é(·‚ª–„‚Ü‚é)
 	trans_.quaRot = Quaternion::Slerp(trans_.quaRot, rot.Mult(trans_.quaRot), slerpPow_);
-
-
-
 }

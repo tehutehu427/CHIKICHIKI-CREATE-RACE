@@ -101,12 +101,12 @@ void AnimationController::Play(int type, bool isLoop,
 		playAnim_.step = startStep;
 
 		// モデルにアニメーションを付ける
-		int animIdx = 0;
-		if (MV1GetAnimNum(playAnim_.model) > 1)
-		{
-			// アニメーションが複数保存されていたら、番号1を指定
-			animIdx = 1;
-		}
+		int animIdx = type;
+		//if (MV1GetAnimNum(playAnim_.model) > 1)
+		//{
+		//	// アニメーションが複数保存されていたら、番号1を指定
+		//	animIdx = 1;
+		//}
 		playAnim_.attachNo = MV1AttachAnim(modelId_, animIdx, playAnim_.model);
 
 		// アニメーション総時間の取得
