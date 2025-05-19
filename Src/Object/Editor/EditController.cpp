@@ -58,6 +58,11 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 		return;
 	}
 	auto& itemMIns = ItemManager::GetInstance();
+	if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyObjectSize(playerNum_)))
+	{
+		//アイテムが重なっている
+		return;
+	}
 	//アイテムを追加
 	//ダミーアイテムを変更する
 	MapEditer::STATUS status;
@@ -139,6 +144,10 @@ void EditController::ItemNotSelect(void)
 		}
 		else
 		{
+			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyObjectSize(playerNum_)))
+			{
+				return;
+			}
 			//アイテムを追加
 			MapEditer::STATUS status;
 			status.mapPos = mapPos_;
@@ -390,7 +399,7 @@ void EditController::DebugUpdate(void)
 {
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_X))
 	{
-		SetItemType(ItemBase::ITEM_TYPE::CANNON);
+		SetItemType(ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
 	}
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_RETURN))
 	{

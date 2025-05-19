@@ -17,6 +17,7 @@ void ItemManager::Init(void)
 
 void ItemManager::Update(void)
 {
+
 	for (auto& [type, itemList] : items_) {
 		for (auto& item : itemList) {
 			if (item) {
@@ -52,14 +53,17 @@ void ItemManager::Draw(void)
 		}
 		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize()))
 		{
-			MV1SetDifColorScale(item.second->GetTransform().modelId, ItemManager::DUMMY_OVERLAP_COLOR);
+			//MV1SetDifColorScale(item.second->GetTransform().modelId, ItemManager::DUMMY_OVERLAP_COLOR);
+			item.second->ChangeModelColor(ItemManager::DUMMY_OVERLAP_COLOR);
 		}
 		else
 		{
-			MV1SetDifColorScale(item.second->GetTransform().modelId, ItemManager::DUMMY_DEFAULT_COLOR);
+			//MV1SetDifColorScale(item.second->GetTransform().modelId, ItemManager::DUMMY_DEFAULT_COLOR);
+			item.second->ChangeModelColor(ItemManager::DUMMY_DEFAULT_COLOR);
 		}
 		item.second->Draw();
-		MV1SetDifColorScale(item.second->GetTransform().modelId, ItemManager::DEFAULT_COLOR);
+		//MV1SetDifColorScale(item.second->GetTransform().modelId, ItemManager::DEFAULT_COLOR);
+		item.second->ChangeModelColor(ItemManager::DEFAULT_COLOR);
 	}
 }
 

@@ -94,7 +94,6 @@ void GameScene::NormalUpdate(void)
 
 	phaseUpdate_();
 
-	ItemManager::GetInstance().Update();
 
 	sky_->Update();
 
@@ -109,11 +108,11 @@ void GameScene::NormalDraw(void)
 	//デバッグ描画
 	//DebagDraw();
 
+
 	//スカイドーム
 	sky_->Draw();
 
-	//グリッド
-	grid_->Draw();
+	phaseDraw_();
 
 	//プレイヤー
 	PlayerManager::GetInstance().Draw();
@@ -121,14 +120,6 @@ void GameScene::NormalDraw(void)
 	//アイテム
 	ItemManager::GetInstance().Draw();
 
-	//エディットコントローラー
-	editController_->Draw();
-	
-	//パレット
-	palette_->Draw();
-
-	//データの入出力
-	mapIO_->Draw();
 }
 
 void GameScene::ChangeNormal(void)
@@ -181,6 +172,7 @@ void GameScene::ChangePhase(PHASE phase)
 void GameScene::ChangePhaseEdit(void)
 {
 	phaseUpdate_ = std::bind(&GameScene::UpdateEdit, this);
+	phaseDraw_ = std::bind(&GameScene::DrawEdit, this);
 	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
 	VECTOR pos;
 	IntVector3 mPos = MapEditer::MAP_SIZE;
@@ -192,6 +184,7 @@ void GameScene::ChangePhaseEdit(void)
 void GameScene::ChangePhaseAction(void)
 {
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
+	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FIXED_UP);
 	VECTOR pos;
 	IntVector3 mPos = MapEditer::MAP_SIZE;
@@ -212,5 +205,25 @@ void GameScene::UpdateEdit(void)
 }
 
 void GameScene::UpdateAction(void)
+{
+	ItemManager::GetInstance().Update();
+}
+
+void GameScene::DrawEdit(void)
+{
+	//グリッド
+	grid_->Draw();
+
+	//パレット
+	palette_->Draw();
+
+	//データの入出力
+	mapIO_->Draw();
+
+	//エディットコントローラー
+	editController_->Draw();
+}
+
+void GameScene::DrawAction(void)
 {
 }
