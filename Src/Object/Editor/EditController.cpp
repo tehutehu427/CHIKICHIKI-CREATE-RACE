@@ -71,6 +71,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	Quaternion rot = {};
 	if (mapPos == ERROR_POS)
 	{
+		itemMIns.DeleteDummyItem(playerNum_);
 		return;
 	}
 	itemMIns.CreateDummyItem(mapPos, rot, itemType_, playerNum_);
@@ -133,6 +134,7 @@ void EditController::ItemNotSelect(void)
 		if (isClickObject_ == true)
 		{
 			itemType_ = MapEditer::GetInstance().GetItemType(NearPos);
+			ItemManager::GetInstance().ItemsAddDummyItems(itemType_, NearPos, playerNum_);
 			ChengeMode(MODE::MOVE_ROTATE);
 		}
 		else
@@ -145,7 +147,6 @@ void EditController::ItemNotSelect(void)
 			MapEditer::GetInstance().AddItem(status,ItemManager::GetInstance().GetDummyObjectSize(playerNum_));
 			itemType_ = ItemBase::ITEM_TYPE::NONE;
 			ItemManager::GetInstance().DummyItemAddItems(playerNum_);
-			ItemManager::GetInstance().ItemsAddDummyItems(status.type,status.mapPos,playerNum_);
 			//ëIëâèú
 			ChengeMode(MODE::ITEM_SELECT);
 		}
@@ -199,8 +200,8 @@ IntVector3 EditController::NearObjectPos(void)
 				{
 					for (int z = 0;z < size.z;z++)
 					{
-						IntVector3 sizeRoop = { x,y,z };
-						if (MapEditer::GetInstance().IsObjectAtMapPos(mapPosTemp + sizeRoop))
+						IntVector3 sizeLoop = { x,y,z };
+						if (MapEditer::GetInstance().IsObjectAtMapPos(mapPosTemp + sizeLoop))
 						{
 							//mapPos = mapPosTemp;
 							if (mapPos.x < 0 || mapPos.x > MapEditer::MAP_SIZE.x - size.x ||
@@ -257,7 +258,8 @@ void EditController::MoveItem(void)
 	VECTOR wallWorldPosFar = MapEditer::GetInstance().MapToWorldPos(nullWallMapPosFar);
 	//âìÇ¢ÇŸÇ§Çï«Ç…ìñÇΩÇÈíÜÇ…ì¸ÇÍÇÈ
 	farWorldPos = VSub(farWorldPos, normalmousePos3D);
-	auto size = ItemManager::GetInstance().GetDummyObjectSize(playerNum_);
+	auto& itemIns = ItemManager::GetInstance();
+	auto size = itemIns.GetDummyObjectSize(playerNum_);
 	switch (moveDir_)
 	{
 	case EditController::MOVE_DIR::NONE:
@@ -317,8 +319,8 @@ void EditController::MoveItem(void)
 	default:
 		break;
 	}
-	ItemManager::GetInstance().DummyItemSetMapPos(mapPos_, playerNum_);
-	ItemManager::GetInstance().ResetDummyItem(playerNum_,itemType_,mapPos_);
+	itemIns.DummyItemSetMapPos(mapPos_, playerNum_);
+	itemIns.ResetDummyItem(playerNum_,itemType_,mapPos_);
 
 }
 
@@ -388,7 +390,7 @@ void EditController::DebugUpdate(void)
 {
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_X))
 	{
-		SetItemType(ItemBase::ITEM_TYPE::FLOOR);
+		SetItemType(ItemBase::ITEM_TYPE::CANNON);
 	}
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_RETURN))
 	{
@@ -413,6 +415,7 @@ void EditController::RotateObject(void) const
 		Quaternion rot = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
 		float rotScale = Utility::Deg2RadF(90.0f);
 		rot = Quaternion::Mult(rot, Quaternion::AngleAxis(rotScale,Utility::AXIS_Y));
+		auto& itemIns = ItemManager::GetInstance();
 		ItemManager::GetInstance().DummyItemSetRotate(rot, playerNum_);
 		ItemManager::GetInstance().ResetDummyItem(playerNum_, itemType_,mapPos_);
 	}
