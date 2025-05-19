@@ -595,6 +595,62 @@ const VECTOR Utility::GetMoveVec(const VECTOR _start, const VECTOR _goal, const 
     return ret;
 }
 
+const VECTOR Utility::GetRotAxisToTarget(const VECTOR _pos, const VECTOR _targetPos, const VECTOR _needAxis)
+{
+    //対象までの方向ベクトル
+    VECTOR targetVec = GetMoveVec(_pos, _targetPos);
+
+    //自身と対象のベクトルの差異
+    VECTOR turretVecDiff = VSub(targetVec, _pos);
+
+    //正規化
+    turretVecDiff = VNorm(turretVecDiff);
+
+    //必要ない軸は除去
+    turretVecDiff.x *= _needAxis.x;
+    turretVecDiff.y *= _needAxis.y;
+    turretVecDiff.z *= _needAxis.z;
+
+    //回転量
+    Quaternion turQuaRot = Quaternion::LookRotation(turretVecDiff);
+
+    //VECTOR変換
+   return turQuaRot.ToEuler();
+}
+
+void Utility::LookAtTarget(Transform& _trans, const VECTOR _toTargetAxis, const float _time, const VECTOR _relativePos)
+{
+    //デルタタイム取得
+    float delta = SceneManager::GetInstance().GetDeltaTime();
+
+    //補正時間カウンタ
+    static float aimTime = _time;
+
+    //まだ補正中でも新たに狙う
+    if (aimTime > 0.1f)aimTime = _time;
+
+    //デルタタイムで補間
+    aimTime -= delta;
+
+    //回転
+    Quaternion rot = Quaternion::Identity();
+
+    //回転を加える
+    rot = rot.Mult(Quaternion::Euler(_toTargetAxis));
+
+    //回転用に座標を相対座標から0,0,0にそろえる
+    _trans.pos = VSub(_trans.pos, _trans.quaRot.PosAxis(_relativePos));
+
+    //反映
+    _trans.quaRot = Quaternion::Slerp(_trans.quaRot, rot, (_time - aimTime) / _time);
+
+    //座標を元に戻す
+    _trans.pos = VAdd(_trans.pos, _trans.quaRot.PosAxis(_relativePos));
+
+    //基本情報更新
+    _trans.Update();
+}
+
 bool Utility::IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vector2 rightBotm)
 {
     //指定の範囲内に座標があるか調べる
