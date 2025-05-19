@@ -167,5 +167,13 @@ public:
 
 	//エクスプローラーからファイルを開く
 	static std::string OpenFileDialog();
+
+	/// <summary>
+	/// 範囲外の値を指定した範囲に収める
+	/// </summary>
+	/// <param name="index"></param>収めたい値
+	/// <param name="max"></param>範囲の最大値
+	/// <returns></returns>0からN-1の範囲に補正した値
+	static int WrapIndex(int index, int max);
 };
 

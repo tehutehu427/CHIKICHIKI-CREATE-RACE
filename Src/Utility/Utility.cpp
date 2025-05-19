@@ -644,3 +644,8 @@ std::string Utility::OpenFileDialog()
     }
     return ""; // ƒLƒƒƒ“ƒZƒ‹‚³‚ê‚½ê‡
 }
+
+int Utility::WrapIndex(int index, int max)
+{
+    return (index % max + max) % max;
+}
