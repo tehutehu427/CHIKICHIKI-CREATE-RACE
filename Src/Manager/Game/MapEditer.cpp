@@ -31,6 +31,30 @@ void MapEditer::Init(void)
 }
 
 
+bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos)
+{
+	return GetItemType(mapPos) != ItemBase::ITEM_TYPE::NONE;
+}
+
+bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos, IntVector3 size)
+{
+	for (int x = 0;x < size.x;x++)
+	{
+		for (int y = 0;y < size.y;y++)
+		{
+			for (int z = 0;z < size.z;z++)
+			{
+				IntVector3 sizeLoop = { x,y,z };
+				if (IsObjectAtMapPos(mapPos + sizeLoop))
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 void MapEditer::AddItem(STATUS status, IntVector3 size)
 {
 	//アイテムの配置
@@ -48,9 +72,25 @@ void MapEditer::AddItem(STATUS status, IntVector3 size)
 	}
 }
 
-void MapEditer::DeleteItem(const ItemBase::ITEM_TYPE& _type, const IntVector3& mapPos)
+void MapEditer::DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos ,IntVector3 _size)
 {
-	
+	//アイテムの消去
+	for (int i = 0; i < _size.x; i++)
+	{
+		for (int j = 0; j < _size.y; j++)
+		{
+			for (int k = 0; k < _size.z; k++)
+			{
+				IntVector3 mapPos = { _mapPos.x + i,_mapPos.y + j,_mapPos.z + k };
+				isMapPosItem_[mapPos.x][mapPos.y][mapPos.z] = ItemBase::ITEM_TYPE::NONE;
+				auto it = std::find(itemsPos_[_type].begin(), itemsPos_[_type].end(), mapPos);
+				if (it != itemsPos_[_type].end())
+				{
+					itemsPos_[_type].erase(it);
+				}
+			}
+		}
+	}
 }
 
 IntVector3 MapEditer::WorldToMapPos(VECTOR worldPos)

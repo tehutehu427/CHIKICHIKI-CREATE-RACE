@@ -50,9 +50,16 @@ void ItemManager::Draw(void)
 		{
 			continue;
 		}
-		MV1SetOpacityRate(item.second->GetTransform().modelId, DUMMY_ITEM_OPACITY_RATE);
+		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize()))
+		{
+			MV1SetDifColorScale(item.second->GetTransform().modelId, ItemManager::DUMMY_OVERLAP_COLOR);
+		}
+		else
+		{
+			MV1SetDifColorScale(item.second->GetTransform().modelId, ItemManager::DUMMY_DEFAULT_COLOR);
+		}
 		item.second->Draw();
-		MV1SetOpacityRate(item.second->GetTransform().modelId, DEFAULT_OPACITY_RATE);
+		MV1SetDifColorScale(item.second->GetTransform().modelId, ItemManager::DEFAULT_COLOR);
 	}
 }
 
@@ -100,6 +107,20 @@ ItemBase::Status ItemManager::GetDummyItemStatus(int playerNum)
 	return status;
 }
 
+IntVector3 ItemManager::GetDummyItemMapPos(int playerNum)
+{
+	IntVector3 mapPos;
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		mapPos = dummyItems_[playerNum]->GetInitMapPos();
+	}
+	else
+	{
+		mapPos = { -1,-1,-1 };
+	}
+	return mapPos;
+}
+
 IntVector3 ItemManager::GetDummyObjectSize(int playerNum)
 {
 	IntVector3 size;
@@ -135,7 +156,6 @@ void ItemManager::ResetDummyItem(int playerNum, ItemBase::ITEM_TYPE type,IntVect
 		Transform transform = dummyItems_[playerNum]->GetTransform();
 		std::shared_ptr<ItemBase> dummy;
 		dummy = CreateItem(type, mapPos, transform.quaRot);
-		//dummy->Init(mapPos, transform.quaRot, dummyItems_[playerNum]->GetStatus().itemType);
 		dummyItems_.erase(playerNum);
 		dummyItems_[playerNum] = dummy;
 	}
@@ -233,6 +253,18 @@ void ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapP
 				}
 			}
 		}
+	}
+}
+
+void ItemManager::DeleteDummyItem(int playerNum)
+{
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		dummyItems_[playerNum] = nullptr;
+	}
+	else
+	{
+		return;
 	}
 }
 

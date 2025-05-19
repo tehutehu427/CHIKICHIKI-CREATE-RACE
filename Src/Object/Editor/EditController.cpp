@@ -57,12 +57,24 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	{
 		return;
 	}
+	auto& itemMIns = ItemManager::GetInstance();
 	//アイテムを追加
 	//ダミーアイテムを変更する
-	ItemManager::GetInstance().DummyItemAddItems(playerNum_);
+	MapEditer::STATUS status;
+	status.mapPos = mapPos_;
+	status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
+	status.type = itemType_;
+	MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyObjectSize(playerNum_));
+	itemMIns.DummyItemAddItems(playerNum_);
+	itemMIns.CreateDummyItem({}, {}, itemType, playerNum_);
 	IntVector3 mapPos = NearObjectPos();
 	Quaternion rot = {};
-	ItemManager::GetInstance().CreateDummyItem(mapPos, rot, itemType_, playerNum_);
+	if (mapPos == ERROR_POS)
+	{
+		itemMIns.DeleteDummyItem(playerNum_);
+		return;
+	}
+	itemMIns.CreateDummyItem(mapPos, rot, itemType_, playerNum_);
 	mapPos_ = mapPos;
 	ChengeMode(MODE::MOVE_ROTATE);
 }
@@ -101,7 +113,7 @@ void EditController::ItemSelectDraw(void)
 
 void EditController::MoveRotateObjectDraw(void)
 {
-	if (mapPos_ != IntVector3{-1,-1,-1})
+	if (mapPos_ != ERROR_POS)
 	{
 		VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
 		worldPos = VAdd(worldPos,{MapEditer::GRID_SIZE /2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
@@ -122,6 +134,7 @@ void EditController::ItemNotSelect(void)
 		if (isClickObject_ == true)
 		{
 			itemType_ = MapEditer::GetInstance().GetItemType(NearPos);
+			ItemManager::GetInstance().ItemsAddDummyItems(itemType_, NearPos, playerNum_);
 			ChengeMode(MODE::MOVE_ROTATE);
 		}
 		else
@@ -134,7 +147,6 @@ void EditController::ItemNotSelect(void)
 			MapEditer::GetInstance().AddItem(status,ItemManager::GetInstance().GetDummyObjectSize(playerNum_));
 			itemType_ = ItemBase::ITEM_TYPE::NONE;
 			ItemManager::GetInstance().DummyItemAddItems(playerNum_);
-			ItemManager::GetInstance().ItemsAddDummyItems(status.type,status.mapPos,playerNum_);
 			//選択解除
 			ChengeMode(MODE::ITEM_SELECT);
 		}
@@ -144,7 +156,7 @@ void EditController::ItemNotSelect(void)
 IntVector3 EditController::NearObjectPos(void)
 {
 	isClickObject_ = false;
-	IntVector3 mapPos = {-1,-1,-1};
+	IntVector3 mapPos = ERROR_POS;
 	VECTOR mousePosNear3D = { mousePos_.x, mousePos_.y, 0.0f };
 	VECTOR nearWorldPos = ConvScreenPosToWorldPos(mousePosNear3D);	//近いほうのワールド座標
 	VECTOR mousePosFar3D = { mousePos_.x, mousePos_.y, 1.0f };
@@ -164,20 +176,48 @@ IntVector3 EditController::NearObjectPos(void)
 			return mapPos;
 		}
 	}
+	auto size = ItemManager::GetInstance().GetDummyObjectSize(playerNum_);
+	//線形補間で当たり判定をする
 	for (float t = 0.0f; t < 1.0f; t += 0.01f)
 	{
 		VECTOR lerp = Utility::Lerp(nearWorldPos, farWorldPos, t);
 		IntVector3 mapPosTemp = MapEditer::GetInstance().WorldToMapPos(lerp);
-		if (MapEditer::GetInstance().GetItemType(mapPosTemp) != ItemBase::ITEM_TYPE::NONE)
+		if (size == ERROR_POS)
 		{
-			mapPos = mapPosTemp;
-			isClickObject_ = true;
-			break;
+			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPosTemp))
+			{
+				//mapPos = mapPosTemp;
+				isClickObject_ = true;
+				return mapPos;
+			}
 		}
 		else
 		{
-			mapPos = mapPosTemp;
+			//サイズ分の大きさを検査する
+			for (int x = 0;x < size.x;x++)
+			{
+				for (int y = 0;y < size.y;y++)
+				{
+					for (int z = 0;z < size.z;z++)
+					{
+						IntVector3 sizeLoop = { x,y,z };
+						if (MapEditer::GetInstance().IsObjectAtMapPos(mapPosTemp + sizeLoop))
+						{
+							//mapPos = mapPosTemp;
+							if (mapPos.x < 0 || mapPos.x > MapEditer::MAP_SIZE.x - size.x ||
+								mapPos.y < 0 || mapPos.y > MapEditer::MAP_SIZE.y - size.y ||
+								mapPos.z < 0 || mapPos.z > MapEditer::MAP_SIZE.z - size.z)
+							{
+								return ERROR_POS;
+							}
+							isClickObject_ = true;
+							return mapPos;
+						}
+					}
+				}
+			}
 		}
+		mapPos = mapPosTemp;
 	}
 	return mapPos;
 }
@@ -218,6 +258,8 @@ void EditController::MoveItem(void)
 	VECTOR wallWorldPosFar = MapEditer::GetInstance().MapToWorldPos(nullWallMapPosFar);
 	//遠いほうを壁に当たる中に入れる
 	farWorldPos = VSub(farWorldPos, normalmousePos3D);
+	auto& itemIns = ItemManager::GetInstance();
+	auto size = itemIns.GetDummyObjectSize(playerNum_);
 	switch (moveDir_)
 	{
 	case EditController::MOVE_DIR::NONE:
@@ -236,7 +278,7 @@ void EditController::MoveItem(void)
 			}
 		}
 		mapPos_.x = MapEditer::GetInstance().WorldToMapPos(farWorldPos).x;
-		mapPos_.x = mapPos_.x < 0 ? 0 : mapPos_.x >= MapEditer::MAP_SIZE.x ? MapEditer::MAP_SIZE.x : mapPos_.x;
+		mapPos_.x = mapPos_.x < 0 ? 0 : mapPos_.x >= MapEditer::MAP_SIZE.x - size.x ? MapEditer::MAP_SIZE.x - size.x : mapPos_.x;
 		break;
 	case EditController::MOVE_DIR::Y:
 		while (farWorldPos.z < wallWorldPosNear.z || farWorldPos.z > wallWorldPosFar.z)
@@ -251,7 +293,7 @@ void EditController::MoveItem(void)
 			}
 		}
 		mapPos_.y = MapEditer::GetInstance().WorldToMapPos(farWorldPos).y;
-		mapPos_.y = mapPos_.y < 0 ? 0 : mapPos_.y >= MapEditer::MAP_SIZE.y ? MapEditer::MAP_SIZE.y : mapPos_.y;
+		mapPos_.y = mapPos_.y < 0 ? 0 : mapPos_.y >= MapEditer::MAP_SIZE.y - size.y ? MapEditer::MAP_SIZE.y - size.y: mapPos_.y;
 		break;
 	case EditController::MOVE_DIR::Z:
 		while (farWorldPos.x < wallWorldPosNear.x || farWorldPos.x > wallWorldPosFar.x)
@@ -266,7 +308,7 @@ void EditController::MoveItem(void)
 			}
 		}
 		mapPos_.z = MapEditer::GetInstance().WorldToMapPos(farWorldPos).z;
-		mapPos_.z = mapPos_.z < 0 ? 0 : mapPos_.z >= MapEditer::MAP_SIZE.z ? MapEditer::MAP_SIZE.z : mapPos_.z;
+		mapPos_.z = mapPos_.z < 0 ? 0 : mapPos_.z >= MapEditer::MAP_SIZE.z - size.z? MapEditer::MAP_SIZE.z - size.z: mapPos_.z;
 		break;
 	case EditController::MOVE_DIR::XY:
 		break;
@@ -277,8 +319,8 @@ void EditController::MoveItem(void)
 	default:
 		break;
 	}
-	ItemManager::GetInstance().DummyItemSetMapPos(mapPos_, playerNum_);
-	ItemManager::GetInstance().ResetDummyItem(playerNum_,itemType_,mapPos_);
+	itemIns.DummyItemSetMapPos(mapPos_, playerNum_);
+	itemIns.ResetDummyItem(playerNum_,itemType_,mapPos_);
 
 }
 
@@ -348,7 +390,11 @@ void EditController::DebugUpdate(void)
 {
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_X))
 	{
-		SetItemType(ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
+		SetItemType(ItemBase::ITEM_TYPE::CANNON);
+	}
+	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_RETURN))
+	{
+		ChengeMode(MODE::ITEM_SELECT);
 	}
 }
 
@@ -369,6 +415,7 @@ void EditController::RotateObject(void) const
 		Quaternion rot = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
 		float rotScale = Utility::Deg2RadF(90.0f);
 		rot = Quaternion::Mult(rot, Quaternion::AngleAxis(rotScale,Utility::AXIS_Y));
+		auto& itemIns = ItemManager::GetInstance();
 		ItemManager::GetInstance().DummyItemSetRotate(rot, playerNum_);
 		ItemManager::GetInstance().ResetDummyItem(playerNum_, itemType_,mapPos_);
 	}

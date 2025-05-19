@@ -332,8 +332,9 @@ void Camera::SetBeforeDrawFreeControll(void)
 	//{
 	//	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetBack(), moveSpeed));
 	//}
-	float moveSpeed = 10.0f;
-	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), GetMouseWheelRotVolF() * moveSpeed));
+	static float moveSpeed = 10.0f;
+	static float moveSpeedFB = 30.0f;
+	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), GetMouseWheelRotVolF() * moveSpeedFB));
 	if (ins.IsNew(KEY_INPUT_A))
 	{
 		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetLeft(), moveSpeed));
