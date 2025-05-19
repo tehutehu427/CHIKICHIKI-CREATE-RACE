@@ -12,3 +12,15 @@ ObjectBase::ObjectBase(void)
 ObjectBase::~ObjectBase(void)
 {
 }
+
+void ObjectBase::ChangeModelColor(const COLOR_F _colorScale)
+{
+	if (MV1SetDifColorScale(trans_.modelId, _colorScale))
+	{
+#ifdef _DEBUG
+
+		OutputDebugString("ChangeModelColor‚ÌŽ¸”s");
+
+#endif // _DEBUG
+	}
+}

@@ -47,12 +47,6 @@ void Cannon::SetParam(void)
 
 void Cannon::Update(void)
 {
-	//’e‚Ìíœˆ—
-	DeleteShot();
-
-	//’e‚Ì¶¬
-	CreateShot();
-
 	auto& ins = InputManager::GetInstance();
 	if (ins.IsNew(KEY_INPUT_UP))targetPos_.z++;
 	if (ins.IsNew(KEY_INPUT_RIGHT))targetPos_.x++;
@@ -60,16 +54,25 @@ void Cannon::Update(void)
 	if (ins.IsNew(KEY_INPUT_LEFT))targetPos_.x--;
 	if (ins.IsNew(KEY_INPUT_RSHIFT))targetPos_.y++;
 	if (ins.IsNew(KEY_INPUT_RCONTROL))targetPos_.y--;
+	
+	//’e‚Ìíœˆ—
+	DeleteShot();
 
+	//Ë’ö“à‚È‚ç
+	if (IsWithinRange())
+	{
+		//’e‚Ì¶¬
+		CreateShot();
 
-	//‘ÎÛ‚ğ‘_‚¤
-	Aim();
+		//‘ÎÛ‚ğ‘_‚¤
+		Aim();
 
-	//–C‘ä‚Ì‰ñ“]
-	RotateTurret();
+		//–C‘ä‚Ì‰ñ“]
+		RotateTurret();
 
-	//–Cg‚Ì‰ñ“]
-	RotateBarrel();
+		//–Cg‚Ì‰ñ“]
+		RotateBarrel();
+	}
 
 	//’e‚ÌXV
 	for (auto& shot : shots_)
@@ -111,6 +114,30 @@ void Cannon::Draw(void)
 	}
 }
 
+void Cannon::ChangeModelColor(COLOR_F _colorScale)
+{
+	//–C‘ä
+	if (MV1SetDifColorScale(trans_.modelId, _colorScale))
+	{
+#ifdef _DEBUG
+
+		OutputDebugString("ChangeModelColor‚Ì¸”s");
+
+#endif // _DEBUG
+	}
+
+	//–Cg
+	if (MV1SetDifColorScale(barrelTrans_.modelId, _colorScale))
+	{
+#ifdef _DEBUG
+
+		OutputDebugString("ChangeModelColor‚Ì¸”s");
+
+#endif // _DEBUG
+	}
+
+}
+
 void Cannon::Aim(void)
 {
 	//‘ÎÛ‚Ö‚Ì•ûŒüƒxƒNƒgƒ‹æ“¾
@@ -135,7 +162,7 @@ void Cannon::RotateTurret(void)
 	turretAddRot_ = turQuaRot.ToEuler();
 
 	//–C‘ä‰ñ“]
-	Rotate(trans_, turretAddRot_);
+	Rotate(trans_, turretAddRot_, AIM_SPEED);
 }
 
 void Cannon::RotateBarrel(void)
@@ -161,16 +188,21 @@ void Cannon::RotateBarrel(void)
 	barrelAddRot_ = barQuaRot.ToEuler();
 
 	//–Cg‰ñ“]
-	Rotate(barrelTrans_, VAdd(barrelAddRot_, turretAddRot_));
+	Rotate(barrelTrans_, VAdd(barrelAddRot_, turretAddRot_), AIM_SPEED);
 }
 
-void Cannon::Rotate(Transform& _trans, const VECTOR _addAxis, const VECTOR _relativePos)const
+void Cannon::Rotate(Transform& _trans, const VECTOR _toGoalAxis, const float _speed, const VECTOR _relativePos)const
 {
 	//‰ñ“]
 	Quaternion rot = Quaternion::Identity();
 
+	//‘¬“x•âŠÔ
+	VECTOR movePow = _toGoalAxis;
+
 	//‰ñ“]‚ğ‰Á‚¦‚é
-	rot = rot.Mult(Quaternion::Euler(_addAxis));
+	rot = rot.Mult(Quaternion::Euler(movePow));
+
+	rot.Normalize();
 
 	//‰ñ“]—p‚ÉÀ•W‚ğ‘Š‘ÎÀ•W‚©‚ç0,0,0‚É‚»‚ë‚¦‚é
 	_trans.pos = VSub(_trans.pos,_trans.quaRot.PosAxis(_relativePos));
@@ -231,4 +263,9 @@ void Cannon::DeleteShot(void)
 		//’eƒJƒEƒ“ƒgŒ¸­
 		shotNum_--;
 	}
+}
+
+bool Cannon::IsWithinRange(void)
+{
+	return Utility::MagnitudeF(targetPos_) <= AIM_RADIUS;
 }

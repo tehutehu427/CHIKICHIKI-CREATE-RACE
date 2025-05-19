@@ -30,6 +30,9 @@ public:
 	//サイズの取得
 	inline const IntVector3 GetSize(void)const { return size_; }
 
+	//モデルの色を変える
+	virtual void ChangeModelColor(const COLOR_F _colorScale);
+
 protected:
 
 	// シングルトン参照
