@@ -49,10 +49,6 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	isPunched_ = false;
 	punchedCnt_ = PUNCHED_TIME;
 
-	capsule_ = std::make_shared<Capsule>(trans_);
-	capsule_->SetLocalPosTop(CAPSULE_TOP);
-	capsule_->SetLocalPosDown(CAPSULE_DOWN);
-	capsule_->SetRadius(20.0f);
 }
 
 void Player::Load(void)
@@ -111,14 +107,13 @@ void Player::DrawDebug(void)
 	else if (playerNum_ == 2) { color = 0x00ff00; }
 	else if (playerNum_ == 3) { color = 0x0000ff; }
 	if (isCol_) { color = 0xff0000; }
-	DrawSphere3D(trans_.pos, 10.0f, 10, color, color, true);
+	DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
 	DrawFormatString(0, 16, 0x000000
 		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,jumpDeceralation_
 		,stepJump_
 	);
-	capsule_->Draw();
 
 	DrawSphere3D(punchPos_, PUNCH_RADIUS, 4, 0xff0000, 0xff0000, isPunch_);
 
@@ -260,7 +255,6 @@ void Player::Punch(void)
 	if (isHit){isPunch_ = true;}
 	if (isPunch_){punchCnt_ += PlayerInput::DELTA_TIME;}
 
-
 	if (isPunched_)
 	{
 		punchedCnt_ -= scnMng_.GetDeltaTime();
@@ -320,10 +314,6 @@ void Player::Collision(void)
 	// 現在座標を起点に移動後座標を決める
 }
 
-bool Player::IsEndLanding(void)
-{
-	return true;
-}
 
 void Player::CubeMove(void)
 {
@@ -331,8 +321,8 @@ void Player::CubeMove(void)
 	const float SPD = 3.0f;
 	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
 	cubeMovePos_ = Utility::VECTOR_ZERO;
-	if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.z += SPD;
-	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.z -= SPD;
+	if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.y += SPD;
+	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.y -= SPD;
 	if (input.IsNew(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
 	if (input.IsNew(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
 	cube_.centerPos=VAdd(cube_.centerPos, cubeMovePos_);

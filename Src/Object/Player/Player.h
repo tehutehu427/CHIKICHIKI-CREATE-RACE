@@ -213,7 +213,7 @@ private:
 	float speed_;			// 移動スピード
 	VECTOR moveDir_;		// 移動方向
 	VECTOR movePow_;		// 移動量
-	VECTOR dir_;
+	VECTOR dir_;			//方向
 
 	//回転
 	Quaternion playerRotY_;
@@ -241,7 +241,6 @@ private:
 	VECTOR cubeMovePos_;
 	VECTOR cubePos_;
 	CUBE cube_;
-	//std::function<int(ANIM_TYPE)> cast_;
 #endif // DEBUG_ON
 
 
@@ -285,9 +284,6 @@ private:
 
 	//当たり判定
 	void Collision(void);
-
-	// 着地モーション終了
-	bool IsEndLanding(void);
 
 #ifdef DEBUG_ON
 	void CubeMove(void);
