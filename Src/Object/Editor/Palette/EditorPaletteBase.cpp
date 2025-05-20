@@ -200,18 +200,6 @@ void EditorPaletteBase::UpdateSelect()
 	//生成開始
 	if (palIcon_->IsCreate())
 	{
-		////生成位置を調整
-		//VECTOR createPos = Utility::GetWorldPosAtScreen(
-		//	{ Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y },
-		//	DISTANCE,
-		//	camera.lock()->GetPos(),
-		//	camera.lock()->GetForward());
-
-		//IntVector3 createMapPos = MapEditer::GetInstance().WorldToMapPos(createPos);
-
-		////アイテムを追加
-		//itemMng.AddItem(createMapPos, Quaternion(), palIcon_->GetSelectType());
-
 		//コントローラに設定
 		ediCon_.SetItemType(palIcon_->GetSelectType());
 

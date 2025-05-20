@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\FreePalette.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\SoloChallengePalette.cpp" />
     <ClCompile Include="Src\Object\Item\CannonShot.cpp" />
     <ClCompile Include="Src\Object\Item\Fan.cpp" />
     <ClCompile Include="Src\Object\Item\Spiky.cpp" />
@@ -69,6 +72,9 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h" />
     <ClInclude Include="Src\Object\Item\CannonShot.h" />
     <ClInclude Include="Src\Object\Item\Fan.h" />
     <ClInclude Include="Src\Object\Item\Spiky.h" />

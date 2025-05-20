@@ -58,7 +58,7 @@ public:
 	EditorPaletteBase(EditController & _controller);
 
 	//デストラクタ
-	~EditorPaletteBase();
+	virtual ~EditorPaletteBase();
 	
 	/// <summary>
 	/// 読みこみ
@@ -121,16 +121,16 @@ private:
 	EditController& ediCon_;
 
 	//状態変更
-	void ChangeStateNone();
-	void ChangeStateWait();
-	void ChangeStateClose();
-	void ChangeStateOpen();
-	void ChangeStateSelect();
+	void ChangeStateNone();		//なし
+	void ChangeStateWait();		//クリック待ち
+	void ChangeStateClose();	//閉じる
+	void ChangeStateOpen();		//開ける
+	void ChangeStateSelect();	//選ぶ
 
 	//更新処理
-	void UpdateNone();
-	void UpdateWait();
-	void UpdateClose();
-	void UpdateOpen();
-	void UpdateSelect();
+	void UpdateNone();			//なし
+	void UpdateWait();			//クリック待ち
+	void UpdateClose();			//閉じる
+	void UpdateOpen();			//開ける
+	void UpdateSelect();		//選ぶ
 };

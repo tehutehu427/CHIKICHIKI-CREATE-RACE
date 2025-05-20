@@ -9,6 +9,11 @@ class ResourceManager
 
 public:
 
+	static constexpr int IMG_ARCS_NUM = 5;		//円弧画像の数
+	static constexpr int IMG_ARCS_DIV_X = 3;	//円弧画像の分割数X
+	static constexpr int IMG_ARCS_DIV_Y = 2;	//円弧画像の分割数Y
+	static constexpr int IMG_ARC_SIZE = 512;	//円弧画像の1分割したサイズ
+
 	// リソース名
 	enum class SRC
 	{
@@ -28,6 +33,7 @@ public:
 
 		//セレクトシーン用画像
 		ARC,
+		ARCS,
 
 		//アイテムモデル
 		FLOOR,				//足場
