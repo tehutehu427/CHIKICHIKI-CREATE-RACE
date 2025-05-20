@@ -12,6 +12,7 @@ EditController::EditController(int playerNum)
 	//ÉÇÅ[Éhä«óù(ëJà⁄éûÇÃèâä˙èàóù)
 	modeChanges_.emplace(MODE::ITEM_SELECT, std::bind(&EditController::ChengeModeItemSelect, this));
 	modeChanges_.emplace(MODE::MOVE_ROTATE, std::bind(&EditController::ChengeModeMove, this));
+	mapPosObject_ = ERROR_POS;
 }
 
 void EditController::Init(void)
@@ -72,7 +73,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyObjectSize(playerNum_));
 	itemMIns.DummyItemAddItems(playerNum_);
 	itemMIns.CreateDummyItem({}, {}, itemType, playerNum_);
-	IntVector3 mapPos = NearObjectPos();
+	IntVector3 mapPos = NearObjectFrontPos();
 	Quaternion rot = {};
 	if (mapPos == ERROR_POS)
 	{
@@ -98,7 +99,7 @@ void EditController::ChengeModeMove(void)
 
 void EditController::ItemSelectUpdate(void)
 {
-	ItemNotSelect();
+	//ItemNotSelect();
 }
 
 void EditController::MoveRotateObjectUpdate(void)
@@ -135,11 +136,13 @@ void EditController::ItemNotSelect(void)
 {
 	if (InputManager::GetInstance().IsTrgDownMouseLeft() == true)
 	{
-		IntVector3 NearPos = NearObjectPos();
+		IntVector3 NearPos = NearObjectFrontPos();
 		if (isClickObject_ == true)
 		{
-			itemType_ = MapEditer::GetInstance().GetItemType(NearPos);
-			ItemManager::GetInstance().ItemsAddDummyItems(itemType_, NearPos, playerNum_);
+			itemType_ = MapEditer::GetInstance().GetItemType(mapPosObject_);
+			IntVector3 leaderPos = MapEditer::GetInstance().GetLeaderMapPos(mapPosObject_);
+			ItemManager::GetInstance().ItemsAddDummyItems(itemType_, leaderPos, playerNum_);
+			MapEditer::GetInstance().DeleteItem(itemType_, leaderPos, ItemManager::GetInstance().GetDummyObjectSize(playerNum_));
 			ChengeMode(MODE::MOVE_ROTATE);
 		}
 		else
@@ -162,7 +165,7 @@ void EditController::ItemNotSelect(void)
 	}
 }
 
-IntVector3 EditController::NearObjectPos(void)
+IntVector3 EditController::NearObjectFrontPos(void)
 {
 	isClickObject_ = false;
 	IntVector3 mapPos = ERROR_POS;
@@ -195,7 +198,7 @@ IntVector3 EditController::NearObjectPos(void)
 		{
 			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPosTemp))
 			{
-				//mapPos = mapPosTemp;
+				mapPosObject_ = mapPosTemp;
 				isClickObject_ = true;
 				return mapPos;
 			}
@@ -220,6 +223,7 @@ IntVector3 EditController::NearObjectPos(void)
 								return ERROR_POS;
 							}
 							isClickObject_ = true;
+							mapPosObject_ = mapPosTemp + sizeLoop;
 							return mapPos;
 						}
 					}
@@ -413,6 +417,8 @@ void EditController::DebugDraw(void)
 	DrawFormatString(0, 20, 0x000000, "%d", static_cast<int>(itemType_));
 	DrawFormatString(0, 40, 0x000000, "%d,%d,%d",mapPos_.x,mapPos_.y,mapPos_.z);
 	DrawFormatString(0, 60, 0x000000, "%d", static_cast<int>(GetMoveDir()));
+	IntVector3 size = ItemManager::GetInstance().GetDummyObjectSize(playerNum_);
+	DrawFormatString(0, 80, 0x000000, "%d,%d,%d",size.x,size.y,size.z);
 
 }
 

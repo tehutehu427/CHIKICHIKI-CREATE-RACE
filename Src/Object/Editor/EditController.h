@@ -53,7 +53,7 @@ private:
 	ItemBase::ITEM_TYPE itemType_;	//アイテムの種類
 	bool isClickObject_;	//オブジェクトをクリックしたか
 	MOVE_DIR moveDir_;	//移動方向
-
+	IntVector3 mapPosObject_; //マウスがオブジェクトに当たった座標
 	//モード管理(遷移時の初期処理)
 	std::map<MODE, std::function<void(void)>> modeChanges_;
 
@@ -78,8 +78,8 @@ private:
 	//アイテム選択解除
 	void ItemNotSelect(void);		
 	
-	//近くのオブジェクトの座標を取得
-	IntVector3 NearObjectPos(void);	
+	//近くのオブジェクトの直前座標を取得
+	IntVector3 NearObjectFrontPos(void);	
 	
 	//移動するアイテムの座標を取得
 	void  MoveItem(void);			
