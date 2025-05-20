@@ -21,6 +21,9 @@ public:
 
 	//プレイヤー1人
 	static constexpr int PLAYER_SINGLE = 1;
+
+	//プレイヤーの大きさ
+	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
 	
 	enum class PLAYER
 	{

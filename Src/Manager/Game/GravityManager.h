@@ -1,12 +1,13 @@
 #pragma once
 #include <memory>
+#include"../Object/Common/Transform.h"
 class GravityManager
 {
 public:
 	GravityManager(void);
 	~GravityManager(void)=default;
 	//重力
-	static constexpr float GRAVITY_POW = 15.0f;
+	static constexpr float GRAVITY_POW = 3.0f;
 
 	//静的にインスタンス生成
 	static void CreateInstance(void);
@@ -33,5 +34,11 @@ public:
 
 private:
 	static std::unique_ptr<GravityManager> instance_;
+
+	//回転用
+	Transform trans_;
+
+	//回転力
+	float slerpPow_;
 };
 

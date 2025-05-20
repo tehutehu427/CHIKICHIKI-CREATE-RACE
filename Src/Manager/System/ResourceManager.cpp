@@ -92,6 +92,9 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, path_Sky + "SkyDome.mv1");
 	resourcesMap_.emplace(SRC::SKY_DOME, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Chicken.mv1");
+	resourcesMap_.emplace(SRC::CHICKEN, std::move(res));
 #pragma endregion 
 
 }

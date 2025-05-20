@@ -3,6 +3,7 @@
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Object/Common/Capsule.h"
+#include "../../Object/Common/AnimationController.h"
 #include "./Process/PlayerInput.h"
 #include "Player.h"
 
@@ -11,20 +12,27 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 #ifdef DEBUG_ON
 	cubeMovePos_=Utility::VECTOR_ZERO;
 	cubePos_=Utility::VECTOR_ZERO;
+	//cast_ = { [this](ANIM_TYPE type){return static_cast<int>(type); }};
 #endif // DEBUG_ON
 
-	animationController_ = nullptr;
+	trans_ = _trans;
+
+	animationController_ = std::make_shared<AnimationController>(trans_.modelId);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), DEFAULT_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), DEFAULT_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_SPD);
 	movedPos_ = Utility::VECTOR_ZERO;
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
 	padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_ + 1);
-	trans_ = _trans;
+	
 	//オブジェクト生成
 	//操作関連
 	//---------------------------------
 	//入力
 	input_ = std::make_shared<PlayerInput>(padNum_, cntl_);
-
 	//当たり判定
 	isCol_ = false;
 
@@ -41,10 +49,6 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	isPunched_ = false;
 	punchedCnt_ = PUNCHED_TIME;
 
-	capsule_ = std::make_shared<Capsule>(trans_);
-	capsule_->SetLocalPosTop(CAPSULE_TOP);
-	capsule_->SetLocalPosDown(CAPSULE_DOWN);
-	capsule_->SetRadius(20.0f);
 }
 
 void Player::Load(void)
@@ -61,19 +65,21 @@ void Player::Update(void)
 {
 	//入力更新
 	input_->Update();
-	//アクション関係
-	Action();
-
-	VECTOR dirDown = trans_.GetDown();
-	//重力
-	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_);
+	animationController_->Update();
 
 #ifdef DEBUG_ON
 	CubeMove();
 #endif // DEBUG_ON
 
+	static VECTOR dirDown = trans_.GetDown();
+	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
+	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_);
+
+
 	//衝突判定
 	Collision();
+	//アクション関係
+	Action();
 	//回転の同期
 	trans_.quaRot = playerRotY_;
 
@@ -83,6 +89,7 @@ void Player::Update(void)
 
 void Player::Draw(void)
 {
+	MV1DrawModel(trans_.modelId);
 #ifdef DEBUG_ON
 	DrawDebug();
 #endif // DEBUG_ON
@@ -93,36 +100,35 @@ void Player::Draw(void)
 void Player::DrawDebug(void)
 {
 	unsigned int color = 0xffffff;
+	const int HIGH = 10;
+	const int WIDTH = 200;
 	if (playerNum_ == 0) { color = 0xffffff; }
 	else if (playerNum_ == 1) { color = 0x550000; }
 	else if (playerNum_ == 2) { color = 0x00ff00; }
 	else if (playerNum_ == 3) { color = 0x0000ff; }
 	if (isCol_) { color = 0xff0000; }
-	DrawSphere3D(trans_.pos, 10.0f, 10, color, color, true);
-	DrawFormatString(0, 16, 0xffffff, "角度(%.2f,%.2f,%.2f)", trans_.rot.x, trans_.rot.y, trans_.rot.z);
-	capsule_->Draw();
+	DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
+	DrawFormatString(0, 16, 0x000000
+		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)"
+		, trans_.rot.x, trans_.rot.y, trans_.rot.z
+		,jumpDeceralation_
+		,stepJump_
+	);
 
 	DrawSphere3D(punchPos_, PUNCH_RADIUS, 4, 0xff0000, 0xff0000, isPunch_);
 
+	DrawCube3D({ cube_.centerPos.x - CUBE_W,cube_.centerPos.y - CUBE_H,cube_.centerPos.z - CUBE_D }
+	, { cube_.centerPos.x + CUBE_W,cube_.centerPos.y + CUBE_H,cube_.centerPos.z + CUBE_D }, 0xff0000, 0xff0000, true);
+	DrawFormatString(0, 80, 0, "POS = %f,%f,%f", movedPos_.x, movedPos_.y, movedPos_.z);
+	DrawFormatString(0, 100, 0, "jump = %d", static_cast<int>(isJump_));
 }
 void Player::Action(void)
 {
 	Rotate();
 	Punch();
-	if (isPunch_)return;
 	Jump();
 	Move();
-	if (isPunched_)
-	{
-		punchCnt_ -= scnMng_.GetDeltaTime();
-	}
-	if (punchCnt_ < 0.0f)
-	{
-		isPunched_ = false;
-		punchCnt_ = PUNCHED_TIME;
-	}
 
-	
 }
 
 void Player::Move(void)
@@ -139,7 +145,7 @@ void Player::Move(void)
 	Quaternion cameraRot = scnMng_.GetCamera().lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
 	//吹き飛び中でなかったらカメラ方向に移動したい
-	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE)&&!isPunched_)
+	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE)&&!isPunched_&&!isPunch_)
 	{
 		dir_ = cameraRot.PosAxis(getDir);
 		deg = input_->GetMoveDeg();
@@ -148,40 +154,19 @@ void Player::Move(void)
 	if (!Utility::EqualsVZero(dir_) /*&& (_isJump || IsEndLanding())*/)
 	{
 		//パンチされてぶっ飛んでる時と通常の移動の時のスピード
-		if (isPunched_)
-		{
-			speed_ = FLY_AWAY_SPEED;
-		}
-		else
-		{
-			speed_ = MOVE_SPEED;
-		}
-		//isPunched_? speed_ = FLY_AWAY_SPEED: speed_ = MOVE_SPEED;
-
-
-		//animationController_->Play((int)ANIM_TYPE::RUN);
-
-		//if ((!_isJump && IsEndLanding()))
-		//{
-
-
-		//}
-
+		if (isPunched_){speed_ = FLY_AWAY_SPEED;}
+		else{speed_ = MOVE_SPEED;}
+		
+		animationController_->Play(static_cast<int>(ANIM_TYPE::WALK));
 		moveDir_ = dir_;
 		//移動量
 		movePow_ = VScale(moveDir_, speed_);
 		SetGoalRotate(Utility::Deg2RadF(deg));
-
 	}
 	else
 	{
-		//speed_ = 0.0f;
-		//animationController_->Play((int)ANIM_TYPE::IDLE);
-
-		//if (!_isJump && IsEndLanding())
-		//{
-
-		//}
+		speed_ = 0.0f;
+		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE));
 	}
 }
 void Player::Rotate(void)
@@ -207,42 +192,44 @@ void Player::SetGoalRotate(double _deg)
 }
 void Player::Jump(void)
 {
+	if (isPunch_)return;
 	bool isHit = input_->CheckAct(PlayerInput::ACT_CNTL::JUMP);
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 	// ジャンプ
-	if (isHit && (isJump_ || IsEndLanding()))
+	if (isHit)
 	{
 		if (!isJump_)
 		{
-			// 空中で無理やりアニメーションを切り取ってアニメーションをする
-			//animationController_->Play(
-			//	(int)ANIM_TYPE::JUMP, true, 13.0f, 25.0f);
+			stepJump_ = 0.0f;
+			 //空中で無理やりアニメーションを切り取ってアニメーションをする
+			animationController_->Play(
+				(int)ANIM_TYPE::JUMP, false, 0.0f, 60.0f);
 			//animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
 
 			// この後、いくつかのジャンプパターンを試します
 		}
 		isJump_ = true;
+		//ジャンプの入力受付時間を減らす
+		stepJump_ += deltaTime;
 	}
 
-	if (isJump_)
+	if (stepJump_ > 0.0f)
 	{
-		// ジャンプの入力受付時間を減らす
-		stepJump_ += scnMng_.GetDeltaTime();
-		if (stepJump_ < TIME_JUMP_IN)
+		if (!isJump_)
 		{
-			jumpDeceralation_ -= stepJump_ * TIME_JUMP_IN;
-			jumpPow_ = VScale(trans_.GetUp(), jumpDeceralation_);
+			stepJump_ = 0.0f;
+			return;
 		}
-		else
-		{
-			jumpDeceralation_ += (TIME_JUMP_IN - stepJump_) * TIME_JUMP_IN;
-			jumpPow_ = VScale(trans_.GetUp(), jumpDeceralation_);
-		}
+			
+		stepJump_ += deltaTime;
+		float i = stepJump_ * TIME_JUMP_SCALE;
+		jumpDeceralation_ -= i;
+		jumpPow_ = VScale(trans_.GetUp(), jumpDeceralation_);
 	}
+
 	// ボタンを離したらジャンプ力に加算しない
-	else
+	if(!isJump_)
 	{
-		stepJump_ = TIME_JUMP_IN;
 		jumpDeceralation_ = POW_JUMP;
 		fallCnt_ = 0.0f;
 		jumpPow_ = Utility::VECTOR_ZERO;
@@ -267,6 +254,16 @@ void Player::Punch(void)
 	}
 	if (isHit){isPunch_ = true;}
 	if (isPunch_){punchCnt_ += PlayerInput::DELTA_TIME;}
+
+	if (isPunched_)
+	{
+		punchedCnt_ -= scnMng_.GetDeltaTime();
+	}
+	if (punchedCnt_ < 0.0f)
+	{
+		isPunched_ = false;
+		punchedCnt_ = PUNCHED_TIME;
+	}
 }
 #endif // DEBUG_ON
 
@@ -279,7 +276,6 @@ VECTOR Player::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _lo
 
 	//足したものを返す
 	return VAdd(_followPos, addPos);
-
 }
 
 void Player::CalcGravityPow(void)
@@ -291,31 +287,39 @@ void Player::Collision(void)
 {
 	movedPos_ = VAdd(trans_.pos, movePow_);
 	movedPos_ = VAdd(movedPos_, jumpPow_);
-#ifdef DEBUG_ON
-	if (movedPos_.y < 0.0f)
+	if (CollCube())
 	{
-		movedPos_.y = 0.0f;
+		movedPos_ = VAdd(movedPos_, cubeMovePos_);
+		movedPos_.y = cube_.upPos.y + RADIUS;
 		isJump_ = false;
-		stepJump_ = 0.0f;
 	}
+	else
+	{
+		isJump_ = true;
+	}
+
+#ifdef DEBUG_ON
+
+	//if (movedPos_.y < 0.0f/*||!CollCube()*/)
+	//{
+	//	movedPos_.y = 0.0f;
+	//	isJump_ = false;
+	//	stepJump_ = 0.0f;
+	//}
 #endif // DEBUG_ON
 	//移動前の座標を格納する
-	//moveDiff_ = VSub(movedPos_, transform_.pos);
+	moveDiff_ = VSub(movedPos_, trans_.pos);
 	// 移動
 	trans_.pos = movedPos_;
 	// 現在座標を起点に移動後座標を決める
-
 }
 
-bool Player::IsEndLanding(void)
-{
-	return true;
-}
 
 void Player::CubeMove(void)
 {
 	auto& input = InputManager::GetInstance();
 	const float SPD = 3.0f;
+	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
 	cubeMovePos_ = Utility::VECTOR_ZERO;
 	if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.y += SPD;
 	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.y -= SPD;
@@ -326,15 +330,10 @@ void Player::CubeMove(void)
 
 bool Player::CollCube(void)
 {
-	cube_.leftPos = VAdd(cube_.centerPos, { -(CUBE_W / 2.0f),0.0f,0.0f });
-	cube_.rightPos = VAdd(cube_.centerPos, { CUBE_W / 2.0f,0.0f,0.0f });
-	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H / 2.0f,0.0f });
-	cube_.downPos = VAdd(cube_.centerPos, { 0.0f,-(CUBE_H / 2.0f),0.0f });
-
-	VECTOR diff = VSub(cube_.centerPos, trans_.pos);
-	if(fabsf(diff.x)>CUBE_W/2+RADIUS
-		||fabsf(diff.y)>CUBE_H/2+RADIUS
-		|| fabsf(diff.z) > CUBE_D / 2 + RADIUS)
+	VECTOR diff = VSub(cube_.centerPos, movedPos_);
+	if(fabsf(diff.x) > CUBE_W+RADIUS
+		||fabsf(diff.y) > CUBE_H+RADIUS
+		|| fabsf(diff.z) > CUBE_D + RADIUS)
 	{
 		return false;
 	}
