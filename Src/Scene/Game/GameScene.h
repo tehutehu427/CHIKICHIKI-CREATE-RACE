@@ -74,6 +74,7 @@ private:
 
 	//フェーズ管理(更新ステップ)
 	std::function<void(void)> phaseUpdate_;
+	std::function<void(void)> phaseDraw_;
 
 	// フェーズ遷移
 	void ChangePhase(PHASE phase);
@@ -83,6 +84,10 @@ private:
 	// 更新ステップ
 	void UpdateEdit(void);
 	void UpdateAction(void);
+
+	// 描画ステップ
+	void DrawEdit(void);
+	void DrawAction(void);
 
 	//プレイヤー
 	std::unique_ptr<EditorPaletteBase> palette_;
