@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\FreePalette.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\SoloChallengePalette.cpp" />
     <ClCompile Include="Src\Scene\SelectScene.cpp" />
     <ClCompile Include="Src\Scene\Game\MultiParty.cpp" />
     <ClCompile Include="Src\Scene\Game\SoloChallenge.cpp" />
@@ -66,6 +69,9 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h" />
     <ClInclude Include="Src\Scene\SelectScene.h" />
     <ClInclude Include="Src\Scene\Game\MultiParty.h" />
     <ClInclude Include="Src\Scene\Game\SoloChallenge.h" />
