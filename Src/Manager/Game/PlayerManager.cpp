@@ -182,6 +182,7 @@ Transform PlayerManager::FixTrans(int _playerNum)
 	x = PLAYER_ONE_POS_X + DISTANCE_POS * _playerNum;
 
 	trans.pos = { x,0.0f,0.0f };
+	trans.localPos = { 0.0f,-Player::RADIUS,0.0f };
 	return trans;
 }
 

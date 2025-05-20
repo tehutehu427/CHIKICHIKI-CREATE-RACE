@@ -140,18 +140,17 @@ void Player::Move(void)
 	}
 	VECTOR getDir = input_->GetDir();
 	float deg = 0;
-	//プレイヤーの周囲にあるステージポリゴンの取得
-	//MV1_COLL_RESULT_POLY_DIM hitDim[STAGECOLLOBJ_MAXNUM + 1];
 	Quaternion cameraRot = scnMng_.GetCamera().lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
 	//吹き飛び中でなかったらカメラ方向に移動したい
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE)&&!isPunched_&&!isPunch_)
 	{
-		dir_ = cameraRot.PosAxis(getDir);
 		deg = input_->GetMoveDeg();
+		dir_ = cameraRot.PosAxis(getDir);
+		dir_ = VNorm(dir_);
 	}
 
-	if (!Utility::EqualsVZero(dir_) /*&& (_isJump || IsEndLanding())*/)
+	if (!Utility::EqualsVZero(dir_))
 	{
 		//パンチされてぶっ飛んでる時と通常の移動の時のスピード
 		if (isPunched_){speed_ = FLY_AWAY_SPEED;}
@@ -318,11 +317,11 @@ void Player::Collision(void)
 void Player::CubeMove(void)
 {
 	auto& input = InputManager::GetInstance();
-	const float SPD = 3.0f;
+	const float SPD = 7.0f;
 	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
 	cubeMovePos_ = Utility::VECTOR_ZERO;
-	if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.y += SPD;
-	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.y -= SPD;
+	if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.z += SPD;
+	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.z -= SPD;
 	if (input.IsNew(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
 	if (input.IsNew(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
 	cube_.centerPos=VAdd(cube_.centerPos, cubeMovePos_);

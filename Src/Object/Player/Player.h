@@ -24,7 +24,7 @@ public:
 	//プレイヤー情報
 	static constexpr VECTOR CAPSULE_TOP = { 0.0f, 110.0f, 0.0f };
 	static constexpr VECTOR CAPSULE_DOWN = { 0.0f, 0.0f, 0.0f };
-	static constexpr float RADIUS = 20.0f;
+	static constexpr float RADIUS = 25.0f;
 	//移動
 	//----------------------------------
 	//移動スピード
