@@ -720,7 +720,7 @@ IntVector3 Utility::ReverseValue(IntVector3 _iv)
 {
     return _iv * REVERSE_SCALE;
 }
-}
+
 
 int Utility::WrapIndex(int index, int max)
 {

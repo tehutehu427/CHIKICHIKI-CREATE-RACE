@@ -106,7 +106,8 @@ private:
 	void ChangePhaseEdit(void);
 	void ChangePhaseAction(void);
 
-
+	void DrawEdit();
+	void DrawAction();
 
 	//ƒvƒŒƒCƒ„[
 	std::unique_ptr<EditorPaletteBase> palette_;
