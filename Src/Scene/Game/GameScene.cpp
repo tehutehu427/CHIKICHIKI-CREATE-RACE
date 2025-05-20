@@ -14,7 +14,6 @@
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Grid.h"
 #include "../../Object/SkyDome/SkyDome.h"
-#include "../../Object/Editor/MapDataIO.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -26,7 +25,6 @@ GameScene::GameScene(void)
 
 	sky_ = nullptr;
 	palette_ = nullptr;
-	mapIO_ = nullptr;
 	phaseChanges_.emplace(PHASE::EDIT_PHASE, std::bind(&GameScene::ChangePhaseEdit, this));
 	phaseChanges_.emplace(PHASE::ACTION_PHASE, std::bind(&GameScene::ChangePhaseAction, this));
 }
@@ -57,9 +55,6 @@ void GameScene::Load(void)
 
 	sky_ = std::make_unique<SkyDome>();
 	sky_->Load();
-
-	mapIO_ = std::make_unique<MapDataIO>();
-	mapIO_->Load();
 }
 
 void GameScene::Init(void)
@@ -67,7 +62,6 @@ void GameScene::Init(void)
 	palette_->Init();
 	editController_->Init();
 	sky_->Init();
-	mapIO_->Init();
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
@@ -125,9 +119,6 @@ void GameScene::NormalDraw(void)
 	
 	//パレット
 	palette_->Draw();
-
-	//データの入出力
-	mapIO_->Draw();
 }
 
 void GameScene::ChangeNormal(void)
@@ -207,7 +198,6 @@ void GameScene::UpdateEdit(void)
 	//パレット
 	palette_->Update();
 	editController_->Update();
-	mapIO_->Update();
 }
 
 void GameScene::UpdateAction(void)

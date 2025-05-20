@@ -8,7 +8,6 @@
 class EditorPaletteBase;
 class Grid;
 class SkyDome;
-class MapDataIO;
 
 class GameScene : public SceneBase
 {
@@ -51,20 +50,39 @@ public:
 	/// <param name=""></param>
 	virtual void Init(void) override;
 
-private:
+protected:
 
-	//更新関数
-	void NormalUpdate(void) override;
-
-	//描画関数
-	void NormalDraw(void) override;
-
-	//処理の変更
-	void ChangeNormal(void) override;
+	/// <summary>
+	/// 通常時の描画処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void NormalDraw(void) override;
 	
-	//デバッグ処理
-	virtual void DebagUpdate(void);	//更新
+	/// <summary>
+	/// エディット時の更新処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void UpdateEdit(void);
+
+	/// <summary>
+	/// アクション時の更新処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void UpdateAction(void);	
+	
+	/// <summary>
+	/// デバッグ時の更新処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void DebagUpdate(void);	
+
+	/// <summary>
+	/// デバッグ時の描画処理
+	/// </summary>
+	/// <param name=""></param>
 	virtual void DebagDraw(void);	//描画
+
+private:
 
 	//フェーズ管理
 	PHASE phase_;
@@ -74,15 +92,17 @@ private:
 
 	//フェーズ管理(更新ステップ)
 	std::function<void(void)> phaseUpdate_;
+	
+	//更新関数
+	void NormalUpdate(void) override;
+
+	//処理の変更
+	void ChangeNormal(void) override;
 
 	// フェーズ遷移
 	void ChangePhase(PHASE phase);
 	void ChangePhaseEdit(void);
 	void ChangePhaseAction(void);
-
-	// 更新ステップ
-	void UpdateEdit(void);
-	void UpdateAction(void);
 
 	//プレイヤー
 	std::unique_ptr<EditorPaletteBase> palette_;
@@ -95,7 +115,4 @@ private:
 
 	//スカイドーム
 	std::unique_ptr<SkyDome> sky_;
-
-	//データの入出力
-	std::unique_ptr<MapDataIO> mapIO_;
 };

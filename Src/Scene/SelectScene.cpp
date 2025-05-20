@@ -23,15 +23,15 @@ SelectScene::SelectScene(void)
 	menuFuncTable_ = {
 		{SELECT_MENU::SOLO,[this]() 
 		{
-			scnMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+			scnMng_.ChangeScene(SceneManager::SCENE_ID::SOLO);
 		}},
 		{SELECT_MENU::MULTI,[this]() 
 		{
-			scnMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+			scnMng_.ChangeScene(SceneManager::SCENE_ID::MULTI);
 		}},
 		{SELECT_MENU::FREE,[this]() 
 		{
-			scnMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+			scnMng_.ChangeScene(SceneManager::SCENE_ID::FREE);
 		}},
 		{SELECT_MENU::SETTINGS,[this]() 
 		{
