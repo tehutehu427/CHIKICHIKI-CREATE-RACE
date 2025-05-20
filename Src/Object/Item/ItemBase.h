@@ -32,8 +32,6 @@ public:
 		MAX,				//最大
 	};
 
-	static constexpr int ITEM_NUM_MAX = static_cast<int>(ITEM_TYPE::MAX) - 1;	//アイテムの種類数
-
 	//アイテムの効果
 	enum class EFFECT_TYPE
 	{
@@ -41,6 +39,9 @@ public:
 		INSTALLATION,	//設置物
 		DESTROYER,		//破壊物
 	};
+
+	//アイテム数
+	static constexpr int ITEM_NUM_MAX = static_cast<int>(ITEM_TYPE::MAX) - 1;	//アイテムの種類数
 
 	//ステータス
 	struct Status
@@ -74,6 +75,7 @@ public:
 
 	//座標の設定
 	void SetPos(IntVector3 mapPos);
+	//回転の設定
 	void SetRotate(Quaternion rot);
 	
 	//初期マップ座標の取得
