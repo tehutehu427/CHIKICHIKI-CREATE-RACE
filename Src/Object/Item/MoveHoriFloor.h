@@ -25,10 +25,10 @@ public:
 	void Draw(void)override;
 
 	/// <summary>
-	/// “–‚½‚Á‚½•¨‚É‚à“¯‚¶ˆÚ“®—Ê‚ğ—^‚¦‚é
+	/// “–‚½‚Á‚½ˆ—
 	/// </summary>
-	/// <param name="_hitTrans">“–‚½‚Á‚½•¨‚ÌTransform</param>
-	void HitObject(Transform& _hitTrans);
+	/// <param name="_hitTrans">‘ÎÛ‚Ìƒ‚ƒfƒ‹î•ñ</param>
+	void Hit(Transform& _hitTrans)override;
 
 private:
 

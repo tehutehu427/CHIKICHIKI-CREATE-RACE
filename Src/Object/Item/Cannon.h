@@ -8,7 +8,7 @@ class Cannon : public ItemBase
 public:
 
 	//’e
-	static constexpr int SHOT_MAX = 3;				//’e‚Ì¶¬”
+	//static constexpr int SHOT_MAX = 3;				//’e‚Ì¶¬”
 	static constexpr float SHOT_INTERVAL = 5.0f;	//’e‚Ì¶¬Š´Šo
 
 	//ƒ}ƒbƒv
@@ -37,7 +37,7 @@ public:
 	void Draw(void)override;
 
 	//ƒ‚ƒfƒ‹‚ÌF•Ï‚¦
-	void ChangeModelColor(COLOR_F _colorScale)override;
+	void ChangeModelColor(const COLOR_F _colorScale)override;
 
 	//‘_‚¤‘ÎÛ‚Ìİ’è
 	void SetTargetPos(const VECTOR _targetPos) { targetPos_ = _targetPos; }
@@ -45,8 +45,8 @@ public:
 private:
 
 	//’eŠÖŒW
-	std::unique_ptr<CannonShot> shots_[SHOT_MAX];		//’e
-	int shotNum_;										//’e‚Ì”
+	//std::unique_ptr<CannonShot> shots_[SHOT_MAX];		//’e
+	//int shotNum_;										//’e‚Ì”
 	float shotCreateCnt_;								//’e‚Ì¶¬ŠÔŠuƒJƒEƒ“ƒ^
 	
 	//ƒ‚ƒfƒ‹ŠÖŒW
@@ -57,13 +57,6 @@ private:
 	//‘ÎÛ
 	VECTOR targetPos_;		//‘_‚¤‘ÎÛ‚ÌˆÊ’uî•ñ
 	VECTOR targetVec_;		//‘_‚¤‘ÎÛ‚É‘Î‚µ‚Ä‚Ì•ûŒüƒxƒNƒgƒ‹
-
-
-	//‘ÎÛ‚ğ‘_‚¤
-	void Aim(void);
-
-	//‘_‚¤ƒxƒNƒgƒ‹‚Ö‚Ì•âŠÔ
-	//void AimLeap()
 
 	//–C‘ä‚Ì‰ñ“]
 	void RotateTurret(void);

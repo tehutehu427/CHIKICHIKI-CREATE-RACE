@@ -2,9 +2,10 @@
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/Resource.h"
 #include "../Manager/System/ResourceManager.h"
+#include "Cannon.h"
 #include "CannonShot.h"
 
-CannonShot::CannonShot(VECTOR _pos, Quaternion _quaRot)
+CannonShot::CannonShot(VECTOR _pos, Quaternion _quaRot, Cannon* _parent) : parent_(_parent)
 {
 	size_ = INT_VECTOR_ZERO;
 	trans_.pos = _pos;
@@ -16,6 +17,8 @@ CannonShot::CannonShot(VECTOR _pos, Quaternion _quaRot)
 
 CannonShot::~CannonShot()
 {
+	delete parent_;
+	parent_ = nullptr;
 }
 
 void CannonShot::SetParam(void)

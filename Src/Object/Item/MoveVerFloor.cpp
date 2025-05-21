@@ -137,7 +137,7 @@ bool MoveVerFloor::IsBeyondRoute(void)
 	return beyondX && beyondY && beyondZ;
 }
 
-void MoveVerFloor::HitObject(Transform& _hitTrans)
+void MoveVerFloor::Hit(Transform& _hitTrans)
 {
 	//当たったオブジェクトに同じだけ移動させる
 	_hitTrans.pos = VAdd(_hitTrans.pos, movePow_);

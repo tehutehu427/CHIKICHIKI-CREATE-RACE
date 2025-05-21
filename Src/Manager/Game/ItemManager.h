@@ -95,6 +95,13 @@ public:
 
 	void DeleteDummyItem(int playerNum);
 
+	/// <summary>
+	/// サブアイテムの所有権獲得
+	/// </summary>
+	/// <param name="_type">所有権を渡したいアイテムの種類</param>
+	/// <param name="_subItem">所有権を渡したいアイテムのポインタ(std::moveして渡す)</param>
+	void MoveSubItemOwner(const ItemBase::ITEM_TYPE _type, std::shared_ptr<ItemBase> _subItem);
+
 protected:
 
 private:

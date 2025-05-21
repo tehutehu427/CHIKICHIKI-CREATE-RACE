@@ -137,7 +137,7 @@ bool MoveHoriFloor::IsBeyondRoute(void)
 	return beyondX && beyondY && beyondZ;
 }
 
-void MoveHoriFloor::HitObject(Transform& _hitTrans)
+void MoveHoriFloor::Hit(Transform& _hitTrans)
 {
 	//当たったオブジェクトに同じだけ移動させる
 	_hitTrans.pos = VAdd(_hitTrans.pos, movePow_);

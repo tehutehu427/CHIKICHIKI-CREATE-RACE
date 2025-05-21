@@ -29,6 +29,9 @@ public:
 		BOMB_SMALL,			//爆弾(小)
 		BOMB_BIG,			//爆弾(大)
 
+		//サブオブジェ
+		CANNON_SHOT,		//大砲の弾
+
 		MAX,				//最大
 	};
 
@@ -70,6 +73,12 @@ public:
 	//描画
 	virtual void Draw(void)override;
 
+	/// <summary>
+	/// 当たった処理
+	/// </summary>
+	/// <param name="_hitTrans">対象のモデル情報</param>
+	virtual void Hit(Transform& _hitTrans);
+
 	//アイテムのステータス取得
 	inline const Status GetStatus(void)const { return status_; }
 
@@ -79,7 +88,7 @@ public:
 	void SetRotate(Quaternion rot);
 	
 	//初期マップ座標の取得
-	IntVector3 GetInitMapPos(void)const { return InitMapPos_; }	
+	inline const IntVector3 GetInitMapPos(void)const { return InitMapPos_; }	
 
 protected:
 

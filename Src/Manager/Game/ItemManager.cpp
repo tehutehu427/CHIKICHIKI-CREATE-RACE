@@ -268,6 +268,15 @@ void ItemManager::DeleteDummyItem(int playerNum)
 	}
 }
 
+void ItemManager::MoveSubItemOwner(const ItemBase::ITEM_TYPE _type, std::shared_ptr<ItemBase> _subItem)
+{
+	//‰Šú‰»ˆ—
+	_subItem->Init();
+
+	//Š—LŒ –¾‚¯“n‚µ
+	items_[_type].emplace_back(_subItem);
+}
+
 ItemManager::ItemManager(void)
 {
 

@@ -19,7 +19,7 @@ public:
 	/// デストラクタ
 	/// </summary>
 	/// <param name=""></param>
-	~SlimeFloor(void)override = default;
+	~SlimeFloor(void);
 
 	/// <summary>
 	/// パラメーター設定
