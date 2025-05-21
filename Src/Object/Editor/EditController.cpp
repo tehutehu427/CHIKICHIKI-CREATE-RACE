@@ -13,7 +13,7 @@ EditController::EditController(int playerNum)
 	modeChanges_.emplace(MODE::ITEM_SELECT, std::bind(&EditController::ChengeModeItemSelect, this));
 	modeChanges_.emplace(MODE::MOVE_ROTATE, std::bind(&EditController::ChengeModeMove, this));
 	mapPosObject_ = ERROR_POS;
-	mode_ = MODE::ITEM_SELECT;
+	mode_ = MODE::MAX;
 	itemType_ = ItemBase::ITEM_TYPE::NONE;
 	isClickObject_ = false;
 	moveDir_ = MOVE_DIR::NONE;
@@ -232,7 +232,6 @@ IntVector3 EditController::NearObjectFrontPos(void)
 						IntVector3 sizeLoop = { x,y,z };
 						if (MapEditer::GetInstance().IsObjectAtMapPos(mapPosTemp + sizeLoop))
 						{
-							//mapPos = mapPosTemp;
 							if (mapPos.x < 0 || mapPos.x > MapEditer::MAP_SIZE.x - size.x ||
 								mapPos.y < 0 || mapPos.y > MapEditer::MAP_SIZE.y - size.y ||
 								mapPos.z < 0 || mapPos.z > MapEditer::MAP_SIZE.z - size.z)

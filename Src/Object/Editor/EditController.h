@@ -17,6 +17,7 @@ public:
 	{
 		ITEM_SELECT,	//アイテム選択
 		MOVE_ROTATE,	//オブジェクト移動,回転
+		MAX
 	};
 
 	enum class MOVE_DIR
