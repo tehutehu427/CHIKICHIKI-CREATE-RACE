@@ -72,7 +72,8 @@ void GameScene::Init(void)
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
-	PlayerManager::CreateInstance(1);
+
+	PlayerManager::CreateInstance(3);
 
 	//ƒAƒCƒeƒ€¶¬
 	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
