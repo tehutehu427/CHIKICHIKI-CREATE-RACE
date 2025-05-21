@@ -54,7 +54,7 @@ public:
 	static constexpr float PUNCH_COOL_TIME = 0.5f;
 
 	// 回転完了までの時間
-	static constexpr float TIME_ROT = 1.0f;
+	static constexpr float TIME_ROT = 0.1f;
 
 	//パンチのローカル座標
 	static constexpr VECTOR PUNCH_LOCAL_POS = { 0.0f,50.0f,40.0f };
@@ -93,9 +93,9 @@ public:
 		IDLE=1,
 		WALK=2,
 		DAMAGE = 8,
-		PUNCH = 11,
-		JUMP = 12,
-		LAND=13,
+		PUNCH = 12,
+		JUMP = 13,
+		LAND=14,
 	};
 
 	struct CUBE

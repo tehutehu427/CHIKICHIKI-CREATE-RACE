@@ -26,7 +26,14 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	movedPos_ = Utility::VECTOR_ZERO;
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
-	padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_ + 1);
+	if (cntl_ == PlayerInput::CNTL::PAD)
+	{
+		padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_);
+	}
+	else
+	{
+		padNum_ = InputManager::JOYPAD_NO::INPUT_KEY;
+	}
 	
 	//オブジェクト生成
 	//操作関連
@@ -69,11 +76,12 @@ void Player::Update(void)
 
 #ifdef DEBUG_ON
 	CubeMove();
+	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
+	cube_.centerPos = VAdd(cube_.centerPos, cubeMovePos_);
 #endif // DEBUG_ON
-
 	static VECTOR dirDown = trans_.GetDown();
 	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
-	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_);
+	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_,10.0f);
 
 
 	//衝突判定
@@ -82,7 +90,7 @@ void Player::Update(void)
 	Action();
 	//回転の同期
 	trans_.quaRot = playerRotY_;
-
+	
 
 	trans_.Update();
 }
@@ -156,13 +164,15 @@ void Player::Move(void)
 		if (isPunched_){speed_ = FLY_AWAY_SPEED;}
 		else{speed_ = MOVE_SPEED;}
 		
-		animationController_->Play(static_cast<int>(ANIM_TYPE::WALK));
+
+		if(!isJump_)animationController_->Play(static_cast<int>(ANIM_TYPE::WALK));
+		
 		moveDir_ = dir_;
 		//移動量
 		movePow_ = VScale(moveDir_, speed_);
 		SetGoalRotate(Utility::Deg2RadF(deg));
 	}
-	else
+	else if(!isJump_)
 	{
 		speed_ = 0.0f;
 		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE));
@@ -200,13 +210,15 @@ void Player::Jump(void)
 		if (!isJump_)
 		{
 			stepJump_ = 0.0f;
-			 //空中で無理やりアニメーションを切り取ってアニメーションをする
-			animationController_->Play(
-				(int)ANIM_TYPE::JUMP, false, 0.0f, 60.0f);
-			//animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
+
 
 			// この後、いくつかのジャンプパターンを試します
 		}
+		//空中で無理やりアニメーションを切り取ってアニメーションをする
+		animationController_->Play(
+			(int)ANIM_TYPE::JUMP, false, 10.0f, 60.0f);
+		animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
+
 		isJump_ = true;
 		//ジャンプの入力受付時間を減らす
 		stepJump_ += deltaTime;
@@ -318,13 +330,11 @@ void Player::CubeMove(void)
 {
 	auto& input = InputManager::GetInstance();
 	const float SPD = 7.0f;
-	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
 	cubeMovePos_ = Utility::VECTOR_ZERO;
 	if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.z += SPD;
 	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.z -= SPD;
 	if (input.IsNew(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
 	if (input.IsNew(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
-	cube_.centerPos=VAdd(cube_.centerPos, cubeMovePos_);
 }
 
 bool Player::CollCube(void)

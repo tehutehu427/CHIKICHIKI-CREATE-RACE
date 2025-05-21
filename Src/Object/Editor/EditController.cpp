@@ -37,7 +37,7 @@ void EditController::Update(void)
 
 void EditController::Draw(void)
 {
-	DebugDraw();
+	//DebugDraw();
 	modeDraw_();
 }
 
@@ -390,7 +390,7 @@ void EditController::DebugUpdate(void)
 {
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_X))
 	{
-		SetItemType(ItemBase::ITEM_TYPE::CANNON);
+		//SetItemType(ItemBase::ITEM_TYPE::CANNON);
 	}
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_RETURN))
 	{

@@ -193,11 +193,11 @@ void PlayerManager::PunchPlayersColl(int p1, int p2)
 
 	//‚»‚ê‚¼‚ê‚ÌƒJƒvƒZƒ‹
 	//auto p1Cap = players_[p1]->GetCapsule().lock();
-	auto p2Cap = players_[p2]->GetCapsule().lock();
+	//auto p2Cap = players_[p2]->GetCapsule().lock();
 
 	//“–‚½‚Á‚½Žž‚Ìˆ—
-	if (Utility::IsHitSphereCapsule(players_[p1]->GetPunchPos(), Player::PUNCH_RADIUS
-		, p2Cap->GetPosTop(), p2Cap->GetPosDown(), p2Cap->GetRadius()))
+	if (Utility::IsHitSpheres(players_[p1]->GetPunchPos(), Player::PUNCH_RADIUS
+		, players_[p2]->GetPos(),Player::RADIUS))
 	{
 		players_[p2]->SetDir(Utility::GetMoveVec(players_[p1]->GetPos(), players_[p2]->GetPos()));
 		players_[p2]->SetIsPunched(true);
