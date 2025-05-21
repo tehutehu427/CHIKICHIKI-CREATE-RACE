@@ -197,7 +197,6 @@ void ItemManager::DummyItemAddItems(int playerNum)
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
 		AddItem(dummyItems_[playerNum]->GetInitMapPos(), dummyItems_[playerNum]->GetTransform().quaRot, dummyItems_[playerNum]->GetStatus().itemType);
-		//items_[dummyItems_[playerNum]->GetStatus().itemType].emplace_back(dummyItems_[playerNum]);
 		dummyItems_.erase(playerNum);
 	}
 }
@@ -229,16 +228,19 @@ const std::vector<std::shared_ptr<ItemBase>>* ItemManager::GetItems(const ItemBa
 bool ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos,int playerNum)
 {
 	auto it = items_.find(_type);
+	//アイテムが存在しない場合　falseを返す
 	if (it == items_.end())
 	{
 		return false;
 	}
 	for (auto& item : it->second)
 	{
+		//アイテムが存在しない場合　次のアイテムへ
 		if (item == nullptr)
 		{
 			continue;
 		}
+		//アイテムのサイズ分ループ
 		for (int i = 0; i < item->GetSize().x; i++)
 		{
 			for (int j = 0; j < item->GetSize().y; j++)
@@ -246,6 +248,7 @@ bool ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapP
 				for (int k = 0; k < item->GetSize().z; k++)
 				{
 					IntVector3 mapPos = { item->GetInitMapPos().x + i,item->GetInitMapPos().y + j,item->GetInitMapPos().z + k };
+					//アイテムのマップ座標と指定されたマップ座標が同じ場合
 					if (mapPos != _mapPos)
 					{
 						continue;

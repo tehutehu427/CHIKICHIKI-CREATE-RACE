@@ -13,6 +13,10 @@ EditController::EditController(int playerNum)
 	modeChanges_.emplace(MODE::ITEM_SELECT, std::bind(&EditController::ChengeModeItemSelect, this));
 	modeChanges_.emplace(MODE::MOVE_ROTATE, std::bind(&EditController::ChengeModeMove, this));
 	mapPosObject_ = ERROR_POS;
+	mode_ = MODE::ITEM_SELECT;
+	itemType_ = ItemBase::ITEM_TYPE::NONE;
+	isClickObject_ = false;
+	moveDir_ = MOVE_DIR::NONE;
 }
 
 void EditController::Init(void)
@@ -182,9 +186,9 @@ IntVector3 EditController::NearObjectFrontPos(void)
 {
 	isClickObject_ = false;
 	IntVector3 mapPos = ERROR_POS;
-	VECTOR mousePosNear3D = { mousePos_.x, mousePos_.y, 0.0f };
+	VECTOR mousePosNear3D = { static_cast<float>(mousePos_.x),static_cast<float>(mousePos_.y), 0.0f };
 	VECTOR nearWorldPos = ConvScreenPosToWorldPos(mousePosNear3D);	//近いほうのワールド座標
-	VECTOR mousePosFar3D = { mousePos_.x, mousePos_.y, 1.0f };
+	VECTOR mousePosFar3D = { static_cast<float>(mousePos_.x),static_cast<float>(mousePos_.y), 1.0f };
 	VECTOR farWorldPos = ConvScreenPosToWorldPos(mousePosFar3D);	//遠いほうのワールド座標
 	VECTOR normalmousePos3D = VNorm(VSub(farWorldPos, nearWorldPos));
 	//遠いほうをマップの中に入れる
@@ -275,9 +279,9 @@ void EditController::MoveItem(void)
 	default:
 		break;
 	}
-	VECTOR mousePosNear3D = { mousePos_.x, mousePos_.y, 0.0f };
+	VECTOR mousePosNear3D = {static_cast<float>(mousePos_.x),static_cast<float>(mousePos_.y), 0.0f };
 	VECTOR nearWorldPos = ConvScreenPosToWorldPos(mousePosNear3D);	//近いほうのワールド座標
-	VECTOR mousePosFar3D = { mousePos_.x, mousePos_.y, 1.0f };
+	VECTOR mousePosFar3D = {static_cast<float>(mousePos_.x),static_cast<float>(mousePos_.y), 1.0f };
 	VECTOR farWorldPos = ConvScreenPosToWorldPos(mousePosFar3D);	//遠いほうのワールド座標
 	VECTOR normalmousePos3D = VNorm(VSub(farWorldPos, nearWorldPos));
 	VECTOR wallWorldPosNear = MapEditer::GetInstance().MapToWorldPos(nullWallMapPosNear);

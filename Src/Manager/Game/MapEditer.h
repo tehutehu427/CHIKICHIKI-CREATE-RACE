@@ -12,9 +12,9 @@ public:
 
 	struct STATUS
 	{
-		IntVector3 mapPos;
-		Quaternion rotate;
-		ItemBase::ITEM_TYPE type;
+		IntVector3 mapPos = {-1,-1,-1};
+		Quaternion rotate = {};
+		ItemBase::ITEM_TYPE type = ItemBase::ITEM_TYPE::NONE;
 	};
 	// 明示的にインステンスを生成する
 	static void CreateInstance(void);

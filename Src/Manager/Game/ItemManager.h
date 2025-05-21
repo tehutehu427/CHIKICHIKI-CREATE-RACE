@@ -47,34 +47,54 @@ public:
 	/// <param name="type">アイテムの種類</param>
 	void CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type, int playerNum);
 
+	/// <summary>
+	/// ダミーアイテムのステータスを取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのステータス</returns>
 	ItemBase::Status GetDummyItemStatus(int playerNum);
+	/// <summary>
+	/// ダミーアイテムのマップ座標を取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのマップ座標</returns>
 	IntVector3 GetDummyItemMapPos(int playerNum);
+	/// <summary>
+	/// ダミーアイテムのサイズを取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのサイズ</returns>
 	IntVector3 GetDummyObjectSize(int playerNum);
+	/// <summary>
+	/// ダミーアイテムのTransformを取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのTransform</returns>
 	Transform GetDummyItemTransform(int playerNum);
 	/// <summary>
 	/// ダミーアイテムを置き換える
 	/// </summary>
-	/// <param name="playerNum"></param>
-	/// <param name="type"></param>
-	/// <param name="mapPos"></param>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <param name="type">アイテムの種類</param>
+	/// <param name="mapPos">マップ座標</param>
 	void ResetDummyItem(int playerNum,ItemBase::ITEM_TYPE type,IntVector3 mapPos);
 
 	/// <summary>
 	/// ダミーアイテムの座標設定
 	/// </summary>
-	/// <param name="mapPos"></param>
-	/// <param name="playerNum"></param>
+	/// <param name="mapPos">マップ座標</param>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void DummyItemSetMapPos(IntVector3 mapPos, int playerNum);
 	/// <summary>
 	/// ダミーアイテムの回転を設定
 	/// </summary>
-	/// <param name="rot"></param>
-	/// <param name="playerNum"></param>
+	/// <param name="rot">回転量</param>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void DummyItemSetRotate(Quaternion rot, int playerNum);
 	/// <summary>
 	/// ダミーアイテムをアイテムに追加
 	/// </summary>
-	/// <param name="playerNum"></param>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void DummyItemAddItems(int playerNum);
 
 	// 明示的にインステンスを生成する
@@ -91,10 +111,24 @@ public:
 	/// <returns>指定したアイテム配列のポインタ。存在しなければ nullptr</returns>
 	const std::vector<std::shared_ptr<ItemBase>>* GetItems(const ItemBase::ITEM_TYPE _type)const;
 	
+	/// <summary>
+	/// itemからdummyItemに置き換える
+	/// </summary>
+	/// <param name="_type">置き換えるアイテムの種類</param>
+	/// <param name="_mapPos">マップ座標</param>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>成功ならtrue 失敗ならfalse</returns>
 	bool ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos , int playerNum);
-
+	/// <summary>
+	/// 特定のプレイヤーのダミーアイテムを削除
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void DeleteDummyItem(int playerNum);
-
+	/// <summary>
+	/// ダミーアイテムが存在するか
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>存在するtrue 存在しないfalse</returns>
 	bool IsDummyItem(int playerNum);
 protected:
 

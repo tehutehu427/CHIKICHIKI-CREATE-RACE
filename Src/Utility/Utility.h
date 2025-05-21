@@ -13,6 +13,13 @@ class Utility
 
 public:
 
+	enum class STRING_PLACE	//文字列を揃える位置
+	{
+		LEFT,		//左揃え
+		CENTER,		//中央揃え
+		RIGHT,		//右揃え
+	};
+
 	// ラジアン(rad)・度(deg)変換用
 	static constexpr float RAD2DEG = (180.0f / DX_PI_F);
 	static constexpr float DEG2RAD = (DX_PI_F / 180.0f);
@@ -139,11 +146,15 @@ public:
 	//待機時間
 	static bool IsTimeOver(float& totalTime, const float& waitTime);
 
-	//文字の描画
-	//_str : 表示する文字　int : そろえるライン　int : y軸座標　int : 色
-	static void DrawStringCenter(std::string _str, int centerLine, int posY, int color);	//中央ぞろえ
-	static void DrawStringLeft(std::string _str, int leftLiine, int posY, int color);	//左揃え
-	static void DrawStringRight(std::string _str, int rightLine, int posY, int color);	//右揃え
+	/// <summary>
+	/// 文字列を指定位置に揃えて描画
+	/// </summary>
+	/// <param name="_str">描画する文字列</param>
+	/// <param name="_line">揃えるX座標　左揃え：左の座標　中央揃え：中央の座標　右揃え：右の座標</param>
+	/// <param name="_posY">描画するY座標</param>
+	/// <param name="_color">描画する色コード</param>
+	/// <param name="_place">揃える位置</param>
+	static void DrawStringPlace(std::string _str, int _line, int _posY, int _color, STRING_PLACE _place);
 
 	/// <summary>
 	/// とある点からとある点までの移動ベクトルを返す
