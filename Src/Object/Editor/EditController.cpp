@@ -141,8 +141,21 @@ void EditController::ItemNotSelect(void)
 		{
 			itemType_ = MapEditer::GetInstance().GetItemType(mapPosObject_);
 			IntVector3 leaderPos = MapEditer::GetInstance().GetLeaderMapPos(mapPosObject_);
-			ItemManager::GetInstance().ItemsAddDummyItems(itemType_, leaderPos, playerNum_);
+			if (ItemManager::GetInstance().IsDummyItem(playerNum_))
+			{
+				MapEditer::STATUS status;
+				status.mapPos = mapPos_;
+				status.rotate = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
+				status.type = itemType_;
+				MapEditer::GetInstance().AddItem(status, ItemManager::GetInstance().GetDummyObjectSize(playerNum_));
+			}
+			ItemManager::GetInstance().DummyItemAddItems(playerNum_);
+			if (!ItemManager::GetInstance().ItemsAddDummyItems(itemType_, leaderPos, playerNum_))
+			{
+				return;
+			}
 			MapEditer::GetInstance().DeleteItem(itemType_, leaderPos, ItemManager::GetInstance().GetDummyObjectSize(playerNum_));
+			mapPos_ = leaderPos;
 			ChengeMode(MODE::MOVE_ROTATE);
 		}
 		else

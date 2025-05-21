@@ -69,7 +69,10 @@ void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE
 	//アイテム
 	std::shared_ptr<ItemBase> item;
 	item = CreateItem(type, mapPos, rot);
-
+	if (item == nullptr)
+	{
+		return;
+	}
 	//配列に追加
 	items_[type].emplace_back(std::move(item));
 }
@@ -90,6 +93,12 @@ void ItemManager::CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::I
 	std::shared_ptr<ItemBase> item;
 
 	item = CreateItem(type, mapPos, rot);
+
+	if (item == nullptr)
+	{
+		return;
+	}
+
 	//配列に追加
 	dummyItems_[playerNum] = item;
 }
@@ -125,14 +134,11 @@ IntVector3 ItemManager::GetDummyItemMapPos(int playerNum)
 IntVector3 ItemManager::GetDummyObjectSize(int playerNum)
 {
 	IntVector3 size;
-	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	if (dummyItems_.find(playerNum) == dummyItems_.end() || dummyItems_[playerNum] == nullptr)
 	{
-		size = dummyItems_[playerNum]->GetSize();
+		return { -1,-1,-1 };
 	}
-	else
-	{
-		size = {-1,-1,-1};
-	}
+	size = dummyItems_[playerNum]->GetSize();
 	return size;
 }
 
@@ -220,12 +226,12 @@ const std::vector<std::shared_ptr<ItemBase>>* ItemManager::GetItems(const ItemBa
 	return nullptr;
 }
 
-void ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos,int playerNum)
+bool ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos,int playerNum)
 {
 	auto it = items_.find(_type);
 	if (it == items_.end())
 	{
-		return;
+		return false;
 	}
 	for (auto& item : it->second)
 	{
@@ -244,17 +250,14 @@ void ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapP
 					{
 						continue;
 					}
-					if (dummyItems_.find(playerNum) != dummyItems_.end())
-					{
-						DummyItemAddItems(playerNum);
-					}
 					dummyItems_[playerNum] = CreateItem(_type, _mapPos, item->GetTransform().quaRot);
 					item = nullptr;
-					return;
+					return true;
 				}
 			}
 		}
 	}
+	return false;
 }
 
 void ItemManager::DeleteDummyItem(int playerNum)
@@ -267,6 +270,19 @@ void ItemManager::DeleteDummyItem(int playerNum)
 	{
 		return;
 	}
+}
+
+bool ItemManager::IsDummyItem(int playerNum)
+{
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return false;
+		}
+		return true;
+	}
+	return false;
 }
 
 ItemManager::ItemManager(void)

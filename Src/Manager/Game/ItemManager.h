@@ -91,10 +91,11 @@ public:
 	/// <returns>指定したアイテム配列のポインタ。存在しなければ nullptr</returns>
 	const std::vector<std::shared_ptr<ItemBase>>* GetItems(const ItemBase::ITEM_TYPE _type)const;
 	
-	void ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos , int playerNum);
+	bool ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos , int playerNum);
 
 	void DeleteDummyItem(int playerNum);
 
+	bool IsDummyItem(int playerNum);
 protected:
 
 private:
