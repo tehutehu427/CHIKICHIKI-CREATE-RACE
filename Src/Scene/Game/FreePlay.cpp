@@ -1,5 +1,6 @@
 #include "FreePlay.h"
 #include "../../Object/Editor/MapDataIO.h"
+#include "../../Object/Editor/Palette/Icon/FreePaletteIcon.h"
 
 FreePlay::FreePlay(void)
 {

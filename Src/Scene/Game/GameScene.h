@@ -82,6 +82,12 @@ protected:
 	/// <param name=""></param>
 	virtual void DebagDraw(void);	//描画
 
+	//エディットコントローラー
+	std::shared_ptr<EditController> editController_;
+
+	//パレット
+	std::unique_ptr<EditorPaletteBase> palette_;
+
 private:
 
 	//フェーズ管理
@@ -109,14 +115,8 @@ private:
 	void DrawEdit();
 	void DrawAction();
 
-	//プレイヤー
-	std::unique_ptr<EditorPaletteBase> palette_;
-
 	//グリッド
 	std::unique_ptr<Grid>grid_;
-
-	//エディットコントローラー
-	std::shared_ptr<EditController> editController_;
 
 	//スカイドーム
 	std::unique_ptr<SkyDome> sky_;

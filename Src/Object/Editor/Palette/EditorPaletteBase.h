@@ -47,11 +47,11 @@ public:
 	//画像描画に関する情報
 	struct ImgInfo
 	{
-		int num_;
-		float rate;
-		float angle;
-		Vector2 pos;
-		Vector2 size;
+		int num = 0;
+		float rate = 0.0f;
+		float angle= 0.0f;
+		Vector2 pos = {};
+		Vector2 size = {};
 	};
 
 	//コンストラクタ

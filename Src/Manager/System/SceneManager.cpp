@@ -239,7 +239,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	ResourceManager::GetInstance().Release();
 
 	// シーンを変更する
-	sceneId_ = sceneId;
+ 	sceneId_ = sceneId;
 
 	// 現在のシーンを解放
 	if (scene_ != nullptr)

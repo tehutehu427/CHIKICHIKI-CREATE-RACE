@@ -35,7 +35,7 @@ SelectScene::SelectScene(void)
 		}},
 		{SELECT_MENU::SETTINGS,[this]() 
 		{
-			scnMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+			scnMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 		}},
 		{SELECT_MENU::EXIT,[this]() 
 		{
@@ -233,11 +233,11 @@ void SelectScene::RotateUpdate()
 void SelectScene::DebugUpdate()
 {
 	// ÉVÅ[ÉìëJà⁄
-	InputManager& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_RETURN))
-	{
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
-	}
+	//InputManager& ins = InputManager::GetInstance();
+	//if (ins.IsTrgDown(KEY_INPUT_RETURN))
+	//{
+	//	SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
+	//}
 }
 
 void SelectScene::DebugDraw()

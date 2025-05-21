@@ -1,8 +1,8 @@
 #include <cassert>
-#include "../../../Manager/System/ResourceManager.h"
-#include "../../../Manager/System/InputManager.h"
-#include "../../../Manager/System/DateBank.h"
-#include "../../../Utility/Utility.h"
+#include "../../../../Manager/System/ResourceManager.h"
+#include "../../../../Manager/System/InputManager.h"
+#include "../../../../Manager/System/DateBank.h"
+#include "../../../../Utility/Utility.h"
 #include "PaletteIcon.h"
 
 PaletteIcon::PaletteIcon()
@@ -18,10 +18,10 @@ PaletteIcon::PaletteIcon()
 	imgIcons_ = -1;
 	mskPal_ = -1;
 	scrLimitLine_ = -1;
-	sleCnt_ = -1;
+	sleCnt_ = 0;
 	prePos_ = {};
 	selectType_ = ItemBase::ITEM_TYPE::NONE;
-	for (EditorPaletteBase::ImgInfo& i : icons_) { i = {}; }
+	icons_.clear();
 	for (EditorPaletteBase::ImgInfo& s : scrIcon_) { s = {}; }
 }
 
@@ -39,50 +39,6 @@ void PaletteIcon::Load()
 	mskPal_ = res.Load(ResourceManager::SRC::PALETTE_MASK).handleId_;
 }
 
-void PaletteIcon::Init()
-{
-	//初期化
-	for (int i = 0; i < ICON_NUM; i++) {
-		icons_[i].rate = ICON_RATE;
-		icons_[i].pos = {
-			ICON_POS_X + (i % COL) * INTERVAL_X,
-			ICON_POS_Y + (i / COL) * INTERVAL_Y };
-		icons_[i].size = { 
-			static_cast<int>(ICON_SIZE * icons_[i].rate),
-			static_cast<int>(ICON_SIZE * icons_[i].rate) };
-	}
-
-	for (int i = 0; i < SCROLL_ICON_NUM; i++) {
-		scrIcon_[i].rate = ICON_RATE;
-		scrIcon_[i].pos = { SCR_ICON_POS_X, SCR_ICON_POS_Y[i] };
-		scrIcon_[i].size = {
-			static_cast<int>(SCR_ICON_SIZE * scrIcon_[i].rate), 
-			static_cast<int>(SCR_ICON_SIZE * scrIcon_[i].rate) };
-	}
-
-	//下のほうのみ角度を変える
-	scrIcon_[1].angle = Utility::Deg2RadF(SCR_ICON_DEG);
-
-	//スクロール制限初期値
-	scrLimitLine_ = 0;
-
-	//タイプの割り当て
-	AssignType();
-
-	//マスクスクリーンの作成
-	int ret = CreateMaskScreen();
-	assert(ret != -1);
-
-	//マスク領域の描画
-	DrawMask(0, 0, mskPal_, DX_MASKTRANS_BLACK);
-
-	//マスク無効
-	SetUseMaskScreenFlag(false);
-
-	//状態変更
-	ChangeState(STATE::NONE);
-}
-
 void PaletteIcon::Update()
 {
 	stateUpdate_();
@@ -90,35 +46,16 @@ void PaletteIcon::Update()
 
 void PaletteIcon::Draw()
 {
+	//一定の状態の場合描画させない
 	if (state_ == STATE::NONE) { return; }
 
-	//アイコンの描画のみマスク処理
-	SetUseMaskScreenFlag(true);
-	for (EditorPaletteBase::ImgInfo& i : icons_)
-	{
-		DrawRotaGraph(
-			i.pos.x,
-			i.pos.y,
-			i.rate,
-			i.angle,
-			imgIcons_,
-			true,
-			false);
-	}
-	SetUseMaskScreenFlag(false);
+	//アイテムアイコンの描画
+	DrawItemIcon();
 
-	//スクロール用アイコン
-	for (EditorPaletteBase::ImgInfo& s : scrIcon_)
-	{
-		DrawRotaGraph(
-			s.pos.x,
-			s.pos.y,
-			s.rate,
-			s.angle,
-			imgScrIcon_,
-			true,
-			false);
-	}
+	//スクロールアイコンの描画
+	DrawScrollIcon();
+
+	DebagDraw();
 }
 
 void PaletteIcon::DebagDraw()
@@ -200,7 +137,8 @@ void PaletteIcon::UpdateScrollUp()
 
 	//全員に加える移動量が同じため
 	//1つだけ参照する
-	if (icons_[0].pos.y <= prePos_.y - INTERVAL_Y) {
+	if (icons_[0].pos.y <= prePos_.y - INTERVAL_Y) 
+	{
 		ChangeState(STATE::SELCT);
 	}
 }
@@ -214,7 +152,8 @@ void PaletteIcon::UpdateScrollDown()
 
 	//全員に加える移動量が同じため
 	//1つだけ参照する
-	if (icons_[0].pos.y >= prePos_.y + INTERVAL_Y) {
+	if (icons_[0].pos.y >= prePos_.y + INTERVAL_Y) 
+	{
 		ChangeState(STATE::SELCT);
 	}
 }
@@ -225,36 +164,52 @@ void PaletteIcon::UpdateSelect()
 
 	//クリックしたか調べる
 	if (ins.IsTrgDownMouseLeft()) {
+		//マウス位置を取得
+		Vector2 mousePos = ins.GetMousePos();
+
 		//特定の範囲をクリックしたか調べる
-		CheckClickPosition(ins.GetMousePos());
+		CheckScrollIcon(mousePos);	//スクロール
+
+		CheckItemIcon(mousePos);	//アイテムアイコン
 	}
 }
 
-void PaletteIcon::AssignType()
+void PaletteIcon::DrawScrollIcon()
 {
-	//種類を割り与える
-	for (int i = 0; i < static_cast<int>(ItemBase::ITEM_TYPE::MAX); i++)
+	//スクロール用アイコン
+	for (EditorPaletteBase::ImgInfo& s : scrIcon_)
 	{
-		//種類
-		ItemBase::ITEM_TYPE type = static_cast<ItemBase::ITEM_TYPE>(i);
-		
-		icons_[i].num_ = i + EXCLUSION;
-
-		//用意するアイコン分設定できたら
-		if (i - 1 == ICON_NUM)
-		{
-			break;	//for文を抜ける
-		}
+		DrawRotaGraph(
+			s.pos.x,
+			s.pos.y,
+			s.rate,
+			s.angle,
+			imgScrIcon_,
+			true,
+			false);
 	}
 }
 
-void PaletteIcon::CheckClickPosition(const Vector2 _mPos)
-{	
+void PaletteIcon::InitMaskScreen()
+{
+	//マスクスクリーンの作成
+	int ret = CreateMaskScreen();
+	assert(ret != -1);
+
+	//マスク領域の描画
+	DrawMask(0, 0, mskPal_, DX_MASKTRANS_BLACK);
+
+	//マスク無効
+	SetUseMaskScreenFlag(false);
+}
+
+void PaletteIcon::CheckScrollIcon(const Vector2 _mPos)
+{
 	Vector2 leftTop = {};		//画像左上
 	Vector2 rightBotm = {};		//画像右下
 
 	//アイテムパレットをスクロールする処理
-	for (int i = 0; i < SCROLL_ICON_NUM; i ++)
+	for (int i = 0; i < SCROLL_ICON_NUM; i++)
 	{
 		EditorPaletteBase::ImgInfo& s = scrIcon_[i];
 		leftTop = { s.pos.x - s.size.x / 2, s.pos.y - s.size.y / 2 };
@@ -275,33 +230,5 @@ void PaletteIcon::CheckClickPosition(const Vector2 _mPos)
 			ChangeState(STATE::SCR_UP);
 			scrLimitLine_++;
 		}
-	}
-
-	//選択タイプのパックアップ
-	ItemBase::ITEM_TYPE preType = selectType_;
-
-	//アイテムの種類の確認
-	for (int i = 0; i < ICON_NUM; i++)
-	{
-		EditorPaletteBase::ImgInfo& ic = icons_[i];
-		leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
-		rightBotm = { ic.pos.x + ic.size.x / 2, ic.pos.y + ic.size.y / 2 };
-		//位置の確認
-		if (Utility::IsPointInRect(_mPos, leftTop, rightBotm))
-		{
-			selectType_ = static_cast<ItemBase::ITEM_TYPE>(ic.num_);
-			sleCnt_ = i;
-		}
-	}
-
-	//選択したアイテムをクリックしたとき
-	EditorPaletteBase::ImgInfo& ic = icons_[sleCnt_];
-	leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
-	rightBotm = { ic.pos.x + ic.size.x / 2, ic.pos.y + ic.size.y / 2 };
-	if (Utility::IsPointInRect(_mPos, leftTop, rightBotm) &&
-		selectType_ == preType) //1クリックで生成するのを防ぐ
-	{
-		//生成開始する
-		isCreate_ = true;
 	}
 }

@@ -98,10 +98,8 @@ void GameScene::NormalUpdate(void)
 void GameScene::NormalDraw(void)
 {
 	//モデルを先に描画させて、UIや2D系の描画を後から描画する
-
 	//デバッグ描画
-	//DebagDraw();
-
+	DebagDraw();
 
 	//スカイドーム
 	sky_->Draw();
@@ -119,8 +117,6 @@ void GameScene::NormalDraw(void)
 	
 	//パレット
 	palette_->Draw();
-
-
 }
 
 void GameScene::ChangeNormal(void)
