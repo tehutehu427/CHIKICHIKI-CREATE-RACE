@@ -1,28 +1,28 @@
 #include"../Manager/System/Resource.h"
 #include"../Manager/System/ResourceManager.h"
-#include "Fan.h"
+#include "GoalFlag.h"
 
-Fan::Fan()
+GoalFlag::GoalFlag()
 {
 }
 
-Fan::~Fan()
+GoalFlag::~GoalFlag()
 {
 }
 
-void Fan::SetParam(void)
+void GoalFlag::SetParam(void)
 {
 	//モデルの基本設定
 	trans_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::FAN));
+		ResourceManager::SRC::GOAL_CUBE));
 
 	//ステータス初期化
 	size_ = MAP_SIZE;
-	status_.isBreak = true;
+	status_.isBreak = false;
 	status_.isGravity = false;
-	status_.effType = EFFECT_TYPE::INSTALLATION;
+	status_.effType = EFFECT_TYPE::FIXED;
 }
 
-void Fan::Update(void)
+void GoalFlag::Update(void)
 {
 }

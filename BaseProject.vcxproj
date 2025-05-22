@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Item\GoalFlag.cpp" />
     <ClCompile Include="Src\Object\Item\CannonShot.cpp" />
     <ClCompile Include="Src\Object\Item\Fan.cpp" />
     <ClCompile Include="Src\Object\Item\Spiky.cpp" />
@@ -67,8 +68,10 @@
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\Utility.cpp" />
+    <ClCompile Include="Src\Object\Item\StartFlag.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Item\GoalFlag.h" />
     <ClInclude Include="Src\Object\Item\CannonShot.h" />
     <ClInclude Include="Src\Object\Item\Fan.h" />
     <ClInclude Include="Src\Object\Item\Spiky.h" />
@@ -163,6 +166,7 @@
     <ClInclude Include="Src\Scene\SceneBase.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Utility\Utility.h" />
+    <ClInclude Include="Src\Object\Item\StartFlag.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

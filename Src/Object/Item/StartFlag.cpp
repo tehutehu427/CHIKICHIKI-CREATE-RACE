@@ -1,28 +1,28 @@
 #include"../Manager/System/Resource.h"
 #include"../Manager/System/ResourceManager.h"
-#include "Fan.h"
+#include "StartFlag.h"
 
-Fan::Fan()
+StartFlag::StartFlag()
 {
 }
 
-Fan::~Fan()
+StartFlag::~StartFlag()
 {
 }
 
-void Fan::SetParam(void)
+void StartFlag::SetParam(void)
 {
 	//モデルの基本設定
 	trans_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::FAN));
+		ResourceManager::SRC::START_CUBE));
 
 	//ステータス初期化
 	size_ = MAP_SIZE;
-	status_.isBreak = true;
+	status_.isBreak = false;
 	status_.isGravity = false;
-	status_.effType = EFFECT_TYPE::INSTALLATION;
+	status_.effType = EFFECT_TYPE::FIXED;
 }
 
-void Fan::Update(void)
+void StartFlag::Update(void)
 {
 }
