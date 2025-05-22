@@ -1,5 +1,6 @@
 #include <string>
 #include <DxLib.h>
+#include "../Common/FontRegistry.h"
 #include "../Application.h"
 #include "../Utility/Utility.h"
 #include "../Manager/System/SceneManager.h"
@@ -22,8 +23,7 @@ TitleScene::~TitleScene(void)
 void TitleScene::Load(void)
 {
 	//フォントの登録
-	resMng_.Load(ResourceManager::SRC::DOT_FONT);
-	buttnFontHandle_ = CreateFontToHandle("ベストテンDOT", FONT_SIZE, 0);
+	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 }
 
 void TitleScene::Init(void)

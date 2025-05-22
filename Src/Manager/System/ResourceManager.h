@@ -19,12 +19,6 @@ public:
 	{
 		NONE,
 
-		//ƒtƒHƒ“ƒg
-		DOT_FONT,
-		PENGS_FONT,
-		BOKUTACHI_FONT,
-		HANAZOME_FONT,
-
 		//‰æ‘œ
 		PALETTE,
 		SCROLL_ARROW_ICON,

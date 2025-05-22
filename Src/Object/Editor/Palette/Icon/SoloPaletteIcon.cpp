@@ -113,10 +113,13 @@ void SoloPaletteIcon::CheckItemIcon(const Vector2 _mPos)
 	leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
 	rightBotm = { ic.pos.x + ic.size.x / 2, ic.pos.y + ic.size.y / 2 };
 	if (Utility::IsPointInRect(_mPos, leftTop, rightBotm) &&
-		selectType_ == preType) //1クリックで生成するのを防ぐ
+		selectType_ == preType  &&
+		itemIconMap_[selectType_] > 0) //1クリックで生成するのを防ぐ
 	{
 		//生成開始する
 		isCreate_ = true;
+		//残量を減らす
+		itemIconMap_[selectType_]--;
 	}
 }
 

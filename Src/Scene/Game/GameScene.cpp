@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../../Application.h"
+#include "../Common/FontRegistry.h"
 #include "../../Utility/Utility.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/ResourceManager.h"
@@ -37,9 +38,8 @@ GameScene::~GameScene(void)
 
 void GameScene::Load(void)
 {
-	//フォントの登録
-	resMng_.Load(ResourceManager::SRC::DOT_FONT);
-	buttnFontHandle_ = CreateFontToHandle("ベストテンDOT", FONT_SIZE, 0);
+	//フォントの生成
+	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
 	//player_ = std::make_unique<Player>();
 	//player_->Load();

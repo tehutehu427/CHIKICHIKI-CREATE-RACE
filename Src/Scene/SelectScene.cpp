@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include <cmath>
 #include "../Application.h"
+#include "../Common/FontRegistry.h"
 #include "../Utility/Utility.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
@@ -68,8 +69,7 @@ SelectScene::~SelectScene(void)
 void SelectScene::Load(void)
 {
 	//フォントの登録
-	resMng_.Load(ResourceManager::SRC::DOT_FONT);
-	buttnFontHandle_ = CreateFontToHandle("ベストテンDOT", FONT_SIZE, 0);
+	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
 	//リソースの読み込み
 	imgArcs_ = resMng_.Load(ResourceManager::SRC::ARCS).handleIds_;

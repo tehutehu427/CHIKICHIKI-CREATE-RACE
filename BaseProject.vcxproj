@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Common\FontRegistry.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp" />
@@ -74,6 +75,7 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Common\FontRegistry.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.h" />
     <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h" />
