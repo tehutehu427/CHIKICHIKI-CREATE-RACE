@@ -94,7 +94,7 @@ void PaletteIcon::ChangeStateNone()
 	stateUpdate_ = std::bind(&PaletteIcon::UpdateNone, this);
 
 	//À•W‚ğ‰ŠúˆÊ’u‚Éw’è
-	for (int i = 0; i < ICON_NUM; i++) { icons_[i].pos = { ICON_POS_X + (i % COL) * INTERVAL_X,ICON_POS_Y + (i / COL) * INTERVAL_Y }; }
+	for (int i = 0; i < icons_.size(); i++) { icons_[i].pos = { ICON_POS_X + (i % COL) * INTERVAL_X,ICON_POS_Y + (i / COL) * INTERVAL_Y }; }
 	for (int i = 0; i < SCROLL_ICON_NUM; i++) { scrIcon_[i].pos = { SCR_ICON_POS_X, SCR_ICON_POS_Y[i] }; }
 	isCreate_ = false;
 	sleCnt_ = 0;
