@@ -1,9 +1,15 @@
-#include "../Object/Item/Floor.h"
-#include "../Object/Item/MoveHoriFloor.h"
-#include "../Object/Item/MoveVerFloor.h"
-#include "../Object/Item/Fence.h"
-#include "../Object/Item/Cannon.h"
-#include "../Object/Item/SlimeFloor.h"
+#include "../Object/Item/Fixed/StartFlag.h"
+#include "../Object/Item/Fixed/GoalFlag.h"
+#include "../Object/Item/Installation/Floor.h"
+#include "../Object/Item/Installation/MoveHoriFloor.h"
+#include "../Object/Item/Installation/MoveVerFloor.h"
+#include "../Object/Item/Installation/Fence.h"
+#include "../Object/Item/Installation/Cannon.h"
+#include "../Object/Item/Installation/SlimeFloor.h"
+#include "../Object/Item/Installation/Fan.h"
+#include "../Object/Item/Installation/Spiky.h"
+#include "../Object/Item/Destroyer/SmallBomb.h"
+#include "../Object/Item/Destroyer/BigBomb.h"
 #include "MapEditer.h"
 #include "ItemManager.h"
 
@@ -287,11 +293,11 @@ std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntV
 	std::shared_ptr<ItemBase> item = nullptr;
 	switch (type)
 	{
-	case ItemBase::ITEM_TYPE::NONE:
-		break;
 	case ItemBase::ITEM_TYPE::START:
+		item = std::make_shared<StartFlag>();
 		break;
 	case ItemBase::ITEM_TYPE::GOAL:
+		item = std::make_shared<GoalFlag>();
 		break;
 	case ItemBase::ITEM_TYPE::FLOOR:
 		item = std::make_shared<Floor>();
@@ -309,12 +315,13 @@ std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntV
 		item = std::make_shared<Cannon>();
 		break;
 	case ItemBase::ITEM_TYPE::SPIKY:
+		item = std::make_shared<Spiky>();
 		break;
 	case ItemBase::ITEM_TYPE::BOMB_SMALL:
+		item = std::make_shared<SmallBomb>();
 		break;
 	case ItemBase::ITEM_TYPE::BOMB_BIG:
-		break;
-	case ItemBase::ITEM_TYPE::MAX:
+		item = std::make_shared<BigBomb>();
 		break;
 	default:
 		break;

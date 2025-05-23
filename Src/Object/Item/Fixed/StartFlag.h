@@ -1,6 +1,6 @@
 #pragma once
-#include "ItemBase.h"
-class GoalFlag :
+#include "../ItemBase.h"
+class StartFlag :
     public ItemBase
 {
 public:
@@ -9,9 +9,9 @@ public:
 	static constexpr IntVector3 MAP_SIZE = { 3,3,3 };	//マップサイズ
 
 	//コンストラクタ
-	GoalFlag();
+	StartFlag();
 	//デストラクタ
-	~GoalFlag()override;
+	~StartFlag()override;
 
 	//個人設定
 	void SetParam(void)override;
@@ -19,6 +19,5 @@ public:
 	void Update(void)override;
 
 private:
-
 };
 
