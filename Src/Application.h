@@ -3,6 +3,7 @@
 #include <memory>
 
 class FpsControl;
+class FontRegistry;
 
 class Application
 {
@@ -63,6 +64,9 @@ private:
 
 	//FPS
 	std::unique_ptr<FpsControl> fps_;
+
+	//フォント登録
+	std::unique_ptr<FontRegistry> fontReg_;
 
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする

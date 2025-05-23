@@ -28,7 +28,7 @@ public:
 	//移動
 	//----------------------------------
 	//移動スピード
-	static constexpr float MOVE_SPEED = 10.0f;
+	static constexpr float MOVE_SPEED = 3.0f;
 
 	//ぶっ飛ぶスピード
 	static constexpr float FLY_AWAY_SPEED = 30.0f;
@@ -37,10 +37,13 @@ public:
 	//ジャンプ
 	//----------------------------------
 	//ジャンプ力
-	static constexpr float POW_JUMP = 30.0f;
+	static constexpr float POW_JUMP = 10.0f;
 
 	//ジャンプ加速の倍率
-	static constexpr float TIME_JUMP_IN = 4.0f;
+	static constexpr float TIME_JUMP_SCALE = 1.0f;
+
+	//ジャンプ時間
+	static constexpr float TIME_JUMP = 3.0f;
 	//----------------------------------
 	//パンチ
 	//----------------------------------
@@ -62,6 +65,11 @@ public:
 	//吹き飛び効果時間
 	static constexpr float PUNCHED_TIME = 0.2f;
 
+	//***********************************
+	//アニメーション関連
+	//***********************************
+	static constexpr float DEFAULT_SPD = 60.0f;
+
 
 	enum class FLOOR_COL
 	{
@@ -81,14 +89,13 @@ public:
 	// アニメーション種別
 	enum class ANIM_TYPE
 	{
-		IDLE,
-		RUN,
-		FAST_RUN,
-		JUMP,
-		WARP_PAUSE,
-		FLY,
-		FALLING,
-		VICTORY
+		NONE=0,
+		IDLE=1,
+		WALK=2,
+		DAMAGE = 8,
+		PUNCH = 11,
+		JUMP = 12,
+		LAND=13,
 	};
 
 	struct CUBE
@@ -99,6 +106,9 @@ public:
 		VECTOR upPos;
 		VECTOR downPos;
 	};
+
+	
+
 	//******************************************
 	// コンストラクタ
 	Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl);
@@ -156,9 +166,9 @@ public:
 	const int PlayerNum(void) { return playerNum_; }
 
 	//デバッグキューブのサイズ
-	static constexpr float CUBE_W = 100.0F;
-	static constexpr float CUBE_H = 100.0F;
-	static constexpr float CUBE_D = 100.0F;
+	static constexpr float CUBE_W = 200.0F;
+	static constexpr float CUBE_H = 10.0F;
+	static constexpr float CUBE_D = 200.0F;
 #endif // DEBUG_ON
 
 	
@@ -169,6 +179,9 @@ private:
 	//******************************************
 	// 移動後の座標
 	VECTOR movedPos_;
+
+	//移動座標
+	VECTOR moveDiff_;
 
 	//入力デバイス
 	PlayerInput::CNTL cntl_;
@@ -200,7 +213,7 @@ private:
 	float speed_;			// 移動スピード
 	VECTOR moveDir_;		// 移動方向
 	VECTOR movePow_;		// 移動量
-	VECTOR dir_;
+	VECTOR dir_;			//方向
 
 	//回転
 	Quaternion playerRotY_;
@@ -271,9 +284,6 @@ private:
 
 	//当たり判定
 	void Collision(void);
-
-	// 着地モーション終了
-	bool IsEndLanding(void);
 
 #ifdef DEBUG_ON
 	void CubeMove(void);

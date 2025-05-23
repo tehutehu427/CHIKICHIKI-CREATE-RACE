@@ -16,7 +16,8 @@ public:
 
 	//エイム
 	static constexpr float  AIM_RADIUS = 500.0f;	//狙う範囲半径
-	static constexpr float AIM_SPEED = 0.5f;		//対象に向く速度
+	static constexpr float AIM_TIME_TURRET = 1.0f;	//対象に向くまでの時間
+	static constexpr float AIM_TIME_BARREL = 1.0f;	//対象に向くまでの時間
 
 	//砲身
 	static constexpr VECTOR BARREL_LOCAL_POS = { 0.0f, 75.0f, -0.0f };	//砲身の相対座標
@@ -69,15 +70,6 @@ private:
 
 	//砲身の回転
 	void RotateBarrel(void);
-
-	/// <summary>
-	/// 回転
-	/// </summary>
-	/// <param name="_trans">回転させるモデル情報</param>
-	/// <param name="_toGoalAxis">終着点までの回転情報</param>
-	/// <param name="_speed">回転速度</param>
-	/// <param name="_relativePos">モデル自体の相対座標</param>
-	void Rotate(Transform& _trans, const VECTOR _toGoalAxis, const float _speed = 0.0f, const VECTOR _relativePos = { 0.0f,0.0f,0.0f })const;
 
 	//弾の生成
 	void CreateShot(void);

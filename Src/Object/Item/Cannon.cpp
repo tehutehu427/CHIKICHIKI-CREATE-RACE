@@ -64,9 +64,6 @@ void Cannon::Update(void)
 		//弾の生成
 		CreateShot();
 
-		//対象を狙う
-		Aim();
-
 		//砲台の回転
 		RotateTurret();
 
@@ -138,89 +135,32 @@ void Cannon::ChangeModelColor(COLOR_F _colorScale)
 
 }
 
-void Cannon::Aim(void)
-{
-	//対象への方向ベクトル取得
-	targetVec_ = Utility::GetMoveVec(barrelTrans_.pos, targetPos_);
-}
-
 void Cannon::RotateTurret(void)
 {
-	//砲台と標的のベクトルの差異
-	VECTOR turretVecDiff = VSub(targetVec_, trans_.pos);
-
-	//正規化
-	turretVecDiff = VNorm(turretVecDiff);
-
-	//横回転なので、Yベクトルは使わない
-	turretVecDiff.y = 0.0f;
-
-	//砲台の回転量
-	Quaternion turQuaRot = Quaternion::LookRotation(turretVecDiff);
-
-	//VECTOR変換
-	turretAddRot_ = turQuaRot.ToEuler();
+	//対象までの回転軸
+	turretAddRot_ = Utility::GetRotAxisToTarget(barrelTrans_.pos, targetPos_,Utility::AXIS_XZ);
 
 	//砲台回転
-	Rotate(trans_, turretAddRot_, AIM_SPEED);
+	Utility::LookAtTarget(trans_, turretAddRot_, AIM_TIME_TURRET);
 }
 
 void Cannon::RotateBarrel(void)
 {
-	//砲身と標的のベクトルの差異
-	VECTOR barrelVecDiff = VSub(targetVec_, barrelTrans_.pos);
-
-	//正規化
-	barrelVecDiff = VNorm(barrelVecDiff);
-
-	//縦回転なので、XZベクトルは使わない
-	barrelVecDiff.x = 0.0f;
-	barrelVecDiff.z = 0.0f;
-
-	//砲身の回転量
-	Quaternion barQuaRot = Quaternion::LookRotation(barrelVecDiff);
+	//対象までの回転軸
+	barrelAddRot_ = Utility::GetRotAxisToTarget(barrelTrans_.pos, targetPos_, Utility::AXIS_Y);
 
 	//距離で補正
-	float distance = Utility::Distance(targetVec_, barrelTrans_.pos);
-	barQuaRot = barQuaRot.AngleAxis(distance, Utility::AXIS_X);
-
-	//VECTOR変換
-	barrelAddRot_ = barQuaRot.ToEuler();
+	float distance = Utility::Distance(Utility::GetMoveVec(barrelTrans_.pos, targetPos_), barrelTrans_.pos);
+	barrelAddRot_ = Quaternion::Euler(barrelAddRot_).AngleAxis(distance, Utility::AXIS_X).ToEuler();
 
 	//砲身回転
-	Rotate(barrelTrans_, VAdd(barrelAddRot_, turretAddRot_), AIM_SPEED);
-}
-
-void Cannon::Rotate(Transform& _trans, const VECTOR _toGoalAxis, const float _speed, const VECTOR _relativePos)const
-{
-	//回転
-	Quaternion rot = Quaternion::Identity();
-
-	//速度補間
-	VECTOR movePow = _toGoalAxis;
-
-	//回転を加える
-	rot = rot.Mult(Quaternion::Euler(movePow));
-
-	rot.Normalize();
-
-	//回転用に座標を相対座標から0,0,0にそろえる
-	_trans.pos = VSub(_trans.pos,_trans.quaRot.PosAxis(_relativePos));
-	
-	//反映
-	_trans.quaRot = rot;
-	
-	//座標を元に戻す
-	_trans.pos = VAdd(_trans.pos, _trans.quaRot.PosAxis(_relativePos));
-
-	//基本情報更新
-	_trans.Update();
+	Utility::LookAtTarget(barrelTrans_, VAdd(barrelAddRot_, turretAddRot_), AIM_TIME_BARREL);
 }
 
 void Cannon::CreateShot(void)
 {
 	//デルタタイム取得
-	auto delta = SceneManager::GetInstance().GetDeltaTime();
+	float delta = SceneManager::GetInstance().GetDeltaTime();
 
 	//生成間隔カウント
 	shotCreateCnt_ += delta;

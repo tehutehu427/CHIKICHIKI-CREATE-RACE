@@ -27,6 +27,7 @@ std::unique_ptr<GravityManager>& GravityManager::GetInstance(void)
 
 void GravityManager::Init(void)
 {
+	slerpPow_ = 0.0f;
 }
 
 void GravityManager::CalcGravity(VECTOR& _dir, VECTOR& _pow, float _per)
@@ -41,6 +42,7 @@ void GravityManager::CalcGravity(VECTOR& _dir, VECTOR& _pow, float _per)
 	VECTOR gravity = VScale(dirGravity, gravityPow);
 	_pow = VAdd(_pow, gravity);
 
+	Calculate();
 
 	//// 内積
 	//float dot = VDot(dirGravity, _pow);
@@ -56,8 +58,14 @@ void GravityManager::Calculate(void)
 	//重力方向
 	VECTOR dirGravity = Utility::DIR_D;
 	//重力の逆方向
-	VECTOR dirUpGravity = VScale(dirGravity, Utility::REVERSE_SCALE);
+	VECTOR dirUpGravity = Utility::ReverseValue(dirGravity);
 
+	// 現在の上方向(つまり、重力の反対方向)
+	VECTOR up = trans_.GetUp();
 
+	// ２つのベクトル間の回転量(差)を求める
+	Quaternion rot = Quaternion::FromToRotation(up, dirUpGravity);
 
+	// 求めた回転量で、現在の重力制御を回転させる(差が埋まる)
+	trans_.quaRot = Quaternion::Slerp(trans_.quaRot, rot.Mult(trans_.quaRot), slerpPow_);
 }

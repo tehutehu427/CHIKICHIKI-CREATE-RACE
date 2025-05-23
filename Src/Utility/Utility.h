@@ -8,6 +8,7 @@
 #include "../Common/Vector2.h"
 #include "../Common/IntVector3.h"
 #include "../Common/Quaternion.h"
+#include "../Object/Common/Transform.h"
 class Utility
 {
 
@@ -31,6 +32,8 @@ public:
 	static constexpr VECTOR AXIS_X = { 1.0f, 0.0f, 0.0f };
 	static constexpr VECTOR AXIS_Y = { 0.0f, 1.0f, 0.0f };
 	static constexpr VECTOR AXIS_Z = { 0.0f, 0.0f, 1.0f };
+	static constexpr VECTOR AXIS_XZ = { 1.0f, 0.0f, 1.0f };
+	static constexpr VECTOR AXIS_XYZ = { 1.0f, 1.0f, 1.0f };
 
 	// 方向
 	static constexpr VECTOR DIR_F = { 0.0f, 0.0f, 1.0f };
@@ -166,12 +169,30 @@ public:
 	static const VECTOR GetMoveVec(const VECTOR _start, const VECTOR _goal, const float _speed = 1.0f);
 
 	/// <summary>
+	/// 対象に向かう回転軸
+	/// </summary>
+	/// <param name="_pos">自身の座標</param>
+	/// <param name="_targetPos">対象の座標</param>
+	/// <param name="_needAxis">必要な回転軸</param>
+	/// <returns>回転軸</returns>
+	static const VECTOR GetRotAxisToTarget(const VECTOR _pos, const VECTOR _targetPos, const VECTOR _needAxis = AXIS_XYZ);
+
+	/// <summary>
+	/// 対象に向く
+	/// </summary>
+	/// <param name="_trans">回転させるモデルの情報</param>
+	/// <param name="_toGoalAxis">対象までの回転軸</param>
+	/// <param name="_time">補正完了までの全体時間(指定がないなら補正なし)</param>
+	/// <param name="_relativePos">モデル自体の相対座標</param>
+	static void LookAtTarget(Transform& _trans, const VECTOR _toTargetAxis, const float _time = 0.0f, const VECTOR _relativePos = VECTOR_ZERO);
+
+	/// <summary>
 	/// 特定の範囲内に座標が含まれてるか調べる
 	/// </summary>
-	/// <param name="pos"></param>調べたい座標
-	/// <param name="leftTop"></param>範囲左上
-	/// <param name="rightBotm"></param>範囲右下
-	/// <returns></returns>判定結果を返す
+	/// <param name="pos">調べたい座標</param>
+	/// <param name="leftTop">範囲左上</param>
+	/// <param name="rightBotm">範囲右下</param>
+	/// <returns>判定結果を返す</returns>
 	static bool IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vector2 rightBotm);
 
 	static VECTOR GetWorldPosAtScreen(const Vector2 screenPos, const float distance, const VECTOR cameraPos, const VECTOR cameraDir);
@@ -188,5 +209,13 @@ public:
 	static  int ReverseValue(const int _i);
 	static float ReverseValue(const float _f);
 	static IntVector3 ReverseValue(const IntVector3 _iv);
+
+	/// <summary>
+	/// 範囲外の値を指定した範囲に収める
+	/// </summary>
+	/// <param name="index"></param>収めたい値
+	/// <param name="max"></param>範囲の最大値
+	/// <returns></returns>0からN-1の範囲に補正した値
+	static int WrapIndex(int index, int max);
 };
 

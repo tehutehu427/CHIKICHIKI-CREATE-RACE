@@ -4,6 +4,7 @@
 #include "Manager/System/ResourceManager.h"
 #include "Manager/System/SceneManager.h"
 #include "FpsControl/FpsControl.h"
+#include "Common/FontRegistry.h"
 #include "Application.h"
 
 Application* Application::instance_ = nullptr;
@@ -66,6 +67,10 @@ void Application::Init(void)
 	// FPS‰Šú‰»
 	fps_ = std::make_unique<FpsControl>();
 	fps_->Init();
+
+	//ƒtƒHƒ“ƒg“o˜^
+	fontReg_ = std::make_unique<FontRegistry>();
+	fontReg_->Init();
 }
 
 void Application::Run(void)
@@ -90,13 +95,13 @@ void Application::Run(void)
 		fps_->CalcFrameRate();
 
 		ScreenFlip();
-
 	}
 
 }
 
 void Application::Destroy(void)
 {
+	fontReg_->Destroy();
 
 	InputManager::GetInstance().Destroy();
 	ResourceManager::GetInstance().Destroy();

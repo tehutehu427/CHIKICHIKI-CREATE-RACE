@@ -28,13 +28,6 @@ public:
 		MAX
 	};
 	
-	// 状態ごとの構造体（更新と描画を分けて保持）
-	struct StateFuncs
-	{
-		std::function<void()> updateFunc;
-		std::function<void()> drawFunc;
-	};
-
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -66,6 +59,13 @@ public:
 	void Draw();
 
 private:
+	
+	// 状態ごとの構造体（更新と描画を分けて保持）
+	struct StateFuncs
+	{
+		std::function<void()> updateFunc;
+		std::function<void()> drawFunc;
+	};
 
 	//入出力確認用ステップ
 	int checkStep_;

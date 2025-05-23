@@ -21,7 +21,11 @@ public:
 		NONE,
 		TITLE,
 		SELECT,
-		GAME
+		GAME,
+		SOLO,
+		MULTI,
+		FREE,
+		MAX
 	};
 	
 	// インスタンスの生成

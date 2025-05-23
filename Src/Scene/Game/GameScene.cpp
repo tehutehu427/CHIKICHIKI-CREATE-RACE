@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../../Application.h"
+#include "../Common/FontRegistry.h"
 #include "../../Utility/Utility.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/ResourceManager.h"
@@ -14,7 +15,6 @@
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Grid.h"
 #include "../../Object/SkyDome/SkyDome.h"
-#include "../../Object/Editor/MapDataIO.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -26,7 +26,6 @@ GameScene::GameScene(void)
 
 	sky_ = nullptr;
 	palette_ = nullptr;
-	mapIO_ = nullptr;
 	phaseChanges_.emplace(PHASE::EDIT_PHASE, std::bind(&GameScene::ChangePhaseEdit, this));
 	phaseChanges_.emplace(PHASE::ACTION_PHASE, std::bind(&GameScene::ChangePhaseAction, this));
 }
@@ -39,9 +38,8 @@ GameScene::~GameScene(void)
 
 void GameScene::Load(void)
 {
-	//フォントの登録
-	resMng_.Load(ResourceManager::SRC::DOT_FONT);
-	buttnFontHandle_ = CreateFontToHandle("ベストテンDOT", FONT_SIZE, 0);
+	//フォントの生成
+	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
 	//player_ = std::make_unique<Player>();
 	//player_->Load();
@@ -58,9 +56,6 @@ void GameScene::Load(void)
 
 	sky_ = std::make_unique<SkyDome>();
 	sky_->Load();
-
-	mapIO_ = std::make_unique<MapDataIO>();
-	mapIO_->Load();
 }
 
 void GameScene::Init(void)
@@ -68,18 +63,17 @@ void GameScene::Init(void)
 	palette_->Init();
 	editController_->Init();
 	sky_->Init();
-	mapIO_->Init();
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
-	PlayerManager::CreateInstance(4);
+	PlayerManager::CreateInstance(1);
 
 	//アイテム生成
-	ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
-	ItemManager::GetInstance().AddItem({ 3,2,3 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
-	ItemManager::GetInstance().AddItem({ 8,2,8 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
-	ItemManager::GetInstance().AddItem({ 10,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
-	ItemManager::GetInstance().AddItem({ 15,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
+	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
+	//ItemManager::GetInstance().AddItem({ 3,2,3 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
+	//ItemManager::GetInstance().AddItem({ 8,2,8 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
+	//ItemManager::GetInstance().AddItem({ 10,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
+	//ItemManager::GetInstance().AddItem({ 15,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
 	ChangePhase(PHASE::EDIT_PHASE);
 }
 
@@ -104,10 +98,8 @@ void GameScene::NormalUpdate(void)
 void GameScene::NormalDraw(void)
 {
 	//モデルを先に描画させて、UIや2D系の描画を後から描画する
-
 	//デバッグ描画
-	//DebagDraw();
-
+	DebagDraw();
 
 	//スカイドーム
 	sky_->Draw();
@@ -120,6 +112,11 @@ void GameScene::NormalDraw(void)
 	//アイテム
 	ItemManager::GetInstance().Draw();
 
+	//エディットコントローラー
+	editController_->Draw();
+	
+	//パレット
+	palette_->Draw();
 }
 
 void GameScene::ChangeNormal(void)
@@ -177,8 +174,8 @@ void GameScene::ChangePhaseEdit(void)
 	VECTOR pos;
 	IntVector3 mPos = MapEditer::MAP_SIZE;
 	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
-	//pos = { 0.0f,250.0f,-500.0f };
-	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	pos = { 0.0f,250.0f,-500.0f };
+	//SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
 }
 
 void GameScene::ChangePhaseAction(void)
@@ -201,7 +198,6 @@ void GameScene::UpdateEdit(void)
 	//パレット
 	palette_->Update();
 	editController_->Update();
-	mapIO_->Update();
 }
 
 void GameScene::UpdateAction(void)
@@ -217,8 +213,6 @@ void GameScene::DrawEdit(void)
 	//パレット
 	palette_->Draw();
 
-	//データの入出力
-	mapIO_->Draw();
 
 	//エディットコントローラー
 	editController_->Draw();
