@@ -64,7 +64,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	status.mapPos = mapPos_;
 	status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
 	status.type = itemType_;
-	MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyObjectSize(playerNum_));
+	MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_));
 	itemMIns.DummyItemAddItems(playerNum_);
 	itemMIns.CreateDummyItem({}, {}, itemType, playerNum_);
 	IntVector3 mapPos = NearObjectPos();
@@ -144,7 +144,7 @@ void EditController::ItemNotSelect(void)
 			status.mapPos = mapPos_;
 			status.rotate = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
 			status.type = itemType_;
-			MapEditer::GetInstance().AddItem(status,ItemManager::GetInstance().GetDummyObjectSize(playerNum_));
+			MapEditer::GetInstance().AddItem(status,ItemManager::GetInstance().GetDummyItemSize(playerNum_));
 			itemType_ = ItemBase::ITEM_TYPE::NONE;
 			ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 			//ëIëâèú
@@ -176,7 +176,7 @@ IntVector3 EditController::NearObjectPos(void)
 			return mapPos;
 		}
 	}
-	auto size = ItemManager::GetInstance().GetDummyObjectSize(playerNum_);
+	auto size = ItemManager::GetInstance().GetDummyItemSize(playerNum_);
 	//ê¸å`ï‚ä‘Ç≈ìñÇΩÇËîªíËÇÇ∑ÇÈ
 	for (float t = 0.0f; t < 1.0f; t += 0.01f)
 	{
@@ -259,7 +259,7 @@ void EditController::MoveItem(void)
 	//âìÇ¢ÇŸÇ§Çï«Ç…ìñÇΩÇÈíÜÇ…ì¸ÇÍÇÈ
 	farWorldPos = VSub(farWorldPos, normalmousePos3D);
 	auto& itemIns = ItemManager::GetInstance();
-	auto size = itemIns.GetDummyObjectSize(playerNum_);
+	auto size = itemIns.GetDummyItemSize(playerNum_);
 	switch (moveDir_)
 	{
 	case EditController::MOVE_DIR::NONE:
