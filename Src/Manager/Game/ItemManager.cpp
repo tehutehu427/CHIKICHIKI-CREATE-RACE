@@ -105,9 +105,13 @@ void ItemManager::CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::I
 
 ItemBase::Status ItemManager::GetDummyItemStatus(int playerNum)
 {
-	ItemBase::Status status;
+	ItemBase::Status status{};
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return status;
+		}
 		status = dummyItems_[playerNum]->GetStatus();
 	}
 	else
@@ -147,6 +151,10 @@ Transform ItemManager::GetDummyItemTransform(int playerNum)
 	Transform transform;
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return Transform();
+		}
 		transform = dummyItems_[playerNum]->GetTransform();
 	}
 	else
@@ -196,6 +204,10 @@ void ItemManager::DummyItemAddItems(int playerNum)
 {
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return;
+		}
 		AddItem(dummyItems_[playerNum]->GetInitMapPos(), dummyItems_[playerNum]->GetTransform().quaRot, dummyItems_[playerNum]->GetStatus().itemType);
 		dummyItems_.erase(playerNum);
 	}
