@@ -327,17 +327,27 @@ void ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapP
 			{
 				for (int k = 0; k < item->GetSize().z; k++)
 				{
-					//
+					//初期位置からサイズ分
 					IntVector3 mapPos = { item->GetInitMapPos().x + i,item->GetInitMapPos().y + j,item->GetInitMapPos().z + k };
+					
+					//重なっていない
 					if (mapPos != _mapPos)
 					{
+						//飛ばす
 						continue;
 					}
+
+					//アイテムが存在するか
 					if (dummyItems_.find(playerNum) != dummyItems_.end())
 					{
+						//ダミーからアイテムに移行
 						DummyItemAddItems(playerNum);
 					}
+
+					//新たに生成
 					dummyItems_[playerNum] = CreateItem(_type, _mapPos, item->GetTransform().quaRot);
+					
+					//元情報を削除
 					item = nullptr;
 					return;
 				}
@@ -348,8 +358,10 @@ void ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapP
 
 void ItemManager::DeleteDummyItem(int playerNum)
 {
+	//アイテムが存在するか
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
+		//削除
 		dummyItems_[playerNum] = nullptr;
 	}
 	else
@@ -378,7 +390,10 @@ ItemManager::~ItemManager(void)
 
 std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntVector3 mapPos, Quaternion rot)
 {
+	//アイテム
 	std::shared_ptr<ItemBase> item = nullptr;
+	
+	//種類ごとの生成
 	switch (type)
 	{
 	case ItemBase::ITEM_TYPE::START:
@@ -414,10 +429,15 @@ std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntV
 	default:
 		break;
 	}
+
+	//アイテムが生成できていない
 	if (item == nullptr)
 	{
+		//空アイテムを返す
 		return nullptr;
 	}
+
+	//初期化
 	item->Init(mapPos, rot, type);
 	return item;
 }
