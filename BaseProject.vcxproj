@@ -26,24 +26,27 @@
     <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\FreePalette.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\SoloChallengePalette.cpp" />
-    <ClCompile Include="Src\Object\Item\CannonShot.cpp" />
-    <ClCompile Include="Src\Object\Item\Fan.cpp" />
-    <ClCompile Include="Src\Object\Item\Spiky.cpp" />
+    <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp" />
+    <ClCompile Include="Src\Object\Item\Destroyer\SmallBomb.cpp" />
+    <ClCompile Include="Src\Object\Item\Fixed\GoalFlag.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\CannonShot.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Fan.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Spiky.cpp" />
     <ClCompile Include="Src\Scene\SelectScene.cpp" />
     <ClCompile Include="Src\Scene\Game\MultiParty.cpp" />
     <ClCompile Include="Src\Scene\Game\SoloChallenge.cpp" />
     <ClCompile Include="Src\Scene\Game\FreePlay.cpp" />
-    <ClCompile Include="Src\Object\Item\SlimeFloor.cpp" />
-    <ClCompile Include="Src\Object\Item\Cannon.cpp" />
-    <ClCompile Include="Src\Object\Item\Fence.cpp" />
-    <ClCompile Include="Src\Object\Item\MoveVerFloor.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\SlimeFloor.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Cannon.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Fence.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\MoveVerFloor.cpp" />
     <ClCompile Include="Src\Manager\Game\PlayerManager.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\PaletteIcon.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\EditorPaletteBase.cpp" />
     <ClCompile Include="Src\Manager\System\DateBank.cpp" />
-    <ClCompile Include="Src\Object\Item\MoveHoriFloor.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\MoveHoriFloor.cpp" />
     <ClCompile Include="Src\Object\Editor\MapDataIO.cpp" />
-    <ClCompile Include="Src\Object\Item\Floor.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Floor.cpp" />
     <ClCompile Include="Src\Object\Grid.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
     <ClCompile Include="Src\Manager\Game\ItemManager.cpp" />
@@ -74,6 +77,7 @@
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\Utility.cpp" />
+    <ClCompile Include="Src\Object\Item\Fixed\StartFlag.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\System\GameClear.h" />
@@ -83,20 +87,23 @@
     <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h" />
     <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h" />
     <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h" />
-    <ClInclude Include="Src\Object\Item\CannonShot.h" />
-    <ClInclude Include="Src\Object\Item\Fan.h" />
-    <ClInclude Include="Src\Object\Item\Spiky.h" />
+    <ClInclude Include="Src\Object\Item\Destroyer\BigBomb.h" />
+    <ClInclude Include="Src\Object\Item\Destroyer\SmallBomb.h" />
+    <ClInclude Include="Src\Object\Item\Fixed\GoalFlag.h" />
+    <ClInclude Include="Src\Object\Item\Installation\CannonShot.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Fan.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Spiky.h" />
     <ClInclude Include="Src\Scene\SelectScene.h" />
     <ClInclude Include="Src\Scene\Game\MultiParty.h" />
     <ClInclude Include="Src\Scene\Game\SoloChallenge.h" />
     <ClInclude Include="Src\Scene\Game\FreePlay.h" />
-    <ClInclude Include="Src\Object\Item\SlimeFloor.h" />
-    <ClInclude Include="Src\Object\Item\Cannon.h" />
-    <ClInclude Include="Src\Object\Item\Fence.h" />
-    <ClInclude Include="Src\Object\Item\MoveVerFloor.h" />
+    <ClInclude Include="Src\Object\Item\Installation\SlimeFloor.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Cannon.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Fence.h" />
+    <ClInclude Include="Src\Object\Item\Installation\MoveVerFloor.h" />
     <ClInclude Include="Src\Manager\Game\PlayerManager.h" />
-    <ClInclude Include="Src\Object\Item\MoveHoriFloor.h" />
-    <ClInclude Include="Src\Object\Editor\Palette\Icon\PaletteIcon.h" />
+    <ClInclude Include="Src\Object\Item\Installation\MoveHoriFloor.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\PaletteIcon.h" />
     <ClInclude Include="Src\Object\Editor\Palette\EditorPaletteBase.h" />
     <ClInclude Include="Src\Manager\System\DateBank.h" />
     <ClInclude Include="Src\Object\Editor\MapDataIO.h" />
@@ -146,7 +153,7 @@
     <ClInclude Include="Src\Lib\nlohmann\ordered_map.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
-    <ClInclude Include="Src\Object\Item\Floor.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Floor.h" />
     <ClInclude Include="Src\Object\Grid.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
     <ClInclude Include="Src\Manager\Game\ItemManager.h" />
@@ -177,6 +184,7 @@
     <ClInclude Include="Src\Scene\SceneBase.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Utility\Utility.h" />
+    <ClInclude Include="Src\Object\Item\Fixed\StartFlag.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

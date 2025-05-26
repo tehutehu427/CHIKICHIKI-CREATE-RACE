@@ -1,17 +1,17 @@
 #pragma once
-#include "ItemBase.h"
-class Fan :
+#include "../ItemBase.h"
+class StartFlag :
     public ItemBase
 {
 public:
 
 	//マップ
-	static constexpr IntVector3 MAP_SIZE = { 4,3,4 };	//マップサイズ
+	static constexpr IntVector3 MAP_SIZE = { 3,3,3 };	//マップサイズ
 
 	//コンストラクタ
-	Fan();
+	StartFlag();
 	//デストラクタ
-	~Fan()override;
+	~StartFlag()override;
 
 	//個人設定
 	void SetParam(void)override;

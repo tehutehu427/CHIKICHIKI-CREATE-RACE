@@ -25,6 +25,8 @@ PlayerInput::PlayerInput(InputManager::JOYPAD_NO _padNum, CNTL _cntl):padNum_(_p
 	leftStickX_ = -1;
 	leftStickY_ = -1;
 	stickDeg_ = -1;
+	moveDeg_ = 0.0f;
+	moveDir_ = Utility::VECTOR_ZERO;
 }
 
 void PlayerInput::InputKeyBoard(void)
@@ -89,7 +91,8 @@ void PlayerInput::InputPad(void)
 	//スティックの角度によって移動方向を決める
 	moveDeg_ = stickDeg_;
 	VECTOR stickDir = { leftStickX_ ,0.0f,-leftStickY_ };
-	moveDir_ = { leftStickX_ ,0.0f,leftStickX_ };
+	//moveDir_ = { leftStickX_ ,0.0f,leftStickX_ };
+	moveDir_ = VNorm(stickDir);
 
 	if (ins.IsPadBtnTrgDown(padNum_, PUNCH_BTN)) { actCntl_ = ACT_CNTL::PUNCH; }
 	if(ins.IsPadBtnTrgDown(padNum_, JUMP_BTN)){ actCntl_ = ACT_CNTL::JUMP; }

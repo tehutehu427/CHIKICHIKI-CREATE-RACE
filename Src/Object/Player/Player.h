@@ -5,7 +5,6 @@
 #include "../Common/AnimationController.h"
 #include "../Common/Capsule.h"
 #include "../../Manager/System/Camera.h"
-#include"../Item/MoveHoriFloor.h"
 #include"./Process/PlayerInput.h"
 #include "../ObjectBase.h"
 
@@ -24,20 +23,20 @@ public:
 	//プレイヤー情報
 	static constexpr VECTOR CAPSULE_TOP = { 0.0f, 110.0f, 0.0f };
 	static constexpr VECTOR CAPSULE_DOWN = { 0.0f, 0.0f, 0.0f };
-	static constexpr float RADIUS = 20.0f;
+	static constexpr float RADIUS = 25.0f;
 	//移動
 	//----------------------------------
 	//移動スピード
 	static constexpr float MOVE_SPEED = 3.0f;
 
 	//ぶっ飛ぶスピード
-	static constexpr float FLY_AWAY_SPEED = 30.0f;
+	static constexpr float FLY_AWAY_SPEED = 20.0f;
 
 	//----------------------------------
 	//ジャンプ
 	//----------------------------------
 	//ジャンプ力
-	static constexpr float POW_JUMP = 10.0f;
+	static constexpr float POW_JUMP = 15.0f;
 
 	//ジャンプ加速の倍率
 	static constexpr float TIME_JUMP_SCALE = 1.0f;
@@ -48,20 +47,17 @@ public:
 	//パンチ
 	//----------------------------------
 	//パンチ有効時間
-	static constexpr float PUNCH_TIME_MAX = 1.5f;
-
+	static constexpr float PUNCH_TIME_MAX = 0.5f;
 	//パンチクールタイム
 	static constexpr float PUNCH_COOL_TIME = 0.5f;
-
 	// 回転完了までの時間
-	static constexpr float TIME_ROT = 1.0f;
-
-	//パンチのローカル座標
-	static constexpr VECTOR PUNCH_LOCAL_POS = { 0.0f,50.0f,40.0f };
-
+	static constexpr float TIME_ROT = 0.1f;
+	//パンチの当たり判定時間中フラグを始めるアニメーションステップ
+	static constexpr float PUNCH_HIT_START_ANIM_STEP = 22.0f;
+	//パンチの当たり判定時間中フラグを終えるアニメーションステップ
+	static constexpr float PUNCH_HIT_END_ANIM_STEP = 35.0f;
 	//パンチの範囲
-	static constexpr float PUNCH_RADIUS = 40.0f;
-
+	static constexpr float PUNCH_RADIUS = 20.0f;
 	//吹き飛び効果時間
 	static constexpr float PUNCHED_TIME = 0.2f;
 
@@ -93,9 +89,9 @@ public:
 		IDLE=1,
 		WALK=2,
 		DAMAGE = 8,
-		PUNCH = 11,
-		JUMP = 12,
-		LAND=13,
+		PUNCH = 12,
+		JUMP = 13,
+		LAND=14,
 	};
 
 	struct CUBE
@@ -136,7 +132,7 @@ public:
 	const std::weak_ptr<PlayerInput> GetInput(void)const { return input_; }
 
 	//パンチ中ゲッタ
-	const bool GetIsPunch(void) { return isPunch_; }
+	const bool GetIsPunch(void) { return isPunchHitTime_; }
 
 	//パンチ座標
 	const VECTOR GetPunchPos(void) { return punchPos_; }
@@ -231,6 +227,7 @@ private:
 	//パンチ
 	//-----------------------
 	bool isPunch_;			//パンチ中フラグ
+	bool isPunchHitTime_;		//パンチ当たり判定の時間フラグ
 	float punchCnt_;				//パンチカウント
 	float punchCoolCnt_;			//パンチクールタイム
 	VECTOR punchPos_;			//攻撃座標

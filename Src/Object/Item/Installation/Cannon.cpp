@@ -1,8 +1,9 @@
-#include "../../Manager/System/ResourceManager.h"
-#include "../../Manager/System/InputManager.h"
-#include "../../Manager/System/SceneManager.h"
-#include "../../Utility/Utility.h"
-#include "../../FpsControl/FpsControl.h"
+#include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/InputManager.h"
+#include "../Manager/System/SceneManager.h"
+#include "../Manager/Game/ItemManager.h"
+#include "../Utility/Utility.h"
+#include "../FpsControl/FpsControl.h"
 #include "CannonShot.h"
 #include "Cannon.h"
 
@@ -47,6 +48,8 @@ void Cannon::SetParam(void)
 
 void Cannon::Update(void)
 {
+#ifdef _DEBUG
+
 	auto& ins = InputManager::GetInstance();
 	if (ins.IsNew(KEY_INPUT_UP))targetPos_.z++;
 	if (ins.IsNew(KEY_INPUT_RIGHT))targetPos_.x++;
@@ -54,6 +57,8 @@ void Cannon::Update(void)
 	if (ins.IsNew(KEY_INPUT_LEFT))targetPos_.x--;
 	if (ins.IsNew(KEY_INPUT_RSHIFT))targetPos_.y++;
 	if (ins.IsNew(KEY_INPUT_RCONTROL))targetPos_.y--;
+
+#endif // _DEBUG
 	
 	//弾の削除処理
 	DeleteShot();
@@ -111,7 +116,7 @@ void Cannon::Draw(void)
 	}
 }
 
-void Cannon::ChangeModelColor(COLOR_F _colorScale)
+void Cannon::ChangeModelColor(const COLOR_F _colorScale)
 {
 	//砲台
 	if (MV1SetDifColorScale(trans_.modelId, _colorScale))
@@ -168,11 +173,15 @@ void Cannon::CreateShot(void)
 	//弾が最大数生成されている　又は　生成間隔を達していないなら生成処理をしない
 	if (shotNum_ >= SHOT_MAX || shotCreateCnt_ < SHOT_INTERVAL)return;
 
+	//アイテムマネージャー
+	ItemManager& itemMng = ItemManager::GetInstance();
+
 	//砲身の全回転
 	Quaternion barrelAllRot = barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal);
 
 	//弾の生成
 	std::unique_ptr<CannonShot> shot = std::make_unique<CannonShot>(barrelTrans_.pos, barrelAllRot);
+	//std::shared_ptr<CannonShot> shot = std::make_shared<CannonShot>(barrelTrans_.pos, barrelAllRot, this);
 
 	//弾の初期化
 	shot->Init();
@@ -182,6 +191,9 @@ void Cannon::CreateShot(void)
 
 	//生成数カウント増加
 	shotNum_++;
+
+	//マネージャーに所有権を渡す
+	//itemMng.MoveSubItemOwner(ITEM_TYPE::CANNON_SHOT, std::move(shot));
 
 	//生成間隔カウンタ初期化
 	shotCreateCnt_ = 0;

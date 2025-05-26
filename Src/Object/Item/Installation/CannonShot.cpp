@@ -2,6 +2,7 @@
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/Resource.h"
 #include "../Manager/System/ResourceManager.h"
+#include "Cannon.h"
 #include "CannonShot.h"
 
 CannonShot::CannonShot(VECTOR _pos, Quaternion _quaRot)
@@ -43,7 +44,7 @@ void CannonShot::Update(void)
 	if (cnt_ >= ALIVE_TIME)
 	{
 		//Á‹ˆ—
-		Hit();
+		Kill();
 
 		return;
 	}
@@ -64,13 +65,19 @@ void CannonShot::Draw(void)
 	MV1DrawModel(trans_.modelId);
 }
 
-void CannonShot::Hit(void)
+void CannonShot::Hit(Transform& _hitTrans)
 {
 	//’e‚ğíœ
-	isAlive_ = false;
+	Kill();
 }
 
 void CannonShot::Move(void)
 {
 	trans_.pos = VAdd(trans_.pos, movePow_);
+}
+
+void CannonShot::Kill(void)
+{
+	//’e‚ğíœ
+	isAlive_ = false;
 }

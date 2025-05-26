@@ -15,8 +15,12 @@ public:
 	static constexpr COLOR_F DUMMY_OVERLAP_COLOR = { 1.0f,0.1f,0.1f,DUMMY_ITEM_OPACITY_RATE };	//ダミーの重なっているときの色
 	static constexpr COLOR_F DUMMY_DEFAULT_COLOR = { 0.1f,0.1f,1.0f,DUMMY_ITEM_OPACITY_RATE };	//ダミーのデフォルトの色
 	static constexpr COLOR_F DEFAULT_COLOR = { 1.0f,1.0f,1.0f,DEFAULT_OPACITY_RATE };	//デフォルトの色
+
+	//初期化
 	void Init(void);
+	//更新
 	void Update(void);
+	//描画
 	void Draw(void);
 
 	/// <summary>
@@ -47,10 +51,15 @@ public:
 	/// <param name="type">アイテムの種類</param>
 	void CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type, int playerNum);
 
+	//ダミーアイテムのステータス取得
 	ItemBase::Status GetDummyItemStatus(int playerNum);
+	//ダミーアイテムのマップ座標取得
 	IntVector3 GetDummyItemMapPos(int playerNum);
-	IntVector3 GetDummyObjectSize(int playerNum);
+	//ダミーアイテムの大きさ取得
+	IntVector3 GetDummyItemSize(int playerNum);
+	//ダミーアイテムのモデル情報取得
 	Transform GetDummyItemTransform(int playerNum);
+	
 	/// <summary>
 	/// ダミーアイテムを置き換える
 	/// </summary>
@@ -83,7 +92,6 @@ public:
 	// 静的インスタンスの取得
 	static ItemManager& GetInstance(void);
 
-
 	/// <summary>
 	/// 指定した種類のアイテム配列を返す
 	/// </summary>
@@ -91,24 +99,48 @@ public:
 	/// <returns>指定したアイテム配列のポインタ。存在しなければ nullptr</returns>
 	const std::vector<std::shared_ptr<ItemBase>>* GetItems(const ItemBase::ITEM_TYPE _type)const;
 	
+	/// <summary>
+	/// アイテムからダミーに追加
+	/// </summary>
+	/// <param name="_type">アイテムの種類</param>
+	/// <param name="_mapPos">マップ座標</param>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos , int playerNum);
 
+	/// <summary>
+	/// ダミーの削除
+	/// </summary>
+	/// <param name="playerNum"></param>
 	void DeleteDummyItem(int playerNum);
+
+	/// <summary>
+	/// サブアイテムの所有権獲得
+	/// </summary>
+	/// <param name="_type">所有権を渡したいアイテムの種類</param>
+	/// <param name="_subItem">所有権を渡したいアイテムのポインタ(std::moveして渡す)</param>
+	//void MoveSubItemOwner(const ItemBase::ITEM_TYPE _type, std::shared_ptr<ItemBase> _subItem);
 
 protected:
 
 private:
+	
+	//インスタンス
 	static ItemManager* instance_;
 
 	//種類ごとにアイテムを管理
 	std::map<ItemBase::ITEM_TYPE, std::vector<std::shared_ptr<ItemBase>>> items_;
+
 	//配置中のアイテム[プレイヤー番号][アイテムの種類]
 	std::map<int,std::shared_ptr<ItemBase>> dummyItems_;
+	
+	//コンストラクタ
 	ItemManager(void);
+
 	//コピーコンストラクタ及び代入演算の禁止
 	ItemManager(const ItemManager& instance_) = delete;
 	void operator= (const ItemManager& instance_) = delete;
-	~ItemManager(void) = default;
+	~ItemManager(void);
+
 	//アイテムの生成
 	std::shared_ptr<ItemBase> CreateItem(ItemBase::ITEM_TYPE type, IntVector3 mapPos, Quaternion rot);
 };

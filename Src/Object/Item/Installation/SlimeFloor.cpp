@@ -8,6 +8,10 @@ SlimeFloor::SlimeFloor(void)
 {
 }
 
+SlimeFloor::~SlimeFloor(void)
+{
+}
+
 void SlimeFloor::SetParam(void)
 {
 	//ƒ‚ƒfƒ‹‚ÌŠî–{İ’è
