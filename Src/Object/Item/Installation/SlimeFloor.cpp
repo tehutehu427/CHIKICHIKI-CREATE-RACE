@@ -18,6 +18,9 @@ void SlimeFloor::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::SLIME_FLOOR));
 
+	//‘Š‘ÎÀ•W
+	trans_.localPos = MAP_LOCALPOS;
+
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
 	status_.isGravity = false;

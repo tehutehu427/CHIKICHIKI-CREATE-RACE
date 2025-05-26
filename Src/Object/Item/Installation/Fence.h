@@ -7,6 +7,7 @@ public:
 
 	//マップ
 	static constexpr IntVector3 MAP_SIZE = { 2,1,1 };	//マップサイズ
+	static constexpr VECTOR MAP_LOCALPOS = { 100.0f,60.0f,10.0f };	//マップとの相対座標
 
 	//コンストラクタ
 	Fence();

@@ -27,6 +27,10 @@ void Cannon::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_TURRET));
 
+	//相対座標
+	trans_.localPos = MAP_LOCALPOS;
+	barrelTrans_.localPos = MAP_LOCALPOS;
+
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
@@ -152,7 +156,7 @@ void Cannon::RotateTurret(void)
 void Cannon::RotateBarrel(void)
 {
 	//対象までの回転軸
-	barrelAddRot_ = Utility::GetRotAxisToTarget(barrelTrans_.pos, targetPos_, Utility::AXIS_Y);
+	barrelAddRot_ = Utility::GetRotAxisToTarget(VAdd(barrelTrans_.pos,barrelTrans_.localPos), targetPos_, Utility::AXIS_Y);
 
 	//距離で補正
 	float distance = Utility::Distance(Utility::GetMoveVec(barrelTrans_.pos, targetPos_), barrelTrans_.pos);

@@ -13,8 +13,11 @@ Fence::~Fence()
 void Fence::SetParam(void)
 {
 	//モデルの基本設定
-	//transform_.SetModel(resMng_.LoadModelDuplicate(
-	//	ResourceManager::SRC::FLOOR));
+	trans_.SetModel(resMng_.LoadModelDuplicate(
+		ResourceManager::SRC::FENCE));
+
+	//相対座標
+	trans_.localPos = MAP_LOCALPOS;
 
 	//ステータス初期化
 	size_ = MAP_SIZE;

@@ -12,7 +12,8 @@ public:
 	static constexpr float SHOT_INTERVAL = 5.0f;	//弾の生成感覚
 
 	//マップ
-	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };	//マップサイズ
+	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };				//マップサイズ
+	static constexpr VECTOR MAP_LOCALPOS = { 60.0f,0.0f,40.0f };	//マップとの相対座標
 
 	//エイム
 	static constexpr float  AIM_RADIUS = 500.0f;	//狙う範囲半径
