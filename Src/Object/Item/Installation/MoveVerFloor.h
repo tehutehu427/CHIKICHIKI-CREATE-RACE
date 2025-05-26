@@ -24,6 +24,9 @@ public:
 	//•`‰æ
 	void Draw(void)override;
 
+	//ƒTƒCƒY‚Ìæ“¾
+	const IntVector3 GetSize(void)const override;
+
 	/// <summary>
 	/// “–‚½‚Á‚½ˆ—
 	/// </summary>

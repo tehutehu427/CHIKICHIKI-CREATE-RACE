@@ -58,6 +58,11 @@ void MoveHoriFloor::Draw(void)
 	MV1DrawModel(trans_.modelId);
 }
 
+const IntVector3 MoveHoriFloor::GetSize(void) const
+{
+	return size_ + IntVector3(MOVE_X, 0, 0);
+}
+
 void MoveHoriFloor::Move(void)
 {
 	//w’èƒ‹[ƒg‚ğ’´‚¦‚½‚©

@@ -58,6 +58,11 @@ void MoveVerFloor::Draw(void)
 	MV1DrawModel(trans_.modelId);
 }
 
+const IntVector3 MoveVerFloor::GetSize(void) const
+{
+	return size_ + IntVector3(0, MOVE_Y, 0);
+}
+
 void MoveVerFloor::Move(void)
 {
 	//w’èƒ‹[ƒg‚ğ’´‚¦‚½‚©
