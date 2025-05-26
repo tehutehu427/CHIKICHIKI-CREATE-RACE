@@ -92,7 +92,7 @@ void MoveHoriFloor::InitRoute(void)
 	distance_ = Utility::Distance(route_[routeNum_], route_[routeNum_ + 1]);
 
 	//‘¬“xİ’è
-	speed_ = distance_ / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
+	speed_ = static_cast<float>(distance_) / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
 
 	//‰Šúƒ‹[ƒgİ’è
 	SetRoute();
