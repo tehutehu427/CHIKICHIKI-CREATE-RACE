@@ -58,7 +58,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 		return;
 	}
 	auto& itemMIns = ItemManager::GetInstance();
-	if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyObjectSize(playerNum_)))
+	if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_)))
 	{
 		//アイテムが重なっている
 		return;
@@ -144,7 +144,7 @@ void EditController::ItemNotSelect(void)
 		}
 		else
 		{
-			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyObjectSize(playerNum_)))
+			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyItemSize(playerNum_)))
 			{
 				return;
 			}

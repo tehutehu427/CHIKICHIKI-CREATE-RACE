@@ -23,6 +23,10 @@ public:
 		EDIT_PHASE,		//エディット
 		ACTION_PHASE,	//アクション
 		CLEAR_PHASE,	//クリア
+
+		//マルチ限定
+		SELECT_PHASE,	//選択
+		RESULT_PHASE,	//リザルト
 	};
 
 	//プレイヤー人数(のちにデータバンクで持ってくる
@@ -94,26 +98,25 @@ protected:
 	std::shared_ptr<EditController> editController_;
 
 	//パレット
-	std::unique_ptr<EditorPaletteBase> palette_;
-
-private:
-
-	//フェーズ管理
-	PHASE phase_;
-
+	std::unique_ptr<EditorPaletteBase> palette_;	
+	
 	//フェーズ管理(遷移時の初期処理)
 	std::map<PHASE, std::function<void(void)>> phaseChanges_;
 
 	//フェーズ管理(更新ステップ)
 	std::function<void(void)> phaseUpdate_;
+	std::function<void(void)> phaseDraw_;
+
+private:
+
+	//フェーズ管理
+	PHASE phase_;
 	
 	//更新関数
 	void NormalUpdate(void) override;
 
 	//処理の変更
 	void ChangeNormal(void) override;
-
-	std::function<void(void)> phaseDraw_;
 
 	//フェーズ遷移
 	void ChangePhase(PHASE phase);
@@ -122,8 +125,8 @@ private:
 	void ChangePhaseClear(void);
 
 	//クリア描画
-	void DrawEdit();
-	void DrawAction();
+	virtual void DrawEdit();
+	virtual void DrawAction();
 	void DrawClear();
 
 	//グリッド
