@@ -3,6 +3,7 @@
 #include "../../../../Manager/System/InputManager.h"
 #include "../../../../Manager/System/DateBank.h"
 #include "../../../../Utility/Utility.h"
+#include "../../../../Common/FontRegistry.h"
 #include "PaletteIcon.h"
 
 PaletteIcon::PaletteIcon()
@@ -22,11 +23,13 @@ PaletteIcon::PaletteIcon()
 	prePos_ = {};
 	selectType_ = ItemBase::ITEM_TYPE::NONE;
 	icons_.clear();
+	fontHandle_ = -1;
 	for (EditorPaletteBase::ImgInfo& s : scrIcon_) { s = {}; }
 }
 
 PaletteIcon::~PaletteIcon()
 {
+	DeleteFontToHandle(fontHandle_);
 	DeleteMaskScreen();
 }
 
@@ -37,6 +40,9 @@ void PaletteIcon::Load()
 	imgScrIcon_ = res.Load(ResourceManager::SRC::SCROLL_ARROW_ICON).handleId_;
 	imgIcons_ = res.Load(ResourceManager::SRC::PALETTE_ICONS).handleId_;
 	mskPal_ = res.Load(ResourceManager::SRC::PALETTE_MASK).handleId_;
+
+	//フォント生成
+	fontHandle_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), NAME_FONT_SIZE, NAME_FONT_THICK);
 }
 
 void PaletteIcon::Update()
@@ -55,6 +61,7 @@ void PaletteIcon::Draw()
 	//スクロールアイコンの描画
 	DrawScrollIcon();
 
+	//デバッグ描画
 	DebagDraw();
 }
 
@@ -172,6 +179,45 @@ void PaletteIcon::UpdateSelect()
 
 		CheckItemIcon(mousePos);	//アイテムアイコン
 	}
+}
+
+void PaletteIcon::DrawItemIcon()
+{
+	//アイコンの描画のみマスク処理
+	SetUseMaskScreenFlag(true);
+	for (EditorPaletteBase::ImgInfo& i : icons_)
+	{
+		//アイコン
+		DrawRotaGraph(
+			i.pos.x,
+			i.pos.y,
+			i.rate,
+			i.angle,
+			imgIcons_,
+			true,
+			false);
+
+
+
+		int nameColor = Utility::BLACK;		//デフォルトネームカラー
+		std::string name = DateBank::GetInstance().GetItemName(static_cast<ItemBase::ITEM_TYPE>(i.num));	//名前を取得	
+		//選択しているものの場合
+		if (i.num == static_cast<int>(selectType_))
+		{
+			//色を赤にする
+			nameColor = Utility::RED;
+		}
+		//名前を描画
+		int offSetX = name.size() * NAME_FONT_SIZE / 4;
+		constexpr int OFFSET_Y = ICON_SIZE / 2 + 20;
+		DrawFormatStringToHandle(
+			i.pos.x - offSetX,
+			i.pos.y + OFFSET_Y,
+			nameColor,
+			fontHandle_,
+			name.c_str());
+	}
+	SetUseMaskScreenFlag(false);
 }
 
 void PaletteIcon::DrawScrollIcon()

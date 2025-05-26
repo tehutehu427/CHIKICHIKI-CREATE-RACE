@@ -16,9 +16,6 @@ public:
 
 private:
 
-	//描画
-	void DrawItemIcon()override;
-
 	//クリック位置がアイコンか調べる
 	void CheckItemIcon(const Vector2 _mPos)override;
 

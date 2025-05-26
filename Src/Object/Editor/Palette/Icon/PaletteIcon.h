@@ -24,6 +24,10 @@ public:
 		MAX,
 	};
 
+	//ネームフォント
+	static constexpr int NAME_FONT_SIZE = 18;	//サイズ
+	static constexpr int NAME_FONT_THICK = 0.0f;	//太さ
+
 	//パレットアイコン移動量
 	static constexpr int ICONS_MOVE = 10;
 
@@ -156,6 +160,9 @@ protected:
 	//スクロールの制限用ライン
 	int scrLimitLine_;
 
+	//フォント
+	int fontHandle_;
+
 	//座標のバックアップ
 	Vector2 prePos_;
 
@@ -172,7 +179,7 @@ protected:
 	void UpdateSelect();
 
 	//各アイコンの描画
-	virtual void DrawItemIcon() = 0;		//アイテムアイコン
+	virtual void DrawItemIcon();		//アイテムアイコン
 	void DrawScrollIcon();				//スクロールアイコン
 
 	//タイプを割り当てる

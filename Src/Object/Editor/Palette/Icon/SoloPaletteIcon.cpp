@@ -68,24 +68,6 @@ void SoloPaletteIcon::Init()
 	ChangeState(STATE::NONE);
 }
 
-void SoloPaletteIcon::DrawItemIcon()
-{
-	//アイコンの描画のみマスク処理
-	SetUseMaskScreenFlag(true);
-	for (EditorPaletteBase::ImgInfo& i : icons_)
-	{
-		DrawRotaGraph(
-			i.pos.x,
-			i.pos.y,
-			i.rate,
-			i.angle,
-			imgIcons_,
-			true,
-			false);
-	}
-	SetUseMaskScreenFlag(false);
-}
-
 void SoloPaletteIcon::CheckItemIcon(const Vector2 _mPos)
 {
 	Vector2 leftTop = {};		//画像左上

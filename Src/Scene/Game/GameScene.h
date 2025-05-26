@@ -8,6 +8,7 @@
 class EditorPaletteBase;
 class Grid;
 class SkyDome;
+class GameClear;
 
 class GameScene : public SceneBase
 {
@@ -21,6 +22,7 @@ public:
 	{
 		EDIT_PHASE,		//エディット
 		ACTION_PHASE,	//アクション
+		CLEAR_PHASE,	//クリア
 	};
 
 	//プレイヤー人数(のちにデータバンクで持ってくる
@@ -69,6 +71,12 @@ protected:
 	/// </summary>
 	/// <param name=""></param>
 	virtual void UpdateAction(void);	
+
+	/// <summary>
+	/// クリア時の更新処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void UpdateClear(void);
 	
 	/// <summary>
 	/// デバッグ時の更新処理
@@ -107,17 +115,23 @@ private:
 
 	std::function<void(void)> phaseDraw_;
 
-	// フェーズ遷移
+	//フェーズ遷移
 	void ChangePhase(PHASE phase);
 	void ChangePhaseEdit(void);
 	void ChangePhaseAction(void);
+	void ChangePhaseClear(void);
 
+	//クリア描画
 	void DrawEdit();
 	void DrawAction();
+	void DrawClear();
 
 	//グリッド
 	std::unique_ptr<Grid>grid_;
 
 	//スカイドーム
 	std::unique_ptr<SkyDome> sky_;
+
+	//ゲームクリア
+	std::unique_ptr<GameClear> gameClear_;
 };

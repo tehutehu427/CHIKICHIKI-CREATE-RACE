@@ -17,6 +17,7 @@ SceneBase::SceneBase(void) :
 
 SceneBase::~SceneBase(void)
 {
+	DeleteFontToHandle(buttnFontHandle_);
 }
 
 void SceneBase::Update(void)
@@ -72,6 +73,6 @@ void SceneBase::DrawNowLoading(void)
 	{
 		loadStr += dotStr;
 	}
-	DrawStringToHandle(LOADING_STRING_POS_X, LOADING_STRING_POS_Y, loadStr.c_str(), 0xffffff, buttnFontHandle_);
+	DrawStringToHandle(LOADING_STRING_POS_X, LOADING_STRING_POS_Y, loadStr.c_str(), Utility::WHITE, buttnFontHandle_);
 
 }
