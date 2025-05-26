@@ -1,5 +1,5 @@
 #pragma once
-#include "ItemBase.h"
+#include "../ItemBase.h"
 
 class CannonShot;
 
@@ -37,7 +37,7 @@ public:
 	void Draw(void)override;
 
 	//モデルの色変え
-	void ChangeModelColor(COLOR_F _colorScale)override;
+	void ChangeModelColor(const COLOR_F _colorScale)override;
 
 	//狙う対象の設定
 	void SetTargetPos(const VECTOR _targetPos) { targetPos_ = _targetPos; }
@@ -57,13 +57,6 @@ private:
 	//対象
 	VECTOR targetPos_;		//狙う対象の位置情報
 	VECTOR targetVec_;		//狙う対象に対しての方向ベクトル
-
-
-	//対象を狙う
-	void Aim(void);
-
-	//狙うベクトルへの補間
-	//void AimLeap()
 
 	//砲台の回転
 	void RotateTurret(void);

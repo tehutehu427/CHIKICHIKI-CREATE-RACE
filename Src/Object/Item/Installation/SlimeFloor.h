@@ -1,6 +1,6 @@
 #pragma once
-#include "ItemBase.h"
-#include "../../Common/IntVector3.h"
+#include "../ItemBase.h"
+#include "../../../Common/IntVector3.h"
 
 class SlimeFloor : public ItemBase
 {
@@ -19,7 +19,7 @@ public:
 	/// デストラクタ
 	/// </summary>
 	/// <param name=""></param>
-	~SlimeFloor(void)override = default;
+	~SlimeFloor(void);
 
 	/// <summary>
 	/// パラメーター設定

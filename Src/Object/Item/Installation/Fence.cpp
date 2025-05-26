@@ -1,5 +1,5 @@
-#include "../../Manager/System/ResourceManager.h"
-#include "../../Manager/Game./MapEditer.h"
+#include "../Manager/System/ResourceManager.h"
+#include "../Manager/Game./MapEditer.h"
 #include "Fence.h"
 
 Fence::Fence()

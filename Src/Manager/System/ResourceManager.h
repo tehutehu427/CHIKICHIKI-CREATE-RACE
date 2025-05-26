@@ -32,6 +32,7 @@ public:
 		//アイテムモデル
 		FLOOR,				//足場
 		MOVE_FLOOR,			//動く足場
+		FENCE,				//柵
 		BOMB,				//爆弾
 		CANNON_BARREL,		//砲身
 		CANNON_TURRET,		//砲台
