@@ -6,10 +6,11 @@ class MoveHoriFloor : public ItemBase
 public:
 
 	//マップ
-	static constexpr IntVector3 MAP_SIZE = { 4,1,4 };	//マップサイズ
-	static constexpr int MOVE_X = 8;					//横移動距離
-	static constexpr float ONE_POINT_SEC = 5.0f;		//1地点移動するのにかかる秒数
-	static constexpr int ROUTE = 2;						//ルート数
+	static constexpr IntVector3 MAP_SIZE = { 4,1,4 };				//マップサイズ
+	static constexpr int MOVE_X = 8;								//横移動距離
+	static constexpr float ONE_POINT_SEC = 5.0f;					//1地点移動するのにかかる秒数
+	static constexpr int ROUTE = 2;									//ルート数
+	static constexpr VECTOR MAP_LOCALPOS = { 220.0f,15.0f,220.0f };	//マップとの相対座標
 
 
 	//コンストラクタ
