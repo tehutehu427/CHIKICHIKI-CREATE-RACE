@@ -66,6 +66,9 @@ public:
 	//***********************************
 	static constexpr float DEFAULT_SPD = 60.0f;
 
+	//当たり判定を行う範囲
+	static constexpr int COL_RANGE = 1;
+
 
 	enum class FLOOR_COL
 	{
@@ -184,6 +187,8 @@ private:
 
 	//ゲームパッド番号
 	InputManager::JOYPAD_NO padNum_;
+
+	
 
 	//オブジェクト関連
 	//--------------------------------------------
