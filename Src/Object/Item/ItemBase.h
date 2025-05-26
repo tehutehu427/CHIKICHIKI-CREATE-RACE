@@ -29,9 +29,6 @@ public:
 		BOMB_SMALL,			//爆弾(小)
 		BOMB_BIG,			//爆弾(大)
 
-		//サブオブジェ
-		CANNON_SHOT,		//大砲の弾
-
 		MAX,				//最大
 	};
 
