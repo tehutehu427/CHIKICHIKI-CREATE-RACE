@@ -419,7 +419,7 @@ void EditController::DebugUpdate(void)
 {
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_X))
 	{
-		SetItemType(ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
+		SetItemType(ItemBase::ITEM_TYPE::FLOOR);
 	}
 	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_RETURN))
 	{

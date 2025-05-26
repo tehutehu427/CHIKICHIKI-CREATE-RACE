@@ -58,6 +58,8 @@ void InputManager::Init(void)
 
 	//パンチキー
 	InputManager::GetInstance().Add(KEY_INPUT_RETURN);
+	InputManager::GetInstance().Add(KEY_INPUT_T);
+	InputManager::GetInstance().Add(KEY_INPUT_Y);
 
 	//---------------------------------------------------
 

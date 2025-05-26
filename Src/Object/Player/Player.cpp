@@ -22,6 +22,7 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	animationController_ = std::make_shared<AnimationController>(trans_.modelId);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), DEFAULT_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), DEFAULT_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL), DEFAULT_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_SPD/PUNCH_TIME_MAX);
@@ -73,10 +74,23 @@ void Player::Init(void)
 
 void Player::Update(void)
 {
+	animationController_->Update();
+	if (IsDeath())
+	{
+		//落ちているアニメーション再生0
+		animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
+		
+		if (animationController_->GetAnimStep() >= FALL_ANIM_START)
+		{
+			animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 60.0f);
+		}
+
+		//animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 5.0f);
+		return;
+	}
 	//入力更新
 	input_->Update();
-	animationController_->Update();
-
+	
 #ifdef DEBUG_ON
 	CubeMove();
 #endif // DEBUG_ON
@@ -125,7 +139,7 @@ void Player::DrawDebug(void)
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,jumpDeceralation_
 		,stepJump_
-		,jumpPow_
+		,jumpPow_.x,jumpPow_.y,jumpPow_.z
 	);
 
 	DrawSphere3D(punchPos_, PUNCH_RADIUS, 4, 0xff0000, 0xff0000, isPunchHitTime_);
@@ -202,9 +216,13 @@ void Player::SetGoalRotate(double _deg)
 	}
 	goalQuaRot_ = axis;
 }
-void Player::Death(void)
+bool Player::IsDeath(void)
 {
-	
+	if (trans_.pos.y <= DEATH_POS_Y)
+	{
+		return true;
+	}
+	return false;
 }
 void Player::Jump(void)
 {
@@ -324,8 +342,20 @@ void Player::HitItem(const IntVector3 _colPos)
 	ItemManager& itemMng = ItemManager::GetInstance();
 	if (mapEdit.IsObjectAtMapPos(_colPos))
 	{
-		mapEdit.GetLeaderMapPos(_colPos);
-		//itemMng.
+		IntVector3 lPos=mapEdit.GetLeaderMapPos(_colPos);
+
+		//アイテムタイプ取得
+		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
+		//アイテムのTransform取得
+		Transform itemTrans = itemMng.GetItemTransform(lPos,type);
+
+		auto hit = MV1CollCheck_Line(itemTrans.modelId, -1, trans_.pos, movedPos_);
+
+		if (hit.HitFlag>0)
+		{
+			movedPos_ = hit.HitPosition;
+		}
+
 	}
 
 }
@@ -357,6 +387,10 @@ void Player::Collision(void)
 	else
 	{
 		isJump_ = true;
+		if (jumpPow_.y <= LIMIT_GRAVITY)
+		{
+			jumpPow_.y = LIMIT_GRAVITY;
+		}
 	}
 
 #ifdef DEBUG_ON
@@ -382,10 +416,12 @@ void Player::CubeMove(void)
 	const float SPD = 8.0f;
 	cubeMovePos_ = Utility::VECTOR_ZERO;
 	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
-	if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.y += SPD;
-	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.y -= SPD;
+	if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.z += SPD;
+	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.z -= SPD;
 	if (input.IsNew(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
 	if (input.IsNew(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
+	if (input.IsNew(KEY_INPUT_T))cubeMovePos_.y -= SPD;
+	if (input.IsNew(KEY_INPUT_Y))cubeMovePos_.y += SPD;
 	cube_.centerPos = VAdd(cube_.centerPos, cubeMovePos_);
 }
 

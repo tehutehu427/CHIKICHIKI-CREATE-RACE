@@ -23,7 +23,15 @@ public:
 	//プレイヤー情報
 	static constexpr VECTOR CAPSULE_TOP = { 0.0f, 110.0f, 0.0f };
 	static constexpr VECTOR CAPSULE_DOWN = { 0.0f, 0.0f, 0.0f };
+	//半径
 	static constexpr float RADIUS = 25.0f;
+
+	//落ちるアニメーションのスタート
+	static constexpr float FALL_ANIM_START = 32.0f;
+	static constexpr float FALL_ANIM_END = 59.0f;
+
+	//死ぬ判定の座標の基準
+	static constexpr float DEATH_POS_Y = -600.0f;
 	//移動
 	//----------------------------------
 	//移動スピード
@@ -32,17 +40,21 @@ public:
 	//ぶっ飛ぶスピード
 	static constexpr float FLY_AWAY_SPEED = 20.0f;
 
+	//落ちているときの重力制限(jumpPowに加算しているのでjumpPowに適用)
+	static constexpr float LIMIT_GRAVITY = -20.0f;
+
 	//----------------------------------
 	//ジャンプ
 	//----------------------------------
 	//ジャンプ力
-	static constexpr float POW_JUMP = 15.0f;
+	static constexpr float POW_JUMP = 20.0f;
 
 	//ジャンプ加速の倍率
 	static constexpr float TIME_JUMP_SCALE = 1.0f;
 
 	//ジャンプ時間
 	static constexpr float TIME_JUMP = 3.0f;
+
 	//----------------------------------
 	//パンチ
 	//----------------------------------
@@ -91,6 +103,7 @@ public:
 		NONE=0,
 		IDLE=1,
 		WALK=2,
+		FALL=4,
 		DAMAGE = 8,
 		PUNCH = 12,
 		JUMP = 13,
@@ -207,6 +220,7 @@ private:
 	//他プレイヤーとの当たりフラグ　true:当たっている
 	bool isCol_;
 
+
 	//アクション関係
 	//----------------------------------------
 	//移動
@@ -266,8 +280,8 @@ private:
 	//最終的に動かしたい角度の設定
 	void SetGoalRotate(double _deg);
 
-	//復活
-	void Death(void);
+	//死んだ判定
+	bool IsDeath(void);
 
 	//ジャンプ
 	void Jump(void);
