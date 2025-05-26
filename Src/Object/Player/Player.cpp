@@ -1,5 +1,6 @@
 #include "../../Utility/Utility.h"
 #include "../../Manager/Game/GravityManager.h"
+#include "../../Manager/Game/MapEditer.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Object/Common/Capsule.h"
@@ -312,8 +313,13 @@ VECTOR Player::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _lo
 	return VAdd(_followPos, addPos);
 }
 
-void Player::CalcGravityPow(void)
+void Player::HitItem(const IntVector3 _colPos)
 {
+	MapEditer& mapEdit = MapEditer::GetInstance();
+	if (mapEdit.IsObjectAtMapPos(_colPos))
+	{
+		//mapEdit.Get
+	}
 
 }
 
@@ -321,16 +327,34 @@ void Player::Collision(void)
 {
 	movedPos_ = VAdd(trans_.pos, movePow_);
 	movedPos_ = VAdd(movedPos_, jumpPow_);
-	if (CollCube())
+	MapEditer& mapEdit = MapEditer::GetInstance();
+	IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
+	for (int x = -COL_RANGE; x <= COL_RANGE; x++)
 	{
-		movedPos_ = VAdd(movedPos_, cubeMovePos_);
-		movedPos_.y = cube_.upPos.y + RADIUS;
-		isJump_ = false;
+		for (int y = -COL_RANGE; y <= COL_RANGE; y++)
+		{
+			for (int z = -COL_RANGE; z <= COL_RANGE; z++)
+			{
+				IntVector3 colPos = mapPos + IntVector3{x, y, z};
+				HitItem(colPos);
+
+
+
+
+			}
+		}
 	}
-	else
-	{
-		isJump_ = true;
-	}
+
+	//if (CollCube())
+	//{
+	//	movedPos_ = VAdd(movedPos_, cubeMovePos_);
+	//	movedPos_.y = cube_.upPos.y + RADIUS;
+	//	isJump_ = false;
+	//}
+	//else
+	//{
+	//	isJump_ = true;
+	//}
 
 #ifdef DEBUG_ON
 

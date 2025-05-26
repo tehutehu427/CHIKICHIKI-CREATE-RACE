@@ -282,7 +282,7 @@ private:
 	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot,VECTOR _localPos);
 
 	//d—Í‚É‚æ‚éˆÚ“®—Ê
-	void CalcGravityPow(void);
+	void HitItem(const IntVector3 _colPos);
 
 	//“–‚½‚è”»’è
 	void Collision(void);
