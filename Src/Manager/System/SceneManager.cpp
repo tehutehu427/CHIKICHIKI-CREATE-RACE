@@ -4,6 +4,9 @@
 #include "../../Scene/TitleScene.h"
 #include "../../Scene/SelectScene.h"
 #include "../../Scene/Game/GameScene.h"
+#include "../../Scene/Game/FreePlay.h"
+#include "../../Scene/Game/MultiParty.h"
+#include "../../Scene/Game/SoloChallenge.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "DateBank.h"
@@ -236,7 +239,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	ResourceManager::GetInstance().Release();
 
 	// シーンを変更する
-	sceneId_ = sceneId;
+ 	sceneId_ = sceneId;
 
 	// 現在のシーンを解放
 	if (scene_ != nullptr)
@@ -256,6 +259,18 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 
 	case SCENE_ID::GAME:
 		scene_ = std::make_unique<GameScene>();
+		break;
+
+	case SCENE_ID::FREE:
+		scene_ = std::make_unique<FreePlay>();
+		break;
+
+	case SCENE_ID::MULTI:
+		scene_ = std::make_unique<MultiParty>();
+		break;
+
+	case SCENE_ID::SOLO:
+		scene_ = std::make_unique<SoloChallenge>();
 		break;
 	}
 

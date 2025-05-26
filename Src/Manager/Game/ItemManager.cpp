@@ -68,20 +68,16 @@ void ItemManager::Draw(void)
 		//他オブジェクトと重なっているか
 		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize()))
 		{
-			//設置禁止表示
-			MV1SetDifColorScale(item.second->GetTransform().modelId, ItemManager::DUMMY_OVERLAP_COLOR);
+			item.second->ChangeModelColor(ItemManager::DUMMY_OVERLAP_COLOR);
 		}
 		//重なっていない
 		else
 		{
-			//設置可能表示
-			MV1SetDifColorScale(item.second->GetTransform().modelId, ItemManager::DUMMY_DEFAULT_COLOR);
+			item.second->ChangeModelColor(ItemManager::DUMMY_DEFAULT_COLOR);
 		}
 		//モデル描画
 		item.second->Draw();
-
-		//元の色に戻す
-		MV1SetDifColorScale(item.second->GetTransform().modelId, ItemManager::DEFAULT_COLOR);
+		item.second->ChangeModelColor(ItemManager::DEFAULT_COLOR);
 	}
 }
 
@@ -92,7 +88,10 @@ void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE
 
 	//アイテムを生成
 	item = CreateItem(type, mapPos, rot);
-
+	if (item == nullptr)
+	{
+		return;
+	}
 	//配列に追加
 	items_[type].emplace_back(std::move(item));
 }
@@ -115,20 +114,25 @@ void ItemManager::CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::I
 
 	//アイテム作成
 	item = CreateItem(type, mapPos, rot);
-	
+
+	if (item == nullptr)
+	{
+		return;
+	}
+
 	//配列に追加
 	dummyItems_[playerNum] = item;
 }
 
 ItemBase::Status ItemManager::GetDummyItemStatus(int playerNum)
 {
-	//ステータス
-	ItemBase::Status status;
-
-	//指定プレイヤーのダミーアイテムがあるか
+	ItemBase::Status status{};
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
-		//見つかった
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return status;
+		}
 		status = dummyItems_[playerNum]->GetStatus();
 	}
 	else
@@ -166,20 +170,11 @@ IntVector3 ItemManager::GetDummyItemSize(int playerNum)
 {
 	//アイテムの大きさ
 	IntVector3 size;
-
-	//指定プレイヤーのダミーアイテムがあるか
-	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	if (dummyItems_.find(playerNum) == dummyItems_.end() || dummyItems_[playerNum] == nullptr)
 	{
-		//見つかった
-		size = dummyItems_[playerNum]->GetSize();
+		return { -1,-1,-1 };
 	}
-	else
-	{
-		//見つからなかった
-		size = {-1,-1,-1};
-	}
-
-	//大きさを返す
+	size = dummyItems_[playerNum]->GetSize();
 	return size;
 }
 
@@ -191,7 +186,10 @@ Transform ItemManager::GetDummyItemTransform(int playerNum)
 	//指定プレイヤーのダミーアイテムがあるか
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
-		//見つかった
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return Transform();
+		}
 		transform = dummyItems_[playerNum]->GetTransform();
 	}
 	else
@@ -259,7 +257,10 @@ void ItemManager::DummyItemAddItems(int playerNum)
 	//指定プレイヤーのダミーアイテムがあるか
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
-		//ダミーからアイテムに追加
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return;
+		}
 		AddItem(dummyItems_[playerNum]->GetInitMapPos(), dummyItems_[playerNum]->GetTransform().quaRot, dummyItems_[playerNum]->GetStatus().itemType);
 		//items_[dummyItems_[playerNum]->GetStatus().itemType].emplace_back(dummyItems_[playerNum]);
 		
@@ -300,27 +301,26 @@ const std::vector<std::shared_ptr<ItemBase>>* ItemManager::GetItems(const ItemBa
 	return nullptr;
 }
 
-void ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos,int playerNum)
+bool ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos,int playerNum)
 {
 	//アイテムが存在するか
 	auto it = items_.find(_type);
+	//アイテムが存在しない場合　falseを返す
 	if (it == items_.end())
 	{
-		//存在しなかった
-		return;
+		return false;
 	}
 
 	//指定アイテム
 	for (auto& item : it->second)
 	{
-		//指定アイテムが存在するか
+		//アイテムが存在しない場合　次のアイテムへ
 		if (item == nullptr)
 		{
 			//飛ばす
 			continue;
 		}
-
-		//大きさ分の全マスと判定
+		//アイテムのサイズ分ループ
 		for (int i = 0; i < item->GetSize().x; i++)
 		{
 			for (int j = 0; j < item->GetSize().y; j++)
@@ -329,31 +329,22 @@ void ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapP
 				{
 					//初期位置からサイズ分
 					IntVector3 mapPos = { item->GetInitMapPos().x + i,item->GetInitMapPos().y + j,item->GetInitMapPos().z + k };
-					
-					//重なっていない
+					//アイテムのマップ座標と指定されたマップ座標が同じ場合
 					if (mapPos != _mapPos)
 					{
 						//飛ばす
 						continue;
 					}
-
-					//アイテムが存在するか
-					if (dummyItems_.find(playerNum) != dummyItems_.end())
-					{
-						//ダミーからアイテムに移行
-						DummyItemAddItems(playerNum);
-					}
-
-					//新たに生成
 					dummyItems_[playerNum] = CreateItem(_type, _mapPos, item->GetTransform().quaRot);
 					
 					//元情報を削除
 					item = nullptr;
-					return;
+					return true;
 				}
 			}
 		}
 	}
+	return false;
 }
 
 void ItemManager::DeleteDummyItem(int playerNum)
@@ -368,6 +359,19 @@ void ItemManager::DeleteDummyItem(int playerNum)
 	{
 		return;
 	}
+}
+
+bool ItemManager::IsDummyItem(int playerNum)
+{
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return false;
+		}
+		return true;
+	}
+	return false;
 }
 
 //void ItemManager::MoveSubItemOwner(const ItemBase::ITEM_TYPE _type, std::shared_ptr<ItemBase> _subItem)

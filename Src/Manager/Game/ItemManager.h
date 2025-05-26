@@ -12,8 +12,8 @@ public:
 
 	static constexpr float DUMMY_ITEM_OPACITY_RATE = 0.5f;	//ダミーアイテムの半透明度
 	static constexpr float DEFAULT_OPACITY_RATE = 1.0f;		//デフォルトの半透明度
-	static constexpr COLOR_F DUMMY_OVERLAP_COLOR = { 1.0f,0.0f,0.0f,DUMMY_ITEM_OPACITY_RATE };	//ダミーの重なっているときの色
-	static constexpr COLOR_F DUMMY_DEFAULT_COLOR = { 0.0f,0.0f,1.0f,DUMMY_ITEM_OPACITY_RATE };	//ダミーのデフォルトの色
+	static constexpr COLOR_F DUMMY_OVERLAP_COLOR = { 1.0f,0.1f,0.1f,DUMMY_ITEM_OPACITY_RATE };	//ダミーの重なっているときの色
+	static constexpr COLOR_F DUMMY_DEFAULT_COLOR = { 0.1f,0.1f,1.0f,DUMMY_ITEM_OPACITY_RATE };	//ダミーのデフォルトの色
 	static constexpr COLOR_F DEFAULT_COLOR = { 1.0f,1.0f,1.0f,DEFAULT_OPACITY_RATE };	//デフォルトの色
 
 	//初期化
@@ -51,39 +51,40 @@ public:
 	/// <param name="type">アイテムの種類</param>
 	void CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type, int playerNum);
 
-	//ダミーアイテムのステータス取得
 	ItemBase::Status GetDummyItemStatus(int playerNum);
-	//ダミーアイテムのマップ座標取得
 	IntVector3 GetDummyItemMapPos(int playerNum);
-	//ダミーアイテムの大きさ取得
-	IntVector3 GetDummyItemSize(int playerNum);
-	//ダミーアイテムのモデル情報取得
+	IntVector3 GetDummyObjectSize(int playerNum);
+	/// <summary>
+	/// ダミーアイテムのTransformを取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのTransform</returns>
 	Transform GetDummyItemTransform(int playerNum);
 	
 	/// <summary>
 	/// ダミーアイテムを置き換える
 	/// </summary>
-	/// <param name="playerNum"></param>
-	/// <param name="type"></param>
-	/// <param name="mapPos"></param>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <param name="type">アイテムの種類</param>
+	/// <param name="mapPos">マップ座標</param>
 	void ResetDummyItem(int playerNum,ItemBase::ITEM_TYPE type,IntVector3 mapPos);
 
 	/// <summary>
 	/// ダミーアイテムの座標設定
 	/// </summary>
-	/// <param name="mapPos"></param>
-	/// <param name="playerNum"></param>
+	/// <param name="mapPos">マップ座標</param>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void DummyItemSetMapPos(IntVector3 mapPos, int playerNum);
 	/// <summary>
 	/// ダミーアイテムの回転を設定
 	/// </summary>
-	/// <param name="rot"></param>
-	/// <param name="playerNum"></param>
+	/// <param name="rot">回転量</param>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void DummyItemSetRotate(Quaternion rot, int playerNum);
 	/// <summary>
 	/// ダミーアイテムをアイテムに追加
 	/// </summary>
-	/// <param name="playerNum"></param>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void DummyItemAddItems(int playerNum);
 
 	// 明示的にインステンスを生成する
@@ -100,26 +101,24 @@ public:
 	const std::vector<std::shared_ptr<ItemBase>>* GetItems(const ItemBase::ITEM_TYPE _type)const;
 	
 	/// <summary>
-	/// アイテムからダミーに追加
+	/// itemからdummyItemに置き換える
 	/// </summary>
-	/// <param name="_type">アイテムの種類</param>
+	/// <param name="_type">置き換えるアイテムの種類</param>
 	/// <param name="_mapPos">マップ座標</param>
 	/// <param name="playerNum">プレイヤー番号</param>
-	void ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos , int playerNum);
-
+	/// <returns>成功ならtrue 失敗ならfalse</returns>
+	bool ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos , int playerNum);
 	/// <summary>
-	/// ダミーの削除
+	/// 特定のプレイヤーのダミーアイテムを削除
 	/// </summary>
-	/// <param name="playerNum"></param>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void DeleteDummyItem(int playerNum);
-
 	/// <summary>
-	/// サブアイテムの所有権獲得
+	/// ダミーアイテムが存在するか
 	/// </summary>
-	/// <param name="_type">所有権を渡したいアイテムの種類</param>
-	/// <param name="_subItem">所有権を渡したいアイテムのポインタ(std::moveして渡す)</param>
-	//void MoveSubItemOwner(const ItemBase::ITEM_TYPE _type, std::shared_ptr<ItemBase> _subItem);
-
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>存在するtrue 存在しないfalse</returns>
+	bool IsDummyItem(int playerNum);
 protected:
 
 private:

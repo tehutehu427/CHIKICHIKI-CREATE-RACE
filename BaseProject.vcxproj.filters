@@ -168,7 +168,7 @@
     <ClCompile Include="Src\Object\Player\Process\PlayerInput.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Editor\Palette\PaletteIcon.cpp">
+    <ClCompile Include="Src\Object\Editor\Palette\Icon\PaletteIcon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Editor\EditController.cpp">
@@ -201,16 +201,22 @@
     <ClCompile Include="Src\Scene\SelectScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Item\Fixed\StartFlag.cpp">
+    <ClCompile Include="Src\Object\Editor\Palette\FreePalette.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Item\Fixed\GoalFlag.cpp">
+    <ClCompile Include="Src\Object\Editor\Palette\SoloChallengePalette.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Item\Destroyer\SmallBomb.cpp">
+    <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp">
+    <ClCompile Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\FontRegistry.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -467,7 +473,7 @@
     <ClInclude Include="Src\Object\Player\Process\PlayerInput.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\PaletteIcon.h">
+    <ClInclude Include="Src\Object\Editor\Palette\Icon\PaletteIcon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Editor\EditController.h">
@@ -491,25 +497,31 @@
     <ClInclude Include="Src\Scene\SelectScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\Spiky.h">
+    <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\Fan.h">
+    <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\CannonShot.h">
+    <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\Fixed\StartFlag.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Fixed\GoalFlag.h">
+    <ClInclude Include="Src\Object\Item\Spiky.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Item\Destroyer\SmallBomb.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Item\Destroyer\BigBomb.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\FontRegistry.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

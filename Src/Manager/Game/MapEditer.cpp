@@ -25,6 +25,7 @@ void MapEditer::Init(void)
 			for (int k = 0;k < MAP_SIZE.z;k++)
 			{
 				isMapPosItem_[i][j][k] = ItemBase::ITEM_TYPE::NONE;
+				leaderMapPos_[i][j][k] = { -1,-1,-1 };
 			}
 		}
 	}
@@ -66,7 +67,7 @@ void MapEditer::AddItem(STATUS status, IntVector3 size)
 			{
 				IntVector3 mapPos = { status.mapPos.x + i,status.mapPos.y + j,status.mapPos.z + k };
 				isMapPosItem_[mapPos.x][mapPos.y][mapPos.z] = status.type;
-				itemsPos_[status.type].emplace_back(mapPos);
+				leaderMapPos_[mapPos.x][mapPos.y][mapPos.z] = status.mapPos;
 			}
 		}
 	}
@@ -83,11 +84,7 @@ void MapEditer::DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos ,IntVec
 			{
 				IntVector3 mapPos = { _mapPos.x + i,_mapPos.y + j,_mapPos.z + k };
 				isMapPosItem_[mapPos.x][mapPos.y][mapPos.z] = ItemBase::ITEM_TYPE::NONE;
-				auto it = std::find(itemsPos_[_type].begin(), itemsPos_[_type].end(), mapPos);
-				if (it != itemsPos_[_type].end())
-				{
-					itemsPos_[_type].erase(it);
-				}
+				leaderMapPos_[mapPos.x][mapPos.y][mapPos.z] = { -1,-1,-1 };
 			}
 		}
 	}
@@ -111,8 +108,22 @@ VECTOR MapEditer::MapToWorldPos(IntVector3 mapPos)
 	return worldPos;
 }
 
+void MapEditer::DeleteAllItem(void)
+{
+	for (int i = 0; i < MAP_SIZE.x; i++)
+	{
+		for (int j = 0; j < MAP_SIZE.y; j++)
+		{
+			for (int k = 0; k < MAP_SIZE.z; k++)
+			{
+				isMapPosItem_[i][j][k] = ItemBase::ITEM_TYPE::NONE;
+				leaderMapPos_[i][j][k] = { -1,-1,-1 };
+			}
+		}
+	}
+}
+
 MapEditer::MapEditer(void)
 {
-	itemsPos_.clear();
 	isMapPosItem_[(MAP_SIZE.x)][(MAP_SIZE.y)][(MAP_SIZE.z)] = {};
 }

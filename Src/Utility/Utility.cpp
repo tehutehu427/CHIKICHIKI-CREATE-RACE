@@ -563,22 +563,30 @@ bool Utility::IsTimeOver(float& totalTime, const float& waitTime)
     return false;
 }
 
-void Utility::DrawStringCenter(std::string str, int centerLine, int posY, int color)
+void Utility::DrawStringPlace(std::string _str, int _line, int _posY, int _color, STRING_PLACE _place)
 {
-    int width = GetDrawStringWidth(str.c_str(), strlen(str.c_str()));
-    DrawString(centerLine - width / 2, posY, str.c_str(), color);
-}
+    //文字列の長さを取得
+    int width = GetDrawStringWidth(_str.c_str(), strlen(_str.c_str()));
 
-void Utility::DrawStringLeft(std::string str, int leftLiine, int posY, int color)
-{
-    int width = GetDrawStringWidth(str.c_str(), strlen(str.c_str()));
-    DrawString(leftLiine, posY, str.c_str(), color);
-}
-
-void Utility::DrawStringRight(std::string str, int rightLine, int posY, int color)
-{
-    int width = GetDrawStringWidth(str.c_str(), strlen(str.c_str()));
-    DrawString(rightLine - width, posY, str.c_str(), color);
+    //表示するX座標を求める
+    int posX = _line;
+    switch (_place)
+    {
+        //左揃えの場合そのまま
+    case Utility::STRING_PLACE::LEFT:
+        break;
+		//中央揃えの場合　文字列の長さの半分を引く
+    case Utility::STRING_PLACE::CENTER:
+		posX = _line - width / 2;
+        break;
+		//右揃えの場合　文字列の長さを引く
+    case Utility::STRING_PLACE::RIGHT:
+		posX = _line - width;
+        break;
+    default:
+        break;
+    }
+    DrawString(posX, _posY, _str.c_str(), _color);
 }
 
 const VECTOR Utility::GetMoveVec(const VECTOR _start, const VECTOR _goal, const float _speed)
@@ -722,4 +730,10 @@ float Utility::ReverseValue(float _f)
 IntVector3 Utility::ReverseValue(IntVector3 _iv)
 {
     return _iv * REVERSE_SCALE;
+}
+
+
+int Utility::WrapIndex(int index, int max)
+{
+    return (index % max + max) % max;
 }
