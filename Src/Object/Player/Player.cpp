@@ -84,8 +84,12 @@ void Player::Update(void)
 
 	//衝突判定
 	Collision();
+
 	//アクション関係
 	Action();
+
+
+
 	//回転の同期
 	trans_.quaRot = playerRotY_;
 	
@@ -135,7 +139,6 @@ void Player::Action(void)
 	Punch();
 	Jump();
 	Move();
-
 }
 
 void Player::Move(void)
@@ -163,7 +166,6 @@ void Player::Move(void)
 		if (isPunched_){speed_ = FLY_AWAY_SPEED;}
 		else{speed_ = MOVE_SPEED;}
 		
-
 		if(!isJump_&&!isPunch_)animationController_->Play(static_cast<int>(ANIM_TYPE::WALK));
 		
 		moveDir_ = dir_;
@@ -237,7 +239,6 @@ void Player::Jump(void)
 		jumpDeceralation_ -= i;
 		jumpPow_ = VScale(trans_.GetUp(), jumpDeceralation_);
 	}
-
 
 	// ボタンを離したらジャンプ力に加算しない
 	if(!isJump_)
