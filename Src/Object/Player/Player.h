@@ -253,6 +253,10 @@ private:
 	bool isPunched_;			//他プレイヤーからのパンチを受けたか
 	float punchedCnt_;			//パンチ効果時間カウント
 
+	//当たり判定
+	VECTOR gravHitPosUp_;	//重力上方向の座標
+	VECTOR gravHitPosDown_;	//重力下方向
+
 #ifdef DEBUG_ON
 	VECTOR cubeMovePos_;
 	VECTOR cubePos_;

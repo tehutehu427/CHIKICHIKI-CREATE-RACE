@@ -348,12 +348,16 @@ void Player::HitItem(const IntVector3 _colPos)
 		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
 		//ƒAƒCƒeƒ€‚ÌTransformŽæ“¾
 		Transform itemTrans = itemMng.GetItemTransform(lPos,type);
-
 		auto hit = MV1CollCheck_Line(itemTrans.modelId, -1, trans_.pos, movedPos_);
 
 		if (hit.HitFlag>0)
 		{
 			movedPos_.y = hit.HitPosition.y+RADIUS+1;
+			isJump_ = false;
+		}
+		else
+		{
+
 		}
 	}
 }
@@ -380,15 +384,15 @@ void Player::Collision(void)
 	{
 		movedPos_ = VAdd(movedPos_, cubeMovePos_);
 		movedPos_.y = cube_.upPos.y + RADIUS;
-		isJump_ = false;
+		
 	}
 	else
 	{
 		isJump_ = true;
-		if (jumpPow_.y <= LIMIT_GRAVITY)
-		{
-			jumpPow_.y = LIMIT_GRAVITY;
-		}
+		//if (jumpPow_.y <= LIMIT_GRAVITY)
+		//{
+		//	jumpPow_.y = LIMIT_GRAVITY;
+		//}
 	}
 
 #ifdef DEBUG_ON
