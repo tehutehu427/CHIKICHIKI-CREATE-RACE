@@ -353,11 +353,9 @@ void Player::HitItem(const IntVector3 _colPos)
 
 		if (hit.HitFlag>0)
 		{
-			movedPos_ = hit.HitPosition;
+			movedPos_.y = hit.HitPosition.y+RADIUS+1;
 		}
-
 	}
-
 }
 
 void Player::Collision(void)
