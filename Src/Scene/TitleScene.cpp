@@ -18,6 +18,7 @@ TitleScene::TitleScene(void)
 
 TitleScene::~TitleScene(void)
 {
+	DeleteFontToHandle(buttnFontHandle_);
 }
 
 void TitleScene::Load(void)

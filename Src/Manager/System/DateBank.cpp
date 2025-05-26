@@ -36,6 +36,15 @@ void DateBank::Init(void)
 	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::START)] = "Start";
 }
 
+void DateBank::Destroy(void)
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
+}
+
 bool DateBank::SetPlayerNum(int num)
 {
 	maxPlayerNum_ = GetJoypadNum();
