@@ -5,7 +5,7 @@
 #include "Cannon.h"
 #include "CannonShot.h"
 
-CannonShot::CannonShot(VECTOR _pos, Quaternion _quaRot, Cannon* _parent) : parent_(_parent)
+CannonShot::CannonShot(VECTOR _pos, Quaternion _quaRot)
 {
 	size_ = INT_VECTOR_ZERO;
 	trans_.pos = _pos;
@@ -17,8 +17,6 @@ CannonShot::CannonShot(VECTOR _pos, Quaternion _quaRot, Cannon* _parent) : paren
 
 CannonShot::~CannonShot()
 {
-	delete parent_;
-	parent_ = nullptr;
 }
 
 void CannonShot::SetParam(void)
@@ -46,7 +44,7 @@ void CannonShot::Update(void)
 	if (cnt_ >= ALIVE_TIME)
 	{
 		//Á‹ˆ—
-		Hit();
+		Kill();
 
 		return;
 	}
@@ -67,13 +65,19 @@ void CannonShot::Draw(void)
 	MV1DrawModel(trans_.modelId);
 }
 
-void CannonShot::Hit(void)
+void CannonShot::Hit(Transform& _hitTrans)
 {
 	//’e‚ğíœ
-	isAlive_ = false;
+	Kill();
 }
 
 void CannonShot::Move(void)
 {
 	trans_.pos = VAdd(trans_.pos, movePow_);
+}
+
+void CannonShot::Kill(void)
+{
+	//’e‚ğíœ
+	isAlive_ = false;
 }

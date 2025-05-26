@@ -3,8 +3,6 @@
 
 #include<memory>
 
-class Cannon;
-
 class CannonShot : public ItemBase
 {
 public:
@@ -15,7 +13,7 @@ public:
 	static constexpr float SCALE = 0.3f;		//弾の大きさ
 
 	//コンストラクタ
-	CannonShot(VECTOR _pos, Quaternion _quaRot, Cannon* _parent);
+	CannonShot(VECTOR _pos, Quaternion _quaRot);
 	//デストラクタ
 	~CannonShot()override;
 
@@ -29,17 +27,22 @@ public:
 	//弾の生存判定
 	const bool IsAlive(void)const { return isAlive_; }
 
-	//弾が何かに当たった
-	void Hit(void);
+	/// <summary>
+	/// 当たった処理
+	/// </summary>
+	/// <param name="_hitTrans">対象のモデル情報</param>
+	void Hit(Transform& _hitTrans)override;
 
 private:
 
 	float cnt_;			//生存カウンタ
 	bool isAlive_;		//生存判定
 	VECTOR movePow_;	//移動量
-	Cannon* parent_;	//親大砲
 
 	//移動処理
 	void Move(void);
+
+	//削除
+	void Kill(void);
 };
 

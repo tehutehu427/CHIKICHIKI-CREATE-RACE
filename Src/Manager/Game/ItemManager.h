@@ -118,7 +118,7 @@ public:
 	/// </summary>
 	/// <param name="_type">所有権を渡したいアイテムの種類</param>
 	/// <param name="_subItem">所有権を渡したいアイテムのポインタ(std::moveして渡す)</param>
-	void MoveSubItemOwner(const ItemBase::ITEM_TYPE _type, std::shared_ptr<ItemBase> _subItem);
+	//void MoveSubItemOwner(const ItemBase::ITEM_TYPE _type, std::shared_ptr<ItemBase> _subItem);
 
 protected:
 

@@ -9,7 +9,7 @@
 
 Cannon::Cannon()
 {
-	//shotNum_ = 0;
+	shotNum_ = 0;
 	shotCreateCnt_ = 0.0f;
 	targetPos_ = { 0.0f,0.0f,0.0f };
 	turretAddRot_ = Utility::VECTOR_ZERO;
@@ -76,15 +76,15 @@ void Cannon::Update(void)
 		RotateBarrel();
 	}
 
-	////弾の更新
-	//for (auto& shot : shots_)
-	//{
-	//	//弾がないならスキップ
-	//	if (shot == nullptr)continue;
+	//弾の更新
+	for (auto& shot : shots_)
+	{
+		//弾がないならスキップ
+		if (shot == nullptr)continue;
 
-	//	//弾の更新
-	//	shot->Update();
-	//}
+		//弾の更新
+		shot->Update();
+	}
 }
 
 void Cannon::Draw(void)
@@ -106,14 +106,14 @@ void Cannon::Draw(void)
 	DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
 
 	//弾関係
-	//for (auto& shot : shots_)
-	//{
-	//	//弾がないならスキップ
-	//	if (shot == nullptr)continue;
+	for (auto& shot : shots_)
+	{
+		//弾がないならスキップ
+		if (shot == nullptr)continue;
 
-	//	//弾の描画
-	//	shot->Draw();
-	//}
+		//弾の描画
+		shot->Draw();
+	}
 }
 
 void Cannon::ChangeModelColor(const COLOR_F _colorScale)
@@ -164,9 +164,6 @@ void Cannon::RotateBarrel(void)
 
 void Cannon::CreateShot(void)
 {
-	//アイテムマネージャー
-	ItemManager& itemMng = ItemManager::GetInstance();
-
 	//デルタタイム取得
 	float delta = SceneManager::GetInstance().GetDeltaTime();
 
@@ -174,26 +171,29 @@ void Cannon::CreateShot(void)
 	shotCreateCnt_ += delta;
 
 	//弾が最大数生成されている　又は　生成間隔を達していないなら生成処理をしない
-	if (/*shotNum_ >= SHOT_MAX || */shotCreateCnt_ < SHOT_INTERVAL)return;
+	if (shotNum_ >= SHOT_MAX || shotCreateCnt_ < SHOT_INTERVAL)return;
+
+	//アイテムマネージャー
+	ItemManager& itemMng = ItemManager::GetInstance();
 
 	//砲身の全回転
 	Quaternion barrelAllRot = barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal);
 
 	//弾の生成
-	//std::unique_ptr<CannonShot> shot = std::make_unique<CannonShot>(barrelTrans_.pos, barrelAllRot);
-	std::shared_ptr<CannonShot> shot = std::make_shared<CannonShot>(barrelTrans_.pos, barrelAllRot, this);
+	std::unique_ptr<CannonShot> shot = std::make_unique<CannonShot>(barrelTrans_.pos, barrelAllRot);
+	//std::shared_ptr<CannonShot> shot = std::make_shared<CannonShot>(barrelTrans_.pos, barrelAllRot, this);
 
 	//弾の初期化
 	shot->Init();
 
 	//配列にセット
-	//shots_[shotNum_] = std::move(shot);
+	shots_[shotNum_] = std::move(shot);
 
 	//生成数カウント増加
-	//shotNum_++;
+	shotNum_++;
 
 	//マネージャーに所有権を渡す
-	itemMng.MoveSubItemOwner(ITEM_TYPE::CANNON_SHOT, std::move(shot));
+	//itemMng.MoveSubItemOwner(ITEM_TYPE::CANNON_SHOT, std::move(shot));
 
 	//生成間隔カウンタ初期化
 	shotCreateCnt_ = 0;
@@ -201,20 +201,20 @@ void Cannon::CreateShot(void)
 
 void Cannon::DeleteShot(void)
 {
-	//for (int i = 0 ; i < SHOT_MAX ; i++)
-	//{
-	//	//弾がない 又は 弾が生きてるならならスキップ
-	//	if (shots_[i] == nullptr || shots_[i]->IsAlive())continue;
+	for (int i = 0 ; i < SHOT_MAX ; i++)
+	{
+		//弾がない 又は 弾が生きてるならならスキップ
+		if (shots_[i] == nullptr || shots_[i]->IsAlive())continue;
 
-	//	//弾消去
-	//	shots_[i].reset();
+		//弾消去
+		shots_[i].reset();
 
-	//	//配列が空いたので一番後ろの弾を代入
-	//	shots_[i] = std::move(shots_[shotNum_ - 1]);
+		//配列が空いたので一番後ろの弾を代入
+		shots_[i] = std::move(shots_[shotNum_ - 1]);
 
-	//	//弾カウント減少
-	//	shotNum_--;
-	//}
+		//弾カウント減少
+		shotNum_--;
+	}
 }
 
 bool Cannon::IsWithinRange(void)
