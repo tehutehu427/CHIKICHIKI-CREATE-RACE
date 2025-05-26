@@ -9,6 +9,8 @@ ItemBase::ItemBase()
 	status_.effType = EFFECT_TYPE::FIXED;
 
 	InitMapPos_ = INT_VECTOR_ZERO;
+
+	trans_.MakeCollider(Collider::TYPE::STAGE);
 }
 
 ItemBase::~ItemBase()
