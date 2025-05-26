@@ -73,7 +73,6 @@ void Transform::Update(void)
 	{
 		MV1RefreshCollInfo(modelId);
 	}
-
 }
 
 void Transform::SetModel(int model)

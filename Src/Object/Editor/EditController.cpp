@@ -63,7 +63,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 		return;
 	}
 	auto& itemMIns = ItemManager::GetInstance();
-	if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyObjectSize(playerNum_)))
+	if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_)))
 	{
 		//アイテムが重なっている
 		return;
@@ -151,20 +151,20 @@ void EditController::ItemNotSelect(void)
 				status.mapPos = mapPos_;
 				status.rotate = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
 				status.type = itemType_;
-				MapEditer::GetInstance().AddItem(status, ItemManager::GetInstance().GetDummyObjectSize(playerNum_));
+				MapEditer::GetInstance().AddItem(status, ItemManager::GetInstance().GetDummyItemSize(playerNum_));
 			}
 			ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 			if (!ItemManager::GetInstance().ItemsAddDummyItems(itemType_, leaderPos, playerNum_))
 			{
 				return;
 			}
-			MapEditer::GetInstance().DeleteItem(itemType_, leaderPos, ItemManager::GetInstance().GetDummyObjectSize(playerNum_));
+			MapEditer::GetInstance().DeleteItem(itemType_, leaderPos, ItemManager::GetInstance().GetDummyItemSize(playerNum_));
 			mapPos_ = leaderPos;
 			ChengeMode(MODE::MOVE_ROTATE);
 		}
 		else
 		{
-			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyObjectSize(playerNum_)))
+			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyItemSize(playerNum_)))
 			{
 				return;
 			}
@@ -433,7 +433,7 @@ void EditController::DebugDraw(void)
 	DrawFormatString(0, 20, 0x000000, "%d", static_cast<int>(itemType_));
 	DrawFormatString(0, 40, 0x000000, "%d,%d,%d",mapPos_.x,mapPos_.y,mapPos_.z);
 	DrawFormatString(0, 60, 0x000000, "%d", static_cast<int>(GetMoveDir()));
-	IntVector3 size = ItemManager::GetInstance().GetDummyObjectSize(playerNum_);
+	IntVector3 size = ItemManager::GetInstance().GetDummyItemSize(playerNum_);
 	DrawFormatString(0, 80, 0x000000, "%d,%d,%d",size.x,size.y,size.z);
 
 }

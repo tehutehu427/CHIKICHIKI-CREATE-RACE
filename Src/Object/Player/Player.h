@@ -266,6 +266,9 @@ private:
 	//最終的に動かしたい角度の設定
 	void SetGoalRotate(double _deg);
 
+	//復活
+	void Death(void);
+
 	//ジャンプ
 	void Jump(void);
 

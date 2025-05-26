@@ -5,6 +5,7 @@
 #include "../../Manager/System/SceneManager.h"
 #include "../../Object/Common/Capsule.h"
 #include "../../Object/Common/AnimationController.h"
+#include "../../Manager/Game/ItemManager.h"
 #include "./Process/PlayerInput.h"
 #include "Player.h"
 
@@ -201,6 +202,10 @@ void Player::SetGoalRotate(double _deg)
 	}
 	goalQuaRot_ = axis;
 }
+void Player::Death(void)
+{
+	
+}
 void Player::Jump(void)
 {
 	//if (isPunch_)return;
@@ -316,9 +321,11 @@ VECTOR Player::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _lo
 void Player::HitItem(const IntVector3 _colPos)
 {
 	MapEditer& mapEdit = MapEditer::GetInstance();
+	ItemManager& itemMng = ItemManager::GetInstance();
 	if (mapEdit.IsObjectAtMapPos(_colPos))
 	{
-		//mapEdit.Get
+		mapEdit.GetLeaderMapPos(_colPos);
+		//itemMng.
 	}
 
 }
@@ -337,24 +344,20 @@ void Player::Collision(void)
 			{
 				IntVector3 colPos = mapPos + IntVector3{x, y, z};
 				HitItem(colPos);
-
-
-
-
 			}
 		}
 	}
 
-	//if (CollCube())
-	//{
-	//	movedPos_ = VAdd(movedPos_, cubeMovePos_);
-	//	movedPos_.y = cube_.upPos.y + RADIUS;
-	//	isJump_ = false;
-	//}
-	//else
-	//{
-	//	isJump_ = true;
-	//}
+	if (CollCube())
+	{
+		movedPos_ = VAdd(movedPos_, cubeMovePos_);
+		movedPos_.y = cube_.upPos.y + RADIUS;
+		isJump_ = false;
+	}
+	else
+	{
+		isJump_ = true;
+	}
 
 #ifdef DEBUG_ON
 

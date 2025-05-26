@@ -53,7 +53,7 @@ public:
 
 	ItemBase::Status GetDummyItemStatus(int playerNum);
 	IntVector3 GetDummyItemMapPos(int playerNum);
-	IntVector3 GetDummyObjectSize(int playerNum);
+	IntVector3 GetDummyItemSize(int playerNum);
 	/// <summary>
 	/// ダミーアイテムのTransformを取得
 	/// </summary>

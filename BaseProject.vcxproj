@@ -25,9 +25,12 @@
     <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\FreePalette.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\SoloChallengePalette.cpp" />
-    <ClCompile Include="Src\Object\Item\CannonShot.cpp" />
-    <ClCompile Include="Src\Object\Item\Fan.cpp" />
-    <ClCompile Include="Src\Object\Item\Spiky.cpp" />
+    <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp" />
+    <ClCompile Include="Src\Object\Item\Destroyer\SmallBomb.cpp" />
+    <ClCompile Include="Src\Object\Item\Fixed\GoalFlag.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\CannonShot.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Fan.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Spiky.cpp" />
     <ClCompile Include="Src\Scene\SelectScene.cpp" />
     <ClCompile Include="Src\Scene\Game\MultiParty.cpp" />
     <ClCompile Include="Src\Scene\Game\SoloChallenge.cpp" />
@@ -87,6 +90,7 @@
     <ClInclude Include="Src\Object\Item\Fixed\GoalFlag.h" />
     <ClInclude Include="Src\Object\Item\Installation\CannonShot.h" />
     <ClInclude Include="Src\Object\Item\Installation\Fan.h" />
+    <ClInclude Include="Src\Object\Item\Installation\MoveHoriFloor.h" />
     <ClInclude Include="Src\Object\Item\Installation\Spiky.h" />
     <ClInclude Include="Src\Scene\SelectScene.h" />
     <ClInclude Include="Src\Scene\Game\MultiParty.h" />
