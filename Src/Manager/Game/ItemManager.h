@@ -130,6 +130,13 @@ public:
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>存在するtrue 存在しないfalse</returns>
 	bool IsDummyItem(int playerNum);
+	/// <summary>
+	/// アイテムのtransformを取得
+	/// </summary>
+	/// <param name="_mapPos">マップ座標</param>
+	/// <param name="_type">アイテムの種類</param>
+	/// <returns></returns>
+	Transform GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
 protected:
 
 private:

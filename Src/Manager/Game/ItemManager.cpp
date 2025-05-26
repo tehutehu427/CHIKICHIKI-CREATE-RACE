@@ -300,6 +300,30 @@ bool ItemManager::IsDummyItem(int playerNum)
 	return false;
 }
 
+Transform ItemManager::GetItemTransform(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type) const
+{
+	for (auto& items : items_)
+	{
+		if (items.first != _type)
+		{
+			continue;
+		}
+		for (auto& item : items.second)
+		{
+			if (item == nullptr)
+			{
+				continue;
+			}
+			if (item->GetInitMapPos() == _mapPos)
+			{
+				return item->GetTransform();
+			}
+		}
+	}
+
+	return Transform{};
+}
+
 ItemManager::ItemManager(void)
 {
 
