@@ -5,7 +5,6 @@
 #include "../Common/AnimationController.h"
 #include "../Common/Capsule.h"
 #include "../../Manager/System/Camera.h"
-#include"../Item/MoveHoriFloor.h"
 #include"./Process/PlayerInput.h"
 #include "../ObjectBase.h"
 

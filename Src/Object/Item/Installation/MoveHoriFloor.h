@@ -1,20 +1,21 @@
 #pragma once
-#include"ItemBase.h"
+#include "../ItemBase.h"
 
-class MoveVerFloor : public ItemBase
+class MoveHoriFloor : public ItemBase
 {
 public:
 
 	//マップ
 	static constexpr IntVector3 MAP_SIZE = { 4,1,4 };	//マップサイズ
-	static constexpr int MOVE_Y = 4;					//横移動距離
+	static constexpr int MOVE_X = 8;					//横移動距離
 	static constexpr float ONE_POINT_SEC = 5.0f;		//1地点移動するのにかかる秒数
 	static constexpr int ROUTE = 2;						//ルート数
 
+
 	//コンストラクタ
-	MoveVerFloor();
+	MoveHoriFloor();
 	//デストラクタ
-	~MoveVerFloor()override;
+	~MoveHoriFloor()override;
 
 	//個人設定
 	void SetParam(void)override;
@@ -24,10 +25,10 @@ public:
 	void Draw(void)override;
 
 	/// <summary>
-	/// 当たった物にも同じ移動量を与える
+	/// 当たった処理
 	/// </summary>
-	/// <param name="_hitTrans">当たった物のTransform</param>
-	void HitObject(Transform& _hitTrans);
+	/// <param name="_hitTrans">対象のモデル情報</param>
+	void Hit(Transform& _hitTrans)override;
 
 private:
 
@@ -54,6 +55,5 @@ private:
 
 	//ルートを超えたかの判定
 	bool IsBeyondRoute(void);
-
 };
 

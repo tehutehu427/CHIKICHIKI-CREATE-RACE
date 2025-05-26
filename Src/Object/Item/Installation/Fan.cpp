@@ -1,19 +1,20 @@
-#include "../../Manager/System/ResourceManager.h"
-#include "Floor.h"
+#include"../Manager/System/Resource.h"
+#include"../Manager/System/ResourceManager.h"
+#include "Fan.h"
 
-Floor::Floor()
+Fan::Fan()
 {
 }
 
-Floor::~Floor()
+Fan::~Fan()
 {
 }
 
-void Floor::SetParam(void)
+void Fan::SetParam(void)
 {
 	//モデルの基本設定
 	trans_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::FLOOR));
+		ResourceManager::SRC::FAN));
 
 	//ステータス初期化
 	size_ = MAP_SIZE;
@@ -22,6 +23,6 @@ void Floor::SetParam(void)
 	status_.effType = EFFECT_TYPE::INSTALLATION;
 }
 
-void Floor::Update(void)
+void Fan::Update(void)
 {
 }

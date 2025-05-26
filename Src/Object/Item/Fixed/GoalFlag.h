@@ -1,17 +1,17 @@
 #pragma once
-#include "ItemBase.h"
-class Spiky :
+#include "../ItemBase.h"
+class GoalFlag :
     public ItemBase
 {
 public:
 
 	//マップ
-	static constexpr IntVector3 MAP_SIZE = { 1,1,1 };	//マップサイズ
+	static constexpr IntVector3 MAP_SIZE = { 3,3,3 };	//マップサイズ
 
 	//コンストラクタ
-	Spiky();
+	GoalFlag();
 	//デストラクタ
-	~Spiky()override;
+	~GoalFlag()override;
 
 	//個人設定
 	void SetParam(void)override;
@@ -19,5 +19,6 @@ public:
 	void Update(void)override;
 
 private:
+
 };
 

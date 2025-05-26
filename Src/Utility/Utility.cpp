@@ -620,14 +620,17 @@ const VECTOR Utility::GetRotAxisToTarget(const VECTOR _pos, const VECTOR _target
 
 void Utility::LookAtTarget(Transform& _trans, const VECTOR _toTargetAxis, const float _time, const VECTOR _relativePos)
 {
+    //しきい値
+    static const float THRESHOLD = 0.1f;
+
     //デルタタイム取得
     float delta = SceneManager::GetInstance().GetDeltaTime();
 
     //補正時間カウンタ
     static float aimTime = _time;
 
-    //まだ補正中でも新たに狙う
-    if (aimTime > 0.1f)aimTime = _time;
+    //しきい値判定
+    if (aimTime > THRESHOLD)aimTime = _time;
 
     //デルタタイムで補間
     aimTime -= delta;

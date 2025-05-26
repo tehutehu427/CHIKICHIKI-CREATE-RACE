@@ -1,16 +1,16 @@
 #pragma once
-#include "ItemBase.h"
-class Floor : public ItemBase
+#include "../ItemBase.h"
+class SmallBomb : public ItemBase
 {
 public:
 
 	//マップ
-	static constexpr IntVector3 MAP_SIZE = { 4,1,4 };	//マップサイズ
+	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };	//マップサイズ
 
 	//コンストラクタ
-	Floor();
+	SmallBomb();
 	//デストラクタ
-	~Floor()override;
+	~SmallBomb()override;
 
 	//個人設定
 	void SetParam(void)override;

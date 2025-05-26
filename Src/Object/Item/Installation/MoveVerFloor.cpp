@@ -3,12 +3,12 @@
 #include "../Manager/Game/MapEditer.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
-#include "MoveHoriFloor.h"
+#include "MoveVerFloor.h"
 
-MoveHoriFloor::MoveHoriFloor()
+MoveVerFloor::MoveVerFloor()
 {
 	routeNum_ = 0;
-	for (int i = 0 ; i< ROUTE;i++)
+	for (int i = 0; i < ROUTE; i++)
 	{
 		route_[i] = Utility::VECTOR_ZERO;
 	}
@@ -20,11 +20,11 @@ MoveHoriFloor::MoveHoriFloor()
 	movePow_ = Utility::VECTOR_ZERO;
 }
 
-MoveHoriFloor::~MoveHoriFloor()
+MoveVerFloor::~MoveVerFloor()
 {
 }
 
-void MoveHoriFloor::SetParam(void)
+void MoveVerFloor::SetParam(void)
 {
 	//モデルの基本設定
 	trans_.SetModel(resMng_.LoadModelDuplicate(
@@ -40,7 +40,7 @@ void MoveHoriFloor::SetParam(void)
 	InitRoute();
 }
 
-void MoveHoriFloor::Update(void)
+void MoveVerFloor::Update(void)
 {
 	//移動処理
 	Move();
@@ -49,16 +49,16 @@ void MoveHoriFloor::Update(void)
 	trans_.Update();
 }
 
-void MoveHoriFloor::Draw(void)
+void MoveVerFloor::Draw(void)
 {
 	DrawLine3D(route_[0], route_[1], 0xffffff);
 	MV1DrawModel(trans_.modelId);
 }
 
-void MoveHoriFloor::Move(void)
+void MoveVerFloor::Move(void)
 {
 	//指定ルートを超えたか
-	if(IsBeyondRoute())
+	if (IsBeyondRoute())
 	{
 		//現在位置の補正
 		trans_.pos = route_[routeNum_];
@@ -71,14 +71,14 @@ void MoveHoriFloor::Move(void)
 	trans_.pos = VAdd(trans_.pos, movePow_);
 }
 
-void MoveHoriFloor::InitRoute(void)
+void MoveVerFloor::InitRoute(void)
 {
 	//初期位置保存
 	route_[routeNum_] = trans_.pos;
 
 	//マップ座標をワールド座標に
-	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ size_.x + MOVE_X, 0, 0 });
-	
+	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ 0, size_.y * MOVE_Y, 0 });
+
 	//移動量
 	VECTOR movePos = trans_.quaRot.PosAxis(intPos);
 	
@@ -92,21 +92,21 @@ void MoveHoriFloor::InitRoute(void)
 	distance_ = Utility::Distance(route_[routeNum_], route_[routeNum_ + 1]);
 
 	//速度設定
-	speed_ = distance_ / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
+	speed_ = static_cast<float>(distance_) / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
 
 	//初期ルート設定
 	SetRoute();
 }
 
-void MoveHoriFloor::SetRoute(void)
+void MoveVerFloor::SetRoute(void)
 {
 	//開始地点
 	startRoute_ = route_[routeNum_];
-	
+
 	//地点用ナンバー増加
 	routeNum_++;
 	if (routeNum_ >= ROUTE)routeNum_ = 0;
-	
+
 	//終了地点
 	goalRoute_ = route_[routeNum_];
 
@@ -117,7 +117,7 @@ void MoveHoriFloor::SetRoute(void)
 	movePow_ = Utility::GetMoveVec(startRoute_, goalRoute_, speed_);
 }
 
-bool MoveHoriFloor::IsBeyondRoute(void)
+bool MoveVerFloor::IsBeyondRoute(void)
 {
 	//Xの比較
 	bool beyondX;
@@ -137,7 +137,7 @@ bool MoveHoriFloor::IsBeyondRoute(void)
 	return beyondX && beyondY && beyondZ;
 }
 
-void MoveHoriFloor::HitObject(Transform& _hitTrans)
+void MoveVerFloor::Hit(Transform& _hitTrans)
 {
 	//当たったオブジェクトに同じだけ移動させる
 	_hitTrans.pos = VAdd(_hitTrans.pos, movePow_);
