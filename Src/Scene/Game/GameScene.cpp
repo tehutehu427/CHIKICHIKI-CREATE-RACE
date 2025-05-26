@@ -210,12 +210,11 @@ void GameScene::DrawEdit(void)
 	//グリッド
 	grid_->Draw();
 
-	//パレット
-	palette_->Draw();
-
-
 	//エディットコントローラー
 	editController_->Draw();
+
+	//パレット
+	palette_->Draw();
 }
 
 void GameScene::DrawAction(void)
