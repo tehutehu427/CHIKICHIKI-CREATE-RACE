@@ -98,13 +98,13 @@ void Player::Update(void)
 	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
 	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_);
 
-	//衝突判定
-	Collision();
 
 	//アクション関係
 	Action();
 
 
+	//衝突判定
+	Collision();
 
 	//回転の同期
 	trans_.quaRot = playerRotY_;
@@ -348,11 +348,19 @@ void Player::HitItem(const IntVector3 _colPos)
 		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
 		//アイテムのTransform取得
 		Transform itemTrans = itemMng.GetItemTransform(lPos,type);
-		auto hit = MV1CollCheck_Line(itemTrans.modelId, -1, trans_.pos, movedPos_);
 
+		VECTOR upPos = movedPos_;
+		upPos.y += RADIUS;
+		VECTOR downPos = movedPos_;
+		downPos.y -= RADIUS;
+
+		auto hit = MV1CollCheck_Line(itemTrans.modelId, -1, upPos, downPos);
+
+		 VECTOR debug = MV1GetPosition(itemTrans.modelId);
 		if (hit.HitFlag>0)
 		{
-			movedPos_.y = hit.HitPosition.y+RADIUS+1;
+			movedPos_.y = hit.HitPosition.y+RADIUS;
+			jumpPow_ = Utility::VECTOR_ZERO;
 			isJump_ = false;
 		}
 		else
@@ -366,6 +374,26 @@ void Player::Collision(void)
 {
 	movedPos_ = VAdd(trans_.pos, movePow_);
 	movedPos_ = VAdd(movedPos_, jumpPow_);
+
+
+	if (CollCube())
+	{
+		movedPos_ = VAdd(movedPos_, cubeMovePos_);
+		jumpPow_ = Utility::VECTOR_ZERO;
+		movedPos_.y = cube_.upPos.y + RADIUS;
+		stepJump_ = 0.0f;
+		jumpDeceralation_ = POW_JUMP;
+	}
+	else
+	{
+		isJump_ = true;
+		//if (jumpPow_.y <= LIMIT_GRAVITY)
+		//{
+		//	jumpPow_.y = LIMIT_GRAVITY;
+		//}
+	}
+
+
 	MapEditer& mapEdit = MapEditer::GetInstance();
 	IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
 	for (int x = -COL_RANGE; x <= COL_RANGE; x++)
@@ -375,24 +403,10 @@ void Player::Collision(void)
 			for (int z = -COL_RANGE; z <= COL_RANGE; z++)
 			{
 				IntVector3 colPos = mapPos + IntVector3{x, y, z};
+				if (colPos.x < 0 || colPos.y < 0 || colPos.z < 0)continue;
 				HitItem(colPos);
 			}
 		}
-	}
-
-	if (CollCube())
-	{
-		movedPos_ = VAdd(movedPos_, cubeMovePos_);
-		movedPos_.y = cube_.upPos.y + RADIUS;
-		
-	}
-	else
-	{
-		isJump_ = true;
-		//if (jumpPow_.y <= LIMIT_GRAVITY)
-		//{
-		//	jumpPow_.y = LIMIT_GRAVITY;
-		//}
 	}
 
 #ifdef DEBUG_ON

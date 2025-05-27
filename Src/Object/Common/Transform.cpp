@@ -69,7 +69,7 @@ void Transform::Update(void)
 	}
 
 	// Õ“Ë”»’è‚ÌXV
-	if (collider != nullptr)
+	//if (collider != nullptr)
 	{
 		MV1RefreshCollInfo(modelId);
 	}
