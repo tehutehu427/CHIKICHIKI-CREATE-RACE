@@ -600,19 +600,13 @@ const VECTOR Utility::GetRotAxisToTarget(const VECTOR _pos, const VECTOR _target
     //対象までの方向ベクトル
     VECTOR targetVec = GetMoveVec(_pos, _targetPos);
 
-    //自身と対象のベクトルの差異
-    VECTOR turretVecDiff = VSub(targetVec, _pos);
-
-    //正規化
-    turretVecDiff = VNorm(turretVecDiff);
-
     //必要ない軸は除去
-    turretVecDiff.x *= _needAxis.x;
-    turretVecDiff.y *= _needAxis.y;
-    turretVecDiff.z *= _needAxis.z;
+    targetVec.x *= _needAxis.x;
+    targetVec.y *= _needAxis.y;
+    targetVec.z *= _needAxis.z;
 
     //回転量
-    Quaternion turQuaRot = Quaternion::LookRotation(turretVecDiff);
+    Quaternion turQuaRot = Quaternion::LookRotation(targetVec);
 
     //VECTOR変換
    return turQuaRot.ToEuler();

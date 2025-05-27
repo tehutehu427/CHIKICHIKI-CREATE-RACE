@@ -28,8 +28,7 @@ void Cannon::SetParam(void)
 		ResourceManager::SRC::CANNON_TURRET));
 
 	//ëäëŒç¿ïW
-	trans_.localPos = MAP_LOCALPOS;
-	barrelTrans_.localPos = MAP_LOCALPOS;
+	trans_.localPos = barrelTrans_.localPos = MAP_LOCALPOS;
 
 	//ÉXÉeÅ[É^ÉXèâä˙âª
 	size_ = MAP_SIZE;
@@ -104,8 +103,8 @@ void Cannon::Draw(void)
 
 	DrawSphere3D(targetPos_, 10.0, 20, 0xffffff, 0xffffff, true);
 
-	DrawLine3D(barrelTrans_.pos, targetPos_, 0x666666);
-	DrawLine3D(barrelTrans_.pos, VScale(barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal).GetForward(),1000.0f), 0x666666);
+	DrawLine3D(VAdd(barrelTrans_.pos,barrelTrans_.localPos), targetPos_, 0x666666);
+	DrawLine3D(VAdd(barrelTrans_.pos, barrelTrans_.localPos), VScale(barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal).GetForward(),1000.0f), 0x666666);
 
 	DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
 
@@ -147,7 +146,7 @@ void Cannon::ChangeModelColor(const COLOR_F _colorScale)
 void Cannon::RotateTurret(void)
 {
 	//ëŒè€Ç‹Ç≈ÇÃâÒì]é≤
-	turretAddRot_ = Utility::GetRotAxisToTarget(barrelTrans_.pos, targetPos_,Utility::AXIS_XZ);
+	turretAddRot_ = Utility::GetRotAxisToTarget(VAdd(trans_.pos,trans_.localPos), targetPos_,Utility::AXIS_XZ);
 
 	//ñCë‰âÒì]
 	Utility::LookAtTarget(trans_, turretAddRot_, AIM_TIME_TURRET);
@@ -184,7 +183,7 @@ void Cannon::CreateShot(void)
 	Quaternion barrelAllRot = barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal);
 
 	//íeÇÃê∂ê¨
-	std::unique_ptr<CannonShot> shot = std::make_unique<CannonShot>(barrelTrans_.pos, barrelAllRot);
+	std::unique_ptr<CannonShot> shot = std::make_unique<CannonShot>(VAdd(barrelTrans_.pos,barrelTrans_.localPos), barrelAllRot);
 	//std::shared_ptr<CannonShot> shot = std::make_shared<CannonShot>(barrelTrans_.pos, barrelAllRot, this);
 
 	//íeÇÃèâä˙âª
