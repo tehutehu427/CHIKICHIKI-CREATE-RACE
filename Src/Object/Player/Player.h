@@ -35,7 +35,7 @@ public:
 	//移動
 	//----------------------------------
 	//移動スピード
-	static constexpr float MOVE_SPEED = 3.0f;
+	static constexpr float MOVE_SPEED = 7.0f;
 
 	//ぶっ飛ぶスピード
 	static constexpr float FLY_AWAY_SPEED = 20.0f;
@@ -72,6 +72,12 @@ public:
 	static constexpr float PUNCH_RADIUS = 20.0f;
 	//吹き飛び効果時間
 	static constexpr float PUNCHED_TIME = 0.2f;
+
+	//--------------------------------------------------
+	//当たり判定
+	//--------------------------------------------------
+	//当たり判定のめりこみ防止用
+	static constexpr float POSITION_OFFSET = 0.1f;
 
 	//***********************************
 	//アニメーション関連
@@ -195,11 +201,17 @@ private:
 	//移動座標
 	VECTOR moveDiff_;
 
+	//アイテムとのローカル座標
+	VECTOR itemLocalPos_;
+
 	//入力デバイス
 	PlayerInput::CNTL cntl_;
 
 	//ゲームパッド番号
 	InputManager::JOYPAD_NO padNum_;
+
+	//アイテムの支点
+	std::vector<IntVector3> itemLPos_;
 
 	
 

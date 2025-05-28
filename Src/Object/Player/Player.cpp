@@ -5,6 +5,7 @@
 #include "../../Manager/System/SceneManager.h"
 #include "../../Object/Common/Capsule.h"
 #include "../../Object/Common/AnimationController.h"
+#include "../../Object/Editor/EditController.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "./Process/PlayerInput.h"
 #include "Player.h"
@@ -58,6 +59,9 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	punchPos_ = Utility::VECTOR_ZERO;
 	isPunched_ = false;
 	punchedCnt_ = PUNCHED_TIME;
+	
+	itemLocalPos_ = Utility::VECTOR_ZERO;
+
 	
 
 }
@@ -135,11 +139,12 @@ void Player::DrawDebug(void)
 	if (isCol_) { color = 0xff0000; }
 	DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
 	DrawFormatString(0, 16*(playerNum_*5), 0x000000
-		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)"
+		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,jumpDeceralation_
 		,stepJump_
 		,jumpPow_.x,jumpPow_.y,jumpPow_.z
+		,movedPos_.x,movedPos_.y,movedPos_.z
 	);
 
 	DrawSphere3D(punchPos_, PUNCH_RADIUS, 4, 0xff0000, 0xff0000, isPunchHitTime_);
@@ -343,30 +348,55 @@ void Player::HitItem(const IntVector3 _colPos)
 	if (mapEdit.IsObjectAtMapPos(_colPos))
 	{
 		IntVector3 lPos=mapEdit.GetLeaderMapPos(_colPos);
-
+		for (auto& iLPos : itemLPos_)
+		{
+			if (iLPos == lPos)return;
+		}
+		
+		
 		//アイテムタイプ取得
 		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
+
+		
 		//アイテムのTransform取得
 		Transform itemTrans = itemMng.GetItemTransform(lPos,type);
 
 		VECTOR upPos = movedPos_;
-		upPos.y += RADIUS;
+		upPos.y += (RADIUS+ 1.0f);
 		VECTOR downPos = movedPos_;
-		downPos.y -= RADIUS;
+		downPos.y -= (RADIUS+ 1.0f);
 
 		auto hit = MV1CollCheck_Line(itemTrans.modelId, -1, upPos, downPos);
 
-		 VECTOR debug = MV1GetPosition(itemTrans.modelId);
 		if (hit.HitFlag>0)
 		{
-			movedPos_.y = hit.HitPosition.y+RADIUS;
+			if (!Utility::EqualsVZero(itemLocalPos_))
+			{
+				VECTOR itemLocalPos = VSub(movedPos_, itemTrans.pos);
+				if (Utility::Equals(itemLocalPos, itemLocalPos_))
+				{
+					movedPos_ = VAdd(itemLocalPos_, itemTrans.pos);
+				}
+				else
+				{
+					VECTOR diff = VSub(itemLocalPos, itemLocalPos_);
+					movedPos_ = VAdd(itemLocalPos_, itemTrans.pos);
+					movedPos_ = VAdd(movedPos_, diff);
+				}
+
+			}
+			movedPos_.y = hit.HitPosition.y+RADIUS+ POSITION_OFFSET;
 			jumpPow_ = Utility::VECTOR_ZERO;
 			isJump_ = false;
+			//jumpDeceralation_ = POW_JUMP;
+			itemLocalPos_ = VSub(movedPos_, itemTrans.pos);
+
 		}
 		else
 		{
-
+			itemLocalPos_ = Utility::VECTOR_ZERO;
 		}
+		itemLPos_.push_back(lPos);
 	}
 }
 
@@ -408,6 +438,7 @@ void Player::Collision(void)
 			}
 		}
 	}
+	itemLPos_.clear();
 
 #ifdef DEBUG_ON
 
