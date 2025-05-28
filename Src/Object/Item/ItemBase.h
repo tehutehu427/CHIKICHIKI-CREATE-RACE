@@ -93,6 +93,9 @@ protected:
 	Status status_;			//ステータス
 	IntVector3 InitMapPos_;	//初期マップ座標
 
+	//サイズの倍率調整
+	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;
+
 private:
 };
 

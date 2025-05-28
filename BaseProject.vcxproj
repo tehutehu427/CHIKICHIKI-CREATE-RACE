@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Item\Installation\Spring.cpp" />
     <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp" />
     <ClCompile Include="Src\Object\Item\Destroyer\SmallBomb.cpp" />
     <ClCompile Include="Src\Object\Item\Fixed\GoalFlag.cpp" />
@@ -73,6 +74,7 @@
     <ClCompile Include="Src\Object\Item\Fixed\StartFlag.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Item\Installation\Spring.h" />
     <ClInclude Include="Src\Object\Item\Destroyer\BigBomb.h" />
     <ClInclude Include="Src\Object\Item\Destroyer\SmallBomb.h" />
     <ClInclude Include="Src\Object\Item\Fixed\GoalFlag.h" />

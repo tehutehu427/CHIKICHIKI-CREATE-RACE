@@ -5,7 +5,11 @@ class SmallBomb : public ItemBase
 public:
 
 	//マップ
-	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };	//マップサイズ
+	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };					//マップサイズ
+	static constexpr VECTOR MAP_LOCALPOS = { 100.0f,100.0f,100.0f };	//マップとの相対座標
+
+	//サイズ
+	static constexpr VECTOR MODEL_SIZE = { 200.0f,200.0f,200.0f };		//モデルのサイズ
 
 	//コンストラクタ
 	SmallBomb();

@@ -6,8 +6,11 @@ class Fence : public ItemBase
 public:
 
 	//マップ
-	static constexpr IntVector3 MAP_SIZE = { 2,1,1 };	//マップサイズ
-	static constexpr VECTOR MAP_LOCALPOS = { 100.0f,60.0f,10.0f };	//マップとの相対座標
+	static constexpr IntVector3 MAP_SIZE = { 2,1,1 };				//マップサイズ
+	static constexpr VECTOR MAP_LOCALPOS = { 110.0f,70.0f,10.0f };	//マップとの相対座標
+
+	//サイズ
+	static constexpr VECTOR MODEL_SIZE = { 220.0f,140.0f,20.0f };	//モデルのサイズ
 
 	//コンストラクタ
 	Fence();
@@ -18,8 +21,6 @@ public:
 	void SetParam(void)override;
 	//更新
 	void Update(void)override;
-	//描画
-	void Draw(void)override;
 
 private:
 

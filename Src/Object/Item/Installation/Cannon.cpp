@@ -27,22 +27,50 @@ void Cannon::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_TURRET));
 
-	//相対座標
-	trans_.localPos = barrelTrans_.localPos = MAP_LOCALPOS;
-
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
 
+	//相対座標
+	trans_.localPos = MAP_LOCALPOS;
+
+	//サイズ倍率
+	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
+
+	//サイズ
+	trans_.scl.x *= adjustSizePer.x;
+	trans_.scl.y *= adjustSizePer.y;
+	trans_.scl.z *= adjustSizePer.z;
+
+	//相対座標
+	trans_.localPos.x = MAP_LOCALPOS.x * trans_.scl.x;
+	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
+	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
+
+	//砲身
+	barrelTrans_ = trans_;
+
+	//砲台からの相対座標
+	VECTOR barrelLocalPos = BARREL_LOCAL_POS;
+	barrelLocalPos.x *= barrelTrans_.scl.x;
+	barrelLocalPos.y *= barrelTrans_.scl.y;
+	barrelLocalPos.z *= barrelTrans_.scl.z;
+
+	//砲台からの相対回転
+	VECTOR barrelLocalRot = BARREL_LOCAL_ROT;
+	barrelLocalRot.x *= barrelTrans_.scl.x;
+	barrelLocalRot.y *= barrelTrans_.scl.y;
+	barrelLocalRot.z *= barrelTrans_.scl.z;
+
 	//砲身を砲台に合わせておく
-	barrelTrans_.pos = VAdd(trans_.pos,BARREL_LOCAL_POS);
+	barrelTrans_.pos = VAdd(trans_.pos, barrelLocalPos);
 	//角度もまっすぐに
 	barrelTrans_.quaRotLocal = Quaternion::Euler(
-		Utility::Deg2RadF(BARREL_LOCAL_ROT.x), 
-		Utility::Deg2RadF(BARREL_LOCAL_ROT.y),
-		Utility::Deg2RadF(BARREL_LOCAL_ROT.z));
+		Utility::Deg2RadF(barrelLocalRot.x),
+		Utility::Deg2RadF(barrelLocalRot.y),
+		Utility::Deg2RadF(barrelLocalRot.z));
 	
 	//砲身のモデル設定
 	barrelTrans_.SetModel(resMng_.LoadModelDuplicate(
@@ -183,7 +211,7 @@ void Cannon::CreateShot(void)
 	Quaternion barrelAllRot = barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal);
 
 	//弾の生成
-	std::unique_ptr<CannonShot> shot = std::make_unique<CannonShot>(VAdd(barrelTrans_.pos,barrelTrans_.localPos), barrelAllRot);
+	std::unique_ptr<CannonShot> shot = std::make_unique<CannonShot>(VAdd(barrelTrans_.pos,barrelTrans_.localPos), barrelAllRot,barrelTrans_.scl);
 	//std::shared_ptr<CannonShot> shot = std::make_shared<CannonShot>(barrelTrans_.pos, barrelAllRot, this);
 
 	//弾の初期化

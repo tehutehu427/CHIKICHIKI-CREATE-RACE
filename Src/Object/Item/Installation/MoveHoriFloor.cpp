@@ -30,14 +30,24 @@ void MoveHoriFloor::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::MOVE_FLOOR));
 
-	//相対座標
-	trans_.localPos = MAP_LOCALPOS;
-
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
+
+	//サイズ倍率
+	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
+
+	//サイズ
+	trans_.scl.x *= adjustSizePer.x;
+	trans_.scl.y *= adjustSizePer.y;
+	trans_.scl.z *= adjustSizePer.z;
+
+	//相対座標
+	trans_.localPos.x = MAP_LOCALPOS.x * trans_.scl.x;
+	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
+	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
 	//ルート設定
 	InitRoute();
@@ -85,7 +95,7 @@ void MoveHoriFloor::InitRoute(void)
 	route_[routeNum_] = trans_.pos;
 
 	//マップ座標をワールド座標に
-	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ size_.x + MOVE_X, 0, 0 });
+	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ MOVE_X, 0, 0 });
 	
 	//移動量
 	VECTOR movePos = trans_.quaRot.PosAxis(intPos);

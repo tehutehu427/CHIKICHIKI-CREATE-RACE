@@ -15,6 +15,9 @@ public:
 	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };				//マップサイズ
 	static constexpr VECTOR MAP_LOCALPOS = { 60.0f,0.0f,40.0f };	//マップとの相対座標
 
+	//サイズ
+	static constexpr VECTOR MODEL_SIZE = { 120.0f,100.0f,80.0f };	//モデルのサイズ
+
 	//エイム
 	static constexpr float  AIM_RADIUS = 500.0f;	//狙う範囲半径
 	static constexpr float AIM_TIME_TURRET = 1.0f;	//対象に向くまでの時間
@@ -22,8 +25,7 @@ public:
 
 	//砲身
 	static constexpr VECTOR BARREL_LOCAL_POS = { 0.0f, 75.0f, -0.0f };	//砲身の相対座標
-	static constexpr VECTOR BARREL_LOCAL_ROT = { 18.0f, 0.0f, 0.0f };	//砲身の相対回転
-
+	static constexpr VECTOR BARREL_LOCAL_ROT = { 20.0f, 0.0f, 0.0f };	//砲身の相対回転
 
 	//コンストラクタ
 	Cannon();
