@@ -18,7 +18,7 @@ public:
 	void Init(void);
 	void Update(void);
 	void Draw(void);
-
+	void Destroy(void);
 	/// <summary>
 	/// ƒAƒCƒeƒ€’Ç‰Á
 	/// </summary>

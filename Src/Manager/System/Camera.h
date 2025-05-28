@@ -32,6 +32,9 @@ public:
 	//固定上用
 	static constexpr VECTOR FIXED_LOCAL_P2T_POS = { 0.0f, -1500.0f, 0.0f };
 
+	//斜め上用
+	static constexpr VECTOR FIXED_DIAGONAL_TARGET_POS = { 2000.0f, 00.0f, 3000.0f };
+
 	// 追従位置から注視点までの相対座標
 	static constexpr VECTOR LOCAL_F2T_POS = { 0.0f, 0.0f, 500.0f };
 
@@ -54,6 +57,7 @@ public:
 		FPS,
 		FREE_CONTROLL,
 		FIXED_UP,
+		FIXED_DIAGONAL,	//斜め固定
 	};
 
 	Camera(void);
@@ -133,5 +137,6 @@ private:
 	void SetBeforeDrawFPS(void);
 	void SetBeforeDrawFreeControll(void);
 	void SetBeforeDrawFixedUp(void);
+	void SetBeforeDrawFixedDiagonal(void);
 };
 

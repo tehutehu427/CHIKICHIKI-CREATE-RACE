@@ -34,6 +34,11 @@ GameScene::~GameScene(void)
 {
 	//インスタンスの削除
 	PlayerManager::GetInstance().Destroy();
+	ItemManager::GetInstance().Destroy();
+	MapEditer::GetInstance().Destroy();
+	DeleteFontToHandle(buttnFontHandle_);
+	phaseChanges_.clear();
+
 }
 
 void GameScene::Load(void)
@@ -104,6 +109,9 @@ void GameScene::NormalDraw(void)
 	//スカイドーム
 	sky_->Draw();
 
+	//グリッド
+	//grid_->Draw();
+
 	phaseDraw_();
 
 	//プレイヤー
@@ -116,7 +124,7 @@ void GameScene::NormalDraw(void)
 	editController_->Draw();
 	
 	//パレット
-	palette_->Draw();
+	//palette_->Draw();
 }
 
 void GameScene::ChangeNormal(void)
@@ -174,22 +182,30 @@ void GameScene::ChangePhaseEdit(void)
 	VECTOR pos;
 	IntVector3 mPos = MapEditer::MAP_SIZE;
 	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
-	pos = { 0.0f,250.0f,-500.0f };
-	//SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	//pos = { 0.0f,250.0f,-500.0f };
+	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
 }
 
 void GameScene::ChangePhaseAction(void)
 {
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
-	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FIXED_UP);
-	VECTOR pos;
-	IntVector3 mPos = MapEditer::MAP_SIZE;
-	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) * 8.5f,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
+
+	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FIXED_DIAGONAL);
+	//VECTOR pos;
+	//IntVector3 mPos = MapEditer::MAP_SIZE;
+	//pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) * 8.5f,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
+	//SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	//VECTOR angles = {};
+	//angles.x = Utility::Deg2RadF(90.0);
+	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
+
+	VECTOR pos = ACTION_CAMERA_POS;
 	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
 	VECTOR angles = {};
-	angles.x = Utility::Deg2RadF(90.0);
-	SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
+	angles = Quaternion::FromToRotation(pos, Camera::FIXED_DIAGONAL_TARGET_POS).ToEuler();
+	//angles.x = Utility::Deg2RadF(90.0);
+	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
 	//SceneManager::GetInstance().GetCamera().lock()->SetTargetPos({ static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2, 0.0f, static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 });
 }
 
@@ -207,8 +223,6 @@ void GameScene::UpdateAction(void)
 
 void GameScene::DrawEdit(void)
 {
-	//グリッド
-	grid_->Draw();
 
 	//エディットコントローラー
 	editController_->Draw();

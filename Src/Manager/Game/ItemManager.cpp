@@ -64,6 +64,16 @@ void ItemManager::Draw(void)
 	}
 }
 
+void ItemManager::Destroy(void)
+{
+	AllDeleteItem();
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
+}
+
 void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type)
 {
 	//ƒAƒCƒeƒ€

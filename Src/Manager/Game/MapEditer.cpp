@@ -32,6 +32,16 @@ void MapEditer::Init(void)
 }
 
 
+void MapEditer::Destroy(void)
+{
+	DeleteAllItem();
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
+}
+
 bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos)
 {
 	return GetItemType(mapPos) != ItemBase::ITEM_TYPE::NONE;
