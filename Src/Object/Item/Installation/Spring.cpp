@@ -1,26 +1,26 @@
 #include"../Manager/System/Resource.h"
 #include"../Manager/System/ResourceManager.h"
-#include "BigBomb.h"
+#include "Spring.h"
 
-BigBomb::BigBomb()
+Spring::Spring()
 {
 }
 
-BigBomb::~BigBomb()
+Spring::~Spring()
 {
 }
 
-void BigBomb::SetParam(void)
+void Spring::SetParam(void)
 {
 	//モデルの基本設定
 	trans_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::BOMB));
+		ResourceManager::SRC::SPRING));
 
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
 	status_.isGravity = false;
-	status_.effType = EFFECT_TYPE::DESTROYER;
+	status_.effType = EFFECT_TYPE::INSTALLATION;
 
 	//サイズ倍率
 	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
@@ -36,6 +36,6 @@ void BigBomb::SetParam(void)
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 }
 
-void BigBomb::Update(void)
+void Spring::Update(void)
 {
 }

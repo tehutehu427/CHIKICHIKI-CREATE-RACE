@@ -1,9 +1,12 @@
 #include "../../Utility/Utility.h"
 #include "../../Manager/Game/GravityManager.h"
+#include "../../Manager/Game/MapEditer.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Object/Common/Capsule.h"
 #include "../../Object/Common/AnimationController.h"
+#include "../../Object/Editor/EditController.h"
+#include "../../Manager/Game/ItemManager.h"
 #include "./Process/PlayerInput.h"
 #include "Player.h"
 
@@ -20,6 +23,7 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	animationController_ = std::make_shared<AnimationController>(trans_.modelId);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), DEFAULT_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), DEFAULT_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL), DEFAULT_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_SPD/PUNCH_TIME_MAX);
@@ -56,6 +60,9 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	isPunched_ = false;
 	punchedCnt_ = PUNCHED_TIME;
 	
+	itemLocalPos_ = Utility::VECTOR_ZERO;
+
+	
 
 }
 
@@ -71,10 +78,23 @@ void Player::Init(void)
 
 void Player::Update(void)
 {
+	animationController_->Update();
+	if (IsDeath())
+	{
+		//落ちているアニメーション再生0
+		animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
+		
+		if (animationController_->GetAnimStep() >= FALL_ANIM_START)
+		{
+			animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 60.0f);
+		}
+
+		//animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 5.0f);
+		return;
+	}
 	//入力更新
 	input_->Update();
-	animationController_->Update();
-
+	
 #ifdef DEBUG_ON
 	CubeMove();
 #endif // DEBUG_ON
@@ -82,13 +102,13 @@ void Player::Update(void)
 	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
 	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_);
 
-	//衝突判定
-	Collision();
 
 	//アクション関係
 	Action();
 
 
+	//衝突判定
+	Collision();
 
 	//回転の同期
 	trans_.quaRot = playerRotY_;
@@ -119,11 +139,12 @@ void Player::DrawDebug(void)
 	if (isCol_) { color = 0xff0000; }
 	DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
 	DrawFormatString(0, 16*(playerNum_*5), 0x000000
-		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)"
+		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,jumpDeceralation_
 		,stepJump_
-		,jumpPow_
+		,jumpPow_.x,jumpPow_.y,jumpPow_.z
+		,movedPos_.x,movedPos_.y,movedPos_.z
 	);
 
 	DrawSphere3D(punchPos_, PUNCH_RADIUS, 4, 0xff0000, 0xff0000, isPunchHitTime_);
@@ -199,6 +220,14 @@ void Player::SetGoalRotate(double _deg)
 		stepRotTime_ = TIME_ROT;
 	}
 	goalQuaRot_ = axis;
+}
+bool Player::IsDeath(void)
+{
+	if (trans_.pos.y <= DEATH_POS_Y)
+	{
+		return true;
+	}
+	return false;
 }
 void Player::Jump(void)
 {
@@ -312,25 +341,94 @@ VECTOR Player::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _lo
 	return VAdd(_followPos, addPos);
 }
 
-void Player::CalcGravityPow(void)
+void Player::HitItem(const IntVector3 _colPos)
 {
+	MapEditer& mapEdit = MapEditer::GetInstance();
+	ItemManager& itemMng = ItemManager::GetInstance();
+	if (mapEdit.IsObjectAtMapPos(_colPos))
+	{
+		IntVector3 lPos=mapEdit.GetLeaderMapPos(_colPos);
+		for (auto& iLPos : itemLPos_)
+		{
+			if (iLPos == lPos)return;
+		}
+		auto vec = VSub(movedPos_, trans_.pos);
+		
+		//アイテムタイプ取得
+		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
 
+		
+		//アイテムのTransform取得
+		Transform itemTrans = itemMng.GetItemTransform(lPos,type);
+
+		VECTOR upPos = movedPos_;
+		upPos.y += (RADIUS+ 10.0f);
+		VECTOR downPos = movedPos_;
+		downPos.y -= (RADIUS+ 10.0f);
+
+		auto hit = MV1CollCheck_Line(itemTrans.modelId, -1, upPos, downPos);
+
+		if (hit.HitFlag>0)
+		{
+			if (!Utility::EqualsVZero(itemLocalPos_))
+			{
+				VECTOR itemLocalPos = VSub(movedPos_, itemTrans.pos);
+				movedPos_ = VAdd(itemLocalPos_, itemTrans.pos);
+				movedPos_ = VAdd(movedPos_, vec);
+			}
+			movedPos_.y = hit.HitPosition.y+RADIUS+ POSITION_OFFSET;
+			jumpPow_ = Utility::VECTOR_ZERO;
+			isJump_ = false;
+			itemLocalPos_ = VSub(movedPos_, itemTrans.pos);
+
+		}
+		else
+		{
+			itemLocalPos_ = Utility::VECTOR_ZERO;
+		}
+		itemLPos_.push_back(lPos);
+	}
 }
 
 void Player::Collision(void)
 {
 	movedPos_ = VAdd(trans_.pos, movePow_);
 	movedPos_ = VAdd(movedPos_, jumpPow_);
+
+
 	if (CollCube())
 	{
 		movedPos_ = VAdd(movedPos_, cubeMovePos_);
+		jumpPow_ = Utility::VECTOR_ZERO;
 		movedPos_.y = cube_.upPos.y + RADIUS;
-		isJump_ = false;
+		stepJump_ = 0.0f;
+		jumpDeceralation_ = POW_JUMP;
 	}
 	else
 	{
 		isJump_ = true;
+		//if (jumpPow_.y <= LIMIT_GRAVITY)
+		//{
+		//	jumpPow_.y = LIMIT_GRAVITY;
+		//}
 	}
+
+
+	MapEditer& mapEdit = MapEditer::GetInstance();
+	IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
+	for (int x = -COL_RANGE; x <= COL_RANGE; x++)
+	{
+		for (int y = -COL_RANGE; y <= COL_RANGE; y++)
+		{
+			for (int z = -COL_RANGE; z <= COL_RANGE; z++)
+			{
+				IntVector3 colPos = mapPos + IntVector3{x, y, z};
+				if (colPos.x < 0 || colPos.y < 0 || colPos.z < 0)continue;
+				HitItem(colPos);
+			}
+		}
+	}
+	itemLPos_.clear();
 
 #ifdef DEBUG_ON
 
@@ -355,10 +453,12 @@ void Player::CubeMove(void)
 	const float SPD = 8.0f;
 	cubeMovePos_ = Utility::VECTOR_ZERO;
 	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
-	if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.y += SPD;
-	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.y -= SPD;
+	if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.z += SPD;
+	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.z -= SPD;
 	if (input.IsNew(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
 	if (input.IsNew(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
+	if (input.IsNew(KEY_INPUT_T))cubeMovePos_.y -= SPD;
+	if (input.IsNew(KEY_INPUT_Y))cubeMovePos_.y += SPD;
 	cube_.centerPos = VAdd(cube_.centerPos, cubeMovePos_);
 }
 

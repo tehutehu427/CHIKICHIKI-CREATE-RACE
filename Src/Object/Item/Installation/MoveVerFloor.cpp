@@ -30,14 +30,24 @@ void MoveVerFloor::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::MOVE_FLOOR));
 
-	//相対座標
-	trans_.localPos = MAP_LOCALPOS;
-
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
+
+	//サイズ倍率
+	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
+
+	//サイズ
+	trans_.scl.x *= adjustSizePer.x;
+	trans_.scl.y *= adjustSizePer.y;
+	trans_.scl.z *= adjustSizePer.z;
+
+	//相対座標
+	trans_.localPos.x = MAP_LOCALPOS.x * trans_.scl.x;
+	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
+	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
 	//ルート設定
 	InitRoute();
@@ -56,6 +66,11 @@ void MoveVerFloor::Draw(void)
 {
 	DrawLine3D(route_[0], route_[1], 0xffffff);
 	MV1DrawModel(trans_.modelId);
+}
+
+const IntVector3 MoveVerFloor::GetSize(void) const
+{
+	return size_ + IntVector3(0, MOVE_Y, 0);
 }
 
 void MoveVerFloor::Move(void)
@@ -80,7 +95,7 @@ void MoveVerFloor::InitRoute(void)
 	route_[routeNum_] = trans_.pos;
 
 	//マップ座標をワールド座標に
-	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ 0, size_.y * MOVE_Y, 0 });
+	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ 0, MOVE_Y, 0 });
 
 	//移動量
 	VECTOR movePos = trans_.quaRot.PosAxis(intPos);
