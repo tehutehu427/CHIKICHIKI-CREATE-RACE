@@ -78,7 +78,7 @@ void GameScene::Init(void)
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
 
-	PlayerManager::CreateInstance(3);
+	PlayerManager::CreateInstance(1);
 
 	//アイテム生成
 	ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
@@ -96,7 +96,7 @@ void GameScene::NormalUpdate(void)
 
 
 
-	PlayerManager::GetInstance().Update();
+
 
 	phaseUpdate_();
 
@@ -117,13 +117,13 @@ void GameScene::NormalDraw(void)
 	sky_->Draw();
 
 	//グリッド
-	//grid_->Draw();
+	grid_->Draw();
 
 	phaseDraw_();
 
 	//プレイヤー
 	PlayerManager::GetInstance().Draw();
-
+	
 	//アイテム
 	ItemManager::GetInstance().Draw();
 
@@ -213,8 +213,8 @@ void GameScene::ChangePhaseAction(void)
 
 	VECTOR pos = ACTION_CAMERA_POS;
 	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
-	VECTOR angles = {};
-	angles = Quaternion::FromToRotation(pos, Camera::FIXED_DIAGONAL_TARGET_POS).ToEuler();
+	//VECTOR angles = {};
+	//angles = Quaternion::FromToRotation(pos, Camera::FIXED_DIAGONAL_TARGET_POS).ToEuler();
 	//angles.x = Utility::Deg2RadF(90.0);
 	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
 	//SceneManager::GetInstance().GetCamera().lock()->SetTargetPos({ static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2, 0.0f, static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 });
@@ -236,6 +236,7 @@ void GameScene::UpdateEdit(void)
 void GameScene::UpdateAction(void)
 {
 	ItemManager::GetInstance().Update();
+	PlayerManager::GetInstance().Update();
 }
 
 void GameScene::UpdateClear(void)

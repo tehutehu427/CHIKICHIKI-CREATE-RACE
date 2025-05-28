@@ -23,26 +23,38 @@ public:
 	//プレイヤー情報
 	static constexpr VECTOR CAPSULE_TOP = { 0.0f, 110.0f, 0.0f };
 	static constexpr VECTOR CAPSULE_DOWN = { 0.0f, 0.0f, 0.0f };
+	//半径
 	static constexpr float RADIUS = 25.0f;
+
+	//落ちるアニメーションのスタート
+	static constexpr float FALL_ANIM_START = 32.0f;
+	static constexpr float FALL_ANIM_END = 59.0f;
+
+	//死ぬ判定の座標の基準
+	static constexpr float DEATH_POS_Y = -600.0f;
 	//移動
 	//----------------------------------
 	//移動スピード
-	static constexpr float MOVE_SPEED = 3.0f;
+	static constexpr float MOVE_SPEED = 7.0f;
 
 	//ぶっ飛ぶスピード
 	static constexpr float FLY_AWAY_SPEED = 20.0f;
+
+	//落ちているときの重力制限(jumpPowに加算しているのでjumpPowに適用)
+	static constexpr float LIMIT_GRAVITY = -20.0f;
 
 	//----------------------------------
 	//ジャンプ
 	//----------------------------------
 	//ジャンプ力
-	static constexpr float POW_JUMP = 15.0f;
+	static constexpr float POW_JUMP = 20.0f;
 
 	//ジャンプ加速の倍率
 	static constexpr float TIME_JUMP_SCALE = 1.0f;
 
 	//ジャンプ時間
 	static constexpr float TIME_JUMP = 3.0f;
+
 	//----------------------------------
 	//パンチ
 	//----------------------------------
@@ -61,10 +73,19 @@ public:
 	//吹き飛び効果時間
 	static constexpr float PUNCHED_TIME = 0.2f;
 
+	//--------------------------------------------------
+	//当たり判定
+	//--------------------------------------------------
+	//当たり判定のめりこみ防止用
+	static constexpr float POSITION_OFFSET = 0.1f;
+
 	//***********************************
 	//アニメーション関連
 	//***********************************
 	static constexpr float DEFAULT_SPD = 60.0f;
+
+	//当たり判定を行う範囲
+	static constexpr int COL_RANGE = 1;
 
 
 	enum class FLOOR_COL
@@ -88,6 +109,7 @@ public:
 		NONE=0,
 		IDLE=1,
 		WALK=2,
+		FALL=4,
 		DAMAGE = 8,
 		PUNCH = 12,
 		JUMP = 13,
@@ -179,11 +201,19 @@ private:
 	//移動座標
 	VECTOR moveDiff_;
 
+	//アイテムとのローカル座標
+	VECTOR itemLocalPos_;
+
 	//入力デバイス
 	PlayerInput::CNTL cntl_;
 
 	//ゲームパッド番号
 	InputManager::JOYPAD_NO padNum_;
+
+	//アイテムの支点
+	std::vector<IntVector3> itemLPos_;
+
+	
 
 	//オブジェクト関連
 	//--------------------------------------------
@@ -201,6 +231,7 @@ private:
 
 	//他プレイヤーとの当たりフラグ　true:当たっている
 	bool isCol_;
+
 
 	//アクション関係
 	//----------------------------------------
@@ -234,6 +265,10 @@ private:
 	bool isPunched_;			//他プレイヤーからのパンチを受けたか
 	float punchedCnt_;			//パンチ効果時間カウント
 
+	//当たり判定
+	VECTOR gravHitPosUp_;	//重力上方向の座標
+	VECTOR gravHitPosDown_;	//重力下方向
+
 #ifdef DEBUG_ON
 	VECTOR cubeMovePos_;
 	VECTOR cubePos_;
@@ -261,6 +296,9 @@ private:
 	//最終的に動かしたい角度の設定
 	void SetGoalRotate(double _deg);
 
+	//死んだ判定
+	bool IsDeath(void);
+
 	//ジャンプ
 	void Jump(void);
 
@@ -277,7 +315,7 @@ private:
 	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot,VECTOR _localPos);
 
 	//重力による移動量
-	void CalcGravityPow(void);
+	void HitItem(const IntVector3 _colPos);
 
 	//当たり判定
 	void Collision(void);

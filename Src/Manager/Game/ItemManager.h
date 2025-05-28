@@ -57,18 +57,8 @@ public:
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのステータス</returns>
 	ItemBase::Status GetDummyItemStatus(int playerNum);
-	/// <summary>
-	/// ダミーアイテムのマップ座標を取得
-	/// </summary>
-	/// <param name="playerNum">プレイヤー番号</param>
-	/// <returns>ダミーアイテムのマップ座標</returns>
 	IntVector3 GetDummyItemMapPos(int playerNum);
-	/// <summary>
-	/// ダミーアイテムのサイズを取得
-	/// </summary>
-	/// <param name="playerNum">プレイヤー番号</param>
-	/// <returns>ダミーアイテムのサイズ</returns>
-	IntVector3 GetDummyObjectSize(int playerNum);
+	IntVector3 GetDummyItemSize(int playerNum);
 	/// <summary>
 	/// ダミーアイテムのTransformを取得
 	/// </summary>

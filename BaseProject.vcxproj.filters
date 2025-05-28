@@ -500,9 +500,6 @@
     <ClInclude Include="Src\Object\Editor\Palette\EditorPaletteBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\MoveHoriFloor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Object\Item\Installation\MoveVerFloor.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
