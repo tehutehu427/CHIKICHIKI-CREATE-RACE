@@ -12,6 +12,9 @@ public:
 	static constexpr int ROUTE = 2;									//ルート数
 	static constexpr VECTOR MAP_LOCALPOS = { 220.0f,15.0f,220.0f };	//マップとの相対座標
 
+	//サイズ
+	static constexpr VECTOR MODEL_SIZE = { 440.0f,30.0f,440.0f };	//モデルのサイズ
+
 	//コンストラクタ
 	MoveVerFloor();
 	//デストラクタ
@@ -23,6 +26,9 @@ public:
 	void Update(void)override;
 	//描画
 	void Draw(void)override;
+
+	//サイズの取得
+	const IntVector3 GetSize(void)const override;
 
 	/// <summary>
 	/// 当たった処理

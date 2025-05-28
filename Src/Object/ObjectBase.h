@@ -28,7 +28,7 @@ public:
 	inline const Transform& GetTransform(void) const { return trans_; }
 
 	//サイズの取得
-	inline const IntVector3 GetSize(void)const { return size_; }
+	virtual const IntVector3 GetSize(void)const { return size_; }
 
 	//モデルの色を変える
 	virtual void ChangeModelColor(const COLOR_F _colorScale);

@@ -28,6 +28,7 @@
     <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\FreePalette.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\SoloChallengePalette.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Spring.cpp" />
     <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp" />
     <ClCompile Include="Src\Object\Item\Destroyer\SmallBomb.cpp" />
     <ClCompile Include="Src\Object\Item\Fixed\GoalFlag.cpp" />
@@ -100,6 +101,7 @@
     <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h" />
     <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h" />
     <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Spring.h" />
     <ClInclude Include="Src\Object\Item\Destroyer\BigBomb.h" />
     <ClInclude Include="Src\Object\Item\Destroyer\SmallBomb.h" />
     <ClInclude Include="Src\Object\Item\Fixed\GoalFlag.h" />

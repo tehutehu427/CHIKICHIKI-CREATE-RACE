@@ -58,6 +58,13 @@ void ResourceManager::Init(void)
 
 #pragma region ƒ‚ƒfƒ‹
 	std::string path_Sky = PATH_MDL + "SkyDome/";
+
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "StartItem.mv1");
+	resourcesMap_.emplace(SRC::START_CUBE, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "GoalItem.mv1");
+	resourcesMap_.emplace(SRC::GOAL_CUBE, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Floor.mv1");
 	resourcesMap_.emplace(SRC::FLOOR, std::move(res));
 
@@ -65,7 +72,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::MOVE_FLOOR, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Fence.mv1");
-	resourcesMap_.emplace(SRC::MOVE_FLOOR, std::move(res));
+	resourcesMap_.emplace(SRC::FENCE, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Bomb.mv1");
 	resourcesMap_.emplace(SRC::BOMB, std::move(res));
@@ -78,6 +85,12 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "CannonShot.mv1");
 	resourcesMap_.emplace(SRC::CANNON_SHOT, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Trap.mv1");
+	resourcesMap_.emplace(SRC::SPIKE, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Fan.mv1");
+	resourcesMap_.emplace(SRC::FAN, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Spring.mv1");
 	resourcesMap_.emplace(SRC::SPRING, std::move(res));
