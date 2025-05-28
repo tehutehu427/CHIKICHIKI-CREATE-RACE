@@ -192,6 +192,7 @@ void SceneManager::PopScene()
 
 void SceneManager::Destroy(void)
 {
+	DateBank::GetInstance().Destroy();
 	delete instance_;
 }
 

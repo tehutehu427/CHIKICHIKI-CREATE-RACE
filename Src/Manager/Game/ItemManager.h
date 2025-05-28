@@ -22,7 +22,7 @@ public:
 	void Update(void);
 	//描画
 	void Draw(void);
-
+	void Destroy(void);
 	/// <summary>
 	/// アイテム追加
 	/// </summary>
@@ -51,39 +51,55 @@ public:
 	/// <param name="type">アイテムの種類</param>
 	void CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type, int playerNum);
 
-	//ダミーアイテムのステータス取得
+	/// <summary>
+	/// ダミーアイテムのステータスを取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのステータス</returns>
 	ItemBase::Status GetDummyItemStatus(int playerNum);
-	//ダミーアイテムのマップ座標取得
+	/// <summary>
+	/// ダミーアイテムのマップ座標を取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのマップ座標</returns>
 	IntVector3 GetDummyItemMapPos(int playerNum);
-	//ダミーアイテムの大きさ取得
-	IntVector3 GetDummyItemSize(int playerNum);
-	//ダミーアイテムのモデル情報取得
+	/// <summary>
+	/// ダミーアイテムのサイズを取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのサイズ</returns>
+	IntVector3 GetDummyObjectSize(int playerNum);
+	/// <summary>
+	/// ダミーアイテムのTransformを取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのTransform</returns>
 	Transform GetDummyItemTransform(int playerNum);
 	
 	/// <summary>
 	/// ダミーアイテムを置き換える
 	/// </summary>
-	/// <param name="playerNum"></param>
-	/// <param name="type"></param>
-	/// <param name="mapPos"></param>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <param name="type">アイテムの種類</param>
+	/// <param name="mapPos">マップ座標</param>
 	void ResetDummyItem(int playerNum,ItemBase::ITEM_TYPE type,IntVector3 mapPos);
 
 	/// <summary>
 	/// ダミーアイテムの座標設定
 	/// </summary>
-	/// <param name="mapPos"></param>
-	/// <param name="playerNum"></param>
+	/// <param name="mapPos">マップ座標</param>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void DummyItemSetMapPos(IntVector3 mapPos, int playerNum);
 	/// <summary>
 	/// ダミーアイテムの回転を設定
 	/// </summary>
-	/// <param name="rot"></param>
-	/// <param name="playerNum"></param>
+	/// <param name="rot">回転量</param>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void DummyItemSetRotate(Quaternion rot, int playerNum);
 	/// <summary>
 	/// ダミーアイテムをアイテムに追加
 	/// </summary>
-	/// <param name="playerNum"></param>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void DummyItemAddItems(int playerNum);
 
 	// 明示的にインステンスを生成する
@@ -100,26 +116,31 @@ public:
 	const std::vector<std::shared_ptr<ItemBase>>* GetItems(const ItemBase::ITEM_TYPE _type)const;
 	
 	/// <summary>
-	/// アイテムからダミーに追加
+	/// itemからdummyItemに置き換える
 	/// </summary>
-	/// <param name="_type">アイテムの種類</param>
+	/// <param name="_type">置き換えるアイテムの種類</param>
 	/// <param name="_mapPos">マップ座標</param>
 	/// <param name="playerNum">プレイヤー番号</param>
-	void ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos , int playerNum);
-
+	/// <returns>成功ならtrue 失敗ならfalse</returns>
+	bool ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos , int playerNum);
 	/// <summary>
-	/// ダミーの削除
+	/// 特定のプレイヤーのダミーアイテムを削除
 	/// </summary>
-	/// <param name="playerNum"></param>
+	/// <param name="playerNum">プレイヤー番号</param>
 	void DeleteDummyItem(int playerNum);
-
 	/// <summary>
-	/// サブアイテムの所有権獲得
+	/// ダミーアイテムが存在するか
 	/// </summary>
-	/// <param name="_type">所有権を渡したいアイテムの種類</param>
-	/// <param name="_subItem">所有権を渡したいアイテムのポインタ(std::moveして渡す)</param>
-	//void MoveSubItemOwner(const ItemBase::ITEM_TYPE _type, std::shared_ptr<ItemBase> _subItem);
-
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>存在するtrue 存在しないfalse</returns>
+	bool IsDummyItem(int playerNum);
+	/// <summary>
+	/// アイテムのtransformを取得
+	/// </summary>
+	/// <param name="_mapPos">マップ座標</param>
+	/// <param name="_type">アイテムの種類</param>
+	/// <returns></returns>
+	Transform GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
 protected:
 
 private:
