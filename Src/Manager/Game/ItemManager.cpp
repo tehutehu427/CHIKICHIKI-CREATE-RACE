@@ -145,7 +145,7 @@ IntVector3 ItemManager::GetDummyItemMapPos(int playerNum)
 	return mapPos;
 }
 
-IntVector3 ItemManager::GetDummyObjectSize(int playerNum)
+IntVector3 ItemManager::GetDummyItemSize(int playerNum)
 {
 	IntVector3 size;
 	if (dummyItems_.find(playerNum) == dummyItems_.end() || dummyItems_[playerNum] == nullptr)

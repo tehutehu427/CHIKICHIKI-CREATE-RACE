@@ -64,7 +64,7 @@ public:
 	/// </summary>
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのサイズ</returns>
-	IntVector3 GetDummyObjectSize(int playerNum);
+	IntVector3 GetDummyItemSize(int playerNum);
 	/// <summary>
 	/// ダミーアイテムのTransformを取得
 	/// </summary>

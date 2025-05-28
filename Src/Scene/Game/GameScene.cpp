@@ -109,8 +109,6 @@ void GameScene::NormalDraw(void)
 	//スカイドーム
 	sky_->Draw();
 
-	//グリッド
-	//grid_->Draw();
 
 	phaseDraw_();
 
@@ -224,6 +222,8 @@ void GameScene::UpdateAction(void)
 void GameScene::DrawEdit(void)
 {
 
+	//グリッド
+	grid_->Draw();
 	//エディットコントローラー
 	editController_->Draw();
 
