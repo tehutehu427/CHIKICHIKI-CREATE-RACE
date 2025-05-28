@@ -352,7 +352,7 @@ void Player::HitItem(const IntVector3 _colPos)
 		{
 			if (iLPos == lPos)return;
 		}
-		
+		auto vec = VSub(movedPos_, trans_.pos);
 		
 		//アイテムタイプ取得
 		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
@@ -362,9 +362,9 @@ void Player::HitItem(const IntVector3 _colPos)
 		Transform itemTrans = itemMng.GetItemTransform(lPos,type);
 
 		VECTOR upPos = movedPos_;
-		upPos.y += (RADIUS+ 1.0f);
+		upPos.y += (RADIUS+ 10.0f);
 		VECTOR downPos = movedPos_;
-		downPos.y -= (RADIUS+ 1.0f);
+		downPos.y -= (RADIUS+ 10.0f);
 
 		auto hit = MV1CollCheck_Line(itemTrans.modelId, -1, upPos, downPos);
 
@@ -373,22 +373,12 @@ void Player::HitItem(const IntVector3 _colPos)
 			if (!Utility::EqualsVZero(itemLocalPos_))
 			{
 				VECTOR itemLocalPos = VSub(movedPos_, itemTrans.pos);
-				if (Utility::Equals(itemLocalPos, itemLocalPos_))
-				{
-					movedPos_ = VAdd(itemLocalPos_, itemTrans.pos);
-				}
-				else
-				{
-					VECTOR diff = VSub(itemLocalPos, itemLocalPos_);
-					movedPos_ = VAdd(itemLocalPos_, itemTrans.pos);
-					movedPos_ = VAdd(movedPos_, diff);
-				}
-
+				movedPos_ = VAdd(itemLocalPos_, itemTrans.pos);
+				movedPos_ = VAdd(movedPos_, vec);
 			}
 			movedPos_.y = hit.HitPosition.y+RADIUS+ POSITION_OFFSET;
 			jumpPow_ = Utility::VECTOR_ZERO;
 			isJump_ = false;
-			//jumpDeceralation_ = POW_JUMP;
 			itemLocalPos_ = VSub(movedPos_, itemTrans.pos);
 
 		}
