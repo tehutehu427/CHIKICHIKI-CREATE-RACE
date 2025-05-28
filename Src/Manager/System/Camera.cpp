@@ -310,11 +310,14 @@ void Camera::SetBeforeDrawFPS(void)
 void Camera::SetBeforeDrawFreeControll(void)
 {
 	auto& ins = InputManager::GetInstance();
-	float rotPow = Utility::Deg2RadF(SPEED);
-	//if (ins.IsNew(KEY_INPUT_E)) { angles_.y += rotPow; }
+	float rotPow = Utility::Deg2RadF(SPEED);	
+	
+	static float moveSpeed = 10.0f;
+	static float moveSpeedFB = 30.0f;
+	if (ins.IsNew(KEY_INPUT_E)) { angles_.y += rotPow; }
 	if (ins.IsNew(KEY_INPUT_Q)) { angles_.y -= rotPow; }
-	//if (ins.IsNew(KEY_INPUT_W)) { angles_.x -= rotPow; }
-	//if (ins.IsNew(KEY_INPUT_S)) { angles_.x += rotPow; }
+	if (ins.IsNew(KEY_INPUT_W)) { angles_.x -= rotPow; }
+	if (ins.IsNew(KEY_INPUT_S)) { angles_.x += rotPow; }
 
 	if (angles_.x <= FPS_LIMIT_X_UP_RAD)
 	{
@@ -324,25 +327,24 @@ void Camera::SetBeforeDrawFreeControll(void)
 	{
 		angles_.x = FPS_LIMIT_X_DW_RAD;
 	}
-	//if (ins.IsNew(KEY_INPUT_W)) 
-	//{
-	//	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), 3.0f));
-	//}
-	//if (ins.IsNew(KEY_INPUT_S))
-	//{
-	//	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetBack(), moveSpeed));
-	//}
-	static float moveSpeed = 10.0f;
-	static float moveSpeedFB = 30.0f;
+	if (ins.IsNew(KEY_INPUT_W)) 
+	{
+		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), 3.0f));
+	}
+	if (ins.IsNew(KEY_INPUT_S))
+	{
+		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetBack(), moveSpeed));
+	}
+
 	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), GetMouseWheelRotVolF() * moveSpeedFB));
-	//if (ins.IsNew(KEY_INPUT_A))
-	//{
-	//	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetLeft(), moveSpeed));
-	//}
-	//if (ins.IsNew(KEY_INPUT_D)) 
-	//{
-	//	pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetRight(), moveSpeed));
-	//}
+	if (ins.IsNew(KEY_INPUT_A))
+	{
+		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetLeft(), moveSpeed));
+	}
+	if (ins.IsNew(KEY_INPUT_D)) 
+	{
+		pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetRight(), moveSpeed));
+	}
 
 	VECTOR localPos;
 	rot_ =(Quaternion::Quaternion(angles_));

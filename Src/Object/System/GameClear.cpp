@@ -184,6 +184,7 @@ void GameClear::DrawMenu()
 				Utility::BLACK,
 				menuFont_,
 				"Ë");
+
 			//–îˆó‚ğ•`‰æ‚³‚¹‚é
 			DrawFormatStringToHandle(
 				pos.x + ARROW_OFFSET_X,

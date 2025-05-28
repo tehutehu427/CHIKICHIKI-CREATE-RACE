@@ -26,5 +26,8 @@ private:
 	//種類の割り当て
 	void AssignType()override;
 
+	//各アイコンの描画
+	virtual void DrawItemIcon();		//アイテムアイコン
+
 };
 

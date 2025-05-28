@@ -197,9 +197,7 @@ void PaletteIcon::DrawItemIcon()
 			true,
 			false);
 
-
-
-		int nameColor = Utility::BLACK;		//デフォルトネームカラー
+		int nameColor = Utility::WHITE;		//デフォルトネームカラー
 		std::string name = DateBank::GetInstance().GetItemName(static_cast<ItemBase::ITEM_TYPE>(i.num));	//名前を取得	
 		//選択しているものの場合
 		if (i.num == static_cast<int>(selectType_))
@@ -207,6 +205,7 @@ void PaletteIcon::DrawItemIcon()
 			//色を赤にする
 			nameColor = Utility::RED;
 		}
+
 		//名前を描画
 		int offSetX = name.size() * NAME_FONT_SIZE / 4;
 		constexpr int OFFSET_Y = ICON_SIZE / 2 + 20;

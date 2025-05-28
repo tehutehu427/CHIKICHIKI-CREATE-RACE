@@ -1,5 +1,6 @@
 #include "SoloPaletteIcon.h"
 #include "../../../../Manager/System/InputManager.h"
+#include "../../../../Manager/System/DateBank.h"
 #include "../../../../Manager/Game/ItemManager.h"
 #include "../../../../Utility/Utility.h"
 
@@ -117,4 +118,57 @@ void SoloPaletteIcon::AssignType()
 		//インデックスを増加
 		index++;
 	}
+}
+
+void SoloPaletteIcon::DrawItemIcon()
+{
+	constexpr int STRING_DIV = 4;	
+	constexpr int OFFSET_Y = ICON_SIZE / 2 + 20;
+	//constexpr int CHARA_SIZE = 16;
+
+	//アイコンの描画のみマスク処理
+	SetUseMaskScreenFlag(true);
+	for (EditorPaletteBase::ImgInfo& i : icons_)
+	{
+		//アイコン
+		DrawRotaGraph(
+			i.pos.x,
+			i.pos.y,
+			i.rate,
+			i.angle,
+			imgIcons_,
+			true,
+			false);
+
+		int nameColor = Utility::WHITE;		//デフォルトネームカラー
+		std::string name = DateBank::GetInstance().GetItemName(static_cast<ItemBase::ITEM_TYPE>(i.num));	//名前を取得	
+		//選択しているものの場合
+		if (i.num == static_cast<int>(selectType_))
+		{
+			//色を赤にする
+			nameColor = Utility::RED;
+		}
+
+		//名前を描画
+		int offSetX = name.size() * NAME_FONT_SIZE / STRING_DIV;
+
+		DrawFormatStringToHandle(
+			i.pos.x - offSetX,
+			i.pos.y + OFFSET_Y,
+			nameColor,
+			fontHandle_,
+			name.c_str());
+
+		//残り数を描画
+		int cnt = itemIconMap_[static_cast<ItemBase::ITEM_TYPE>(i.num)];
+		DrawFormatStringToHandle(
+			i.pos.x - NAME_FONT_SIZE,
+			i.pos.y + OFFSET_Y + NAME_FONT_SIZE,
+			nameColor,
+			fontHandle_,
+			"×%d",
+			cnt);
+
+	}
+	SetUseMaskScreenFlag(false);
 }

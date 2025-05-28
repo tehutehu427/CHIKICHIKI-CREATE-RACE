@@ -71,7 +71,7 @@ public:
 	static constexpr int MASK_POS_Y = Application::SCREEN_HALF_Y - MASK_SIZE_Y / 2;
 
 	//スクロールに制限をかける
-	static constexpr int SCROLL_LIMIT_LINE = 0; //ICON_NUM / COL -1;
+	static constexpr int SCROLL_LIMIT_LINE = ICON_NUM / COL -1;
 
 	/// <summary>
 	/// コンストラクタ
