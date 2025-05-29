@@ -42,7 +42,7 @@ void EditController::Update(void)
 
 void EditController::Draw(void)
 {
-	DebugDraw();
+	//DebugDraw();
 	modeDraw_();
 }
 

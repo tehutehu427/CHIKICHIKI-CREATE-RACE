@@ -30,6 +30,9 @@ void MoveHoriFloor::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::MOVE_FLOOR));
 
+	//相対座標
+	trans_.localPos = MAP_LOCALPOS;
+
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
