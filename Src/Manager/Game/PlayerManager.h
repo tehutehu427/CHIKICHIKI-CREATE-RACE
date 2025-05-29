@@ -59,12 +59,9 @@ public:
 	//カプセル同士の当たり判定(完全ではない)
 	bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
 
-	/// <summary>
-	/// プレイヤー同士の押し出し処理
-	/// </summary>
-	/// <param name="_pNum1">当たったプレイヤー1人目</param>
-	/// <param name="_pNum2">当たったプレイヤー2人目</param>
-	void P2PPush(int _pNum1, int _pNum2);
+	//プレイヤーゲッタ
+	Player& GetPlayer(const int _playerNum) { return *players_[_playerNum]; }
+
 private:
 
 

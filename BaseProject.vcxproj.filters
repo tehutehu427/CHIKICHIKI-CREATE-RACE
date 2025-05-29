@@ -135,7 +135,7 @@
     <ClCompile Include="Src\Object\Item\ItemBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Item\Floor.cpp">
+    <ClCompile Include="Src\Object\Item\Installation\Floor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Editor\MapDataIO.cpp">
@@ -144,7 +144,7 @@
     <ClCompile Include="Src\Object\Editor\Palette\EditorPaletteBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Item\MoveHoriFloor.cpp">
+    <ClCompile Include="Src\Object\Item\Installation\MoveHoriFloor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Manager\System\DateBank.cpp">
@@ -153,13 +153,13 @@
     <ClCompile Include="Src\Object\Grid.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Item\MoveVerFloor.cpp">
+    <ClCompile Include="Src\Object\Item\Installation\MoveVerFloor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Item\Fence.cpp">
+    <ClCompile Include="Src\Object\Item\Installation\Fence.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Item\Cannon.cpp">
+    <ClCompile Include="Src\Object\Item\Installation\Cannon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Manager\Game\PlayerManager.cpp">
@@ -177,19 +177,10 @@
     <ClCompile Include="Src\Object\SkyDome\SkyDome.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Item\SlimeFloor.cpp">
+    <ClCompile Include="Src\Object\Item\Installation\SlimeFloor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Scene\Game\FreePlay.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Spiky.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Fan.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\CannonShot.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Scene\Game\SoloChallenge.cpp">
@@ -217,6 +208,27 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Common\FontRegistry.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Item\Fixed\StartFlag.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Item\Installation\CannonShot.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Item\Installation\Fan.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Item\Installation\Spiky.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Item\Destroyer\SmallBomb.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Item\Fixed\GoalFlag.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -440,7 +452,7 @@
     <ClInclude Include="Src\Object\Item\ItemBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\Floor.h">
+    <ClInclude Include="Src\Object\Item\Installation\Floor.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Editor\MapDataIO.h">
@@ -452,16 +464,13 @@
     <ClInclude Include="Src\Object\Editor\Palette\EditorPaletteBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\MoveHoriFloor.h">
+    <ClInclude Include="Src\Object\Item\Installation\MoveVerFloor.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\MoveVerFloor.h">
+    <ClInclude Include="Src\Object\Item\Installation\Fence.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\Fence.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Cannon.h">
+    <ClInclude Include="Src\Object\Item\Installation\Cannon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Item\ItemBase.h">
@@ -482,7 +491,7 @@
     <ClInclude Include="Src\Object\SkyDome\SkyDome.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\SlimeFloor.h">
+    <ClInclude Include="Src\Object\Item\Installation\SlimeFloor.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Scene\Game\FreePlay.h">
@@ -506,13 +515,10 @@
     <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\Spiky.h">
+    <ClInclude Include="Src\Object\Item\Destroyer\SmallBomb.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\Fan.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\CannonShot.h">
+    <ClInclude Include="Src\Object\Item\Destroyer\BigBomb.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.h">
@@ -522,6 +528,27 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Common\FontRegistry.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Item\Fixed\GoalFlag.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Item\Installation\CannonShot.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Item\Installation\Fan.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Item\Installation\Spiky.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Item\MoveHoriFloor.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Item\Fixed\StartFlag.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Item\Installation\MoveHoriFloor.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

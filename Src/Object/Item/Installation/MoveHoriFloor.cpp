@@ -30,6 +30,9 @@ void MoveHoriFloor::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::MOVE_FLOOR));
 
+	//相対座標
+	trans_.localPos = MAP_LOCALPOS;
+
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
@@ -53,6 +56,11 @@ void MoveHoriFloor::Draw(void)
 {
 	DrawLine3D(route_[0], route_[1], 0xffffff);
 	MV1DrawModel(trans_.modelId);
+}
+
+const IntVector3 MoveHoriFloor::GetSize(void) const
+{
+	return size_ + IntVector3(MOVE_X, 0, 0);
 }
 
 void MoveHoriFloor::Move(void)
@@ -92,7 +100,7 @@ void MoveHoriFloor::InitRoute(void)
 	distance_ = Utility::Distance(route_[routeNum_], route_[routeNum_ + 1]);
 
 	//速度設定
-	speed_ = distance_ / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
+	speed_ = static_cast<float>(distance_) / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
 
 	//初期ルート設定
 	SetRoute();
@@ -137,7 +145,7 @@ bool MoveHoriFloor::IsBeyondRoute(void)
 	return beyondX && beyondY && beyondZ;
 }
 
-void MoveHoriFloor::HitObject(Transform& _hitTrans)
+void MoveHoriFloor::Hit(Transform& _hitTrans)
 {
 	//当たったオブジェクトに同じだけ移動させる
 	_hitTrans.pos = VAdd(_hitTrans.pos, movePow_);

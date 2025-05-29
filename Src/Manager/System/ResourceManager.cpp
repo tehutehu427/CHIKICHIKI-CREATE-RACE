@@ -64,6 +64,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "MoveFloor.mv1");
 	resourcesMap_.emplace(SRC::MOVE_FLOOR, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Fence.mv1");
+	resourcesMap_.emplace(SRC::MOVE_FLOOR, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Bomb.mv1");
 	resourcesMap_.emplace(SRC::BOMB, std::move(res));
 

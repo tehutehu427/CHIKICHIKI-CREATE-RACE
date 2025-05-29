@@ -1,5 +1,7 @@
 #pragma once
-#include "ItemBase.h"
+#include "../ItemBase.h"
+
+#include<memory>
 
 class CannonShot : public ItemBase
 {
@@ -25,8 +27,11 @@ public:
 	//’e‚Ì¶‘¶”»’è
 	const bool IsAlive(void)const { return isAlive_; }
 
-	//’e‚ª‰½‚©‚É“–‚½‚Á‚½
-	void Hit(void);
+	/// <summary>
+	/// “–‚½‚Á‚½ˆ—
+	/// </summary>
+	/// <param name="_hitTrans">‘ÎÛ‚Ìƒ‚ƒfƒ‹î•ñ</param>
+	void Hit(Transform& _hitTrans)override;
 
 private:
 
@@ -36,5 +41,8 @@ private:
 
 	//ˆÚ“®ˆ—
 	void Move(void);
+
+	//íœ
+	void Kill(void);
 };
 
