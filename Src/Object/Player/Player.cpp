@@ -1,4 +1,5 @@
 #include "../../Utility/Utility.h"
+#include "../Application.h"
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/Game/MapEditer.h"
 #include "../../Manager/System/ResourceManager.h"
@@ -10,23 +11,14 @@
 #include "./Process/PlayerInput.h"
 #include "Player.h"
 
-Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNum_(_playerNum), cntl_(_cntl)
+Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), cntl_(_cntl)
 {
 #ifdef DEBUG_ON
 	cubeMovePos_=Utility::VECTOR_ZERO;
 	cubePos_=Utility::VECTOR_ZERO;
-	//cast_ = { [this](ANIM_TYPE type){return static_cast<int>(type); }};
 #endif // DEBUG_ON
 
-	trans_ = _trans;
-
-	animationController_ = std::make_shared<AnimationController>(trans_.modelId);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_SPD/PUNCH_TIME_MAX);
+	trans_ = Transform();
 	movedPos_ = Utility::VECTOR_ZERO;
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
@@ -42,8 +34,6 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	//オブジェクト生成
 	//操作関連
 	//---------------------------------
-	//入力
-	input_ = std::make_shared<PlayerInput>(padNum_, cntl_);
 	//当たり判定
 	isCol_ = false;
 
@@ -62,17 +52,60 @@ Player::Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl):playerNu
 	
 	itemLocalPos_ = Utility::VECTOR_ZERO;
 
-	
-
+	input_ = nullptr;
 }
 
 void Player::Load(void)
 {
+	//アニメーションでmodelIdを使うので先にモデルセットする
+	trans_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::CHICKEN));
+
 	//リソースの読み込みなど
+	animationController_ = std::make_shared<AnimationController>(trans_.modelId);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), DEFAULT_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), DEFAULT_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL), DEFAULT_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_SPD / PUNCH_TIME_MAX);
+
+
+	//入力
+	input_ = std::make_shared<PlayerInput>(padNum_, cntl_);
 }
 
 void Player::Init(void)
 {
+	//Transformの設定
+	trans_.quaRot = Quaternion();
+	trans_.scl = MODEL_SCL;
+	trans_.quaRotLocal =
+		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
+
+	float posX = PLAYER_ONE_POS_X + DISTANCE_POS * playerNum_;
+
+	trans_.pos={ posX,0.0f,0.0f };
+
+	trans_.localPos = { 0.0f,-Player::RADIUS,0.0f };
+	//操作関連
+	//---------------------------------
+	//当たり判定
+	isCol_ = false;
+
+	isJump_ = false;
+	stepJump_ = 0.0f;
+	jumpPow_ = Utility::VECTOR_ZERO;
+	jumpDeceralation_ = POW_JUMP;
+
+	//パンチ関係の初期化
+	punchCnt_ = 0.0f;
+	punchCoolCnt_ = 0.0f;
+	isPunch_ = false;
+	punchPos_ = Utility::VECTOR_ZERO;
+	isPunched_ = false;
+	punchedCnt_ = PUNCHED_TIME;
+
+	itemLocalPos_ = Utility::VECTOR_ZERO;
 	trans_.Update();
 }
 
@@ -88,8 +121,6 @@ void Player::Update(void)
 		{
 			animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 60.0f);
 		}
-
-		//animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 5.0f);
 		return;
 	}
 	//入力更新
@@ -146,6 +177,13 @@ void Player::DrawDebug(void)
 		,jumpPow_.x,jumpPow_.y,jumpPow_.z
 		,movedPos_.x,movedPos_.y,movedPos_.z
 	);
+	if (IsDeath())
+	{
+		static int OFFSET = 32;
+		//リトライするかEditシーンに戻るか選べるようにする。
+		DrawFormatString(Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y+ OFFSET *playerNum_, 0xff0000, "(%d)GameOver", playerNum_);
+	}
+	
 
 	DrawSphere3D(punchPos_, PUNCH_RADIUS, 4, 0xff0000, 0xff0000, isPunchHitTime_);
 
