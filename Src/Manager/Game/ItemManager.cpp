@@ -422,10 +422,6 @@ ItemManager::ItemManager(void)
 
 }
 
-ItemManager::~ItemManager(void)
-{
-}
-
 std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntVector3 mapPos, Quaternion rot)
 {
 	//ƒAƒCƒeƒ€
