@@ -34,6 +34,9 @@ void DateBank::Init(void)
 	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::MOVE_VER_FLOOR)] = "VerticalMoveFloor";
 	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::SPIKY)] = "Spiky";
 	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::START)] = "Start";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::FAN)] = "Fan";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::SLIME_FLOOR)] = "SlimFloor";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::SPRING)] = "Spring";
 }
 
 void DateBank::Destroy(void)

@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Shader\Effect\EffectBase.cpp" />
+    <ClCompile Include="Src\Object\System\ModeSelect.cpp" />
+    <ClCompile Include="Src\Object\System\GameClear.cpp" />
     <ClCompile Include="Src\Common\FontRegistry.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.cpp" />
@@ -76,8 +79,16 @@
     <ClCompile Include="Src\Scene\Game\GameScene.cpp" />
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
+    <ClCompile Include="Src\Shader\PixelMaterial.cpp" />
+    <ClCompile Include="Src\Shader\PixelRenderer.cpp" />
+    <ClCompile Include="Src\Shader\PostEffect\PostEffectBase.cpp" />
+    <ClCompile Include="Src\Shader\PostEffect\PostEffectBlur.cpp" />
+    <ClCompile Include="Src\Shader\PostEffect\PostEffectDamage.cpp" />
+    <ClCompile Include="Src\Shader\PostEffect\PostEffectMonotone.cpp" />
+    <ClCompile Include="Src\Shader\PostEffect\PostEffectScanLine.cpp" />
     <ClCompile Include="Src\Utility\Utility.cpp" />
     <ClCompile Include="Src\Object\Item\Fixed\StartFlag.cpp" />
+    <ClCompile Include="Src\Shader\Effect\SelectUIGlow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Manager\Game\PlayerManager.h" />
@@ -95,6 +106,10 @@
     <ClInclude Include="Src\Object\Item\Installation\CannonShot.h" />
     <ClInclude Include="Src\Object\Item\Installation\Fan.h" />
     <ClInclude Include="Src\Object\Item\Installation\Spiky.h" />
+    <ClInclude Include="Src\Shader\Effect\EffectBase.h" />
+    <ClInclude Include="Src\Object\System\ModeSelect.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\Icon\PaletteIcon.h" />
+    <ClInclude Include="Src\Object\System\GameClear.h" />
     <ClInclude Include="Src\Common\FontRegistry.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.h" />
@@ -184,7 +199,54 @@
     <ClInclude Include="Src\Scene\Game\GameScene.h" />
     <ClInclude Include="Src\Scene\SceneBase.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
+    <ClInclude Include="Src\Shader\PixelMaterial.h" />
+    <ClInclude Include="Src\Shader\PixelRenderer.h" />
+    <ClInclude Include="Src\Shader\PostEffect\PostEffectBase.h" />
+    <ClInclude Include="Src\Shader\PostEffect\PostEffectBlur.h" />
+    <ClInclude Include="Src\Shader\PostEffect\PostEffectDamage.h" />
+    <ClInclude Include="Src\Shader\PostEffect\PostEffectMonotone.h" />
+    <ClInclude Include="Src\Shader\PostEffect\PostEffectScanLine.h" />
     <ClInclude Include="Src\Utility\Utility.h" />
+    <ClInclude Include="Src\Shader\Effect\SelectUIGlow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
+    <None Include="Src\Shader\Common\Pixel\PixelShader3DHeader.hlsli" />
+    <None Include="Src\Shader\Common\VertexToPixelHeader.hlsli" />
+    <None Include="Src\Shader\Common\Vertex\CommonShader3DHeader.hlsli" />
+    <None Include="Src\Shader\Common\Vertex\VertexInput.hlsli" />
+    <None Include="Src\Shader\Common\Vertex\VertexInputType.hlsli" />
+    <None Include="Src\Shader\Common\Vertex\VertexShader3DHeader.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Src\Shader\hlsl\Blur.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\hlsl\Damage.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\hlsl\Glow.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\hlsl\GlowRotateSprite.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\hlsl\Monotone.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\hlsl\ScanLine.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -11,6 +11,8 @@ public:
 		BOKUTATI,
 		HANAZOME,
 		PENGS,
+		LOGO,
+		BANANA,
 		MAX
 	};
 
@@ -22,6 +24,8 @@ public:
 	static const std::string BOKUTATI;
 	static const std::string HANAZOME;
 	static const std::string PENGS;
+	static const std::string LOGO;
+	static const std::string BANANA;
 
 	/// <summary>
 	/// コンストラクタ

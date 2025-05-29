@@ -24,7 +24,7 @@ public:
 	};
 
 	//パレット移動
-	static constexpr int PALETTE_MOVE = 10;		
+	static constexpr int PALETTE_MOVE = 20;		
 	
 	//大きさ
 	static constexpr int PALETTE_SIZE_X = 399;
@@ -34,15 +34,12 @@ public:
 	static constexpr float PALETTE_RATE = 1.8f;
 
 	//閉じてる時の位置
-	static constexpr int CLOSE_POS_X = Application::SCREEN_SIZE_X + 200;
+	static constexpr int CLOSE_POS_X = Application::SCREEN_SIZE_X + 300;
 	static constexpr int CLOSE_POS_Y = Application::SCREEN_HALF_Y;
 
 	//開いてる時の位置
 	static constexpr int OPEN_POS_X = Application::SCREEN_HALF_X;
 	static constexpr int OPEN_POS_Y = Application::SCREEN_HALF_Y;
-
-	//設置場所距離
-	static constexpr float DISTANCE = 500.0f;
 
 	//画像描画に関する情報
 	struct ImgInfo
