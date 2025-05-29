@@ -80,6 +80,11 @@
     <ClCompile Include="Src\Object\Item\Fixed\StartFlag.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\Game\PlayerManager.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Cannon.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Fence.h" />
+    <ClInclude Include="Src\Object\Item\Installation\MoveVerFloor.h" />
+    <ClInclude Include="Src\Object\Item\Installation\SlimeFloor.h" />
     <ClInclude Include="Src\Object\Item\Installation\Spring.h" />
     <ClInclude Include="Src\Object\Item\Destroyer\BigBomb.h" />
     <ClInclude Include="Src\Object\Item\Destroyer\SmallBomb.h" />
@@ -93,25 +98,12 @@
     <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h" />
     <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h" />
     <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h" />
-    <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h" />
-    <ClInclude Include="Src\Object\Item\CannonShot.h" />
-    <ClInclude Include="Src\Object\Item\Fan.h" />
-    <ClInclude Include="Src\Object\Item\Spiky.h" />
-    <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h" />
-    <ClInclude Include="Src\Object\Item\CannonShot.h" />
-    <ClInclude Include="Src\Object\Item\Fan.h" />
-    <ClInclude Include="Src\Object\Item\Spiky.h" />
     <ClInclude Include="Src\Scene\SelectScene.h" />
     <ClInclude Include="Src\Scene\Game\MultiParty.h" />
     <ClInclude Include="Src\Scene\Game\SoloChallenge.h" />
     <ClInclude Include="Src\Scene\Game\FreePlay.h" />
     <ClInclude Include="Src\Object\Item\Installation\MoveHoriFloor.h" />
-    <ClInclude Include="Src\Object\Item\Installation\MoveHoriFloor.h" />
     <ClInclude Include="Src\Object\Editor\Palette\PaletteIcon.h" />
-    <ClInclude Include="Src\Object\Item\MoveHoriFloor.h" />
-    <ClInclude Include="Src\Object\Item\Installation\MoveHoriFloor.h" />
-    <ClInclude Include="Src\Object\Editor\Palette\PaletteIcon.h" />
-    <ClInclude Include="Src\Object\Item\MoveHoriFloor.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\PaletteIcon.h" />
     <ClInclude Include="Src\Object\Editor\Palette\EditorPaletteBase.h" />
     <ClInclude Include="Src\Manager\System\DateBank.h" />
