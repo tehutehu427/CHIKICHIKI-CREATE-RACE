@@ -135,43 +135,41 @@ bool PlayerManager::IsHitCapsules(const std::weak_ptr<Capsule> cap1, const std::
 	VECTOR cap2PosTop_To_cap2PosDownVec = VSub(cap2.lock()->GetPosDown(), cap2.lock()->GetPosTop());
 
 	return false;
-
-	//return false;
-
-
 }
 
-void PlayerManager::P2PPush(int _pNum1,int _pNum2)
-{
-	//同じプレイヤー番号なら抜ける
-	if (_pNum1 == _pNum2)return;
-	//プレイヤー1の情報
-	VECTOR pos1 = players_[_pNum1]->GetTransform().pos;
-	std::weak_ptr<Capsule>p1Cap = players_[_pNum1]->GetCapsule();
-
-	//プレイヤー2の情報
-	VECTOR pos2 = players_[_pNum2]->GetTransform().pos;
-	std::weak_ptr<Capsule>p2Cap = players_[_pNum2]->GetCapsule();
-
-	VECTOR vec = VSub(players_[_pNum2]->GetTransform().pos
-		, players_[_pNum1]->GetTransform().pos);
-	float len = sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-	float overlap = p1Cap.lock()->GetRadius() + p2Cap.lock()->GetRadius() - len;
-	float weight = 0.5f;
-	//大きさを1にする
-	vec = VNorm(vec);
-	players_[_pNum1]->SetMovePow(VScale(vec, overlap * weight));
-	players_[_pNum2]->SetMovePow(VScale(vec, overlap * (1.0-weight)));
-		
-}
+//void PlayerManager::P2PPush(int _pNum1,int _pNum2)
+//{
+//	//同じプレイヤー番号なら抜ける
+//	if (_pNum1 == _pNum2)return;
+//	//プレイヤー1の情報
+//	VECTOR pos1 = players_[_pNum1]->GetTransform().pos;
+//	std::weak_ptr<Capsule>p1Cap = players_[_pNum1]->GetCapsule();
+//
+//	//プレイヤー2の情報
+//	VECTOR pos2 = players_[_pNum2]->GetTransform().pos;
+//	std::weak_ptr<Capsule>p2Cap = players_[_pNum2]->GetCapsule();
+//
+//	VECTOR vec = VSub(players_[_pNum2]->GetTransform().pos
+//		, players_[_pNum1]->GetTransform().pos);
+//	float len = sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+//	float overlap = p1Cap.lock()->GetRadius() + p2Cap.lock()->GetRadius() - len;
+//	float weight = 0.5f;
+//	//大きさを1にする
+//	vec = VNorm(vec);
+//	players_[_pNum1]->SetMovePow(VScale(vec, overlap * weight));
+//	players_[_pNum2]->SetMovePow(VScale(vec, overlap * (1.0-weight)));
+//		
+//}
 
 Transform PlayerManager::FixTrans(int _playerNum)
 {
 	Transform trans = Transform();
 	//モデルできたら番号ごとで設定する
 	ResourceManager& resIns = ResourceManager::GetInstance();
+	//番号でモデルを変える(予定)
 	trans.SetModel(resIns.LoadModelDuplicate(ResourceManager::SRC::CHICKEN));
-	//番号でモデルを変える
+	
+	//transの初期化
 	PLAYER num = static_cast<PLAYER>(_playerNum);
 	float x = 0.0f;
 	trans.quaRot = Quaternion();
@@ -182,6 +180,7 @@ Transform PlayerManager::FixTrans(int _playerNum)
 	x = PLAYER_ONE_POS_X + DISTANCE_POS * _playerNum;
 
 	trans.pos = { x,0.0f,0.0f };
+	trans.localPos = { 0.0f,-Player::RADIUS,0.0f };
 	return trans;
 }
 
@@ -192,11 +191,11 @@ void PlayerManager::PunchPlayersColl(int p1, int p2)
 
 	//それぞれのカプセル
 	//auto p1Cap = players_[p1]->GetCapsule().lock();
-	auto p2Cap = players_[p2]->GetCapsule().lock();
+	//auto p2Cap = players_[p2]->GetCapsule().lock();
 
 	//当たった時の処理
-	if (Utility::IsHitSphereCapsule(players_[p1]->GetPunchPos(), Player::PUNCH_RADIUS
-		, p2Cap->GetPosTop(), p2Cap->GetPosDown(), p2Cap->GetRadius()))
+	if (Utility::IsHitSpheres(players_[p1]->GetPunchPos(), Player::PUNCH_RADIUS
+		, players_[p2]->GetPos(),Player::RADIUS))
 	{
 		players_[p2]->SetDir(Utility::GetMoveVec(players_[p1]->GetPos(), players_[p2]->GetPos()));
 		players_[p2]->SetIsPunched(true);

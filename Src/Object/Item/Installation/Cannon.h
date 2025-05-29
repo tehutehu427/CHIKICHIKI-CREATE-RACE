@@ -1,5 +1,5 @@
 #pragma once
-#include "ItemBase.h"
+#include "../ItemBase.h"
 
 class CannonShot;
 
@@ -12,7 +12,11 @@ public:
 	static constexpr float SHOT_INTERVAL = 5.0f;	//弾の生成感覚
 
 	//マップ
-	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };	//マップサイズ
+	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };				//マップサイズ
+	static constexpr VECTOR MAP_LOCALPOS = { 60.0f,0.0f,40.0f };	//マップとの相対座標
+
+	//サイズ
+	static constexpr VECTOR MODEL_SIZE = { 120.0f,100.0f,80.0f };	//モデルのサイズ
 
 	//エイム
 	static constexpr float  AIM_RADIUS = 500.0f;	//狙う範囲半径
@@ -21,8 +25,7 @@ public:
 
 	//砲身
 	static constexpr VECTOR BARREL_LOCAL_POS = { 0.0f, 75.0f, -0.0f };	//砲身の相対座標
-	static constexpr VECTOR BARREL_LOCAL_ROT = { 18.0f, 0.0f, 0.0f };	//砲身の相対回転
-
+	static constexpr VECTOR BARREL_LOCAL_ROT = { 20.0f, 0.0f, 0.0f };	//砲身の相対回転
 
 	//コンストラクタ
 	Cannon();
@@ -37,7 +40,7 @@ public:
 	void Draw(void)override;
 
 	//モデルの色変え
-	void ChangeModelColor(COLOR_F _colorScale)override;
+	void ChangeModelColor(const COLOR_F _colorScale)override;
 
 	//狙う対象の設定
 	void SetTargetPos(const VECTOR _targetPos) { targetPos_ = _targetPos; }
@@ -57,13 +60,6 @@ private:
 	//対象
 	VECTOR targetPos_;		//狙う対象の位置情報
 	VECTOR targetVec_;		//狙う対象に対しての方向ベクトル
-
-
-	//対象を狙う
-	void Aim(void);
-
-	//狙うベクトルへの補間
-	//void AimLeap()
 
 	//砲台の回転
 	void RotateTurret(void);

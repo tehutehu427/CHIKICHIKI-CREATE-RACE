@@ -2,6 +2,7 @@
 #include <crtdbg.h>
 
 #include <DxLib.h>
+#include<crtdbg.h>
 #include "Application.h"
 
 
@@ -15,6 +16,15 @@ int WINAPI WinMain(
 	_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	_In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
+#ifdef _DEBUG
+
+	// メモリリーク検出
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+	//_CrtSetBreakAlloc(17384);
+
+#endif // _DEBUG
+
 
 	// メモリリーク検出
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -37,6 +47,13 @@ int WINAPI WinMain(
 
 	// 解放
 	instance.Destroy();
+
+#ifdef _DEBUG
+
+	//明示的にメモリーリークをダンプ
+	_CrtDumpMemoryLeaks();
+
+#endif // _DEBUG
 
 	return 0;
 

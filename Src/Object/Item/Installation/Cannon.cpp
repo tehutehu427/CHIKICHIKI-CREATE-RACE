@@ -1,8 +1,9 @@
-#include "../../Manager/System/ResourceManager.h"
-#include "../../Manager/System/InputManager.h"
-#include "../../Manager/System/SceneManager.h"
-#include "../../Utility/Utility.h"
-#include "../../FpsControl/FpsControl.h"
+#include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/InputManager.h"
+#include "../Manager/System/SceneManager.h"
+#include "../Manager/Game/ItemManager.h"
+#include "../Utility/Utility.h"
+#include "../FpsControl/FpsControl.h"
 #include "CannonShot.h"
 #include "Cannon.h"
 
@@ -32,13 +33,44 @@ void Cannon::SetParam(void)
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
 
+	//相対座標
+	trans_.localPos = MAP_LOCALPOS;
+
+	//サイズ倍率
+	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
+
+	//サイズ
+	trans_.scl.x *= adjustSizePer.x;
+	trans_.scl.y *= adjustSizePer.y;
+	trans_.scl.z *= adjustSizePer.z;
+
+	//相対座標
+	trans_.localPos.x = MAP_LOCALPOS.x * trans_.scl.x;
+	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
+	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
+
+	//砲身
+	barrelTrans_ = trans_;
+
+	//砲台からの相対座標
+	VECTOR barrelLocalPos = BARREL_LOCAL_POS;
+	barrelLocalPos.x *= barrelTrans_.scl.x;
+	barrelLocalPos.y *= barrelTrans_.scl.y;
+	barrelLocalPos.z *= barrelTrans_.scl.z;
+
+	//砲台からの相対回転
+	VECTOR barrelLocalRot = BARREL_LOCAL_ROT;
+	barrelLocalRot.x *= barrelTrans_.scl.x;
+	barrelLocalRot.y *= barrelTrans_.scl.y;
+	barrelLocalRot.z *= barrelTrans_.scl.z;
+
 	//砲身を砲台に合わせておく
-	barrelTrans_.pos = VAdd(trans_.pos,BARREL_LOCAL_POS);
+	barrelTrans_.pos = VAdd(trans_.pos, barrelLocalPos);
 	//角度もまっすぐに
 	barrelTrans_.quaRotLocal = Quaternion::Euler(
-		Utility::Deg2RadF(BARREL_LOCAL_ROT.x), 
-		Utility::Deg2RadF(BARREL_LOCAL_ROT.y),
-		Utility::Deg2RadF(BARREL_LOCAL_ROT.z));
+		Utility::Deg2RadF(barrelLocalRot.x),
+		Utility::Deg2RadF(barrelLocalRot.y),
+		Utility::Deg2RadF(barrelLocalRot.z));
 	
 	//砲身のモデル設定
 	barrelTrans_.SetModel(resMng_.LoadModelDuplicate(
@@ -47,6 +79,8 @@ void Cannon::SetParam(void)
 
 void Cannon::Update(void)
 {
+#ifdef _DEBUG
+
 	auto& ins = InputManager::GetInstance();
 	if (ins.IsNew(KEY_INPUT_UP))targetPos_.z++;
 	if (ins.IsNew(KEY_INPUT_RIGHT))targetPos_.x++;
@@ -54,6 +88,8 @@ void Cannon::Update(void)
 	if (ins.IsNew(KEY_INPUT_LEFT))targetPos_.x--;
 	if (ins.IsNew(KEY_INPUT_RSHIFT))targetPos_.y++;
 	if (ins.IsNew(KEY_INPUT_RCONTROL))targetPos_.y--;
+
+#endif // _DEBUG
 	
 	//弾の削除処理
 	DeleteShot();
@@ -95,8 +131,8 @@ void Cannon::Draw(void)
 
 	DrawSphere3D(targetPos_, 10.0, 20, 0xffffff, 0xffffff, true);
 
-	DrawLine3D(barrelTrans_.pos, targetPos_, 0x666666);
-	DrawLine3D(barrelTrans_.pos, VScale(barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal).GetForward(),1000.0f), 0x666666);
+	DrawLine3D(VAdd(barrelTrans_.pos,barrelTrans_.localPos), targetPos_, 0x666666);
+	DrawLine3D(VAdd(barrelTrans_.pos, barrelTrans_.localPos), VScale(barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal).GetForward(),1000.0f), 0x666666);
 
 	DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
 
@@ -111,7 +147,7 @@ void Cannon::Draw(void)
 	}
 }
 
-void Cannon::ChangeModelColor(COLOR_F _colorScale)
+void Cannon::ChangeModelColor(const COLOR_F _colorScale)
 {
 	//砲台
 	if (MV1SetDifColorScale(trans_.modelId, _colorScale))
@@ -138,7 +174,7 @@ void Cannon::ChangeModelColor(COLOR_F _colorScale)
 void Cannon::RotateTurret(void)
 {
 	//対象までの回転軸
-	turretAddRot_ = Utility::GetRotAxisToTarget(barrelTrans_.pos, targetPos_,Utility::AXIS_XZ);
+	turretAddRot_ = Utility::GetRotAxisToTarget(VAdd(trans_.pos,trans_.localPos), targetPos_,Utility::AXIS_XZ);
 
 	//砲台回転
 	Utility::LookAtTarget(trans_, turretAddRot_, AIM_TIME_TURRET);
@@ -147,7 +183,7 @@ void Cannon::RotateTurret(void)
 void Cannon::RotateBarrel(void)
 {
 	//対象までの回転軸
-	barrelAddRot_ = Utility::GetRotAxisToTarget(barrelTrans_.pos, targetPos_, Utility::AXIS_Y);
+	barrelAddRot_ = Utility::GetRotAxisToTarget(VAdd(barrelTrans_.pos,barrelTrans_.localPos), targetPos_, Utility::AXIS_Y);
 
 	//距離で補正
 	float distance = Utility::Distance(Utility::GetMoveVec(barrelTrans_.pos, targetPos_), barrelTrans_.pos);
@@ -168,11 +204,15 @@ void Cannon::CreateShot(void)
 	//弾が最大数生成されている　又は　生成間隔を達していないなら生成処理をしない
 	if (shotNum_ >= SHOT_MAX || shotCreateCnt_ < SHOT_INTERVAL)return;
 
+	//アイテムマネージャー
+	ItemManager& itemMng = ItemManager::GetInstance();
+
 	//砲身の全回転
 	Quaternion barrelAllRot = barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal);
 
 	//弾の生成
-	std::unique_ptr<CannonShot> shot = std::make_unique<CannonShot>(barrelTrans_.pos, barrelAllRot);
+	std::unique_ptr<CannonShot> shot = std::make_unique<CannonShot>(VAdd(barrelTrans_.pos,barrelTrans_.localPos), barrelAllRot,barrelTrans_.scl);
+	//std::shared_ptr<CannonShot> shot = std::make_shared<CannonShot>(barrelTrans_.pos, barrelAllRot, this);
 
 	//弾の初期化
 	shot->Init();
@@ -182,6 +222,9 @@ void Cannon::CreateShot(void)
 
 	//生成数カウント増加
 	shotNum_++;
+
+	//マネージャーに所有権を渡す
+	//itemMng.MoveSubItemOwner(ITEM_TYPE::CANNON_SHOT, std::move(shot));
 
 	//生成間隔カウンタ初期化
 	shotCreateCnt_ = 0;

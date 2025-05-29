@@ -71,10 +71,11 @@ void GameScene::Init(void)
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
+
 	PlayerManager::CreateInstance(1);
 
 	//ÉAÉCÉeÉÄê∂ê¨
-	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
+	ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
 	//ItemManager::GetInstance().AddItem({ 3,2,3 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
 	//ItemManager::GetInstance().AddItem({ 8,2,8 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
 	//ItemManager::GetInstance().AddItem({ 10,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
@@ -89,7 +90,7 @@ void GameScene::NormalUpdate(void)
 
 
 
-	PlayerManager::GetInstance().Update();
+
 
 	phaseUpdate_();
 
@@ -217,6 +218,7 @@ void GameScene::UpdateEdit(void)
 void GameScene::UpdateAction(void)
 {
 	ItemManager::GetInstance().Update();
+	PlayerManager::GetInstance().Update();
 }
 
 void GameScene::DrawEdit(void)

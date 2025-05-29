@@ -1,9 +1,16 @@
-#include "../Object/Item/Floor.h"
-#include "../Object/Item/MoveHoriFloor.h"
-#include "../Object/Item/MoveVerFloor.h"
-#include "../Object/Item/Fence.h"
-#include "../Object/Item/Cannon.h"
-#include "../Object/Item/SlimeFloor.h"
+#include "../Object/Item/Fixed/StartFlag.h"
+#include "../Object/Item/Fixed/GoalFlag.h"
+#include "../Object/Item/Installation/Floor.h"
+#include "../Object/Item/Installation/MoveHoriFloor.h"
+#include "../Object/Item/Installation/MoveVerFloor.h"
+#include "../Object/Item/Installation/Fence.h"
+#include "../Object/Item/Installation/Cannon.h"
+#include "../Object/Item/Installation/Spiky.h"
+#include "../Object/Item/Installation/Fan.h"
+#include "../Object/Item/Installation/SlimeFloor.h"
+#include "../Object/Item/Installation/Spring.h"
+#include "../Object/Item/Destroyer/SmallBomb.h"
+#include "../Object/Item/Destroyer/BigBomb.h"
 #include "MapEditer.h"
 #include "ItemManager.h"
 
@@ -25,10 +32,13 @@ void ItemManager::Update(void)
 			}
 		}
 	}
+	//各ダミーアイテムの更新
 	for (auto& item : dummyItems_)
 	{
+		//まだ設置してない
 		if (item.second == nullptr)
 		{
+			//飛ばす
 			continue;
 		}
 		item.second->Update();
@@ -37,6 +47,7 @@ void ItemManager::Update(void)
 
 void ItemManager::Draw(void)
 {
+	//各アイテムの描画
 	for (auto& [type, itemList] : items_) {
 		for (auto& item : itemList) {
 			if (item) {
@@ -55,10 +66,12 @@ void ItemManager::Draw(void)
 		{
 			item.second->ChangeModelColor(ItemManager::DUMMY_OVERLAP_COLOR);
 		}
+		//重なっていない
 		else
 		{
 			item.second->ChangeModelColor(ItemManager::DUMMY_DEFAULT_COLOR);
 		}
+		//モデル描画
 		item.second->Draw();
 		item.second->ChangeModelColor(ItemManager::DEFAULT_COLOR);
 	}
@@ -102,6 +115,7 @@ void ItemManager::CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::I
 	//アイテム
 	std::shared_ptr<ItemBase> item;
 
+	//アイテム作成
 	item = CreateItem(type, mapPos, rot);
 
 	if (item == nullptr)
@@ -140,13 +154,17 @@ IntVector3 ItemManager::GetDummyItemMapPos(int playerNum)
 	}
 	else
 	{
+		//見つからなかった
 		mapPos = { -1,-1,-1 };
 	}
+
+	//マップ座標を返す
 	return mapPos;
 }
 
 IntVector3 ItemManager::GetDummyItemSize(int playerNum)
 {
+	//アイテムの大きさ
 	IntVector3 size;
 	if (dummyItems_.find(playerNum) == dummyItems_.end() || dummyItems_[playerNum] == nullptr)
 	{
@@ -169,6 +187,7 @@ Transform ItemManager::GetDummyItemTransform(int playerNum)
 	}
 	else
 	{
+		//見つからなかった
 		transform = Transform();
 	}
 	return transform;
@@ -347,8 +366,10 @@ std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntV
 	case ItemBase::ITEM_TYPE::NONE:
 		break;
 	case ItemBase::ITEM_TYPE::START:
+		item = std::make_shared<StartFlag>();
 		break;
 	case ItemBase::ITEM_TYPE::GOAL:
+		item = std::make_shared<GoalFlag>();
 		break;
 	case ItemBase::ITEM_TYPE::FLOOR:
 		item = std::make_shared<Floor>();
@@ -366,20 +387,35 @@ std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntV
 		item = std::make_shared<Cannon>();
 		break;
 	case ItemBase::ITEM_TYPE::SPIKY:
+		item = std::make_shared<Spiky>();
+		break;
+	case ItemBase::ITEM_TYPE::FAN:
+		item = std::make_shared<Fan>();
+		break;
+	case ItemBase::ITEM_TYPE::SLIME_FLOOR:
+		item = std::make_shared<SlimeFloor>();
+		break;
+	case ItemBase::ITEM_TYPE::SPRING:
+		item = std::make_shared<Spring>();
 		break;
 	case ItemBase::ITEM_TYPE::BOMB_SMALL:
+		item = std::make_shared<SmallBomb>();
 		break;
 	case ItemBase::ITEM_TYPE::BOMB_BIG:
-		break;
-	case ItemBase::ITEM_TYPE::MAX:
+		item = std::make_shared<BigBomb>();
 		break;
 	default:
 		break;
 	}
+
+	//アイテムが生成できていない
 	if (item == nullptr)
 	{
+		//空アイテムを返す
 		return nullptr;
 	}
+
+	//初期化
 	item->Init(mapPos, rot, type);
 	return item;
 }

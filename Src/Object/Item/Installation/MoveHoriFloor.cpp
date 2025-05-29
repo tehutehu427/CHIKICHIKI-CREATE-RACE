@@ -3,12 +3,12 @@
 #include "../Manager/Game/MapEditer.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
-#include "MoveVerFloor.h"
+#include "MoveHoriFloor.h"
 
-MoveVerFloor::MoveVerFloor()
+MoveHoriFloor::MoveHoriFloor()
 {
 	routeNum_ = 0;
-	for (int i = 0; i < ROUTE; i++)
+	for (int i = 0 ; i< ROUTE;i++)
 	{
 		route_[i] = Utility::VECTOR_ZERO;
 	}
@@ -20,11 +20,11 @@ MoveVerFloor::MoveVerFloor()
 	movePow_ = Utility::VECTOR_ZERO;
 }
 
-MoveVerFloor::~MoveVerFloor()
+MoveHoriFloor::~MoveHoriFloor()
 {
 }
 
-void MoveVerFloor::SetParam(void)
+void MoveHoriFloor::SetParam(void)
 {
 	//モデルの基本設定
 	trans_.SetModel(resMng_.LoadModelDuplicate(
@@ -36,11 +36,24 @@ void MoveVerFloor::SetParam(void)
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
 
+	//サイズ倍率
+	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
+
+	//サイズ
+	trans_.scl.x *= adjustSizePer.x;
+	trans_.scl.y *= adjustSizePer.y;
+	trans_.scl.z *= adjustSizePer.z;
+
+	//相対座標
+	trans_.localPos.x = MAP_LOCALPOS.x * trans_.scl.x;
+	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
+	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
+
 	//ルート設定
 	InitRoute();
 }
 
-void MoveVerFloor::Update(void)
+void MoveHoriFloor::Update(void)
 {
 	//移動処理
 	Move();
@@ -49,16 +62,21 @@ void MoveVerFloor::Update(void)
 	trans_.Update();
 }
 
-void MoveVerFloor::Draw(void)
+void MoveHoriFloor::Draw(void)
 {
 	DrawLine3D(route_[0], route_[1], 0xffffff);
 	MV1DrawModel(trans_.modelId);
 }
 
-void MoveVerFloor::Move(void)
+const IntVector3 MoveHoriFloor::GetSize(void) const
+{
+	return size_ + IntVector3(MOVE_X, 0, 0);
+}
+
+void MoveHoriFloor::Move(void)
 {
 	//指定ルートを超えたか
-	if (IsBeyondRoute())
+	if(IsBeyondRoute())
 	{
 		//現在位置の補正
 		trans_.pos = route_[routeNum_];
@@ -71,14 +89,14 @@ void MoveVerFloor::Move(void)
 	trans_.pos = VAdd(trans_.pos, movePow_);
 }
 
-void MoveVerFloor::InitRoute(void)
+void MoveHoriFloor::InitRoute(void)
 {
 	//初期位置保存
 	route_[routeNum_] = trans_.pos;
 
 	//マップ座標をワールド座標に
-	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ 0, size_.y * MOVE_Y, 0 });
-
+	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ MOVE_X, 0, 0 });
+	
 	//移動量
 	VECTOR movePos = trans_.quaRot.PosAxis(intPos);
 	
@@ -92,21 +110,21 @@ void MoveVerFloor::InitRoute(void)
 	distance_ = Utility::Distance(route_[routeNum_], route_[routeNum_ + 1]);
 
 	//速度設定
-	speed_ = distance_ / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
+	speed_ = static_cast<float>(distance_) / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
 
 	//初期ルート設定
 	SetRoute();
 }
 
-void MoveVerFloor::SetRoute(void)
+void MoveHoriFloor::SetRoute(void)
 {
 	//開始地点
 	startRoute_ = route_[routeNum_];
-
+	
 	//地点用ナンバー増加
 	routeNum_++;
 	if (routeNum_ >= ROUTE)routeNum_ = 0;
-
+	
 	//終了地点
 	goalRoute_ = route_[routeNum_];
 
@@ -117,7 +135,7 @@ void MoveVerFloor::SetRoute(void)
 	movePow_ = Utility::GetMoveVec(startRoute_, goalRoute_, speed_);
 }
 
-bool MoveVerFloor::IsBeyondRoute(void)
+bool MoveHoriFloor::IsBeyondRoute(void)
 {
 	//Xの比較
 	bool beyondX;
@@ -137,7 +155,7 @@ bool MoveVerFloor::IsBeyondRoute(void)
 	return beyondX && beyondY && beyondZ;
 }
 
-void MoveVerFloor::HitObject(Transform& _hitTrans)
+void MoveHoriFloor::Hit(Transform& _hitTrans)
 {
 	//当たったオブジェクトに同じだけ移動させる
 	_hitTrans.pos = VAdd(_hitTrans.pos, movePow_);

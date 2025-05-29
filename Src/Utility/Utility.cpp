@@ -608,19 +608,13 @@ const VECTOR Utility::GetRotAxisToTarget(const VECTOR _pos, const VECTOR _target
     //対象までの方向ベクトル
     VECTOR targetVec = GetMoveVec(_pos, _targetPos);
 
-    //自身と対象のベクトルの差異
-    VECTOR turretVecDiff = VSub(targetVec, _pos);
-
-    //正規化
-    turretVecDiff = VNorm(turretVecDiff);
-
     //必要ない軸は除去
-    turretVecDiff.x *= _needAxis.x;
-    turretVecDiff.y *= _needAxis.y;
-    turretVecDiff.z *= _needAxis.z;
+    targetVec.x *= _needAxis.x;
+    targetVec.y *= _needAxis.y;
+    targetVec.z *= _needAxis.z;
 
     //回転量
-    Quaternion turQuaRot = Quaternion::LookRotation(turretVecDiff);
+    Quaternion turQuaRot = Quaternion::LookRotation(targetVec);
 
     //VECTOR変換
    return turQuaRot.ToEuler();
@@ -628,14 +622,17 @@ const VECTOR Utility::GetRotAxisToTarget(const VECTOR _pos, const VECTOR _target
 
 void Utility::LookAtTarget(Transform& _trans, const VECTOR _toTargetAxis, const float _time, const VECTOR _relativePos)
 {
+    //しきい値
+    static const float THRESHOLD = 0.1f;
+
     //デルタタイム取得
     float delta = SceneManager::GetInstance().GetDeltaTime();
 
     //補正時間カウンタ
     static float aimTime = _time;
 
-    //まだ補正中でも新たに狙う
-    if (aimTime > 0.1f)aimTime = _time;
+    //しきい値判定
+    if (aimTime > THRESHOLD)aimTime = _time;
 
     //デルタタイムで補間
     aimTime -= delta;

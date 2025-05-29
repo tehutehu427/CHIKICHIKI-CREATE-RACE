@@ -114,12 +114,16 @@ const bool IntVector3::operator>=(const IntVector3 _value)
 
 VECTOR IntVectorToVECTOR(IntVector3 _iv)
 {
-	return VGet(_iv.x, _iv.y, _iv.z);
+	float vx = static_cast<float>(_iv.x);
+	float vy = static_cast<float>(_iv.y);
+	float vz = static_cast<float>(_iv.z);
+
+	return VGet(vx, vy, vz);
 }
 
 IntVector3 VECTORToIntVector(VECTOR _v)
 {
-	IntVector3 intVec;
+	IntVector3 intVec = INT_VECTOR_ZERO;
 
 	intVec.x = static_cast<int>(_v.x);
 	intVec.y = static_cast<int>(_v.y);
