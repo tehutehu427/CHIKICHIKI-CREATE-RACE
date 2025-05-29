@@ -120,7 +120,6 @@
     <ClInclude Include="Src\Scene\Game\MultiParty.h" />
     <ClInclude Include="Src\Scene\Game\SoloChallenge.h" />
     <ClInclude Include="Src\Scene\Game\FreePlay.h" />
-    <ClInclude Include="Src\Object\Editor\Palette\Icon\PaletteIcon.h" />
     <ClInclude Include="Src\Object\Editor\Palette\EditorPaletteBase.h" />
     <ClInclude Include="Src\Manager\System\DateBank.h" />
     <ClInclude Include="Src\Object\Editor\MapDataIO.h" />
