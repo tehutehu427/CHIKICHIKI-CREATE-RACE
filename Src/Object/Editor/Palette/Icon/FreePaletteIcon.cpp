@@ -1,5 +1,6 @@
 #include "FreePaletteIcon.h"
-#include "../../../../Utility/Utility.h"
+#include "../../../../Utility/Utility.h"]
+#include "../../../../Manager/System/DateBank.h"
 
 FreePaletteIcon::FreePaletteIcon()
 {
@@ -56,24 +57,6 @@ void FreePaletteIcon::Init()
 
 	//状態変更
 	ChangeState(STATE::NONE);
-}
-
-void FreePaletteIcon::DrawItemIcon()
-{
-	//アイコンの描画のみマスク処理
-	SetUseMaskScreenFlag(true);
-	for (EditorPaletteBase::ImgInfo& i : icons_)
-	{
-		DrawRotaGraph(
-			i.pos.x,
-			i.pos.y,
-			i.rate,
-			i.angle,
-			imgIcons_,
-			true,
-			false);
-	}
-	SetUseMaskScreenFlag(false);
 }
 
 void FreePaletteIcon::CheckItemIcon(const Vector2 _mPos)

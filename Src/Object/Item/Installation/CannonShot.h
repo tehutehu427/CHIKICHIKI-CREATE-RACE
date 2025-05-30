@@ -13,7 +13,7 @@ public:
 	static constexpr float SCALE = 0.3f;		//弾の大きさ
 
 	//コンストラクタ
-	CannonShot(VECTOR _pos, Quaternion _quaRot);
+	CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl);
 	//デストラクタ
 	~CannonShot()override;
 

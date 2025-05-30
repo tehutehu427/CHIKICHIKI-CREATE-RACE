@@ -1,4 +1,5 @@
 #include"../Manager/Game/MapEditer.h"
+#include"../Utility/Utility.h"
 #include "ItemBase.h"
 
 ItemBase::ItemBase()
@@ -74,4 +75,24 @@ void ItemBase::SetRotate(Quaternion rot)
 {
 	trans_.quaRot = rot;
 	trans_.Update();
+}
+
+const VECTOR ItemBase::AdjustSizePer(const VECTOR _modelSize)const
+{
+	//マップエディタ
+	MapEditer& map = MapEditer::GetInstance();
+
+	//サイズ倍率
+	VECTOR ret = Utility::VECTOR_ZERO;
+	ret = map.MapToWorldPos(size_);
+
+	//マップサイズ
+	VECTOR modelSize = _modelSize;
+	
+	//サイズ倍率
+	ret.x /= modelSize.x;
+	ret.y /= modelSize.y;
+	ret.z /= modelSize.z;
+
+	return ret;
 }

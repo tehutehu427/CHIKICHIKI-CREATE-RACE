@@ -15,6 +15,7 @@
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Grid.h"
 #include "../../Object/SkyDome/SkyDome.h"
+#include "../../Object/System/GameClear.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -28,12 +29,18 @@ GameScene::GameScene(void)
 	palette_ = nullptr;
 	phaseChanges_.emplace(PHASE::EDIT_PHASE, std::bind(&GameScene::ChangePhaseEdit, this));
 	phaseChanges_.emplace(PHASE::ACTION_PHASE, std::bind(&GameScene::ChangePhaseAction, this));
+	phaseChanges_.emplace(PHASE::CLEAR_PHASE, std::bind(&GameScene::ChangePhaseClear, this));
 }
 
 GameScene::~GameScene(void)
 {
 	//インスタンスの削除
 	PlayerManager::GetInstance().Destroy();
+	ItemManager::GetInstance().Destroy();
+	MapEditer::GetInstance().Destroy();
+	DeleteFontToHandle(buttnFontHandle_);
+	phaseChanges_.clear();
+
 }
 
 void GameScene::Load(void)
@@ -59,6 +66,9 @@ void GameScene::Load(void)
 
 	sky_ = std::make_unique<SkyDome>();
 	sky_->Load();
+
+	gameClear_ = std::make_unique<GameClear>();
+	gameClear_->Load();
 }
 
 void GameScene::Init(void)
@@ -66,6 +76,7 @@ void GameScene::Init(void)
 	palette_->Init();
 	editController_->Init();
 	sky_->Init();
+	gameClear_->Init();
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
@@ -108,19 +119,11 @@ void GameScene::NormalDraw(void)
 	//スカイドーム
 	sky_->Draw();
 
+
 	phaseDraw_();
-
-	//プレイヤー
-	PlayerManager::GetInstance().Draw();
-
 	//アイテム
 	ItemManager::GetInstance().Draw();
 
-	//エディットコントローラー
-	editController_->Draw();
-	
-	//パレット
-	palette_->Draw();
 }
 
 void GameScene::ChangeNormal(void)
@@ -141,6 +144,10 @@ void GameScene::DebagUpdate(void)
 	if (ins.IsTrgDown(KEY_INPUT_Z))
 	{
 		ChangePhase(phase_ == PHASE::ACTION_PHASE ? PHASE::EDIT_PHASE : PHASE::ACTION_PHASE);
+	}
+	else if (ins.IsTrgDown(KEY_INPUT_C))
+	{
+		ChangePhase(PHASE::CLEAR_PHASE);
 	}
 }
 
@@ -178,8 +185,8 @@ void GameScene::ChangePhaseEdit(void)
 	VECTOR pos;
 	IntVector3 mPos = MapEditer::MAP_SIZE;
 	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
-	pos = { 0.0f,250.0f,-500.0f };
-	//SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	//pos = { 0.0f,250.0f,-500.0f };
+	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
 }
 
 void GameScene::ChangePhaseAction(void)
@@ -200,6 +207,12 @@ void GameScene::ChangePhaseAction(void)
 	//SceneManager::GetInstance().GetCamera().lock()->SetTargetPos({ static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2, 0.0f, static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 });
 }
 
+void GameScene::ChangePhaseClear(void)
+{
+	phaseUpdate_ = std::bind(&GameScene::UpdateClear, this);
+	phaseDraw_ = std::bind(&GameScene::DrawClear, this);
+}
+
 void GameScene::UpdateEdit(void)
 {
 	//パレット
@@ -213,11 +226,19 @@ void GameScene::UpdateAction(void)
 	PlayerManager::GetInstance().Update();
 }
 
+void GameScene::UpdateClear(void)
+{
+	//プレイヤーにアニメーションをさせたりする
+	//エフェクトなどを表示させる
+
+	gameClear_->Update();
+}
+
 void GameScene::DrawEdit(void)
 {
+
 	//グリッド
 	grid_->Draw();
-
 	//エディットコントローラー
 	editController_->Draw();
 
@@ -227,4 +248,15 @@ void GameScene::DrawEdit(void)
 
 void GameScene::DrawAction(void)
 {
+	//プレイヤー
+	PlayerManager::GetInstance().Draw();
+}
+
+void GameScene::DrawClear()
+{
+	//プレイ画面を背景に描画
+	DrawAction();
+
+	//ゲームクリアの描画
+	gameClear_->Draw();
 }

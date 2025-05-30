@@ -22,7 +22,7 @@ public:
 	void Update(void);
 	//描画
 	void Draw(void);
-
+	void Destroy(void);
 	/// <summary>
 	/// アイテム追加
 	/// </summary>
@@ -51,8 +51,23 @@ public:
 	/// <param name="type">アイテムの種類</param>
 	void CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type, int playerNum);
 
+	/// <summary>
+	/// ダミーアイテムのステータスを取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのステータス</returns>
 	ItemBase::Status GetDummyItemStatus(int playerNum);
+	/// <summary>
+	/// ダミーアイテムのマップ座標を取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのマップ座標</returns>
 	IntVector3 GetDummyItemMapPos(int playerNum);
+	/// <summary>
+	/// ダミーアイテムのサイズを取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのサイズ</returns>
 	IntVector3 GetDummyItemSize(int playerNum);
 	/// <summary>
 	/// ダミーアイテムのTransformを取得
@@ -60,7 +75,6 @@ public:
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのTransform</returns>
 	Transform GetDummyItemTransform(int playerNum);
-	
 	/// <summary>
 	/// ダミーアイテムを置き換える
 	/// </summary>
@@ -92,6 +106,7 @@ public:
 
 	// 静的インスタンスの取得
 	static ItemManager& GetInstance(void);
+
 
 	/// <summary>
 	/// 指定した種類のアイテム配列を返す
@@ -129,24 +144,17 @@ public:
 protected:
 
 private:
-	
-	//インスタンス
 	static ItemManager* instance_;
 
 	//種類ごとにアイテムを管理
 	std::map<ItemBase::ITEM_TYPE, std::vector<std::shared_ptr<ItemBase>>> items_;
-
 	//配置中のアイテム[プレイヤー番号][アイテムの種類]
 	std::map<int,std::shared_ptr<ItemBase>> dummyItems_;
-	
-	//コンストラクタ
 	ItemManager(void);
-
 	//コピーコンストラクタ及び代入演算の禁止
 	ItemManager(const ItemManager& instance_) = delete;
 	void operator= (const ItemManager& instance_) = delete;
-	~ItemManager(void);
-
+	~ItemManager(void) = default;
 	//アイテムの生成
 	std::shared_ptr<ItemBase> CreateItem(ItemBase::ITEM_TYPE type, IntVector3 mapPos, Quaternion rot);
 };

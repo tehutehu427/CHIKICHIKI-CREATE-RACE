@@ -5,9 +5,10 @@
 #include "../Object/Item/Installation/MoveVerFloor.h"
 #include "../Object/Item/Installation/Fence.h"
 #include "../Object/Item/Installation/Cannon.h"
-#include "../Object/Item/Installation/SlimeFloor.h"
-#include "../Object/Item/Installation/Fan.h"
 #include "../Object/Item/Installation/Spiky.h"
+#include "../Object/Item/Installation/Fan.h"
+#include "../Object/Item/Installation/SlimeFloor.h"
+#include "../Object/Item/Installation/Spring.h"
 #include "../Object/Item/Destroyer/SmallBomb.h"
 #include "../Object/Item/Destroyer/BigBomb.h"
 #include "MapEditer.h"
@@ -78,6 +79,16 @@ void ItemManager::Draw(void)
 		//ÉÇÉfÉãï`âÊ
 		item.second->Draw();
 		item.second->ChangeModelColor(ItemManager::DEFAULT_COLOR);
+	}
+}
+
+void ItemManager::Destroy(void)
+{
+	AllDeleteItem();
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
 	}
 }
 
@@ -398,22 +409,9 @@ Transform ItemManager::GetItemTransform(IntVector3 _mapPos, ItemBase::ITEM_TYPE 
 	return Transform{};
 }
 
-//void ItemManager::MoveSubItemOwner(const ItemBase::ITEM_TYPE _type, std::shared_ptr<ItemBase> _subItem)
-//{
-//	//èâä˙âªèàóù
-//	_subItem->Init();
-//
-//	//èäóLå†ñæÇØìnÇµ
-//	items_[_type].emplace_back(_subItem);
-//}
-
 ItemManager::ItemManager(void)
 {
 
-}
-
-ItemManager::~ItemManager(void)
-{
 }
 
 std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntVector3 mapPos, Quaternion rot)
@@ -424,6 +422,8 @@ std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntV
 	//éÌóﬁÇ≤Ç∆ÇÃê∂ê¨
 	switch (type)
 	{
+	case ItemBase::ITEM_TYPE::NONE:
+		break;
 	case ItemBase::ITEM_TYPE::START:
 		item = std::make_shared<StartFlag>();
 		break;
@@ -447,6 +447,15 @@ std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntV
 		break;
 	case ItemBase::ITEM_TYPE::SPIKY:
 		item = std::make_shared<Spiky>();
+		break;
+	case ItemBase::ITEM_TYPE::FAN:
+		item = std::make_shared<Fan>();
+		break;
+	case ItemBase::ITEM_TYPE::SLIME_FLOOR:
+		item = std::make_shared<SlimeFloor>();
+		break;
+	case ItemBase::ITEM_TYPE::SPRING:
+		item = std::make_shared<Spring>();
 		break;
 	case ItemBase::ITEM_TYPE::BOMB_SMALL:
 		item = std::make_shared<SmallBomb>();

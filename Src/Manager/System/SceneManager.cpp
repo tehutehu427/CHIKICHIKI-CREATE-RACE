@@ -46,6 +46,10 @@ void SceneManager::Init(void)
 	// デルタタイム
 	preTime_ = std::chrono::system_clock::now();
 
+	// メインスクリーン
+	mainScreen_ = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, true);
+
+	//データバンクを生成
 	DateBank::CreateInstance();
 
 	//ウィンドウがアクティブ状態でなくとも処理を行う
@@ -115,7 +119,7 @@ void SceneManager::Draw(void)
 	
 	// 描画先グラフィック領域の指定
 	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
-	SetDrawScreen(DX_SCREEN_BACK);
+	SetDrawScreen(mainScreen_);
 
 	// 画面を初期化
 	ClearDrawScreen();
@@ -137,6 +141,18 @@ void SceneManager::Draw(void)
 	
 	// 暗転・明転
 	fader_->Draw();
+
+	//背面スクリーンにメインスクリーンを描画
+	SetDrawScreen(DX_SCREEN_BACK);
+
+	// 画面を初期化
+	ClearDrawScreen();
+
+	// カメラ設定
+	camera_->CameraSetting();
+
+	//メインスクリーンを描画
+	DrawGraph(0, 0, mainScreen_, false);
 
 }
 
@@ -182,6 +198,7 @@ void SceneManager::PopScene()
 
 void SceneManager::Destroy(void)
 {
+	DateBank::GetInstance().Destroy();
 	delete instance_;
 }
 

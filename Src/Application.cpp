@@ -17,6 +17,7 @@ const std::string Application::PATH_FONT = "Data/Font/";
 const std::string Application::PATH_TEXT = "Data/Text/";
 const std::string Application::PATH_JSON = "Data/JSON/";
 const std::string Application::PATH_CSV = "Data/CSV/";
+const std::string Application::PATH_SHADER = "Data/Shader/";
 
 void Application::CreateInstance(void)
 {

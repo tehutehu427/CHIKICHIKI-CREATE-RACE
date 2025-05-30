@@ -21,7 +21,7 @@ public:
 		CANNON,				//大砲
 		SPIKY,				//とげ
 		FAN,				//扇風機
-		FERRIS_WHEEL,		//観覧車
+		//FERRIS_WHEEL,		//観覧車
 		SLIME_FLOOR,		//スライム床
 		SPRING,				//ばね(ジャンプ台)
 
@@ -92,6 +92,9 @@ protected:
 	//共通変数
 	Status status_;			//ステータス
 	IntVector3 InitMapPos_;	//初期マップ座標
+
+	//サイズの倍率調整
+	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;
 
 private:
 };

@@ -63,6 +63,9 @@ void InputManager::Init(void)
 
 	//---------------------------------------------------
 
+	//デバッグ
+	Add(KEY_INPUT_C);	//ゲームクリアへの遷移
+
 
 	InputManager::MouseInfo info;
 
@@ -393,5 +396,3 @@ bool InputManager::IsPadBtnTrgUp(JOYPAD_NO no, JOYPAD_BTN btn) const
 {
 	return padInfos_[static_cast<int>(no)].IsTrgUp[static_cast<int>(btn)];
 }
-
-

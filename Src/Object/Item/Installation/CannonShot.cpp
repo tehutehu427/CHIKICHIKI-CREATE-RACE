@@ -5,11 +5,12 @@
 #include "Cannon.h"
 #include "CannonShot.h"
 
-CannonShot::CannonShot(VECTOR _pos, Quaternion _quaRot)
+CannonShot::CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl)
 {
 	size_ = INT_VECTOR_ZERO;
 	trans_.pos = _pos;
 	trans_.quaRot = _quaRot;
+	trans_.scl = _scl;
 	isAlive_ = false;
 	movePow_ = Utility::VECTOR_ZERO;
 	cnt_ = 0.0f;
@@ -25,7 +26,7 @@ void CannonShot::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::CANNON_SHOT));
 
 	//‘å‚«‚³
-	trans_.scl = { SCALE,SCALE,SCALE };
+	trans_.scl = VScale(trans_.scl,SCALE);
 
 	//ˆÚ“®—Ê
 	movePow_ = VScale(trans_.quaRot.GetForward(), SPEED);

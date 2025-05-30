@@ -7,7 +7,7 @@ class MapEditer
 {
 public:
 
-	static constexpr IntVector3 MAP_SIZE = { 50,5,40 };
+	static constexpr IntVector3 MAP_SIZE = { 40,5,30 };
 	static constexpr int GRID_SIZE = 100;
 
 	struct STATUS
@@ -35,6 +35,8 @@ public:
 	/// <param name="mapPos">マップ座標</param>
 	/// <returns>支点座標</returns>
 	IntVector3 GetLeaderMapPos(IntVector3 mapPos) const { return leaderMapPos_[mapPos.x][mapPos.y][mapPos.z]; }
+
+	void Destroy(void);
 
 	/// <summary>
 	/// 指定のマップ座標にオブジェクトがあるか

@@ -8,11 +8,14 @@
 class EditorPaletteBase;
 class Grid;
 class SkyDome;
+class GameClear;
 
 class GameScene : public SceneBase
 {
 
 public:
+
+	static constexpr VECTOR ACTION_CAMERA_POS = { 2000.0f, 1700.0f, -2000.0f };	//アクション時のカメラ位置
 
 	/// <summary>
 	/// フェーズ
@@ -21,6 +24,11 @@ public:
 	{
 		EDIT_PHASE,		//エディット
 		ACTION_PHASE,	//アクション
+		CLEAR_PHASE,	//クリア
+
+		//マルチ限定
+		SELECT_PHASE,	//選択
+		RESULT_PHASE,	//リザルト
 	};
 
 	//プレイヤー人数(のちにデータバンクで持ってくる
@@ -69,6 +77,12 @@ protected:
 	/// </summary>
 	/// <param name=""></param>
 	virtual void UpdateAction(void);	
+
+	/// <summary>
+	/// クリア時の更新処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void UpdateClear(void);
 	
 	/// <summary>
 	/// デバッグ時の更新処理
@@ -86,18 +100,19 @@ protected:
 	std::shared_ptr<EditController> editController_;
 
 	//パレット
-	std::unique_ptr<EditorPaletteBase> palette_;
-
-private:
-
-	//フェーズ管理
-	PHASE phase_;
-
+	std::unique_ptr<EditorPaletteBase> palette_;	
+	
 	//フェーズ管理(遷移時の初期処理)
 	std::map<PHASE, std::function<void(void)>> phaseChanges_;
 
 	//フェーズ管理(更新ステップ)
 	std::function<void(void)> phaseUpdate_;
+	std::function<void(void)> phaseDraw_;
+
+private:
+
+	//フェーズ管理
+	PHASE phase_;
 	
 	//更新関数
 	void NormalUpdate(void) override;
@@ -105,19 +120,23 @@ private:
 	//処理の変更
 	void ChangeNormal(void) override;
 
-	std::function<void(void)> phaseDraw_;
-
-	// フェーズ遷移
+	//フェーズ遷移
 	void ChangePhase(PHASE phase);
 	void ChangePhaseEdit(void);
 	void ChangePhaseAction(void);
+	void ChangePhaseClear(void);
 
-	void DrawEdit();
-	void DrawAction();
+	//クリア描画
+	virtual void DrawEdit();
+	virtual void DrawAction();
+	void DrawClear();
 
 	//グリッド
 	std::unique_ptr<Grid>grid_;
 
 	//スカイドーム
 	std::unique_ptr<SkyDome> sky_;
+
+	//ゲームクリア
+	std::unique_ptr<GameClear> gameClear_;
 };

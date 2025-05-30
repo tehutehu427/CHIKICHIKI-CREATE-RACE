@@ -31,5 +31,19 @@ private:
 
 	//エディット時の更新処理
 	void UpdateEdit(void) override;
+
+	//状態遷移
+	void ChangePhaseSelect();
+	void ChangePhaseResult();
+
+	//状態別更新処理
+	void UpdateSelect();
+	void UpdateResult();
+
+	//状態別描画処理
+	void DrawAction() override;
+	void DrawEdit() override;
+	void DrawSelect();
+	void DrawResult();
 };
 

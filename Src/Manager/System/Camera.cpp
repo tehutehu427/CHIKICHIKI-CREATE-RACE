@@ -59,18 +59,27 @@ void Camera::SetBeforeDraw(void)
 	case Camera::MODE::FIXED_UP:
 		SetBeforeDrawFixedUp();
 		break;
+	case Camera::MODE::FIXED_DIAGONAL:
+		SetBeforeDrawFixedDiagonal();
+		break;
 	}
 
-	// カメラの設定(位置と注視点による制御)
-	SetCameraPositionAndTargetAndUpVec(
-		pos_, 
-		targetPos_, 
-		cameraUp_
-	);
+	//カメラの設定
+	CameraSetting();
 
 	// DXライブラリのカメラとEffekseerのカメラを同期する。
 	Effekseer_Sync3DSetting();
 
+}
+
+void Camera::CameraSetting()
+{
+	// カメラの設定(位置と注視点による制御)
+	SetCameraPositionAndTargetAndUpVec(
+		pos_,
+		targetPos_,
+		cameraUp_
+	);
 }
 
 void Camera::Draw(void)
@@ -356,6 +365,13 @@ void Camera::SetBeforeDrawFreeControll(void)
 void Camera::SetBeforeDrawFixedUp(void)
 {
 	targetPos_ = VAdd(pos_, FIXED_LOCAL_P2T_POS);
+	rot_ = Quaternion::Quaternion(angles_);
+	cameraUp_ = rot_.GetUp();
+}
+
+void Camera::SetBeforeDrawFixedDiagonal(void)
+{
+	targetPos_ = FIXED_DIAGONAL_TARGET_POS;
 	rot_ = Quaternion::Quaternion(angles_);
 	cameraUp_ = rot_.GetUp();
 }
