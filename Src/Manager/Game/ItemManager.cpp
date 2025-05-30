@@ -218,6 +218,10 @@ void ItemManager::ResetDummyItem(int playerNum, ItemBase::ITEM_TYPE type,IntVect
 	//指定プレイヤーのダミーアイテムがあるか
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return;
+		}
 		//モデルの回転情報は保存
 		Transform transform = dummyItems_[playerNum]->GetTransform();
 		
@@ -238,6 +242,10 @@ void ItemManager::DummyItemSetMapPos(IntVector3 mapPos, int playerNum)
 	//指定プレイヤーのダミーアイテムがあるか
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return;
+		}
 		//見つかった
 		dummyItems_[playerNum]->SetPos(mapPos);
 	}
