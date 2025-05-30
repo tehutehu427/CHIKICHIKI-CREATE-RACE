@@ -1,8 +1,6 @@
 #pragma once
 #include "GameScene.h"
 
-class MapDataIO;
-
 class FreePlay : public GameScene
 {
 public:
@@ -23,9 +21,6 @@ public:
 	//マップデータの入出力はここでのみ使う
 
 private:
-
-	//マップ情報の入出力
-	std::unique_ptr<MapDataIO> mapIO_;
 
 	//アクション時の更新処理
 	void UpdateAction(void) override;

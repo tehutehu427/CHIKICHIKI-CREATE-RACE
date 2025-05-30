@@ -13,9 +13,11 @@
 #include "../../Manager/Game/PlayerManager.h"
 #include "../../Object/Player/Player.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
+#include "../../Object/Editor/MapDataIO.h"
 #include "../../Object/Grid.h"
 #include "../../Object/SkyDome/SkyDome.h"
 #include "../../Object/System/GameClear.h"
+#include "../../Object/UI/EditorUi.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -55,40 +57,55 @@ void GameScene::Load(void)
 	//{
 	// 
 	//	editController_ = std::make_shared<EditController>(i);
-	//}
+	//}	
+	
+	//アイテムマネージャーの生成
+	ItemManager::CreateInstance();
+	
+	//エディットコントローラーの生成
 	editController_ = std::make_shared<EditController>(0);
 
+	//パレットの生成
 	palette_ = std::make_unique<EditorPaletteBase>(*editController_);
 	palette_->Load();
 
+	//スカイドームの生成
 	sky_ = std::make_unique<SkyDome>();
 	sky_->Load();
 
+	//ゲームクリアの生成
 	gameClear_ = std::make_unique<GameClear>();
-	gameClear_->Load();
+	gameClear_->Load();	
+
+	//マップデータの入出力
+	mapIO_ = std::make_unique<MapDataIO>();
+	mapIO_->Load();
+
+	//エディターモード
+	editorUi_ = std::make_unique<EditorUi>();
+	editorUi_->Load();
 }
 
 void GameScene::Init(void)
 {
+	//初期化
 	palette_->Init();
 	editController_->Init();
 	sky_->Init();
 	gameClear_->Init();
+	editorUi_->Init();
 	MapEditer::CreateInstance();
-	ItemManager::CreateInstance();
+
 	GravityManager::CreateInstance();
 
 	PlayerManager::CreateInstance(1);
 
 	//アイテム生成
-	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
-	ItemManager::GetInstance().AddItem({ 1,1,1 }, Quaternion(), ItemBase::ITEM_TYPE::START);
-	ItemManager::GetInstance().AddItem({ 46,1,36 }, Quaternion(), ItemBase::ITEM_TYPE::GOAL);
-	ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::START);
-	//ItemManager::GetInstance().AddItem({ 3,2,3 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
-	//ItemManager::GetInstance().AddItem({ 8,2,8 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
-	//ItemManager::GetInstance().AddItem({ 10,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
-	//ItemManager::GetInstance().AddItem({ 15,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
+	//ItemManager::GetInstance().AddItem(
+	//	{ MapEditer::MAP_SIZE.x - 3,0,MapEditer::MAP_SIZE.z - 3 }, Quaternion(), ItemBase::ITEM_TYPE::GOAL);
+	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::START);
+
+	//初期フェーズ
 	ChangePhase(PHASE::EDIT_PHASE);
 }
 
@@ -119,11 +136,11 @@ void GameScene::NormalDraw(void)
 	//スカイドーム
 	sky_->Draw();
 
-
-	phaseDraw_();
 	//アイテム
 	ItemManager::GetInstance().Draw();
-
+	
+	//フェーズの描画
+	phaseDraw_();
 }
 
 void GameScene::ChangeNormal(void)
@@ -241,14 +258,17 @@ void GameScene::UpdateClear(void)
 
 void GameScene::DrawEdit(void)
 {
-
 	//グリッド
 	grid_->Draw();
+	
 	//エディットコントローラー
 	editController_->Draw();
-
+	
 	//パレット
 	palette_->Draw();
+
+	//エディターモード用のUI
+	editorUi_->Draw();
 }
 
 void GameScene::DrawAction(void)
