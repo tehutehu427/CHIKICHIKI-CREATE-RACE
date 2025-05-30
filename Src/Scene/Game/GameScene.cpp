@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../../Application.h"
+#include "../Common/FontRegistry.h"
 #include "../../Utility/Utility.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/ResourceManager.h"
@@ -14,7 +15,7 @@
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Grid.h"
 #include "../../Object/SkyDome/SkyDome.h"
-#include "../../Object/Editor/MapDataIO.h"
+#include "../../Object/System/GameClear.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -26,22 +27,26 @@ GameScene::GameScene(void)
 
 	sky_ = nullptr;
 	palette_ = nullptr;
-	mapIO_ = nullptr;
 	phaseChanges_.emplace(PHASE::EDIT_PHASE, std::bind(&GameScene::ChangePhaseEdit, this));
 	phaseChanges_.emplace(PHASE::ACTION_PHASE, std::bind(&GameScene::ChangePhaseAction, this));
+	phaseChanges_.emplace(PHASE::CLEAR_PHASE, std::bind(&GameScene::ChangePhaseClear, this));
 }
 
 GameScene::~GameScene(void)
 {
 	//インスタンスの削除
 	PlayerManager::GetInstance().Destroy();
+	ItemManager::GetInstance().Destroy();
+	MapEditer::GetInstance().Destroy();
+	DeleteFontToHandle(buttnFontHandle_);
+	phaseChanges_.clear();
+
 }
 
 void GameScene::Load(void)
 {
-	//フォントの登録
-	resMng_.Load(ResourceManager::SRC::DOT_FONT);
-	buttnFontHandle_ = CreateFontToHandle("ベストテンDOT", FONT_SIZE, 0);
+	//フォントの生成
+	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
 	//player_ = std::make_unique<Player>();
 	//player_->Load();
@@ -59,8 +64,8 @@ void GameScene::Load(void)
 	sky_ = std::make_unique<SkyDome>();
 	sky_->Load();
 
-	mapIO_ = std::make_unique<MapDataIO>();
-	mapIO_->Load();
+	gameClear_ = std::make_unique<GameClear>();
+	gameClear_->Load();
 }
 
 void GameScene::Init(void)
@@ -68,12 +73,12 @@ void GameScene::Init(void)
 	palette_->Init();
 	editController_->Init();
 	sky_->Init();
-	mapIO_->Init();
+	gameClear_->Init();
 	MapEditer::CreateInstance();
 	ItemManager::CreateInstance();
 	GravityManager::CreateInstance();
 
-	PlayerManager::CreateInstance(3);
+	PlayerManager::CreateInstance(1);
 
 	//アイテム生成
 	ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
@@ -91,11 +96,10 @@ void GameScene::NormalUpdate(void)
 
 
 
-	PlayerManager::GetInstance().Update();
+
 
 	phaseUpdate_();
 
-	ItemManager::GetInstance().Update();
 
 	sky_->Update();
 
@@ -106,30 +110,17 @@ void GameScene::NormalUpdate(void)
 void GameScene::NormalDraw(void)
 {
 	//モデルを先に描画させて、UIや2D系の描画を後から描画する
-
 	//デバッグ描画
-	//DebagDraw();
+	DebagDraw();
 
 	//スカイドーム
 	sky_->Draw();
 
-	//グリッド
-	grid_->Draw();
 
-	//プレイヤー
-	PlayerManager::GetInstance().Draw();
-
+	phaseDraw_();
 	//アイテム
 	ItemManager::GetInstance().Draw();
 
-	//エディットコントローラー
-	editController_->Draw();
-	
-	//パレット
-	palette_->Draw();
-
-	//データの入出力
-	mapIO_->Draw();
 }
 
 void GameScene::ChangeNormal(void)
@@ -150,6 +141,10 @@ void GameScene::DebagUpdate(void)
 	if (ins.IsTrgDown(KEY_INPUT_Z))
 	{
 		ChangePhase(phase_ == PHASE::ACTION_PHASE ? PHASE::EDIT_PHASE : PHASE::ACTION_PHASE);
+	}
+	else if (ins.IsTrgDown(KEY_INPUT_C))
+	{
+		ChangePhase(PHASE::CLEAR_PHASE);
 	}
 }
 
@@ -182,26 +177,42 @@ void GameScene::ChangePhase(PHASE phase)
 void GameScene::ChangePhaseEdit(void)
 {
 	phaseUpdate_ = std::bind(&GameScene::UpdateEdit, this);
+	phaseDraw_ = std::bind(&GameScene::DrawEdit, this);
 	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
 	VECTOR pos;
 	IntVector3 mPos = MapEditer::MAP_SIZE;
 	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
-	pos = { 0.0f,250.0f,-500.0f };
-	//SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	//pos = { 0.0f,250.0f,-500.0f };
+	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
 }
 
 void GameScene::ChangePhaseAction(void)
 {
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
-	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FIXED_UP);
-	VECTOR pos;
-	IntVector3 mPos = MapEditer::MAP_SIZE;
-	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) * 8.5f,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
+	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
+
+	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FIXED_DIAGONAL);
+	//VECTOR pos;
+	//IntVector3 mPos = MapEditer::MAP_SIZE;
+	//pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) * 8.5f,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
+	//SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	//VECTOR angles = {};
+	//angles.x = Utility::Deg2RadF(90.0);
+	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
+
+	VECTOR pos = ACTION_CAMERA_POS;
 	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
 	VECTOR angles = {};
-	angles.x = Utility::Deg2RadF(90.0);
-	SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
+	angles = Quaternion::FromToRotation(pos, Camera::FIXED_DIAGONAL_TARGET_POS).ToEuler();
+	//angles.x = Utility::Deg2RadF(90.0);
+	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
 	//SceneManager::GetInstance().GetCamera().lock()->SetTargetPos({ static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2, 0.0f, static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 });
+}
+
+void GameScene::ChangePhaseClear(void)
+{
+	phaseUpdate_ = std::bind(&GameScene::UpdateClear, this);
+	phaseDraw_ = std::bind(&GameScene::DrawClear, this);
 }
 
 void GameScene::UpdateEdit(void)
@@ -209,9 +220,45 @@ void GameScene::UpdateEdit(void)
 	//パレット
 	palette_->Update();
 	editController_->Update();
-	mapIO_->Update();
 }
 
 void GameScene::UpdateAction(void)
 {
+	ItemManager::GetInstance().Update();
+	PlayerManager::GetInstance().Update();
+}
+
+void GameScene::UpdateClear(void)
+{
+	//プレイヤーにアニメーションをさせたりする
+	//エフェクトなどを表示させる
+
+	gameClear_->Update();
+}
+
+void GameScene::DrawEdit(void)
+{
+
+	//グリッド
+	grid_->Draw();
+	//エディットコントローラー
+	editController_->Draw();
+
+	//パレット
+	palette_->Draw();
+}
+
+void GameScene::DrawAction(void)
+{
+	//プレイヤー
+	PlayerManager::GetInstance().Draw();
+}
+
+void GameScene::DrawClear()
+{
+	//プレイ画面を背景に描画
+	DrawAction();
+
+	//ゲームクリアの描画
+	gameClear_->Draw();
 }

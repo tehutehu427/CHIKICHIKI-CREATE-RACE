@@ -4,6 +4,9 @@
 #include "../../Scene/TitleScene.h"
 #include "../../Scene/SelectScene.h"
 #include "../../Scene/Game/GameScene.h"
+#include "../../Scene/Game/FreePlay.h"
+#include "../../Scene/Game/MultiParty.h"
+#include "../../Scene/Game/SoloChallenge.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "DateBank.h"
@@ -43,6 +46,10 @@ void SceneManager::Init(void)
 	// デルタタイム
 	preTime_ = std::chrono::system_clock::now();
 
+	// メインスクリーン
+	mainScreen_ = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, true);
+
+	//データバンクを生成
 	DateBank::CreateInstance();
 
 	//ウィンドウがアクティブ状態でなくとも処理を行う
@@ -112,7 +119,7 @@ void SceneManager::Draw(void)
 	
 	// 描画先グラフィック領域の指定
 	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
-	SetDrawScreen(DX_SCREEN_BACK);
+	SetDrawScreen(mainScreen_);
 
 	// 画面を初期化
 	ClearDrawScreen();
@@ -134,6 +141,18 @@ void SceneManager::Draw(void)
 	
 	// 暗転・明転
 	fader_->Draw();
+
+	//背面スクリーンにメインスクリーンを描画
+	SetDrawScreen(DX_SCREEN_BACK);
+
+	// 画面を初期化
+	ClearDrawScreen();
+
+	// カメラ設定
+	camera_->CameraSetting();
+
+	//メインスクリーンを描画
+	DrawGraph(0, 0, mainScreen_, false);
 
 }
 
@@ -179,6 +198,7 @@ void SceneManager::PopScene()
 
 void SceneManager::Destroy(void)
 {
+	DateBank::GetInstance().Destroy();
 	delete instance_;
 }
 
@@ -236,7 +256,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	ResourceManager::GetInstance().Release();
 
 	// シーンを変更する
-	sceneId_ = sceneId;
+ 	sceneId_ = sceneId;
 
 	// 現在のシーンを解放
 	if (scene_ != nullptr)
@@ -256,6 +276,18 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 
 	case SCENE_ID::GAME:
 		scene_ = std::make_unique<GameScene>();
+		break;
+
+	case SCENE_ID::FREE:
+		scene_ = std::make_unique<FreePlay>();
+		break;
+
+	case SCENE_ID::MULTI:
+		scene_ = std::make_unique<MultiParty>();
+		break;
+
+	case SCENE_ID::SOLO:
+		scene_ = std::make_unique<SoloChallenge>();
 		break;
 	}
 

@@ -59,18 +59,27 @@ void Camera::SetBeforeDraw(void)
 	case Camera::MODE::FIXED_UP:
 		SetBeforeDrawFixedUp();
 		break;
+	case Camera::MODE::FIXED_DIAGONAL:
+		SetBeforeDrawFixedDiagonal();
+		break;
 	}
 
-	// カメラの設定(位置と注視点による制御)
-	SetCameraPositionAndTargetAndUpVec(
-		pos_, 
-		targetPos_, 
-		cameraUp_
-	);
+	//カメラの設定
+	CameraSetting();
 
 	// DXライブラリのカメラとEffekseerのカメラを同期する。
 	Effekseer_Sync3DSetting();
 
+}
+
+void Camera::CameraSetting()
+{
+	// カメラの設定(位置と注視点による制御)
+	SetCameraPositionAndTargetAndUpVec(
+		pos_,
+		targetPos_,
+		cameraUp_
+	);
 }
 
 void Camera::Draw(void)
@@ -311,10 +320,10 @@ void Camera::SetBeforeDrawFreeControll(void)
 {
 	auto& ins = InputManager::GetInstance();
 	float rotPow = Utility::Deg2RadF(SPEED);
-	//if (ins.IsNew(KEY_INPUT_E)) { angles_.y += rotPow; }
+	if (ins.IsNew(KEY_INPUT_E)) { angles_.y += rotPow; }
 	if (ins.IsNew(KEY_INPUT_Q)) { angles_.y -= rotPow; }
-	//if (ins.IsNew(KEY_INPUT_W)) { angles_.x -= rotPow; }
-	//if (ins.IsNew(KEY_INPUT_S)) { angles_.x += rotPow; }
+	if (ins.IsNew(KEY_INPUT_W)) { angles_.x -= rotPow; }
+	if (ins.IsNew(KEY_INPUT_S)) { angles_.x += rotPow; }
 
 	if (angles_.x <= FPS_LIMIT_X_UP_RAD)
 	{
@@ -335,14 +344,14 @@ void Camera::SetBeforeDrawFreeControll(void)
 	static float moveSpeed = 10.0f;
 	static float moveSpeedFB = 30.0f;
 	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), GetMouseWheelRotVolF() * moveSpeedFB));
-	//if (ins.IsNew(KEY_INPUT_A))
-	//{
-	//	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetLeft(), moveSpeed));
-	//}
-	//if (ins.IsNew(KEY_INPUT_D)) 
-	//{
-	//	pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetRight(), moveSpeed));
-	//}
+	if (ins.IsNew(KEY_INPUT_A))
+	{
+		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetLeft(), moveSpeed));
+	}
+	if (ins.IsNew(KEY_INPUT_D)) 
+	{
+		pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetRight(), moveSpeed));
+	}
 
 	VECTOR localPos;
 	rot_ =(Quaternion::Quaternion(angles_));
@@ -356,6 +365,13 @@ void Camera::SetBeforeDrawFreeControll(void)
 void Camera::SetBeforeDrawFixedUp(void)
 {
 	targetPos_ = VAdd(pos_, FIXED_LOCAL_P2T_POS);
+	rot_ = Quaternion::Quaternion(angles_);
+	cameraUp_ = rot_.GetUp();
+}
+
+void Camera::SetBeforeDrawFixedDiagonal(void)
+{
+	targetPos_ = FIXED_DIAGONAL_TARGET_POS;
 	rot_ = Quaternion::Quaternion(angles_);
 	cameraUp_ = rot_.GetUp();
 }

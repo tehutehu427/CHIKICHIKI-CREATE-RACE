@@ -16,5 +16,34 @@ public:
 
 	//初期化処理
 	void Init(void) override;
+
+	//プレイヤーやカメラは人数分用意する
+	//描画処理を画面分割して行う
+	//パレットをマルチ仕様のを呼び出す
+
+private:
+
+	//描画関数
+	void NormalDraw(void) override;
+
+	//アクション時の更新処理
+	void UpdateAction(void) override;
+
+	//エディット時の更新処理
+	void UpdateEdit(void) override;
+
+	//状態遷移
+	void ChangePhaseSelect();
+	void ChangePhaseResult();
+
+	//状態別更新処理
+	void UpdateSelect();
+	void UpdateResult();
+
+	//状態別描画処理
+	void DrawAction() override;
+	void DrawEdit() override;
+	void DrawSelect();
+	void DrawResult();
 };
 

@@ -8,12 +8,14 @@
 class EditorPaletteBase;
 class Grid;
 class SkyDome;
-class MapDataIO;
+class GameClear;
 
 class GameScene : public SceneBase
 {
 
 public:
+
+	static constexpr VECTOR ACTION_CAMERA_POS = { 2000.0f, 1700.0f, -2000.0f };	//アクション時のカメラ位置
 
 	/// <summary>
 	/// フェーズ
@@ -22,6 +24,11 @@ public:
 	{
 		EDIT_PHASE,		//エディット
 		ACTION_PHASE,	//アクション
+		CLEAR_PHASE,	//クリア
+
+		//マルチ限定
+		SELECT_PHASE,	//選択
+		RESULT_PHASE,	//リザルト
 	};
 
 	//プレイヤー人数(のちにデータバンクで持ってくる
@@ -51,51 +58,85 @@ public:
 	/// <param name=""></param>
 	virtual void Init(void) override;
 
-private:
+protected:
 
-	//更新関数
-	void NormalUpdate(void) override;
-
-	//描画関数
-	void NormalDraw(void) override;
-
-	//処理の変更
-	void ChangeNormal(void) override;
+	/// <summary>
+	/// 通常時の描画処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void NormalDraw(void) override;
 	
-	//デバッグ処理
-	virtual void DebagUpdate(void);	//更新
+	/// <summary>
+	/// エディット時の更新処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void UpdateEdit(void);
+
+	/// <summary>
+	/// アクション時の更新処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void UpdateAction(void);	
+
+	/// <summary>
+	/// クリア時の更新処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void UpdateClear(void);
+	
+	/// <summary>
+	/// デバッグ時の更新処理
+	/// </summary>
+	/// <param name=""></param>
+	virtual void DebagUpdate(void);	
+
+	/// <summary>
+	/// デバッグ時の描画処理
+	/// </summary>
+	/// <param name=""></param>
 	virtual void DebagDraw(void);	//描画
 
-	//フェーズ管理
-	PHASE phase_;
+	//エディットコントローラー
+	std::shared_ptr<EditController> editController_;
 
+	//パレット
+	std::unique_ptr<EditorPaletteBase> palette_;	
+	
 	//フェーズ管理(遷移時の初期処理)
 	std::map<PHASE, std::function<void(void)>> phaseChanges_;
 
 	//フェーズ管理(更新ステップ)
 	std::function<void(void)> phaseUpdate_;
+	std::function<void(void)> phaseDraw_;
 
-	// フェーズ遷移
+private:
+
+	//フェーズ管理
+	PHASE phase_;
+	
+	//更新関数
+	void NormalUpdate(void) override;
+
+	//処理の変更
+	void ChangeNormal(void) override;
+
+	//フェーズ遷移
 	void ChangePhase(PHASE phase);
 	void ChangePhaseEdit(void);
 	void ChangePhaseAction(void);
+	void ChangePhaseClear(void);
 
-	// 更新ステップ
-	void UpdateEdit(void);
-	void UpdateAction(void);
-
-	//プレイヤー
-	std::unique_ptr<EditorPaletteBase> palette_;
+	//クリア描画
+	virtual void DrawEdit();
+	virtual void DrawAction();
+	void DrawClear();
 
 	//グリッド
 	std::unique_ptr<Grid>grid_;
 
-	//エディットコントローラー
-	std::shared_ptr<EditController> editController_;
-
 	//スカイドーム
 	std::unique_ptr<SkyDome> sky_;
 
-	//データの入出力
-	std::unique_ptr<MapDataIO> mapIO_;
+	//ゲームクリア
+	std::unique_ptr<GameClear> gameClear_;
 };

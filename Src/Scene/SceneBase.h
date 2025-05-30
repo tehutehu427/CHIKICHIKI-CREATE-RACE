@@ -12,7 +12,7 @@ class SceneBase
 public:
 
 	//最低ローディング時間
-	static constexpr float LOADING_TIME = 2.0f;
+	static constexpr float LOADING_TIME = 0.3f;
 
 	//フォントサイズ
 	static constexpr int FONT_SIZE = 28;

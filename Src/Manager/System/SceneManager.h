@@ -21,7 +21,11 @@ public:
 		NONE,
 		TITLE,
 		SELECT,
-		GAME
+		GAME,
+		SOLO,
+		MULTI,
+		FREE,
+		MAX
 	};
 	
 	// インスタンスの生成
@@ -72,6 +76,9 @@ public:
 	// シーンIDの取得
 	inline SCENE_ID GetSceneID(void) const { return sceneId_; }
 
+	//メインスクリーンを返す
+	inline int GetMainScreen() const { return mainScreen_; }
+
 	// デルタタイムの取得
 	inline float GetDeltaTime(void) const { return deltaTime_; }
 
@@ -107,6 +114,9 @@ private:
 
 	//経過時間
 	float totalTime_;
+
+	//メインスクリーン
+	int mainScreen_;
 	
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする

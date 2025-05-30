@@ -24,7 +24,7 @@ public:
 	};
 
 	//パレット移動
-	static constexpr int PALETTE_MOVE = 10;		
+	static constexpr int PALETTE_MOVE = 20;		
 	
 	//大きさ
 	static constexpr int PALETTE_SIZE_X = 399;
@@ -34,31 +34,28 @@ public:
 	static constexpr float PALETTE_RATE = 1.8f;
 
 	//閉じてる時の位置
-	static constexpr int CLOSE_POS_X = Application::SCREEN_SIZE_X + 200;
+	static constexpr int CLOSE_POS_X = Application::SCREEN_SIZE_X + 300;
 	static constexpr int CLOSE_POS_Y = Application::SCREEN_HALF_Y;
 
 	//開いてる時の位置
 	static constexpr int OPEN_POS_X = Application::SCREEN_HALF_X;
 	static constexpr int OPEN_POS_Y = Application::SCREEN_HALF_Y;
 
-	//設置場所距離
-	static constexpr float DISTANCE = 500.0f;
-
 	//画像描画に関する情報
 	struct ImgInfo
 	{
-		int num_;
-		float rate;
-		float angle;
-		Vector2 pos;
-		Vector2 size;
+		int num = 0;
+		float rate = 0.0f;
+		float angle= 0.0f;
+		Vector2 pos = {};
+		Vector2 size = {};
 	};
 
 	//コンストラクタ
 	EditorPaletteBase(EditController & _controller);
 
 	//デストラクタ
-	~EditorPaletteBase();
+	virtual ~EditorPaletteBase();
 	
 	/// <summary>
 	/// 読みこみ
@@ -121,16 +118,16 @@ private:
 	EditController& ediCon_;
 
 	//状態変更
-	void ChangeStateNone();
-	void ChangeStateWait();
-	void ChangeStateClose();
-	void ChangeStateOpen();
-	void ChangeStateSelect();
+	void ChangeStateNone();		//なし
+	void ChangeStateWait();		//クリック待ち
+	void ChangeStateClose();	//閉じる
+	void ChangeStateOpen();		//開ける
+	void ChangeStateSelect();	//選ぶ
 
 	//更新処理
-	void UpdateNone();
-	void UpdateWait();
-	void UpdateClose();
-	void UpdateOpen();
-	void UpdateSelect();
+	void UpdateNone();			//なし
+	void UpdateWait();			//クリック待ち
+	void UpdateClose();			//閉じる
+	void UpdateOpen();			//開ける
+	void UpdateSelect();		//選ぶ
 };

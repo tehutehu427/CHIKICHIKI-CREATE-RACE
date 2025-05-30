@@ -4,6 +4,7 @@
 #include "Manager/System/ResourceManager.h"
 #include "Manager/System/SceneManager.h"
 #include "FpsControl/FpsControl.h"
+#include "Common/FontRegistry.h"
 #include "Application.h"
 
 Application* Application::instance_ = nullptr;
@@ -16,6 +17,7 @@ const std::string Application::PATH_FONT = "Data/Font/";
 const std::string Application::PATH_TEXT = "Data/Text/";
 const std::string Application::PATH_JSON = "Data/JSON/";
 const std::string Application::PATH_CSV = "Data/CSV/";
+const std::string Application::PATH_SHADER = "Data/Shader/";
 
 void Application::CreateInstance(void)
 {
@@ -66,6 +68,10 @@ void Application::Init(void)
 	// FPSèâä˙âª
 	fps_ = std::make_unique<FpsControl>();
 	fps_->Init();
+
+	//ÉtÉHÉìÉgìoò^
+	fontReg_ = std::make_unique<FontRegistry>();
+	fontReg_->Init();
 }
 
 void Application::Run(void)
@@ -90,13 +96,13 @@ void Application::Run(void)
 		fps_->CalcFrameRate();
 
 		ScreenFlip();
-
 	}
 
 }
 
 void Application::Destroy(void)
 {
+	fontReg_->Destroy();
 
 	InputManager::GetInstance().Destroy();
 	ResourceManager::GetInstance().Destroy();

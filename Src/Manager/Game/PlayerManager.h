@@ -59,6 +59,9 @@ public:
 	//カプセル同士の当たり判定(完全ではない)
 	bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
 
+	//プレイヤーゲッタ
+	Player& GetPlayer(const int _playerNum) { return *players_[_playerNum]; }
+
 private:
 
 

@@ -9,7 +9,9 @@
 #include "../../../Utility/Utility.h"
 #include "../EditController.h"
 #include "EditorPaletteBase.h"
-#include "PaletteIcon.h"
+#include "Icon/PaletteIcon.h"
+#include "Icon/FreePaletteIcon.h"
+#include "Icon/SoloPaletteIcon.h"
 
 EditorPaletteBase::EditorPaletteBase(EditController& _controller) 
 	: ediCon_(_controller)
@@ -37,7 +39,18 @@ void EditorPaletteBase::Load()
 	imgPalette_ = res.Load(ResourceManager::SRC::PALETTE).handleId_;
 
 	//パレットアイコン
-	palIcon_ = std::make_unique<PaletteIcon>();
+	SceneManager::SCENE_ID sceneId = SceneManager::GetInstance().GetSceneID();
+	switch (sceneId)
+	{
+	case SceneManager::SCENE_ID::FREE:
+		palIcon_ = std::make_unique<FreePaletteIcon>();
+		break;
+	case SceneManager::SCENE_ID::SOLO:
+		palIcon_ = std::make_unique<SoloPaletteIcon>();
+		break;
+	default:
+		break;
+	}
 	palIcon_->Load();
 }
 
@@ -200,18 +213,6 @@ void EditorPaletteBase::UpdateSelect()
 	//生成開始
 	if (palIcon_->IsCreate())
 	{
-		////生成位置を調整
-		//VECTOR createPos = Utility::GetWorldPosAtScreen(
-		//	{ Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y },
-		//	DISTANCE,
-		//	camera.lock()->GetPos(),
-		//	camera.lock()->GetForward());
-
-		//IntVector3 createMapPos = MapEditer::GetInstance().WorldToMapPos(createPos);
-
-		////アイテムを追加
-		//itemMng.AddItem(createMapPos, Quaternion(), palIcon_->GetSelectType());
-
 		//コントローラに設定
 		ediCon_.SetItemType(palIcon_->GetSelectType());
 

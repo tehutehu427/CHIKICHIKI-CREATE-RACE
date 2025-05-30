@@ -2,6 +2,8 @@
 
 MultiParty::MultiParty(void)
 {
+	phaseChanges_.emplace(PHASE::SELECT_PHASE, std::bind(&MultiParty::ChangePhaseSelect, this));
+	phaseChanges_.emplace(PHASE::RESULT_PHASE, std::bind(&MultiParty::ChangePhaseResult, this));
 }
 
 MultiParty::~MultiParty(void)
@@ -10,8 +12,66 @@ MultiParty::~MultiParty(void)
 
 void MultiParty::Load(void)
 {
+	//親クラスの読み込み処理を呼ぶ
+	GameScene::Load();
 }
 
 void MultiParty::Init(void)
+{
+	//親クラスの初期化処理を呼ぶ
+	GameScene::Init();
+}
+
+void MultiParty::NormalDraw(void)
+{
+	//親クラスの描画処理を呼ぶ
+	GameScene::NormalDraw();
+}
+
+void MultiParty::UpdateAction(void)
+{
+	//親クラスのアクション時の更新処理を呼ぶ
+	GameScene::UpdateAction();
+}
+
+void MultiParty::UpdateEdit(void)
+{
+	//親クラスのエディット時の更新処理を呼ぶ
+	GameScene::UpdateEdit();
+}
+
+void MultiParty::ChangePhaseSelect()
+{
+	phaseUpdate_ = std::bind(&MultiParty::UpdateSelect, this);
+	phaseDraw_ = std::bind(&MultiParty::DrawSelect, this);
+}
+
+void MultiParty::ChangePhaseResult()
+{
+	phaseUpdate_ = std::bind(&MultiParty::UpdateResult, this);
+	phaseDraw_ = std::bind(&MultiParty::DrawResult, this);
+}
+
+void MultiParty::UpdateSelect()
+{
+}
+
+void MultiParty::UpdateResult()
+{
+}
+
+void MultiParty::DrawAction()
+{
+}
+
+void MultiParty::DrawEdit()
+{
+}
+
+void MultiParty::DrawSelect()
+{
+}
+
+void MultiParty::DrawResult()
 {
 }

@@ -27,17 +27,6 @@ void ResourceManager::Init(void)
 
 	std::unique_ptr<Resource> res;
 
-#pragma region フォント
-	res = std::make_unique<Resource>(Resource::TYPE::FONT, Application::PATH_FONT + "bokutachi.otf");
-	resourcesMap_.emplace(SRC::BOKUTACHI_FONT, std::move(res));
-	res = std::make_unique<Resource>(Resource::TYPE::FONT, Application::PATH_FONT + "FontDot.otf");
-	resourcesMap_.emplace(SRC::DOT_FONT, std::move(res));
-	res = std::make_unique<Resource>(Resource::TYPE::FONT, Application::PATH_FONT + "PENGS.ttf");
-	resourcesMap_.emplace(SRC::PENGS_FONT, std::move(res));
-	res = std::make_unique<Resource>(Resource::TYPE::FONT, Application::PATH_FONT + "はなぞめフォント.ttf");
-	resourcesMap_.emplace(SRC::HANAZOME_FONT, std::move(res));
-#pragma endregion 
-
 #pragma region 画像
 	std::string path_EditUi = Application::PATH_IMAGE + "EditUI/";
 	std::string path_PlayUi = Application::PATH_IMAGE + "PlayUI/";
@@ -56,6 +45,9 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "Arc.png");
 	resourcesMap_.emplace(SRC::ARC, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "Arcs.png", IMG_ARCS_DIV_X, IMG_ARCS_DIV_Y, IMG_ARC_SIZE, IMG_ARC_SIZE);
+	resourcesMap_.emplace(SRC::ARCS, std::move(res));
 #pragma endregion 
 
 #pragma region マスク画像

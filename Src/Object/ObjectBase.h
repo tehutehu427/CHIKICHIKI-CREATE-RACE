@@ -19,7 +19,7 @@ public:
 	virtual void Load(void) = 0;
 	//初期化
 	virtual void Init(void) = 0;
-	//更新
+	//更新d
 	virtual void Update(void) = 0;
 	//描画
 	virtual void Draw(void) = 0;

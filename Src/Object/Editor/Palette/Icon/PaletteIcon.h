@@ -1,5 +1,5 @@
 #pragma once
-#include "EditorPaletteBase.h"
+#include "../EditorPaletteBase.h"
 
 class ItemName;
 
@@ -23,6 +23,10 @@ public:
 		DOWWN,
 		MAX,
 	};
+
+	//ネームフォント
+	static constexpr int NAME_FONT_SIZE = 18;	//サイズ
+	static constexpr int NAME_FONT_THICK = 0.0f;	//太さ
 
 	//パレットアイコン移動量
 	static constexpr int ICONS_MOVE = 10;
@@ -67,7 +71,7 @@ public:
 	static constexpr int MASK_POS_Y = Application::SCREEN_HALF_Y - MASK_SIZE_Y / 2;
 
 	//スクロールに制限をかける
-	static constexpr int SCROLL_LIMIT_LINE = 0; //ICON_NUM / COL -1;
+	static constexpr int SCROLL_LIMIT_LINE = ICON_NUM / COL -1;
 
 	/// <summary>
 	/// コンストラクタ
@@ -77,17 +81,17 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~PaletteIcon();
+	virtual ~PaletteIcon();
 	
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();	
+	virtual void Load();	
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();	
+	virtual void Init() = 0;	
 
 	/// <summary>
 	/// 更新
@@ -102,7 +106,7 @@ public:
 	/// <summary>
 	/// デバッグ描画
 	/// </summary>
-	void DebagDraw();
+	virtual void DebagDraw();
 
 	/// <summary>
 	/// 状態変更
@@ -122,7 +126,22 @@ public:
 	/// <returns></returns>選択した種類
 	inline const ItemBase::ITEM_TYPE GetSelectType()const { return selectType_; }
 
-private:
+protected:
+
+	//アイコン
+	std::vector<EditorPaletteBase::ImgInfo> icons_;
+
+	//スクロールアイコン
+	EditorPaletteBase::ImgInfo scrIcon_[SCROLL_ICON_NUM];
+
+	//選択してるアイテム
+	int sleCnt_;
+	ItemBase::ITEM_TYPE selectType_;	
+	
+	//生成判定
+	bool isCreate_;
+
+//private:
 
 	//状態変更処理の管理
 	std::map<STATE, std::function<void()>> stateChanges_;
@@ -136,27 +155,16 @@ private:
 	//画像
 	int imgScrIcon_;	//スクロール用アイコン
 	int mskPal_;		//マスク画像
-	//int* imgIcons_;	//アイコン画像
 	int imgIcons_;
 
 	//スクロールの制限用ライン
 	int scrLimitLine_;
 
-	//生成判定
-	bool isCreate_;
+	//フォント
+	int fontHandle_;
 
 	//座標のバックアップ
 	Vector2 prePos_;
-
-	//アイコン
-	EditorPaletteBase::ImgInfo icons_[ICON_NUM];
-
-	//スクロールアイコン
-	EditorPaletteBase::ImgInfo scrIcon_[SCROLL_ICON_NUM];
-
-	//選択してるアイテム
-	int sleCnt_;
-	ItemBase::ITEM_TYPE selectType_;
 
 	//状態変更処理
 	void ChangeStateNone();
@@ -170,11 +178,20 @@ private:
 	void UpdateScrollDown();
 	void UpdateSelect();
 
-	//タイプを割り当てる
-	void AssignType();
+	//各アイコンの描画
+	virtual void DrawItemIcon();		//アイテムアイコン
+	void DrawScrollIcon();				//スクロールアイコン
 
-	//クリック位置が特定の範囲か調べる
-	void CheckClickPosition(const Vector2 _mPos);
+	//タイプを割り当てる
+	virtual void AssignType() = 0;
+
+	//マスクスクリーンの初期設定
+	void InitMaskScreen();
+
+	//クリック位置がスクロールアイコンか調べる
+	void CheckScrollIcon(const Vector2 _mPos);	
+	
+	//アイテムアイコンをクリックしたか調べる
+	virtual void CheckItemIcon(const Vector2 _mPos) = 0;
 
 };
-

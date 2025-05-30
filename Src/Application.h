@@ -3,6 +3,7 @@
 #include <memory>
 
 class FpsControl;
+class FontRegistry;
 
 class Application
 {
@@ -27,6 +28,7 @@ public:
 	static const std::string PATH_TEXT;
 	static const std::string PATH_JSON;
 	static const std::string PATH_CSV;
+	static const std::string PATH_SHADER;
 	//-------------------------------------------
 
 	// 明示的にインステンスを生成する
@@ -63,6 +65,9 @@ private:
 
 	//FPS
 	std::unique_ptr<FpsControl> fps_;
+
+	//フォント登録
+	std::unique_ptr<FontRegistry> fontReg_;
 
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
