@@ -31,6 +31,10 @@ public:
 	static constexpr float PLAYER_ONE_POS_X = -20.0f;
 	//座標の間隔
 	static constexpr float DISTANCE_POS = 50.0f;
+	//当たり判定の押し出し回数
+	static constexpr int COL_TRY_CNT_MAX = 10;
+
+
 	//落ちるアニメーションのスタート
 	static constexpr float FALL_ANIM_START = 32.0f;
 	//落ちるアニメーションの終わり
@@ -324,6 +328,12 @@ private:
 
 	//当たり判定
 	void Collision(void);
+
+	//地面との当たり判定(動いてる床とか)
+	void DownColl(const Transform _itemTrans);
+
+	//周囲との当たり判定
+	void ArroundColl(Transform _itemTrans);
 
 #ifdef DEBUG_ON
 	void CubeMove(void);

@@ -105,6 +105,12 @@ void Player::Init(void)
 	isPunched_ = false;
 	punchedCnt_ = PUNCHED_TIME;
 
+#ifdef DEBUG_ON
+	cube_.centerPos = Utility::VECTOR_ZERO;
+	cubeMovePos_ = Utility::VECTOR_ZERO;
+#endif // DEBUG_ON
+
+
 	itemLocalPos_ = Utility::VECTOR_ZERO;
 	trans_.Update();
 }
@@ -131,7 +137,7 @@ void Player::Update(void)
 #endif // DEBUG_ON
 	static VECTOR dirDown = trans_.GetDown();
 	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
-	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_);
+	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_,50.0f);
 
 
 	//アクション関係
@@ -390,7 +396,7 @@ void Player::HitItem(const IntVector3 _colPos)
 		{
 			if (iLPos == lPos)return;
 		}
-		auto vec = VSub(movedPos_, trans_.pos);
+		
 		
 		//アイテムタイプ取得
 		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
@@ -399,31 +405,9 @@ void Player::HitItem(const IntVector3 _colPos)
 		//アイテムのTransform取得
 		Transform itemTrans = itemMng.GetItemTransform(lPos,type);
 
-		VECTOR upPos = movedPos_;
-		upPos.y += (RADIUS+ 10.0f);
-		VECTOR downPos = movedPos_;
-		downPos.y -= (RADIUS+ 10.0f);
+		DownColl(itemTrans);
+		ArroundColl(itemTrans);
 
-		auto hit = MV1CollCheck_Line(itemTrans.modelId, -1, upPos, downPos);
-
-		if (hit.HitFlag>0)
-		{
-			if (!Utility::EqualsVZero(itemLocalPos_))
-			{
-				VECTOR itemLocalPos = VSub(movedPos_, itemTrans.pos);
-				movedPos_ = VAdd(itemLocalPos_, itemTrans.pos);
-				movedPos_ = VAdd(movedPos_, vec);
-			}
-			movedPos_.y = hit.HitPosition.y+RADIUS+ POSITION_OFFSET;
-			jumpPow_ = Utility::VECTOR_ZERO;
-			isJump_ = false;
-			itemLocalPos_ = VSub(movedPos_, itemTrans.pos);
-
-		}
-		else
-		{
-			itemLocalPos_ = Utility::VECTOR_ZERO;
-		}
 		itemLPos_.push_back(lPos);
 	}
 }
@@ -482,6 +466,74 @@ void Player::Collision(void)
 	// 移動
 	trans_.pos = movedPos_;
 	// 現在座標を起点に移動後座標を決める
+}
+
+void Player::DownColl(const Transform _itemTrans)
+{
+	//Lineを引くための上と下の座標をとる
+	VECTOR upPos = movedPos_;
+	upPos.y += (RADIUS + 10.0f);
+	VECTOR downPos = movedPos_;
+	downPos.y -= (RADIUS + 10.0f);
+	VECTOR vec = VSub(movedPos_, trans_.pos);
+
+	auto hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
+
+	//当たったら
+	if (hit.HitFlag > 0)
+	{
+		//座標をワールド座標とアイテムローカル座標を足した分移動させる
+		if (!Utility::EqualsVZero(itemLocalPos_))
+		{
+			VECTOR itemLocalPos = VSub(movedPos_, _itemTrans.pos);
+			movedPos_ = VAdd(itemLocalPos_, _itemTrans.pos);
+			movedPos_ = VAdd(movedPos_, vec);
+		}
+		//Y座標のみ半径分上に移動させる
+		movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
+		jumpPow_ = Utility::VECTOR_ZERO;
+		isJump_ = false;
+		itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
+
+	}
+	else
+	{
+		//当たらなかったら初期化する
+		itemLocalPos_ = Utility::VECTOR_ZERO;
+	}
+}
+
+void Player::ArroundColl(Transform _itemTrans)
+{
+	//移動後座標を一回格納し、移動前をとる
+	Transform trans = Transform(trans_);
+	trans.pos = movedPos_;
+	trans.Update();
+
+	auto hits = MV1CollCheck_Sphere(_itemTrans.modelId, -1, trans.pos
+		, RADIUS);
+	for (int i = 0; i < hits.HitNum; i++)
+	{
+		auto hit = hits.Dim[i];
+		for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
+		{
+			hit.Position[i];
+			int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
+				, hit.Position[0], hit.Position[1], hit.Position[2]);
+			if (pHit)
+			{
+				movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
+				// カプセルを移動させる
+				trans.pos = movedPos_;
+				trans.Update();
+				continue;
+			}
+
+			break;
+		}
+		
+	}
+	MV1CollResultPolyDimTerminate(hits);
 }
 
 
