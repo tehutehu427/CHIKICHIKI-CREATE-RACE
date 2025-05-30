@@ -21,6 +21,8 @@ public:
 
 	void Init(void);
 
+	void Destroy(void);
+
 	bool SetPlayerNum(int num);
 
 	int GetPlayerNum(void);

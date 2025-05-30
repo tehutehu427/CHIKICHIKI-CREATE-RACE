@@ -261,6 +261,9 @@
     <ClCompile Include="Src\Shader\Effect\SelectUIDarkly.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Object\Item\Installation\Spring.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Fader.h">
@@ -497,31 +500,19 @@
     <ClInclude Include="Src\Object\Item\Installation\MoveHoriFloor.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\MoveVerFloor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\Fence.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\Cannon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Object\Item\ItemBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Manager\Game\PlayerManager.h">
+    <ClInclude Include="Src\Object\Player\Process\PlayerInput.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Player\Process\PlayerInput.h">
+    <ClInclude Include="Src\Object\Editor\Palette\Icon\PaletteIcon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Editor\EditController.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\SkyDome\SkyDome.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\SlimeFloor.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Scene\Game\FreePlay.h">
@@ -535,6 +526,7 @@
     </ClInclude>
     <ClInclude Include="Src\Scene\SelectScene.h">
       <Filter>ヘッダー ファイル</Filter>
+    
     </ClInclude>
     <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h">
     </ClInclude>
@@ -556,7 +548,18 @@
     <ClInclude Include="Src\Object\Item\Destroyer\SmallBomb.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h">
+    </ClInclude>
     <ClInclude Include="Src\Object\Item\Destroyer\BigBomb.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Item\Installation\Spring.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.h">
@@ -568,10 +571,25 @@
     <ClInclude Include="Src\Common\FontRegistry.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\System\GameClear.h">
+    <ClInclude Include="Src\Object\Editor\Palette\PaletteIcon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\PaletteIcon.h">
+    <ClInclude Include="Src\Object\Item\Installation\Cannon.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Item\Installation\Fence.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Item\Installation\MoveVerFloor.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Item\Installation\SlimeFloor.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Manager\Game\PlayerManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\System\GameClear.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Shader\PixelMaterial.h">
@@ -593,9 +611,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Shader\PostEffect\PostEffectScanLine.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\Icon\PaletteIcon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\System\ModeSelect.h">

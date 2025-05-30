@@ -563,22 +563,30 @@ bool Utility::IsTimeOver(float& totalTime, const float& waitTime)
     return false;
 }
 
-void Utility::DrawStringCenter(std::string str, int centerLine, int posY, int color)
+void Utility::DrawStringPlace(std::string _str, int _line, int _posY, int _color, STRING_PLACE _place)
 {
-    int width = GetDrawStringWidth(str.c_str(), strlen(str.c_str()));
-    DrawString(centerLine - width / 2, posY, str.c_str(), color);
-}
+    //文字列の長さを取得
+    int width = GetDrawStringWidth(_str.c_str(), strlen(_str.c_str()));
 
-void Utility::DrawStringLeft(std::string str, int leftLiine, int posY, int color)
-{
-    int width = GetDrawStringWidth(str.c_str(), strlen(str.c_str()));
-    DrawString(leftLiine, posY, str.c_str(), color);
-}
-
-void Utility::DrawStringRight(std::string str, int rightLine, int posY, int color)
-{
-    int width = GetDrawStringWidth(str.c_str(), strlen(str.c_str()));
-    DrawString(rightLine - width, posY, str.c_str(), color);
+    //表示するX座標を求める
+    int posX = _line;
+    switch (_place)
+    {
+        //左揃えの場合そのまま
+    case Utility::STRING_PLACE::LEFT:
+        break;
+		//中央揃えの場合　文字列の長さの半分を引く
+    case Utility::STRING_PLACE::CENTER:
+		posX = _line - width / 2;
+        break;
+		//右揃えの場合　文字列の長さを引く
+    case Utility::STRING_PLACE::RIGHT:
+		posX = _line - width;
+        break;
+    default:
+        break;
+    }
+    DrawString(posX, _posY, _str.c_str(), _color);
 }
 
 const VECTOR Utility::GetMoveVec(const VECTOR _start, const VECTOR _goal, const float _speed)
@@ -600,19 +608,13 @@ const VECTOR Utility::GetRotAxisToTarget(const VECTOR _pos, const VECTOR _target
     //対象までの方向ベクトル
     VECTOR targetVec = GetMoveVec(_pos, _targetPos);
 
-    //自身と対象のベクトルの差異
-    VECTOR turretVecDiff = VSub(targetVec, _pos);
-
-    //正規化
-    turretVecDiff = VNorm(turretVecDiff);
-
     //必要ない軸は除去
-    turretVecDiff.x *= _needAxis.x;
-    turretVecDiff.y *= _needAxis.y;
-    turretVecDiff.z *= _needAxis.z;
+    targetVec.x *= _needAxis.x;
+    targetVec.y *= _needAxis.y;
+    targetVec.z *= _needAxis.z;
 
     //回転量
-    Quaternion turQuaRot = Quaternion::LookRotation(turretVecDiff);
+    Quaternion turQuaRot = Quaternion::LookRotation(targetVec);
 
     //VECTOR変換
    return turQuaRot.ToEuler();

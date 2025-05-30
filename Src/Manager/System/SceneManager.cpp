@@ -145,6 +145,12 @@ void SceneManager::Draw(void)
 	//背面スクリーンにメインスクリーンを描画
 	SetDrawScreen(DX_SCREEN_BACK);
 
+	// 画面を初期化
+	ClearDrawScreen();
+
+	// カメラ設定
+	camera_->CameraSetting();
+
 	//メインスクリーンを描画
 	DrawGraph(0, 0, mainScreen_, false);
 
@@ -192,6 +198,7 @@ void SceneManager::PopScene()
 
 void SceneManager::Destroy(void)
 {
+	DateBank::GetInstance().Destroy();
 	delete instance_;
 }
 
