@@ -1,6 +1,5 @@
 #pragma once
 #include "GameScene.h"
-
 class MultiParty : public GameScene
 {
 public:
@@ -45,5 +44,9 @@ private:
 	void DrawEdit() override;
 	void DrawSelect();
 	void DrawResult();
+
+	std::map<int, std::function<std::vector<int>(void)>>makeScreens_;
+	std::vector<int>screens_;
+
 };
 
