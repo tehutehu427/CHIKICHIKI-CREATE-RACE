@@ -76,9 +76,9 @@ void GameScene::Init(void)
 	PlayerManager::CreateInstance(3);
 
 	//ÉAÉCÉeÉÄê∂ê¨
-	ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
-	//ItemManager::GetInstance().AddItem({ 3,2,3 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
-	//ItemManager::GetInstance().AddItem({ 8,2,8 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
+	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
+	ItemManager::GetInstance().AddItem({ 1,1,1 }, Quaternion(), ItemBase::ITEM_TYPE::START);
+	ItemManager::GetInstance().AddItem({ 46,1,36 }, Quaternion(), ItemBase::ITEM_TYPE::GOAL);
 	//ItemManager::GetInstance().AddItem({ 10,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
 	//ItemManager::GetInstance().AddItem({ 15,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
 	ChangePhase(PHASE::EDIT_PHASE);

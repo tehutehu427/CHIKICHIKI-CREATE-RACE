@@ -28,6 +28,8 @@ public:
 		//セレクトシーン用画像
 		ARC,
 		ARCS,
+		BACK_ARC,
+		SHADOW_ARC,
 
 		//アイテムモデル
 		FLOOR,				//足場
@@ -43,9 +45,7 @@ public:
 		SPIKE,				//とげ
 		SLIME_FLOOR,		//スライム床
 		FAN,				//扇風機
-
 		SKY_DOME,			//スカイドーム
-
 		CHICKEN,			//チキンモデル
 	};
 

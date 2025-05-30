@@ -10,6 +10,7 @@
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "../../Manager/System/SceneManager.h"
 
 using json = nlohmann::json;
 
@@ -38,6 +39,9 @@ MapDataIO::~MapDataIO()
 
 void MapDataIO::Load()
 {
+    //ファイルパスの指定
+    selectFile_ = GetFileName();
+    ImportJsonFile();
 }
 
 void MapDataIO::Init()
@@ -233,6 +237,24 @@ void MapDataIO::DrawCheckCommand()
             commandColor,
             commandMes[i].c_str()
         );
+    }
+}
+
+std::string MapDataIO::GetFileName()
+{
+    switch (SceneManager::GetInstance().GetSceneID())
+    {
+    case SceneManager::SCENE_ID::MULTI:
+    case SceneManager::SCENE_ID::FREE:
+        return "DefaultStage.json";
+        break;
+   
+    case SceneManager::SCENE_ID::SOLO:
+        return "ChallengeStage.json";
+        break;
+
+    default:
+        break;
     }
 }
 

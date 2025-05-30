@@ -5,6 +5,7 @@
 
 class SceneManager;
 class SelectUIGlow;
+class SelectUIDarkly;
 
 class ModeSelect
 {
@@ -85,7 +86,9 @@ private:
 	};
 
 	//画像のハンドル
+	int imgBackArc_;
 	int* imgArcs_;
+	int imgShadowArc_;
 
 	//移動角度
 	float currentAngle_;
@@ -117,6 +120,9 @@ private:
 
 	//エフェクトグロー
 	std::unique_ptr<SelectUIGlow> uiGlow_;
+
+	//エフェクトダークリー
+	std::unique_ptr<SelectUIDarkly> uiDarkly_;
 
 	//状態の処理を登録
 	void RegisterArcState(const UPD_STATE _state, std::function<void()> _update);

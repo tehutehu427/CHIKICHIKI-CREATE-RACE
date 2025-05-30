@@ -91,7 +91,7 @@ void PixelRenderer::MakeSquereVertex(Vector2 pos, Vector2 size)
 void PixelRenderer::Draw(Vector2 pos, Vector2 size)
 {
 	//画面初期化
-	ClearDrawScreen();
+	//ClearDrawScreen();
 
 	//オリジナルシェーダーを使用
 	MV1SetUseOrigShader(true);
@@ -112,7 +112,7 @@ void PixelRenderer::Draw(Vector2 pos, Vector2 size)
 	pixelMaterial_.TextureAddressModeApply();
 
 	// 描画
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 256);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 	DrawPolygonIndexed2DToShader(vertexs_, 4, indexes_, 2);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 

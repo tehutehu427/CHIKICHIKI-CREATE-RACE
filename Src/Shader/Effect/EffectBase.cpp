@@ -18,6 +18,9 @@ void EffectBase::Draw(const int _texture, const Vector2 _pos, const Vector2 _siz
 	//マテリアルにテクスチャを設定
 	material_->SetTexture(_texture);
 
+	//テクスチャアドレスを指定
+	//material_->SetTextureAdrdress(PixelMaterial::TEXADDRESS::WRAP);
+
 	// レンダーの描画
 	render_->Draw(_pos, _size);
 }
