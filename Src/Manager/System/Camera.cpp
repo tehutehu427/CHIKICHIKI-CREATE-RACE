@@ -64,16 +64,22 @@ void Camera::SetBeforeDraw(void)
 		break;
 	}
 
-	// カメラの設定(位置と注視点による制御)
-	SetCameraPositionAndTargetAndUpVec(
-		pos_, 
-		targetPos_, 
-		cameraUp_
-	);
+	//カメラの設定
+	CameraSetting();
 
 	// DXライブラリのカメラとEffekseerのカメラを同期する。
 	Effekseer_Sync3DSetting();
 
+}
+
+void Camera::CameraSetting()
+{
+	// カメラの設定(位置と注視点による制御)
+	SetCameraPositionAndTargetAndUpVec(
+		pos_,
+		targetPos_,
+		cameraUp_
+	);
 }
 
 void Camera::Draw(void)

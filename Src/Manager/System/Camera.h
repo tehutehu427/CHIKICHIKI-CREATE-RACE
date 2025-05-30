@@ -82,6 +82,9 @@ public:
 	// カメラの前方方向
 	VECTOR GetForward(void) const;
 
+	//カメラの設定
+	void CameraSetting(void);
+
 	// カメラモードの変更
 	void ChangeMode(MODE mode);
 
