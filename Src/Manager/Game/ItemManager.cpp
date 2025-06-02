@@ -434,6 +434,23 @@ IntVector3 ItemManager::GetItemSize(ItemBase::ITEM_TYPE _type) const
 	return size;
 }
 
+VECTOR ItemManager::GetStartWorldPos(void) const
+{
+	VECTOR startPos = { -1.0f,-1.0f,-1.0f };
+	auto it = items_.find(ItemBase::ITEM_TYPE::START);
+	if (it != items_.end() && !it->second.empty() && it->second[0] != nullptr)
+	{
+		IntVector3 mapPos = it->second[0]->GetInitMapPos();
+		//マップ座標からワールド座標に変換
+		IntVector3 startMapSize = it->second[0]->GetSize();
+		startPos = MapEditer::GetInstance().MapToWorldPos(mapPos + startMapSize - IntVector3{startMapSize.x / 2,0,startMapSize.z/2});
+		startPos.x += startMapSize.x % 2 == 0 ? 0.0f : MapEditer::GRID_SIZE / 2.0f;
+		startPos.y += startMapSize.y % 2 == 0 ? 0.0f : MapEditer::GRID_SIZE / 2.0f;
+		startPos.z += startMapSize.z % 2 == 0 ? 0.0f : MapEditer::GRID_SIZE / 2.0f;
+	}
+	return startPos;
+}
+
 ItemManager::ItemManager(void)
 {
 
