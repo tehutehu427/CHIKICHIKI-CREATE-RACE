@@ -4,7 +4,6 @@
 
 FreePlay::FreePlay(void)
 {
-	mapIO_ = nullptr;
 }
 
 FreePlay::~FreePlay(void)
@@ -15,10 +14,6 @@ void FreePlay::Load(void)
 {
 	//親クラスの読み込み
 	GameScene::Load();
-
-	//マップデータの入出力
-	mapIO_ = std::make_unique<MapDataIO>();
-	mapIO_->Load();
 }
 
 void FreePlay::Init(void)

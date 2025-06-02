@@ -11,7 +11,7 @@ public:
 	TitleScene(void);
 
 	// デストラクタ
-	~TitleScene(void);
+	~TitleScene(void) override;
 
 	//読み込み処理
 	void Load(void) override;

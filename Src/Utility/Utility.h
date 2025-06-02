@@ -48,7 +48,7 @@ public:
 	static constexpr int RED = 0xFF0000;	//赤
 	static constexpr int BLUE = 0x0000FF;	//青
 	static constexpr int YELLOW = 0xFFFF00;	//黄色
-	static constexpr int GREEN = 0x00FF00;	//緑
+	static constexpr int GREEN = 0x008000;	//緑
 	static constexpr int CYAN = 0x00FFFF;	//水色
 	static constexpr int PINK = 0xFFC0CB;	//桃色
 	static constexpr int ORANGE = 0xFFA500;	//オレンジ

@@ -48,7 +48,9 @@ void EditorPaletteBase::Load()
 	case SceneManager::SCENE_ID::SOLO:
 		palIcon_ = std::make_unique<SoloPaletteIcon>();
 		break;
+
 	default:
+		palIcon_ = std::make_unique<FreePaletteIcon>();
 		break;
 	}
 	palIcon_->Load();
