@@ -156,6 +156,10 @@ ResourceManager::ResourceManager(void)
 {
 }
 
+ResourceManager::~ResourceManager(void)
+{
+}
+
 Resource& ResourceManager::_Load(SRC src)
 {
 

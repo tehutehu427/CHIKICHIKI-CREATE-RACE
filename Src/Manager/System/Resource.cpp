@@ -186,3 +186,8 @@ void Resource::CopyHandle(int* imgs)
 	}
 
 }
+
+Resource::~Resource(void)
+{
+
+}

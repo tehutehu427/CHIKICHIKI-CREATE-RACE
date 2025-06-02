@@ -73,7 +73,7 @@ private:
 	// ŠO•”‚©‚ç¶¬‚Å‚«‚È‚¢—l‚É‚·‚é
 	Application(void);
 	Application(const Application& manager) = default;
-	~Application(void) = default;
+	~Application(void);
 
 	// Effekseer‚Ì‰Šú‰»
 	void InitEffekseer(void);

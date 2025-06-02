@@ -19,6 +19,10 @@ EditController::EditController(int playerNum)
 	moveDir_ = MOVE_DIR::NONE;
 }
 
+EditController::~EditController()
+{
+}
+
 void EditController::Init(void)
 {
 	//ÉÇÅ[ÉhïœçX

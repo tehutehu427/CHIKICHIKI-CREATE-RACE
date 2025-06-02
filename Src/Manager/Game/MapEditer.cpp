@@ -137,3 +137,7 @@ MapEditer::MapEditer(void)
 {
 	isMapPosItem_[(MAP_SIZE.x)][(MAP_SIZE.y)][(MAP_SIZE.z)] = {};
 }
+
+MapEditer::~MapEditer(void)
+{
+}

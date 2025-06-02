@@ -158,7 +158,7 @@ private:
 	//コピーコンストラクタ及び代入演算の禁止
 	ItemManager(const ItemManager& instance_) = delete;
 	void operator= (const ItemManager& instance_) = delete;
-	~ItemManager(void) = default;
+	~ItemManager(void);
 	//アイテムの生成
 	std::shared_ptr<ItemBase> CreateItem(ItemBase::ITEM_TYPE type, IntVector3 mapPos, Quaternion rot);
 };

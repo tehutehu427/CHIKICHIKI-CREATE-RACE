@@ -110,7 +110,7 @@ private:
 	/// <param name="playerNum">データバンクから人数を持ってくる</param>
 	PlayerManager(int _playerNum);
 	PlayerManager(const PlayerManager& instance_) = default;
-	~PlayerManager(void) = default;
+	~PlayerManager(void);
 	
 
 };

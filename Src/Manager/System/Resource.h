@@ -30,7 +30,7 @@ public:
 	Resource(TYPE type, const std::string& path, int numX, int numY, int sizeX, int sizeY);
 
 	// デストラクタ
-	~Resource(void) = default;
+	~Resource(void);
 
 	// 読み込み
 	void Load(void);

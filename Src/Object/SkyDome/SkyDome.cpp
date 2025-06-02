@@ -8,6 +8,10 @@ SkyDome::SkyDome()
 	state_ = STATE::NONE;
 }
 
+SkyDome::~SkyDome(void)
+{
+}
+
 void SkyDome::Load(void)
 {
 	transform_.SetModel(
