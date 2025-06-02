@@ -9,6 +9,8 @@ class EditorPaletteBase;
 class Grid;
 class SkyDome;
 class GameClear;
+class MapDataIO;
+class EditorUi;
 
 class GameScene : public SceneBase
 {
@@ -100,7 +102,10 @@ protected:
 	std::shared_ptr<EditController> editController_;
 
 	//パレット
-	std::unique_ptr<EditorPaletteBase> palette_;	
+	std::unique_ptr<EditorPaletteBase> palette_;
+
+	//マップ情報の入出力
+	std::unique_ptr<MapDataIO> mapIO_;
 	
 	//フェーズ管理(遷移時の初期処理)
 	std::map<PHASE, std::function<void(void)>> phaseChanges_;
@@ -139,4 +144,7 @@ private:
 
 	//ゲームクリア
 	std::unique_ptr<GameClear> gameClear_;
+
+	//エディター用UI
+	std::unique_ptr<EditorUi> editorUi_;
 };

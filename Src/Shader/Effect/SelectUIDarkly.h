@@ -1,6 +1,6 @@
 #pragma once
 #include "EffectBase.h"
-class SelectUIGlow : public EffectBase
+class SelectUIDarkly : public EffectBase
 {
 public:
 
@@ -10,12 +10,12 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	SelectUIGlow();
+	SelectUIDarkly();
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~SelectUIGlow();
+	~SelectUIDarkly();
 
 	/// <summary>
 	/// 読み込み処理
@@ -25,9 +25,10 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
+	/// <param name="_imgIndex"></param>画像インデックス
 	/// <param name="_angle"></param>角度
 	/// <param name="_size"></param>サイズ
-	void Update(const float _angle, const Vector2 _size);
-
+	/// <param name="_div"></param>分割数
+	void Update(const int _imgIndex, const float _angle, const Vector2 _size, const Vector2 _div);
 };
 

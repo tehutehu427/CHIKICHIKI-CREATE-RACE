@@ -8,6 +8,7 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/InputManager.h"
 #include "../Shader/Effect/SelectUIGlow.h"
+#include "../Shader/Effect/SelectUIDarkly.h"
 #include "ModeSelect.h"
 
 namespace
@@ -63,6 +64,9 @@ ModeSelect::ModeSelect() : scnMng_(SceneManager::GetInstance())
 	menuIndex_ = 0;
 	updState_ = UPD_STATE::NONE;
 	uiGlow_ = nullptr;
+	uiDarkly_ = nullptr;
+	imgBackArc_ = 0;
+	imgShadowArc_ = 0;
 }
 
 ModeSelect::~ModeSelect()
@@ -71,11 +75,18 @@ ModeSelect::~ModeSelect()
 
 void ModeSelect::Load()
 {
+	ResourceManager& res = ResourceManager::GetInstance();
+
 	//リソースの読み込み
-	imgArcs_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::ARCS).handleIds_;
+	imgArcs_ = res.Load(ResourceManager::SRC::ARCS).handleIds_;
+	imgBackArc_ = res.Load(ResourceManager::SRC::BACK_ARC).handleId_;
+	imgShadowArc_ = res.Load(ResourceManager::SRC::SHADOW_ARC).handleId_;
 
 	uiGlow_ = std::make_unique<SelectUIGlow>();
 	uiGlow_->Load();
+
+	uiDarkly_ = std::make_unique<SelectUIDarkly>();
+	uiDarkly_->Load();
 }
 
 void ModeSelect::Init()
@@ -114,7 +125,8 @@ void ModeSelect::Update()
 	if (selectUpdateFunc_) selectUpdateFunc_();
 
 	//エフェクトを更新
-	uiGlow_->Update(menuIndex_, arc_[menuIndex_].angle, imgArcSize, imgArcDivs);
+	uiGlow_->Update(arc_[arcIndex_].angle, imgArcSize);
+	uiDarkly_->Update(arcIndex_, arc_[arcIndex_].angle, imgArcSize, imgArcDivs);
 }
 
 void ModeSelect::Draw()
@@ -125,13 +137,14 @@ void ModeSelect::Draw()
 
 	for (int i = 0; i < DRAW_ARC_NUM; i++)
 	{
-		if (i != menuIndex_)
+		if (i == arcIndex_)
 		{
-			DrawDarkly(i);
+			
+			DrawGlow(arcIndex_);
 		}
 		else
 		{
-			DrawGlow(i);
+			DrawDarkly(i);
 		}
 	}
 }
@@ -249,10 +262,7 @@ void ModeSelect::SetMenuItem(const int _imgIndex, const int _arcIndex)
 void ModeSelect::DrawDarkly(const int _index)
 {
 	constexpr int ALPHA = 128;
-
-	// 描画前にブレンドモードを設定（乗算）
-	//SetDrawBlendMode(DX_BLENDMODE_MUL, ALPHA);
-
+	
 	// 画像描画
 	DrawRotaGraph(
 		arc_[_index].pos.x,
@@ -263,27 +273,50 @@ void ModeSelect::DrawDarkly(const int _index)
 		true,
 		false);
 
+	// 描画前にブレンドモードを設定（乗算）
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, ALPHA);
+
+	// 画像描画
+	DrawRotaGraph(
+		arc_[_index].pos.x,
+		arc_[_index].pos.y,
+		1.0f,
+		arc_[_index].angle,
+		imgShadowArc_,
+		true,
+		false);
+
+	//座標調整
+	Vector2 pos = {
+		arc_[_index].pos.x - imgArcSize.x / 2,
+		arc_[_index].pos.y - imgArcSize.y / 2 };
+
+	//描画
+	//uiGlow_->Draw(imgArcs_[_index], pos, imgArcSize);
+
 	// ブレンドモードを元に戻す
-	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void ModeSelect::DrawGlow(const int _index)
 {
 	//座標調整
-	Vector2 pos = { arc_[_index].pos.x - imgArcSize.x / 2,arc_[_index].pos.y - imgArcSize.y / 2 };
+	Vector2 pos = { 
+		arc_[_index].pos.x - imgArcSize.x / 2,
+		arc_[_index].pos.y - imgArcSize.y / 2 };
 
+	//描画
+	uiGlow_->Draw(imgBackArc_, pos, imgArcSize);
+	
 	// 画像描画
-	/*DrawRotaGraph(
+	DrawRotaGraph(
 		arc_[_index].pos.x,
 		arc_[_index].pos.y,
 		1.0f,
 		arc_[_index].angle,
 		arc_[_index].img,
 		true,
-		false);*/
-
-	//描画
-	uiGlow_->Draw(imgArcs_[_index], pos, imgArcSize);
+		false);
 }
 
 void ModeSelect::DebugUpdate()

@@ -43,11 +43,15 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "PaletteIcons.png");
 	resourcesMap_.emplace(SRC::PALETTE_ICONS, std::move(res));
 
-	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "Arc.png");
-	resourcesMap_.emplace(SRC::ARC, std::move(res));
-
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "Arcs.png", IMG_ARCS_DIV_X, IMG_ARCS_DIV_Y, IMG_ARC_SIZE, IMG_ARC_SIZE);
 	resourcesMap_.emplace(SRC::ARCS, std::move(res));
+	
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "BackArc.png");
+	resourcesMap_.emplace(SRC::BACK_ARC, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "ShadowArc.png");
+	resourcesMap_.emplace(SRC::SHADOW_ARC, std::move(res));
+
 #pragma endregion 
 
 #pragma region ƒ}ƒXƒN‰æ‘œ
