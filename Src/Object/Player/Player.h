@@ -189,6 +189,12 @@ public:
 	//方向
 	void SetDir(const VECTOR _dir) { dir_ = _dir; }
 
+	/// <summary>
+	/// 座標
+	/// </summary>
+	/// <param name="_worldPos">ワールド座標</param>
+	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
+
 #ifdef DEBUG_ON
 	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
 	const int PlayerNum(void) { return playerNum_; }

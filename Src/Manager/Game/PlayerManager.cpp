@@ -145,9 +145,13 @@ bool PlayerManager::IsHitCapsules(const std::weak_ptr<Capsule> cap1, const std::
 	return false;
 }
 
-void PlayerManager::SetInitPos(void)
+void PlayerManager::SetInitPos(VECTOR _worldPos)
 {
-
+	for (int i = 0; i < playerNum_; i++)
+	{
+		float posX= _worldPos.x + (Player::RADIUS * 2) * i;
+		players_[i]->SetPos({ posX, _worldPos.y, _worldPos.z }) ;
+	}
 }
 
 //void PlayerManager::P2PPush(int _pNum1,int _pNum2)

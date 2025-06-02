@@ -58,7 +58,7 @@ public:
 	Player& GetPlayer(const int _playerNum) { return *players_[_playerNum]; }
 
 	//‰ŠúÀ•W‚É–ß‚·
-	void SetInitPos(void);
+	void SetInitPos(VECTOR _worldPos);
 private:
 
 
