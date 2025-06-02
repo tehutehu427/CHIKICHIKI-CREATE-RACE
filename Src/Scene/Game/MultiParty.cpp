@@ -46,6 +46,10 @@ MultiParty::MultiParty(void)
 
 MultiParty::~MultiParty(void)
 {
+	for (auto& screen : screens_)
+	{
+		DeleteGraph(screen);
+	}
 }
 
 void MultiParty::Load(void)
