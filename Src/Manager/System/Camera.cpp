@@ -195,7 +195,7 @@ void Camera::SyncFollow(void)
 
 void Camera::SyncFollowFPS(void)
 {
-	auto& gIns = GravityManager::GetInstance();
+	auto gIns = GravityManager::GetInstance();
 
 	// “¯Šúæ‚ÌˆÊ’u
 	VECTOR pos = followTransform_->pos;
@@ -285,7 +285,7 @@ void Camera::SetBeforeDrawFollow(void)
 
 void Camera::SetBeforeDrawSelfShot(void)
 {
-	auto& gIns = GravityManager::GetInstance();
+	auto gIns = GravityManager::GetInstance();
 
 	// “¯Šúæ‚ÌˆÊ’u
 	VECTOR pos = followTransform_->pos;

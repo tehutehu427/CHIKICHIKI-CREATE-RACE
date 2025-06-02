@@ -34,7 +34,7 @@ public:
 	//コンストラクタ
 	EditController(int playerNum);
 	//デストラクタ
-	~EditController() = default;
+	~EditController();
 
 	void Init(void);		//初期化
 	void Update(void);		//更新

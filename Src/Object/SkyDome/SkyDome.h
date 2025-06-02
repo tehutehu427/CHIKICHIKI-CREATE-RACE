@@ -26,7 +26,7 @@ public:
 	SkyDome();
 
 	// デストラクタ
-	~SkyDome(void)override = default;
+	~SkyDome(void)override;
 
 	void Load(void) override;
 	void Init(void) override;

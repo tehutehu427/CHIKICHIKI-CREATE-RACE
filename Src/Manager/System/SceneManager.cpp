@@ -244,6 +244,10 @@ SceneManager::SceneManager(void)
 
 }
 
+SceneManager::~SceneManager(void)
+{
+}
+
 void SceneManager::ResetDeltaTime(void)
 {
 	deltaTime_ = 0.016f;

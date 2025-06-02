@@ -87,7 +87,7 @@ private:
 	// 外部から生成できない様にする
 	ResourceManager(void);
 	ResourceManager(const ResourceManager& manager) = default;
-	~ResourceManager(void) = default;
+	~ResourceManager(void);
 
 	// 内部ロード
 	Resource& _Load(SRC src);

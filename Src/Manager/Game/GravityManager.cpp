@@ -2,8 +2,12 @@
 #include"../Utility/Utility.h"
 #include "GravityManager.h"
 
-std::unique_ptr<GravityManager> GravityManager::instance_ = nullptr;
+GravityManager* GravityManager::instance_ = nullptr;
 GravityManager::GravityManager(void)
+{
+}
+
+GravityManager::~GravityManager(void)
 {
 }
 
@@ -11,18 +15,27 @@ void GravityManager::CreateInstance(void)
 {
 	if (instance_ == nullptr)
 	{
-		instance_ = std::make_unique<GravityManager>();
+		instance_ = new GravityManager();
 	}
 	instance_->Init();
 }
 
-std::unique_ptr<GravityManager>& GravityManager::GetInstance(void)
+GravityManager* GravityManager::GetInstance(void)
 {
 	if (instance_ == nullptr)
 	{
 		GravityManager::CreateInstance();
 	}
 	return instance_;
+}
+
+void GravityManager::Destroy(void)
+{
+	if (instance_ != nullptr)
+	{
+		delete instance_;
+		instance_ = nullptr;
+	}
 }
 
 void GravityManager::Init(void)

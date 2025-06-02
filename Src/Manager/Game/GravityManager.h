@@ -5,7 +5,7 @@ class GravityManager
 {
 public:
 	GravityManager(void);
-	~GravityManager(void)=default;
+	~GravityManager(void);
 	//重力
 	static constexpr float GRAVITY_POW = 3.0f;
 
@@ -13,9 +13,9 @@ public:
 	static void CreateInstance(void);
 
 	//静的にインスタンスを取得する
-	static std::unique_ptr<GravityManager>& GetInstance(void);
+	static GravityManager* GetInstance(void);
 
-
+	static void Destroy(void);
 
 	void Init(void);
 
@@ -33,7 +33,7 @@ public:
 	void Calculate(void);
 
 private:
-	static std::unique_ptr<GravityManager> instance_;
+	static GravityManager* instance_;
 
 	//回転用
 	Transform trans_;

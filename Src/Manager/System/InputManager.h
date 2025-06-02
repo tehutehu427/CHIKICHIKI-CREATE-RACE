@@ -173,7 +173,7 @@ private:
 	// 外部から生成できない様にする
 	InputManager(void);
 	InputManager(const InputManager& manager) = default;
-	~InputManager(void) = default;
+	~InputManager(void);
 
 	// 配列の中からキー情報を取得する
 	const InputManager::Info& Find(int key) const;
