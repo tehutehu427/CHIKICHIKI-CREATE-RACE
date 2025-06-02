@@ -205,6 +205,10 @@ InputManager::InputManager(void)
 	mouseInput_ = -1;
 }
 
+InputManager::~InputManager(void)
+{
+}
+
 const InputManager::Info& InputManager::Find(int key) const
 {
 

@@ -40,6 +40,7 @@ GameScene::~GameScene(void)
 	PlayerManager::GetInstance().Destroy();
 	ItemManager::GetInstance().Destroy();
 	MapEditer::GetInstance().Destroy();
+	GravityManager::Destroy();
 	DeleteFontToHandle(buttnFontHandle_);
 	phaseChanges_.clear();
 

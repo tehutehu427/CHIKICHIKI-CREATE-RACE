@@ -86,3 +86,7 @@ DateBank::DateBank(void)
 	playerNum_ = 0;
 	for (std::string& n : itemNames_) { n = ""; }
 }
+
+DateBank::~DateBank(void)
+{
+}

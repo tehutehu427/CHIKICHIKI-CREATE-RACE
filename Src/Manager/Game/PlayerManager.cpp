@@ -11,6 +11,11 @@ PlayerManager::PlayerManager(int _playerNum)
 	playerNum_ = _playerNum;
 }
 
+PlayerManager::~PlayerManager(void)
+{
+	instance_ = nullptr;
+}
+
 void PlayerManager::CreateInstance(int _playerNum)
 {
 	if (instance_ == nullptr)

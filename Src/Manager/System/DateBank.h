@@ -38,7 +38,7 @@ private:
 	static DateBank* instance_;
 	DateBank(void);
 	DateBank(const DateBank& instance_) = default;
-	~DateBank(void) = default;
+	~DateBank(void);
 	int playerNum_;		//プレイヤーの人数
 	int maxPlayerNum_;	//コントローラー数よりプレイヤー人数が多くならないようにする
 
