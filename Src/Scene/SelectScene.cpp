@@ -22,6 +22,7 @@ SelectScene::SelectScene(void)
 
 SelectScene::~SelectScene(void)
 {
+	DeleteFontToHandle(buttnFontHandle_);
 }
 
 void SelectScene::Load(void)

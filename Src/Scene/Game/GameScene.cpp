@@ -136,9 +136,6 @@ void GameScene::NormalDraw(void)
 	//スカイドーム
 	sky_->Draw();
 
-	//アイテム
-	ItemManager::GetInstance().Draw();
-	
 	//フェーズの描画
 	phaseDraw_();
 }
@@ -263,6 +260,9 @@ void GameScene::DrawEdit(void)
 	
 	//エディットコントローラー
 	editController_->Draw();
+
+	//アイテム
+	ItemManager::GetInstance().Draw();
 	
 	//パレット
 	palette_->Draw();
@@ -275,6 +275,9 @@ void GameScene::DrawAction(void)
 {
 	//プレイヤー
 	PlayerManager::GetInstance().Draw();
+
+	//アイテム
+	ItemManager::GetInstance().Draw();
 }
 
 void GameScene::DrawClear()
