@@ -143,6 +143,8 @@ public:
 	Transform GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
 
 	IntVector3 GetItemSize(ItemBase::ITEM_TYPE _type) const;
+
+	VECTOR GetStartWorldPos(void) const;
 protected:
 
 private:
