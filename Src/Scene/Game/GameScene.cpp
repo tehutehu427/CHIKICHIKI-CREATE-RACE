@@ -212,6 +212,7 @@ void GameScene::ChangePhaseAction(void)
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
 	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FIXED_DIAGONAL);
+	PlayerManager::GetInstance().Init();
 	//VECTOR pos;
 	//IntVector3 mPos = MapEditer::MAP_SIZE;
 	//pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) * 8.5f,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
