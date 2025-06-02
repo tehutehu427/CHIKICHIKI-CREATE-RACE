@@ -138,7 +138,7 @@ public:
 	Player(int _playerNum,PlayerInput::CNTL _cntl);
 
 	// デストラクタ
-	~Player(void) = default;
+	~Player(void);
 
 	void Load(void)override;
 	void Init(void)override;

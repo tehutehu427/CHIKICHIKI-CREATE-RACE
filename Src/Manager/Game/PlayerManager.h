@@ -19,6 +19,11 @@ public:
 
 	//プレイヤーの大きさ
 	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
+
+	//初期座標
+	static constexpr float START_POS = 50.0f;
+
+
 	
 	enum class PLAYER
 	{
@@ -59,6 +64,8 @@ public:
 
 	//初期座標に戻す
 	void SetInitPos(VECTOR _worldPos);
+
+
 private:
 
 

@@ -149,8 +149,9 @@ void PlayerManager::SetInitPos(VECTOR _worldPos)
 {
 	for (int i = 0; i < playerNum_; i++)
 	{
-		float posX= _worldPos.x + (Player::RADIUS * 2) * i;
-		players_[i]->SetPos({ posX, _worldPos.y, _worldPos.z }) ;
+		float posX = i % 2 == 0 ? START_POS : -START_POS;
+		float posZ = i < 2 ? START_POS : -START_POS;
+		players_[i]->SetPos({ posX+_worldPos.x, _worldPos.y, posZ+_worldPos.z }) ;
 	}
 }
 

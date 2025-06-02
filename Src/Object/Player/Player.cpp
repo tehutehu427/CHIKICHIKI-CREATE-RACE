@@ -55,6 +55,10 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 	input_ = nullptr;
 }
 
+Player::~Player(void)
+{
+}
+
 void Player::Load(void)
 {
 	//アニメーションでmodelIdを使うので先にモデルセットする
