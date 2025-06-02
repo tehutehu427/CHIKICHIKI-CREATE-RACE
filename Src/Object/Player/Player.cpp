@@ -405,7 +405,7 @@ void Player::HitItem(const IntVector3 _colPos)
 		//アイテムのTransform取得
 		Transform itemTrans = itemMng.GetItemTransform(lPos,type);
 
-		DownColl(itemTrans);
+		UpDownColl(itemTrans);
 		ArroundColl(itemTrans);
 
 		itemLPos_.push_back(lPos);
@@ -468,16 +468,40 @@ void Player::Collision(void)
 	// 現在座標を起点に移動後座標を決める
 }
 
-void Player::DownColl(const Transform _itemTrans)
+void Player::UpDownColl(const Transform _itemTrans)
 {
+	//移動後と移動前をとる
+	VECTOR prePos = trans_.pos;
+	VECTOR curPos = movedPos_;
+	
+	VECTOR vec = VSub(curPos, prePos);
+
+	auto hit = MV1CollCheck_Line(_itemTrans.modelId, -1, prePos, curPos);
+
+	//当たったら
+	if (hit.HitFlag > 0)
+	{
+		//Y座標のみ半径分上に移動させる
+		movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
+		jumpPow_ = Utility::VECTOR_ZERO;
+		isJump_ = false;
+		itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
+		return;
+	}
+	//else
+	//{
+	//	//当たらなかったら初期化する
+	//	itemLocalPos_ = Utility::VECTOR_ZERO;
+	//}
+
+
 	//Lineを引くための上と下の座標をとる
 	VECTOR upPos = movedPos_;
-	upPos.y += (RADIUS + 10.0f);
+	upPos.y += (RADIUS);
 	VECTOR downPos = movedPos_;
-	downPos.y -= (RADIUS + 10.0f);
-	VECTOR vec = VSub(movedPos_, trans_.pos);
+	downPos.y -= (RADIUS+ 10.0f);
 
-	auto hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
+	hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
 
 	//当たったら
 	if (hit.HitFlag > 0)
@@ -490,11 +514,18 @@ void Player::DownColl(const Transform _itemTrans)
 			movedPos_ = VAdd(movedPos_, vec);
 		}
 		//Y座標のみ半径分上に移動させる
-		movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
+
+		if (movedPos_.y > hit.HitPosition.y)
+		{
+			movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
+		}
+		else
+		{
+			movedPos_.y = hit.HitPosition.y - RADIUS - POSITION_OFFSET;
+		}
 		jumpPow_ = Utility::VECTOR_ZERO;
 		isJump_ = false;
 		itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
-
 	}
 	else
 	{

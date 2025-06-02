@@ -47,7 +47,7 @@ public:
 	//移動スピード
 	static constexpr float MOVE_SPEED = 7.0f;
 	//ぶっ飛ぶスピード
-	static constexpr float FLY_AWAY_SPEED = 20.0f;
+	static constexpr float FLY_AWAY_SPEED = 12.0f;
 	//落ちているときの重力制限(jumpPowに加算しているのでjumpPowに適用)
 	static constexpr float LIMIT_GRAVITY = -20.0f;
 
@@ -323,14 +323,14 @@ private:
 	/// <param name="_localPos">相対座標</param>
 	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot,VECTOR _localPos);
 
-	//重力による移動量
+	//アイテム都の当たり判定
 	void HitItem(const IntVector3 _colPos);
 
 	//当たり判定
 	void Collision(void);
 
 	//地面との当たり判定(動いてる床とか)
-	void DownColl(const Transform _itemTrans);
+	void UpDownColl(const Transform _itemTrans);
 
 	//周囲との当たり判定
 	void ArroundColl(Transform _itemTrans);
