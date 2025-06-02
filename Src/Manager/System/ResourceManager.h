@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include <unordered_map>
+#include <map>
 #include <string>
 #include "Resource.h"
 
@@ -76,10 +76,11 @@ private:
 	static ResourceManager* instance_;
 
 	// リソース管理の対象
-	std::unordered_map<SRC, std::unique_ptr<Resource>> resourcesMap_;
+	
+	std::map<SRC, std::unique_ptr<Resource>> resourcesMap_;
 
 	// 読み込み済みリソース
-	std::unordered_map<SRC, Resource&> loadedMap_;
+	std::map<SRC, Resource&> loadedMap_;
 
 	Resource dummy_;
 
