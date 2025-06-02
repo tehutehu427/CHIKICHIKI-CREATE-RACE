@@ -417,6 +417,23 @@ Transform ItemManager::GetItemTransform(IntVector3 _mapPos, ItemBase::ITEM_TYPE 
 	return Transform{};
 }
 
+IntVector3 ItemManager::GetItemSize(ItemBase::ITEM_TYPE _type) const
+{
+	//アイテムのサイズ
+	IntVector3 size = { -1,-1,-1 };
+	//指定アイテムが存在するか
+	auto it = items_.find(_type);
+	if (it != items_.end())
+	{
+		//存在した
+		if (!it->second.empty() && it->second[0] != nullptr)
+		{
+			size = it->second[0]->GetSize();
+		}
+	}
+	return size;
+}
+
 ItemManager::ItemManager(void)
 {
 

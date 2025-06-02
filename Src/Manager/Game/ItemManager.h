@@ -141,6 +141,8 @@ public:
 	/// <param name="_type">ƒAƒCƒeƒ€‚ÌŽí—Þ</param>
 	/// <returns></returns>
 	Transform GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
+
+	IntVector3 GetItemSize(ItemBase::ITEM_TYPE _type) const;
 protected:
 
 private:

@@ -149,6 +149,9 @@ void MapDataIO::ImportJsonFile()
 
             //Ši”[
             itemMng.AddItem(mapPos, Quaternion(), type);
+			MapEditer::GetInstance().AddItem(
+				{ mapPos, Quaternion(), type },
+                itemMng.GetItemSize(type));
         }
     }
 }

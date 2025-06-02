@@ -53,6 +53,9 @@ void GameScene::Load(void)
 	PlayerManager::CreateInstance(2);
 	PlayerManager::GetInstance().Load();
 
+	MapEditer::CreateInstance();
+
+	GravityManager::CreateInstance();
 	//player_ = std::make_unique<Player>();
 	//player_->Load();
 
@@ -97,9 +100,6 @@ void GameScene::Init(void)
 	sky_->Init();
 	gameClear_->Init();
 	editorUi_->Init();
-	MapEditer::CreateInstance();
-
-	GravityManager::CreateInstance();
 
 	
 
