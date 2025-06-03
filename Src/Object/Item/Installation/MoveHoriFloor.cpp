@@ -64,7 +64,7 @@ void MoveHoriFloor::Update(void)
 
 void MoveHoriFloor::Draw(void)
 {
-	DrawLine3D(route_[0], route_[1], 0xffffff);
+	DrawLine3D(VAdd(route_[0], MAP_LOCALPOS), VAdd(route_[1], MAP_LOCALPOS), Utility::BLACK);
 	MV1DrawModel(trans_.modelId);
 }
 
