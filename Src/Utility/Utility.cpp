@@ -731,3 +731,18 @@ int Utility::WrapIndex(int index, int max)
 {
     return (index % max + max) % max;
 }
+
+void Utility::DrawPointLine3D(const VECTOR sPos, const VECTOR ePos, int color, float len)
+{
+	VECTOR dir = VNorm(VSub(ePos, sPos));
+	VECTOR currentPos = sPos;
+	while (true)
+	{
+		DrawLine3D(currentPos, VAdd(currentPos, VScale(dir, len)), color);
+		currentPos = VAdd(currentPos, VScale(dir, len * 2.0f));
+		if (Magnitude(VSub(currentPos, ePos)) < len)
+		{
+			break;
+		}
+	}
+}
