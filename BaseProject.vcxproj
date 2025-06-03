@@ -29,8 +29,6 @@
     <ClCompile Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp" />
-    <ClCompile Include="Src\Object\Editor\Palette\FreePalette.cpp" />
-    <ClCompile Include="Src\Object\Editor\Palette\SoloChallengePalette.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\Spring.cpp" />
     <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp" />
     <ClCompile Include="Src\Object\Item\Destroyer\SmallBomb.cpp" />
