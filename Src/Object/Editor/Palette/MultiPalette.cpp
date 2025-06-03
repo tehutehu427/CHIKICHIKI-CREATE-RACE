@@ -4,8 +4,6 @@
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/DateBank.h"
 #include "Icon/PaletteIcon.h"
-#include "Icon/FreePaletteIcon.h"
-#include "Icon/SoloPaletteIcon.h"
 #include "Icon/MultiPaletteIcon.h"
 #include "PaletteCursor.h"
 

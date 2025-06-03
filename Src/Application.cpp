@@ -37,7 +37,7 @@ void Application::Init(void)
 {
 
 	// アプリケーションの初期設定
-	SetWindowText("ここを見たなこの野郎");
+	SetWindowText("CHIKICHKI CREATE RACE");
 
 	// ウィンドウサイズ
 	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 32);

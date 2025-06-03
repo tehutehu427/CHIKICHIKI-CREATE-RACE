@@ -110,18 +110,13 @@ void GameScene::Init(void)
 	//ItemManager::GetInstance().AddItem({ 8,2,8 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
 	//ItemManager::GetInstance().AddItem({ 10,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
 	//ItemManager::GetInstance().AddItem({ 15,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
-	ChangePhase(PHASE::EDIT_PHASE);
+	//ChangePhase(PHASE::EDIT_PHASE);
 }
 
 void GameScene::NormalUpdate(void)
 {
 	//プレイヤー
-	//player_->Update();
-
-
-
-
-
+	//player_->Update(
 	phaseUpdate_();
 
 
@@ -159,10 +154,9 @@ void GameScene::DebagUpdate(void)
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
-	if (ins.IsTrgDown(KEY_INPUT_Z))
-	{
-		ChangePhase(phase_ == PHASE::ACTION_PHASE ? PHASE::EDIT_PHASE : PHASE::ACTION_PHASE);
-	}
+
+	//フェーズ遷移は各アップデートに作ったのでここは消し
+
 	else if (ins.IsTrgDown(KEY_INPUT_C))
 	{
 		ChangePhase(PHASE::CLEAR_PHASE);
@@ -188,7 +182,7 @@ void GameScene::DebagDraw(void)
 
 	//palette_->DebagDraw();
 }
-void GameScene::ChangePhase(PHASE phase)
+void GameScene::ChangePhase(const PHASE phase)
 {
 	if (!ItemManager::GetInstance().AllDummyItemAddItems())
 	{
