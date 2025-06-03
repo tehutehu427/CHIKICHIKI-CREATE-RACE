@@ -51,7 +51,7 @@ void GameScene::Load(void)
 	//フォントの生成
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
-	PlayerManager::CreateInstance(2);
+	PlayerManager::CreateInstance(PLAYER_NUM);
 	PlayerManager::GetInstance().Load();
 
 	MapEditer::CreateInstance();
@@ -248,6 +248,7 @@ void GameScene::UpdateAction(void)
 {
 	ItemManager::GetInstance().Update();
 	PlayerManager::GetInstance().Update();
+	ChangePlayerClearPhase();
 }
 
 void GameScene::UpdateClear(void)
@@ -292,4 +293,13 @@ void GameScene::DrawClear()
 
 	//ゲームクリアの描画
 	gameClear_->Draw();
+}
+
+void GameScene::ChangePlayerClearPhase(void)
+{
+	for (int i = 0; i < PLAYER_NUM; i++)
+	{
+		if (!PlayerManager::GetInstance().IsGoalPlayers()[i])return;
+	}
+	ChangePhase(PHASE::CLEAR_PHASE);
 }

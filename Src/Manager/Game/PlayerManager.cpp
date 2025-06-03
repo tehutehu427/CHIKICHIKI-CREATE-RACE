@@ -9,6 +9,10 @@ PlayerManager* PlayerManager::instance_ = nullptr;
 PlayerManager::PlayerManager(int _playerNum)
 {
 	playerNum_ = _playerNum;
+	for (int i = 0; i < playerNum_; i++)
+	{
+		isGoal_.emplace_back(false);
+	}
 }
 
 PlayerManager::~PlayerManager(void)
@@ -160,17 +164,21 @@ void PlayerManager::SetInitPos(VECTOR _worldPos)
 	}
 }
 
-bool PlayerManager::IsGoalPlayers(void)
+std::vector<bool> PlayerManager::IsGoalPlayers(void)
 {
-	for (auto& player : players_)
+	for (int i=0;i<playerNum_;i++)
 	{
-		if (player->GetHitItemType() != ItemBase::ITEM_TYPE::GOAL)
+		if (players_[i]->GetHitItemType() == ItemBase::ITEM_TYPE::GOAL)
 		{
-			break;
+			isGoal_[i] = true;
 		}
-		return true;
+		else
+		{
+			isGoal_[i] = false;
+		}
 	}
-	return false;
+	return isGoal_;
+	
 }
 
 //void PlayerManager::P2PPush(int _pNum1,int _pNum2)

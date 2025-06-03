@@ -78,7 +78,7 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns>true:全員ゴールに行った　false:誰か一人でもゴールに行ってない</returns>
-	bool IsGoalPlayers(void);
+	std::vector<bool> IsGoalPlayers(void);
 
 
 private:
@@ -92,6 +92,9 @@ private:
 	//*****************************************
 	//プレイヤー
 	std::vector<std::unique_ptr<Player>> players_;
+
+	//プレイヤーゴール判定
+	std::vector<bool>isGoal_;
 
 	std::vector<int>models_;
 
