@@ -8,9 +8,9 @@
 class EditController
 {
 public:
-	static constexpr float MOVE_ARROW_LENGTH = 50.0f;	//移動矢印の長さ
+	static constexpr float MOVE_ARROW_LENGTH = 75.0f;	//移動矢印の長さ
 	static constexpr float MOVE_ARROW_SIZE = 10.0f;		//移動矢印の先端の大きさ
-	static constexpr int DELAY_MOVE_ARROW = 30;			//移動矢印の先端からの猶予座標
+	static constexpr int DELAY_MOVE_ARROW = 20;			//移動矢印の先端からの猶予座標
 	static constexpr IntVector3 ERROR_POS = { -1,-1,-1 };	//生成不可の座標
 
 	enum class MODE
