@@ -164,10 +164,21 @@ void PlayerManager::SetInitPos(VECTOR _worldPos)
 	}
 }
 
-bool PlayerManager::IsGoalPlayers(void)
+std::vector<bool> PlayerManager::IsGoalPlayers(void)
 {
+	for (int i=0;i<playerNum_;i++)
+	{
+		if (players_[i]->GetHitItemType() == ItemBase::ITEM_TYPE::GOAL)
+		{
+			isGoal_[i] = true;
+		}
+		else
+		{
+			isGoal_[i] = false;
+		}
+	}
+	return isGoal_;
 	
-	return false;
 }
 
 //void PlayerManager::P2PPush(int _pNum1,int _pNum2)

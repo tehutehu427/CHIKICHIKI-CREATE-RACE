@@ -51,7 +51,7 @@ void GameScene::Load(void)
 	//ÉtÉHÉìÉgÇÃê∂ê¨
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
-	PlayerManager::CreateInstance(2);
+	PlayerManager::CreateInstance(PLAYER_NUM);
 	PlayerManager::GetInstance().Load();
 
 	MapEditer::CreateInstance();
@@ -303,8 +303,9 @@ void GameScene::DrawClear()
 
 void GameScene::ChangePlayerClearPhase(void)
 {
-	if (PlayerManager::GetInstance().IsGoalPlayers())
+	for (int i = 0; i < PLAYER_NUM; i++)
 	{
-		ChangePhase(PHASE::CLEAR_PHASE);
+		if (!PlayerManager::GetInstance().IsGoalPlayers()[i])return;
 	}
+	ChangePhase(PHASE::CLEAR_PHASE);
 }
