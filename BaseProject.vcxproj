@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Item\Installation\FerrisWheel.cpp" />
     <ClCompile Include="Src\Shader\Effect\EffectBase.cpp" />
     <ClCompile Include="Src\Object\System\ModeSelect.cpp" />
     <ClCompile Include="Src\Object\System\GameClear.cpp" />
@@ -91,6 +92,7 @@
     <ClCompile Include="Src\Shader\Effect\SelectUIGlow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Item\Installation\FerrisWheel.h" />
     <ClInclude Include="Src\Manager\Game\PlayerManager.h" />
     <ClInclude Include="Src\Object\Item\Installation\Floor.h" />
     <ClInclude Include="Src\Object\Item\Installation\Cannon.h" />

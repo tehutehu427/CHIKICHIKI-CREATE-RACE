@@ -1,3 +1,4 @@
+#include"../Utility/Utility.h"
 #include"../Manager/System/Resource.h"
 #include"../Manager/System/ResourceManager.h"
 #include "Fan.h"
@@ -38,4 +39,17 @@ void Fan::SetParam(void)
 
 void Fan::Update(void)
 {
+}
+
+void Fan::Draw(void)
+{
+	//‹¤’Ê
+	ItemBase::Draw();
+
+	VECTOR fanCenterPos = VAdd(trans_.pos, trans_.localPos);
+
+	//•—
+	DrawCube3D(VAdd(fanCenterPos, { MODEL_SIZE.x / 2.0f,-MODEL_SIZE.y/2.0f,30.0f }),
+		VAdd(fanCenterPos, { -MODEL_SIZE.x / 2.0f,MODEL_SIZE.y / 2.0f,400.0f }),
+		Utility::WHITE, Utility::WHITE, false);
 }

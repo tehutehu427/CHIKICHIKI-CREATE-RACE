@@ -1,7 +1,7 @@
 #pragma once
 #include "../ItemBase.h"
-class Fan :
-    public ItemBase
+
+class Fan : public ItemBase
 {
 public:
 
@@ -21,6 +21,8 @@ public:
 	void SetParam(void)override;
 	//XV
 	void Update(void)override;
+	//•`‰æ
+	void Draw(void)override;
 
 private:
 };

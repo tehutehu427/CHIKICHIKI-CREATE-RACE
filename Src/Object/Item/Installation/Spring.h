@@ -1,5 +1,6 @@
 #pragma once
 #include "../ItemBase.h"
+
 class Spring : public ItemBase
 {
 public:
