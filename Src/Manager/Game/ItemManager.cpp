@@ -451,6 +451,43 @@ VECTOR ItemManager::GetStartWorldPos(void) const
 	return startPos;
 }
 
+bool ItemManager::AllDummyItemAddItems(void)
+{
+	bool isClear = true;	//アイテムをすべて移せたか
+	std::vector<int> playerNum;
+	//各ダミーアイテム
+	for (auto& item : dummyItems_)
+	{
+		//まだ設置してない
+		if (item.second == nullptr)
+		{
+			//飛ばす
+			continue;
+		}
+
+		//他オブジェクトと重なっているか
+		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize()))
+		{
+			isClear = false;
+		}
+		//重なっていない
+		else
+		{
+			playerNum.push_back(item.first);
+		}
+	}
+	for (auto& pNum : playerNum)
+	{
+		MapEditer::STATUS status;
+		status.mapPos = GetDummyItemMapPos(pNum);
+		status.rotate = GetDummyItemTransform(pNum).quaRot;
+		status.type = dummyItems_[pNum]->GetStatus().itemType;
+		MapEditer::GetInstance().AddItem(status, GetDummyItemSize(pNum));
+		DummyItemAddItems(pNum);
+	}
+	return isClear;
+}
+
 ItemManager::ItemManager(void)
 {
 

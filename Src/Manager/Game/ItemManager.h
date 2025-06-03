@@ -141,10 +141,26 @@ public:
 	/// <param name="_type">アイテムの種類</param>
 	/// <returns></returns>
 	Transform GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
-
+	/// <summary>
+	/// 設置済みのアイテムの大きさを取得
+	/// </summary>
+	/// <param name="_type">アイテムの種類</param>
+	/// <returns></returns>
 	IntVector3 GetItemSize(ItemBase::ITEM_TYPE _type) const;
-
+	/// <summary>
+	/// スタートのワールド座標を返す
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns></returns>
 	VECTOR GetStartWorldPos(void) const;
+
+	/// <summary>
+	/// すべてのプレイヤーのダミーアイテムをアイテムに移す
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>すべて移動でtrue</returns>
+	bool AllDummyItemAddItems(void);
+
 protected:
 
 private:

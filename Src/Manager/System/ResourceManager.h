@@ -76,6 +76,7 @@ private:
 	static ResourceManager* instance_;
 
 	// リソース管理の対象
+	
 	std::map<SRC, std::unique_ptr<Resource>> resourcesMap_;
 
 	// 読み込み済みリソース
