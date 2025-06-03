@@ -136,7 +136,7 @@ private:
 	virtual void DrawAction();
 	void DrawClear();
 
-	//プレイヤーがクリアオブジェクトに立った後の遷移
+	//プレイヤーがクリアオブジェクトに当たった後の遷移
 	void ChangePlayerClearPhase(void);
 
 	//グリッド
