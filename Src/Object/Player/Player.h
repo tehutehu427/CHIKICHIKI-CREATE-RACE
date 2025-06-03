@@ -7,7 +7,7 @@
 #include"./Process/PlayerInput.h"
 #include "../ObjectBase.h"
 
-#define DEBUG_ON
+//#define DEBUG_ON
 class Camera;
 class PMove;
 class PJump;
@@ -199,10 +199,13 @@ public:
 	/// </summary>
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
-
-#ifdef DEBUG_ON
+	//コントローラーセット
 	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
+
+	//プレイヤー番号ゲット
 	const int PlayerNum(void) { return playerNum_; }
+#ifdef DEBUG_ON
+
 
 	//デバッグキューブのサイズ
 	static constexpr float CUBE_W = 200.0F;

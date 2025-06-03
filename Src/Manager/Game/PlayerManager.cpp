@@ -47,6 +47,8 @@ void PlayerManager::Load(void)
 	for (int i = 0; i < playerNum_; i++)
 	{
 #ifdef DEBUG_ON
+
+#endif // DEBUG_ON
 		if (i == 0)
 		{
 			cntl_ = PlayerInput::CNTL::KEYBOARD;
@@ -55,7 +57,6 @@ void PlayerManager::Load(void)
 		{
 			cntl_ = PlayerInput::CNTL::PAD;
 		}
-#endif // DEBUG_ON
 		std::unique_ptr<Player> player;
 		player = std::make_unique<Player>(i, cntl_);
 		player->Load();
