@@ -134,6 +134,9 @@ private:
 	virtual void DrawAction();
 	void DrawClear();
 
+	//プレイヤーがクリアオブジェクトに立った後の遷移
+	void ChangePlayerClearPhase(void);
+
 	//グリッド
 	std::unique_ptr<Grid>grid_;
 

@@ -249,6 +249,7 @@ void GameScene::UpdateAction(void)
 {
 	ItemManager::GetInstance().Update();
 	PlayerManager::GetInstance().Update();
+	ChangePlayerClearPhase();
 }
 
 void GameScene::UpdateClear(void)
@@ -293,4 +294,12 @@ void GameScene::DrawClear()
 
 	//ƒQ[ƒ€ƒNƒŠƒA‚Ì•`‰æ
 	gameClear_->Draw();
+}
+
+void GameScene::ChangePlayerClearPhase(void)
+{
+	if (PlayerManager::GetInstance().IsGoalPlayers())
+	{
+		ChangePhase(PHASE::CLEAR_PHASE);
+	}
 }

@@ -9,6 +9,10 @@ PlayerManager* PlayerManager::instance_ = nullptr;
 PlayerManager::PlayerManager(int _playerNum)
 {
 	playerNum_ = _playerNum;
+	for (int i = 0; i < playerNum_; i++)
+	{
+		isGoal_.emplace_back(false);
+	}
 }
 
 PlayerManager::~PlayerManager(void)
@@ -162,14 +166,7 @@ void PlayerManager::SetInitPos(VECTOR _worldPos)
 
 bool PlayerManager::IsGoalPlayers(void)
 {
-	for (auto& player : players_)
-	{
-		if (player->GetHitItemType() != ItemBase::ITEM_TYPE::GOAL)
-		{
-			break;
-		}
-		return true;
-	}
+	
 	return false;
 }
 
