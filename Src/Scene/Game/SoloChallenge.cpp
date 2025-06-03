@@ -18,6 +18,9 @@ void SoloChallenge::Init(void)
 {
 	//親クラスの初期化処理を呼ぶ	
 	GameScene::Init();
+
+	//アクションフェーズへ移る
+	ChangePhase(PHASE::ACTION_PHASE);
 }
 
 void SoloChallenge::NormalDraw(void)
@@ -30,10 +33,4 @@ void SoloChallenge::UpdateAction(void)
 {
 	//親クラスのアクション時の更新処理を呼ぶ
 	GameScene::UpdateAction();
-}
-
-void SoloChallenge::UpdateEdit(void)
-{
-	//親クラスのエディット時の更新処理を呼ぶ
-	GameScene::UpdateEdit();
 }

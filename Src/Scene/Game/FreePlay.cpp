@@ -1,6 +1,5 @@
 #include "FreePlay.h"
 #include "../../Object/Editor/MapDataIO.h"
-#include "../../Object/Editor/Palette/Icon/FreePaletteIcon.h"
 
 FreePlay::FreePlay(void)
 {
@@ -23,18 +22,32 @@ void FreePlay::Init(void)
 
 	//マップデータの初期化
 	mapIO_->Init();
+
+	ChangePhase(PHASE::EDIT_PHASE);
 }
 
 void FreePlay::UpdateAction(void)
 {
 	//親クラスの更新
 	GameScene::UpdateAction();
+
+	//フェーズ遷移
+	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_Z))
+	{
+		ChangePhase(PHASE::EDIT_PHASE);
+	}
 }
 
 void FreePlay::UpdateEdit(void)
 {
 	//親クラスの更新
 	GameScene::UpdateEdit();
+
+	//フェーズ遷移
+	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_Z))
+	{
+		ChangePhase(PHASE::ACTION_PHASE);
+	}
 
 	//マップデータの更新
 	mapIO_->Update();

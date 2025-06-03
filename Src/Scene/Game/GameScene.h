@@ -98,6 +98,9 @@ protected:
 	/// <param name=""></param>
 	virtual void DebagDraw(void);	//描画
 
+	//フェーズ遷移
+	void ChangePhase(const PHASE phase);
+
 	//エディットコントローラー
 	std::vector<std::unique_ptr<EditController>> editControllers_;
 
@@ -126,7 +129,6 @@ private:
 	void ChangeNormal(void) override;
 
 	//フェーズ遷移
-	void ChangePhase(PHASE phase);
 	void ChangePhaseEdit(void);
 	void ChangePhaseAction(void);
 	void ChangePhaseClear(void);

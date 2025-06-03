@@ -11,7 +11,7 @@
 #include "EditorPaletteBase.h"
 #include "Icon/PaletteIcon.h"
 #include "Icon/FreePaletteIcon.h"
-#include "Icon/SoloPaletteIcon.h"
+#include "Icon/MultiPaletteIcon.h"
 
 EditorPaletteBase::EditorPaletteBase(std::vector<std::unique_ptr<EditController>>& _editControllers)
 	: editControllers_(_editControllers)
@@ -45,8 +45,8 @@ void EditorPaletteBase::Load()
 	case SceneManager::SCENE_ID::FREE:
 		palIcon_ = std::make_unique<FreePaletteIcon>();
 		break;
-	case SceneManager::SCENE_ID::SOLO:
-		palIcon_ = std::make_unique<SoloPaletteIcon>();
+	case SceneManager::SCENE_ID::MULTI:
+		palIcon_ = std::make_unique<MultiPaletteIcon>();
 		break;
 
 	default:

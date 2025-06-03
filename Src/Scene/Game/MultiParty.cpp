@@ -63,6 +63,8 @@ void MultiParty::Init(void)
 {
 	//eƒNƒ‰ƒX‚Ì‰Šú‰»ˆ—‚ğŒÄ‚Ô
 	GameScene::Init();
+
+	ChangePhase(PHASE::SELECT_PHASE);
 }
 
 void MultiParty::NormalDraw(void)
