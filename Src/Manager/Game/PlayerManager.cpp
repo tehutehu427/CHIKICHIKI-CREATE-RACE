@@ -11,13 +11,18 @@ PlayerManager::PlayerManager(int _playerNum)
 	playerNum_ = _playerNum;
 }
 
+PlayerManager::~PlayerManager(void)
+{
+	instance_ = nullptr;
+}
+
 void PlayerManager::CreateInstance(int _playerNum)
 {
 	if (instance_ == nullptr)
 	{
 		instance_ = new PlayerManager(_playerNum);
 	}
-	instance_->Init();
+	//instance_->Init();
 }
 
 void PlayerManager::Destroy(void)
@@ -31,10 +36,8 @@ PlayerManager& PlayerManager::GetInstance(void)
 	return *instance_;
 }
 
-void PlayerManager::Init(void)
+void PlayerManager::Load(void)
 {
-	if (playerNum_ > PLAYER_SINGLE) { cntl_ = PlayerInput::CNTL::PAD; }
-	else { cntl_ = PlayerInput::CNTL::KEYBOARD; }
 	for (int i = 0; i < playerNum_; i++)
 	{
 #ifdef DEBUG_ON
@@ -48,11 +51,21 @@ void PlayerManager::Init(void)
 		}
 #endif // DEBUG_ON
 		std::unique_ptr<Player> player;
-		Transform trans=FixTrans(i);
-		player = std::make_unique<Player>(i,trans, cntl_);
-		player->Init();
+		player = std::make_unique<Player>(i, cntl_);
+		player->Load();
 		players_.push_back(std::move(player));
 	}
+}
+
+void PlayerManager::Init(void)
+{
+	if (playerNum_ > PLAYER_SINGLE) { cntl_ = PlayerInput::CNTL::PAD; }
+	else { cntl_ = PlayerInput::CNTL::KEYBOARD; }
+	for (auto& player : players_)
+	{
+		player->Init();
+	}
+
 }
 
 void PlayerManager::Update(void)
@@ -137,6 +150,29 @@ bool PlayerManager::IsHitCapsules(const std::weak_ptr<Capsule> cap1, const std::
 	return false;
 }
 
+void PlayerManager::SetInitPos(VECTOR _worldPos)
+{
+	for (int i = 0; i < playerNum_; i++)
+	{
+		float posX = i % 2 == 0 ? START_POS : -START_POS;
+		float posZ = i < 2 ? START_POS : -START_POS;
+		players_[i]->SetPos({ posX+_worldPos.x, _worldPos.y, posZ+_worldPos.z }) ;
+	}
+}
+
+bool PlayerManager::IsGoalPlayers(void)
+{
+	for (auto& player : players_)
+	{
+		if (player->GetHitItemType() != ItemBase::ITEM_TYPE::GOAL)
+		{
+			break;
+		}
+		return true;
+	}
+	return false;
+}
+
 //void PlayerManager::P2PPush(int _pNum1,int _pNum2)
 //{
 //	//同じプレイヤー番号なら抜ける
@@ -168,18 +204,15 @@ Transform PlayerManager::FixTrans(int _playerNum)
 	ResourceManager& resIns = ResourceManager::GetInstance();
 	//番号でモデルを変える(予定)
 	trans.SetModel(resIns.LoadModelDuplicate(ResourceManager::SRC::CHICKEN));
-	
+
 	//transの初期化
 	PLAYER num = static_cast<PLAYER>(_playerNum);
-	float x = 0.0f;
+	
 	trans.quaRot = Quaternion();
 	trans.scl = MODEL_SCL;
 	trans.quaRotLocal =
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
-	
-	x = PLAYER_ONE_POS_X + DISTANCE_POS * _playerNum;
 
-	trans.pos = { x,0.0f,0.0f };
 	trans.localPos = { 0.0f,-Player::RADIUS,0.0f };
 	return trans;
 }
@@ -200,4 +233,13 @@ void PlayerManager::PunchPlayersColl(int p1, int p2)
 		players_[p2]->SetDir(Utility::GetMoveVec(players_[p1]->GetPos(), players_[p2]->GetPos()));
 		players_[p2]->SetIsPunched(true);
 	}
+}
+
+void PlayerManager::DupilicateModel(void)
+{
+	//モデルを変えるかもしれないので一応配列で格納する
+	int model = ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::CHICKEN);
+
+	//配列を追加
+	models_.emplace_back(model);
 }

@@ -124,7 +124,7 @@ private:
 	// コピーコンストラクタも同様
 	SceneManager(const SceneManager& manager) = default;
 	// デストラクタも同様
-	~SceneManager(void) = default;
+	~SceneManager(void);
 
 	// デルタタイムをリセットする
 	void ResetDeltaTime(void);

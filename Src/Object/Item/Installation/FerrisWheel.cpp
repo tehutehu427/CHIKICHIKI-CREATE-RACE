@@ -3,12 +3,12 @@
 #include "../Manager/Game/MapEditer.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
-#include "MoveHoriFloor.h"
+#include "FerrisWheel.h"
 
-MoveHoriFloor::MoveHoriFloor()
+FerrisWheel::FerrisWheel()
 {
 	routeNum_ = 0;
-	for (int i = 0 ; i< ROUTE;i++)
+	for (int i = 0; i < ROUTE; i++)
 	{
 		route_[i] = Utility::VECTOR_ZERO;
 	}
@@ -20,11 +20,11 @@ MoveHoriFloor::MoveHoriFloor()
 	movePow_ = Utility::VECTOR_ZERO;
 }
 
-MoveHoriFloor::~MoveHoriFloor()
+FerrisWheel::~FerrisWheel()
 {
 }
 
-void MoveHoriFloor::SetParam(void)
+void FerrisWheel::SetParam(void)
 {
 	//モデルの基本設定
 	trans_.SetModel(resMng_.LoadModelDuplicate(
@@ -53,7 +53,7 @@ void MoveHoriFloor::SetParam(void)
 	InitRoute();
 }
 
-void MoveHoriFloor::Update(void)
+void FerrisWheel::Update(void)
 {
 	//移動処理
 	Move();
@@ -62,21 +62,25 @@ void MoveHoriFloor::Update(void)
 	trans_.Update();
 }
 
-void MoveHoriFloor::Draw(void)
+void FerrisWheel::Draw(void)
 {
 	DrawLine3D(VAdd(route_[0], MAP_LOCALPOS), VAdd(route_[1], MAP_LOCALPOS), Utility::BLACK);
 	MV1DrawModel(trans_.modelId);
 }
 
-const IntVector3 MoveHoriFloor::GetSize(void) const
+const IntVector3 FerrisWheel::GetSize(void) const
 {
-	return size_ + IntVector3(MOVE_X, 0, 0);
+	return size_ + IntVector3(MOVE_X, MOVE_Y, 0);
 }
 
-void MoveHoriFloor::Move(void)
+void FerrisWheel::Hit(Transform& _hitTrans)
+{
+}
+
+void FerrisWheel::Move(void)
 {
 	//指定ルートを超えたか
-	if(IsBeyondRoute())
+	if (IsBeyondRoute())
 	{
 		//現在位置の補正
 		trans_.pos = route_[routeNum_];
@@ -89,17 +93,17 @@ void MoveHoriFloor::Move(void)
 	trans_.pos = VAdd(trans_.pos, movePow_);
 }
 
-void MoveHoriFloor::InitRoute(void)
+void FerrisWheel::InitRoute(void)
 {
 	//初期位置保存
 	route_[routeNum_] = trans_.pos;
 
 	//マップ座標をワールド座標に
 	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ MOVE_X, 0, 0 });
-	
+
 	//移動量
 	VECTOR movePos = trans_.quaRot.PosAxis(intPos);
-	
+
 	//目標地点
 	VECTOR goalPos = VAdd(route_[routeNum_], movePos);
 
@@ -116,15 +120,15 @@ void MoveHoriFloor::InitRoute(void)
 	SetRoute();
 }
 
-void MoveHoriFloor::SetRoute(void)
+void FerrisWheel::SetRoute(void)
 {
 	//開始地点
 	startRoute_ = route_[routeNum_];
-	
+
 	//地点用ナンバー増加
 	routeNum_++;
 	if (routeNum_ >= ROUTE)routeNum_ = 0;
-	
+
 	//終了地点
 	goalRoute_ = route_[routeNum_];
 
@@ -135,7 +139,7 @@ void MoveHoriFloor::SetRoute(void)
 	movePow_ = Utility::GetMoveVec(startRoute_, goalRoute_, speed_);
 }
 
-bool MoveHoriFloor::IsBeyondRoute(void)
+bool FerrisWheel::IsBeyondRoute(void)
 {
 	//Xの比較
 	bool beyondX;
@@ -153,10 +157,4 @@ bool MoveHoriFloor::IsBeyondRoute(void)
 	else beyondZ = trans_.pos.z < route_[routeNum_].z + moveVec_.z;
 
 	return beyondX && beyondY && beyondZ;
-}
-
-void MoveHoriFloor::Hit(Transform& _hitTrans)
-{
-	//当たったオブジェクトに同じだけ移動させる
-	_hitTrans.pos = VAdd(_hitTrans.pos, movePow_);
 }

@@ -73,5 +73,5 @@ private:
 
 	MapEditer(void);
 	MapEditer(const MapEditer& instance_) = default;
-	~MapEditer(void) = default;
+	~MapEditer(void);
 };

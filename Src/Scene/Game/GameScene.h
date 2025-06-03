@@ -33,8 +33,6 @@ public:
 		RESULT_PHASE,	//リザルト
 	};
 
-	//プレイヤー人数(のちにデータバンクで持ってくる
-	static constexpr int PLAYER_NUM = 2;
 
 	/// <summary>
 	/// コンストラクタ

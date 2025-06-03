@@ -84,6 +84,7 @@ private:
 	static ResourceManager* instance_;
 
 	// リソース管理の対象
+	
 	std::map<SRC, std::unique_ptr<Resource>> resourcesMap_;
 
 	// 読み込み済みリソース
@@ -95,7 +96,7 @@ private:
 	// 外部から生成できない様にする
 	ResourceManager(void);
 	ResourceManager(const ResourceManager& manager) = default;
-	~ResourceManager(void) = default;
+	~ResourceManager(void);
 
 	// 内部ロード
 	Resource& _Load(SRC src);

@@ -40,6 +40,7 @@ GameScene::~GameScene(void)
 	PlayerManager::GetInstance().Destroy();
 	ItemManager::GetInstance().Destroy();
 	MapEditer::GetInstance().Destroy();
+	GravityManager::Destroy();
 	DeleteFontToHandle(buttnFontHandle_);
 	phaseChanges_.clear();
 
@@ -50,6 +51,12 @@ void GameScene::Load(void)
 	//フォントの生成
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
+	PlayerManager::CreateInstance(2);
+	PlayerManager::GetInstance().Load();
+
+	MapEditer::CreateInstance();
+
+	GravityManager::CreateInstance();
 	//player_ = std::make_unique<Player>();
 	//player_->Load();
 
@@ -94,18 +101,15 @@ void GameScene::Init(void)
 	sky_->Init();
 	gameClear_->Init();
 	editorUi_->Init();
-	MapEditer::CreateInstance();
 
-	GravityManager::CreateInstance();
-
-	PlayerManager::CreateInstance(1);
+	
 
 	//アイテム生成
-	//ItemManager::GetInstance().AddItem(
-	//	{ MapEditer::MAP_SIZE.x - 3,0,MapEditer::MAP_SIZE.z - 3 }, Quaternion(), ItemBase::ITEM_TYPE::GOAL);
-	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::START);
-
-	//初期フェーズ
+	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
+	//ItemManager::GetInstance().AddItem({ 3,2,3 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
+	//ItemManager::GetInstance().AddItem({ 8,2,8 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
+	//ItemManager::GetInstance().AddItem({ 10,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
+	//ItemManager::GetInstance().AddItem({ 15,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
 	ChangePhase(PHASE::EDIT_PHASE);
 }
 
@@ -186,6 +190,11 @@ void GameScene::DebagDraw(void)
 }
 void GameScene::ChangePhase(PHASE phase)
 {
+	if (!ItemManager::GetInstance().AllDummyItemAddItems())
+	{
+		return;
+	}
+
 	phase_ = phase;
 
 	phaseChanges_[phase_]();
@@ -209,6 +218,8 @@ void GameScene::ChangePhaseAction(void)
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
 	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FIXED_DIAGONAL);
+	PlayerManager::GetInstance().Init();
+	PlayerManager::GetInstance().SetInitPos(ItemManager::GetInstance().GetStartWorldPos());
 	//VECTOR pos;
 	//IntVector3 mPos = MapEditer::MAP_SIZE;
 	//pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) * 8.5f,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };

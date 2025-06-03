@@ -141,6 +141,26 @@ public:
 	/// <param name="_type">アイテムの種類</param>
 	/// <returns></returns>
 	Transform GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
+	/// <summary>
+	/// 設置済みのアイテムの大きさを取得
+	/// </summary>
+	/// <param name="_type">アイテムの種類</param>
+	/// <returns></returns>
+	IntVector3 GetItemSize(ItemBase::ITEM_TYPE _type) const;
+	/// <summary>
+	/// スタートのワールド座標を返す
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns></returns>
+	VECTOR GetStartWorldPos(void) const;
+
+	/// <summary>
+	/// すべてのプレイヤーのダミーアイテムをアイテムに移す
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>すべて移動でtrue</returns>
+	bool AllDummyItemAddItems(void);
+
 protected:
 
 private:
@@ -154,7 +174,7 @@ private:
 	//コピーコンストラクタ及び代入演算の禁止
 	ItemManager(const ItemManager& instance_) = delete;
 	void operator= (const ItemManager& instance_) = delete;
-	~ItemManager(void) = default;
+	~ItemManager(void);
 	//アイテムの生成
 	std::shared_ptr<ItemBase> CreateItem(ItemBase::ITEM_TYPE type, IntVector3 mapPos, Quaternion rot);
 };

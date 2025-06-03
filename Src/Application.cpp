@@ -138,6 +138,11 @@ Application::Application(void)
 	fps_ = nullptr;
 }
 
+Application::~Application(void)
+{
+
+}
+
 void Application::InitEffekseer(void)
 {
 	if (Effekseer_Init(8000) == -1)

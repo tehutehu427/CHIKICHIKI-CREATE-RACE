@@ -23,6 +23,7 @@
     <ClCompile Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.cpp" />
     <ClCompile Include="Src\Object\UI\EditorUi.cpp" />
     <ClCompile Include="Src\Shader\Effect\SelectUIDarkly.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\FerrisWheel.cpp" />
     <ClCompile Include="Src\Shader\Effect\EffectBase.cpp" />
     <ClCompile Include="Src\Object\System\ModeSelect.cpp" />
     <ClCompile Include="Src\Object\System\GameClear.cpp" />
@@ -97,6 +98,7 @@
     <ClInclude Include="Src\Object\Editor\Palette\PaletteCursor.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.h" />
     <ClInclude Include="Src\Object\UI\EditorUi.h" />
+    <ClInclude Include="Src\Object\Item\Installation\FerrisWheel.h" />
     <ClInclude Include="Src\Manager\Game\PlayerManager.h" />
     <ClInclude Include="Src\Object\Item\Installation\Floor.h" />
     <ClInclude Include="Src\Object\Item\Installation\Cannon.h" />
@@ -121,6 +123,8 @@
     <ClInclude Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.h" />
     <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h" />
     <ClInclude Include="Src\Scene\SelectScene.h" />
     <ClInclude Include="Src\Scene\Game\MultiParty.h" />
     <ClInclude Include="Src\Scene\Game\SoloChallenge.h" />

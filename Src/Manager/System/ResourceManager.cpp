@@ -21,9 +21,9 @@ ResourceManager& ResourceManager::GetInstance(void)
 
 void ResourceManager::Init(void)
 {
-	static std::string PATH_IMG = Application::PATH_IMAGE;
-	static std::string PATH_MDL = Application::PATH_MODEL;
-	static std::string PATH_EFF = Application::PATH_EFFECT;
+	std::string PATH_IMG = Application::PATH_IMAGE;
+	std::string PATH_MDL = Application::PATH_MODEL;
+	std::string PATH_EFF = Application::PATH_EFFECT;
 
 	std::unique_ptr<Resource> res;
 
@@ -159,6 +159,10 @@ int ResourceManager::LoadModelDuplicate(SRC src)
 }
 
 ResourceManager::ResourceManager(void)
+{
+}
+
+ResourceManager::~ResourceManager(void)
 {
 }
 

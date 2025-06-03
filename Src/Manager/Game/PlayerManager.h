@@ -13,17 +13,17 @@ public:
 	//定数
 	//**************************************
 	static constexpr int PLAYER_NUM = 4;
-	//プレイヤー１の座標
-	static constexpr float PLAYER_ONE_POS_X = -20.0f;
-
-	//座標の間隔
-	static constexpr float DISTANCE_POS = 50.0f;
 
 	//プレイヤー1人
 	static constexpr int PLAYER_SINGLE = 1;
 
 	//プレイヤーの大きさ
 	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
+
+	//初期座標
+	static constexpr float START_POS = 50.0f;
+
+
 	
 	enum class PLAYER
 	{
@@ -48,7 +48,7 @@ public:
 
 	//静的にインスタンスを取得する
 	static PlayerManager& GetInstance(void);
-
+	void Load(void);
 	void Init(void);
 	void Update(void);
 	void Draw(void);
@@ -59,8 +59,27 @@ public:
 	//カプセル同士の当たり判定(完全ではない)
 	bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
 
+
+	//*****************************************
+	//ゲッタ
+	//*****************************************
 	//プレイヤーゲッタ
 	Player& GetPlayer(const int _playerNum) { return *players_[_playerNum]; }
+
+
+	//****************************************
+	//セッタ
+	//****************************************
+	//初期座標に戻す
+	void SetInitPos(VECTOR _worldPos);
+
+	/// <summary>
+	///プレイヤー全員がゴールに行ったかどうかを判定
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>true:全員ゴールに行った　false:誰か一人でもゴールに行ってない</returns>
+	bool IsGoalPlayers(void);
+
 
 private:
 
@@ -74,7 +93,7 @@ private:
 	//プレイヤー
 	std::vector<std::unique_ptr<Player>> players_;
 
-	Player* play_[PLAYER_NUM];
+	std::vector<int>models_;
 
 
 	//プレイヤー人数
@@ -98,13 +117,15 @@ private:
 	/// <param name="p2">判定したい2人目のプレイヤ</param>
 	void PunchPlayersColl(int p1,int p2);
 
+	void DupilicateModel(void);
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="playerNum">データバンクから人数を持ってくる</param>
 	PlayerManager(int _playerNum);
 	PlayerManager(const PlayerManager& instance_) = default;
-	~PlayerManager(void) = default;
+	~PlayerManager(void);
 	
 
 };
