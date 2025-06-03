@@ -1,6 +1,7 @@
 #pragma once
 #include<functional>
 #include<memory>
+#include<vector>
 #include<map>
 #include "../../../Application.h"
 #include "../../../Common/Vector2.h"
@@ -51,10 +52,15 @@ public:
 		Vector2 size = {};
 	};
 
-	//コンストラクタ
-	EditorPaletteBase(EditController & _controller);
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_editControllers"></param>エディットコントローラー
+	EditorPaletteBase(std::vector<std::unique_ptr<EditController>>& _editControllers);
 
-	//デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~EditorPaletteBase();
 	
 	/// <summary>
@@ -94,19 +100,7 @@ public:
 	/// <returns></returns>状態
 	inline const STATE GetState()const { return state_; }
 
-private:
-	
-	//状態変更処理の管理
-	std::map<STATE, std::function<void()>> stateChanges_;
-
-	//更新処理管理
-	std::function<void()> stateUpdate_;
-
-	//画像
-	int imgPalette_;	//パレット	
-
-	//状態
-	STATE state_;
+protected:
 
 	//パレット
 	ImgInfo pal_;
@@ -115,7 +109,21 @@ private:
 	std::unique_ptr<PaletteIcon> palIcon_;
 
 	//エディットコントローラー(参照)
-	EditController& ediCon_;
+	std::vector<std::unique_ptr<EditController>>& editControllers_;
+	
+	//画像
+	int imgPalette_;	//パレット	
+
+private:
+	
+	//状態変更処理の管理
+	std::map<STATE, std::function<void()>> stateChanges_;
+
+	//更新処理管理
+	std::function<void()> stateUpdate_;
+
+	//状態
+	STATE state_;
 
 	//状態変更
 	void ChangeStateNone();		//なし
@@ -126,8 +134,8 @@ private:
 
 	//更新処理
 	void UpdateNone();			//なし
-	void UpdateWait();			//クリック待ち
-	void UpdateClose();			//閉じる
-	void UpdateOpen();			//開ける
-	void UpdateSelect();		//選ぶ
+	virtual void UpdateWait();			//クリック待ち
+	virtual void UpdateClose();			//閉じる
+	virtual void UpdateOpen();			//開ける
+	virtual void UpdateSelect();		//選ぶ
 };
