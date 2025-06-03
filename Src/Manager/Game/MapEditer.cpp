@@ -49,9 +49,23 @@ bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos)
 
 bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos, IntVector3 size,float rotY)
 {
-	if (static_cast<int>(rotY) % 180 == 90)
+	int rot = static_cast<int>(rotY) % 360;
+	switch (rot)
 	{
+	case 0:
+		break;
+	case 90:
 		std::swap(size.x, size.z);
+		mapPos.z -= size.z;
+		break;
+	case 180:
+		mapPos.x -= size.x;
+		break;
+	case 270:
+		std::swap(size.x, size.z);
+		break;
+	default:
+		break;
 	}
 
 	for (int x = 0;x < size.x;x++)
@@ -71,8 +85,28 @@ bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos, IntVector3 size,float rotY)
 	return false;
 }
 
-void MapEditer::AddItem(STATUS status, IntVector3 size)
+void MapEditer::AddItem(STATUS status, IntVector3 size , float rotY)
 {
+	int rot = static_cast<int>(rotY) % 360;
+	switch (rot)
+	{
+	case 0:
+		break;
+	case 90:
+		std::swap(size.x, size.z);
+		status.mapPos.z -= size.z;
+		break;
+	case 180:
+		status.mapPos.x -= size.x;
+		break;
+	case 270:
+		std::swap(size.x, size.z);
+		break;
+	default:
+		break;
+	}
+
+
 	//アイテムの配置
 	for (int i = 0; i < size.x; i++)
 	{

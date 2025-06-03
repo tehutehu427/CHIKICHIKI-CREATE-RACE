@@ -67,7 +67,7 @@ void ItemManager::Draw(void)
 		}
 
 		//他オブジェクトと重なっているか
-		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize()))
+		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize(),GetDummyItemRotY(item.first)))
 		{
 			item.second->ChangeModelColor(ItemManager::DUMMY_OVERLAP_COLOR);
 		}
@@ -228,7 +228,7 @@ void ItemManager::ResetDummyItem(int playerNum, ItemBase::ITEM_TYPE type,IntVect
 		//新たに指定されたアイテムを生成
 		std::shared_ptr<ItemBase> dummy;
 		dummy = CreateItem(type, mapPos, transform.quaRot);
-
+		dummy->SetRotY(GetDummyItemRotY(playerNum));
 		//元あったアイテムの削除
 		dummyItems_.erase(playerNum);
 
@@ -355,7 +355,7 @@ bool ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapP
 						continue;
 					}
 					dummyItems_[playerNum] = CreateItem(_type, _mapPos, item->GetTransform().quaRot);
-					
+					dummyItems_[playerNum]->SetRotY(item->GetRotY());
 					//元情報を削除
 					item = nullptr;
 					return true;
@@ -466,7 +466,7 @@ bool ItemManager::AllDummyItemAddItems(void)
 		}
 
 		//他オブジェクトと重なっているか
-		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize()))
+		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize(),GetDummyItemRotY(item.first)))
 		{
 			isClear = false;
 		}
@@ -482,7 +482,7 @@ bool ItemManager::AllDummyItemAddItems(void)
 		status.mapPos = GetDummyItemMapPos(pNum);
 		status.rotate = GetDummyItemTransform(pNum).quaRot;
 		status.type = dummyItems_[pNum]->GetStatus().itemType;
-		MapEditer::GetInstance().AddItem(status, GetDummyItemSize(pNum));
+		MapEditer::GetInstance().AddItem(status, GetDummyItemSize(pNum),GetDummyItemRotY(pNum));
 		DummyItemAddItems(pNum);
 	}
 	return isClear;
@@ -502,6 +502,32 @@ void ItemManager::ResetItemValue(void)
 			item->ResetValue();
 		}
 	}
+}
+
+float ItemManager::GetDummyItemRotY(int playerNum)
+{
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return 0.0f;
+		}
+		return dummyItems_[playerNum]->GetRotY();
+	}
+	return 0.0f;
+}
+
+void ItemManager::SetDummyItemRotY(int playerNum , float rotY)
+{
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return ;
+		}
+		dummyItems_[playerNum]->SetRotY(rotY);
+	}
+	return;
 }
 
 ItemManager::ItemManager(void)

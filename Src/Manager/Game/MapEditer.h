@@ -52,7 +52,7 @@ public:
 	/// <returns></returns>
 	bool IsObjectAtMapPos(IntVector3 mapPos, IntVector3 size,float rotY);
 
-	void AddItem(STATUS status, IntVector3 size);
+	void AddItem(STATUS status, IntVector3 size, float rotY);
 	void DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos, IntVector3 _size);
 	/// <summary>
 	/// ワールド座標をマップ座標に変換する

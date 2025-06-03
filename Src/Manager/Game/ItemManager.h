@@ -164,6 +164,10 @@ public:
 	//アイテムの値リセット
 	void ResetItemValue(void);
 
+	float GetDummyItemRotY(int playerNum);
+
+	void SetDummyItemRotY(int playerNum , float rotY);
+
 protected:
 
 private:

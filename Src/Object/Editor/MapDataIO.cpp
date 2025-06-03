@@ -151,7 +151,7 @@ void MapDataIO::ImportJsonFile()
             itemMng.AddItem(mapPos, Quaternion(), type);
 			MapEditer::GetInstance().AddItem(
 				{ mapPos, Quaternion(), type },
-                itemMng.GetItemSize(type));
+                itemMng.GetItemSize(type),0.0f);
         }
     }
 }
