@@ -88,11 +88,21 @@ public:
 	//初期マップ座標の取得
 	inline const IntVector3 GetInitMapPos(void)const { return InitMapPos_; }	
 
+	//Y回転の取得
+	const float GetRotY(void)const { return rotY_; }
+
+	//Y回転の設定
+	void SetRotY(const float _rotY) { rotY_ = _rotY; }
+
+	//アイテムの値リセット
+	virtual void ResetValue(void);
+
 protected:
 
 	//共通変数
 	Status status_;			//ステータス
 	IntVector3 InitMapPos_;	//初期マップ座標
+	float rotY_;			//Y回転
 
 	//サイズの倍率調整
 	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;

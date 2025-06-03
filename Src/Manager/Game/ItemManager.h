@@ -161,6 +161,9 @@ public:
 	/// <returns>すべて移動でtrue</returns>
 	bool AllDummyItemAddItems(void);
 
+	//アイテムの値リセット
+	void ResetItemValue(void);
+
 protected:
 
 private:
