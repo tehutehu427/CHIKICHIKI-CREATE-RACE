@@ -164,6 +164,12 @@ public:
 	//プレイヤー座標
 	const VECTOR GetPos(void)const { return trans_.pos; }
 
+	//移動後のプレイヤー座標
+	const VECTOR GetMovedPos(void)const { return movedPos_; }
+
+	//当たり判定を確認しているマップ座標
+	const IntVector3 GetColPos(void)const { return colPos_; }
+
 	//死んだ判定
 	bool IsDeath(void);
 
@@ -227,6 +233,9 @@ private:
 
 	//アイテムの支点
 	std::vector<IntVector3> itemLPos_;
+
+	//当たり判定で調べる座標
+	IntVector3 colPos_;
 
 	
 
