@@ -99,7 +99,7 @@ protected:
 	virtual void DebagDraw(void);	//描画
 
 	//エディットコントローラー
-	std::shared_ptr<EditController> editController_;
+	std::vector<std::unique_ptr<EditController>> editControllers_;
 
 	//パレット
 	std::unique_ptr<EditorPaletteBase> palette_;

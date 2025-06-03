@@ -13,8 +13,8 @@
 #include "Icon/FreePaletteIcon.h"
 #include "Icon/SoloPaletteIcon.h"
 
-EditorPaletteBase::EditorPaletteBase(EditController& _controller) 
-	: ediCon_(_controller)
+EditorPaletteBase::EditorPaletteBase(std::vector<std::unique_ptr<EditController>>& _editControllers)
+	: editControllers_(_editControllers)
 {
 	stateChanges_.emplace(STATE::NONE, std::bind(&EditorPaletteBase::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::WAIT, std::bind(&EditorPaletteBase::ChangeStateWait, this));
@@ -215,8 +215,8 @@ void EditorPaletteBase::UpdateSelect()
 	//生成開始
 	if (palIcon_->IsCreate())
 	{
-		//コントローラに設定
-		ediCon_.SetItemType(palIcon_->GetSelectType());
+		//コントローラに設定(ソロ)
+		editControllers_[0]->SetItemType(palIcon_->GetSelectType());
 
 		//状態変更
 		ChangeState(STATE::CLOSE);

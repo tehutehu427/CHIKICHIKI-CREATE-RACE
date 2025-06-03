@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Editor\Palette\PaletteCursor.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.cpp" />
     <ClCompile Include="Src\Object\UI\EditorUi.cpp" />
     <ClCompile Include="Src\Shader\Effect\SelectUIDarkly.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\FerrisWheel.cpp" />
@@ -93,6 +95,8 @@
     <ClCompile Include="Src\Object\UI\UiBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Editor\Palette\PaletteCursor.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.h" />
     <ClInclude Include="Src\Object\UI\EditorUi.h" />
     <ClInclude Include="Src\Object\Item\Installation\FerrisWheel.h" />
     <ClInclude Include="Src\Manager\Game\PlayerManager.h" />

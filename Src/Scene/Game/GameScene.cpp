@@ -70,10 +70,10 @@ void GameScene::Load(void)
 	ItemManager::CreateInstance();
 	
 	//エディットコントローラーの生成
-	editController_ = std::make_shared<EditController>(0);
+	editControllers_.push_back(std::make_unique<EditController>(0));
 
 	//パレットの生成
-	palette_ = std::make_unique<EditorPaletteBase>(*editController_);
+	palette_ = std::make_unique<EditorPaletteBase>(editControllers_);
 	palette_->Load();
 
 	//スカイドームの生成
@@ -97,7 +97,7 @@ void GameScene::Init(void)
 {
 	//初期化
 	palette_->Init();
-	editController_->Init();
+	for (auto& controller : editControllers_) { controller->Init(); }
 	sky_->Init();
 	gameClear_->Init();
 	editorUi_->Init();
@@ -247,7 +247,7 @@ void GameScene::UpdateEdit(void)
 {
 	//パレット
 	palette_->Update();
-	editController_->Update();
+	for (auto& controller : editControllers_) { controller->Update(); }
 }
 
 void GameScene::UpdateAction(void)
@@ -271,7 +271,7 @@ void GameScene::DrawEdit(void)
 	grid_->Draw();
 	
 	//エディットコントローラー
-	editController_->Draw();
+	for (auto& controller : editControllers_) { controller->Draw(); }
 
 	//アイテム
 	ItemManager::GetInstance().Draw();

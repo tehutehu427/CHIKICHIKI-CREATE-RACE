@@ -43,6 +43,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "PaletteIcons.png");
 	resourcesMap_.emplace(SRC::PALETTE_ICONS, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "Cursors.png",IMG_CURSORS_DIV_X, IMG_CURSORS_DIV_Y, IMG_CURSORS_SIZE, IMG_CURSORS_SIZE);
+	resourcesMap_.emplace(SRC::CURSORS, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "Arcs.png", IMG_ARCS_DIV_X, IMG_ARCS_DIV_Y, IMG_ARC_SIZE, IMG_ARC_SIZE);
 	resourcesMap_.emplace(SRC::ARCS, std::move(res));
 	
@@ -51,6 +54,9 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "ShadowArc.png");
 	resourcesMap_.emplace(SRC::SHADOW_ARC, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Title + "TitleLogo.png");
+	resourcesMap_.emplace(SRC::TITLE_LOGO, std::move(res));
 
 #pragma endregion 
 

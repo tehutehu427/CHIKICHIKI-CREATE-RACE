@@ -21,6 +21,9 @@ public:
 
 private:
 
+	//タイトル画像
+	int imgTitleLogo_;
+
 	//更新関数
 	void NormalUpdate(void) override;
 

@@ -14,6 +14,10 @@ public:
 	static constexpr int IMG_ARCS_DIV_Y = 2;	//円弧画像の分割数Y
 	static constexpr int IMG_ARC_SIZE = 512;	//円弧画像の1分割したサイズ
 
+	static constexpr int IMG_CURSORS_DIV_X = 4;	//分割数X
+	static constexpr int IMG_CURSORS_DIV_Y = 1; //分割数Y
+	static constexpr int IMG_CURSORS_SIZE = 64; //サイズ
+
 	// リソース名
 	enum class SRC
 	{
@@ -25,11 +29,15 @@ public:
 		PALETTE_ICONS,
 		PALETTE_MASK,
 
+		//タイトルシーン用画像
+		TITLE_LOGO,
+
 		//セレクトシーン用画像
 		ARC,
 		ARCS,
 		BACK_ARC,
 		SHADOW_ARC,
+		CURSORS,
 
 		//アイテムモデル
 		FLOOR,				//足場
