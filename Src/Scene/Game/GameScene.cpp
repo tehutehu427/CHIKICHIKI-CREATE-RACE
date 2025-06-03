@@ -190,6 +190,11 @@ void GameScene::DebagDraw(void)
 }
 void GameScene::ChangePhase(PHASE phase)
 {
+	if (!ItemManager::GetInstance().AllDummyItemAddItems())
+	{
+		return;
+	}
+
 	phase_ = phase;
 
 	phaseChanges_[phase_]();
