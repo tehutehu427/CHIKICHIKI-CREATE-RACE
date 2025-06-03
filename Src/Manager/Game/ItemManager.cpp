@@ -488,6 +488,22 @@ bool ItemManager::AllDummyItemAddItems(void)
 	return isClear;
 }
 
+void ItemManager::ResetItemValue(void)
+{
+	//全アイテムタイプ
+	for (auto& itemType : items_)
+	{
+		//全アイテム
+		for (auto& item : itemType.second)
+		{
+			if (item == nullptr)continue;
+
+			//値初期化
+			item->ResetValue();
+		}
+	}
+}
+
 ItemManager::ItemManager(void)
 {
 

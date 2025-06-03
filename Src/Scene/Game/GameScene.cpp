@@ -210,6 +210,7 @@ void GameScene::ChangePhaseEdit(void)
 	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
 	//pos = { 0.0f,250.0f,-500.0f };
 	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	ItemManager::GetInstance().ResetItemValue();
 }
 
 void GameScene::ChangePhaseAction(void)
@@ -220,6 +221,8 @@ void GameScene::ChangePhaseAction(void)
 	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FIXED_DIAGONAL);
 	PlayerManager::GetInstance().Init();
 	PlayerManager::GetInstance().SetInitPos(ItemManager::GetInstance().GetStartWorldPos());
+
+	ItemManager::GetInstance().ResetItemValue();
 	//VECTOR pos;
 	//IntVector3 mPos = MapEditer::MAP_SIZE;
 	//pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) * 8.5f,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
