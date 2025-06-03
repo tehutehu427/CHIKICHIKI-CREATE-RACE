@@ -4,6 +4,7 @@
 #include "../../Manager/Game/MapEditer.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SceneManager.h"
+#include "../../Manager/System/Camera.h"
 #include "../../Object/Common/Capsule.h"
 #include "../../Object/Common/AnimationController.h"
 #include "../../Object/Editor/EditController.h"
@@ -51,6 +52,7 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 	punchedCnt_ = PUNCHED_TIME;
 	
 	itemLocalPos_ = Utility::VECTOR_ZERO;
+	hitItemType_ = ItemBase::ITEM_TYPE::NONE;
 
 	input_ = nullptr;
 }
@@ -180,12 +182,13 @@ void Player::DrawDebug(void)
 	if (isCol_) { color = 0xff0000; }
 	DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
 	DrawFormatString(0, 16*(playerNum_*5), 0x000000
-		, "äpìx(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)"
+		, "äpìx(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nhitIType(%d)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,jumpDeceralation_
 		,stepJump_
 		,jumpPow_.x,jumpPow_.y,jumpPow_.z
 		,movedPos_.x,movedPos_.y,movedPos_.z
+		,hitItemType_
 	);
 	if (IsDeath())
 	{
@@ -481,6 +484,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 	VECTOR vec = VSub(curPos, prePos);
 
 	auto hit = MV1CollCheck_Line(_itemTrans.modelId, -1, prePos, curPos);
+	MapEditer& mapEdit = MapEditer::GetInstance();
 
 	//ìñÇΩÇ¡ÇΩÇÁ
 	if (hit.HitFlag > 0)
@@ -490,6 +494,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 		jumpPow_ = Utility::VECTOR_ZERO;
 		isJump_ = false;
 		itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
+	
 		return;
 	}
 	//else
@@ -516,6 +521,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 			VECTOR itemLocalPos = VSub(movedPos_, _itemTrans.pos);
 			movedPos_ = VAdd(itemLocalPos_, _itemTrans.pos);
 			movedPos_ = VAdd(movedPos_, vec);
+			hitItemType_ =mapEdit.GetItemType(mapEdit.WorldToMapPos(hit.HitPosition));
 		}
 		//Yç¿ïWÇÃÇ›îºåaï™è„Ç…à⁄ìÆÇ≥ÇπÇÈ
 
@@ -535,6 +541,8 @@ void Player::UpDownColl(const Transform _itemTrans)
 	{
 		//ìñÇΩÇÁÇ»Ç©Ç¡ÇΩÇÁèâä˙âªÇ∑ÇÈ
 		itemLocalPos_ = Utility::VECTOR_ZERO;
+
+		hitItemType_ = ItemBase::ITEM_TYPE::NONE;
 	}
 }
 

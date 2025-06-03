@@ -59,11 +59,26 @@ public:
 	//カプセル同士の当たり判定(完全ではない)
 	bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
 
+
+	//*****************************************
+	//ゲッタ
+	//*****************************************
 	//プレイヤーゲッタ
 	Player& GetPlayer(const int _playerNum) { return *players_[_playerNum]; }
 
+
+	//****************************************
+	//セッタ
+	//****************************************
 	//初期座標に戻す
 	void SetInitPos(VECTOR _worldPos);
+
+	/// <summary>
+	///プレイヤー全員がゴールに行ったかどうかを判定
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>true:全員ゴールに行った　false:誰か一人でもゴールに行ってない</returns>
+	bool IsGoalPlayers(void);
 
 
 private:

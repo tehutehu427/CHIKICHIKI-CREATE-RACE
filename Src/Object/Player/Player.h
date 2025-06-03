@@ -3,8 +3,7 @@
 #include <map>
 #include <functional>
 #include "../Common/AnimationController.h"
-#include "../Common/Capsule.h"
-#include "../../Manager/System/Camera.h"
+#include "../Object/item/ItemBase.h"
 #include"./Process/PlayerInput.h"
 #include "../ObjectBase.h"
 
@@ -150,9 +149,6 @@ public:
 	//プレイヤー番号
 	const int GetPlayerNum(void)const { return playerNum_; }
 
-	//カプセル情報
-	const std::weak_ptr<Capsule> GetCapsule(void)const { return capsule_; }
-
 	const PlayerInput::CNTL GetCntl(void) { return cntl_; }
 
 	const VECTOR GetMovePow(void) { return movePow_; }
@@ -170,6 +166,9 @@ public:
 
 	//死んだ判定
 	bool IsDeath(void);
+
+	//当たったアイテム
+	const ItemBase::ITEM_TYPE GetHitItemType(void)const { return hitItemType_; }
 
 	//******************************************
 	//セッタ
@@ -236,9 +235,6 @@ private:
 	// アニメーション
 	std::shared_ptr<AnimationController> animationController_;
 
-	//カプセル
-	std::shared_ptr<Capsule> capsule_;
-
 	//操作入力
 	std::shared_ptr<PlayerInput> input_;
 
@@ -247,6 +243,9 @@ private:
 
 	//他プレイヤーとの当たりフラグ　true:当たっている
 	bool isCol_;
+
+	//当たっているアイテムタイプ
+	ItemBase::ITEM_TYPE hitItemType_;	
 
 
 	//アクション関係
