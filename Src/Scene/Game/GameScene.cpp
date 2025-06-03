@@ -116,7 +116,8 @@ void GameScene::Init(void)
 void GameScene::NormalUpdate(void)
 {
 	//プレイヤー
-	//player_->Update(
+	//player_->Update();
+
 	phaseUpdate_();
 
 
@@ -150,7 +151,7 @@ void GameScene::DebagUpdate(void)
 {
 	// シーン遷移
 	InputManager& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	if (ins.IsTrgDown(KEY_INPUT_RSHIFT))
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
@@ -244,7 +245,11 @@ void GameScene::UpdateEdit(void)
 {
 	//パレット
 	palette_->Update();
-	for (auto& controller : editControllers_) { controller->Update(); }
+
+	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT)
+	{
+		for (auto& controller : editControllers_) { controller->Update(); }
+	}
 }
 
 void GameScene::UpdateAction(void)
@@ -300,9 +305,8 @@ void GameScene::DrawClear()
 
 void GameScene::ChangePlayerClearPhase(void)
 {
-	for (int i = 0; i < PLAYER_NUM; i++)
+	if (PlayerManager::GetInstance().IsPlayersEnd())
 	{
-		if (!PlayerManager::GetInstance().IsGoalPlayers()[i])return;
+		ChangePhase(PHASE::CLEAR_PHASE);
 	}
-	ChangePhase(PHASE::CLEAR_PHASE);
 }

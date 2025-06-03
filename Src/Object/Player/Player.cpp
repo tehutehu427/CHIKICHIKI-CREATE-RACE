@@ -300,6 +300,10 @@ void Player::Jump(void)
 		isJump_ = true;
 		//ƒWƒƒƒ“ƒv‚Ì“ü—ÍŽó•tŽžŠÔ‚ðŒ¸‚ç‚·
 		stepJump_ += deltaTime;
+
+		isPunch_ = false;
+		isPunchHitTime_ = false;
+		punchCnt_ = 0.0f;
 	}
 
 	if (stepJump_ > 0.0f)
@@ -431,6 +435,7 @@ void Player::Collision(void)
 		jumpPow_ = Utility::VECTOR_ZERO;
 		movedPos_.y = cube_.upPos.y + RADIUS;
 		stepJump_ = 0.0f;
+		isJump_ = false;
 		jumpDeceralation_ = POW_JUMP;
 	}
 	else
@@ -451,9 +456,9 @@ void Player::Collision(void)
 		{
 			for (int z = -COL_RANGE; z <= COL_RANGE; z++)
 			{
-				IntVector3 colPos = mapPos + IntVector3{x, y, z};
-				if (colPos.x < 0 || colPos.y < 0 || colPos.z < 0)continue;
-				HitItem(colPos);
+				colPos_ = mapPos + IntVector3{x, y, z};
+				if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
+				HitItem(colPos_);
 			}
 		}
 	}
@@ -494,7 +499,6 @@ void Player::UpDownColl(const Transform _itemTrans)
 		jumpPow_ = Utility::VECTOR_ZERO;
 		isJump_ = false;
 		itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
-	
 		return;
 	}
 	//else

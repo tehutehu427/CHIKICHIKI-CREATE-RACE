@@ -63,9 +63,13 @@ public:
 	//*****************************************
 	//ゲッタ
 	//*****************************************
-	//プレイヤーゲッタ
-	Player& GetPlayer(const int _playerNum) { return *players_[_playerNum]; }
+	//モデル情報ゲッタ
+	const Transform GetPlayerTransform(const int _num) { return players_[_num]->GetTransform(); }
 
+	//移動後座標
+	const VECTOR GetPlayerMovedPos(const int _num) { return players_[_num]->GetMovedPos(); }
+
+	const std::vector<bool>GetPlayersIsDeath(void);
 
 	//****************************************
 	//セッタ
@@ -79,6 +83,13 @@ public:
 	/// <param name=""></param>
 	/// <returns>true:全員ゴールに行った　false:誰か一人でもゴールに行ってない</returns>
 	std::vector<bool> IsGoalPlayers(void);
+
+	//当たり判定で調べる座標
+	IntVector3 GetPlayerColPos(const int _num) { return players_[_num]->GetColPos(); }
+
+	//全員がゴールしてるか死んでるか
+	bool IsPlayersEnd(void);
+
 
 
 private:
@@ -96,7 +107,8 @@ private:
 	//プレイヤーゴール判定
 	std::vector<bool>isGoal_;
 
-	std::vector<int>models_;
+	//プレイヤー生存判定
+	std::vector<bool>isDeath_;
 
 
 	//プレイヤー人数
@@ -119,8 +131,6 @@ private:
 	/// <param name="p1">判定したい1人目のプレイヤ</param>
 	/// <param name="p2">判定したい2人目のプレイヤ</param>
 	void PunchPlayersColl(int p1,int p2);
-
-	void DupilicateModel(void);
 
 	/// <summary>
 	/// コンストラクタ
