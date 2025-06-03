@@ -47,8 +47,13 @@ bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos)
 	return GetItemType(mapPos) != ItemBase::ITEM_TYPE::NONE;
 }
 
-bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos, IntVector3 size)
+bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos, IntVector3 size,float rotY)
 {
+	if (static_cast<int>(rotY) % 180 == 90)
+	{
+		std::swap(size.x, size.z);
+	}
+
 	for (int x = 0;x < size.x;x++)
 	{
 		for (int y = 0;y < size.y;y++)

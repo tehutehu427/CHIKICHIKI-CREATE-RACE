@@ -50,7 +50,7 @@ public:
 	/// <param name="mapPos"></param>
 	/// <param name="size"></param>
 	/// <returns></returns>
-	bool IsObjectAtMapPos(IntVector3 mapPos, IntVector3 size);
+	bool IsObjectAtMapPos(IntVector3 mapPos, IntVector3 size,float rotY);
 
 	void AddItem(STATUS status, IntVector3 size);
 	void DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos, IntVector3 _size);
