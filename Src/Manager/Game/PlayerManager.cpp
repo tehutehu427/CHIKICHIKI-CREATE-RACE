@@ -160,6 +160,19 @@ void PlayerManager::SetInitPos(VECTOR _worldPos)
 	}
 }
 
+bool PlayerManager::IsGoalPlayers(void)
+{
+	for (auto& player : players_)
+	{
+		if (player->GetHitItemType() != ItemBase::ITEM_TYPE::GOAL)
+		{
+			break;
+		}
+		return true;
+	}
+	return false;
+}
+
 //void PlayerManager::P2PPush(int _pNum1,int _pNum2)
 //{
 //	//“¯‚¶ƒvƒŒƒCƒ„[”Ô†‚È‚ç”²‚¯‚é
