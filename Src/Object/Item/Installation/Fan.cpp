@@ -17,6 +17,9 @@ void Fan::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::FAN));
 
+	//モデルIDのコピー
+	models_.emplace_back(trans_.modelId);
+
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
