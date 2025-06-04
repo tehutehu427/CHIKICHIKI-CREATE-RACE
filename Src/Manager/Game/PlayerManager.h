@@ -71,6 +71,10 @@ public:
 
 	const std::vector<bool>GetPlayersIsDeath(void);
 
+	std::vector<std::unique_ptr<Player>>&GetPlayers(void) { return players_; }
+
+	Player& GetPlayer(int _num) { return *players_[_num]; }
+
 	//****************************************
 	//ƒZƒbƒ^
 	//****************************************
