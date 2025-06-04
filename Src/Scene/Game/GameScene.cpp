@@ -213,9 +213,10 @@ void GameScene::ChangePhaseAction(void)
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
-	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FIXED_DIAGONAL);
-	PlayerManager::GetInstance().Init();
+	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::SELF_SHOT);
+	SceneManager::GetInstance().GetCamera().lock()->SetFollow(&PlayerManager::GetInstance().GetPlayer(0).GetTransform());
 	PlayerManager::GetInstance().SetInitPos(ItemManager::GetInstance().GetStartWorldPos());
+	PlayerManager::GetInstance().Init();
 	//VECTOR pos;
 	//IntVector3 mPos = MapEditer::MAP_SIZE;
 	//pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) * 8.5f,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
@@ -251,6 +252,7 @@ void GameScene::UpdateAction(void)
 	ItemManager::GetInstance().Update();
 	PlayerManager::GetInstance().Update();
 	ChangePlayerClearPhase();
+	Collision();
 
 
 }
@@ -305,6 +307,121 @@ void GameScene::ChangePlayerClearPhase(void)
 	{
 		ChangePhase(PHASE::CLEAR_PHASE);
 	}
+}
+
+void GameScene::Collision(void)
+{
+	PlayerManager& pMng = PlayerManager::GetInstance();
+
+	for (auto& player : pMng.GetPlayers())
+	{
+		CheckHitCol(*player);
+	}
+}
+
+void GameScene::CheckHitCol(Player& _player)
+{
+	VECTOR pMovedPos = _player.GetMovedPos();
+	IntVector3 mapPos = MapEditer::GetInstance().WorldToMapPos(pMovedPos);
+	for (int x = -Player::COL_RANGE; x <= Player::COL_RANGE; x++)
+	{
+		for (int y = -Player::COL_RANGE; y <= Player::COL_RANGE; y++)
+		{
+			for (int z = -Player::COL_RANGE; z <= Player::COL_RANGE; z++)
+			{
+				IntVector3 colPos = mapPos + IntVector3{ x, y, z };
+				if (colPos.x < 0 || colPos.y < 0 || colPos.z < 0)continue;
+				HitPlayerAndItem(_player,colPos);
+			}
+		}
+	}
+	itemLPos_.clear();
+}
+
+void GameScene::HitPlayerAndItem(Player& _player, const IntVector3 _colPos)
+{
+	MapEditer& mapEdit = MapEditer::GetInstance();
+	ItemManager& itemMng = ItemManager::GetInstance();
+	if (mapEdit.IsObjectAtMapPos(_colPos))
+	{
+		IntVector3 lPos = mapEdit.GetLeaderMapPos(_colPos);
+		for (auto& iLPos : itemLPos_)
+		{
+			if (iLPos == lPos)return;
+		}
+
+
+		//アイテムタイプ取得
+		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
+
+
+		//アイテムのTransform取得
+		Transform itemTrans = itemMng.GetItemTransform(lPos, type);
+
+		PlayerUpColl(_player,itemTrans);
+		//ArroundColl(itemTrans);
+
+		itemLPos_.push_back(lPos);
+	}
+}
+
+void GameScene::PlayerUpColl(Player& _player,Transform _itemTrans)
+{
+	//移動後と移動前をとる(高速で落ちているときの当たり判定)
+	VECTOR pMovedPos = _player.GetMovedPos();
+	VECTOR prePos = _player.GetTransform().pos;
+	VECTOR curPos = pMovedPos;
+
+	VECTOR vec = VSub(curPos, prePos);
+
+	col_ = ITEM_COL_INFO::NONE;
+
+	//アイテムモデルとプレイヤーモデルの当たり判定
+	auto hit = MV1CollCheck_Line(_itemTrans.modelId, -1, prePos, curPos);
+
+	MapEditer& mapEdit = MapEditer::GetInstance();
+
+	//当たったら
+	if (hit.HitFlag > 0)
+	{
+		if (pMovedPos.y > hit.HitPosition.y)
+		{
+			col_ = ITEM_COL_INFO::UP;
+		}
+		else
+		{
+			col_ = ITEM_COL_INFO::DOWN;
+		}
+		return;
+	}
+
+
+	//プレイヤーの通常時(低速落下などの時)
+	//Lineを引くための上と下の座標をとる
+	VECTOR upPos = curPos;
+	upPos.y += (Player::RADIUS);
+	VECTOR downPos = curPos;
+	downPos.y -= (Player::RADIUS + 10.0f);
+
+	hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
+
+	//当たったら
+	if (hit.HitFlag > 0)
+	{
+		if (pMovedPos.y > hit.HitPosition.y)
+		{
+			col_ = ITEM_COL_INFO::UP;
+		}
+		else
+		{
+			col_ = ITEM_COL_INFO::DOWN;
+		}
+	}
+}
+
+bool GameScene::ArroundColl(Player& _player,Transform _itemTrans)
+{
+	return false;
 }
 
 

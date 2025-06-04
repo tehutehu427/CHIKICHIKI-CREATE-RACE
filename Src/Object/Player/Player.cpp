@@ -88,10 +88,6 @@ void Player::Init(void)
 	trans_.quaRotLocal =
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
 
-	float posX = PLAYER_ONE_POS_X + DISTANCE_POS * playerNum_;
-
-	trans_.pos={ posX,0.0f,0.0f };
-
 	trans_.localPos = { 0.0f,-Player::RADIUS,0.0f };
 	//操作関連
 	//---------------------------------
@@ -181,7 +177,7 @@ void Player::DrawDebug(void)
 	else if (playerNum_ == 3) { color = 0x0000ff; }
 	if (isCol_) { color = 0xff0000; }
 	DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
-	DrawFormatString(0, 16*(playerNum_*5), 0x000000
+	DrawFormatString(0, 16*(playerNum_*7), 0x000000
 		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nhitIType(%d)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,jumpDeceralation_
@@ -450,23 +446,23 @@ void Player::Collision(void)
 
 #endif // DEBUG_ON
 
+	UpDownColl();
 
-
-	MapEditer& mapEdit = MapEditer::GetInstance();
-	IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
-	for (int x = -COL_RANGE; x <= COL_RANGE; x++)
-	{
-		for (int y = -COL_RANGE; y <= COL_RANGE; y++)
-		{
-			for (int z = -COL_RANGE; z <= COL_RANGE; z++)
-			{
-				colPos_ = mapPos + IntVector3{x, y, z};
-				if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
-				HitItem(colPos_);
-			}
-		}
-	}
-	itemLPos_.clear();
+	//MapEditer& mapEdit = MapEditer::GetInstance();
+	//IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
+	//for (int x = -COL_RANGE; x <= COL_RANGE; x++)
+	//{
+	//	for (int y = -COL_RANGE; y <= COL_RANGE; y++)
+	//	{
+	//		for (int z = -COL_RANGE; z <= COL_RANGE; z++)
+	//		{
+	//			colPos_ = mapPos + IntVector3{x, y, z};
+	//			if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
+	//			HitItem(colPos_);
+	//		}
+	//	}
+	//}
+	//itemLPos_.clear();
 
 #ifdef DEBUG_ON
 
@@ -484,74 +480,82 @@ void Player::Collision(void)
 	// 現在座標を起点に移動後座標を決める
 }
 
-void Player::UpDownColl(const Transform _itemTrans)
+void Player::UpDownColl(void)
 {
-	//移動後と移動前をとる
-	VECTOR prePos = trans_.pos;
-	VECTOR curPos = movedPos_;
-	
-	VECTOR vec = VSub(curPos, prePos);
 
-	auto hit = MV1CollCheck_Line(_itemTrans.modelId, -1, prePos, curPos);
-	MapEditer& mapEdit = MapEditer::GetInstance();
 
-	//当たったら
-	if (hit.HitFlag > 0)
-	{
-		//Y座標のみ半径分上に移動させる
-		movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
-		jumpPow_ = Utility::VECTOR_ZERO;
-		isJump_ = false;
-		itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
-		return;
-	}
+
+
+
+
+
+
+
+	////移動後と移動前をとる
+	//VECTOR prePos = trans_.pos;
+	//VECTOR curPos = movedPos_;
+	//
+	//VECTOR vec = VSub(curPos, prePos);
+
+	//auto hit = MV1CollCheck_Line(_itemTrans.modelId, -1, prePos, curPos);
+	//MapEditer& mapEdit = MapEditer::GetInstance();
+
+	////当たったら
+	//if (hit.HitFlag > 0)
+	//{
+	//	//Y座標のみ半径分上に移動させる
+	//	movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
+	//	jumpPow_ = Utility::VECTOR_ZERO;
+	//	isJump_ = false;
+	//	itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
+	//	return;
+	//}
+	////else
+	////{
+	////	//当たらなかったら初期化する
+	////	itemLocalPos_ = Utility::VECTOR_ZERO;
+	////}
+
+
+	////Lineを引くための上と下の座標をとる
+	//VECTOR upPos = movedPos_;
+	//upPos.y += (RADIUS);
+	//VECTOR downPos = movedPos_;
+	//downPos.y -= (RADIUS+ 10.0f);
+
+	//hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
+
+	////当たったら
+	//if (hit.HitFlag > 0)
+	//{
+	//	//座標をワールド座標とアイテムローカル座標を足した分移動させる
+	//	if (!Utility::EqualsVZero(itemLocalPos_))
+	//	{
+	//		VECTOR itemLocalPos = VSub(movedPos_, _itemTrans.pos);
+	//		movedPos_ = VAdd(itemLocalPos_, _itemTrans.pos);
+	//		movedPos_ = VAdd(movedPos_, vec);
+	//		hitItemType_ =mapEdit.GetItemType(mapEdit.WorldToMapPos(hit.HitPosition));
+	//	}
+	//	//Y座標のみ半径分上に移動させる
+	//	if (movedPos_.y > hit.HitPosition.y)
+	//	{
+	//		movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
+	//	}
+	//	else
+	//	{
+	//		movedPos_.y = hit.HitPosition.y - RADIUS - POSITION_OFFSET;
+	//	}
+	//	jumpPow_ = Utility::VECTOR_ZERO;
+	//	isJump_ = false;
+	//	itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
+	//}
 	//else
 	//{
 	//	//当たらなかったら初期化する
 	//	itemLocalPos_ = Utility::VECTOR_ZERO;
+	//	isJump_ = true;
+	//	hitItemType_ = ItemBase::ITEM_TYPE::NONE;
 	//}
-
-
-	//Lineを引くための上と下の座標をとる
-	VECTOR upPos = movedPos_;
-	upPos.y += (RADIUS);
-	VECTOR downPos = movedPos_;
-	downPos.y -= (RADIUS+ 10.0f);
-
-	hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
-
-	//当たったら
-	if (hit.HitFlag > 0)
-	{
-		//座標をワールド座標とアイテムローカル座標を足した分移動させる
-		if (!Utility::EqualsVZero(itemLocalPos_))
-		{
-			VECTOR itemLocalPos = VSub(movedPos_, _itemTrans.pos);
-			movedPos_ = VAdd(itemLocalPos_, _itemTrans.pos);
-			movedPos_ = VAdd(movedPos_, vec);
-			hitItemType_ =mapEdit.GetItemType(mapEdit.WorldToMapPos(hit.HitPosition));
-		}
-		//Y座標のみ半径分上に移動させる
-
-		if (movedPos_.y > hit.HitPosition.y)
-		{
-			movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
-		}
-		else
-		{
-			movedPos_.y = hit.HitPosition.y - RADIUS - POSITION_OFFSET;
-		}
-		jumpPow_ = Utility::VECTOR_ZERO;
-		isJump_ = false;
-		itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
-	}
-	else
-	{
-		//当たらなかったら初期化する
-		itemLocalPos_ = Utility::VECTOR_ZERO;
-		isJump_ = true;
-		hitItemType_ = ItemBase::ITEM_TYPE::NONE;
-	}
 }
 
 void Player::ArroundColl(Transform _itemTrans)

@@ -19,7 +19,7 @@ public:
 
 	static constexpr VECTOR ACTION_CAMERA_POS = { 2000.0f, 1700.0f, -2000.0f };	//アクション時のカメラ位置
 
-	static constexpr int PLAYER_NUM = 2;
+	static constexpr int PLAYER_NUM = 4;
 
 	/// <summary>
 	/// フェーズ
@@ -34,6 +34,15 @@ public:
 		SELECT_PHASE,	//選択
 		RESULT_PHASE,	//リザルト
 	};
+
+	enum class ITEM_COL_INFO
+	{
+		NONE
+		,UP
+		,DOWN
+		,ARROUND
+	};
+
 
 
 	/// <summary>
@@ -138,6 +147,25 @@ private:
 
 	//プレイヤーがクリアオブジェクトに当たった後の遷移
 	void ChangePlayerClearPhase(void);
+
+	//プレイヤーとアイテムの当たり判定
+	void Collision(void);
+	//当たり判定を行う範囲チェック
+	void CheckHitCol(Player& _player);
+
+	//当たり判定
+	void HitPlayerAndItem(Player& _player,const IntVector3 _colPos);
+	//上下の当たり判定
+	void PlayerUpColl(Player& _player,Transform _itemTrans);
+
+	//プレイヤー側面との当たり判定
+	bool ArroundColl(Player& _player,Transform _itemTrans);
+
+	//当たり判定情報
+	ITEM_COL_INFO col_;
+
+	//アイテムの支点
+	std::vector<IntVector3>itemLPos_;
 
 	//グリッド
 	std::unique_ptr<Grid>grid_;

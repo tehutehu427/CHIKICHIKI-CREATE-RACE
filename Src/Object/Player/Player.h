@@ -3,15 +3,13 @@
 #include <map>
 #include <functional>
 #include "../Common/AnimationController.h"
+#include"../Scene/Game/GameScene.h"
 #include "../Object/item/ItemBase.h"
 #include"./Process/PlayerInput.h"
 #include "../ObjectBase.h"
 
-//#define DEBUG_ON
+#define DEBUG_ON
 class Camera;
-class PMove;
-class PJump;
-class PPunch;
 class PlayerInput;
 class Player :public ObjectBase
 {
@@ -259,6 +257,9 @@ private:
 	//当たっているアイテムタイプ
 	ItemBase::ITEM_TYPE hitItemType_;	
 
+	//アイテムのどこと当たっているか
+	GameScene::ITEM_COL_INFO colInfo_;
+
 
 	//アクション関係
 	//----------------------------------------
@@ -347,7 +348,7 @@ private:
 	void Collision(void);
 
 	//地面との当たり判定(動いてる床とか)
-	void UpDownColl(const Transform _itemTrans);
+	void UpDownColl(void);
 
 	//周囲との当たり判定
 	void ArroundColl(Transform _itemTrans);
