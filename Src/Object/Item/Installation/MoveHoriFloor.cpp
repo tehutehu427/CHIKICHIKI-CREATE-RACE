@@ -30,6 +30,9 @@ void MoveHoriFloor::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::MOVE_FLOOR));
 
+	//モデルIDのコピー
+	models_.emplace_back(trans_.modelId);
+
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
@@ -68,7 +71,7 @@ void MoveHoriFloor::Draw(void)
 	MV1DrawModel(trans_.modelId);
 }
 
-const IntVector3 MoveHoriFloor::GetSize(void) const
+const IntVector3 MoveHoriFloor::GetHitSize(void) const
 {
 	return size_ + IntVector3(MOVE_X, 0, 0);
 }

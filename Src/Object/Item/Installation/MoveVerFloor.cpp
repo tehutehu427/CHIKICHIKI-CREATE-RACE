@@ -30,6 +30,9 @@ void MoveVerFloor::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::MOVE_FLOOR));
 
+	//モデルIDのコピー
+	models_.emplace_back(trans_.modelId);
+
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
@@ -68,7 +71,7 @@ void MoveVerFloor::Draw(void)
 	MV1DrawModel(trans_.modelId);
 }
 
-const IntVector3 MoveVerFloor::GetSize(void) const
+const IntVector3 MoveVerFloor::GetHitSize(void) const
 {
 	return size_ + IntVector3(0, MOVE_Y, 0);
 }
