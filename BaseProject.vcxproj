@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\Game\CollisionManager.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\PaletteCursor.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.cpp" />
     <ClCompile Include="Src\Object\UI\EditorUi.cpp" />
@@ -95,6 +96,7 @@
     <ClCompile Include="Src\Object\UI\UiBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\Game\CollisionManager.h" />
     <ClInclude Include="Src\Object\Editor\Palette\PaletteCursor.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.h" />
     <ClInclude Include="Src\Object\UI\EditorUi.h" />

@@ -12,6 +12,7 @@ class GameClear;
 class MapDataIO;
 class EditorUi;
 
+class Player;
 class GameScene : public SceneBase
 {
 
@@ -35,14 +36,14 @@ public:
 		RESULT_PHASE,	//ƒŠƒUƒ‹ƒg
 	};
 
+	//“–‚½‚è”»’è‚Ìî•ñ
 	enum class ITEM_COL_INFO
 	{
-		NONE
-		,UP
-		,DOWN
-		,ARROUND
+		NONE,
+		UP,
+		DOWN,
+		ARROUND,
 	};
-
 
 
 	/// <summary>

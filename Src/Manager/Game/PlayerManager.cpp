@@ -204,6 +204,7 @@ bool PlayerManager::IsPlayersEnd(void)
 	return true;
 }
 
+
 //void PlayerManager::P2PPush(int _pNum1,int _pNum2)
 //{
 //	//“¯‚¶ƒvƒŒƒCƒ„[”Ô†‚È‚ç”²‚¯‚é

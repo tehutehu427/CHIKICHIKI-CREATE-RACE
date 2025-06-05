@@ -3,10 +3,10 @@
 #include <map>
 #include <functional>
 #include "../Common/AnimationController.h"
-#include"../Scene/Game/GameScene.h"
 #include "../Object/item/ItemBase.h"
 #include"./Process/PlayerInput.h"
 #include "../ObjectBase.h"
+#include"../Scene/Game/GameScene.h"
 
 #define DEBUG_ON
 class Camera;
@@ -174,6 +174,9 @@ public:
 	//当たったアイテム
 	const ItemBase::ITEM_TYPE GetHitItemType(void)const { return hitItemType_; }
 
+	//プレイヤー番号ゲット
+	const int PlayerNum(void) { return playerNum_; }
+
 	//******************************************
 	//セッタ
 	//******************************************
@@ -198,10 +201,12 @@ public:
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
 	//コントローラーセット
-	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
+	void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
 
-	//プレイヤー番号ゲット
-	const int PlayerNum(void) { return playerNum_; }
+	//アイテム当たり判定情報セッタ
+	//void SetItemHitColInfo(const GameScene::ITEM_COL_INFO _colInfo) { colInfo_ = _colInfo; }
+
+
 #ifdef DEBUG_ON
 
 
@@ -251,6 +256,9 @@ private:
 	//プレイヤー単体が持っているもの
 	int playerNum_;			//プレイヤー番号
 
+	//当たり判定関連
+	//----------------------------------------------------
+	//using ITEM_COL = GameScene::ITEM_COL_INFO;
 	//他プレイヤーとの当たりフラグ　true:当たっている
 	bool isCol_;
 
@@ -258,8 +266,8 @@ private:
 	ItemBase::ITEM_TYPE hitItemType_;	
 
 	//アイテムのどこと当たっているか
-	GameScene::ITEM_COL_INFO colInfo_;
-
+	//GameScene::ITEM_COL_INFO colInfo_;
+	//----------------------------------------------------
 
 	//アクション関係
 	//----------------------------------------

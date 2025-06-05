@@ -350,7 +350,6 @@ void GameScene::HitPlayerAndItem(Player& _player, const IntVector3 _colPos)
 			if (iLPos == lPos)return;
 		}
 
-
 		//アイテムタイプ取得
 		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
 
@@ -377,8 +376,7 @@ void GameScene::PlayerUpColl(Player& _player,Transform _itemTrans)
 	col_ = ITEM_COL_INFO::NONE;
 
 	//アイテムモデルとプレイヤーモデルの当たり判定
-	auto hit = MV1CollCheck_Line(_itemTrans.modelId, -1, prePos, curPos);
-
+	MV1_COLL_RESULT_POLY hit = MV1CollCheck_Line(_itemTrans.modelId, -1, prePos, curPos);
 	MapEditer& mapEdit = MapEditer::GetInstance();
 
 	//当たったら
@@ -417,6 +415,9 @@ void GameScene::PlayerUpColl(Player& _player,Transform _itemTrans)
 			col_ = ITEM_COL_INFO::DOWN;
 		}
 	}
+
+	//各プレイヤーに当たり判定情報を与える
+	//_player.SetItemHitColInfo(col_);
 }
 
 bool GameScene::ArroundColl(Player& _player,Transform _itemTrans)

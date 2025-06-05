@@ -97,7 +97,8 @@ public:
 
 
 private:
-
+	//アイテムのどこと当たっているか
+	GameScene::ITEM_COL_INFO colInfo_;
 
 	//静的インスタンス
 	static PlayerManager* instance_;

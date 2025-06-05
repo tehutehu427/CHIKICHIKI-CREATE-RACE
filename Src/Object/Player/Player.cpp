@@ -395,29 +395,29 @@ VECTOR Player::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _lo
 
 void Player::HitItem(const IntVector3 _colPos)
 {
-	MapEditer& mapEdit = MapEditer::GetInstance();
-	ItemManager& itemMng = ItemManager::GetInstance();
-	if (mapEdit.IsObjectAtMapPos(_colPos))
-	{
-		IntVector3 lPos=mapEdit.GetLeaderMapPos(_colPos);
-		for (auto& iLPos : itemLPos_)
-		{
-			if (iLPos == lPos)return;
-		}
-		
-		
-		//アイテムタイプ取得
-		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
+	//MapEditer& mapEdit = MapEditer::GetInstance();
+	//ItemManager& itemMng = ItemManager::GetInstance();
+	//if (mapEdit.IsObjectAtMapPos(_colPos))
+	//{
+	//	IntVector3 lPos=mapEdit.GetLeaderMapPos(_colPos);
+	//	for (auto& iLPos : itemLPos_)
+	//	{
+	//		if (iLPos == lPos)return;
+	//	}
+	//	
+	//	
+	//	//アイテムタイプ取得
+	//	ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
 
-		
-		//アイテムのTransform取得
-		Transform itemTrans = itemMng.GetItemTransform(lPos,type);
+	//	
+	//	//アイテムのTransform取得
+	//	Transform itemTrans = itemMng.GetItemTransform(lPos,type);
 
-		UpDownColl(itemTrans);
-		ArroundColl(itemTrans);
+	//	UpDownColl();
+	//	//ArroundColl(itemTrans);
 
-		itemLPos_.push_back(lPos);
-	}
+	//	itemLPos_.push_back(lPos);
+	//}
 }
 
 void Player::Collision(void)
@@ -446,7 +446,7 @@ void Player::Collision(void)
 
 #endif // DEBUG_ON
 
-	UpDownColl();
+	//UpDownColl();
 
 	//MapEditer& mapEdit = MapEditer::GetInstance();
 	//IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
@@ -482,7 +482,10 @@ void Player::Collision(void)
 
 void Player::UpDownColl(void)
 {
-
+	//if (colInfo_ == ITEM_COL::UP)
+	//{
+	//	//movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
+	//}
 
 
 
