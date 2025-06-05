@@ -9,9 +9,11 @@ PlayerManager* PlayerManager::instance_ = nullptr;
 PlayerManager::PlayerManager(int _playerNum)
 {
 	playerNum_ = _playerNum;
+	cntl_ = PlayerInput::CNTL::NONE;
 	for (int i = 0; i < playerNum_; i++)
 	{
 		isGoal_.emplace_back(false);
+		isDeath_.emplace_back(false);
 	}
 }
 
@@ -154,6 +156,15 @@ bool PlayerManager::IsHitCapsules(const std::weak_ptr<Capsule> cap1, const std::
 	return false;
 }
 
+const std::vector<bool> PlayerManager::GetPlayersIsDeath(void)
+{
+	for (int i=0;i<playerNum_;i++)
+	{
+		isDeath_[i] = players_[i]->IsDeath();
+	}
+	return isDeath_;
+}
+
 void PlayerManager::SetInitPos(VECTOR _worldPos)
 {
 	for (int i = 0; i < playerNum_; i++)
@@ -178,7 +189,18 @@ std::vector<bool> PlayerManager::IsGoalPlayers(void)
 		}
 	}
 	return isGoal_;
-	
+}
+
+bool PlayerManager::IsPlayersEnd(void)
+{
+	for (int i = 0; i < playerNum_; i++)
+	{
+		if (!players_[i]->IsDeath() && players_[i]->GetHitItemType() != ItemBase::ITEM_TYPE::GOAL)
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 //void PlayerManager::P2PPush(int _pNum1,int _pNum2)
@@ -241,13 +263,4 @@ void PlayerManager::PunchPlayersColl(int p1, int p2)
 		players_[p2]->SetDir(Utility::GetMoveVec(players_[p1]->GetPos(), players_[p2]->GetPos()));
 		players_[p2]->SetIsPunched(true);
 	}
-}
-
-void PlayerManager::DupilicateModel(void)
-{
-	//ƒ‚ƒfƒ‹‚ð•Ï‚¦‚é‚©‚à‚µ‚ê‚È‚¢‚Ì‚Åˆê‰ž”z—ñ‚ÅŠi”[‚·‚é
-	int model = ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::CHICKEN);
-
-	//”z—ñ‚ð’Ç‰Á
-	models_.emplace_back(model);
 }
