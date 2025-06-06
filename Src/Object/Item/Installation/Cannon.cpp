@@ -28,7 +28,7 @@ void Cannon::SetParam(void)
 		ResourceManager::SRC::CANNON_TURRET));
 
 	//モデルIDのコピー
-	models_.emplace_back(trans_.modelId);
+	models_.emplace_back(&trans_.modelId);
 
 	//ステータス初期化
 	size_ = MAP_SIZE;
@@ -80,7 +80,7 @@ void Cannon::SetParam(void)
 		ResourceManager::SRC::CANNON_BARREL));
 
 	//モデルIDのコピー
-	models_.emplace_back(barrelTrans_.modelId);
+	models_.emplace_back(&barrelTrans_.modelId);
 }
 
 void Cannon::Update(void)

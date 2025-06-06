@@ -26,7 +26,7 @@ void CannonShot::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::CANNON_SHOT));
 
 	//モデルIDのコピー
-	models_.emplace_back(trans_.modelId);
+	models_.emplace_back(&trans_.modelId);
 
 	//大きさ
 	trans_.scl = VScale(trans_.scl,SCALE);

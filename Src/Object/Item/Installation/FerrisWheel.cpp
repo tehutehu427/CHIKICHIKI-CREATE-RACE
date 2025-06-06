@@ -31,7 +31,7 @@ void FerrisWheel::SetParam(void)
 		ResourceManager::SRC::MOVE_FLOOR));
 
 	//モデルIDのコピー
-	models_.emplace_back(trans_.modelId);
+	models_.emplace_back(&trans_.modelId);
 
 	//ステータス初期化
 	size_ = MAP_SIZE;

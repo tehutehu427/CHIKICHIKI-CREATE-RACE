@@ -1,4 +1,5 @@
 #pragma once
+#include<vector>
 #include "../ObjectBase.h"
 
 class ItemBase : public ObjectBase
@@ -78,7 +79,7 @@ public:
 	virtual void Hit(Transform& _hitTrans);
 
 	//全モデルの取得
-	const std::vector<int&> GetModels(void)const { return models_; }
+	const std::vector<int*> GetModels(void)const { return models_; }
 
 	//アイテムのステータス取得
 	const Status GetStatus(void)const { return status_; }
@@ -109,7 +110,7 @@ protected:
 	Status status_;				//ステータス
 	IntVector3 InitMapPos_;		//初期マップ座標
 	float rotY_;				//Y回転
-	std::vector<int&> models_;	//全モデル
+	std::vector<int*> models_;	//全モデル
 
 	//サイズの倍率調整
 	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;

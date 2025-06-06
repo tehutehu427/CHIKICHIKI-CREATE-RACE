@@ -19,7 +19,7 @@ void SlimeFloor::SetParam(void)
 		ResourceManager::SRC::SLIME_FLOOR));
 
 	//モデルIDのコピー
-	models_.emplace_back(trans_.modelId);
+	models_.emplace_back(&trans_.modelId);
 
 	//ステータス初期化
 	size_ = MAP_SIZE;

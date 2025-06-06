@@ -50,10 +50,10 @@ public:
 	/// <param name="mapPos"></param>
 	/// <param name="size"></param>
 	/// <returns></returns>
-	bool IsObjectAtMapPos(IntVector3 mapPos, IntVector3 size,float rotY);
+	bool IsObjectAtMapPos(IntVector3 mapPos, IntVector3 size, IntVector3 hitSize,float rotY);
 
-	void AddItem(STATUS status, IntVector3 size, float rotY);
-	void DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos, IntVector3 _size);
+	void AddItem(STATUS status, IntVector3 size,IntVector3 hitSize, float rotY);
+	void DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos, float _rotY , IntVector3 _size,IntVector3 _hitSize);
 	/// <summary>
 	/// ワールド座標をマップ座標に変換する
 	/// </summary>

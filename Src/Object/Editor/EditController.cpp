@@ -67,7 +67,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 		return;
 	}
 	auto& itemMIns = ItemManager::GetInstance();
-	if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_),itemMIns.GetDummyItemRotY(playerNum_)))
+	if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_),itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
 	{
 		//アイテムが重なっている
 		return;
@@ -78,7 +78,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	status.mapPos = mapPos_;
 	status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
 	status.type = itemType_;
-	MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_),itemMIns.GetDummyItemRotY(playerNum_));
+	MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_),itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
 	itemMIns.DummyItemAddItems(playerNum_);
 	itemMIns.CreateDummyItem({}, {}, itemType, playerNum_);
 	IntVector3 mapPos = NearObjectFrontPos();
@@ -155,20 +155,20 @@ void EditController::ItemNotSelect(void)
 				status.mapPos = mapPos_;
 				status.rotate = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
 				status.type = itemType_;
-				MapEditer::GetInstance().AddItem(status, ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_));
+				MapEditer::GetInstance().AddItem(status, ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_), ItemManager::GetInstance().GetDummyItemRotY(playerNum_));
 			}
 			ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 			if (!ItemManager::GetInstance().ItemsAddDummyItems(itemType_, leaderPos, playerNum_))
 			{
 				return;
 			}
-			MapEditer::GetInstance().DeleteItem(itemType_, leaderPos, ItemManager::GetInstance().GetDummyItemSize(playerNum_));
+			MapEditer::GetInstance().DeleteItem(itemType_, leaderPos, ItemManager::GetInstance().GetDummyItemRotY(playerNum_), ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_));
 			mapPos_ = leaderPos;
 			ChengeMode(MODE::MOVE_ROTATE);
 		}
 		else
 		{
-			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_)))
+			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_)))
 			{
 				return;
 			}
@@ -177,7 +177,7 @@ void EditController::ItemNotSelect(void)
 			status.mapPos = mapPos_;
 			status.rotate = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
 			status.type = itemType_;
-			MapEditer::GetInstance().AddItem(status,ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_));
+			MapEditer::GetInstance().AddItem(status,ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_));
 			itemType_ = ItemBase::ITEM_TYPE::NONE;
 			ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 			//選択解除
