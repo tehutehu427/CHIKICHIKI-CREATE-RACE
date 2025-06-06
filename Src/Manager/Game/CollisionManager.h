@@ -1,7 +1,11 @@
 #pragma once
+#include<DxLib.h>
 #include<memory>
+#include<vector>
+#include<map>
 
 class ObjectBase;
+class Collider;
 class CollisionManager
 {
 public:
@@ -12,10 +16,20 @@ public:
 	{
 		NONE
 		,PLAYER
+		,MOVE_VER_FLOOR
+		,MOVE_HORI_FLOOR
+		,
+	};
+	enum class COLLISION_SHAPE
+	{
+		SPHERE
+		,CUBE
+		,LINE
+		,MODEL
 	};
 
-	void Update(void);
-	void Draw(void);
+	void AddCollider(void);
+	void LineCol(ObjectBase& _object,VECTOR pos1, VECTOR pos2);
 
 
 private:
@@ -28,6 +42,7 @@ private:
 
 	//ÉÅÉìÉoïœêî
 	static CollisionManager* collisionMng_;
+	//std::map<COL_TAG, std::vector<std::unique_ptr<Collider>>>colliders_;
 
 
 };

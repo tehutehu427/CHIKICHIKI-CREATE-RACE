@@ -395,29 +395,29 @@ VECTOR Player::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _lo
 
 void Player::HitItem(const IntVector3 _colPos)
 {
-	//MapEditer& mapEdit = MapEditer::GetInstance();
-	//ItemManager& itemMng = ItemManager::GetInstance();
-	//if (mapEdit.IsObjectAtMapPos(_colPos))
-	//{
-	//	IntVector3 lPos=mapEdit.GetLeaderMapPos(_colPos);
-	//	for (auto& iLPos : itemLPos_)
-	//	{
-	//		if (iLPos == lPos)return;
-	//	}
-	//	
-	//	
-	//	//アイテムタイプ取得
-	//	ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
+	MapEditer& mapEdit = MapEditer::GetInstance();
+	ItemManager& itemMng = ItemManager::GetInstance();
+	if (mapEdit.IsObjectAtMapPos(_colPos))
+	{
+		IntVector3 lPos=mapEdit.GetLeaderMapPos(_colPos);
+		for (auto& iLPos : itemLPos_)
+		{
+			if (iLPos == lPos)return;
+		}
+		
+		
+		//アイテムタイプ取得
+		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
 
-	//	
-	//	//アイテムのTransform取得
-	//	Transform itemTrans = itemMng.GetItemTransform(lPos,type);
+		
+		//アイテムのTransform取得
+		Transform itemTrans = itemMng.GetItemTransform(lPos,type);
 
-	//	UpDownColl();
-	//	//ArroundColl(itemTrans);
+		//UpDownColl();
+		ArroundColl(itemTrans);
 
-	//	itemLPos_.push_back(lPos);
-	//}
+		itemLPos_.push_back(lPos);
+	}
 }
 
 void Player::Collision(void)
@@ -448,21 +448,21 @@ void Player::Collision(void)
 
 	//UpDownColl();
 
-	//MapEditer& mapEdit = MapEditer::GetInstance();
-	//IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
-	//for (int x = -COL_RANGE; x <= COL_RANGE; x++)
-	//{
-	//	for (int y = -COL_RANGE; y <= COL_RANGE; y++)
-	//	{
-	//		for (int z = -COL_RANGE; z <= COL_RANGE; z++)
-	//		{
-	//			colPos_ = mapPos + IntVector3{x, y, z};
-	//			if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
-	//			HitItem(colPos_);
-	//		}
-	//	}
-	//}
-	//itemLPos_.clear();
+	MapEditer& mapEdit = MapEditer::GetInstance();
+	IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
+	for (int x = -COL_RANGE; x <= COL_RANGE; x++)
+	{
+		for (int y = -COL_RANGE; y <= COL_RANGE; y++)
+		{
+			for (int z = -COL_RANGE; z <= COL_RANGE; z++)
+			{
+				colPos_ = mapPos + IntVector3{x, y, z};
+				if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
+				HitItem(colPos_);
+			}
+		}
+	}
+	itemLPos_.clear();
 
 #ifdef DEBUG_ON
 
@@ -573,7 +573,7 @@ void Player::ArroundColl(Transform _itemTrans)
 	for (int i = 0; i < hits.HitNum; i++)
 	{
 		auto hit = hits.Dim[i];
-		for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
+		for (int tryCnt = 0; tryCnt < (int)RADIUS; tryCnt++)
 		{
 			hit.Position[i];
 			int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
