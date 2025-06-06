@@ -53,7 +53,7 @@ public:
 	void Update(void);
 
 	void SetModel(int modelHId);
-	void MakeCollider(Collider::TYPE type);
+	void MakeCollider(Collider::COL_TAG type);
 
 	// ‘O•û•ûŒü‚ðŽæ“¾
 	VECTOR GetForward(void) const;

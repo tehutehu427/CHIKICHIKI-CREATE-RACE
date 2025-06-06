@@ -2,6 +2,7 @@
 #include "../Application.h"
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "../../Manager/Game/CollisionManager.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/Camera.h"
@@ -21,6 +22,13 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 
 	trans_ = Transform();
 	movedPos_ = Utility::VECTOR_ZERO;
+
+
+	//デバッグ
+	CollisionManager::CreateInstance();
+
+
+
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
 	if (cntl_ == PlayerInput::CNTL::PAD)
@@ -114,12 +122,22 @@ void Player::Init(void)
 
 
 	itemLocalPos_ = Utility::VECTOR_ZERO;
+	trans_.MakeCollider(Collider::COL_TAG::PLAYER);
 	trans_.Update();
 }
 
 void Player::Update(void)
 {
 	animationController_->Update();
+
+
+
+
+
+
+
+
+
 	if (IsDeath())
 	{
 		//落ちているアニメーション再生0

@@ -10,7 +10,7 @@ class CollisionManager
 {
 public:
 	static void CreateInstance(void);
-	CollisionManager* GetInstance(void);
+	static CollisionManager& GetInstance(void);
 
 	enum class COL_TAG
 	{
@@ -28,8 +28,16 @@ public:
 		,MODEL
 	};
 
-	void AddCollider(void);
-	void LineCol(ObjectBase& _object,VECTOR pos1, VECTOR pos2);
+	struct Coll_Info
+	{
+		Collider::COL_TAG tag;	//何と当たっているか
+		VECTOR hitPos;			//当たっている座標
+		VECTOR normal;			//法線ベクトル
+	};
+
+	void AddCollider(std::weak_ptr<Collider>_collider);
+	void ClearCollider(void);
+	Collider::COL_TAG LineCol(VECTOR pos1, VECTOR pos2);
 
 
 private:
@@ -42,6 +50,9 @@ private:
 
 	//メンバ変数
 	static CollisionManager* collisionMng_;
+
+	//当たり判定配列
+	std::vector<std::weak_ptr<Collider>>colliders_;
 	//std::map<COL_TAG, std::vector<std::unique_ptr<Collider>>>colliders_;
 
 

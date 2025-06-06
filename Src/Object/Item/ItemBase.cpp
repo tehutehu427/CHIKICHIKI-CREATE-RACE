@@ -11,7 +11,7 @@ ItemBase::ItemBase()
 
 	InitMapPos_ = INT_VECTOR_ZERO;
 
-	trans_.MakeCollider(Collider::TYPE::STAGE);
+	trans_.MakeCollider(Collider::COL_TAG::STAGE);
 }
 
 ItemBase::~ItemBase()

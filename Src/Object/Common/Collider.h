@@ -5,19 +5,24 @@ class Collider
 public :
 
 	// 衝突種別
-	enum class TYPE
+	enum class COL_TAG
 	{
+		NONE,
 		STAGE,
+		PLAYER,
+		DEATH,
+		FLOOR,
+		SLIME,
 	};
 
 	// コンストラクタ
-	Collider(TYPE type, int modelId);
+	Collider(COL_TAG type, int modelId);
 
 	// デストラクタ
 	~Collider(void);
 
 	// 衝突種別
-	TYPE type_;
+	COL_TAG type_;
 
 	// モデルのハンドルID
 	int modelId_;

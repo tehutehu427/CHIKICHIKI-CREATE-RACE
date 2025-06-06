@@ -34,6 +34,8 @@ public:
 	virtual void ChangeModelColor(const COLOR_F _colorScale);
 
 protected:
+	//当たり判定タグ
+	Collider::COL_TAG colTag_;
 
 	// シングルトン参照
 	ResourceManager& resMng_;
