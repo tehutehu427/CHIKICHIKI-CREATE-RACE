@@ -7,6 +7,7 @@
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/InputManager.h"
+#include "../Manager/System/DateBank.h"
 #include "../Shader/Effect/SelectUIGlow.h"
 #include "../Shader/Effect/SelectUIDarkly.h"
 #include "ModeSelect.h"
@@ -17,7 +18,9 @@ namespace
 	Vector2 imgArcDivs = { ResourceManager::IMG_ARCS_DIV_X, ResourceManager::IMG_ARCS_DIV_Y };
 }
 
-ModeSelect::ModeSelect() : scnMng_(SceneManager::GetInstance())
+ModeSelect::ModeSelect()
+	: scnMng_(SceneManager::GetInstance()),
+	dateBank_(DateBank::GetInstance())
 {
 	//状態別更新関数のセット
 	RegisterArcState(UPD_STATE::SELECT, [this]() { SelectUpdate(); });
@@ -27,14 +30,17 @@ ModeSelect::ModeSelect() : scnMng_(SceneManager::GetInstance())
 	menuFuncTable_ = {
 		{SELECT_MENU::SOLO,[this]()
 		{
+			dateBank_.SetPlayerNum(1);
 			scnMng_.ChangeScene(SceneManager::SCENE_ID::SOLO);
 		}},
 		{SELECT_MENU::MULTI,[this]()
 		{
+			dateBank_.SetPlayerNum(2);
 			scnMng_.ChangeScene(SceneManager::SCENE_ID::MULTI);
 		}},
 		{SELECT_MENU::FREE,[this]()
 		{
+			dateBank_.SetPlayerNum(1);
 			scnMng_.ChangeScene(SceneManager::SCENE_ID::FREE);
 		}},
 		{SELECT_MENU::SETTINGS,[this]()

@@ -228,4 +228,3 @@ public:
 	/// <param name="len">ŠÔŠu</param>
 	static void DrawPointLine3D(const VECTOR sPos, const VECTOR ePos, int color, float len = 50.0f);
 };
-

@@ -50,12 +50,12 @@ void DateBank::Destroy(void)
 
 bool DateBank::SetPlayerNum(int num)
 {
-	maxPlayerNum_ = GetJoypadNum();
-	if (num > maxPlayerNum_)
-	{
+	//maxPlayerNum_ = GetJoypadNum();
+	//if (num <= maxPlayerNum_)
+	//{
 		playerNum_ = num;
 		return true;
-	}
+	//}
 	return false;
 }
 

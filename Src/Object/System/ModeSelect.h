@@ -4,6 +4,7 @@
 #include "../Common/Vector2.h"
 
 class SceneManager;
+class DateBank;
 class SelectUIGlow;
 class SelectUIDarkly;
 
@@ -76,6 +77,9 @@ private:
 
 	//シーン管理
 	SceneManager& scnMng_;
+
+	//データ管理
+	DateBank& dateBank_;
 
 	//円弧
 	struct Arc

@@ -100,8 +100,8 @@ void PlayerManager::PlayersCollision(void)
 			if (i == j)continue;
 
 			//各プレイヤーに当たっていることを伝える
-			if (Utility::IsHitSpheres(players_[i]->GetPos(),Player::RADIUS
-				,players_[j]->GetPos(),Player::RADIUS))
+			if (Utility::IsHitSpheres(players_[i]->GetPos(),Player::RADIUS,
+				players_[j]->GetPos(),Player::RADIUS))
 			{
 				players_[i]->SetCollision(true);
 				players_[j]->SetCollision(true);

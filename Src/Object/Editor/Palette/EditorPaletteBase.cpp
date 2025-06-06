@@ -10,7 +10,6 @@
 #include "../EditController.h"
 #include "EditorPaletteBase.h"
 #include "Icon/PaletteIcon.h"
-#include "Icon/FreePaletteIcon.h"
 #include "Icon/MultiPaletteIcon.h"
 
 EditorPaletteBase::EditorPaletteBase(std::vector<std::unique_ptr<EditController>>& _editControllers)
@@ -39,20 +38,7 @@ void EditorPaletteBase::Load()
 	imgPalette_ = res.Load(ResourceManager::SRC::PALETTE).handleId_;
 
 	//パレットアイコン
-	SceneManager::SCENE_ID sceneId = SceneManager::GetInstance().GetSceneID();
-	switch (sceneId)
-	{
-	case SceneManager::SCENE_ID::FREE:
-		palIcon_ = std::make_unique<FreePaletteIcon>();
-		break;
-	case SceneManager::SCENE_ID::MULTI:
-		palIcon_ = std::make_unique<MultiPaletteIcon>();
-		break;
-
-	default:
-		palIcon_ = std::make_unique<FreePaletteIcon>();
-		break;
-	}
+	palIcon_ = std::make_unique<PaletteIcon>();
 	palIcon_->Load();
 }
 

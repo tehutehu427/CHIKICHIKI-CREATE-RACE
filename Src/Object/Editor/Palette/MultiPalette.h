@@ -1,39 +1,45 @@
 #pragma once
 #include "EditorPaletteBase.h"
 
-class PaletteCursor;
-
 class MultiPalette : public EditorPaletteBase
 {
 public:
 
 	static constexpr float RATE_SPEED = 0.05f;
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="editControllers"></param>エディットコントローラーの配列
 	MultiPalette(std::vector<std::unique_ptr<EditController>>& editControllers);
 
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	~MultiPalette(void) override;
 
-	//読み込み処理
+	/// <summary>
+	/// 読み込み処理
+	/// </summary>
+	/// <param name=""></param>
 	void Load(void) override;
 
-	//初期化処理
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name=""></param>
 	void Init(void) override;
 
-	//描画処理
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void) override;
 
 private:
-	
-	//カーソル画像
-	int* imgCursors_;
-
-	//カーソル
-	std::vector<std::unique_ptr<PaletteCursor>> cursors_;
 
 	//状態別更新
-	void UpdateWait()override;			//クリック待ち
 	void UpdateClose()override;			//閉じる
 	void UpdateOpen()override;			//開ける
 	void UpdateSelect()override;		//選ぶ

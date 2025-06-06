@@ -51,6 +51,9 @@ void GameScene::Load(void)
 	//フォントの生成
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
+	//仮で人数設定
+	int playerNum = DateBank::GetInstance().GetPlayerNum();
+
 	PlayerManager::CreateInstance(PLAYER_NUM);
 	PlayerManager::GetInstance().Load();
 
@@ -70,11 +73,10 @@ void GameScene::Load(void)
 	ItemManager::CreateInstance();
 	
 	//エディットコントローラーの生成
-	editControllers_.push_back(std::make_unique<EditController>(0));
-
-	//パレットの生成
-	palette_ = std::make_unique<EditorPaletteBase>(editControllers_);
-	palette_->Load();
+	for (int i = 0; i < playerNum; i++)
+	{
+		editControllers_.push_back(std::make_unique<EditController>(0));
+	}
 
 	//スカイドームの生成
 	sky_ = std::make_unique<SkyDome>();
@@ -95,8 +97,6 @@ void GameScene::Load(void)
 
 void GameScene::Init(void)
 {
-	//初期化
-	palette_->Init();
 	for (auto& controller : editControllers_) { controller->Init(); }
 	sky_->Init();
 	gameClear_->Init();

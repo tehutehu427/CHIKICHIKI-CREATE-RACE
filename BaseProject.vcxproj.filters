@@ -204,12 +204,6 @@
     <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Common\FontRegistry.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -570,12 +564,6 @@
     <ClInclude Include="Src\Object\Item\Installation\Spring.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Common\FontRegistry.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -643,6 +631,15 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Item\Installation\FerrisWheel.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Utility\UtilityTemplates.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

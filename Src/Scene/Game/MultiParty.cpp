@@ -1,5 +1,8 @@
 #include "MultiParty.h"
 #include "../../Manager/System/DateBank.h"
+#include "../../Object/Editor/Palette/EditorPaletteBase.h"
+#include "../../Object/Editor/Palette/MultiPalette.h"
+#include "../../Manager/System/DateBank.h"
 
 MultiParty::MultiParty(void)
 {
@@ -54,9 +57,15 @@ MultiParty::~MultiParty(void)
 
 void MultiParty::Load(void)
 {
+
 	//親クラスの読み込み処理を呼ぶ
 	GameScene::Load();
-	screens_ = makeScreens_[DateBank::GetInstance().GetPlayerNum()]();
+
+	//パレット生成
+	palette_ = std::make_unique<MultiPalette>(editControllers_);
+	palette_->Load();
+
+	//screens_ = makeScreens_[DateBank::GetInstance().GetPlayerNum()]();
 }
 
 void MultiParty::Init(void)
@@ -64,6 +73,10 @@ void MultiParty::Init(void)
 	//親クラスの初期化処理を呼ぶ
 	GameScene::Init();
 
+	//初期化
+	palette_->Init();
+
+	//フェーズ遷移
 	ChangePhase(PHASE::SELECT_PHASE);
 }
 
@@ -99,6 +112,13 @@ void MultiParty::ChangePhaseResult()
 
 void MultiParty::UpdateSelect()
 {
+	palette_->Update();
+
+	//パレット処理が終了したとき
+	if (palette_->GetState() == EditorPaletteBase::STATE::NONE)
+	{
+		ChangePhase(PHASE::EDIT_PHASE);
+	}
 }
 
 void MultiParty::UpdateResult()
@@ -115,6 +135,7 @@ void MultiParty::DrawEdit()
 
 void MultiParty::DrawSelect()
 {
+	palette_->Draw();
 }
 
 void MultiParty::DrawResult()
