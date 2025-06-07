@@ -1,5 +1,6 @@
 #pragma once
 #include "Common/Transform.h"
+#include"../Manager/Game/CollisionManager.h"
 #include "../Common/IntVector3.h"
 
 class ResourceManager;
@@ -36,6 +37,8 @@ public:
 protected:
 	//当たり判定タグ
 	Collider::COL_TAG colTag_;
+
+	virtual void Onhit(CollisionManager::COL_TAG _tag);
 
 	// シングルトン参照
 	ResourceManager& resMng_;

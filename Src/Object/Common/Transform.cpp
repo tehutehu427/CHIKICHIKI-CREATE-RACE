@@ -126,3 +126,8 @@ VECTOR Transform::GetDir(const VECTOR& vec) const
 {
 	return quaRot.PosAxis(vec);
 }
+
+std::weak_ptr<Collider> Transform::GetCollider(void) const
+{
+	return collider;
+}

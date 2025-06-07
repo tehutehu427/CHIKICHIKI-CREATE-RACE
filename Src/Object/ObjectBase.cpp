@@ -24,3 +24,8 @@ void ObjectBase::ChangeModelColor(const COLOR_F _colorScale)
 #endif // _DEBUG
 	}
 }
+
+void ObjectBase::Onhit(CollisionManager::COL_TAG _tag)
+{
+
+}

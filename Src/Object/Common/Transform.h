@@ -76,4 +76,6 @@ public:
 	// ‘ÎÛ•ûŒü‚ğæ“¾
 	VECTOR GetDir(const VECTOR& vec) const;
 
+	//ƒRƒ‰ƒCƒ_‚ğæ“¾
+	std::weak_ptr<Collider> GetCollider(void) const;
 };

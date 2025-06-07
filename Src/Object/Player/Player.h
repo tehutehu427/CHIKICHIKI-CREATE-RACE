@@ -3,6 +3,7 @@
 #include <map>
 #include <functional>
 #include "../Common/AnimationController.h"
+#include"../../Manager/Game/CollisionManager.h"
 #include "../Object/item/ItemBase.h"
 #include"./Process/PlayerInput.h"
 #include "../ObjectBase.h"
@@ -265,6 +266,12 @@ private:
 	//当たっているアイテムタイプ
 	ItemBase::ITEM_TYPE hitItemType_;	
 
+	//当たっているオブジェクトごとの処理
+	//状態遷移用
+	std::map<CollisionManager::COL_TAG, std::function<void(void)>>colChanges_;
+	//更新
+	std::function<void(void)> colUpdate_;
+
 	//アイテムのどこと当たっているか
 	//GameScene::ITEM_COL_INFO colInfo_;
 	//----------------------------------------------------
@@ -360,6 +367,23 @@ private:
 
 	//周囲との当たり判定
 	void ArroundColl(Transform _itemTrans);
+
+
+	//当たった時の処理
+	void HitAction(bool _isHit,VECTOR _hitPos,VECTOR _itemPos);
+
+	//当たった時の処理
+	void Onhit(CollisionManager::COL_TAG)override;
+
+	//当たった時の処理
+	//当たっていない
+	void OnHitNone(void);
+	// 
+	//床
+	void OnHitFloor(const IntVector3 _colPos);
+	//即死アイテム
+	void OnHitDeathItem(const IntVector3 _colPos);
+
 
 #ifdef DEBUG_ON
 	void CubeMove(void);

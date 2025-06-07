@@ -63,6 +63,9 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 	hitItemType_ = ItemBase::ITEM_TYPE::NONE;
 
 	input_ = nullptr;
+
+	//当たり判定の初期化
+
 }
 
 Player::~Player(void)
@@ -613,6 +616,84 @@ void Player::ArroundColl(Transform _itemTrans)
 }
 
 #ifdef DEBUG_ON
+void Player::HitAction(bool _isHit, VECTOR _hitPos, VECTOR _itemPos)
+{
+	//移動後と移動前をとる
+	VECTOR prePos = trans_.pos;
+	VECTOR curPos = movedPos_;
+
+	VECTOR vec = VSub(curPos, prePos);
+
+	//当たったら
+	if (_isHit)
+	{
+		//Y座標のみ半径分上に移動させる
+		movedPos_.y = _hitPos.y + RADIUS + POSITION_OFFSET;
+		jumpPow_ = Utility::VECTOR_ZERO;
+		isJump_ = false;
+		itemLocalPos_ = VSub(movedPos_, _itemPos);
+		return;
+	}
+	//else
+	//{
+	//	//当たらなかったら初期化する
+	//	itemLocalPos_ = Utility::VECTOR_ZERO;
+	//}
+
+
+	//Lineを引くための上と下の座標をとる
+	VECTOR upPos = movedPos_;
+	upPos.y += (RADIUS);
+	VECTOR downPos = movedPos_;
+	downPos.y -= (RADIUS + 10.0f);
+
+	//hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
+
+	//当たったら
+	if (_isHit )
+	{
+		//座標をワールド座標とアイテムローカル座標を足した分移動させる
+		if (!Utility::EqualsVZero(itemLocalPos_))
+		{
+			VECTOR itemLocalPos = VSub(movedPos_, _itemPos);
+			movedPos_ = VAdd(itemLocalPos_, _itemPos);
+			movedPos_ = VAdd(movedPos_, vec);
+			//hitItemType_ =mapEdit.GetItemType(mapEdit.WorldToMapPos(hit.HitPosition));
+		}
+		//Y座標のみ半径分上に移動させる
+		if (movedPos_.y > _hitPos.y)
+		{
+			movedPos_.y = _hitPos.y + RADIUS + POSITION_OFFSET;
+		}
+		else
+		{
+			movedPos_.y = _hitPos.y - RADIUS - POSITION_OFFSET;
+		}
+		jumpPow_ = Utility::VECTOR_ZERO;
+		isJump_ = false;
+		itemLocalPos_ = VSub(movedPos_, _itemPos);
+	}
+	else
+	{
+		//当たらなかったら初期化する
+		itemLocalPos_ = Utility::VECTOR_ZERO;
+		isJump_ = true;
+		hitItemType_ = ItemBase::ITEM_TYPE::NONE;
+	}
+}
+void Player::Onhit(CollisionManager::COL_TAG)
+{
+
+}
+void Player::OnHitNone(void)
+{
+}
+void Player::OnHitFloor(const IntVector3 _colPos)
+{
+}
+void Player::OnHitDeathItem(const IntVector3 _colPos)
+{
+}
 void Player::CubeMove(void)
 {
 	auto& input = InputManager::GetInstance();
