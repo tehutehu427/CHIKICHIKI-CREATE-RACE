@@ -64,7 +64,7 @@ public:
 	//ゲッタ
 	//*****************************************
 	//モデル情報ゲッタ
-	const Transform GetPlayerTransform(const int _num) { return players_[_num]->GetTransform(); }
+	const Transform& GetPlayerTransform(const int _num) { return players_[_num]->GetTransform(); }
 
 	//移動後座標
 	const VECTOR GetPlayerMovedPos(const int _num) { return players_[_num]->GetMovedPos(); }
