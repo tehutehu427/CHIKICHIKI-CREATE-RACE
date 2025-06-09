@@ -142,22 +142,36 @@ void EditController::MoveRotateObjectDraw(void)
 
 void EditController::ItemNotSelect(void)
 {
+	auto& itemMIns = ItemManager::GetInstance();
 	if (InputManager::GetInstance().IsTrgDownMouseLeft() == true)
 	{
+		if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+		{
+			return;
+		}
+		if (itemMIns.IsDummyItem(playerNum_))
+		{
+			MapEditer::STATUS status;
+			status.mapPos = mapPos_;
+			status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
+			status.type = itemType_;
+			MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+			itemMIns.DummyItemAddItems(playerNum_);
+		}
 		IntVector3 NearPos = NearObjectFrontPos();
 		if (isClickObject_ == true)
 		{
 			itemType_ = MapEditer::GetInstance().GetItemType(mapPosObject_);
 			IntVector3 leaderPos = MapEditer::GetInstance().GetLeaderMapPos(mapPosObject_);
-			if (ItemManager::GetInstance().IsDummyItem(playerNum_))
-			{
-				MapEditer::STATUS status;
-				status.mapPos = mapPos_;
-				status.rotate = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
-				status.type = itemType_;
-				MapEditer::GetInstance().AddItem(status, ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_), ItemManager::GetInstance().GetDummyItemRotY(playerNum_));
-			}
-			ItemManager::GetInstance().DummyItemAddItems(playerNum_);
+			//if (ItemManager::GetInstance().IsDummyItem(playerNum_))
+			//{
+			//	MapEditer::STATUS status;
+			//	status.mapPos = mapPos_;
+			//	status.rotate = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
+			//	status.type = itemType_;
+			//	MapEditer::GetInstance().AddItem(status,ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_));
+			//}
+			//ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 			if (!ItemManager::GetInstance().ItemsAddDummyItems(itemType_, leaderPos, playerNum_))
 			{
 				return;
@@ -173,13 +187,13 @@ void EditController::ItemNotSelect(void)
 				return;
 			}
 			//アイテムを追加
-			MapEditer::STATUS status;
-			status.mapPos = mapPos_;
-			status.rotate = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
-			status.type = itemType_;
-			MapEditer::GetInstance().AddItem(status,ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_));
+			//MapEditer::STATUS status;
+			//status.mapPos = mapPos_;
+			//status.rotate = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
+			//status.type = itemType_;
+			//MapEditer::GetInstance().AddItem(status,ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_));
 			itemType_ = ItemBase::ITEM_TYPE::NONE;
-			ItemManager::GetInstance().DummyItemAddItems(playerNum_);
+			//ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 			//選択解除
 			ChengeMode(MODE::ITEM_SELECT);
 		}
