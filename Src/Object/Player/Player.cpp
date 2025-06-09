@@ -63,9 +63,6 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 	hitItemType_ = ItemBase::ITEM_TYPE::NONE;
 
 	input_ = nullptr;
-
-	//当たり判定の初期化
-
 }
 
 Player::~Player(void)
@@ -76,6 +73,9 @@ void Player::Load(void)
 {
 	//アニメーションでmodelIdを使うので先にモデルセットする
 	trans_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::CHICKEN));
+	//当たり判定の初期化
+	trans_.MakeCollider(Collider::COL_TAG::PLAYER);
+
 
 	//リソースの読み込みなど
 	animationController_ = std::make_shared<AnimationController>(trans_.modelId);
@@ -85,6 +85,7 @@ void Player::Load(void)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_SPD / PUNCH_TIME_MAX);
+
 
 
 	//入力
@@ -125,7 +126,6 @@ void Player::Init(void)
 
 
 	itemLocalPos_ = Utility::VECTOR_ZERO;
-	trans_.MakeCollider(Collider::COL_TAG::PLAYER);
 	trans_.Update();
 }
 
@@ -435,7 +435,7 @@ void Player::HitItem(const IntVector3 _colPos)
 		Transform itemTrans = itemMng.GetItemTransform(lPos,type);
 
 		//UpDownColl();
-		ArroundColl(itemTrans);
+		//ArroundColl(itemTrans);
 
 		itemLPos_.push_back(lPos);
 	}
@@ -616,8 +616,9 @@ void Player::ArroundColl(Transform _itemTrans)
 }
 
 #ifdef DEBUG_ON
-void Player::HitAction(bool _isHit, VECTOR _hitPos, VECTOR _itemPos)
+void Player::HitAction(Collider::COL_TAG _tag, bool _isHit, VECTOR _hitPos, VECTOR _itemPos)
 {
+	if (_tag == Collider::COL_TAG::PLAYER)return;
 	//移動後と移動前をとる
 	VECTOR prePos = trans_.pos;
 	VECTOR curPos = movedPos_;

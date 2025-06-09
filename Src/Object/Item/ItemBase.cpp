@@ -1,4 +1,5 @@
 #include"../Manager/Game/MapEditer.h"
+#include"../Manager/Game/CollisionManager.h"
 #include"../Utility/Utility.h"
 #include "ItemBase.h"
 
@@ -11,7 +12,6 @@ ItemBase::ItemBase()
 
 	InitMapPos_ = INT_VECTOR_ZERO;
 
-	trans_.MakeCollider(Collider::COL_TAG::STAGE);
 }
 
 ItemBase::~ItemBase()
@@ -44,12 +44,17 @@ void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot, ITEM_TYPE _itemType)
 
 	//基本初期化
 	Init();
+
+
 }
 
 void ItemBase::Init()
 {
 	//個々の設定
 	SetParam();
+
+	//モデル情報を決めた後にコライダを設定
+	trans_.MakeCollider(Collider::COL_TAG::STAGE);
 
 	//モデルの更新
 	trans_.Update();

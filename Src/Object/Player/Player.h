@@ -206,7 +206,8 @@ public:
 
 	//アイテム当たり判定情報セッタ
 	//void SetItemHitColInfo(const GameScene::ITEM_COL_INFO _colInfo) { colInfo_ = _colInfo; }
-
+	//当たった時の処理
+	void HitAction(Collider::COL_TAG _tag, bool _isHit, VECTOR _hitPos, VECTOR _itemPos);
 
 #ifdef DEBUG_ON
 
@@ -369,8 +370,7 @@ private:
 	void ArroundColl(Transform _itemTrans);
 
 
-	//当たった時の処理
-	void HitAction(bool _isHit,VECTOR _hitPos,VECTOR _itemPos);
+
 
 	//当たった時の処理
 	void Onhit(CollisionManager::COL_TAG)override;

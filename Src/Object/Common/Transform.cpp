@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../../Utility/Utility.h"
+#include"../Manager/Game/CollisionManager.h"
 #include "Transform.h"
 
 Transform::Transform(void)
@@ -89,6 +90,7 @@ void Transform::MakeCollider(Collider::COL_TAG type)
 	}
 
 	collider = std::make_shared<Collider>(type, modelId);
+	CollisionManager::GetInstance().AddCollider(collider);
 	int ret = MV1SetupCollInfo(modelId, -1, 1, 1, 1);
 }
 

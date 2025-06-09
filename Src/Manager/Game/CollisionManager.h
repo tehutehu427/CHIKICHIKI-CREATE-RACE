@@ -3,6 +3,7 @@
 #include<memory>
 #include<vector>
 #include<map>
+#include"../Common/IntVector3.h"
 #include"../../Object/Common/Collider.h"
 class ObjectBase;
 class Collider;
@@ -33,6 +34,7 @@ public:
 	struct Coll_Info
 	{
 		Collider::COL_TAG tag;	//何と当たっているか
+		bool isHit;				//当たったか
 		VECTOR hitPos;			//当たっている座標
 		VECTOR colTargetPos;	//当たっているオブジェクトの座標
 		VECTOR normal;			//法線ベクトル
@@ -41,12 +43,21 @@ public:
 	//当たり判定の更新
 	void Update(Player& _player);
 
+	//コライダの追加
 	void AddCollider(std::weak_ptr<Collider>_collider);
+	//コライダの削除
 	void ClearCollider(void);
-	Collider::COL_TAG LineCol(VECTOR pos1, VECTOR pos2);
+	//インスタンス解放
+	void Destroy(void);
+	//線の当たり判定
+	Coll_Info LineCol(VECTOR pos1, VECTOR pos2);
+	//球の当たり判定
 	Collider::COL_TAG SphereCol(float RADIUS,VECTOR pos);
 
-
+	//プレイヤーの当たり判定を行う範囲内にアイテムがあるかを調べる
+	void CheckItemsInPlayerColRange(Player& _player, IntVector3 _colPos);
+	//アイテムの支点
+	std::vector<IntVector3>itemLPos_;
 private:
 	//コピーコンストラクタの防止
 	CollisionManager(void);

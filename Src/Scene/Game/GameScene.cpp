@@ -11,6 +11,7 @@
 #include "../../Manager/Game/MapEditer.h"
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/Game/PlayerManager.h"
+#include "../../Manager/Game/CollisionManager.h"
 #include "../../Object/Player/Player.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Editor/MapDataIO.h"
@@ -51,12 +52,17 @@ void GameScene::Load(void)
 	//フォントの生成
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
+	//プレイヤーマネージャ生成とロード
 	PlayerManager::CreateInstance(PLAYER_NUM);
 	PlayerManager::GetInstance().Load();
 
 	MapEditer::CreateInstance();
 
 	GravityManager::CreateInstance();
+
+	//コリジョンマネージャの生成
+	CollisionManager::CreateInstance();
+
 	//player_ = std::make_unique<Player>();
 	//player_->Load();
 
@@ -315,7 +321,7 @@ void GameScene::Collision(void)
 
 	for (auto& player : pMng.GetPlayers())
 	{
-		CheckHitCol(*player);
+		CollisionManager::GetInstance().Update(*player);
 	}
 }
 
