@@ -28,7 +28,7 @@ public:
 	void Draw(void)override;
 
 	//ƒTƒCƒY‚Ìæ“¾
-	const IntVector3 GetSize(void)const override;
+	const IntVector3 GetHitSize(void)const override;
 
 	/// <summary>
 	/// “–‚½‚Á‚½ˆ—

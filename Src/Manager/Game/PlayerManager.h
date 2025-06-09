@@ -64,12 +64,16 @@ public:
 	//ゲッタ
 	//*****************************************
 	//モデル情報ゲッタ
-	const Transform GetPlayerTransform(const int _num) { return players_[_num]->GetTransform(); }
+	const Transform& GetPlayerTransform(const int _num) { return players_[_num]->GetTransform(); }
 
 	//移動後座標
 	const VECTOR GetPlayerMovedPos(const int _num) { return players_[_num]->GetMovedPos(); }
 
 	const std::vector<bool>GetPlayersIsDeath(void);
+
+	std::vector<std::unique_ptr<Player>>&GetPlayers(void) { return players_; }
+
+	Player& GetPlayer(int _num) { return *players_[_num]; }
 
 	//****************************************
 	//セッタ
