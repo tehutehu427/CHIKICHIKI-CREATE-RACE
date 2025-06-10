@@ -211,7 +211,7 @@ public:
 
 #ifdef DEBUG_ON
 
-
+	int tag_;	//当たり判定のタグ
 	//デバッグキューブのサイズ
 	static constexpr float CUBE_W = 200.0F;
 	static constexpr float CUBE_H = 10.0F;

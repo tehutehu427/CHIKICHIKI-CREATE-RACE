@@ -205,7 +205,7 @@ void Player::DrawDebug(void)
 		,stepJump_
 		,jumpPow_.x,jumpPow_.y,jumpPow_.z
 		,movedPos_.x,movedPos_.y,movedPos_.z
-		,hitItemType_
+		,tag_
 	);
 	if (IsDeath())
 	{
@@ -469,21 +469,21 @@ void Player::Collision(void)
 
 	//UpDownColl();
 
-	MapEditer& mapEdit = MapEditer::GetInstance();
-	IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
-	for (int x = -COL_RANGE; x <= COL_RANGE; x++)
-	{
-		for (int y = -COL_RANGE; y <= COL_RANGE; y++)
-		{
-			for (int z = -COL_RANGE; z <= COL_RANGE; z++)
-			{
-				colPos_ = mapPos + IntVector3{x, y, z};
-				if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
-				HitItem(colPos_);
-			}
-		}
-	}
-	itemLPos_.clear();
+	//MapEditer& mapEdit = MapEditer::GetInstance();
+	//IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
+	//for (int x = -COL_RANGE; x <= COL_RANGE; x++)
+	//{
+	//	for (int y = -COL_RANGE; y <= COL_RANGE; y++)
+	//	{
+	//		for (int z = -COL_RANGE; z <= COL_RANGE; z++)
+	//		{
+	//			colPos_ = mapPos + IntVector3{x, y, z};
+	//			if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
+	//			HitItem(colPos_);
+	//		}
+	//	}
+	//}
+	//itemLPos_.clear();
 
 #ifdef DEBUG_ON
 
@@ -618,6 +618,11 @@ void Player::ArroundColl(Transform _itemTrans)
 #ifdef DEBUG_ON
 void Player::HitAction(Collider::COL_TAG _tag, bool _isHit, VECTOR _hitPos, VECTOR _itemPos)
 {
+#ifdef DEBUG_ON
+	tag_ = (int)_tag;
+#endif // DEBUG_ON
+
+	
 	if (_tag == Collider::COL_TAG::PLAYER)return;
 	//ˆÚ“®Œã‚ÆˆÚ“®‘O‚ð‚Æ‚é
 	VECTOR prePos = trans_.pos;
