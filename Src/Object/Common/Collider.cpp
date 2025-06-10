@@ -1,9 +1,9 @@
 #include "Collider.h"
 
-Collider::Collider(COL_TAG type, int modelId)
+Collider::Collider(ObjectBase& _owner,COL_TAG _tag,COLLISION_TYPE _type, int _modelId):
+	owner_(_owner), tag_(_tag), type_(_type), modelId_(_modelId)
 {
-	type_ = type;
-	modelId_ = modelId;
+
 }
 
 Collider::~Collider(void)

@@ -10,6 +10,7 @@
 /// 回転　：Quaternion基準
 /// 位置　：VECTOR基準
 /// </summary>
+class ObjectBase;
 class Transform
 {
 
@@ -44,7 +45,7 @@ public:
 	Quaternion quaRotLocal;
 
 	// コライダ
-	std::shared_ptr<Collider> collider;
+	//std::shared_ptr<Collider> collider;
 
 	/// <summary>
 	/// モデル制御の基本情報更新
@@ -53,7 +54,6 @@ public:
 	void Update(void);
 
 	void SetModel(int modelHId);
-	void MakeCollider(Collider::COL_TAG type);
 
 	// 前方方向を取得
 	VECTOR GetForward(void) const;
@@ -77,5 +77,5 @@ public:
 	VECTOR GetDir(const VECTOR& vec) const;
 
 	//コライダを取得
-	std::weak_ptr<Collider> GetCollider(void) const;
+	//std::weak_ptr<Collider> GetCollider(void) const;
 };

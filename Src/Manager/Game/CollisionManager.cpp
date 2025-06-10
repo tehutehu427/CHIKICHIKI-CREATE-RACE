@@ -38,11 +38,6 @@ void CollisionManager::Update(Player& _player)
 	//itemLPos_.clear();
 }
 
-void CollisionManager::AddCollider(std::weak_ptr<Collider> _collider)
-{
-	colliders_.emplace_back(_collider);
-}
-
 void CollisionManager::ClearCollider(void)
 {
 	colliders_.clear();
@@ -66,22 +61,7 @@ CollisionManager::Coll_Info CollisionManager::LineCol(VECTOR pos1, VECTOR pos2)
 	col.hitPos = Utility::VECTOR_ZERO;
 	col.normal = Utility::VECTOR_ZERO;
 	col.colTargetPos = Utility::VECTOR_ZERO;
-	for (int i = 0; i < colliders_.size(); i++)
-	{
-		for (int j = i; j < colliders_.size(); j++)
-		{
-			if (j == i)continue;
-			auto hits = MV1CollCheck_Line(colliders_[j].lock()->modelId_, -1,
-				pos1, pos2);
-			if (hits.HitFlag > 0)
-			{
-				col.tag = colliders_[j].lock()->type_;
-				col.hitPos = hits.HitPosition;
-				col.isHit = true;
-				break;
-			}
-		}
-	}
+
 	return col;
 }
 
@@ -93,8 +73,8 @@ Collider::COL_TAG CollisionManager::SphereCol(float _radius, VECTOR _pos)
 		for (int j = i; j < colliders_.size(); j++)
 		{
 			if (j = i)continue;
-			auto hits = MV1CollCheck_Sphere(colliders_[j].lock()->modelId_, -1,
-				_pos,_radius);
+			//auto hits = MV1CollCheck_Sphere(colliders_[j].lock()->modelId_, -1,
+			//	_pos,_radius);
 		}
 	}
 	return tag;
@@ -124,9 +104,9 @@ void CollisionManager::CheckItemsInPlayerColRange(Player& _player, IntVector3 _c
 		VECTOR playerDown = _player.GetMovedPos();
 		playerDown.y -= Player::RADIUS;
 
-
-		auto lineHit = LineCol(playerUp, playerDown);
-		_player.HitAction(lineHit.tag,lineHit.isHit, lineHit.hitPos, lineHit.colTargetPos);
+		CheckCollider();
+		//auto lineHit = LineCol(playerUp, playerDown);
+		//_player.HitAction(lineHit.tag,lineHit.isHit, lineHit.hitPos, lineHit.colTargetPos);
 
 
 
@@ -137,9 +117,36 @@ void CollisionManager::CheckItemsInPlayerColRange(Player& _player, IntVector3 _c
 	}
 }
 
+void CollisionManager::CheckCollider(void)
+{
+	using COL_TYPE = Collider::COLLISION_TYPE;
+	using COL_TAG = Collider::COL_TAG;
+	for (int i = 0; i < colliders_.size(); i++)
+	{
+		for (int j = i + 1; j < colliders_.size(); j++)
+		{
+			auto colA = colliders_[i].get();
+			auto colB = colliders_[j].get();
+			Collider::COL_TAG colAtag = colA->GetTag();
+			Collider::COL_TAG colBtag = colB->GetTag();
+			if (colA->GetTag() == colB->GetTag())continue;
+			if (colA->GetColType() == COL_TYPE::LINE && colB->GetColType() == COL_TYPE::MODEL)
+			{
+				//LineCol()
+			}
+		}
+	}
+}
+
 CollisionManager::CollisionManager(void)
 {
 
+}
+
+void CollisionManager::MakeColllider(ObjectBase& _owner, Collider::COLLISION_TYPE _type, Collider::COL_TAG _tag,int _modelId)
+{
+	std::unique_ptr<Collider>collider = std::make_unique<Collider>(_owner, _tag, _type,_modelId);
+	colliders_.emplace_back(std::move(collider));
 }
 
 CollisionManager::~CollisionManager(void)

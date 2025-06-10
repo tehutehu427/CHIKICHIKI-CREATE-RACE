@@ -74,7 +74,7 @@ void Player::Load(void)
 	//アニメーションでmodelIdを使うので先にモデルセットする
 	trans_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::CHICKEN));
 	//当たり判定の初期化
-	trans_.MakeCollider(Collider::COL_TAG::PLAYER);
+	CollisionManager::GetInstance().MakeColllider(*this,Collider::COLLISION_TYPE::SPHERE,Collider::COL_TAG::PLAYER,trans_.modelId);
 
 
 	//リソースの読み込みなど
