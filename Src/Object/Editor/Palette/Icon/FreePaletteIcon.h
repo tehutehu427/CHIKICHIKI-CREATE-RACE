@@ -9,7 +9,7 @@ public:
 	FreePaletteIcon();
 
 	//デストラクタ
-	~FreePaletteIcon();
+	~FreePaletteIcon()override;
 
 	//初期化
 	void Init()override;

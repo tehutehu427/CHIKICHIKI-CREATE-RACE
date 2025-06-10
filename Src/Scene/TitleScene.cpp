@@ -14,6 +14,8 @@ TitleScene::TitleScene(void)
 	updataFunc_ = std::bind(&TitleScene::LoadingUpdate, this);
 	//描画関数のセット
 	drawFunc_ = std::bind(&TitleScene::LoadingDraw, this);
+
+	imgTitleLogo_ = -1;
 }
 
 TitleScene::~TitleScene(void)
@@ -23,12 +25,16 @@ TitleScene::~TitleScene(void)
 
 void TitleScene::Load(void)
 {
+	ResourceManager& res = ResourceManager::GetInstance();
+	imgTitleLogo_ = res.Load(ResourceManager::SRC::TITLE_LOGO).handleId_;
+
 	//フォントの登録
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 }
 
 void TitleScene::Init(void)
 {
+
 }
 
 void TitleScene::NormalUpdate(void)
@@ -56,6 +62,16 @@ void TitleScene::NormalDraw(void)
 		0, 0,
 		0x000000,
 		"TitleScene"
+	);
+
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y,
+		1.0f,
+		0.0f,
+		imgTitleLogo_,
+		true,
+		false
 	);
 }
 

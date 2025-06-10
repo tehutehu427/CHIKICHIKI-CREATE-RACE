@@ -9,6 +9,17 @@ PlayerManager* PlayerManager::instance_ = nullptr;
 PlayerManager::PlayerManager(int _playerNum)
 {
 	playerNum_ = _playerNum;
+	cntl_ = PlayerInput::CNTL::NONE;
+	for (int i = 0; i < playerNum_; i++)
+	{
+		isGoal_.emplace_back(false);
+		isDeath_.emplace_back(false);
+	}
+}
+
+PlayerManager::~PlayerManager(void)
+{
+	instance_ = nullptr;
 }
 
 void PlayerManager::CreateInstance(int _playerNum)
@@ -17,7 +28,7 @@ void PlayerManager::CreateInstance(int _playerNum)
 	{
 		instance_ = new PlayerManager(_playerNum);
 	}
-	instance_->Init();
+	//instance_->Init();
 }
 
 void PlayerManager::Destroy(void)
@@ -31,13 +42,13 @@ PlayerManager& PlayerManager::GetInstance(void)
 	return *instance_;
 }
 
-void PlayerManager::Init(void)
+void PlayerManager::Load(void)
 {
-	if (playerNum_ > PLAYER_SINGLE) { cntl_ = PlayerInput::CNTL::PAD; }
-	else { cntl_ = PlayerInput::CNTL::KEYBOARD; }
 	for (int i = 0; i < playerNum_; i++)
 	{
 #ifdef DEBUG_ON
+
+#endif // DEBUG_ON
 		if (i == 0)
 		{
 			cntl_ = PlayerInput::CNTL::KEYBOARD;
@@ -46,13 +57,22 @@ void PlayerManager::Init(void)
 		{
 			cntl_ = PlayerInput::CNTL::PAD;
 		}
-#endif // DEBUG_ON
 		std::unique_ptr<Player> player;
-		Transform trans=FixTrans(i);
-		player = std::make_unique<Player>(i,trans, cntl_);
-		player->Init();
+		player = std::make_unique<Player>(i, cntl_);
+		player->Load();
 		players_.push_back(std::move(player));
 	}
+}
+
+void PlayerManager::Init(void)
+{
+	if (playerNum_ > PLAYER_SINGLE) { cntl_ = PlayerInput::CNTL::PAD; }
+	else { cntl_ = PlayerInput::CNTL::KEYBOARD; }
+	for (auto& player : players_)
+	{
+		player->Init();
+	}
+
 }
 
 void PlayerManager::Update(void)
@@ -68,6 +88,7 @@ void PlayerManager::Draw(void)
 {
 	for (auto& p : players_)
 	{
+		p->ChangeModelColor({ 0.0f,0.0f,0.5f,1.0f });
 		p->Draw();
 	}
 }
@@ -137,6 +158,53 @@ bool PlayerManager::IsHitCapsules(const std::weak_ptr<Capsule> cap1, const std::
 	return false;
 }
 
+const std::vector<bool> PlayerManager::GetPlayersIsDeath(void)
+{
+	for (int i=0;i<playerNum_;i++)
+	{
+		isDeath_[i] = players_[i]->IsDeath();
+	}
+	return isDeath_;
+}
+
+void PlayerManager::SetInitPos(VECTOR _worldPos)
+{
+	for (int i = 0; i < playerNum_; i++)
+	{
+		float posX = i % 2 == 0 ? START_POS : -START_POS;
+		float posZ = i < 2 ? START_POS : -START_POS;
+		players_[i]->SetPos({ posX+_worldPos.x, _worldPos.y, posZ+_worldPos.z }) ;
+	}
+}
+
+std::vector<bool> PlayerManager::IsGoalPlayers(void)
+{
+	for (int i=0;i<playerNum_;i++)
+	{
+		if (players_[i]->GetHitItemType() == ItemBase::ITEM_TYPE::GOAL)
+		{
+			isGoal_[i] = true;
+		}
+		else
+		{
+			isGoal_[i] = false;
+		}
+	}
+	return isGoal_;
+}
+
+bool PlayerManager::IsPlayersEnd(void)
+{
+	for (int i = 0; i < playerNum_; i++)
+	{
+		if (!players_[i]->IsDeath() && players_[i]->GetHitItemType() != ItemBase::ITEM_TYPE::GOAL)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 //void PlayerManager::P2PPush(int _pNum1,int _pNum2)
 //{
 //	//同じプレイヤー番号なら抜ける
@@ -168,18 +236,15 @@ Transform PlayerManager::FixTrans(int _playerNum)
 	ResourceManager& resIns = ResourceManager::GetInstance();
 	//番号でモデルを変える(予定)
 	trans.SetModel(resIns.LoadModelDuplicate(ResourceManager::SRC::CHICKEN));
-	
+
 	//transの初期化
 	PLAYER num = static_cast<PLAYER>(_playerNum);
-	float x = 0.0f;
+	
 	trans.quaRot = Quaternion();
 	trans.scl = MODEL_SCL;
 	trans.quaRotLocal =
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
-	
-	x = PLAYER_ONE_POS_X + DISTANCE_POS * _playerNum;
 
-	trans.pos = { x,0.0f,0.0f };
 	trans.localPos = { 0.0f,-Player::RADIUS,0.0f };
 	return trans;
 }

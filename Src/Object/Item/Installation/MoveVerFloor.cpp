@@ -30,6 +30,9 @@ void MoveVerFloor::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::MOVE_FLOOR));
 
+	//モデルIDのコピー
+	models_.emplace_back(&trans_.modelId);
+
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
@@ -64,11 +67,11 @@ void MoveVerFloor::Update(void)
 
 void MoveVerFloor::Draw(void)
 {
-	DrawLine3D(route_[0], route_[1], 0xffffff);
+	DrawLine3D(VAdd(route_[0], MAP_LOCALPOS), VAdd(route_[1], MAP_LOCALPOS), Utility::BLACK);
 	MV1DrawModel(trans_.modelId);
 }
 
-const IntVector3 MoveVerFloor::GetSize(void) const
+const IntVector3 MoveVerFloor::GetHitSize(void) const
 {
 	return size_ + IntVector3(0, MOVE_Y, 0);
 }

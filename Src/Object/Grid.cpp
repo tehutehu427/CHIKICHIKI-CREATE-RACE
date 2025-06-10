@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../Manager/Game/MapEditer.h"
+#include "../Utility/Utility.h"
 #include "Grid.h"
 
 Grid::Grid(void)
@@ -40,7 +41,8 @@ void Grid::Draw(void)
 			sPos = {static_cast<float>( i * size),static_cast<float>(j * size),0 };
 			ePos = {static_cast<float>( i * size),static_cast<float>(j * size),static_cast<float>(lineNum.z * size) };
 
-			DrawLine3D(sPos, ePos, 0x0000ff);
+			DrawLine3D(sPos, ePos,Utility::GRAY);
+			//Utility::DrawPointLine3D(sPos, ePos, Utility::GRAY);
 		}
 	}
 	for (int i = 0; i <= lineNum.x; i++)
@@ -50,7 +52,8 @@ void Grid::Draw(void)
 			sPos = {static_cast<float>( i * size),0,static_cast<float>(j * size) };
 			ePos = {static_cast<float>( i * size),static_cast<float>(lineNum.y * size),static_cast<float>(j * size) };
 
-			DrawLine3D(sPos, ePos, 0xff0000);
+			DrawLine3D(sPos, ePos, Utility::GRAY);
+			//Utility::DrawPointLine3D(sPos, ePos, Utility::GRAY);
 		}
 	}
 	for (int i = 0; i <= lineNum.y; i++)
@@ -60,7 +63,8 @@ void Grid::Draw(void)
 			sPos = {0,static_cast<float>( i * size),static_cast<float>(j * size) };
 			ePos = {static_cast<float>(lineNum.x * size),static_cast<float>( i * size),static_cast<float>(j * size) };
 
-			DrawLine3D(sPos, ePos, 0x00ff00);
+			DrawLine3D(sPos, ePos, Utility::GRAY);
+			//Utility::DrawPointLine3D(sPos, ePos, Utility::GRAY);
 		}
 	}
 

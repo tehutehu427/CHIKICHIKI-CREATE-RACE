@@ -3,12 +3,11 @@
 #include <map>
 #include <functional>
 #include "../Common/AnimationController.h"
-#include "../Common/Capsule.h"
-#include "../../Manager/System/Camera.h"
+#include "../Object/item/ItemBase.h"
 #include"./Process/PlayerInput.h"
 #include "../ObjectBase.h"
 
-#define DEBUG_ON
+//#define DEBUG_ON
 class Camera;
 class PMove;
 class PJump;
@@ -25,9 +24,19 @@ public:
 	static constexpr VECTOR CAPSULE_DOWN = { 0.0f, 0.0f, 0.0f };
 	//半径
 	static constexpr float RADIUS = 25.0f;
+	//プレイヤーの大きさ
+	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
+	//プレイヤー１のX座標
+	static constexpr float PLAYER_ONE_POS_X = -20.0f;
+	//座標の間隔
+	static constexpr float DISTANCE_POS = 50.0f;
+	//当たり判定の押し出し回数
+	static constexpr int COL_TRY_CNT_MAX = 10;
+
 
 	//落ちるアニメーションのスタート
 	static constexpr float FALL_ANIM_START = 32.0f;
+	//落ちるアニメーションの終わり
 	static constexpr float FALL_ANIM_END = 59.0f;
 
 	//死ぬ判定の座標の基準
@@ -36,10 +45,8 @@ public:
 	//----------------------------------
 	//移動スピード
 	static constexpr float MOVE_SPEED = 7.0f;
-
 	//ぶっ飛ぶスピード
-	static constexpr float FLY_AWAY_SPEED = 20.0f;
-
+	static constexpr float FLY_AWAY_SPEED = 12.0f;
 	//落ちているときの重力制限(jumpPowに加算しているのでjumpPowに適用)
 	static constexpr float LIMIT_GRAVITY = -20.0f;
 
@@ -48,10 +55,8 @@ public:
 	//----------------------------------
 	//ジャンプ力
 	static constexpr float POW_JUMP = 20.0f;
-
 	//ジャンプ加速の倍率
 	static constexpr float TIME_JUMP_SCALE = 1.0f;
-
 	//ジャンプ時間
 	static constexpr float TIME_JUMP = 3.0f;
 
@@ -129,10 +134,10 @@ public:
 
 	//******************************************
 	// コンストラクタ
-	Player(int _playerNum,Transform _trans,PlayerInput::CNTL _cntl);
+	Player(int _playerNum,PlayerInput::CNTL _cntl);
 
 	// デストラクタ
-	~Player(void) = default;
+	~Player(void);
 
 	void Load(void)override;
 	void Init(void)override;
@@ -143,9 +148,6 @@ public:
 	//******************************************
 	//プレイヤー番号
 	const int GetPlayerNum(void)const { return playerNum_; }
-
-	//カプセル情報
-	const std::weak_ptr<Capsule> GetCapsule(void)const { return capsule_; }
 
 	const PlayerInput::CNTL GetCntl(void) { return cntl_; }
 
@@ -161,6 +163,19 @@ public:
 
 	//プレイヤー座標
 	const VECTOR GetPos(void)const { return trans_.pos; }
+
+	//移動後のプレイヤー座標
+	const VECTOR GetMovedPos(void)const { return movedPos_; }
+
+	//当たり判定を確認しているマップ座標
+	const IntVector3 GetColPos(void)const { return colPos_; }
+
+	//死んだ判定
+	bool IsDeath(void);
+
+	//当たったアイテム
+	const ItemBase::ITEM_TYPE GetHitItemType(void)const { return hitItemType_; }
+
 	//******************************************
 	//セッタ
 	//******************************************
@@ -179,16 +194,25 @@ public:
 	//方向
 	void SetDir(const VECTOR _dir) { dir_ = _dir; }
 
-#ifdef DEBUG_ON
+	/// <summary>
+	/// 座標
+	/// </summary>
+	/// <param name="_worldPos">ワールド座標</param>
+	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
+	//コントローラーセット
 	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
+
+	//プレイヤー番号ゲット
 	const int PlayerNum(void) { return playerNum_; }
+#ifdef DEBUG_ON
+
 
 	//デバッグキューブのサイズ
 	static constexpr float CUBE_W = 200.0F;
 	static constexpr float CUBE_H = 10.0F;
 	static constexpr float CUBE_D = 200.0F;
 #endif // DEBUG_ON
-
+	void ChangeModelColor(const COLOR_F _colorScale)override;
 	
 
 private:
@@ -213,15 +237,15 @@ private:
 	//アイテムの支点
 	std::vector<IntVector3> itemLPos_;
 
+	//当たり判定で調べる座標
+	IntVector3 colPos_;
+
 	
 
 	//オブジェクト関連
 	//--------------------------------------------
 	// アニメーション
 	std::shared_ptr<AnimationController> animationController_;
-
-	//カプセル
-	std::shared_ptr<Capsule> capsule_;
 
 	//操作入力
 	std::shared_ptr<PlayerInput> input_;
@@ -231,6 +255,9 @@ private:
 
 	//他プレイヤーとの当たりフラグ　true:当たっている
 	bool isCol_;
+
+	//当たっているアイテムタイプ
+	ItemBase::ITEM_TYPE hitItemType_;	
 
 
 	//アクション関係
@@ -296,8 +323,7 @@ private:
 	//最終的に動かしたい角度の設定
 	void SetGoalRotate(double _deg);
 
-	//死んだ判定
-	bool IsDeath(void);
+
 
 	//ジャンプ
 	void Jump(void);
@@ -314,11 +340,17 @@ private:
 	/// <param name="_localPos">相対座標</param>
 	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot,VECTOR _localPos);
 
-	//重力による移動量
+	//アイテム都の当たり判定
 	void HitItem(const IntVector3 _colPos);
 
 	//当たり判定
 	void Collision(void);
+
+	//地面との当たり判定(動いてる床とか)
+	void UpDownColl(const Transform _itemTrans);
+
+	//周囲との当たり判定
+	void ArroundColl(Transform _itemTrans);
 
 #ifdef DEBUG_ON
 	void CubeMove(void);

@@ -21,9 +21,9 @@ ResourceManager& ResourceManager::GetInstance(void)
 
 void ResourceManager::Init(void)
 {
-	static std::string PATH_IMG = Application::PATH_IMAGE;
-	static std::string PATH_MDL = Application::PATH_MODEL;
-	static std::string PATH_EFF = Application::PATH_EFFECT;
+	std::string PATH_IMG = Application::PATH_IMAGE;
+	std::string PATH_MDL = Application::PATH_MODEL;
+	std::string PATH_EFF = Application::PATH_EFFECT;
 
 	std::unique_ptr<Resource> res;
 
@@ -43,11 +43,21 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "PaletteIcons.png");
 	resourcesMap_.emplace(SRC::PALETTE_ICONS, std::move(res));
 
-	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "Arc.png");
-	resourcesMap_.emplace(SRC::ARC, std::move(res));
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "Cursors.png",IMG_CURSORS_DIV_X, IMG_CURSORS_DIV_Y, IMG_CURSORS_SIZE, IMG_CURSORS_SIZE);
+	resourcesMap_.emplace(SRC::CURSORS, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "Arcs.png", IMG_ARCS_DIV_X, IMG_ARCS_DIV_Y, IMG_ARC_SIZE, IMG_ARC_SIZE);
 	resourcesMap_.emplace(SRC::ARCS, std::move(res));
+	
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "BackArc.png");
+	resourcesMap_.emplace(SRC::BACK_ARC, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "ShadowArc.png");
+	resourcesMap_.emplace(SRC::SHADOW_ARC, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Title + "TitleLogo.png");
+	resourcesMap_.emplace(SRC::TITLE_LOGO, std::move(res));
+
 #pragma endregion 
 
 #pragma region ƒ}ƒXƒN‰æ‘œ
@@ -149,6 +159,10 @@ int ResourceManager::LoadModelDuplicate(SRC src)
 }
 
 ResourceManager::ResourceManager(void)
+{
+}
+
+ResourceManager::~ResourceManager(void)
 {
 }
 

@@ -67,7 +67,7 @@ void ItemManager::Draw(void)
 		}
 
 		//他オブジェクトと重なっているか
-		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize()))
+		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize(),item.second->GetHitSize(),GetDummyItemRotY(item.first)))
 		{
 			item.second->ChangeModelColor(ItemManager::DUMMY_OVERLAP_COLOR);
 		}
@@ -92,7 +92,7 @@ void ItemManager::Destroy(void)
 	}
 }
 
-void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type)
+void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type,float rotY)
 {
 	//アイテム
 	std::shared_ptr<ItemBase> item;
@@ -103,6 +103,7 @@ void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE
 	{
 		return;
 	}
+	item->SetRotY(rotY);
 	//配列に追加
 	items_[type].emplace_back(std::move(item));
 }
@@ -177,6 +178,18 @@ IntVector3 ItemManager::GetDummyItemMapPos(int playerNum)
 	return mapPos;
 }
 
+IntVector3 ItemManager::GetDummyItemHitSize(int playerNum)
+{
+	//アイテムの大きさ
+	IntVector3 size;
+	if (dummyItems_.find(playerNum) == dummyItems_.end() || dummyItems_[playerNum] == nullptr)
+	{
+		return { -1,-1,-1 };
+	}
+	size = dummyItems_[playerNum]->GetHitSize();
+	return size;
+}
+
 IntVector3 ItemManager::GetDummyItemSize(int playerNum)
 {
 	//アイテムの大きさ
@@ -218,13 +231,17 @@ void ItemManager::ResetDummyItem(int playerNum, ItemBase::ITEM_TYPE type,IntVect
 	//指定プレイヤーのダミーアイテムがあるか
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return;
+		}
 		//モデルの回転情報は保存
 		Transform transform = dummyItems_[playerNum]->GetTransform();
 		
 		//新たに指定されたアイテムを生成
 		std::shared_ptr<ItemBase> dummy;
 		dummy = CreateItem(type, mapPos, transform.quaRot);
-
+		dummy->SetRotY(GetDummyItemRotY(playerNum));
 		//元あったアイテムの削除
 		dummyItems_.erase(playerNum);
 
@@ -238,6 +255,10 @@ void ItemManager::DummyItemSetMapPos(IntVector3 mapPos, int playerNum)
 	//指定プレイヤーのダミーアイテムがあるか
 	if (dummyItems_.find(playerNum) != dummyItems_.end())
 	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return;
+		}
 		//見つかった
 		dummyItems_[playerNum]->SetPos(mapPos);
 	}
@@ -272,7 +293,10 @@ void ItemManager::DummyItemAddItems(int playerNum)
 		{
 			return;
 		}
-		AddItem(dummyItems_[playerNum]->GetInitMapPos(), dummyItems_[playerNum]->GetTransform().quaRot, dummyItems_[playerNum]->GetStatus().itemType);
+		AddItem(dummyItems_[playerNum]->GetInitMapPos(), dummyItems_[playerNum]->GetTransform().quaRot, dummyItems_[playerNum]->GetStatus().itemType,dummyItems_[playerNum]->GetRotY());
+		//items_[dummyItems_[playerNum]->GetStatus().itemType].emplace_back(dummyItems_[playerNum]);
+		
+		//ダミー内の要素を消す
 		dummyItems_.erase(playerNum);
 	}
 }
@@ -344,7 +368,7 @@ bool ItemManager::ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapP
 						continue;
 					}
 					dummyItems_[playerNum] = CreateItem(_type, _mapPos, item->GetTransform().quaRot);
-					
+					dummyItems_[playerNum]->SetRotY(item->GetRotY());
 					//元情報を削除
 					item = nullptr;
 					return true;
@@ -406,14 +430,126 @@ Transform ItemManager::GetItemTransform(IntVector3 _mapPos, ItemBase::ITEM_TYPE 
 	return Transform{};
 }
 
-//void ItemManager::MoveSubItemOwner(const ItemBase::ITEM_TYPE _type, std::shared_ptr<ItemBase> _subItem)
-//{
-//	//初期化処理
-//	_subItem->Init();
-//
-//	//所有権明け渡し
-//	items_[_type].emplace_back(_subItem);
-//}
+IntVector3 ItemManager::GetItemHitSize(ItemBase::ITEM_TYPE _type) const
+{
+	//アイテムのサイズ
+	IntVector3 size = { -1,-1,-1 };
+	auto item = GetInstance().CreateItem(_type, { -1,-1,-1 }, {});
+	size = item->GetHitSize();
+	return size;
+}
+
+IntVector3 ItemManager::GetItemSize(ItemBase::ITEM_TYPE _type) const
+{
+	//アイテムのサイズ
+	IntVector3 size = { -1,-1,-1 };
+	auto item = GetInstance().CreateItem(_type, { -1,-1,-1 }, {});
+	size =item->GetSize();
+	return size;
+}
+
+VECTOR ItemManager::GetStartWorldPos(void) const
+{
+	VECTOR startPos = { -1.0f,-1.0f,-1.0f };
+	auto it = items_.find(ItemBase::ITEM_TYPE::START);
+	if (it != items_.end())
+	{
+		for (auto& item : it->second)
+		{
+			if (item == nullptr)
+			{
+				continue;
+			}
+			IntVector3 mapPos = item->GetInitMapPos();
+			//マップ座標からワールド座標に変換
+			IntVector3 startMapSize = item->GetSize();
+			startPos = MapEditer::GetInstance().MapToWorldPos(mapPos + IntVector3{ startMapSize.x / 2,startMapSize.y,startMapSize.z / 2 });
+			startPos.x += startMapSize.x % 2 == 0 ? 0.0f : MapEditer::GRID_SIZE / 2.0f;
+			startPos.y += startMapSize.y % 2 == 0 ? 0.0f : MapEditer::GRID_SIZE / 2.0f;
+			startPos.z += startMapSize.z % 2 == 0 ? 0.0f : MapEditer::GRID_SIZE / 2.0f;
+		}
+	}
+	return startPos;
+}
+
+bool ItemManager::AllDummyItemAddItems(void)
+{
+	bool isClear = true;	//アイテムをすべて移せたか
+	std::vector<int> playerNum;
+	//各ダミーアイテム
+	for (auto& item : dummyItems_)
+	{
+		//まだ設置してない
+		if (item.second == nullptr)
+		{
+			//飛ばす
+			continue;
+		}
+
+		//他オブジェクトと重なっているか
+		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize(),item.second->GetHitSize(),GetDummyItemRotY(item.first)))
+		{
+			isClear = false;
+		}
+		//重なっていない
+		else
+		{
+			playerNum.push_back(item.first);
+		}
+	}
+	for (auto& pNum : playerNum)
+	{
+		MapEditer::STATUS status;
+		status.mapPos = GetDummyItemMapPos(pNum);
+		status.rotate = GetDummyItemTransform(pNum).quaRot;
+		status.type = dummyItems_[pNum]->GetStatus().itemType;
+		MapEditer::GetInstance().AddItem(status, GetDummyItemSize(pNum),GetDummyItemHitSize(pNum), GetDummyItemRotY(pNum));
+		DummyItemAddItems(pNum);
+	}
+	return isClear;
+}
+
+void ItemManager::ResetItemValue(void)
+{
+	//全アイテムタイプ
+	for (auto& itemType : items_)
+	{
+		//全アイテム
+		for (auto& item : itemType.second)
+		{
+			if (item == nullptr)continue;
+
+			//値初期化
+			item->ResetValue();
+		}
+	}
+}
+
+float ItemManager::GetDummyItemRotY(int playerNum)
+{
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return 0.0f;
+		}
+		return dummyItems_[playerNum]->GetRotY();
+	}
+	return 0.0f;
+}
+
+void ItemManager::SetDummyItemRotY(int playerNum , float rotY)
+{
+	if (dummyItems_.find(playerNum) != dummyItems_.end())
+	{
+		if (dummyItems_[playerNum] == nullptr)
+		{
+			return ;
+		}
+		dummyItems_[playerNum]->SetRotY(rotY);
+	}
+	return;
+}
 
 ItemManager::ItemManager(void)
 {
@@ -432,6 +568,8 @@ std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntV
 	//種類ごとの生成
 	switch (type)
 	{
+	case ItemBase::ITEM_TYPE::NONE:
+		break;
 	case ItemBase::ITEM_TYPE::START:
 		item = std::make_shared<StartFlag>();
 		break;

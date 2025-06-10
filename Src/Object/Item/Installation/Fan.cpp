@@ -1,3 +1,4 @@
+#include"../Utility/Utility.h"
 #include"../Manager/System/Resource.h"
 #include"../Manager/System/ResourceManager.h"
 #include "Fan.h"
@@ -15,6 +16,9 @@ void Fan::SetParam(void)
 	//モデルの基本設定
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::FAN));
+
+	//モデルIDのコピー
+	models_.emplace_back(&trans_.modelId);
 
 	//ステータス初期化
 	size_ = MAP_SIZE;
@@ -38,4 +42,17 @@ void Fan::SetParam(void)
 
 void Fan::Update(void)
 {
+}
+
+void Fan::Draw(void)
+{
+	//共通
+	ItemBase::Draw();
+
+	VECTOR fanCenterPos = VAdd(trans_.pos, trans_.localPos);
+
+	//風
+	DrawCube3D(VAdd(fanCenterPos, { MODEL_SIZE.x / 2.0f,-MODEL_SIZE.y/2.0f,30.0f }),
+		VAdd(fanCenterPos, { -MODEL_SIZE.x / 2.0f,MODEL_SIZE.y / 2.0f,400.0f }),
+		Utility::WHITE, Utility::WHITE, false);
 }

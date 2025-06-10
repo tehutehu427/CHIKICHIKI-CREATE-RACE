@@ -11,7 +11,7 @@ public:
 	TitleScene(void);
 
 	// デストラクタ
-	~TitleScene(void);
+	~TitleScene(void) override;
 
 	//読み込み処理
 	void Load(void) override;
@@ -20,6 +20,9 @@ public:
 	void Init(void) override;
 
 private:
+
+	//タイトル画像
+	int imgTitleLogo_;
 
 	//更新関数
 	void NormalUpdate(void) override;

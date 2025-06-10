@@ -117,4 +117,7 @@ private:
 	//確認画面のコマンドの描画
 	void DrawCheckCommand();
 
+	//ファイルネームを取得
+	std::string GetFileName();
+
 };

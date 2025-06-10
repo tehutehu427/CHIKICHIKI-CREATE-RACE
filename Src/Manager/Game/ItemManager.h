@@ -29,7 +29,7 @@ public:
 	/// <param name="mapPos">生成させるマップ座標</param>
 	/// <param name="rot">生成させる時の回転情報</param>
 	/// <param name="type">アイテムの種類</param>
-	void AddItem(IntVector3 mapPos,Quaternion rot,ItemBase::ITEM_TYPE type);
+	void AddItem(IntVector3 mapPos,Quaternion rot,ItemBase::ITEM_TYPE type,float rotY);
 
 	/// <summary>
 	/// アイテム消去
@@ -57,7 +57,23 @@ public:
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのステータス</returns>
 	ItemBase::Status GetDummyItemStatus(int playerNum);
+	/// <summary>
+	/// ダミーアイテムのマップ座標を取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのマップ座標</returns>
 	IntVector3 GetDummyItemMapPos(int playerNum);
+	/// <summary>
+	/// ダミーアイテムの当たり判定サイズを取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのサイズ</returns>
+	IntVector3 GetDummyItemHitSize(int playerNum);
+	/// <summary>
+	/// ダミーアイテムのサイズを取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのサイズ</returns>
 	IntVector3 GetDummyItemSize(int playerNum);
 	/// <summary>
 	/// ダミーアイテムのTransformを取得
@@ -65,7 +81,6 @@ public:
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのTransform</returns>
 	Transform GetDummyItemTransform(int playerNum);
-	
 	/// <summary>
 	/// ダミーアイテムを置き換える
 	/// </summary>
@@ -97,6 +112,7 @@ public:
 
 	// 静的インスタンスの取得
 	static ItemManager& GetInstance(void);
+
 
 	/// <summary>
 	/// 指定した種類のアイテム配列を返す
@@ -131,27 +147,53 @@ public:
 	/// <param name="_type">アイテムの種類</param>
 	/// <returns></returns>
 	Transform GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
+	/// <summary>
+	/// アイテムの当たり判定大きさを取得
+	/// </summary>
+	/// <param name="_type">アイテムの種類</param>
+	/// <returns></returns>
+	IntVector3 GetItemHitSize(ItemBase::ITEM_TYPE _type) const;
+	/// <summary>
+	/// アイテムの大きさを取得
+	/// </summary>
+	/// <param name="_type">アイテムの種類</param>
+	/// <returns></returns>
+	IntVector3 GetItemSize(ItemBase::ITEM_TYPE _type) const;
+	/// <summary>
+	/// スタートのワールド座標を返す
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns></returns>
+	VECTOR GetStartWorldPos(void) const;
+
+	/// <summary>
+	/// すべてのプレイヤーのダミーアイテムをアイテムに移す
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>すべて移動でtrue</returns>
+	bool AllDummyItemAddItems(void);
+
+	//アイテムの値リセット
+	void ResetItemValue(void);
+
+	float GetDummyItemRotY(int playerNum);
+
+	void SetDummyItemRotY(int playerNum , float rotY);
+
 protected:
 
 private:
-	
-	//インスタンス
 	static ItemManager* instance_;
 
 	//種類ごとにアイテムを管理
 	std::map<ItemBase::ITEM_TYPE, std::vector<std::shared_ptr<ItemBase>>> items_;
-
 	//配置中のアイテム[プレイヤー番号][アイテムの種類]
 	std::map<int,std::shared_ptr<ItemBase>> dummyItems_;
-	
-	//コンストラクタ
 	ItemManager(void);
-
 	//コピーコンストラクタ及び代入演算の禁止
 	ItemManager(const ItemManager& instance_) = delete;
 	void operator= (const ItemManager& instance_) = delete;
 	~ItemManager(void);
-
 	//アイテムの生成
 	std::shared_ptr<ItemBase> CreateItem(ItemBase::ITEM_TYPE type, IntVector3 mapPos, Quaternion rot);
 };

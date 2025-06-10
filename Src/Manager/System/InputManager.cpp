@@ -64,7 +64,8 @@ void InputManager::Init(void)
 	//---------------------------------------------------
 
 	//デバッグ
-	Add(KEY_INPUT_C);	//ゲームクリアへの遷移
+	InputManager::GetInstance().Add(KEY_INPUT_C);	//ゲームクリアへの遷移
+	InputManager::GetInstance().Add(KEY_INPUT_RSHIFT);	//タイトルシーン遷移
 
 
 	InputManager::MouseInfo info;
@@ -203,6 +204,10 @@ bool InputManager::IsTrgUpMouseRight(void) const
 InputManager::InputManager(void)
 {
 	mouseInput_ = -1;
+}
+
+InputManager::~InputManager(void)
+{
 }
 
 const InputManager::Info& InputManager::Find(int key) const

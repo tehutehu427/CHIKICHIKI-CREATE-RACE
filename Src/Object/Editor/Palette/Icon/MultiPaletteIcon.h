@@ -1,16 +1,19 @@
 #pragma once
-#include <map>
 #include "PaletteIcon.h"
 
-class SoloPaletteIcon : public PaletteIcon
+class MultiPaletteIcon : public PaletteIcon
 {
 public:
 
-	//コンストラクタ
-	SoloPaletteIcon();
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	MultiPaletteIcon();
 
-	//デストラクタ
-	~SoloPaletteIcon() override;
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~MultiPaletteIcon() override;
 
 	//初期化
 	void Init()override;
@@ -28,6 +31,5 @@ private:
 
 	//各アイコンの描画
 	virtual void DrawItemIcon();		//アイテムアイコン
-
 };
 

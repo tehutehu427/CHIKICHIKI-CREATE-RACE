@@ -145,6 +145,12 @@ void SceneManager::Draw(void)
 	//背面スクリーンにメインスクリーンを描画
 	SetDrawScreen(DX_SCREEN_BACK);
 
+	// 画面を初期化
+	ClearDrawScreen();
+
+	// カメラ設定
+	camera_->CameraSetting();
+
 	//メインスクリーンを描画
 	DrawGraph(0, 0, mainScreen_, false);
 
@@ -238,6 +244,10 @@ SceneManager::SceneManager(void)
 
 }
 
+SceneManager::~SceneManager(void)
+{
+}
+
 void SceneManager::ResetDeltaTime(void)
 {
 	deltaTime_ = 0.016f;
@@ -290,7 +300,6 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	ResetDeltaTime();
 
 	waitSceneId_ = SCENE_ID::NONE;
-
 }
 
 void SceneManager::Fade(void)

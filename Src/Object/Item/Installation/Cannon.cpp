@@ -27,6 +27,9 @@ void Cannon::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_TURRET));
 
+	//モデルIDのコピー
+	models_.emplace_back(&trans_.modelId);
+
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
@@ -75,6 +78,9 @@ void Cannon::SetParam(void)
 	//砲身のモデル設定
 	barrelTrans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_BARREL));
+
+	//モデルIDのコピー
+	models_.emplace_back(&barrelTrans_.modelId);
 }
 
 void Cannon::Update(void)
@@ -131,10 +137,10 @@ void Cannon::Draw(void)
 
 	DrawSphere3D(targetPos_, 10.0, 20, 0xffffff, 0xffffff, true);
 
-	DrawLine3D(VAdd(barrelTrans_.pos,barrelTrans_.localPos), targetPos_, 0x666666);
-	DrawLine3D(VAdd(barrelTrans_.pos, barrelTrans_.localPos), VScale(barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal).GetForward(),1000.0f), 0x666666);
+	//DrawLine3D(VAdd(barrelTrans_.pos,barrelTrans_.localPos), targetPos_, 0x666666);
+	//DrawLine3D(VAdd(barrelTrans_.pos, barrelTrans_.localPos), VScale(barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal).GetForward(),1000.0f), 0x666666);
 
-	DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
+	//DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
 
 	//弾関係
 	for (auto& shot : shots_)
