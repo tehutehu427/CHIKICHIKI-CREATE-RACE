@@ -61,6 +61,8 @@ void EditController::ChengeMode(MODE mode)
 
 void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 {
+
+	mousePos_ = InputManager::GetInstance().GetMousePos();
 	itemType_ = itemType;
 	if (itemType_ == ItemBase::ITEM_TYPE::NONE)
 	{
