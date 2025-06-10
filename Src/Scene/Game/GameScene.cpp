@@ -110,7 +110,7 @@ void GameScene::Init(void)
 	//ItemManager::GetInstance().AddItem({ 8,2,8 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
 	//ItemManager::GetInstance().AddItem({ 10,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
 	//ItemManager::GetInstance().AddItem({ 15,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
-	ChangePhase(PHASE::EDIT_PHASE);
+	//ChangePhase(PHASE::EDIT_PHASE);
 }
 
 void GameScene::NormalUpdate(void)
@@ -155,10 +155,9 @@ void GameScene::DebagUpdate(void)
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
-	if (ins.IsTrgDown(KEY_INPUT_Z))
-	{
-		ChangePhase(phase_ == PHASE::ACTION_PHASE ? PHASE::EDIT_PHASE : PHASE::ACTION_PHASE);
-	}
+
+	//フェーズ遷移は各アップデートに作ったのでここは消し
+
 	else if (ins.IsTrgDown(KEY_INPUT_C))
 	{
 		ChangePhase(PHASE::CLEAR_PHASE);
@@ -184,7 +183,7 @@ void GameScene::DebagDraw(void)
 
 	//palette_->DebagDraw();
 }
-void GameScene::ChangePhase(PHASE phase)
+void GameScene::ChangePhase(const PHASE phase)
 {
 	if (!ItemManager::GetInstance().AllDummyItemAddItems())
 	{
@@ -206,6 +205,7 @@ void GameScene::ChangePhaseEdit(void)
 	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
 	//pos = { 0.0f,250.0f,-500.0f };
 	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	ItemManager::GetInstance().ResetItemValue();
 }
 
 void GameScene::ChangePhaseAction(void)
@@ -213,9 +213,12 @@ void GameScene::ChangePhaseAction(void)
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
-	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FIXED_DIAGONAL);
+	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FOLLOW);
 	PlayerManager::GetInstance().Init();
 	PlayerManager::GetInstance().SetInitPos(ItemManager::GetInstance().GetStartWorldPos());
+	SceneManager::GetInstance().GetCamera().lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(0));
+
+	ItemManager::GetInstance().ResetItemValue();
 	//VECTOR pos;
 	//IntVector3 mPos = MapEditer::MAP_SIZE;
 	//pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) * 8.5f,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
@@ -224,10 +227,11 @@ void GameScene::ChangePhaseAction(void)
 	//angles.x = Utility::Deg2RadF(90.0);
 	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
 
-	VECTOR pos = ACTION_CAMERA_POS;
-	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
-	VECTOR angles = {};
-	angles = Quaternion::FromToRotation(pos, Camera::FIXED_DIAGONAL_TARGET_POS).ToEuler();
+	//VECTOR pos = ACTION_CAMERA_POS;
+	//SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	//VECTOR angles = {};
+	//angles = Quaternion::FromToRotation(pos, Camera::FIXED_DIAGONAL_TARGET_POS).ToEuler();
+
 	//angles.x = Utility::Deg2RadF(90.0);
 	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
 	//SceneManager::GetInstance().GetCamera().lock()->SetTargetPos({ static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2, 0.0f, static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 });
@@ -243,7 +247,11 @@ void GameScene::UpdateEdit(void)
 {
 	//パレット
 	palette_->Update();
-	for (auto& controller : editControllers_) { controller->Update(); }
+
+	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT)
+	{
+		for (auto& controller : editControllers_) { controller->Update(); }
+	}
 }
 
 void GameScene::UpdateAction(void)
@@ -251,8 +259,6 @@ void GameScene::UpdateAction(void)
 	ItemManager::GetInstance().Update();
 	PlayerManager::GetInstance().Update();
 	ChangePlayerClearPhase();
-
-
 }
 
 void GameScene::UpdateClear(void)
@@ -306,5 +312,3 @@ void GameScene::ChangePlayerClearPhase(void)
 		ChangePhase(PHASE::CLEAR_PHASE);
 	}
 }
-
-
