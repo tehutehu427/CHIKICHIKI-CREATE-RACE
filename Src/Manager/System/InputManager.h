@@ -38,13 +38,33 @@ public:
 	// ゲームコントローラーボタン
 	enum class JOYPAD_BTN
 	{
-		LEFT = 0,
-		RIGHT,
-		TOP,
-		DOWN,
-		R_TRIGGER,
-		L_TRIGGER,
+		RIGHTBUTTON_LEFT = 0,	// X
+		RIGHTBUTTON_RIGHT,		// B
+		RIGHTBUTTON_TOP,		// Y
+		RIGHTBUTTON_DOWN,		// A
+		R_TRIGGER,				// R_TRIGGER
+		L_TRIGGER,				// L_TRIGGER
+		R_BUTTON,				// R_BUTTON
+		L_BUTTON,				// L_BUTTON
+		START_BUTTON,			// START_BUTTON
+		SELECT_BUTTON,			// SELECT_BUTTON
+		LEFTBUTTON_TOP,			// 上
+		LEFTBUTTON_DOWN,		// 下
+		LEFTBUTTON_LEFT,		// 左
+		LEFTBUTTON_RIGHT,		// 右
 		MAX
+	};
+
+	enum class MOUSE
+	{
+		CLICK_RIGHT,		//右クリック
+		CLICK_LEFT,			//左クリック
+		MOVE_LEFT,			//左移動
+		MOVE_RIGHT,			//右移動
+		MOVE_UP,			//上移動
+		MOVE_DOWN,			//下移動
+		WHEEL_FRONT,		//ホイール前回転
+		WHEEL_BACK,			//ホイール後ろ回転
 	};
 
 	// ゲームコントローラーの入力情報
