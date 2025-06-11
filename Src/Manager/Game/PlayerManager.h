@@ -71,7 +71,7 @@ public:
 
 	const std::vector<bool>GetPlayersIsDeath(void);
 
-	std::vector<std::unique_ptr<Player>>&GetPlayers(void) { return players_; }
+	std::vector<std::shared_ptr<Player>>&GetPlayers(void) { return players_; }
 
 	Player& GetPlayer(int _num) { return *players_[_num]; }
 
@@ -107,7 +107,7 @@ private:
 	//メンバ変数
 	//*****************************************
 	//プレイヤー
-	std::vector<std::unique_ptr<Player>> players_;
+	std::vector<std::shared_ptr<Player>> players_;
 
 	//プレイヤーゴール判定
 	std::vector<bool>isGoal_;

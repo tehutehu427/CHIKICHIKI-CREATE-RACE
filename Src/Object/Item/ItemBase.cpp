@@ -54,8 +54,7 @@ void ItemBase::Init()
 	//個々の設定
 	SetParam();
 
-	//モデル情報を決めた後にコライダを設定
-	CollisionManager::GetInstance().MakeColllider(*this,Collider::COLLISION_TYPE::MODEL,Collider::COL_TAG::STAGE,trans_.modelId);
+
 
 	//モデルの更新
 	trans_.Update();

@@ -38,6 +38,7 @@ Transform::Transform(int model)
 
 Transform::~Transform(void)
 {
+	modelId = -1;
 }
 
 void Transform::Update(void)

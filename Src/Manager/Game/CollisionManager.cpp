@@ -21,6 +21,18 @@ CollisionManager& CollisionManager::GetInstance(void)
 
 void CollisionManager::Update(Player& _player)
 {
+	for (int i = 0; i < colliders_.size(); i++)
+	{
+		if (colliders_[i]->GetTag() == Collider::COL_TAG::PLAYER)
+		{
+			continue;
+		}
+		if (colliders_[i]->GetOwner().lock().get() == nullptr)
+		{
+			colliders_[i] = nullptr;
+		}
+	}
+
 	VECTOR pMovedPos = _player.GetMovedPos();
 	IntVector3 mapPos = MapEditer::GetInstance().WorldToMapPos(pMovedPos);
 	for (int x = -Player::COL_RANGE; x <= Player::COL_RANGE; x++)
@@ -66,7 +78,7 @@ CollisionManager::Coll_Info CollisionManager::LineCol(Collider& _col, VECTOR _st
 		lineCol_.tag = _col.GetTag();
 		lineCol_.isHit = true;
 		lineCol_.hitPos = hit.HitPosition;
-		lineCol_.colTargetPos = _col.GetOwner().GetTransform().pos;
+		lineCol_.colTargetPos = _col.GetOwner().lock()->GetTransform().pos;
 		return lineCol_;
 	}
 	
@@ -92,7 +104,6 @@ Collider::COL_TAG CollisionManager::SphereCol(float _radius, VECTOR _pos)
 void CollisionManager::CheckItemsInPlayerColRange(Player& _player, IntVector3 _colPos)
 {
 	MapEditer& mapEdit = MapEditer::GetInstance();
-	ItemManager& itemMng = ItemManager::GetInstance();
 	if (mapEdit.IsObjectAtMapPos(_colPos))
 	{
 		CheckCollider();
@@ -109,21 +120,29 @@ void CollisionManager::CheckCollider(void)
 		{
 			auto colA = colliders_[i].get();
 			auto colB = colliders_[j].get();
+			if (colA == nullptr || colB == nullptr)
+			{
+				continue;
+			}
 			Collider::COL_TAG colAtag = colA->GetTag();
 			Collider::COL_TAG colBtag = colB->GetTag();
+
+			//ƒvƒŒƒCƒ„[“¯Žm‚È‚ç“–‚½‚è”»’è‚µ‚È‚¢
 			if (colA->GetTag() == colB->GetTag())continue;
+
 			if (colA->GetColType() == COL_TYPE::LINE && colB->GetColType() == COL_TYPE::MODEL)
 			{
-				auto& player = dynamic_cast<Player&>(colA->GetOwner());
+				auto owner = colA->GetOwner().lock();
+				auto player = std::dynamic_pointer_cast<Player>(owner);
 				//if (player == nullptr)continue;
-				VECTOR playerUp = player.GetMovedPos();
+				VECTOR playerUp = player->GetMovedPos();
 				playerUp.y += Player::RADIUS;
-				VECTOR playerDown = player.GetMovedPos();
+				VECTOR playerDown = player->GetMovedPos();
 				playerDown.y -= Player::RADIUS;
 				if (LineCol(*colB, playerUp, playerDown).isHit)
 				{
 					Coll_Info lineCol = LineCol(*colB, playerUp, playerDown);
-					player.HitAction(lineCol.tag,lineCol.isHit,lineCol.hitPos,lineCol.colTargetPos);
+					player->HitAction(lineCol.tag,lineCol.isHit,lineCol.hitPos,lineCol.colTargetPos);
 				};
 			}
 		}
@@ -135,7 +154,7 @@ CollisionManager::CollisionManager(void)
 
 }
 
-void CollisionManager::MakeColllider(ObjectBase& _owner, Collider::COLLISION_TYPE _type, Collider::COL_TAG _tag,int _modelId)
+void CollisionManager::MakeColllider(std::weak_ptr<ObjectBase>_owner, Collider::COLLISION_TYPE _type, Collider::COL_TAG _tag, int _modelId)
 {
 	std::unique_ptr<Collider>collider = std::make_unique<Collider>(_owner, _tag, _type,_modelId);
 	colliders_.emplace_back(std::move(collider));
@@ -143,5 +162,5 @@ void CollisionManager::MakeColllider(ObjectBase& _owner, Collider::COLLISION_TYP
 
 CollisionManager::~CollisionManager(void)
 {
-
+	colliders_.clear();
 }

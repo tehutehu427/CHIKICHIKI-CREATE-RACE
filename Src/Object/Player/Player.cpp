@@ -74,9 +74,7 @@ void Player::Load(void)
 	//アニメーションでmodelIdを使うので先にモデルセットする
 	trans_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::CHICKEN));
 	//当たり判定の初期化
-	CollisionManager::GetInstance().MakeColllider(*this,Collider::COLLISION_TYPE::SPHERE,Collider::COL_TAG::PLAYER,trans_.modelId);
-	CollisionManager::GetInstance().MakeColllider(*this,Collider::COLLISION_TYPE::LINE,Collider::COL_TAG::PLAYER,trans_.modelId);
-
+	
 
 	//リソースの読み込みなど
 	animationController_ = std::make_shared<AnimationController>(trans_.modelId);
@@ -452,14 +450,11 @@ void Player::Collision(void)
 	movedPos_ = VAdd(movedPos_, jumpPow_);
 
 #ifdef DEBUG_ON
-	if (CollisionManager::GetInstance().GetLineCol().isHit)
-	{
-		
-	}
-	else
+	if (!CollisionManager::GetInstance().GetLineCol().isHit)
 	{
 		isJump_ = true;
 	}
+
 
 	//if (CollCube())
 	//{
@@ -691,7 +686,6 @@ void Player::HitAction(Collider::COL_TAG _tag, bool _isHit, VECTOR _hitPos, VECT
 		isJump_ = true;
 		hitItemType_ = ItemBase::ITEM_TYPE::NONE;
 	}
-	trans_.pos = movedPos_;
 }
 void Player::Onhit(CollisionManager::COL_TAG)
 {

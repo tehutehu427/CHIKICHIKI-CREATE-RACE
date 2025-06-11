@@ -67,7 +67,7 @@ public:
 	void CheckItemsInPlayerColRange(Player& _player, IntVector3 _colPos);
 
 	//コライダの作成
-	void MakeColllider(ObjectBase& _owner, Collider::COLLISION_TYPE _type, Collider::COL_TAG _tag,int _modelId);
+	void MakeColllider(std::weak_ptr<ObjectBase>_owner, Collider::COLLISION_TYPE _type, Collider::COL_TAG _tag,int _modelId);
 
 	//線の当たり判定情報取得
 	inline const Coll_Info GetLineCol(void)const { return lineCol_; }
@@ -85,8 +85,6 @@ private:
 
 	//メンバ変数
 	static CollisionManager* collisionMng_;
-
-	std::unique_ptr<ObjectBase>object_;
 
 	//当たり判定配列
 	std::vector<std::unique_ptr<Collider>>colliders_;

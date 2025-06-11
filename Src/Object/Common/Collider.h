@@ -1,4 +1,5 @@
 #pragma once
+#include<memory>
 class ObjectBase;
 class Collider
 {
@@ -33,7 +34,7 @@ public :
 	/// <param name="_tag">タグ</param>
 	/// <param name="_type">どんな当たり判定のタイプ</param>
 	/// <param name="_modelId">モデルID</param>
-	Collider(ObjectBase& _owner,COL_TAG _tag,COLLISION_TYPE _type ,int _modelId);
+	Collider(std::weak_ptr<ObjectBase> _owner,COL_TAG _tag,COLLISION_TYPE _type ,int _modelId);
 
 	// デストラクタ
 	~Collider(void);
@@ -41,7 +42,7 @@ public :
 	//void OnHit(const Collider& target)override
 	//ゲッタ
 	//持ち主
-	ObjectBase& GetOwner(void)const{ return owner_; }
+	std::weak_ptr<ObjectBase> GetOwner(void)const{ return owner_; }
 	//タグ
 	const COL_TAG GetTag(void)const { return tag_; }
 	//当たり判定タイプ
@@ -52,7 +53,7 @@ public :
 protected:
 private:
 	//当たり判定の持ち主
-	ObjectBase& owner_;
+	std::weak_ptr<ObjectBase> owner_;
 
 	// 衝突種別
 	COL_TAG tag_;
