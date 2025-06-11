@@ -58,7 +58,10 @@ public:
 	/// 初期化処理
 	/// </summary>
 	/// <param name=""></param>
-	virtual void Init(void) override;
+	virtual void Init(void) override;	
+	
+	//フェーズ遷移
+	void ChangePhase(const PHASE phase);
 
 protected:
 
@@ -97,9 +100,6 @@ protected:
 	/// </summary>
 	/// <param name=""></param>
 	virtual void DebagDraw(void);	//描画
-
-	//フェーズ遷移
-	void ChangePhase(const PHASE phase);
 
 	//エディットコントローラー
 	std::vector<std::unique_ptr<EditController>> editControllers_;

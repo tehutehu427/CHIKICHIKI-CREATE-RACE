@@ -1,0 +1,117 @@
+#pragma once
+#include "../../../Common/Vector2.h"
+#include <functional>
+#include <unordered_map>
+
+class Palette
+{
+public:
+
+	enum class STATE
+	{
+		NONE,		//非表示
+		EXPANSION,	//拡大
+		REDUCTION,	//縮小
+		ADMISSION,	//入場
+		EXIT,		//退場
+		CENTER,		//中央表示
+	};
+
+	//拡大率
+	static constexpr float RATE_MAX = 1.8f;
+
+	//拡大速度
+	static constexpr float RATE_SPEED = 3.0f;
+
+	//移動速度
+	static constexpr float MOVE_SPEED = 800.0f;
+
+	//大きさ
+	static constexpr int SIZE_X = 399;
+	static constexpr int SIZE_Y = 282;
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	Palette();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~Palette();
+
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	void Load();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Init();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw();
+
+	/// <summary>
+	/// 状態変更
+	/// </summary>
+	/// <param name="_state"></param>変更先の状態
+	void ChangeState(const STATE _state);
+
+	/// <summary>
+	/// 状態を返す
+	/// </summary>
+	/// <returns></returns>状態
+	inline const STATE GetState()const { return state_; }
+
+private:
+
+	//状態
+	STATE state_;
+
+	//画像
+	int imgPalette_;
+
+	//拡大率
+	float rate_;
+
+	//座標
+	Vector2 pos_;
+
+	////画面外座標
+	//Vector2
+
+	//アニメーション用タイム
+	float time_;
+
+	//更新処理管理
+	std::function<void()> stateUpdate_;
+
+	//状態ごとに処理を実行
+	std::unordered_map < STATE, std::function<void()>> stateChanges_;
+
+	//状態別変更処理
+	void ChangeStateNone();
+	void ChangeStateExpansion();
+	void ChangeStateReduction();
+	void ChangeStateAdmission();
+	void ChangeStateExit();
+	void ChangeStateCenter();
+
+	//状態別更新処理
+	void UpdateStateNone();
+	void UpdateStateExpansion();
+	void UpdateStateReduction();
+	void UpdateStateAdmission();
+	void UpdateStateExit();
+
+};
+

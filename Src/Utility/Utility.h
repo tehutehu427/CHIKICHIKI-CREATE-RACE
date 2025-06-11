@@ -227,4 +227,25 @@ public:
 	/// <param name="color">色</param>
 	/// <param name="len">間隔</param>
 	static void DrawPointLine3D(const VECTOR sPos, const VECTOR ePos, int color, float len = 50.0f);
+
+	/// <summary>
+	/// イーズイン
+	/// </summary>
+	/// <param name="_time">経過時間</param>
+	/// <param name="_totalTime">アニメーション総時間</param>
+	/// <param name="_start">開始位置</param>
+	/// <param name="_end">終了位置</param>
+	/// <returns>変化量</returns>
+	static float EaseInQuad(float _time,const float _totalTime, const float _start, const float _end);
+
+
+	/// <summary>
+	/// イーズアウト
+	/// </summary>
+	/// <param name="_time">経過時間</param>
+	/// <param name="_totalTime">アニメーション総時間</param>
+	/// <param name="_start">開始位置</param>
+	/// <param name="_change">終了位置</param>
+	/// <returns>変化量</returns>
+	static float EaseOutQuad(float _time, const float _totalTime, const float _start, const float _end);
 };

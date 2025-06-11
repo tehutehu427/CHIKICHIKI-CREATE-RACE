@@ -35,7 +35,7 @@ ModeSelect::ModeSelect()
 		}},
 		{SELECT_MENU::MULTI,[this]()
 		{
-			dateBank_.SetPlayerNum(2);
+			dateBank_.SetPlayerNum(4);
 			scnMng_.ChangeScene(SceneManager::SCENE_ID::MULTI);
 		}},
 		{SELECT_MENU::FREE,[this]()

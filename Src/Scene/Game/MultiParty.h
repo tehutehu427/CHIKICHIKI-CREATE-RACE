@@ -1,5 +1,8 @@
 #pragma once
 #include "GameScene.h"
+
+class MultiResult;
+
 class MultiParty : public GameScene
 {
 public:
@@ -47,6 +50,9 @@ private:
 
 	std::map<int, std::function<std::vector<int>(void)>>makeScreens_;
 	std::vector<int>screens_;
+
+	//ƒŠƒUƒ‹ƒgˆ—
+	std::unique_ptr<MultiResult> result_;
 
 };
 

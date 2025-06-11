@@ -30,7 +30,6 @@ void ResourceManager::Init(void)
 #pragma region ‰æ‘œ
 	std::string path_EditUi = Application::PATH_IMAGE + "EditUI/";
 	std::string path_PlayUi = Application::PATH_IMAGE + "PlayUI/";
-	std::string path_RezaltUi = Application::PATH_IMAGE + "RezaltUI/";
 	std::string path_Title = Application::PATH_IMAGE + "Title/";
 	std::string path_Select = Application::PATH_IMAGE + "Select/";
 

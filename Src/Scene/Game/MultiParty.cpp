@@ -2,10 +2,13 @@
 #include "../../Manager/System/DateBank.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Editor/Palette/MultiPalette.h"
+#include "../../Object/System/Result/MultiResult.h"
 #include "../../Manager/System/DateBank.h"
+#include "../../Manager/Game/ScoreManager.h"
 
 MultiParty::MultiParty(void)
 {
+	result_ = nullptr;
 	phaseChanges_.emplace(PHASE::SELECT_PHASE, std::bind(&MultiParty::ChangePhaseSelect, this));
 	phaseChanges_.emplace(PHASE::RESULT_PHASE, std::bind(&MultiParty::ChangePhaseResult, this));
 	makeScreens_[1] = [this]() 
@@ -53,6 +56,9 @@ MultiParty::~MultiParty(void)
 	{
 		DeleteGraph(screen);
 	}
+
+	//スコアマネージャーのインスタンスを削除
+	ScoreManager::GetInstance().Destroy();
 }
 
 void MultiParty::Load(void)
@@ -65,6 +71,13 @@ void MultiParty::Load(void)
 	palette_ = std::make_unique<MultiPalette>(editControllers_);
 	palette_->Load();
 
+	//リザルト
+	result_ = std::make_unique<MultiResult>();
+	result_->Load();
+
+	//スコアマネージャーを生成
+	ScoreManager::GetInstance().CreateInstance();
+
 	//screens_ = makeScreens_[DateBank::GetInstance().GetPlayerNum()]();
 }
 
@@ -76,8 +89,11 @@ void MultiParty::Init(void)
 	//初期化
 	palette_->Init();
 
+	//リザルト初期化
+	result_->Init();
+
 	//フェーズ遷移
-	ChangePhase(PHASE::SELECT_PHASE);
+	ChangePhase(PHASE::RESULT_PHASE);
 }
 
 void MultiParty::NormalDraw(void)
@@ -117,12 +133,13 @@ void MultiParty::UpdateSelect()
 	//パレット処理が終了したとき
 	if (palette_->GetState() == EditorPaletteBase::STATE::NONE)
 	{
-		ChangePhase(PHASE::EDIT_PHASE);
+		ChangePhase(PHASE::RESULT_PHASE);
 	}
 }
 
 void MultiParty::UpdateResult()
 {
+	result_->Update(*this);
 }
 
 void MultiParty::DrawAction()
@@ -140,4 +157,5 @@ void MultiParty::DrawSelect()
 
 void MultiParty::DrawResult()
 {
+	result_->Draw();
 }
