@@ -13,8 +13,6 @@ ItemBase::ItemBase()
 	InitMapPos_ = INT_VECTOR_ZERO;
 
 	rotY_ = 0.0f;
-
-	trans_.MakeCollider(Collider::TYPE::STAGE);
 }
 
 ItemBase::~ItemBase()
