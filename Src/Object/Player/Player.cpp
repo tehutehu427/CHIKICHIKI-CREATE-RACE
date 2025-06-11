@@ -299,6 +299,10 @@ bool Player::IsDeath(void)
 	}
 	return false;
 }
+void Player::ChangeModelColor(const COLOR_F _colorScale)
+{
+	MV1SetEmiColorScale(trans_.modelId, _colorScale);
+}
 void Player::Jump(void)
 {
 	//if (isPunch_)return;

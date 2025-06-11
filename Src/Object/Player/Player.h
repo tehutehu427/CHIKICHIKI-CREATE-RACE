@@ -221,7 +221,7 @@ public:
 	static constexpr float CUBE_D = 200.0F;
 	int GetTag(void) { return tag_; }
 #endif // DEBUG_ON
-
+	void ChangeModelColor(const COLOR_F _colorScale)override;
 	
 
 private:

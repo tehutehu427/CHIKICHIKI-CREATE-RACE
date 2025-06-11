@@ -16,6 +16,9 @@ void GoalFlag::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::GOAL_CUBE));
 
+	//モデルIDのコピー
+	models_.emplace_back(&trans_.modelId);
+
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = false;
