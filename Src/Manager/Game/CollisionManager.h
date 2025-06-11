@@ -66,8 +66,14 @@ public:
 	//プレイヤーの当たり判定を行う範囲内にアイテムがあるかを調べる
 	void CheckItemsInPlayerColRange(Player& _player, IntVector3 _colPos);
 
-	//コライダの作成
-	void MakeColllider(std::weak_ptr<ObjectBase>_owner, Collider::COLLISION_TYPE _type, Collider::COL_TAG _tag,int _modelId);
+	/// <summary>
+	/// コライダの生成
+	/// </summary>
+	/// <param name="_owner">持ち主自身</param>
+	/// <param name="_tag">タグ</param>
+	/// <param name="_type">当たり判定の形状</param>
+	/// <param name="_modelId">自分自身のモデルID</param>
+	void MakeColllider(std::weak_ptr<ObjectBase>_owner, Collider::COL_TAG _tag,Collider::COLLISION_TYPE _type,int _modelId);
 
 	//線の当たり判定情報取得
 	inline const Coll_Info GetLineCol(void)const { return lineCol_; }
@@ -87,7 +93,7 @@ private:
 	static CollisionManager* collisionMng_;
 
 	//当たり判定配列
-	std::vector<std::unique_ptr<Collider>>colliders_;
+	std::vector<std::shared_ptr<Collider>>colliders_;
 	//std::map<COL_TAG, std::vector<std::unique_ptr<Collider>>>colliders_;
 
 	//線の当たり判定情報

@@ -42,7 +42,7 @@ public :
 	//void OnHit(const Collider& target)override
 	//ゲッタ
 	//持ち主
-	std::weak_ptr<ObjectBase> GetOwner(void)const{ return owner_; }
+	std::weak_ptr<ObjectBase> GetOwner(void)const{ return owner_.lock(); }
 	//タグ
 	const COL_TAG GetTag(void)const { return tag_; }
 	//当たり判定タイプ

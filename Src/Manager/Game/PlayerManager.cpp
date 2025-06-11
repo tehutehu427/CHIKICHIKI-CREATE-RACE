@@ -61,8 +61,6 @@ void PlayerManager::Load(void)
 		std::shared_ptr<Player> player;
 		player = std::make_shared<Player>(i, cntl_);
 		player->Load();
-		CollisionManager::GetInstance().MakeColllider(player, Collider::COLLISION_TYPE::SPHERE, Collider::COL_TAG::PLAYER, player->GetTransform().modelId);
-		CollisionManager::GetInstance().MakeColllider(player, Collider::COLLISION_TYPE::LINE, Collider::COL_TAG::PLAYER, player->GetTransform().modelId);
 
 		players_.push_back(std::move(player));
 	}

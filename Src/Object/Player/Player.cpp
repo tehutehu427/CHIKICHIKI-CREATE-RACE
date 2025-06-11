@@ -74,7 +74,8 @@ void Player::Load(void)
 	//アニメーションでmodelIdを使うので先にモデルセットする
 	trans_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::CHICKEN));
 	//当たり判定の初期化
-	
+	CollisionManager::GetInstance().MakeColllider(shared_from_this(), Collider::COL_TAG::PLAYER,Collider::COLLISION_TYPE::SPHERE, trans_.modelId);
+	CollisionManager::GetInstance().MakeColllider(shared_from_this(), Collider::COL_TAG::PLAYER,Collider::COLLISION_TYPE::LINE, trans_.modelId);
 
 	//リソースの読み込みなど
 	animationController_ = std::make_shared<AnimationController>(trans_.modelId);
@@ -627,9 +628,6 @@ void Player::ArroundColl(Transform _itemTrans)
 #ifdef DEBUG_ON
 void Player::HitAction(Collider::COL_TAG _tag, bool _isHit, VECTOR _hitPos, VECTOR _itemPos)
 {
-#ifdef DEBUG_ON
-	tag_ = static_cast<int>(_tag);
-#endif // DEBUG_ON
 	//移動後と移動前をとる
 	VECTOR prePos = trans_.pos;
 	VECTOR curPos = movedPos_;

@@ -2,7 +2,7 @@
 #include<vector>
 #include "../ObjectBase.h"
 
-class ItemBase : public ObjectBase
+class ItemBase : public ObjectBase, public std::enable_shared_from_this<ObjectBase>
 {
 public:
 

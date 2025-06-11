@@ -29,7 +29,8 @@ void CollisionManager::Update(Player& _player)
 		}
 		if (colliders_[i]->GetOwner().lock().get() == nullptr)
 		{
-			colliders_[i] = nullptr;
+			//colliders_[i] = nullptr;
+			//colliders_.erase(colliders_.begin());
 		}
 	}
 
@@ -154,9 +155,9 @@ CollisionManager::CollisionManager(void)
 
 }
 
-void CollisionManager::MakeColllider(std::weak_ptr<ObjectBase>_owner, Collider::COLLISION_TYPE _type, Collider::COL_TAG _tag, int _modelId)
+void CollisionManager::MakeColllider(std::weak_ptr<ObjectBase>_owner, Collider::COL_TAG _tag, Collider::COLLISION_TYPE _type, int _modelId)
 {
-	std::unique_ptr<Collider>collider = std::make_unique<Collider>(_owner, _tag, _type,_modelId);
+	std::shared_ptr<Collider>collider = std::make_shared<Collider>(_owner, _tag, _type,_modelId);
 	colliders_.emplace_back(std::move(collider));
 }
 

@@ -12,7 +12,7 @@
 #define DEBUG_ON
 class Camera;
 class PlayerInput;
-class Player :public ObjectBase
+class Player :public ObjectBase,public std::enable_shared_from_this<ObjectBase>
 {
 public:
 	//******************************************

@@ -54,6 +54,8 @@ void ItemBase::Init()
 	//個々の設定
 	SetParam();
 
+	//当たり判定の作成
+	CollisionManager::GetInstance().MakeColllider(weak_from_this(), Collider::COL_TAG::STAGE,Collider::COLLISION_TYPE::MODEL, trans_.modelId);
 
 
 	//モデルの更新
