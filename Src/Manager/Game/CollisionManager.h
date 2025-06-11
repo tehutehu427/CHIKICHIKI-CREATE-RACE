@@ -44,7 +44,7 @@ public:
 	void Update(Player& _player);
 
 	//コライダの追加
-	void AddCollider(std::weak_ptr<Collider>_collider);
+	//void AddCollider(Collider& _colllider);
 	//コライダの削除
 	void ClearCollider(void);
 	//インスタンス解放
@@ -54,8 +54,14 @@ public:
 	//球の当たり判定
 	Collider::COL_TAG SphereCol(float RADIUS,VECTOR pos);
 
+	//当たり判定のチェック
+	void CheckCollider(void);
+
 	//プレイヤーの当たり判定を行う範囲内にアイテムがあるかを調べる
 	void CheckItemsInPlayerColRange(Player& _player, IntVector3 _colPos);
+
+	//コライダの作成
+	void MakeColllider(ObjectBase& _owner, Collider::COLLISION_TYPE _type, Collider::COL_TAG _tag,int _modelId);
 	//アイテムの支点
 	std::vector<IntVector3>itemLPos_;
 private:
@@ -72,7 +78,7 @@ private:
 	std::shared_ptr<ObjectBase>object_;
 
 	//当たり判定配列
-	std::vector<std::weak_ptr<Collider>>colliders_;
+	std::vector<std::unique_ptr<Collider>>colliders_;
 	//std::map<COL_TAG, std::vector<std::unique_ptr<Collider>>>colliders_;
 
 

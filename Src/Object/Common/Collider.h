@@ -1,4 +1,5 @@
 #pragma once
+class ObjectBase;
 class Collider
 {
 
@@ -15,16 +16,50 @@ public :
 		SLIME,
 	};
 
-	// コンストラクタ
-	Collider(COL_TAG type, int modelId);
+	enum class COLLISION_TYPE
+	{
+		NONE,
+		MODEL,
+		SPHERE,
+		LINE,
+		CUBE,
+		CAPSULE
+	};
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_owner">持ち主</param>
+	/// <param name="_tag">タグ</param>
+	/// <param name="_type">どんな当たり判定のタイプ</param>
+	/// <param name="_modelId">モデルID</param>
+	Collider(ObjectBase& _owner,COL_TAG _tag,COLLISION_TYPE _type ,int _modelId);
 
 	// デストラクタ
 	~Collider(void);
 
+	//void OnHit(const Collider& target)override
+	//ゲッタ
+	//持ち主
+	ObjectBase& GetOwner(void)const{ return owner_; }
+	//タグ
+	const COL_TAG GetTag(void)const { return tag_; }
+	//当たり判定タイプ
+	const COLLISION_TYPE GetColType(void) { return type_; }
+	//モデルID
+	const int GetModelId(void)const { return modelId_; }
+
+protected:
+private:
+	//当たり判定の持ち主
+	ObjectBase& owner_;
+
 	// 衝突種別
-	COL_TAG type_;
+	COL_TAG tag_;
+
+	//当たり判定のタイプ
+	COLLISION_TYPE type_;
 
 	// モデルのハンドルID
 	int modelId_;
-
 };

@@ -18,7 +18,6 @@ Transform::Transform(void)
 	quaRot = Quaternion();
 	quaRotLocal = Quaternion();
 
-	collider = nullptr;
 }
 
 Transform::Transform(int model)
@@ -35,8 +34,6 @@ Transform::Transform(int model)
 	matPos = MGetIdent();
 	quaRot = Quaternion();
 	quaRotLocal = Quaternion();
-
-	collider = nullptr;
 }
 
 Transform::~Transform(void)
@@ -81,18 +78,10 @@ void Transform::SetModel(int model)
 	modelId = model;
 }
 
-void Transform::MakeCollider(Collider::COL_TAG type)
-{
-
-	if (modelId == -1)
-	{
-		return;
-	}
-
-	collider = std::make_shared<Collider>(type, modelId);
-	CollisionManager::GetInstance().AddCollider(collider);
-	int ret = MV1SetupCollInfo(modelId, -1, 1, 1, 1);
-}
+//void Transform::MakeCollider(ObjectBase& _owner, Collider::COLLISION_TYPE _type, Collider::COL_TAG _tag)
+//{
+//	int ret = MV1SetupCollInfo(modelId, -1, 1, 1, 1);
+//}
 
 VECTOR Transform::GetForward(void) const
 {
@@ -129,7 +118,3 @@ VECTOR Transform::GetDir(const VECTOR& vec) const
 	return quaRot.PosAxis(vec);
 }
 
-std::weak_ptr<Collider> Transform::GetCollider(void) const
-{
-	return collider;
-}
