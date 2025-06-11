@@ -49,8 +49,14 @@ public:
 	void ClearCollider(void);
 	//インスタンス解放
 	void Destroy(void);
-	//線の当たり判定
-	Coll_Info LineCol(VECTOR pos1, VECTOR pos2);
+	/// <summary>
+	/// モデルと線の当たり判定
+	/// </summary>
+	/// <param name="_col">相手のモデルコライダ</param>
+	/// <param name="_startPos">線の始まりの座標</param>
+	/// <param name="_endPos">線の終わりの座標</param>
+	/// <returns>当たった座標などの基本情報</returns>
+	Coll_Info LineCol(Collider& _col,VECTOR _startPos, VECTOR _endPos);
 	//球の当たり判定
 	Collider::COL_TAG SphereCol(float RADIUS,VECTOR pos);
 
@@ -62,6 +68,11 @@ public:
 
 	//コライダの作成
 	void MakeColllider(ObjectBase& _owner, Collider::COLLISION_TYPE _type, Collider::COL_TAG _tag,int _modelId);
+
+	//線の当たり判定情報取得
+	inline const Coll_Info GetLineCol(void)const { return lineCol_; }
+
+
 	//アイテムの支点
 	std::vector<IntVector3>itemLPos_;
 private:
@@ -75,12 +86,14 @@ private:
 	//メンバ変数
 	static CollisionManager* collisionMng_;
 
-	std::shared_ptr<ObjectBase>object_;
+	std::unique_ptr<ObjectBase>object_;
 
 	//当たり判定配列
 	std::vector<std::unique_ptr<Collider>>colliders_;
 	//std::map<COL_TAG, std::vector<std::unique_ptr<Collider>>>colliders_;
 
+	//線の当たり判定情報
+	Coll_Info lineCol_;
 
 };
 

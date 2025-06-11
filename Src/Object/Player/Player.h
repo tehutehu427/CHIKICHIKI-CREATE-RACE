@@ -146,37 +146,37 @@ public:
 	//ゲッタ
 	//******************************************
 	//プレイヤー番号
-	const int GetPlayerNum(void)const { return playerNum_; }
+	inline const int GetPlayerNum(void)const { return playerNum_; }
 
-	const PlayerInput::CNTL GetCntl(void) { return cntl_; }
+	inline const PlayerInput::CNTL GetCntl(void) { return cntl_; }
 
-	const VECTOR GetMovePow(void) { return movePow_; }
+	inline const VECTOR GetMovePow(void) { return movePow_; }
 	//入力
-	const std::weak_ptr<PlayerInput> GetInput(void)const { return input_; }
+	inline const std::weak_ptr<PlayerInput> GetInput(void)const { return input_; }
 
 	//パンチ中ゲッタ
-	const bool GetIsPunch(void) { return isPunchHitTime_; }
+	inline const bool GetIsPunch(void) { return isPunchHitTime_; }
 
 	//パンチ座標
-	const VECTOR GetPunchPos(void) { return punchPos_; }
+	inline const VECTOR GetPunchPos(void) { return punchPos_; }
 
 	//プレイヤー座標
-	const VECTOR GetPos(void)const { return trans_.pos; }
+	inline const VECTOR GetPos(void)const { return trans_.pos; }
 
 	//移動後のプレイヤー座標
-	const VECTOR GetMovedPos(void)const { return movedPos_; }
+	inline const VECTOR GetMovedPos(void)const { return movedPos_; }
 
 	//当たり判定を確認しているマップ座標
-	const IntVector3 GetColPos(void)const { return colPos_; }
+	inline const IntVector3 GetColPos(void)const { return colPos_; }
 
 	//死んだ判定
-	bool IsDeath(void);
+	inline bool IsDeath(void);
 
 	//当たったアイテム
 	const ItemBase::ITEM_TYPE GetHitItemType(void)const { return hitItemType_; }
 
 	//プレイヤー番号ゲット
-	const int PlayerNum(void) { return playerNum_; }
+	inline const int PlayerNum(void) { return playerNum_; }
 
 	//******************************************
 	//セッタ
@@ -209,6 +209,9 @@ public:
 	//当たった時の処理
 	void HitAction(Collider::COL_TAG _tag, bool _isHit, VECTOR _hitPos, VECTOR _itemPos);
 
+	//当たり判定
+	void Collision(void);
+
 #ifdef DEBUG_ON
 
 	int tag_;	//当たり判定のタグ
@@ -216,6 +219,7 @@ public:
 	static constexpr float CUBE_W = 200.0F;
 	static constexpr float CUBE_H = 10.0F;
 	static constexpr float CUBE_D = 200.0F;
+	int GetTag(void) { return tag_; }
 #endif // DEBUG_ON
 
 	
@@ -360,8 +364,7 @@ private:
 	//アイテム都の当たり判定
 	void HitItem(const IntVector3 _colPos);
 
-	//当たり判定
-	void Collision(void);
+
 
 	//地面との当たり判定(動いてる床とか)
 	void UpDownColl(void);

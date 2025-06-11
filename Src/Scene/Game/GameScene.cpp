@@ -255,12 +255,12 @@ void GameScene::UpdateEdit(void)
 
 void GameScene::UpdateAction(void)
 {
+	
 	ItemManager::GetInstance().Update();
 	PlayerManager::GetInstance().Update();
-	ChangePlayerClearPhase();
 	Collision();
 
-
+	ChangePlayerClearPhase();
 }
 
 void GameScene::UpdateClear(void)
@@ -323,6 +323,7 @@ void GameScene::Collision(void)
 	{
 		CollisionManager::GetInstance().Update(*player);
 	}
+
 }
 
 void GameScene::CheckHitCol(Player& _player)

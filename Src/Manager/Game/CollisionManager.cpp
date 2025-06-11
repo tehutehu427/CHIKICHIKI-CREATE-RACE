@@ -53,16 +53,25 @@ void CollisionManager::Destroy(void)
 	}
 }
 
-CollisionManager::Coll_Info CollisionManager::LineCol(VECTOR pos1, VECTOR pos2)
+CollisionManager::Coll_Info CollisionManager::LineCol(Collider& _col, VECTOR _startPos, VECTOR _endPos)
 {
-	Coll_Info col;
-	col.tag = Collider::COL_TAG::NONE;
-	col.isHit = false;
-	col.hitPos = Utility::VECTOR_ZERO;
-	col.normal = Utility::VECTOR_ZERO;
-	col.colTargetPos = Utility::VECTOR_ZERO;
+	lineCol_.tag = Collider::COL_TAG::NONE;
+	lineCol_.isHit = false;
+	lineCol_.hitPos = Utility::VECTOR_ZERO;
+	lineCol_.normal = Utility::VECTOR_ZERO;
+	lineCol_.colTargetPos = Utility::VECTOR_ZERO;
+	auto hit = MV1CollCheck_Line(_col.GetModelId(), -1, _startPos, _endPos);
+	if (hit.HitFlag > 0)
+	{
+		lineCol_.tag = _col.GetTag();
+		lineCol_.isHit = true;
+		lineCol_.hitPos = hit.HitPosition;
+		lineCol_.colTargetPos = _col.GetOwner().GetTransform().pos;
+		return lineCol_;
+	}
+	
 
-	return col;
+	return lineCol_;
 }
 
 Collider::COL_TAG CollisionManager::SphereCol(float _radius, VECTOR _pos)
@@ -86,34 +95,7 @@ void CollisionManager::CheckItemsInPlayerColRange(Player& _player, IntVector3 _c
 	ItemManager& itemMng = ItemManager::GetInstance();
 	if (mapEdit.IsObjectAtMapPos(_colPos))
 	{
-		IntVector3 lPos = mapEdit.GetLeaderMapPos(_colPos);
-		//for (auto& iLPos : itemLPos_)
-		//{
-		//	if (iLPos == lPos)return;
-		//}
-
-		//アイテムタイプ取得
-		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
-
-
-		//アイテムのTransform取得
-		Transform itemTrans = itemMng.GetItemTransform(lPos, type);
-		VECTOR playerUp = _player.GetMovedPos();
-		playerUp.y += Player::RADIUS;
-
-		VECTOR playerDown = _player.GetMovedPos();
-		playerDown.y -= Player::RADIUS;
-
 		CheckCollider();
-		//auto lineHit = LineCol(playerUp, playerDown);
-		//_player.HitAction(lineHit.tag,lineHit.isHit, lineHit.hitPos, lineHit.colTargetPos);
-
-
-
-		//LineCol(_player, itemTrans);
-		//ArroundColl(itemTrans);
-
-		itemLPos_.push_back(lPos);
 	}
 }
 
@@ -132,7 +114,17 @@ void CollisionManager::CheckCollider(void)
 			if (colA->GetTag() == colB->GetTag())continue;
 			if (colA->GetColType() == COL_TYPE::LINE && colB->GetColType() == COL_TYPE::MODEL)
 			{
-				//LineCol()
+				auto& player = dynamic_cast<Player&>(colA->GetOwner());
+				//if (player == nullptr)continue;
+				VECTOR playerUp = player.GetMovedPos();
+				playerUp.y += Player::RADIUS;
+				VECTOR playerDown = player.GetMovedPos();
+				playerDown.y -= Player::RADIUS;
+				if (LineCol(*colB, playerUp, playerDown).isHit)
+				{
+					Coll_Info lineCol = LineCol(*colB, playerUp, playerDown);
+					player.HitAction(lineCol.tag,lineCol.isHit,lineCol.hitPos,lineCol.colTargetPos);
+				};
 			}
 		}
 	}

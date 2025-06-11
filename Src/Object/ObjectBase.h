@@ -31,6 +31,9 @@ public:
 	//サイズの取得
 	virtual const IntVector3 GetSize(void)const { return size_; }
 
+	//タグの取得
+	const Collider::COL_TAG GetColTag(void)const { return colTag_; }
+
 	//モデルの色を変える
 	virtual void ChangeModelColor(const COLOR_F _colorScale);
 

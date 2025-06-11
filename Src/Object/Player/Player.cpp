@@ -75,6 +75,7 @@ void Player::Load(void)
 	trans_.SetModel(ResourceManager::GetInstance().LoadModelDuplicate(ResourceManager::SRC::CHICKEN));
 	//当たり判定の初期化
 	CollisionManager::GetInstance().MakeColllider(*this,Collider::COLLISION_TYPE::SPHERE,Collider::COL_TAG::PLAYER,trans_.modelId);
+	CollisionManager::GetInstance().MakeColllider(*this,Collider::COLLISION_TYPE::LINE,Collider::COL_TAG::PLAYER,trans_.modelId);
 
 
 	//リソースの読み込みなど
@@ -447,23 +448,32 @@ void Player::Collision(void)
 	movedPos_ = VAdd(movedPos_, jumpPow_);
 
 #ifdef DEBUG_ON
-	if (CollCube())
+	if (CollisionManager::GetInstance().GetLineCol().isHit)
 	{
-		movedPos_ = VAdd(movedPos_, cubeMovePos_);
-		jumpPow_ = Utility::VECTOR_ZERO;
-		movedPos_.y = cube_.upPos.y + RADIUS;
-		stepJump_ = 0.0f;
-		isJump_ = false;
-		jumpDeceralation_ = POW_JUMP;
+		
 	}
 	else
 	{
 		isJump_ = true;
-		//if (jumpPow_.y <= LIMIT_GRAVITY)
-		//{
-		//	jumpPow_.y = LIMIT_GRAVITY;
-		//}
 	}
+
+	//if (CollCube())
+	//{
+	//	movedPos_ = VAdd(movedPos_, cubeMovePos_);
+	//	jumpPow_ = Utility::VECTOR_ZERO;
+	//	movedPos_.y = cube_.upPos.y + RADIUS;
+	//	stepJump_ = 0.0f;
+	//	isJump_ = false;
+	//	jumpDeceralation_ = POW_JUMP;
+	//}
+	//else
+	//{
+	//	isJump_ = true;
+	//	//if (jumpPow_.y <= LIMIT_GRAVITY)
+	//	//{
+	//	//	jumpPow_.y = LIMIT_GRAVITY;
+	//	//}
+	//}
 
 #endif // DEBUG_ON
 
@@ -619,11 +629,8 @@ void Player::ArroundColl(Transform _itemTrans)
 void Player::HitAction(Collider::COL_TAG _tag, bool _isHit, VECTOR _hitPos, VECTOR _itemPos)
 {
 #ifdef DEBUG_ON
-	tag_ = (int)_tag;
+	tag_ = static_cast<int>(_tag);
 #endif // DEBUG_ON
-
-	
-	if (_tag == Collider::COL_TAG::PLAYER)return;
 	//移動後と移動前をとる
 	VECTOR prePos = trans_.pos;
 	VECTOR curPos = movedPos_;
@@ -638,7 +645,7 @@ void Player::HitAction(Collider::COL_TAG _tag, bool _isHit, VECTOR _hitPos, VECT
 		jumpPow_ = Utility::VECTOR_ZERO;
 		isJump_ = false;
 		itemLocalPos_ = VSub(movedPos_, _itemPos);
-		return;
+		//return;
 	}
 	//else
 	//{
@@ -646,12 +653,6 @@ void Player::HitAction(Collider::COL_TAG _tag, bool _isHit, VECTOR _hitPos, VECT
 	//	itemLocalPos_ = Utility::VECTOR_ZERO;
 	//}
 
-
-	//Lineを引くための上と下の座標をとる
-	VECTOR upPos = movedPos_;
-	upPos.y += (RADIUS);
-	VECTOR downPos = movedPos_;
-	downPos.y -= (RADIUS + 10.0f);
 
 	//hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
 
@@ -686,6 +687,7 @@ void Player::HitAction(Collider::COL_TAG _tag, bool _isHit, VECTOR _hitPos, VECT
 		isJump_ = true;
 		hitItemType_ = ItemBase::ITEM_TYPE::NONE;
 	}
+	trans_.pos = movedPos_;
 }
 void Player::Onhit(CollisionManager::COL_TAG)
 {
@@ -693,6 +695,7 @@ void Player::Onhit(CollisionManager::COL_TAG)
 }
 void Player::OnHitNone(void)
 {
+
 }
 void Player::OnHitFloor(const IntVector3 _colPos)
 {

@@ -20,7 +20,7 @@ public:
 
 	static constexpr VECTOR ACTION_CAMERA_POS = { 2000.0f, 1700.0f, -2000.0f };	//アクション時のカメラ位置
 
-	static constexpr int PLAYER_NUM = 4;
+	static constexpr int PLAYER_NUM = 1;
 
 	/// <summary>
 	/// フェーズ
