@@ -29,7 +29,6 @@
     <ClCompile Include="Src\Object\System\ModeSelect.cpp" />
     <ClCompile Include="Src\Object\System\GameClear.cpp" />
     <ClCompile Include="Src\Common\FontRegistry.cpp" />
-    <ClCompile Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\Spring.cpp" />
@@ -122,7 +121,6 @@
     <ClInclude Include="Src\Object\Editor\Palette\Icon\PaletteIcon.h" />
     <ClInclude Include="Src\Object\System\GameClear.h" />
     <ClInclude Include="Src\Common\FontRegistry.h" />
-    <ClInclude Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.h" />
     <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h" />
     <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h" />

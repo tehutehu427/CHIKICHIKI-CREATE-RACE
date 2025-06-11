@@ -217,7 +217,7 @@ public:
 	static constexpr float CUBE_H = 10.0F;
 	static constexpr float CUBE_D = 200.0F;
 #endif // DEBUG_ON
-
+	void ChangeModelColor(const COLOR_F _colorScale)override;
 	
 
 private:

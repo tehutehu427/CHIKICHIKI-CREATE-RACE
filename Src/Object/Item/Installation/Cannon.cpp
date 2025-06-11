@@ -27,6 +27,9 @@ void Cannon::SetParam(void)
 	trans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_TURRET));
 
+	//モデルIDのコピー
+	models_.emplace_back(&trans_.modelId);
+
 	//ステータス初期化
 	size_ = MAP_SIZE;
 	status_.isBreak = true;
@@ -75,6 +78,9 @@ void Cannon::SetParam(void)
 	//砲身のモデル設定
 	barrelTrans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_BARREL));
+
+	//モデルIDのコピー
+	models_.emplace_back(&barrelTrans_.modelId);
 }
 
 void Cannon::Update(void)
