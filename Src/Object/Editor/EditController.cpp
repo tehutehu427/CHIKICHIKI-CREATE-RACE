@@ -61,6 +61,8 @@ void EditController::ChengeMode(MODE mode)
 
 void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 {
+
+	mousePos_ = InputManager::GetInstance().GetMousePos();
 	itemType_ = itemType;
 	if (itemType_ == ItemBase::ITEM_TYPE::NONE)
 	{
@@ -145,7 +147,8 @@ void EditController::ItemNotSelect(void)
 	auto& itemMIns = ItemManager::GetInstance();
 	if (InputManager::GetInstance().IsTrgDownMouseLeft() == true)
 	{
-		if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+		//if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+		if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
 		{
 			return;
 		}
@@ -182,7 +185,8 @@ void EditController::ItemNotSelect(void)
 		}
 		else
 		{
-			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_)))
+			//if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_)))
+			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_)))
 			{
 				return;
 			}
@@ -233,9 +237,16 @@ IntVector3 EditController::NearObjectFrontPos(void)
 		{
 			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPosTemp))
 			{
-				mapPosObject_ = mapPosTemp;
-				isClickObject_ = true;
-				return mapPos;
+				IntVector3 lPos = MapEditer::GetInstance().GetLeaderMapPos(mapPosTemp);
+				auto type = MapEditer::GetInstance().GetItemType(mapPosTemp);
+				auto modelId = ItemManager::GetInstance().GetItemTransform(lPos, type).modelId;
+				auto hit = MV1CollCheck_Line(modelId, -1, nearWorldPos, farWorldPos);
+				if (hit.HitFlag > 0)
+				{
+					mapPosObject_ = mapPosTemp;
+					isClickObject_ = true;
+					return mapPos;
+				}
 			}
 		}
 		else
@@ -255,10 +266,20 @@ IntVector3 EditController::NearObjectFrontPos(void)
 								mapPos.z < 0 || mapPos.z > MapEditer::MAP_SIZE.z - size.z)
 							{
 								return ERROR_POS;
+							}				
+							IntVector3 lPos = MapEditer::GetInstance().GetLeaderMapPos(mapPosTemp + sizeLoop);
+							auto type = MapEditer::GetInstance().GetItemType(mapPosTemp + sizeLoop);
+							auto modelId = ItemManager::GetInstance().GetItemTransform(lPos, type).modelId;
+							auto hit = MV1CollCheck_Line(modelId, -1, nearWorldPos, farWorldPos);
+							if (hit.HitFlag > 0)
+							{
+								mapPosObject_ = mapPosTemp + sizeLoop;
+								isClickObject_ = true;
+								return mapPos;
 							}
-							isClickObject_ = true;
-							mapPosObject_ = mapPosTemp + sizeLoop;
-							return mapPos;
+							//isClickObject_ = true;
+							//mapPosObject_ = mapPosTemp + sizeLoop;
+							//return mapPos;
 						}
 					}
 				}

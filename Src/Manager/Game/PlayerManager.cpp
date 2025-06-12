@@ -88,6 +88,7 @@ void PlayerManager::Draw(void)
 {
 	for (auto& p : players_)
 	{
+		p->ChangeModelColor({ 0.0f,0.0f,0.5f,1.0f });
 		p->Draw();
 	}
 }
