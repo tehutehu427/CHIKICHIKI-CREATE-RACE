@@ -1,53 +1,16 @@
 #include "MultiParty.h"
 #include "../../Manager/System/DateBank.h"
+#include "../../Manager/System/SceneManager.h"
+#include "../../Manager/Game/ScoreManager.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Editor/Palette/MultiPalette.h"
 #include "../../Object/System/Result/MultiResult.h"
-#include "../../Manager/System/DateBank.h"
-#include "../../Manager/Game/ScoreManager.h"
 
 MultiParty::MultiParty(void)
 {
 	result_ = nullptr;
 	phaseChanges_.emplace(PHASE::SELECT_PHASE, std::bind(&MultiParty::ChangePhaseSelect, this));
 	phaseChanges_.emplace(PHASE::RESULT_PHASE, std::bind(&MultiParty::ChangePhaseResult, this));
-	makeScreens_[1] = [this]() 
-		{
-			std::vector<int> screens;
-			int screen = MakeScreen(Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y, true);
-			screens.push_back(screen);
-			return screens;
-		};
-	makeScreens_[2] = [this]() 
-		{
-			std::vector<int> screens;
-			for (int i = 0; i < 2; ++i)
-			{
-				int screen = MakeScreen(Application::SCREEN_HALF_X / 2, Application::SCREEN_HALF_Y, true);
-				screens.push_back(screen);
-			}
-			return screens;
-		};
-	makeScreens_[3] = [this]() 
-		{
-			std::vector<int> screens;
-			for (int i = 0; i < 4; ++i)
-			{
-				int screen = MakeScreen(Application::SCREEN_HALF_X / 2, Application::SCREEN_HALF_Y / 2, true);
-				screens.push_back(screen);
-			}
-			return screens;
-		};
-	makeScreens_[4] = [this]() 
-		{
-			std::vector<int> screens;
-			for (int i = 0; i < 4; ++i)
-			{
-				int screen = MakeScreen(Application::SCREEN_HALF_X / 2, Application::SCREEN_HALF_Y /2 , true);
-				screens.push_back(screen);
-			}
-			return screens;
-		};
 }
 
 MultiParty::~MultiParty(void)
@@ -78,7 +41,18 @@ void MultiParty::Load(void)
 	//スコアマネージャーを生成
 	ScoreManager::GetInstance().CreateInstance();
 
-	//screens_ = makeScreens_[DateBank::GetInstance().GetPlayerNum()]();
+	// プレイヤー人数を取得
+	int playerNum = DateBank::GetInstance().GetPlayerNum();
+
+	// 分割数を計算（2人なら左右分割、それ以上は全画面）
+	const Vector2 div = (playerNum == 2) ? Vector2{ 2, 1 } : Vector2{ 2, 2 };
+
+	// プレイヤーごとに描画用スクリーンを作成
+	for (int i = 0; i < playerNum; i++)
+	{
+		int screen = MakeScreen(Application::SCREEN_SIZE_X / div.x, Application::SCREEN_SIZE_Y / div.y, true);
+		screens_.push_back(screen);
+	}
 }
 
 void MultiParty::Init(void)
@@ -144,10 +118,63 @@ void MultiParty::UpdateResult()
 
 void MultiParty::DrawAction()
 {
+	//プレイヤーごとにスクリーンを分割して描画
+	int playerNum = DateBank::GetInstance().GetPlayerNum();
+	for (int i = 0; i < playerNum; i++)
+	{
+		//スクリーンを設定
+		SetDrawScreen(screens_[i]);
+
+		//画面をクリア
+		ClearDrawScreen();
+
+		//アイテムの描画
+		//ItemManager::GetInstance().Draw();
+
+		//プレイヤーの描画
+		//PlayerManager::GetInstance().Draw(i);
+	}
+
+	//スクリーンを戻す
+	SetDrawScreen(scnMng_.GetMainScreen());
+
+	//全てのスクリーンを描画
+	for (const auto& screen : screens_)
+	{
+		DrawGraph(0, 0, screen, true);
+
+	}
+	
 }
 
 void MultiParty::DrawEdit()
 {
+	//プレイヤーごとにスクリーンを分割して描画
+	int playerNum = DateBank::GetInstance().GetPlayerNum();
+	for (int i = 0; i < playerNum; i++)
+	{
+		//スクリーンを設定
+		SetDrawScreen(screens_[i]);
+
+		//画面をクリア
+		ClearDrawScreen();
+
+		//アイテムの描画
+		//ItemManager::GetInstance().Draw();
+
+		//エディットコントローラーの描画
+		//ItemManager::GetInstance().Draw();
+	}
+
+	//スクリーンを戻す
+	SetDrawScreen(scnMng_.GetMainScreen());
+
+	//全てのスクリーンを描画
+	for (const auto& screen : screens_)
+	{
+		DrawGraph(0, 0, screen, true);
+
+	}
 }
 
 void MultiParty::DrawSelect()

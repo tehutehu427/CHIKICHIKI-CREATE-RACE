@@ -48,8 +48,8 @@ private:
 	void DrawSelect();
 	void DrawResult();
 
-	std::map<int, std::function<std::vector<int>(void)>>makeScreens_;
-	std::vector<int>screens_;
+	//スクリーン
+	std::vector<int> screens_;
 
 	//リザルト処理
 	std::unique_ptr<MultiResult> result_;
