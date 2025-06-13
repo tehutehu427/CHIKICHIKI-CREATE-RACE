@@ -131,17 +131,8 @@ void Player::Init(void)
 void Player::Update(void)
 {
 	animationController_->Update();
-	if (IsDeath())
-	{
-		//落ちているアニメーション再生0
-		animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
-		
-		if (animationController_->GetAnimStep() >= FALL_ANIM_START)
-		{
-			animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 60.0f);
-		}
-		return;
-	}
+
+
 	//入力更新
 	input_->Update();
 	
@@ -218,9 +209,10 @@ void Player::Action(void)
 	//各アクションの更新
 	actionUpdate_();
 
-
-
+	//プレイヤーの回転
 	Rotate();
+
+
 	//方向の更新
 	moveDir_ = dir_;
 	//移動量の更新
@@ -235,7 +227,17 @@ void Player::ChangeAction(ATK_ACT _act)
 
 void Player::NoneUpdate(void)
 {
-	//何もしない
+	//死んだ時の処理
+	if (IsDeath())
+	{
+		//落ちているアニメーション再生
+		animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
+
+		if (animationController_->GetAnimStep() >= FALL_ANIM_START)
+		{
+			animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 60.0f);
+		}
+	}
 }
 
 void Player::ActionInputUpdate(void)
@@ -360,13 +362,21 @@ void Player::Jump(void)
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 	stepJump_ += deltaTime;
 
+	//アニメーションの再生
+	animationController_->Play(
+		(int)ANIM_TYPE::JUMP, false, 10.0f, 60.0f);
+
+	//空中アニメーションステップのループ設定
+	animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
+
 	//ジャンプ中も移動できるようにする
 	Move();
 
-	//
+	//ジャンプカウントが0以上なら
 	if (stepJump_ > 0.0f)
 	{
 		stepJump_ += deltaTime;
+		//プレイヤーが落下していたら
 		if (jumpDeceralation_ < 0.0f)
 		{
 			animationController_->Play(static_cast<int>(ANIM_TYPE::LAND));
@@ -392,11 +402,6 @@ void Player::Jump(void)
 }
 void Player::ChangeJump(void)
 {
-	//空中で無理やりアニメーションを切り取ってアニメーションをする
-	animationController_->Play(
-		(int)ANIM_TYPE::JUMP, false, 10.0f, 60.0f);
-	animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
-
 	//ジャンプ関係
 	isJump_ = true;
 	stepJump_ = 0.0f;
@@ -417,13 +422,25 @@ void Player::Punch(void)
 	if (animStep > PUNCH_HIT_END_ANIM_STEP)
 	{
 		isPunchHitTime_ = false;
-		ChangeAction(ATK_ACT::INPUT);
 	}
 	else if (animStep > PUNCH_HIT_START_ANIM_STEP)
 	{
 		isPunchHitTime_ = true;
 	}
 
+	if (animationController_->IsEnd())
+	{
+		//パンチクールタイムセット
+		punchCoolCnt_ = PUNCH_COOL_TIME;
+		ChangeAction(ATK_ACT::INPUT);
+	}
+
+
+
+
+	
+
+	//ここは別の状態で考える
 	//パンチを受けた時
 	if (isPunched_)
 	{
@@ -489,6 +506,8 @@ void Player::Collision(void)
 	movedPos_ = VAdd(movedPos_, jumpPow_);
 
 #ifdef DEBUG_ON
+
+	//デバッグ用床の当たり判定
 	if (CollCube())
 	{
 		movedPos_ = VAdd(movedPos_, cubeMovePos_);
