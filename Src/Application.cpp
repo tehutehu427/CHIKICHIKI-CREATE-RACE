@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "Manager/System/InputManager.h"
+#include "Manager/System/KeyConfig.h"
 #include "Manager/System/ResourceManager.h"
 #include "Manager/System/SceneManager.h"
 #include "FpsControl/FpsControl.h"
@@ -65,6 +66,7 @@ void Application::Init(void)
 	// ƒV[ƒ“ŠÇ—‰Šú‰»
 	SceneManager::CreateInstance();
 
+	KeyConfig::CreateInstance();
 	// FPS‰Šú‰»
 	fps_ = std::make_unique<FpsControl>();
 	fps_->Init();

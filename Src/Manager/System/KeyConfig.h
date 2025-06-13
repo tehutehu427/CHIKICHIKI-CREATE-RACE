@@ -53,6 +53,7 @@ public:
 	//操作の種類別にキーを追加	
 	void Add(int key , CONTROL_TYPE type);
 	void Add(InputManager::JOYPAD_BTN key, CONTROL_TYPE type);
+	void Add(InputManager::JOYPAD_STICK key, CONTROL_TYPE type);
 
 	// リソースの破棄
 	void Destroy(void);
@@ -61,6 +62,7 @@ private:
 	
 	std::map<CONTROL_TYPE, std::vector<int>>keyInput_;	//操作の種類とキーの種類でキーボードの状態を格納
 	std::map<CONTROL_TYPE, std::vector<InputManager::JOYPAD_BTN>>conInput_;	//操作の種類とボタンの種類でコントローラーの状態を格納
+	std::map<CONTROL_TYPE, std::vector<InputManager::JOYPAD_STICK>>stickInput_;	//操作の種類とスティックの種類でコントローラーの状態を格納
 
 	// シングルトン用インスタンス
 	static KeyConfig* instance_;

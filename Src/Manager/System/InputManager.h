@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <vector>
 #include <Dxlib.h>
 #include "../../Common/Vector2.h"
 
@@ -8,6 +9,7 @@ class InputManager
 
 public:
 
+	static constexpr int STICK_THRESHOLD = 300;	//スティックの猶予
 	// ゲームコントローラーの認識番号
 	// DxLib定数、DX_INPUT_PAD1等に対応
 	enum class JOYPAD_NO
@@ -55,6 +57,19 @@ public:
 		MAX
 	};
 
+	enum class JOYPAD_STICK
+	{
+		L_STICK_UP,		//左スティック上
+		L_STICK_DOWN,	//左スティック下
+		L_STICK_LEFT,	//左スティック左
+		L_STICK_RIGHT,	//左スティック右
+		R_STICK_UP,		//右スティック上
+		R_STICK_DOWN,	//右スティック下
+		R_STICK_LEFT,	//右スティック左
+		R_STICK_RIGHT,	//右スティック右
+		MAX
+	};
+
 	enum class MOUSE
 	{
 		CLICK_RIGHT,		//右クリック
@@ -65,6 +80,7 @@ public:
 		MOVE_DOWN,			//下移動
 		WHEEL_FRONT,		//ホイール前回転
 		WHEEL_BACK,			//ホイール後ろ回転
+		MAX
 	};
 
 	// ゲームコントローラーの入力情報
@@ -141,6 +157,11 @@ public:
 	bool IsPadBtnTrgDown(JOYPAD_NO no, JOYPAD_BTN btn) const;
 	bool IsPadBtnTrgUp(JOYPAD_NO no, JOYPAD_BTN btn) const;
 
+	// スティックが倒されたか
+	bool IsStickNew(JOYPAD_NO no, JOYPAD_STICK stick) const;
+	bool IsStickDown(JOYPAD_NO no, JOYPAD_STICK stick) const;
+	bool IsStickUp(JOYPAD_NO no, JOYPAD_STICK stick) const;
+
 private:
 
 	// キー情報
@@ -163,6 +184,15 @@ private:
 		bool keyTrgUp;		// 現フレームでボタンが離されたか
 	};
 
+	struct StickInfo
+	{
+		JOYPAD_STICK key;
+		bool keyOld = false;
+		bool keyNew = false;
+		bool keyTrgDown = false;
+		bool keyTrgUp = false;
+	};
+
 	// コントローラ情報
 	DINPUT_JOYSTATE joyDInState_;
 
@@ -179,6 +209,9 @@ private:
 	// マウス情報
 	std::map<int, InputManager::MouseInfo> mouseInfos_;
 	InputManager::MouseInfo mouseInfoEmpty_;
+
+	// スティック情報
+	std::map<JOYPAD_NO, std::vector<InputManager::StickInfo>> stickInfos_;
 
 	// マウスカーソルの位置
 	Vector2 mousePos_;
@@ -213,4 +246,6 @@ private:
 	// コントローラの入力情報を更新する
 	void SetJPadInState(JOYPAD_NO jpNo);
 
+	//指定の方向に倒れた度合い0から1000
+	int PadStickOverSize(JOYPAD_NO no, JOYPAD_STICK stick)const;
 };

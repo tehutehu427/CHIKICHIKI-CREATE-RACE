@@ -39,6 +39,7 @@ void KeyConfig::Init(void)
 	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::RIGHTBUTTON_RIGHT, CONTROL_TYPE::PLAYER_JUMP);
 	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::RIGHTBUTTON_DOWN, CONTROL_TYPE::CANCEL);
 	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::RIGHTBUTTON_LEFT, CONTROL_TYPE::PLAYER_PUNCH);
+
 	KeyConfig::GetInstance().Add(KEY_INPUT_LCONTROL, CONTROL_TYPE::CANCEL);
 	KeyConfig::GetInstance().Add(KEY_INPUT_SPACE, CONTROL_TYPE::ENTER);
 }
@@ -77,6 +78,20 @@ bool KeyConfig::IsNew(CONTROL_TYPE cType, InputManager::JOYPAD_NO no)
 			}
 		}
 	}
+	for (auto& stick : stickInput_)
+	{
+		if (stick.first != cType)
+		{
+			continue;
+		}
+		for (auto stickI : stick.second)
+		{
+			if (InputManager::GetInstance().IsStickNew(no, stickI))
+			{
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
@@ -110,6 +125,20 @@ bool KeyConfig::IsTrgDown(CONTROL_TYPE cType, InputManager::JOYPAD_NO no)
 			}
 		}
 	}
+	for (auto& stick : stickInput_)
+	{
+		if (stick.first != cType)
+		{
+			continue;
+		}
+		for (auto stickI : stick.second)
+		{
+			if (InputManager::GetInstance().IsStickDown(no, stickI))
+			{
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
@@ -138,6 +167,20 @@ bool KeyConfig::IsTrgUp(CONTROL_TYPE cType, InputManager::JOYPAD_NO no)
 		for (auto conI : con.second)
 		{
 			if (InputManager::GetInstance().IsPadBtnTrgUp(no, conI))
+			{
+				return true;
+			}
+		}
+	}
+	for (auto& stick : stickInput_)
+	{
+		if (stick.first != cType)
+		{
+			continue;
+		}
+		for (auto stickI : stick.second)
+		{
+			if (InputManager::GetInstance().IsStickUp(no, stickI))
 			{
 				return true;
 			}
@@ -178,6 +221,23 @@ void KeyConfig::Add(InputManager::JOYPAD_BTN key, CONTROL_TYPE type)
 	std::vector<InputManager::JOYPAD_BTN> cons;
 	cons.emplace_back(key);
 	conInput_.emplace(type, cons);
+}
+
+void KeyConfig::Add(InputManager::JOYPAD_STICK key, CONTROL_TYPE type)
+{
+	for (auto& stick : stickInput_)
+	{
+		if (stick.first != type)
+		{
+			continue;
+		}
+		stick.second.emplace_back(key);
+		return;
+	}
+
+	std::vector<InputManager::JOYPAD_STICK> sticks;
+	sticks.emplace_back(key);
+	stickInput_.emplace(type, sticks);
 }
 
 void KeyConfig::Destroy(void)
