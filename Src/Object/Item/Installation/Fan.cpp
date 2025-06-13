@@ -56,3 +56,7 @@ void Fan::Draw(void)
 		VAdd(fanCenterPos, { -MODEL_SIZE.x / 2.0f,MODEL_SIZE.y / 2.0f,400.0f }),
 		Utility::WHITE, Utility::WHITE, false);
 }
+
+void Fan::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}

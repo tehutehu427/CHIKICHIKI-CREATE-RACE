@@ -144,6 +144,12 @@ public:
 	void Update(void)override;
 	void Draw(void)override;
 
+	/// <summary>
+	/// 当たり判定後の処理
+	/// </summary>
+	/// <param name="_hitColTag">相手側の当たり判定</param>
+	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
+
 	//ゲッタ
 	//******************************************
 	//プレイヤー番号

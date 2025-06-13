@@ -42,3 +42,7 @@ void SmallBomb::SetParam(void)
 void SmallBomb::Update(void)
 {
 }
+
+void SmallBomb::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}

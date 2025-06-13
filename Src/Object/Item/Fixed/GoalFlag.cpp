@@ -42,3 +42,7 @@ void GoalFlag::SetParam(void)
 void GoalFlag::Update(void)
 {
 }
+
+void GoalFlag::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}

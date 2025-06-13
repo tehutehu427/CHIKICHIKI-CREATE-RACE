@@ -42,3 +42,7 @@ void Spiky::SetParam(void)
 void Spiky::Update(void)
 {
 }
+
+void Spiky::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}

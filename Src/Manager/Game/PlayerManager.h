@@ -4,7 +4,7 @@
 #include"../../Object/Common/Transform.h"
 #include"../../Object/Player/Player.h"
 #include"../../Object/Player/Process/PlayerInput.h"
-#include"../../Object/Common/Capsule.h"
+//#include"../../Object/Common/Capsule.h"
 class Player;
 class PlayerManager
 {
@@ -23,6 +23,10 @@ public:
 	//初期座標
 	static constexpr float START_POS = 50.0f;
 
+	static constexpr Collider::TAG PLAYER_1_TAG = Collider::TAG::PLAYER1;
+	static constexpr Collider::TAG PLAYER_2_TAG = Collider::TAG::PLAYER2;
+	static constexpr Collider::TAG PLAYER_3_TAG = Collider::TAG::PLAYER3;
+	static constexpr Collider::TAG PLAYER_4_TAG = Collider::TAG::PLAYER4;
 
 	
 	enum class PLAYER
@@ -57,7 +61,7 @@ public:
 	void PlayersCollision(void);
 
 	//カプセル同士の当たり判定(完全ではない)
-	bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
+	//bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
 
 
 	//*****************************************

@@ -71,6 +71,10 @@ void MoveHoriFloor::Draw(void)
 	MV1DrawModel(trans_.modelId);
 }
 
+void MoveHoriFloor::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}
+
 const IntVector3 MoveHoriFloor::GetHitSize(void) const
 {
 	return size_ + IntVector3(MOVE_X, 0, 0);

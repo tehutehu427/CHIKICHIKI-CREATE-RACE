@@ -1,11 +1,21 @@
+#include "../ObjectBase.h"
+#include "Geometry/Geometry.h"
 #include "Collider.h"
 
-Collider::Collider(TYPE type, int modelId)
+Collider::Collider(ObjectBase& _parent, const TAG _tag, Geometry& _geometry) :
+	parent_(_parent),
+	tag_(_tag),
+	geometry_(_geometry)
 {
-	type_ = type;
-	modelId_ = modelId;
+	isDead_ = false;
 }
 
 Collider::~Collider(void)
 {
+}
+
+void Collider::OnHit(const std::weak_ptr<Collider> _collider)
+{
+	//親に相手のコライダを渡す
+	parent_.OnHit(_collider);
 }

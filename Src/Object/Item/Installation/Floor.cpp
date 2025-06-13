@@ -41,3 +41,7 @@ void Floor::SetParam(void)
 void Floor::Update(void)
 {
 }
+
+void Floor::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}

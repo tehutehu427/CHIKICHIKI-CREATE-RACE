@@ -76,7 +76,7 @@ const IntVector3 FerrisWheel::GetSize(void) const
 	return size_ + IntVector3(MOVE_X, MOVE_Y, 0);
 }
 
-void FerrisWheel::Hit(Transform& _hitTrans)
+void FerrisWheel::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
 }
 

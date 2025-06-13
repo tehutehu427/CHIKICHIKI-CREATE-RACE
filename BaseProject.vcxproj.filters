@@ -93,9 +93,6 @@
     <ClCompile Include="Src\Object\Common\AnimationController.cpp">
       <Filter>ソース ファイル\Object\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Common\Capsule.cpp">
-      <Filter>ソース ファイル\Object\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Object\Common\Collider.cpp">
       <Filter>ソース ファイル\Object\Common</Filter>
     </ClCompile>
@@ -207,9 +204,6 @@
     <ClCompile Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Common\FontRegistry.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -279,6 +273,27 @@
     <ClCompile Include="Src\Object\Item\Installation\FerrisWheel.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Object\Common\Geometry\Geometry.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Manager\Game\CollisionManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Common\Geometry\Model.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Common\Geometry\Cube.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Common\Geometry\Sphere.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Common\Geometry\Capsule.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Common\Geometry\Line.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Fader.h">
@@ -309,9 +324,6 @@
       <Filter>ヘッダー ファイル\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Common\AnimationController.h">
-      <Filter>ヘッダー ファイル\Object\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Common\Capsule.h">
       <Filter>ヘッダー ファイル\Object\Common</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Common\Collider.h">
@@ -573,9 +585,6 @@
     <ClInclude Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Common\FontRegistry.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -643,6 +652,33 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Item\Installation\FerrisWheel.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Common\Geometry\Geometry.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Manager\Game\CollisionManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Common\Geometry\Model.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Common\Geometry\Cube.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Common\Geometry\Sphere.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Common\Geometry\Capsule.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Common\Geometry\Line.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
