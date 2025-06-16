@@ -143,7 +143,7 @@ void Player::Update(void)
 #endif // DEBUG_ON
 	static VECTOR dirDown = trans_.GetDown();
 	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
-	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_,20.0f);
+	GravityManager::GetInstance().CalcGravity(dirDown, jumpPow_,20.0f);
 
 
 	//アクション関係
@@ -223,7 +223,7 @@ void Player::Move(void)
 	}
 	VECTOR getDir = input_->GetDir();
 	float deg = 0;
-	Quaternion cameraRot = scnMng_.GetCamera().lock()->GetQuaRotOutX();
+	Quaternion cameraRot = scnMng_.GetCamera(0).lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
 	//吹き飛び中でなかったらカメラ方向に移動したい
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE)&&!isPunched_&&!isPunch_)
@@ -261,7 +261,7 @@ void Player::Rotate(void)
 }
 void Player::SetGoalRotate(double _deg)
 {
-	VECTOR cameraRot = scnMng_.GetCamera().lock()->GetAngles();
+	VECTOR cameraRot = scnMng_.GetCamera(0).lock()->GetAngles();
 	Quaternion axis = Quaternion::AngleAxis(
 		(double)cameraRot.y + _deg, Utility::AXIS_Y);
 	// 現在設定されている回転との角度差を取る

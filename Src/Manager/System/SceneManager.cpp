@@ -7,6 +7,7 @@
 #include "../../Scene/Game/FreePlay.h"
 #include "../../Scene/Game/MultiParty.h"
 #include "../../Scene/Game/SoloChallenge.h"
+#include "../Game/PlayerManager.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "DateBank.h"
@@ -37,9 +38,8 @@ void SceneManager::Init(void)
 	fader_ = std::make_unique<Fader>();
 	fader_->Init();
 
-	// カメラ
-	camera_ = std::make_shared<Camera>();
-	camera_->Init();
+	// カメラ（初期化時は1つのみ生成）
+	CreateCameras(1);
 
 	isSceneChanging_ = true;
 
@@ -110,8 +110,10 @@ void SceneManager::Update(void)
 	scene_->Update();
 
 	// カメラ更新
-	camera_->Update();
-
+	for (auto& c : cameras_)
+	{
+		c->Update();
+	}
 }
 
 void SceneManager::Draw(void)
@@ -124,23 +126,50 @@ void SceneManager::Draw(void)
 	// 画面を初期化
 	ClearDrawScreen();
 
-	// カメラ設定
-	camera_->SetBeforeDraw();
+	if (isSplitMode_)
+	{
+		//スクリーン数分描画
+		for (int i = 0; i < splitScreens_.size(); i++)
+		{
+			// カメラ設定
+			cameras_[i]->SetBeforeDraw();
 
-	// Effekseerにより再生中のエフェクトを更新する。
-	UpdateEffekseer3D();
+			// Effekseerにより再生中のエフェクトを更新する。
+			UpdateEffekseer3D();
 
-	// 描画
-	scene_->Draw();
+			// 描画
+			scene_->Draw();
 
-	// 主にポストエフェクト用
-	camera_->Draw();
+			// 主にポストエフェクト用
+			cameras_[i]->Draw();
 
-	// Effekseerにより再生中のエフェクトを描画する。
-	DrawEffekseer3D();
-	
-	// 暗転・明転
-	fader_->Draw();
+			// Effekseerにより再生中のエフェクトを描画する。
+			DrawEffekseer3D();
+
+			// 暗転・明転
+			fader_->Draw();
+		}
+	}
+	else
+	{
+		// カメラ設定
+		cameras_[0]->SetBeforeDraw();
+
+		// Effekseerにより再生中のエフェクトを更新する。
+		UpdateEffekseer3D();
+
+		// 描画
+		scene_->Draw();
+
+		// 主にポストエフェクト用
+		cameras_[0]->Draw();
+
+		// Effekseerにより再生中のエフェクトを描画する。
+		DrawEffekseer3D();
+
+		// 暗転・明転
+		fader_->Draw();
+	}
 
 	//背面スクリーンにメインスクリーンを描画
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -149,7 +178,7 @@ void SceneManager::Draw(void)
 	ClearDrawScreen();
 
 	// カメラ設定
-	camera_->CameraSetting();
+	cameras_[0]->CameraSetting();
 
 	//メインスクリーンを描画
 	DrawGraph(0, 0, mainScreen_, false);
@@ -198,6 +227,10 @@ void SceneManager::PopScene()
 
 void SceneManager::Destroy(void)
 {
+	//スクリーンの解放
+	DeleteGraph(mainScreen_);
+	for(auto & screen : splitScreens_){ DeleteGraph(screen); }
+
 	DateBank::GetInstance().Destroy();
 	delete instance_;
 }
@@ -224,6 +257,80 @@ void SceneManager::StartFadeIn(void)
 	isSceneChanging_ = false;
 }
 
+std::weak_ptr<Camera> SceneManager::GetCamera(const int _playerIndex) const
+{
+	return cameras_[_playerIndex];
+}
+
+void SceneManager::CreateCameras(const int _playerNum)
+{
+	//現在のカメラの数が引数と同じ場合
+	if (cameras_.size() == _playerNum)
+	{
+		//処理は実行しない
+		return;
+	}
+	//カメラが空じゃない場合
+	else if (!cameras_.empty())
+	{
+		//カメラの中身を削除
+		cameras_.clear();
+	}
+	//カメラ生成
+	for (int i = 0; i < _playerNum; i++)
+	{
+		std::shared_ptr<Camera> camera;
+		camera = std::make_shared<Camera>();
+		camera->Init();
+		cameras_.push_back(std::move(camera));
+	}
+
+}
+
+void SceneManager::CreateSplitScreen(const int _playerNum)
+{
+	//引数が１以下もしくは
+	// 最大人数を超える場合,
+	// または引数と現在のスクリーン数が同じとき
+	if (_playerNum <= 1 || 
+		_playerNum > PlayerManager::PLAYER_NUM ||
+		splitScreens_.size() == _playerNum)
+	{
+		isSplitMode_ = false;	//分割しない
+		return;					//生成しない
+	}
+	//空じゃない場合
+	else if (!splitScreens_.empty())
+	{
+		//中身削除
+		splitScreens_.clear();
+	}
+
+	//分割を行う
+	isSplitMode_ = true;
+
+	int createNum = _playerNum;	//生成数
+	int divY = 1;				//Yの分割数
+	const int CASE_VALUE = 3;	//条件値(3人以上の場合)
+	
+	//人数が条件以上の場合
+	if (_playerNum >= CASE_VALUE)
+	{
+		createNum = PlayerManager::PLAYER_NUM;	//最大人数分生成
+		divY++;									//画面分割数増加
+	}
+
+	//スクリーン生成
+	for (int i = 0; i < createNum; i++)
+	{
+		int screen = MakeScreen(
+			Application::SCREEN_HALF_X,
+			Application::SCREEN_SIZE_Y / divY,
+			true);
+		splitScreens_.push_back(screen);
+	}
+}
+
 SceneManager::SceneManager(void)
 {
 
@@ -234,12 +341,13 @@ SceneManager::SceneManager(void)
 	fader_ = nullptr;
 
 	isSceneChanging_ = false;
+	isSplitMode_ = false;
+
+	cameras_.clear();
+	splitScreens_.clear();
 
 	// デルタタイム
 	deltaTime_ = 1.0f / 60.0f;
-
-	camera_ = nullptr;
-
 	totalTime_ = -1.0f;
 
 }
@@ -268,6 +376,16 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		scene_.reset();
 	}
 
+	//シーンに合わせて生成数を設定
+	const int createNum = (sceneId == SCENE_ID::MULTI) ? DateBank::GetInstance().GetPlayerNum() : 1;
+
+	//カメラ生成
+	CreateCameras(createNum);
+
+	//分割スクリーン生成
+	CreateSplitScreen(createNum);
+
+	//シーンを生成
 	switch (sceneId_)
 	{
 	case SCENE_ID::TITLE:
@@ -295,10 +413,13 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		break;
 	}
 
+	//読み込み
 	scene_->Load();
 
+	//デルタタイムリセット
 	ResetDeltaTime();
 
+	//シーンID初期化
 	waitSceneId_ = SCENE_ID::NONE;
 }
 

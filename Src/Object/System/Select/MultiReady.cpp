@@ -79,22 +79,24 @@ void MultiReady::RegisterProcessFunc(const STATE _state, SceneBase::ProcessFunct
 
 void MultiReady::UpdateNumCheck()
 {
-	//最大人数
-	static const int playerMax = PlayerManager::PLAYER_NUM;
+	static constexpr int PLAYER_NUM_MAX = PlayerManager::PLAYER_NUM;//選べるプレイヤー人数の最大
+	static constexpr int PLAYER_NUM_CHOICES = PLAYER_NUM_MAX - PLAYER_NUM_MIN + 1;//定数：選べるプレイヤー人数の数
 
 	//人数の選択
 	if (input_.IsTrgDown(KEY_INPUT_LEFT))
 	{
-		playerNum_ = (playerNum_ - 1 + playerMax) % playerMax;
+		//左キーで選択をひとつ戻す（範囲内でループ）
+		playerNum_ = (playerNum_ - 1 + PLAYER_NUM_CHOICES) % PLAYER_NUM_CHOICES;
 	}
 	else if (input_.IsTrgDown(KEY_INPUT_RIGHT))
 	{
-		playerNum_ = (playerNum_ + 1) % playerMax;
+		//右キーで選択をひとつ進める（範囲内でループ）
+		playerNum_ = (playerNum_ + 1) % PLAYER_NUM_CHOICES;
 	}
 	else if (input_.IsTrgDown(KEY_INPUT_RETURN))
 	{
-		//データ格納
-		DateBank::GetInstance().SetPlayerNum(playerNum_ + 1);
+		//データ格納（実際の人数は MIN を加算）
+		DateBank::GetInstance().SetPlayerNum(playerNum_ + PLAYER_NUM_MIN);
 
 		//状態遷移
 		ChangeState(STATE::PAD_CHECK);
@@ -125,7 +127,7 @@ void MultiReady::UpdateFinalCheck()
 
 void MultiReady::DrawNumCheck()
 {
-	DrawFormatString(300, 300, Utility::WHITE, "プレイヤー人数 : %d", playerNum_ + 1);
+	DrawFormatString(300, 300, Utility::WHITE, "プレイヤー人数 : %d", playerNum_ + PLAYER_NUM_MIN);
 }
 
 void MultiReady::DrawPadCheck()

@@ -8,6 +8,7 @@
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/InputManager.h"
+#include "../Manager/System/DateBank.h"
 #include "../Object/System/Select/ModeSelect.h"
 #include "../Object/System/Select/MultiReady.h"
 #include "../Object/System/Select/SelectStage.h"
@@ -81,6 +82,9 @@ void SelectScene::Init(void)
 	modeSelect_->Init();
 	multiReady_->Init();
 	selectStage_->Init();
+
+	//‰Šú‰»“_‚Ål”‚ğˆêl‚Éİ’è‚µ‚Ä‚¨‚­
+	DateBank::GetInstance().SetPlayerNum(1);
 }
 
 void SelectScene::ProcessMenuFunction(const SELECT_MENU _menu)

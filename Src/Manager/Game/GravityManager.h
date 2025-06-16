@@ -13,7 +13,7 @@ public:
 	static void CreateInstance(void);
 
 	//静的にインスタンスを取得する
-	static GravityManager* GetInstance(void);
+	static GravityManager& GetInstance(void);
 
 	static void Destroy(void);
 
