@@ -96,7 +96,8 @@ void MapDataIO::ExportJsonFile(const std::string _fileName)
 
                 //座標取得
                 VECTOR pos = item->GetTransform().pos;
-                positions.push_back({   //格納
+                positions.push_back(
+                    {   //格納
                     {"x", pos.x},
                     {"y", pos.y},
                     {"z", pos.z}
@@ -125,7 +126,8 @@ void MapDataIO::ExportJsonFile(const std::string _fileName)
             outFile << j.dump(INDENT);
             std::cout << "アイテムを " << _fileName << " に出力しました。\n";
         }
-        catch (const std::exception& e) {
+        catch (const std::exception& e)
+        {
             std::cerr << "JSON出力中に例外発生: " << e.what() << "\n";
         }
         outFile.close();
@@ -168,7 +170,8 @@ std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItem
     std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> items = {};
 
     std::ifstream inFile(_filepath);
-    if (!inFile.is_open()) {
+    if (!inFile.is_open()) 
+    {
         std::cerr << "ファイルを開けませんでした: " << _filepath << "\n";
         return items;
     }

@@ -1,10 +1,12 @@
 #pragma once
 #include<functional>
-#include "../Application.h"
-#include "../Common/Vector2.h"
+#include<DxLib.h>
+#include "../../../Application.h"
+#include "../../../Common/Vector2.h"
 
 class SceneManager;
 class DateBank;
+class SelectScene;
 class SelectUIGlow;
 class SelectUIDarkly;
 
@@ -12,26 +14,15 @@ class ModeSelect
 {
 public:
 
-	//セレクトメニュー
-	enum class SELECT_MENU
-	{
-		SOLO,		//ソロ課題モード
-		FREE,		//フリープレイモード	
-		MULTI,		//マルチプレイモード
-		SETTINGS,	//設定
-		EXIT,		//終了
-		MAX,		//最大値
-	};
-
+	/// <summary>
+	/// 更新状態
+	/// </summary>
 	enum class UPD_STATE
 	{
 		NONE,
 		SELECT,	//選択
 		ROTATE,	//回転
 	};
-
-	//セレクトメニューの項目数
-	static constexpr int MENU_LIST_NUM = static_cast<int>(SELECT_MENU::MAX);	//項目数
 
 	//円弧の描画数
 	static constexpr int DRAW_ARC_NUM = 4;	//描画数
@@ -66,7 +57,7 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(SelectScene& _parent);
 
 	/// <summary>
 	/// 描画処理
@@ -112,15 +103,11 @@ private:
 	//円弧の配列
 	Arc arc_[DRAW_ARC_NUM];
 
-	//選択したモード
-	std::string selectType_[MENU_LIST_NUM];
+	//状態変更処理の管理
+	std::unordered_map<UPD_STATE, std::function<void(SelectScene&)>> stateMap_;
 
 	//更新関数
-	std::function<void()> selectUpdateFunc_;
-
-	//状態変更処理の管理
-	std::unordered_map<UPD_STATE, std::function<void()>> stateMap_;
-	std::unordered_map <SELECT_MENU, std::function<void()>> menuFuncTable_;
+	std::function<void(SelectScene&)> selectUpdateFunc_;
 
 	//エフェクトグロー
 	std::unique_ptr<SelectUIGlow> uiGlow_;
@@ -129,14 +116,14 @@ private:
 	std::unique_ptr<SelectUIDarkly> uiDarkly_;
 
 	//状態の処理を登録
-	void RegisterArcState(const UPD_STATE _state, std::function<void()> _update);
+	void RegisterArcState(const UPD_STATE _state, std::function<void(SelectScene&)> _update);
 
 	//状態変更
 	void ChangeUpdateState(const UPD_STATE _state);
 
 	//円弧の状態別更新
-	void SelectUpdate();	//待機
-	void RotateUpdate();	//回転
+	void SelectUpdate(SelectScene& _parent);	//待機
+	void RotateUpdate(SelectScene&);	//回転
 
 	//次に表示される円弧にメニュー項目を与える
 	void SetMenuItem(const int _imgIndex, const int _arcIndex);

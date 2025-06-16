@@ -23,9 +23,9 @@
 GameScene::GameScene(void)
 {
 	//更新関数のセット
-	updataFunc_ = std::bind(&GameScene::LoadingUpdate, this);
+	func_.updataFunc_ = std::bind(&GameScene::LoadingUpdate, this);
 	//描画関数のセット
-	drawFunc_ = std::bind(&GameScene::LoadingDraw, this);
+	func_.drawFunc_ = std::bind(&GameScene::LoadingDraw, this);
 
 	sky_ = nullptr;
 	palette_ = nullptr;
@@ -142,8 +142,8 @@ void GameScene::NormalDraw(void)
 void GameScene::ChangeNormal(void)
 {
 	//処理変更
-	updataFunc_ = std::bind(&GameScene::NormalUpdate, this);
-	drawFunc_ = std::bind(&GameScene::NormalDraw, this);
+	func_.updataFunc_ = std::bind(&GameScene::NormalUpdate, this);
+	func_.drawFunc_ = std::bind(&GameScene::NormalDraw, this);
 }
 
 void GameScene::DebagUpdate(void)
