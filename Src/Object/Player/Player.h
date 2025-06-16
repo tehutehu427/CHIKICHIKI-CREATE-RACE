@@ -102,10 +102,11 @@ public:
 
 	enum class ATK_ACT
 	{
-		NONE,
-		INPUT,
-		MOVE,
-		PUNCH,
+		NONE,	//何もなし
+		INPUT,	//入力
+		MOVE,	//移動
+		PUNCH,	//パンチ
+		KNOCKBACK,//パンチされた状態
 		JUMP
 	};
 
@@ -116,7 +117,7 @@ public:
 		IDLE=1,
 		WALK=2,
 		FALL=4,
-		DAMAGE = 8,
+		DAMAGE = 9,
 		PUNCH = 12,
 		JUMP = 13,
 		LAND=14,
@@ -366,13 +367,14 @@ private:
 	//変更
 	void ChangeNone(void);
 
-	//
+	//移動状態の更新
 	void MoveUpdate(void);
-
-	//移動
-	void Move(void);
+	//入力方向に応じて方向を決める
+	void MoveDirFronInput(void);
 	//移動に変更する
 	void ChangeMove(void);
+	//毎フレーム移動方向とスピードを更新する
+	void UpdateMoveDirAndPow(void);
 
 	//回転
 	void Rotate(void);
@@ -389,6 +391,12 @@ private:
 	//パンチ
 	void Punch(void);
 	void ChangePunch(void);
+
+	//ノックバック
+	void KnockBack(void);
+	void ChangeKnockBack(void);
+
+	//
 	//------------------------------
 	
 	/// <summary>

@@ -107,8 +107,8 @@ private:
 	/// <summary>
 	/// JSONからアイテム種類ごとに座標を読み込む
 	/// </summary>
-	/// <param name="filepath"></param>ファイルネームを返す
-	/// <returns></returns>読み込んだ種類別配置情報を返す
+	/// <param name="filepath">ファイルネーム</param>
+	/// <returns>読み込んだ種類別配置情報を返す</returns>
 	std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> LoadItemsFromJson(const std::string& _filepath);
 
 	//確認画面の背景

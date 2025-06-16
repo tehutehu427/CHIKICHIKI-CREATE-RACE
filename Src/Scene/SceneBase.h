@@ -9,10 +9,17 @@ class InputManager;
 class SceneBase
 {
 
-public:
+public:	
+	
+	//処理管理まとめ
+	struct ProcessFunction
+	{
+		std::function<void()> updataFunc_;		//更新処理管理
+		std::function<void()> drawFunc_;		//描画処理管理
+	};
 
 	//最低ローディング時間
-	static constexpr float LOADING_TIME = 0.3f;
+	static constexpr float LOADING_TIME = 0.01f;
 
 	//フォントサイズ
 	static constexpr int FONT_SIZE = 28;
@@ -48,9 +55,8 @@ protected:
 	InputManager& inputMng_;
 	SceneManager& scnMng_;
 
-	//更新処理管理
-	std::function<void(void)> updataFunc_;
-	std::function<void(void)> drawFunc_;
+	//処理の管理
+	ProcessFunction func_;
 
 	//ローディング経過時間
 	float loadingTime_;
@@ -59,17 +65,17 @@ protected:
 	int buttnFontHandle_;
 
 	//更新関数
-	virtual void LoadingUpdate(void);
-	virtual void NormalUpdate(void) = 0;
+	virtual void LoadingUpdate();
+	virtual void NormalUpdate() = 0;
 
 	//描画関数
-	virtual void LoadingDraw(void);
-	virtual void NormalDraw(void) = 0;
+	virtual void LoadingDraw();
+	virtual void NormalDraw() = 0;
 
 	//ローディング処理から通常処理へ
-	virtual void ChangeNormal(void) = 0;
+	virtual void ChangeNormal() = 0;
 	
 	//「now loading......」の描画
-	void DrawNowLoading(void);
+	void DrawNowLoading();
 
 };

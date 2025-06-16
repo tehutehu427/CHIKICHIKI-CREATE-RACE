@@ -82,22 +82,29 @@ void MapDataIO::ExportJsonFile(const std::string _fileName)
         ItemBase::ITEM_TYPE type = static_cast<ItemBase::ITEM_TYPE>(i);
         const auto& items = ItemManager::GetInstance().GetItems(type);
 
+        //中身がカラじゃない場合
         if (items && !items->empty())
         {
+            //座標格納用の配列を用意
             nlohmann::json positions = nlohmann::json::array();
 
+            //アイテム分回す
             for (const auto& item : *items)
             {
+                //ない場合次へ
                 if (!item) continue; // nullチェックを追加
 
+                //座標取得
                 VECTOR pos = item->GetTransform().pos;
-                positions.push_back({
+                positions.push_back(
+                    {   //格納
                     {"x", pos.x},
                     {"y", pos.y},
                     {"z", pos.z}
                     });
             }
 
+            //名前取得
             std::string typeName = DateBank::GetInstance().GetItemName(type);
             if (!typeName.empty()) // 空文字チェック
             {
@@ -110,6 +117,7 @@ void MapDataIO::ExportJsonFile(const std::string _fileName)
         }
     }
 
+    //JSONファイルを出力
     std::ofstream outFile(_fileName);
     if (outFile.is_open())
     {
@@ -118,7 +126,8 @@ void MapDataIO::ExportJsonFile(const std::string _fileName)
             outFile << j.dump(INDENT);
             std::cout << "アイテムを " << _fileName << " に出力しました。\n";
         }
-        catch (const std::exception& e) {
+        catch (const std::exception& e)
+        {
             std::cerr << "JSON出力中に例外発生: " << e.what() << "\n";
         }
         outFile.close();
@@ -161,7 +170,8 @@ std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItem
     std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> items = {};
 
     std::ifstream inFile(_filepath);
-    if (!inFile.is_open()) {
+    if (!inFile.is_open()) 
+    {
         std::cerr << "ファイルを開けませんでした: " << _filepath << "\n";
         return items;
     }

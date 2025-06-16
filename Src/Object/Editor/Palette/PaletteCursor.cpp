@@ -9,10 +9,8 @@ PaletteCursor::PaletteCursor(const int _plNum, const int _img) :
 	//‰Šú‰»
 	pad_ = InputManager::JOYPAD_NO::PAD1;
 	pos_ = { -1,-1 };
-	playerNum_ = -1;
 	decide_ = false;
 	rate_ = -1.0f;
-	img_ = -1;
 }
 
 PaletteCursor::~PaletteCursor()

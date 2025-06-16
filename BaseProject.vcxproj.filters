@@ -204,7 +204,8 @@
     <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.cpp">
+
+    <ClCompile Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Common\FontRegistry.cpp">
@@ -246,7 +247,7 @@
     <ClCompile Include="Src\Shader\PostEffect\PostEffectScanLine.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\System\ModeSelect.cpp">
+    <ClCompile Include="Src\Object\System\Select\ModeSelect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Shader\Effect\SelectUIGlow.cpp">
@@ -273,10 +274,34 @@
     <ClCompile Include="Src\Object\Editor\Palette\PaletteCursor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Item\Installation\FerrisWheel.cpp">
+    <ClCompile Include="Src\Object\System\Result\MultiResult.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\System\Result\Palette.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\System\Result\ScoreGage.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Manager\Game\ScoreManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\System\Result\ScoreGageManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\System\MultiInputCheck.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\System\Select\MultiReady.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\System\Select\SelectStage.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Manager\System\KeyConfig.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Item\Installation\FerrisWheel.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -567,10 +592,11 @@
     <ClInclude Include="Src\Object\Item\Destroyer\BigBomb.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\Spring.h">
+
+    <ClInclude Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.h">
+    <ClInclude Include="Src\Object\Editor\Palette\Icon\SoloPaletteIcon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Common\FontRegistry.h">
@@ -615,7 +641,7 @@
     <ClInclude Include="Src\Shader\PostEffect\PostEffectScanLine.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\System\ModeSelect.h">
+    <ClInclude Include="Src\Object\System\Select\ModeSelect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Shader\Effect\SelectUIGlow.h">
@@ -636,19 +662,38 @@
     <ClInclude Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+   
+    <ClInclude Include="Src\Utility\UtilityTemplates.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\System\Result\MultiResult.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\System\Result\Palette.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\System\Result\ScoreGage.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Manager\Game\ScoreManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\System\Result\ScoreGageManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\System\MultiInputCheck.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\System\Select\MultiReady.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\System\Select\SelectStage.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="Src\Object\Editor\Palette\PaletteCursor.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Item\Installation\FerrisWheel.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\System\KeyConfig.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

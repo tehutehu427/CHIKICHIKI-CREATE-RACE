@@ -20,16 +20,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Manager\System\KeyConfig.cpp" />
+    <ClCompile Include="Src\Object\System\Select\SelectStage.cpp" />
+    <ClCompile Include="Src\Object\System\Select\MultiReady.cpp" />
+    <ClCompile Include="Src\Object\System\MultiInputCheck.cpp" />
+    <ClCompile Include="Src\Object\System\Result\ScoreGageManager.cpp" />
+    <ClCompile Include="Src\Manager\Game\ScoreManager.cpp" />
+    <ClCompile Include="Src\Object\System\Result\ScoreGage.cpp" />
+    <ClCompile Include="Src\Object\System\Result\Palette.cpp" />
+    <ClCompile Include="Src\Object\System\Result\MultiResult.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\PaletteCursor.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.cpp" />
     <ClCompile Include="Src\Object\UI\EditorUi.cpp" />
     <ClCompile Include="Src\Shader\Effect\SelectUIDarkly.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\FerrisWheel.cpp" />
     <ClCompile Include="Src\Shader\Effect\EffectBase.cpp" />
-    <ClCompile Include="Src\Object\System\ModeSelect.cpp" />
+    <ClCompile Include="Src\Object\System\Select\ModeSelect.cpp" />
     <ClCompile Include="Src\Object\System\GameClear.cpp" />
     <ClCompile Include="Src\Common\FontRegistry.cpp" />
-    <ClCompile Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\Spring.cpp" />
     <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp" />
@@ -95,6 +102,14 @@
     <ClCompile Include="Src\Object\UI\UiBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\System\Select\SelectStage.h" />
+    <ClInclude Include="Src\Object\System\Select\MultiReady.h" />
+    <ClInclude Include="Src\Object\System\MultiInputCheck.h" />
+    <ClInclude Include="Src\Object\System\Result\ScoreGageManager.h" />
+    <ClInclude Include="Src\Manager\Game\ScoreManager.h" />
+    <ClInclude Include="Src\Object\System\Result\ScoreGage.h" />
+    <ClInclude Include="Src\Object\System\Result\Palette.h" />
+    <ClInclude Include="Src\Object\System\Result\MultiResult.h" />
     <ClInclude Include="Src\Manager\System\KeyConfig.h" />
     <ClInclude Include="Src\Object\Editor\Palette\PaletteCursor.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.h" />
@@ -117,11 +132,10 @@
     <ClInclude Include="Src\Object\Item\Installation\Spiky.h" />
     <ClInclude Include="Src\Shader\Effect\SelectUIDarkly.h" />
     <ClInclude Include="Src\Shader\Effect\EffectBase.h" />
-    <ClInclude Include="Src\Object\System\ModeSelect.h" />
+    <ClInclude Include="Src\Object\System\Select\ModeSelect.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\PaletteIcon.h" />
     <ClInclude Include="Src\Object\System\GameClear.h" />
     <ClInclude Include="Src\Common\FontRegistry.h" />
-    <ClInclude Include="Src\Object\Editor\Palette\Icon\FreePaletteIcon.h" />
     <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h" />
     <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h" />
     <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h" />
@@ -217,6 +231,7 @@
     <ClInclude Include="Src\Utility\Utility.h" />
     <ClInclude Include="Src\Shader\Effect\SelectUIGlow.h" />
     <ClInclude Include="Src\Object\UI\UiBase.h" />
+    <ClInclude Include="Src\Utility\UtilityTemplates.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

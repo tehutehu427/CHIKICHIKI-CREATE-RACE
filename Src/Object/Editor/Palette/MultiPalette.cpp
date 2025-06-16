@@ -5,7 +5,6 @@
 #include "../Manager/System/DateBank.h"
 #include "Icon/PaletteIcon.h"
 #include "Icon/MultiPaletteIcon.h"
-#include "PaletteCursor.h"
 
 MultiPalette::MultiPalette(std::vector<std::unique_ptr<EditController>>& _editControllers)
 	: EditorPaletteBase(_editControllers)
@@ -21,13 +20,6 @@ void MultiPalette::Load(void)
 	//リソースの読み込み
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgPalette_ = res.Load(ResourceManager::SRC::PALETTE).handleId_;
-	imgCursors_ = res.Load(ResourceManager::SRC::CURSORS).handleIds_;
-
-	//カーソル
-	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
-	{
-		cursors_.push_back(std::make_unique<PaletteCursor>(i, imgCursors_[i]));
-	}
 
 	//パレットアイコン
 	palIcon_ = std::make_unique<MultiPaletteIcon>();
@@ -36,12 +28,16 @@ void MultiPalette::Load(void)
 
 void MultiPalette::Init(void)
 {
-	for (auto& cursor : cursors_)
-	{
-		cursor->Init();
-	}
+	//初期化
+	pal_.pos = { Application::SCREEN_HALF_X,Application::SCREEN_HALF_Y };
+	pal_.rate = 0.0f;
+	pal_.size = {
+		static_cast<int>(static_cast<float>(PALETTE_SIZE_X) * pal_.rate),
+		static_cast<int>(static_cast<float>(PALETTE_SIZE_Y) * pal_.rate) };
 
-	ChangeState(STATE::NONE);
+	palIcon_->Init();
+
+	ChangeState(STATE::OPEN);
 }
 
 void MultiPalette::Draw(void)
@@ -58,17 +54,6 @@ void MultiPalette::Draw(void)
 
 	//選択描画
 	palIcon_->Draw();
-
-	//カーソル描画
-	for (auto& cursor : cursors_)
-	{
-		cursor->Draw();
-	}
-}
-
-void MultiPalette::UpdateWait()
-{
-	//特に処理なし
 }
 
 void MultiPalette::UpdateClose()
@@ -86,20 +71,34 @@ void MultiPalette::UpdateOpen()
 {
 	pal_.rate += RATE_SPEED;
 
-	if (pal_.rate >= 1.0f)
+	if (pal_.rate >= PALETTE_RATE)
 	{
-		pal_.rate = 1.0f;
+		pal_.rate = PALETTE_RATE;
 		ChangeState(STATE::SELECT);
 	}
 }
 
 void MultiPalette::UpdateSelect()
 {
-	//各プレイヤーごとにカーソルを用意
-	//アイテムを選ばせる処理
+	//パレットアイコンに関する処理
+	palIcon_->Update();
 
-	for (auto& cursor : cursors_)
+	//生成開始をしないとき
+	if (!palIcon_->IsCreate())
 	{
-		cursor->Update();
+		//処理終了
+		return;
 	}
+
+	//人数分コントローラに設定
+	for (int i = 0; i < editControllers_.size(); i++)
+	{
+		editControllers_[i]->SetItemType(palIcon_->GetSelectType());
+	}
+
+	//状態変更
+	ChangeState(STATE::CLOSE);
+
+	//アイコンの状態も変更
+	palIcon_->ChangeState(PaletteIcon::STATE::NONE);
 }

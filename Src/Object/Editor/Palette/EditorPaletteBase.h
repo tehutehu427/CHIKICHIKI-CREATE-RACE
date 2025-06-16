@@ -14,7 +14,9 @@ class EditorPaletteBase
 {
 public:
 
-	//ó‘Ô
+	/// <summary>
+	/// ó‘Ô
+	/// </summary>
 	enum class STATE
 	{
 		NONE,	
@@ -42,7 +44,9 @@ public:
 	static constexpr int OPEN_POS_X = Application::SCREEN_HALF_X;
 	static constexpr int OPEN_POS_Y = Application::SCREEN_HALF_Y;
 
-	//‰æ‘œ•`‰æ‚ÉŠÖ‚·‚éî•ñ
+	/// <summary>
+	/// ‰æ‘œ‚ÉŠÖ‚·‚éî•ñ
+	/// </summary>
 	struct ImgInfo
 	{
 		int num = 0;
