@@ -38,6 +38,8 @@ public:
 	/// <param name="range">消去範囲</param>
 	void DeleteItem(VECTOR mapPos, int range);
 
+	void DeleteItem(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type);
+
 	/// <summary>
 	/// すべてのアイテムを削除
 	/// </summary>
@@ -159,6 +161,8 @@ public:
 	/// <param name="_type">アイテムの種類</param>
 	/// <returns></returns>
 	IntVector3 GetItemSize(ItemBase::ITEM_TYPE _type) const;
+
+	float GetItemRotY(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos);
 	/// <summary>
 	/// スタートのワールド座標を返す
 	/// </summary>
