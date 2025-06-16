@@ -53,11 +53,7 @@ void GameScene::Load(void)
 	//フォントの生成
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
-	//仮で人数設定
-	int playerNum = DateBank::GetInstance().GetPlayerNum();
-
-	//プレイヤー管理クラスを生成
-	PlayerManager::CreateInstance(PLAYER_NUM);
+	PlayerManager::CreateInstance();
 	PlayerManager::GetInstance().Load();
 
 	//マップエディター

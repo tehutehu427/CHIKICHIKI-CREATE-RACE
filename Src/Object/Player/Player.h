@@ -7,7 +7,7 @@
 #include"./Process/PlayerInput.h"
 #include "../ObjectBase.h"
 
-//#define DEBUG_ON
+#define DEBUG_ON
 class Camera;
 class PMove;
 class PJump;
@@ -102,9 +102,11 @@ public:
 
 	enum class ATK_ACT
 	{
-		NONE,
-		MOVE,
-		PUNCH,
+		NONE,	//何もなし
+		INPUT,	//入力
+		MOVE,	//移動
+		PUNCH,	//パンチ
+		KNOCKBACK,//パンチされた状態
 		JUMP
 	};
 
@@ -115,7 +117,7 @@ public:
 		IDLE=1,
 		WALK=2,
 		FALL=4,
-		DAMAGE = 8,
+		DAMAGE = 9,
 		PUNCH = 12,
 		JUMP = 13,
 		LAND=14,
@@ -133,15 +135,41 @@ public:
 	
 
 	//******************************************
-	// コンストラクタ
+	
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_playerNum">プレイヤー番号</param>
+	/// <param name="_cntl">コントローラー識別番号</param>
 	Player(int _playerNum,PlayerInput::CNTL _cntl);
-
-	// デストラクタ
+	
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Player(void);
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	/// <param name=""></param>
 	void Load(void)override;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name=""></param>
 	void Init(void)override;
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void)override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void)override;
 
 	//ゲッタ
@@ -262,6 +290,17 @@ private:
 
 	//アクション関係
 	//----------------------------------------
+	//状態遷移
+	std::map<ATK_ACT, std::function<void(void)>>changeAction_;
+
+	//状態更新
+	std::function<void(void)>actionUpdate_;
+
+	//状態
+	ATK_ACT act_;
+
+	//地面との当たり判定
+	bool isLandHit_;
 	//移動
 	//------------------------
 	float speed_;			// 移動スピード
@@ -314,8 +353,28 @@ private:
 	//アクション関係
 	//------------------------------
 	void Action(void);
-	//移動
-	void Move(void);
+
+	//状態遷移
+	void ChangeAction(ATK_ACT _act);
+
+	//何もしない
+	void NoneUpdate(void);
+
+	//入力
+	void ActionInputUpdate(void);
+	void ChangeInput(void);
+
+	//変更
+	void ChangeNone(void);
+
+	//移動状態の更新
+	void MoveUpdate(void);
+	//入力方向に応じて方向を決める
+	void MoveDirFronInput(void);
+	//移動に変更する
+	void ChangeMove(void);
+	//毎フレーム移動方向とスピードを更新する
+	void UpdateMoveDirAndPow(void);
 
 	//回転
 	void Rotate(void);
@@ -327,9 +386,17 @@ private:
 
 	//ジャンプ
 	void Jump(void);
+	void ChangeJump(void);
 
 	//パンチ
 	void Punch(void);
+	void ChangePunch(void);
+
+	//ノックバック
+	void KnockBack(void);
+	void ChangeKnockBack(void);
+
+	//
 	//------------------------------
 	
 	/// <summary>
