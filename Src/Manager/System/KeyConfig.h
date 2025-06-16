@@ -5,6 +5,13 @@ class KeyConfig
 {
 public:
 
+	enum class TYPE
+	{
+		KEYBORD_MOUSE,
+		PAD,
+		ALL,
+	};
+
 	enum class CONTROL_TYPE //操作の種類	
 	{
 		ENTER,					//決定
@@ -46,23 +53,24 @@ public:
 	void Update(void);
 
 	//操作の種類別にキーの状態を取得
-	bool IsNew(CONTROL_TYPE cType, InputManager::JOYPAD_NO no);
-	bool IsTrgDown(CONTROL_TYPE cType, InputManager::JOYPAD_NO no);
-	bool IsTrgUp(CONTROL_TYPE cType, InputManager::JOYPAD_NO no);
+	bool IsNew(CONTROL_TYPE cType, InputManager::JOYPAD_NO no ,TYPE type = TYPE::ALL);
+	bool IsTrgDown(CONTROL_TYPE cType, InputManager::JOYPAD_NO no,TYPE type = TYPE::ALL);
+	bool IsTrgUp(CONTROL_TYPE cType, InputManager::JOYPAD_NO no, TYPE type = TYPE::ALL);
 
 	//操作の種類別にキーを追加	
-	void Add(int key , CONTROL_TYPE type);
-	void Add(InputManager::JOYPAD_BTN key, CONTROL_TYPE type);
-	void Add(InputManager::JOYPAD_STICK key, CONTROL_TYPE type);
-
+	void Add(CONTROL_TYPE type, int key);
+	void Add(CONTROL_TYPE type, InputManager::JOYPAD_BTN key);
+	void Add(CONTROL_TYPE type, InputManager::JOYPAD_STICK key);
+	void Add(CONTROL_TYPE type, InputManager::MOUSE key);
 	// リソースの破棄
 	void Destroy(void);
 
 private:
 	
-	std::map<CONTROL_TYPE, std::vector<int>>keyInput_;	//操作の種類とキーの種類でキーボードの状態を格納
-	std::map<CONTROL_TYPE, std::vector<InputManager::JOYPAD_BTN>>conInput_;	//操作の種類とボタンの種類でコントローラーの状態を格納
-	std::map<CONTROL_TYPE, std::vector<InputManager::JOYPAD_STICK>>stickInput_;	//操作の種類とスティックの種類でコントローラーの状態を格納
+	std::map<CONTROL_TYPE, std::vector<int>>keyInput_;								//操作の種類とキーの種類でキーボードの状態を格納
+	std::map<CONTROL_TYPE, std::vector<InputManager::JOYPAD_BTN>>conInput_;			//操作の種類とボタンの種類でコントローラーの状態を格納
+	std::map<CONTROL_TYPE, std::vector<InputManager::JOYPAD_STICK>>stickInput_;		//操作の種類とスティックの種類でコントローラーの状態を格納
+	std::map < CONTROL_TYPE, std::vector<InputManager::MOUSE>>mouseInput_;			//操作の種類とマウスの種類でマウスの状態を格納
 
 	// シングルトン用インスタンス
 	static KeyConfig* instance_;

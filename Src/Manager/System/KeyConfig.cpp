@@ -22,174 +22,218 @@ KeyConfig& KeyConfig::GetInstance(void)
 
 void KeyConfig::Init(void)
 {
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::LEFTBUTTON_DOWN, CONTROL_TYPE::SELECT_DOWN);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::LEFTBUTTON_DOWN, CONTROL_TYPE::EDIT_CAMERA_ROT_DOWN);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::LEFTBUTTON_DOWN, CONTROL_TYPE::PLAY_CAMERA_MOVE_DOWN);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::LEFTBUTTON_TOP, CONTROL_TYPE::SELECT_UP);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::LEFTBUTTON_TOP, CONTROL_TYPE::EDIT_CAMERA_ROT_UP);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::LEFTBUTTON_TOP, CONTROL_TYPE::PLAY_CAMERA_MOVE_UP);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::LEFTBUTTON_LEFT, CONTROL_TYPE::SELECT_LEFT);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::LEFTBUTTON_LEFT, CONTROL_TYPE::EDIT_CAMERA_ROT_LEFT);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::LEFTBUTTON_LEFT, CONTROL_TYPE::PLAY_CAMERA_MOVE_LEFT);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::LEFTBUTTON_RIGHT, CONTROL_TYPE::SELECT_RIGHT);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::LEFTBUTTON_RIGHT, CONTROL_TYPE::EDIT_CAMERA_ROT_RIGHT);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::LEFTBUTTON_RIGHT, CONTROL_TYPE::PLAY_CAMERA_MOVE_RIGHT);
-	
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::RIGHTBUTTON_RIGHT, CONTROL_TYPE::ENTER);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::RIGHTBUTTON_RIGHT, CONTROL_TYPE::PLAYER_JUMP);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::RIGHTBUTTON_DOWN, CONTROL_TYPE::CANCEL);
-	KeyConfig::GetInstance().Add(InputManager::JOYPAD_BTN::RIGHTBUTTON_LEFT, CONTROL_TYPE::PLAYER_PUNCH);
-
-	KeyConfig::GetInstance().Add(KEY_INPUT_LCONTROL, CONTROL_TYPE::CANCEL);
-	KeyConfig::GetInstance().Add(KEY_INPUT_SPACE, CONTROL_TYPE::ENTER);
+	Add(CONTROL_TYPE::ENTER, KEY_INPUT_SPACE);
+	Add(CONTROL_TYPE::ENTER, InputManager::MOUSE::CLICK_LEFT);
+	Add(CONTROL_TYPE::ENTER, InputManager::JOYPAD_BTN::RIGHTBUTTON_RIGHT);
 }
 
 void KeyConfig::Update(void)
 {
 }
 
-bool KeyConfig::IsNew(CONTROL_TYPE cType, InputManager::JOYPAD_NO no)
+bool KeyConfig::IsNew(CONTROL_TYPE cType, InputManager::JOYPAD_NO no,TYPE type)
 {
-	for (auto &key : keyInput_)
+	if (type == TYPE::KEYBORD_MOUSE || type == TYPE::ALL)
 	{
-		if (key.first != cType)
+		for (auto& key : keyInput_)
 		{
-			continue;
-		}
-		for (auto keyI : key.second)
-		{
-			if (InputManager::GetInstance().IsNew(keyI))
+			if (key.first != cType)
 			{
-				return true;
+				continue;
+			}
+			for (auto keyI : key.second)
+			{
+				if (InputManager::GetInstance().IsNew(keyI))
+				{
+					return true;
+				}
+			}
+		}
+		for (auto& mouse : mouseInput_)
+		{
+			if (mouse.first != cType)
+			{
+				continue;
+			}
+			for (auto mouseI : mouse.second)
+			{
+				if (InputManager::GetInstance().IsMouseNew(mouseI))
+				{
+					return true;
+				}
 			}
 		}
 	}
-	for (auto& con : conInput_)
+	if (type == TYPE::PAD || type == TYPE::ALL)
 	{
-		if (con.first != cType)
+		for (auto& con : conInput_)
 		{
-			continue;
-		}
-		for (auto conI : con.second)
-		{
-			if (InputManager::GetInstance().IsPadBtnNew(no, conI))
+			if (con.first != cType)
 			{
-				return true;
+				continue;
+			}
+			for (auto conI : con.second)
+			{
+				if (InputManager::GetInstance().IsPadBtnNew(no, conI))
+				{
+					return true;
+				}
 			}
 		}
-	}
-	for (auto& stick : stickInput_)
-	{
-		if (stick.first != cType)
+		for (auto& stick : stickInput_)
 		{
-			continue;
-		}
-		for (auto stickI : stick.second)
-		{
-			if (InputManager::GetInstance().IsStickNew(no, stickI))
+			if (stick.first != cType)
 			{
-				return true;
+				continue;
+			}
+			for (auto stickI : stick.second)
+			{
+				if (InputManager::GetInstance().IsStickNew(no, stickI))
+				{
+					return true;
+				}
 			}
 		}
 	}
 	return false;
 }
 
-bool KeyConfig::IsTrgDown(CONTROL_TYPE cType, InputManager::JOYPAD_NO no)
+bool KeyConfig::IsTrgDown(CONTROL_TYPE cType, InputManager::JOYPAD_NO no ,TYPE type)
 {
-	for (auto& key : keyInput_)
+
+	if (type == TYPE::KEYBORD_MOUSE || type == TYPE::ALL)
 	{
-		if (key.first != cType)
+		for (auto& key : keyInput_)
 		{
-			continue;
-		}
-		for (auto keyI : key.second)
-		{
-			if (InputManager::GetInstance().IsTrgDown(keyI))
+			if (key.first != cType)
 			{
-				return true;
+				continue;
+			}
+			for (auto keyI : key.second)
+			{
+				if (InputManager::GetInstance().IsTrgDown(keyI))
+				{
+					return true;
+				}
+			}
+		}
+		for (auto& mouse : mouseInput_)
+		{
+			if (mouse.first != cType)
+			{
+				continue;
+			}
+			for (auto mouseI : mouse.second)
+			{
+				if (InputManager::GetInstance().IsMouseTrgDown(mouseI))
+				{
+					return true;
+				}
 			}
 		}
 	}
-	for (auto& con : conInput_)
+	if (type == TYPE::KEYBORD_MOUSE || type == TYPE::ALL)
 	{
-		if (con.first != cType)
+		for (auto& con : conInput_)
 		{
-			continue;
-		}
-		for (auto conI : con.second)
-		{
-			if (InputManager::GetInstance().IsPadBtnTrgDown(no, conI))
+			if (con.first != cType)
 			{
-				return true;
+				continue;
+			}
+			for (auto conI : con.second)
+			{
+				if (InputManager::GetInstance().IsPadBtnTrgDown(no, conI))
+				{
+					return true;
+				}
 			}
 		}
-	}
-	for (auto& stick : stickInput_)
-	{
-		if (stick.first != cType)
+		for (auto& stick : stickInput_)
 		{
-			continue;
-		}
-		for (auto stickI : stick.second)
-		{
-			if (InputManager::GetInstance().IsStickDown(no, stickI))
+			if (stick.first != cType)
 			{
-				return true;
+				continue;
+			}
+			for (auto stickI : stick.second)
+			{
+				if (InputManager::GetInstance().IsStickDown(no, stickI))
+				{
+					return true;
+				}
 			}
 		}
 	}
 	return false;
 }
 
-bool KeyConfig::IsTrgUp(CONTROL_TYPE cType, InputManager::JOYPAD_NO no)
+bool KeyConfig::IsTrgUp(CONTROL_TYPE cType, InputManager::JOYPAD_NO no, TYPE type)
 {
-	for (auto& key : keyInput_)
+	if (type == TYPE::KEYBORD_MOUSE || type == TYPE::ALL)
 	{
-		if (key.first != cType)
+		for (auto& key : keyInput_)
 		{
-			continue;
-		}
-		for (auto keyI : key.second)
-		{
-			if (InputManager::GetInstance().IsTrgUp(keyI))
+			if (key.first != cType)
 			{
-				return true;
+				continue;
+			}
+			for (auto keyI : key.second)
+			{
+				if (InputManager::GetInstance().IsTrgUp(keyI))
+				{
+					return true;
+				}
+			}
+		}
+		for (auto& mouse : mouseInput_)
+		{
+			if (mouse.first != cType)
+			{
+				continue;
+			}
+			for (auto mouseI : mouse.second)
+			{
+				if (InputManager::GetInstance().IsMouseTrgUp(mouseI))
+				{
+					return true;
+				}
 			}
 		}
 	}
-	for (auto& con : conInput_)
+	if (type == TYPE::KEYBORD_MOUSE || type == TYPE::ALL)
 	{
-		if (con.first != cType)
+		for (auto& con : conInput_)
 		{
-			continue;
-		}
-		for (auto conI : con.second)
-		{
-			if (InputManager::GetInstance().IsPadBtnTrgUp(no, conI))
+			if (con.first != cType)
 			{
-				return true;
+				continue;
+			}
+			for (auto conI : con.second)
+			{
+				if (InputManager::GetInstance().IsPadBtnTrgUp(no, conI))
+				{
+					return true;
+				}
 			}
 		}
-	}
-	for (auto& stick : stickInput_)
-	{
-		if (stick.first != cType)
+		for (auto& stick : stickInput_)
 		{
-			continue;
-		}
-		for (auto stickI : stick.second)
-		{
-			if (InputManager::GetInstance().IsStickUp(no, stickI))
+			if (stick.first != cType)
 			{
-				return true;
+				continue;
+			}
+			for (auto stickI : stick.second)
+			{
+				if (InputManager::GetInstance().IsStickUp(no, stickI))
+				{
+					return true;
+				}
 			}
 		}
 	}
 	return false;
 }
 
-void KeyConfig::Add(int key, CONTROL_TYPE type)
+void KeyConfig::Add(CONTROL_TYPE type,int key )
 {
 	for (auto &keys : keyInput_)
 	{
@@ -206,7 +250,7 @@ void KeyConfig::Add(int key, CONTROL_TYPE type)
 	keyInput_.emplace(type, keys);
 }
 
-void KeyConfig::Add(InputManager::JOYPAD_BTN key, CONTROL_TYPE type)
+void KeyConfig::Add(CONTROL_TYPE type,InputManager::JOYPAD_BTN key)
 {
 	for (auto& con : conInput_)
 	{
@@ -223,7 +267,7 @@ void KeyConfig::Add(InputManager::JOYPAD_BTN key, CONTROL_TYPE type)
 	conInput_.emplace(type, cons);
 }
 
-void KeyConfig::Add(InputManager::JOYPAD_STICK key, CONTROL_TYPE type)
+void KeyConfig::Add(CONTROL_TYPE type,InputManager::JOYPAD_STICK key)
 {
 	for (auto& stick : stickInput_)
 	{
@@ -240,10 +284,29 @@ void KeyConfig::Add(InputManager::JOYPAD_STICK key, CONTROL_TYPE type)
 	stickInput_.emplace(type, sticks);
 }
 
+void KeyConfig::Add(CONTROL_TYPE type, InputManager::MOUSE key)
+{
+	for (auto& mouse : mouseInput_)
+	{
+		if (mouse.first != type)
+		{
+			continue;
+		}
+		mouse.second.emplace_back(key);
+		return;
+	}
+
+	std::vector<InputManager::MOUSE> mouse;
+	mouse.emplace_back(key);
+	mouseInput_.emplace(type, mouse);
+}
+
 void KeyConfig::Destroy(void)
 {
 	keyInput_.clear();
 	conInput_.clear();
+	stickInput_.clear();
+	mouseInput_.clear();
 	delete instance_;
 }
 
