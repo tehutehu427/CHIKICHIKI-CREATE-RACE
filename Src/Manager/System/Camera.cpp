@@ -168,7 +168,7 @@ void Camera::SyncFollow(void)
 	VECTOR pos = followTransform_->pos;
 
 	// d—Í‚Ì•ûŒü§Œä‚É]‚¤
-	Quaternion gRot = Quaternion::Euler(VECTOR(0.0, 1.0, 0.0));
+	Quaternion gRot = Quaternion::Euler(VECTOR(0.0, 0.0, 0.0));
 
 	// ³–Ê‚©‚çİ’è‚³‚ê‚½Y²•ªA‰ñ“]‚³‚¹‚é
 	rotOutX_ = gRot.Mult(Quaternion::AngleAxis(angles_.y, Utility::AXIS_Y));

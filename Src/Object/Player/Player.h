@@ -366,13 +366,14 @@ private:
 	//変更
 	void ChangeNone(void);
 
-	//
+	//移動状態の更新
 	void MoveUpdate(void);
-
-	//移動
-	void Move(void);
+	//入力方向に応じて方向を決める
+	void MoveDirFronInput(void);
 	//移動に変更する
 	void ChangeMove(void);
+	//毎フレーム移動方向とスピードを更新する
+	void UpdateMoveDirAndPow(void);
 
 	//回転
 	void Rotate(void);

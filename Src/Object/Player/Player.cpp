@@ -90,7 +90,7 @@ void Player::Init(void)
 	//Transformの設定
 	trans_.quaRot = Quaternion();
 	trans_.scl = MODEL_SCL;
-	trans_.quaRotLocal =
+	trans_.quaRotLocal = 
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
 
 	float posX = PLAYER_ONE_POS_X + DISTANCE_POS * playerNum_;
@@ -141,7 +141,7 @@ void Player::Update(void)
 #endif // DEBUG_ON
 	static VECTOR dirDown = trans_.GetDown();
 	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
-	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_,20.0f);
+	//GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_,20.0f);
 
 
 	//アクション関係
@@ -180,13 +180,14 @@ void Player::DrawDebug(void)
 	if (isCol_) { color = 0xff0000; }
 	DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
 	DrawFormatString(0, 16*(playerNum_*5), 0x000000
-		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nAction(%d)"
+		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nAction(%d)\nCameraRot(%f)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,jumpDeceralation_
 		,stepJump_
 		,jumpPow_.x,jumpPow_.y,jumpPow_.z
 		,movedPos_.x,movedPos_.y,movedPos_.z
 		,act_
+		,scnMng_.GetCamera().lock()->GetAngles().y
 	);
 	if (IsDeath())
 	{
@@ -212,11 +213,8 @@ void Player::Action(void)
 	//プレイヤーの回転
 	Rotate();
 
-
-	//方向の更新
-	moveDir_ = dir_;
-	//移動量の更新
-	movePow_ = VScale(moveDir_, speed_);
+	//プレイヤーの方向とスピードの更新
+	UpdateMoveDirAndPow();
 }
 
 void Player::ChangeAction(ATK_ACT _act)
@@ -292,9 +290,9 @@ void Player::MoveUpdate(void)
 		return;
 	}
 
-	Move();
+	MoveDirFronInput();
 }
-void Player::Move(void)
+void Player::MoveDirFronInput(void)
 {
 	//移動量を0にリセット
  	movePow_ = Utility::VECTOR_ZERO;
@@ -310,11 +308,8 @@ void Player::Move(void)
 
 	if (!Utility::EqualsVZero(dir_))
 	{
-		//パンチされてぶっ飛んでる時と通常の移動の時のスピード
-		//if (isPunched_) { speed_ = FLY_AWAY_SPEED; }
-
 		//補完角度の設定(入力角度まで方向転換する)
-		SetGoalRotate(Utility::Deg2RadF(deg));
+		SetGoalRotate(deg);
 	}
 }
 void Player::ChangeMove(void)
@@ -322,6 +317,13 @@ void Player::ChangeMove(void)
 	animationController_->Play(static_cast<int>(ANIM_TYPE::WALK));
 	speed_ = MOVE_SPEED;
 	actionUpdate_ = std::bind(&Player::MoveUpdate, this);
+}
+void Player::UpdateMoveDirAndPow(void)
+{
+	//方向の更新
+	moveDir_ = dir_;
+	//移動量の更新
+	movePow_ = VScale(moveDir_, speed_);
 }
 void Player::Rotate(void)
 {
@@ -335,7 +337,7 @@ void Player::SetGoalRotate(double _deg)
 	//カメラの角度を取得
 	VECTOR cameraRot = scnMng_.GetCamera().lock()->GetAngles();
 	Quaternion axis = Quaternion::AngleAxis(
-		(double)cameraRot.y + _deg, Utility::AXIS_Y);
+		(double)cameraRot.y + Utility::Deg2RadF(_deg), Utility::AXIS_Y);
 	// 現在設定されている回転との角度差を取る
 	double angleDiff = Quaternion::Angle(axis, goalQuaRot_);
 	// しきい値
@@ -370,7 +372,7 @@ void Player::Jump(void)
 	animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
 
 	//ジャンプ中も移動できるようにする
-	Move();
+	MoveDirFronInput();
 
 	//ジャンプカウントが0以上なら
 	if (stepJump_ > 0.0f)
