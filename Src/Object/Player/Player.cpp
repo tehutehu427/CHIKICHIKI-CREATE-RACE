@@ -21,16 +21,16 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl):playerNum_(_playerNum), cntl
 
 	trans_ = Transform();
 	movedPos_ = Utility::VECTOR_ZERO;
-
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
-	//if (cntl_ == PlayerInput::CNTL::PAD)
-	//{
-	//	padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_);
-	//}
-	//else
-	//{
-	//	padNum_ = InputManager::JOYPAD_NO::INPUT_KEY;
-	//}
+	if (cntl_ == DateBank::TYPE::CONTROLLER)
+	{
+		//パッド番号を設定
+		padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_ + 1);
+	}
+	else
+	{
+		padNum_ = InputManager::JOYPAD_NO::INPUT_KEY;
+	}
 	
 	//オブジェクト生成
 	//操作関連
@@ -178,13 +178,13 @@ void Player::DrawDebug(void)
 	if (isCol_) { color = 0xff0000; }
 	DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
 	DrawFormatString(0, 16*(playerNum_*9), 0x000000
-		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nAction(%d)\nCameraRot(%f)"
+		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nAction(%f,%f)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,jumpDeceralation_
 		,stepJump_
 		,jumpPow_.x,jumpPow_.y,jumpPow_.z
 		,movedPos_.x,movedPos_.y,movedPos_.z
-		,act_
+		, input_->GetStickDeg()
 	);
 	if (IsDeath())
 	{
@@ -598,7 +598,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 	VECTOR upPos = movedPos_;
 	upPos.y += (RADIUS);
 	VECTOR downPos = movedPos_;
-	downPos.y -= (RADIUS+ 10.0f);
+	downPos.y -= (RADIUS);
 
 	hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
 

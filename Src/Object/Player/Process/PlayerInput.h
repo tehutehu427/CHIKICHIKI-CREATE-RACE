@@ -66,7 +66,6 @@ public:
     float GetStickDeg(void){ return stickDeg_; }
     float GetMoveDeg(void) { return moveDeg_; }
     VECTOR GetDir(void) { return moveDir_; }
-
 private:
     //ƒƒ“ƒoŠÖ”
     void InputKeyBoard(void);
