@@ -12,8 +12,11 @@ ObjectBase::ObjectBase(void)
 
 ObjectBase::~ObjectBase(void)
 {
-	//コライダの削除
-	col_.collider_->Kill();
+	for (auto& colParam : colParam_)
+	{
+		//所持している全コライダの削除
+		colParam.collider_->Kill();
+	}
 }
 
 void ObjectBase::ChangeModelColor(const COLOR_F _colorScale)
@@ -28,11 +31,20 @@ void ObjectBase::ChangeModelColor(const COLOR_F _colorScale)
 	}
 }
 
-void ObjectBase::MakeCollider(Collider::TAG _tag)
+void ObjectBase::MakeCollider(const Collider::TAG _tag, std::unique_ptr<Geometry> _geometry)
 {
+	//当たり判定情報
+	ColParam colParam;
+
+	//形状情報の挿入
+	colParam.geometry_ = std::move(_geometry);
+
 	//情報を使ってコライダの作成
-	col_.collider_ = std::make_shared<Collider>(*this, _tag, *col_.geometry_);
+	colParam.collider_ = std::make_shared<Collider>(*this, _tag, *colParam.geometry_);
 
 	//コライダを管理マネージャーに追加
-	CollisionManager::GetInstance().AddCollider(col_.collider_);
+	CollisionManager::GetInstance().AddCollider(colParam.collider_);
+
+	//配列にセット
+	colParam_.push_back(std::move(colParam));
 }

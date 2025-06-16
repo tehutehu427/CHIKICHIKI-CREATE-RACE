@@ -5,14 +5,14 @@
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/Camera.h"
-#include "../../Object/Common/Geometry/Capsule.h"
+#include "../../Object/Common/Geometry/Sphere.h"
 #include "../../Object/Common/AnimationController.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "./Process/PlayerInput.h"
 #include "Player.h"
 
-Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), cntl_(_cntl)
+Player::Player(int _playerNum,PlayerInput::CNTL _cntl, const Collider::TAG _tag):playerNum_(_playerNum), cntl_(_cntl)
 {
 #ifdef DEBUG_ON
 	cubeMovePos_=Utility::VECTOR_ZERO;
@@ -37,6 +37,8 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 	//---------------------------------
 	//“–‚½‚è”»’è
 	isCol_ = false;
+	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_, RADIUS);
+	MakeCollider(_tag, std::move(geo));
 
 	isJump_ = false;
 	stepJump_ = 0.0f;

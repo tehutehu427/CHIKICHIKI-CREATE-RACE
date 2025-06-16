@@ -31,6 +31,9 @@ void CollisionManager::Sweep(void)
 
 void CollisionManager::Update(void)
 {
+	//ƒRƒ‰ƒCƒ_‚ªˆê‚Â‚à‚È‚¢‚È‚çˆ—‚ğ”ò‚Î‚·
+	if (colliders_.size() <= 0)return;
+
 	for (int i = 0; i < colliders_.size() - 1; i++)
 	{
 		for (int j = i + 1; j < colliders_.size(); j++)

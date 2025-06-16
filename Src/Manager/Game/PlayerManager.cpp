@@ -58,7 +58,7 @@ void PlayerManager::Load(void)
 			cntl_ = PlayerInput::CNTL::PAD;
 		}
 		std::unique_ptr<Player> player;
-		player = std::make_unique<Player>(i, cntl_);
+		player = std::make_unique<Player>(i, cntl_, static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
 		player->Load();
 		players_.push_back(std::move(player));
 	}

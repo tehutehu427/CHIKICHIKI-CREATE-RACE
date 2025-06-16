@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 #include <map>
 #include <functional>
 #include "../Common/AnimationController.h"
@@ -134,7 +133,7 @@ public:
 
 	//******************************************
 	// コンストラクタ
-	Player(int _playerNum,PlayerInput::CNTL _cntl);
+	Player(int _playerNum,PlayerInput::CNTL _cntl, const Collider::TAG _tag);
 
 	// デストラクタ
 	~Player(void);

@@ -2,6 +2,7 @@
 #include "../Common/Quaternion.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
+#include"../../Common/Geometry/Model.h"
 #include "SlimeFloor.h"
 
 SlimeFloor::SlimeFloor(void)
@@ -39,6 +40,10 @@ void SlimeFloor::SetParam(void)
 	trans_.localPos.x = MAP_LOCALPOS.x * trans_.scl.x;
 	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
+
+	//ÉRÉâÉCÉ_ÇÃçÏê¨
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_);
+	MakeCollider(Collider::TAG::SLIME_FLOOR, std::move(geo));
 }
 
 void SlimeFloor::Update(void)

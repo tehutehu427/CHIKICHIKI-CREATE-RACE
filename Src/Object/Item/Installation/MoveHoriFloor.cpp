@@ -3,6 +3,7 @@
 #include "../Manager/Game/MapEditer.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
+#include"../../Common/Geometry/Model.h"
 #include "MoveHoriFloor.h"
 
 MoveHoriFloor::MoveHoriFloor()
@@ -51,6 +52,10 @@ void MoveHoriFloor::SetParam(void)
 	trans_.localPos.x = MAP_LOCALPOS.x * trans_.scl.x;
 	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
+
+	//コライダの作成
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_);
+	MakeCollider(Collider::TAG::MOVE_FLOOR, std::move(geo));
 
 	//ルート設定
 	InitRoute();

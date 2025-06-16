@@ -16,6 +16,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="_parent">追従する親</param>
+	/// <param name="_radius">半径</param>
 	Sphere(const Transform& _parent, const float _radius);
 
 	/// <summary>

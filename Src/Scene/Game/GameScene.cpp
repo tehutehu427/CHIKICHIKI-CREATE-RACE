@@ -7,6 +7,7 @@
 #include "../../Manager/System/Camera.h"
 #include "../../Manager/System/InputManager.h"
 #include "../../Manager/System/DateBank.h"
+#include "../../Manager/Game/CollisionManager.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "../../Manager/Game/MapEditer.h"
 #include "../../Manager/Game/GravityManager.h"
@@ -258,6 +259,9 @@ void GameScene::UpdateAction(void)
 {
 	ItemManager::GetInstance().Update();
 	PlayerManager::GetInstance().Update();
+
+	//更新はアクション中のみ
+	CollisionManager::GetInstance().Update();
 	ChangePlayerClearPhase();
 }
 

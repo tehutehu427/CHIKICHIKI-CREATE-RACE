@@ -9,6 +9,7 @@
 #include "../../Scene/Game/SoloChallenge.h"
 #include "Camera.h"
 #include "ResourceManager.h"
+#include "../Game/CollisionManager.h"
 #include "DateBank.h"
 #include "SceneManager.h"
 
@@ -51,6 +52,9 @@ void SceneManager::Init(void)
 
 	//データバンクを生成
 	DateBank::CreateInstance();
+
+	//当たり判定管理の初期化(各シーンで追加の可能性があるため)
+	CollisionManager::CreateInstance();
 
 	//ウィンドウがアクティブ状態でなくとも処理を行う
 	SetAlwaysRunFlag(true);
@@ -112,6 +116,8 @@ void SceneManager::Update(void)
 	// カメラ更新
 	camera_->Update();
 
+	//終了した当たり判定の消去
+	CollisionManager::GetInstance().Sweep();
 }
 
 void SceneManager::Draw(void)
@@ -198,7 +204,13 @@ void SceneManager::PopScene()
 
 void SceneManager::Destroy(void)
 {
+	//当たり判定管理の解放
+	CollisionManager::GetInstance().Destroy();
+	
+	//データバンクの解放
 	DateBank::GetInstance().Destroy();
+	
+	//自身のインスタンス解放
 	delete instance_;
 }
 

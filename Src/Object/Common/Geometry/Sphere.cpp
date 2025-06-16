@@ -36,7 +36,7 @@ const bool Sphere::IsHit(const Geometry& _geometry) const
 const bool Sphere::IsHit(const Model& _model) const
 {
 	//‹…‘Ì‚Æƒ‚ƒfƒ‹‚Ì“–‚½‚è”»’è
-	auto col = MV1CollCheck_Sphere(*_model.GetParentModel(), -1, GetTransParent().pos, GetRadius());
+	auto col = MV1CollCheck_Sphere(_model.GetParentModel(), -1, GetTransParent().pos, GetRadius());
 
 	return col.HitNum >= 1;
 }
