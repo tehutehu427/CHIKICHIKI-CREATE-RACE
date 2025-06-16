@@ -1,5 +1,4 @@
 #pragma once
-#include<vector>
 #include "../ObjectBase.h"
 
 class ItemBase : public ObjectBase

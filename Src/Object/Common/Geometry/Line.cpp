@@ -13,12 +13,14 @@ Line::Line(const Transform& _parent, const VECTOR _localPosPoint1, const VECTOR 
 	localPosPoint1_(_localPosPoint1),
 	localPosPoint2_(_localPosPoint2)
 {
+	hitInfo_ = {};
 }
 
 Line::Line(const Line& _copyBase, const Transform& _parent) : Geometry(_parent)
 {
 	localPosPoint1_ = _copyBase.GetLocalPosPoint1();
 	localPosPoint2_ = _copyBase.GetLocalPosPoint2();
+	hitInfo_ = {};
 }
 
 Line::~Line(void)

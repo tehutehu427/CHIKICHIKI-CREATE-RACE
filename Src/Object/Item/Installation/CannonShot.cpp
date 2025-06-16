@@ -2,6 +2,7 @@
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/Resource.h"
 #include "../Manager/System/ResourceManager.h"
+#include"../../Common/Geometry/Model.h"
 #include "Cannon.h"
 #include "CannonShot.h"
 
@@ -36,6 +37,10 @@ void CannonShot::SetParam(void)
 
 	//ê∂ë∂îªíË
 	isAlive_ = true;
+
+	//ÉRÉâÉCÉ_ÇÃçÏê¨
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_);
+	MakeCollider(Collider::TAG::KILLER_ITEM, std::move(geo));
 }
 
 void CannonShot::Update(void)

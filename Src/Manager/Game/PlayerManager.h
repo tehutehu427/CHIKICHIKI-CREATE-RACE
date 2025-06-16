@@ -22,12 +22,6 @@ public:
 
 	//èâä˙ç¿ïW
 	static constexpr float START_POS = 50.0f;
-
-	static constexpr Collider::TAG PLAYER_1_TAG = Collider::TAG::PLAYER1;
-	static constexpr Collider::TAG PLAYER_2_TAG = Collider::TAG::PLAYER2;
-	static constexpr Collider::TAG PLAYER_3_TAG = Collider::TAG::PLAYER3;
-	static constexpr Collider::TAG PLAYER_4_TAG = Collider::TAG::PLAYER4;
-
 	
 	enum class PLAYER
 	{

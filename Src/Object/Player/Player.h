@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 #include <map>
 #include <functional>
 #include "../Common/AnimationController.h"
@@ -141,11 +140,10 @@ public:
 	/// </summary>
 	/// <param name="_playerNum">プレイヤー番号</param>
 	/// <param name="_cntl">コントローラー識別番号</param>
-	Player(int _playerNum,PlayerInput::CNTL _cntl);
-	
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
+	/// <param name="_tag">プレイヤーごとのタグ</param>
+	Player(int _playerNum,PlayerInput::CNTL _cntl, const Collider::TAG _tag);
+
+	// デストラクタ
 	~Player(void);
 
 	/// <summary>

@@ -25,9 +25,9 @@ public:
 	static CollisionManager& GetInstance(void) { return *instance_; }
 
 	//コライダの追加
-	void AddCollider(std::shared_ptr<Collider> _collider) { colliders_.push_back(_collider); }
+	void AddCollider(const std::shared_ptr<Collider> _collider) { colliders_.push_back(_collider); }
 
-	//必要なくなったコライダの削除(ゲームループの最後に置く)
+	//必要なくなったコライダの削除(更新の最後に置く)
 	void Sweep(void);
 
 	//更新

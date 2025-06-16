@@ -40,7 +40,7 @@ public:
 	const bool IsHit(Line& _line) override;
 
 	//親モデルIDの取得
-	inline const int* GetParentModel(void)const { return parentModel_; }
+	inline const int GetParentModel(void)const;
 
 	//当たった時の情報取得
 	inline const MV1_COLL_RESULT_POLY& GetHitInfo(void)const { return hitInfo_; }
@@ -49,8 +49,6 @@ public:
 	inline void SetHitInfo(const MV1_COLL_RESULT_POLY _hitInfo) { hitInfo_ = _hitInfo; }
 
 private:
-
-	const int* parentModel_;	//親のモデルID
 
 	MV1_COLL_RESULT_POLY hitInfo_;	//当たった時の情報
 };

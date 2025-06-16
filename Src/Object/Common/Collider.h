@@ -17,6 +17,9 @@ public :
 		PLAYER3,		//プレイヤー3
 		PLAYER4,		//プレイヤー4
 
+		START,			//開始地点
+		GOAL,			//終了地点
+
 		NORMAL_ITEM,	//通常アイテム		
 		MOVE_FLOOR,		//移動床
 		SLIME_FLOOR,	//スライム床

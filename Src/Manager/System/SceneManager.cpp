@@ -10,6 +10,7 @@
 #include "../Game/PlayerManager.h"
 #include "Camera.h"
 #include "ResourceManager.h"
+#include "../Game/CollisionManager.h"
 #include "DateBank.h"
 #include "SceneManager.h"
 
@@ -51,6 +52,9 @@ void SceneManager::Init(void)
 
 	//データバンクを生成
 	DateBank::CreateInstance();
+
+	//当たり判定管理の初期化(各シーンで追加の可能性があるため)
+	CollisionManager::CreateInstance();
 
 	//ウィンドウがアクティブ状態でなくとも処理を行う
 	SetAlwaysRunFlag(true);
@@ -109,7 +113,9 @@ void SceneManager::Update(void)
 	//シーンごとの更新
 	scene_->Update();
 
-	// カメラ更新
+	//終了した当たり判定の消去
+	CollisionManager::GetInstance().Sweep();
+
 	for (auto& c : cameras_)
 	{
 		c->Update();
@@ -208,11 +214,17 @@ void SceneManager::PopScene()
 
 void SceneManager::Destroy(void)
 {
+	//当たり判定管理の解放
+	CollisionManager::GetInstance().Destroy();
+	
+	//データバンクの解放
 	//スクリーンの解放
 	DeleteGraph(mainScreen_);
 	for(auto & screen : splitScreens_){ DeleteGraph(screen); }
 
 	DateBank::GetInstance().Destroy();
+	
+	//自身のインスタンス解放
 	delete instance_;
 }
 

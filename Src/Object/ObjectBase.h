@@ -1,4 +1,6 @@
 #pragma once
+#include<memory>
+#include<vector>
 #include "Common/Transform.h"
 #include "../Common/IntVector3.h"
 #include "Common/Collider.h"
@@ -11,11 +13,11 @@ class ObjectBase
 {
 public:
 
-	//当たり判定関係
-	struct Collision
+	//当たり判定情報
+	struct ColParam
 	{
 		std::unique_ptr<Geometry> geometry_;	//形状情報
-		std::shared_ptr<Collider> collider_;	//当たり判定情報
+		std::shared_ptr<Collider> collider_;	//全体の当たり判定情報
 	};
 
 	// コンストラクタ
@@ -61,12 +63,13 @@ protected:
 	IntVector3 size_;
 
 	//当たり判定関係
-	Collision col_;
+	std::vector<ColParam> colParam_;
 
 	/// <summary>
 	/// 当たり判定作成(形状情報作成後)
 	/// </summary>
 	/// <param name="_tag">自身の当たり判定タグ</param>
-	void MakeCollider(Collider::TAG _tag);
+	/// <param name="_Geometry">自身の形状情報</param>
+	void MakeCollider(const Collider::TAG _tag, std::unique_ptr<Geometry> _geometry);
 };
 
