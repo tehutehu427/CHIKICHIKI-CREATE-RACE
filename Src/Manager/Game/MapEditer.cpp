@@ -77,7 +77,14 @@ bool MapEditer::IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size,IntVector3
 			for (int z = 0;z < _hitSize.z;z++)
 			{
 				IntVector3 sizeLoop = { x,y,z };
-				if (IsObjectAtMapPos(_mapPos + sizeLoop))
+				IntVector3 mapPos = _mapPos + sizeLoop;
+				if (mapPos.x < 0 || mapPos.x > MAP_SIZE.x ||
+					mapPos.y < 0 || mapPos.y >MAP_SIZE.y ||
+					mapPos.z <0 || mapPos.z > MAP_SIZE.z)
+				{
+					return true;
+				}
+				if (IsObjectAtMapPos(mapPos))
 				{
 					return true;
 				}
