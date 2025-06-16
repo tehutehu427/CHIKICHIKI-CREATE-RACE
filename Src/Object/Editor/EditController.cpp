@@ -69,10 +69,13 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 		return;
 	}
 	auto& itemMIns = ItemManager::GetInstance();
-	if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_),itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
 	{
-		//アイテムが重なっている
-		return;
+		if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+		{
+			//アイテムが重なっている
+			return;
+		}
 	}
 	//アイテムを追加
 	//ダミーアイテムを変更する
@@ -80,7 +83,15 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	status.mapPos = mapPos_;
 	status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
 	status.type = itemType_;
-	MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_),itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+
+	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
+	{
+		DeleteItems(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+	}
+	else
+	{
+		MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+	}
 	itemMIns.DummyItemAddItems(playerNum_);
 	itemMIns.CreateDummyItem({}, {}, itemType, playerNum_);
 	IntVector3 mapPos = NearObjectFrontPos();
@@ -147,19 +158,29 @@ void EditController::ItemNotSelect(void)
 	auto& itemMIns = ItemManager::GetInstance();
 	if (InputManager::GetInstance().IsMouseTrgDown(InputManager::MOUSE::CLICK_LEFT) == true)
 	{
-		if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
-		//if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+		if (itemMIns.GetDummyItemStatus(playerNum_).effType != ItemBase::EFFECT_TYPE::DESTROYER)
 		{
-			return;
+			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+				//if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+			{
+				return;
+			}
+			if (itemMIns.IsDummyItem(playerNum_))
+			{
+				MapEditer::STATUS status;
+				status.mapPos = mapPos_;
+				status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
+				status.type = itemType_;
+				MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+				itemMIns.DummyItemAddItems(playerNum_);
+			}
 		}
-		if (itemMIns.IsDummyItem(playerNum_))
+		else
 		{
-			MapEditer::STATUS status;
-			status.mapPos = mapPos_;
-			status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
-			status.type = itemType_;
-			MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
-			itemMIns.DummyItemAddItems(playerNum_);
+			if (itemMIns.IsDummyItem(playerNum_))
+			{
+				DeleteItems(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+			}
 		}
 		IntVector3 NearPos = NearObjectFrontPos();
 		if (isClickObject_ == true)
@@ -490,6 +511,53 @@ void EditController::RotateObject(void) const
 		auto& itemIns = ItemManager::GetInstance();
 		ItemManager::GetInstance().DummyItemSetRotate(rot, playerNum_);
 		ItemManager::GetInstance().ResetDummyItem(playerNum_, itemType_,mapPos_);
+	}
+}
+
+void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY)
+{
+	MapEditer& editer = MapEditer::GetInstance();
+	ItemManager& itemM = ItemManager::GetInstance();
+	int rot = static_cast<int>(_rotY) % 360;
+	switch (rot)
+	{
+	case 0:
+		break;
+	case 90:
+		std::swap(_hitSize.x, _hitSize.z);
+		_mapPos.z -= _hitSize.z - _size.z;
+		break;
+	case 180:
+		_mapPos.x -= _hitSize.x - _size.x;
+		break;
+	case 270:
+		std::swap(_hitSize.x, _hitSize.z);
+		break;
+	default:
+		break;
+	}
+	for (int x = 0; x < _hitSize.x;x++)
+	{
+		for (int y = 0; y < _hitSize.y;y++)
+		{
+			for (int z = 0; z < _hitSize.z;z++)
+			{
+				IntVector3 sizeLoop = { x,y,z };
+				IntVector3 mapPos = _mapPos + sizeLoop;
+				if (!editer.IsObjectAtMapPos(mapPos))
+				{
+					continue;
+				}
+				IntVector3 lPos = editer.GetLeaderMapPos(mapPos);
+				ItemBase::ITEM_TYPE type = editer.GetItemType(mapPos);
+				float rotY = itemM.GetItemRotY(type, lPos);
+				IntVector3 size = itemM.GetItemSize(type);
+				IntVector3 hitSize = itemM.GetItemHitSize(type);
+				editer.DeleteItem(type, lPos, rotY, size, hitSize);
+				itemM.DeleteItem(lPos, type);
+				itemM.DeleteDummyItem(playerNum_);
+			}
+		}
 	}
 }
 

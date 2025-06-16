@@ -161,12 +161,9 @@ void MapEditer::DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos ,float 
 			for (int k = 0; k < _hitSize.z; k++)
 			{
 				IntVector3 mapPos = { _mapPos.x + i,_mapPos.y + j,_mapPos.z + k };
-				if (!IsObjectAtMapPos(mapPos)) 
-				{
-					int a = 0;
-				}
 				isMapPosItem_[mapPos.x][mapPos.y][mapPos.z] = ItemBase::ITEM_TYPE::NONE;
 				leaderMapPos_[mapPos.x][mapPos.y][mapPos.z] = { -1,-1,-1 };
+
 			}
 		}
 	}

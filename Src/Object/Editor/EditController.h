@@ -92,5 +92,7 @@ private:
 	void DebugDraw(void);	//デバッグ用描画
 
 	void RotateObject(void) const;	//オブジェクト回転
+
+	void DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY);	//範囲内のアイテムを削除
 };
 
