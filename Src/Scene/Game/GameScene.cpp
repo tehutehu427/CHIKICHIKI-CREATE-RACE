@@ -50,6 +50,8 @@ GameScene::~GameScene(void)
 
 void GameScene::Load(void)
 {
+	int playerNum = DateBank::GetInstance().GetPlayerNum();
+
 	//フォントの生成
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
@@ -64,7 +66,6 @@ void GameScene::Load(void)
 	
 	//アイテムマネージャーの生成
 	ItemManager::CreateInstance();
-	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	//エディットコントローラーの生成
 	for (int i = 0; i < playerNum; i++)
 	{
