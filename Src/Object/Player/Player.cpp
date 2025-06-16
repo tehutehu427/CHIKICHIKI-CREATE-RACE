@@ -40,6 +40,7 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 	changeAction_.emplace(ATK_ACT::INPUT, std::bind(&Player::ChangeInput, this));
 	changeAction_.emplace(ATK_ACT::JUMP, std::bind(&Player::ChangeJump, this));
 	changeAction_.emplace(ATK_ACT::PUNCH, std::bind(&Player::ChangePunch, this));
+	changeAction_.emplace(ATK_ACT::KNOCKBACK, std::bind(&Player::ChangeKnockBack, this));
 	//当たり判定
 	isCol_ = false;
 
@@ -51,7 +52,6 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 	//パンチ関係の初期化
 	punchCnt_ = 0.0f;
 	punchCoolCnt_ = 0.0f;
-	isPunch_ = false;
 	punchPos_ = Utility::VECTOR_ZERO;
 	isPunched_ = false;
 	punchedCnt_ = PUNCHED_TIME;
@@ -141,12 +141,10 @@ void Player::Update(void)
 #endif // DEBUG_ON
 	static VECTOR dirDown = trans_.GetDown();
 	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
-	//GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_,20.0f);
-
+	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_,20.0f);
 
 	//アクション関係
 	Action();
-
 
 	//衝突判定
 	Collision();
@@ -179,7 +177,7 @@ void Player::DrawDebug(void)
 	else if (playerNum_ == 3) { color = 0x0000ff; }
 	if (isCol_) { color = 0xff0000; }
 	DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
-	DrawFormatString(0, 16*(playerNum_*5), 0x000000
+	DrawFormatString(0, 16*(playerNum_*9), 0x000000
 		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nAction(%d)\nCameraRot(%f)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,jumpDeceralation_
@@ -364,10 +362,6 @@ void Player::Jump(void)
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 	stepJump_ += deltaTime;
 
-	//アニメーションの再生
-	animationController_->Play(
-		(int)ANIM_TYPE::JUMP, false, 10.0f, 60.0f);
-
 	//空中アニメーションステップのループ設定
 	animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
 
@@ -407,7 +401,9 @@ void Player::ChangeJump(void)
 	//ジャンプ関係
 	isJump_ = true;
 	stepJump_ = 0.0f;
-
+	//アニメーションの再生
+	animationController_->Play(
+		(int)ANIM_TYPE::JUMP, false, 10.0f, 60.0f);
 	//状態遷移
 	actionUpdate_ = std::bind(&Player::Jump, this);
 }
@@ -437,30 +433,36 @@ void Player::Punch(void)
 		ChangeAction(ATK_ACT::INPUT);
 	}
 
+	////ここは別の状態で考える
+	////パンチを受けた時
+	//if (isPunched_)
+	//{
+	//	punchedCnt_ -= scnMng_.GetDeltaTime();
+	//}
 
-
-
-	
-
-	//ここは別の状態で考える
-	//パンチを受けた時
-	if (isPunched_)
-	{
-		punchedCnt_ -= scnMng_.GetDeltaTime();
-	}
-	if (punchedCnt_ < 0.0f)
-	{
-		isPunched_ = false;
-		punchedCnt_ = PUNCHED_TIME;
-	}
 }
 
 void Player::ChangePunch(void)
 {
 	punchCnt_ = 0.0f;
-	isPunch_ = true;
 	punchCoolCnt_ = PUNCH_COOL_TIME;
 	actionUpdate_ = std::bind(&Player::Punch, this);
+}
+
+void Player::KnockBack(void)
+{
+	punchedCnt_ -= scnMng_.GetDeltaTime();
+	if (punchedCnt_ < 0.0f)
+	{
+		punchedCnt_ = PUNCHED_TIME;
+	}
+}
+
+void Player::ChangeKnockBack(void)
+{
+	//animationController_->Play()
+	speed_ = FLY_AWAY_SPEED;
+	actionUpdate_ = std::bind(&Player::KnockBack, this);
 }
 
 

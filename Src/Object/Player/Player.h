@@ -102,10 +102,11 @@ public:
 
 	enum class ATK_ACT
 	{
-		NONE,
-		INPUT,
-		MOVE,
-		PUNCH,
+		NONE,	//何もなし
+		INPUT,	//入力
+		MOVE,	//移動
+		PUNCH,	//パンチ
+		KNOCKBACK,//パンチされた状態
 		JUMP
 	};
 
@@ -116,7 +117,7 @@ public:
 		IDLE=1,
 		WALK=2,
 		FALL=4,
-		DAMAGE = 8,
+		DAMAGE = 9,
 		PUNCH = 12,
 		JUMP = 13,
 		LAND=14,
@@ -390,6 +391,12 @@ private:
 	//パンチ
 	void Punch(void);
 	void ChangePunch(void);
+
+	//ノックバック
+	void KnockBack(void);
+	void ChangeKnockBack(void);
+
+	//
 	//------------------------------
 	
 	/// <summary>

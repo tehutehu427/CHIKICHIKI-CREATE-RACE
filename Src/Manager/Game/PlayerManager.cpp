@@ -6,9 +6,9 @@
 PlayerManager* PlayerManager::instance_ = nullptr;
 
 
-PlayerManager::PlayerManager(int _playerNum)
+PlayerManager::PlayerManager(void)
 {
-	playerNum_ = _playerNum;
+	playerNum_ = PLAYER_NUM;
 	cntl_ = PlayerInput::CNTL::NONE;
 	for (int i = 0; i < playerNum_; i++)
 	{
@@ -22,11 +22,11 @@ PlayerManager::~PlayerManager(void)
 	instance_ = nullptr;
 }
 
-void PlayerManager::CreateInstance(int _playerNum)
+void PlayerManager::CreateInstance(void)
 {
 	if (instance_ == nullptr)
 	{
-		instance_ = new PlayerManager(_playerNum);
+		instance_ = new PlayerManager();
 	}
 	//instance_->Init();
 }

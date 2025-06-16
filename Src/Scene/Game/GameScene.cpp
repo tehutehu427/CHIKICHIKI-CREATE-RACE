@@ -51,7 +51,7 @@ void GameScene::Load(void)
 	//ƒtƒHƒ“ƒg‚Ì¶¬
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
-	PlayerManager::CreateInstance(PLAYER_NUM);
+	PlayerManager::CreateInstance();
 	PlayerManager::GetInstance().Load();
 
 	MapEditer::CreateInstance();
