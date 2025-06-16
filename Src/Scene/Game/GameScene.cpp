@@ -65,6 +65,8 @@ void GameScene::Load(void)
 	//アイテムマネージャーの生成
 	ItemManager::CreateInstance();
 	
+	int playerNum = DateBank::GetInstance().GetPlayerNum();
+
 	//エディットコントローラーの生成
 	for (int i = 0; i < playerNum; i++)
 	{
