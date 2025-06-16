@@ -141,7 +141,7 @@ public:
 	/// </summary>
 	/// <param name="_playerNum">プレイヤー番号</param>
 	/// <param name="_cntl">コントローラー識別番号</param>
-	Player(int _playerNum,PlayerInput::CNTL _cntl);
+	Player(int _playerNum,DateBank::TYPE _cntl);
 	
 	/// <summary>
 	/// デストラクタ
@@ -177,7 +177,7 @@ public:
 	//プレイヤー番号
 	const int GetPlayerNum(void)const { return playerNum_; }
 
-	const PlayerInput::CNTL GetCntl(void) { return cntl_; }
+	const DateBank::TYPE GetCntl(void) { return cntl_; }
 
 	const VECTOR GetMovePow(void) { return movePow_; }
 	//入力
@@ -228,7 +228,7 @@ public:
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
 	//コントローラーセット
-	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
+	const void SetCntl(DateBank::TYPE _cntl) { cntl_ = _cntl; }
 
 	//プレイヤー番号ゲット
 	const int PlayerNum(void) { return playerNum_; }
@@ -257,7 +257,7 @@ private:
 	VECTOR itemLocalPos_;
 
 	//入力デバイス
-	PlayerInput::CNTL cntl_;
+	DateBank::TYPE cntl_;
 
 	//ゲームパッド番号
 	InputManager::JOYPAD_NO padNum_;

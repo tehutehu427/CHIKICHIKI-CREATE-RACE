@@ -12,7 +12,7 @@
 #include "./Process/PlayerInput.h"
 #include "Player.h"
 
-Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), cntl_(_cntl)
+Player::Player(int _playerNum,DateBank::TYPE _cntl):playerNum_(_playerNum), cntl_(_cntl)
 {
 #ifdef DEBUG_ON
 	cubeMovePos_=Utility::VECTOR_ZERO;
@@ -23,14 +23,14 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 	movedPos_ = Utility::VECTOR_ZERO;
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
-	if (cntl_ == PlayerInput::CNTL::PAD)
-	{
-		padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_);
-	}
-	else
-	{
-		padNum_ = InputManager::JOYPAD_NO::INPUT_KEY;
-	}
+	//if (cntl_ == PlayerInput::CNTL::PAD)
+	//{
+	//	padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_);
+	//}
+	//else
+	//{
+	//	padNum_ = InputManager::JOYPAD_NO::INPUT_KEY;
+	//}
 	
 	//オブジェクト生成
 	//操作関連

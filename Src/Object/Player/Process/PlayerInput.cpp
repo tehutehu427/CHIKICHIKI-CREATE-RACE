@@ -6,12 +6,12 @@ void PlayerInput::Update(void)
 {
 	switch (cntl_)
 	{
-	case CNTL::NONE:
+	case DateBank::TYPE::ERORE:
 		break;
-	case CNTL::KEYBOARD:
+	case DateBank::TYPE::KEY_BORD:
 		InputKeyBoard();
 		break;
-	case CNTL::PAD:
+	case DateBank::TYPE::CONTROLLER:
 		InputPad();
 		break;
 	default:
@@ -19,7 +19,7 @@ void PlayerInput::Update(void)
 	}
 }
 
-PlayerInput::PlayerInput(InputManager::JOYPAD_NO _padNum, CNTL _cntl):padNum_(_padNum),cntl_(_cntl)
+PlayerInput::PlayerInput(InputManager::JOYPAD_NO _padNum, DateBank::TYPE _cntl):padNum_(_padNum),cntl_(_cntl)
 {
 	actCntl_ = ACT_CNTL::NONE;
 	leftStickX_ = -1;

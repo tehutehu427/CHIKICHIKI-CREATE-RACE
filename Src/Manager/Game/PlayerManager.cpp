@@ -2,13 +2,14 @@
 #include"../../Utility/Utility.h"
 #include"../../Manager/System/ResourceManager.h"
 #include"../../Utility/Utility.h"
+#include"../System/DateBank.h"
 #include "PlayerManager.h"
 PlayerManager* PlayerManager::instance_ = nullptr;
 
 
 PlayerManager::PlayerManager(void)
 {
-	playerNum_ = PLAYER_NUM;
+	playerNum_ = 0;
 	cntl_ = PlayerInput::CNTL::NONE;
 	for (int i = 0; i < playerNum_; i++)
 	{
@@ -44,11 +45,11 @@ PlayerManager& PlayerManager::GetInstance(void)
 
 void PlayerManager::Load(void)
 {
+	//データバンクから人数を取得
+	playerNum_ = DateBank::GetInstance().GetPlayerNum();
 	for (int i = 0; i < playerNum_; i++)
 	{
 #ifdef DEBUG_ON
-
-#endif // DEBUG_ON
 		if (i == 0)
 		{
 			cntl_ = PlayerInput::CNTL::KEYBOARD;
@@ -57,8 +58,10 @@ void PlayerManager::Load(void)
 		{
 			cntl_ = PlayerInput::CNTL::PAD;
 		}
+#endif // DEBUG_ON
+		DateBank::TYPE cntlType = DateBank::GetInstance().GetType();
 		std::unique_ptr<Player> player;
-		player = std::make_unique<Player>(i, cntl_);
+		player = std::make_unique<Player>(i, cntlType);
 		player->Load();
 		players_.push_back(std::move(player));
 	}

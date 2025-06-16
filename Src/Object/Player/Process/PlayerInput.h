@@ -1,6 +1,7 @@
 #pragma once
 #include<DxLib.h>
 #include<memory>
+#include"../Manager/System/DateBank.h"
 #include"../Manager/System/SceneManager.h"
 #include"../Manager/System/InputManager.h"
 class PlayerBase;
@@ -51,7 +52,7 @@ public:
         PAD
     };
     //シングルトン化するために外部で生成されないようにする
-    PlayerInput(InputManager::JOYPAD_NO _padNum, CNTL _cntl);
+    PlayerInput(InputManager::JOYPAD_NO _padNum, DateBank::TYPE _cntl);
     ~PlayerInput(void) = default;
 
     void Update(void);
@@ -82,7 +83,7 @@ private:
     float moveDeg_;             //移動方向
     VECTOR moveDir_;            //移動方向
 
-    CNTL cntl_;                 //入力デバイス
+    DateBank::TYPE cntl_;                 //入力デバイス
     InputManager::JOYPAD_NO padNum_;                //パッド番号
 
 
