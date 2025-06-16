@@ -64,7 +64,8 @@ void InputManager::Init(void)
 	//---------------------------------------------------
 
 	//デバッグ
-	Add(KEY_INPUT_C);	//ゲームクリアへの遷移
+	InputManager::GetInstance().Add(KEY_INPUT_C);	//ゲームクリアへの遷移
+	InputManager::GetInstance().Add(KEY_INPUT_RSHIFT);	//タイトルシーン遷移
 
 
 	InputManager::MouseInfo info;

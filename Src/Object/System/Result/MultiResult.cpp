@@ -56,8 +56,6 @@ void MultiResult::Init()
 	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
 	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
 	ScoreManager::GetInstance().AddScore(1, ScoreManager::SCORE_TYPE::CLEAR);
-	ScoreManager::GetInstance().AddScore(2, ScoreManager::SCORE_TYPE::CLEAR);
-	ScoreManager::GetInstance().AddScore(3, ScoreManager::SCORE_TYPE::CLEAR);
 }
 
 void MultiResult::Update(MultiParty& _parent)

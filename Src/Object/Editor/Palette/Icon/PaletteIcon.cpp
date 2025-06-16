@@ -218,8 +218,8 @@ void PaletteIcon::UpdateSelect()
 		//マウス位置を取得
 		Vector2 mousePos = ins.GetMousePos();
 
-		//スクロールをクリックしたか調べる
-		CheckScrollIcon(mousePos);	
+		//スクロールをクリックしたか調べる（クリックしてた場合処理終了）
+		if (CheckScrollIcon(mousePos)) { return; }
 
 		//アイテムアイコンをクリックしたか判定を返す
 		isCreate_ = CheckItemIcon(mousePos);
@@ -314,7 +314,7 @@ void PaletteIcon::InitMaskScreen()
 	SetUseMaskScreenFlag(false);
 }
 
-void PaletteIcon::CheckScrollIcon(const Vector2 _mPos)
+bool PaletteIcon::CheckScrollIcon(const Vector2 _mPos)
 {
 	Vector2 leftTop = {};		//画像左上
 	Vector2 rightBotm = {};		//画像右下
@@ -332,6 +332,7 @@ void PaletteIcon::CheckScrollIcon(const Vector2 _mPos)
 		{
 			ChangeState(STATE::SCR_DOWN);
 			scrLimitLine_--;
+			return true;
 		}
 		//下
 		else if (Utility::IsPointInRect(_mPos, leftTop, rightBotm) &&
@@ -340,8 +341,11 @@ void PaletteIcon::CheckScrollIcon(const Vector2 _mPos)
 		{
 			ChangeState(STATE::SCR_UP);
 			scrLimitLine_++;
+			return true;
 		}
 	}
+
+	return false;
 }
 
 bool PaletteIcon::CheckItemIcon(const Vector2 _mPos, const int _playerIndex)
@@ -355,20 +359,31 @@ bool PaletteIcon::CheckItemIcon(const Vector2 _mPos, const int _playerIndex)
 	//アイテムの種類の確認
 	for (int i = 0; i < icons_.size(); i++)
 	{
-		EditorPaletteBase::ImgInfo& ic = icons_[i];
-		leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
+		EditorPaletteBase::ImgInfo& ic = icons_[i];	//情報の格納
+		leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };//座標定義
 		rightBotm = { ic.pos.x + ic.size.x / 2, ic.pos.y + ic.size.y / 2 };
 		//位置の確認
 		if (Utility::IsPointInRect(_mPos, leftTop, rightBotm))
 		{
 			selectTypes_[_playerIndex] = static_cast<ItemBase::ITEM_TYPE>(ic.num);
 			sleCnt_[_playerIndex] = i;
+			break;
+		}
+		else
+		{
+			sleCnt_[_playerIndex] = -1;
 		}
 	}
 
-	//選択したアイテムをクリックしたとき
-	EditorPaletteBase::ImgInfo& ic = icons_[sleCnt_[_playerIndex]];
-	leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
+	//選択カウントが設定されなかった場合
+	if (sleCnt_[_playerIndex] == -1)
+	{
+		return false;
+	}
+
+	//もう一度選択したアイテムをクリックしたとき
+	EditorPaletteBase::ImgInfo& ic = icons_[sleCnt_[_playerIndex]];	//情報の格納
+	leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };//座標定義
 	rightBotm = { ic.pos.x + ic.size.x / 2, ic.pos.y + ic.size.y / 2 };
 	if (Utility::IsPointInRect(_mPos, leftTop, rightBotm) &&
 		selectTypes_[_playerIndex] == preType) //1クリックで生成するのを防ぐ

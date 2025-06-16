@@ -20,13 +20,13 @@ void GravityManager::CreateInstance(void)
 	instance_->Init();
 }
 
-GravityManager* GravityManager::GetInstance(void)
+GravityManager& GravityManager::GetInstance(void)
 {
 	if (instance_ == nullptr)
 	{
 		GravityManager::CreateInstance();
 	}
-	return instance_;
+	return *instance_;
 }
 
 void GravityManager::Destroy(void)

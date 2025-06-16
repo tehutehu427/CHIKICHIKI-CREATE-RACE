@@ -12,7 +12,7 @@ public:
 	//**************************************
 	//定数
 	//**************************************
-	static constexpr int PLAYER_NUM = 4;
+	static constexpr int PLAYER_NUM = 1;
 
 	//プレイヤー1人
 	static constexpr int PLAYER_SINGLE = 1;
@@ -41,7 +41,7 @@ public:
 	/// 静的にインスタンス生成
 	/// </summary>
 	/// <param name="_playerNum">プレイヤー人数</param>
-	static void CreateInstance(int _playerNum);
+	static void CreateInstance(void);
 
 	//解放
 	void Destroy(void);
@@ -63,9 +63,17 @@ public:
 	//*****************************************
 	//ゲッタ
 	//*****************************************
-	//プレイヤーゲッタ
-	Player& GetPlayer(const int _playerNum) { return *players_[_playerNum]; }
+	//モデル情報ゲッタ
+	const Transform& GetPlayerTransform(const int _num) { return players_[_num]->GetTransform(); }
 
+	//移動後座標
+	const VECTOR GetPlayerMovedPos(const int _num) { return players_[_num]->GetMovedPos(); }
+
+	const std::vector<bool>GetPlayersIsDeath(void);
+
+	std::vector<std::unique_ptr<Player>>&GetPlayers(void) { return players_; }
+
+	Player& GetPlayer(int _num) { return *players_[_num]; }
 
 	//****************************************
 	//セッタ
@@ -79,6 +87,13 @@ public:
 	/// <param name=""></param>
 	/// <returns>true:全員ゴールに行った　false:誰か一人でもゴールに行ってない</returns>
 	std::vector<bool> IsGoalPlayers(void);
+
+	//当たり判定で調べる座標
+	IntVector3 GetPlayerColPos(const int _num) { return players_[_num]->GetColPos(); }
+
+	//全員がゴールしてるか死んでるか
+	bool IsPlayersEnd(void);
+
 
 
 private:
@@ -96,7 +111,8 @@ private:
 	//プレイヤーゴール判定
 	std::vector<bool>isGoal_;
 
-	std::vector<int>models_;
+	//プレイヤー生存判定
+	std::vector<bool>isDeath_;
 
 
 	//プレイヤー人数
@@ -120,13 +136,11 @@ private:
 	/// <param name="p2">判定したい2人目のプレイヤ</param>
 	void PunchPlayersColl(int p1,int p2);
 
-	void DupilicateModel(void);
-
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="playerNum">データバンクから人数を持ってくる</param>
-	PlayerManager(int _playerNum);
+	PlayerManager(void);
 	PlayerManager(const PlayerManager& instance_) = default;
 	~PlayerManager(void);
 	

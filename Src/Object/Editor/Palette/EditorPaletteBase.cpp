@@ -183,7 +183,6 @@ void EditorPaletteBase::UpdateSelect()
 {	
 	InputManager& ins = InputManager::GetInstance();
 	ItemManager & itemMng = ItemManager::GetInstance();
-	auto camera = SceneManager::GetInstance().GetCamera();
 	Vector2 leftTop = {};		//‰æ‘œ¶ã
 	Vector2 rightBotm = {};		//‰æ‘œ‰E‰º
 

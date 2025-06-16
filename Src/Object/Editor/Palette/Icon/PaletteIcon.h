@@ -194,7 +194,7 @@ protected:
 	void InitMaskScreen();
 
 	//クリック位置がスクロールアイコンか調べる
-	void CheckScrollIcon(const Vector2 _mPos);	
+	bool CheckScrollIcon(const Vector2 _mPos);	
 	
 	//アイテムアイコンをクリックしたか調べる
 	virtual bool CheckItemIcon( const Vector2 _mPosconst, int _playerIndex = 0);

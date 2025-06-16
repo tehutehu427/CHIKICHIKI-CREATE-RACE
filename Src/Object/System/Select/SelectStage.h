@@ -6,8 +6,8 @@ class SelectStage
 {
 public:
 
-	static constexpr int COL = 5;
-	static constexpr int LINE = 6;
+	static constexpr int COL = 2;
+	static constexpr int LINE = 2;
 
 	/// <summary>
 	/// コンストラクタ

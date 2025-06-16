@@ -1,6 +1,7 @@
 #include "SelectStage.h"
 #include "../../../Manager/System/InputManager.h"
 #include "../../../Manager/System/DateBank.h"
+#include "../../../Manager/System/SceneManager.h"
 #include "../../../Scene/SelectScene.h"
 
 SelectStage::SelectStage()
@@ -33,6 +34,9 @@ void SelectStage::Update(SelectScene& _parent)
 	{
 		//ステージ番号を格納
 		DateBank::GetInstance().SetStageNo(stageIndex_);
+
+		//ソロチャレンジにシーン遷移
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SOLO);
 	}
 	else if (input.IsTrgDown(KEY_INPUT_LEFT) && stageIndex_ % LINE != 0)
 	{

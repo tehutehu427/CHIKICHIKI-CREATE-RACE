@@ -164,32 +164,30 @@ void Camera::SetDefault(void)
 void Camera::SyncFollow(void)
 {
 
-	//auto& gIns = GravityManager::GetInstance();
+	// 同期先の位置
+	VECTOR pos = followTransform_->pos;
 
-	//// 同期先の位置
-	//VECTOR pos = followTransform_->pos;
+	// 重力の方向制御に従う
+	Quaternion gRot = Quaternion::Euler(VECTOR(0.0, 0.0, 0.0));
 
-	//// 重力の方向制御に従う
-	//Quaternion gRot = gIns.GetTransform().quaRot;
+	// 正面から設定されたY軸分、回転させる
+	rotOutX_ = gRot.Mult(Quaternion::AngleAxis(angles_.y, Utility::AXIS_Y));
 
-	//// 正面から設定されたY軸分、回転させる
-	//rotOutX_ = gRot.Mult(Quaternion::AngleAxis(angles_.y, Utility::AXIS_Y));
+	// 正面から設定されたX軸分、回転させる
+	rot_ = rotOutX_.Mult(Quaternion::AngleAxis(angles_.x, Utility::AXIS_X));
 
-	//// 正面から設定されたX軸分、回転させる
-	//rot_ = rotOutX_.Mult(Quaternion::AngleAxis(angles_.x, Utility::AXIS_X));
+	VECTOR localPos;
 
-	//VECTOR localPos;
+	// 注視点(通常重力でいうところのY値を追従対象と同じにする)
+	localPos = rotOutX_.PosAxis(LOCAL_F2T_POS);
+	targetPos_ = VAdd(pos, localPos);
 
-	//// 注視点(通常重力でいうところのY値を追従対象と同じにする)
-	//localPos = rotOutX_.PosAxis(LOCAL_F2T_POS);
-	//targetPos_ = VAdd(pos, localPos);
+	// カメラ位置
+	localPos = rot_.PosAxis(LOCAL_F2C_POS);
+	pos_ = VAdd(pos, localPos);
 
-	//// カメラ位置
-	//localPos = rot_.PosAxis(LOCAL_F2C_POS);
-	//pos_ = VAdd(pos, localPos);
-
-	//// カメラの上方向
-	//cameraUp_ = gRot.GetUp();
+	// カメラの上方向
+	cameraUp_ = gRot.GetUp();
 
 }
 

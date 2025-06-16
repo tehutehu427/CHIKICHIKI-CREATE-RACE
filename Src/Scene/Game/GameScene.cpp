@@ -29,6 +29,8 @@ GameScene::GameScene(void)
 
 	sky_ = nullptr;
 	palette_ = nullptr;
+
+	//フェーズの状態遷移処理を登録
 	phaseChanges_.emplace(PHASE::EDIT_PHASE, std::bind(&GameScene::ChangePhaseEdit, this));
 	phaseChanges_.emplace(PHASE::ACTION_PHASE, std::bind(&GameScene::ChangePhaseAction, this));
 	phaseChanges_.emplace(PHASE::CLEAR_PHASE, std::bind(&GameScene::ChangePhaseClear, this));
@@ -40,7 +42,7 @@ GameScene::~GameScene(void)
 	PlayerManager::GetInstance().Destroy();
 	ItemManager::GetInstance().Destroy();
 	MapEditer::GetInstance().Destroy();
-	GravityManager::Destroy();
+	GravityManager::GetInstance().Destroy();
 	DeleteFontToHandle(buttnFontHandle_);
 	phaseChanges_.clear();
 
@@ -51,23 +53,14 @@ void GameScene::Load(void)
 	//フォントの生成
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
-	//仮で人数設定
-	int playerNum = DateBank::GetInstance().GetPlayerNum();
-
-	PlayerManager::CreateInstance(PLAYER_NUM);
+	PlayerManager::CreateInstance();
 	PlayerManager::GetInstance().Load();
 
+	//マップエディター
 	MapEditer::CreateInstance();
 
+	//重力管理クラスを生成
 	GravityManager::CreateInstance();
-	//player_ = std::make_unique<Player>();
-	//player_->Load();
-
-	//for (int i = 0; i < DateBank::GetInstance().GetPlayerNum();i++)
-	//{
-	// 
-	//	editController_ = std::make_shared<EditController>(i);
-	//}	
 	
 	//アイテムマネージャーの生成
 	ItemManager::CreateInstance();
@@ -97,29 +90,19 @@ void GameScene::Load(void)
 
 void GameScene::Init(void)
 {
+	//各クラスの初期化
 	for (auto& controller : editControllers_) { controller->Init(); }
 	sky_->Init();
 	gameClear_->Init();
 	editorUi_->Init();
-
-	
-
-	//アイテム生成
-	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
-	//ItemManager::GetInstance().AddItem({ 3,2,3 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
-	//ItemManager::GetInstance().AddItem({ 8,2,8 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
-	//ItemManager::GetInstance().AddItem({ 10,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
-	//ItemManager::GetInstance().AddItem({ 15,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
-	//ChangePhase(PHASE::EDIT_PHASE);
 }
 
 void GameScene::NormalUpdate(void)
 {
-	//プレイヤー
-	//player_->Update(
+	//フェーズ別の処理
 	phaseUpdate_();
 
-
+	//スカイドームは常に更新
 	sky_->Update();
 
 	//デバッグ処理
@@ -150,13 +133,12 @@ void GameScene::DebagUpdate(void)
 {
 	// シーン遷移
 	InputManager& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	if (ins.IsTrgDown(KEY_INPUT_RSHIFT))
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
 
 	//フェーズ遷移は各アップデートに作ったのでここは消し
-
 	else if (ins.IsTrgDown(KEY_INPUT_C))
 	{
 		ChangePhase(PHASE::CLEAR_PHASE);
@@ -198,12 +180,12 @@ void GameScene::ChangePhaseEdit(void)
 {
 	phaseUpdate_ = std::bind(&GameScene::UpdateEdit, this);
 	phaseDraw_ = std::bind(&GameScene::DrawEdit, this);
-	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
+	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
 	VECTOR pos;
 	IntVector3 mPos = MapEditer::MAP_SIZE;
 	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
 	//pos = { 0.0f,250.0f,-500.0f };
-	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	SceneManager::GetInstance().GetCamera(0).lock()->SetPos(pos);
 	ItemManager::GetInstance().ResetItemValue();
 }
 
@@ -212,9 +194,10 @@ void GameScene::ChangePhaseAction(void)
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
-	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FIXED_DIAGONAL);
+	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FOLLOW);
 	PlayerManager::GetInstance().Init();
 	PlayerManager::GetInstance().SetInitPos(ItemManager::GetInstance().GetStartWorldPos());
+	SceneManager::GetInstance().GetCamera(0).lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(0));
 
 	ItemManager::GetInstance().ResetItemValue();
 	//VECTOR pos;
@@ -225,10 +208,11 @@ void GameScene::ChangePhaseAction(void)
 	//angles.x = Utility::Deg2RadF(90.0);
 	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
 
-	VECTOR pos = ACTION_CAMERA_POS;
-	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
-	VECTOR angles = {};
-	angles = Quaternion::FromToRotation(pos, Camera::FIXED_DIAGONAL_TARGET_POS).ToEuler();
+	//VECTOR pos = ACTION_CAMERA_POS;
+	//SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	//VECTOR angles = {};
+	//angles = Quaternion::FromToRotation(pos, Camera::FIXED_DIAGONAL_TARGET_POS).ToEuler();
+
 	//angles.x = Utility::Deg2RadF(90.0);
 	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
 	//SceneManager::GetInstance().GetCamera().lock()->SetTargetPos({ static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2, 0.0f, static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 });
@@ -244,7 +228,11 @@ void GameScene::UpdateEdit(void)
 {
 	//パレット
 	palette_->Update();
-	for (auto& controller : editControllers_) { controller->Update(); }
+
+	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT)
+	{
+		for (auto& controller : editControllers_) { controller->Update(); }
+	}
 }
 
 void GameScene::UpdateAction(void)
@@ -300,9 +288,8 @@ void GameScene::DrawClear()
 
 void GameScene::ChangePlayerClearPhase(void)
 {
-	for (int i = 0; i < PLAYER_NUM; i++)
+	if (PlayerManager::GetInstance().IsPlayersEnd())
 	{
-		if (!PlayerManager::GetInstance().IsGoalPlayers()[i])return;
+		ChangePhase(PHASE::CLEAR_PHASE);
 	}
-	ChangePhase(PHASE::CLEAR_PHASE);
 }

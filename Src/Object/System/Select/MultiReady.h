@@ -55,6 +55,9 @@ public:
 
 private:
 
+	//選べるプレイヤー人数の最小
+	static constexpr int PLAYER_NUM_MIN = 2;
+
 	//入力管理クラス
 	InputManager& input_;
 

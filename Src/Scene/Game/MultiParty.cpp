@@ -1,4 +1,5 @@
 #include "MultiParty.h"
+#include "../../Manager/System/Camera.h"
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/Game/ScoreManager.h"
@@ -15,18 +16,12 @@ MultiParty::MultiParty(void)
 
 MultiParty::~MultiParty(void)
 {
-	for (auto& screen : screens_)
-	{
-		DeleteGraph(screen);
-	}
-
 	//スコアマネージャーのインスタンスを削除
 	ScoreManager::GetInstance().Destroy();
 }
 
 void MultiParty::Load(void)
 {
-
 	//親クラスの読み込み処理を呼ぶ
 	GameScene::Load();
 
@@ -40,19 +35,6 @@ void MultiParty::Load(void)
 
 	//スコアマネージャーを生成
 	ScoreManager::GetInstance().CreateInstance();
-
-	// プレイヤー人数を取得
-	int playerNum = DateBank::GetInstance().GetPlayerNum();
-
-	// 分割数を計算（2人なら左右分割、それ以上は全画面）
-	const Vector2 div = (playerNum == 2) ? Vector2{ 2, 1 } : Vector2{ 2, 2 };
-
-	// プレイヤーごとに描画用スクリーンを作成
-	for (int i = 0; i < playerNum; i++)
-	{
-		int screen = MakeScreen(Application::SCREEN_SIZE_X / div.x, Application::SCREEN_SIZE_Y / div.y, true);
-		screens_.push_back(screen);
-	}
 }
 
 void MultiParty::Init(void)
@@ -67,7 +49,14 @@ void MultiParty::Init(void)
 	result_->Init();
 
 	//フェーズ遷移
-	ChangePhase(PHASE::RESULT_PHASE);
+	ChangePhase(PHASE::SELECT_PHASE);
+
+	//カメラ設定
+	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
+	{
+		auto camera = SceneManager::GetInstance().GetCamera(i);
+		//各プレイヤーへの設定等をしてください
+	}
 }
 
 void MultiParty::NormalDraw(void)
@@ -88,16 +77,40 @@ void MultiParty::UpdateEdit(void)
 	GameScene::UpdateEdit();
 }
 
+void MultiParty::ChangePhaseEdit()
+{
+	//親クラスの処理を呼びだし
+	GameScene::ChangePhaseEdit();
+
+	//画面を分割する
+	scnMng_.SetIsSplitMode(true);
+}
+
+void MultiParty::ChangePhaseAction()
+{
+	//親クラスの処理を呼びだし
+	GameScene::ChangePhaseEdit();
+
+	//画面を分割する
+	scnMng_.SetIsSplitMode(true);
+}
+
 void MultiParty::ChangePhaseSelect()
 {
 	phaseUpdate_ = std::bind(&MultiParty::UpdateSelect, this);
 	phaseDraw_ = std::bind(&MultiParty::DrawSelect, this);
+
+	//画面分割はしない
+	scnMng_.SetIsSplitMode(false);
 }
 
 void MultiParty::ChangePhaseResult()
 {
 	phaseUpdate_ = std::bind(&MultiParty::UpdateResult, this);
 	phaseDraw_ = std::bind(&MultiParty::DrawResult, this);
+
+	//画面分割はしない
+	scnMng_.SetIsSplitMode(false);
 }
 
 void MultiParty::UpdateSelect()
@@ -116,67 +129,6 @@ void MultiParty::UpdateResult()
 	result_->Update(*this);
 }
 
-void MultiParty::DrawAction()
-{
-	//プレイヤーごとにスクリーンを分割して描画
-	int playerNum = DateBank::GetInstance().GetPlayerNum();
-	for (int i = 0; i < playerNum; i++)
-	{
-		//スクリーンを設定
-		SetDrawScreen(screens_[i]);
-
-		//画面をクリア
-		ClearDrawScreen();
-
-		//アイテムの描画
-		//ItemManager::GetInstance().Draw();
-
-		//プレイヤーの描画
-		//PlayerManager::GetInstance().Draw(i);
-	}
-
-	//スクリーンを戻す
-	SetDrawScreen(scnMng_.GetMainScreen());
-
-	//全てのスクリーンを描画
-	for (const auto& screen : screens_)
-	{
-		DrawGraph(0, 0, screen, true);
-
-	}
-	
-}
-
-void MultiParty::DrawEdit()
-{
-	//プレイヤーごとにスクリーンを分割して描画
-	int playerNum = DateBank::GetInstance().GetPlayerNum();
-	for (int i = 0; i < playerNum; i++)
-	{
-		//スクリーンを設定
-		SetDrawScreen(screens_[i]);
-
-		//画面をクリア
-		ClearDrawScreen();
-
-		//アイテムの描画
-		//ItemManager::GetInstance().Draw();
-
-		//エディットコントローラーの描画
-		//ItemManager::GetInstance().Draw();
-	}
-
-	//スクリーンを戻す
-	SetDrawScreen(scnMng_.GetMainScreen());
-
-	//全てのスクリーンを描画
-	for (const auto& screen : screens_)
-	{
-		DrawGraph(0, 0, screen, true);
-
-	}
-}
-
 void MultiParty::DrawSelect()
 {
 	palette_->Draw();
@@ -185,4 +137,16 @@ void MultiParty::DrawSelect()
 void MultiParty::DrawResult()
 {
 	result_->Draw();
+}
+
+void MultiParty::DebagUpdate()
+{
+	//次のフェーズへ状態遷移する
+	if (inputMng_.IsTrgDown(KEY_INPUT_RETURN))
+	{
+		int phase = static_cast<int>(phase_);
+		int nextPhase = phase + 1;
+		if (nextPhase == static_cast<int>(PHASE::CLEAR_PHASE)) { nextPhase = 0; }
+		ChangePhase(static_cast<PHASE>(nextPhase));
+	}
 }
