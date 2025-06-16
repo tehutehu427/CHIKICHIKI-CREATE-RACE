@@ -7,7 +7,7 @@
 #include"./Process/PlayerInput.h"
 #include "../ObjectBase.h"
 
-//#define DEBUG_ON
+#define DEBUG_ON
 class Camera;
 class PMove;
 class PJump;
@@ -103,6 +103,7 @@ public:
 	enum class ATK_ACT
 	{
 		NONE,
+		INPUT,
 		MOVE,
 		PUNCH,
 		JUMP
@@ -133,15 +134,41 @@ public:
 	
 
 	//******************************************
-	// コンストラクタ
+	
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_playerNum">プレイヤー番号</param>
+	/// <param name="_cntl">コントローラー識別番号</param>
 	Player(int _playerNum,PlayerInput::CNTL _cntl);
-
-	// デストラクタ
+	
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Player(void);
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	/// <param name=""></param>
 	void Load(void)override;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name=""></param>
 	void Init(void)override;
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void)override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void)override;
 
 	//ゲッタ
@@ -262,6 +289,17 @@ private:
 
 	//アクション関係
 	//----------------------------------------
+	//状態遷移
+	std::map<ATK_ACT, std::function<void(void)>>changeAction_;
+
+	//状態更新
+	std::function<void(void)>actionUpdate_;
+
+	//状態
+	ATK_ACT act_;
+
+	//地面との当たり判定
+	bool isLandHit_;
 	//移動
 	//------------------------
 	float speed_;			// 移動スピード
@@ -314,8 +352,27 @@ private:
 	//アクション関係
 	//------------------------------
 	void Action(void);
+
+	//状態遷移
+	void ChangeAction(ATK_ACT _act);
+
+	//何もしない
+	void NoneUpdate(void);
+
+	//入力
+	void ActionInputUpdate(void);
+	void ChangeInput(void);
+
+	//変更
+	void ChangeNone(void);
+
+	//
+	void MoveUpdate(void);
+
 	//移動
 	void Move(void);
+	//移動に変更する
+	void ChangeMove(void);
 
 	//回転
 	void Rotate(void);
@@ -327,9 +384,11 @@ private:
 
 	//ジャンプ
 	void Jump(void);
+	void ChangeJump(void);
 
 	//パンチ
 	void Punch(void);
+	void ChangePunch(void);
 	//------------------------------
 	
 	/// <summary>
