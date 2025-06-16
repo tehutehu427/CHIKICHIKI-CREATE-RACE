@@ -13,7 +13,7 @@ public:
 	static void CreateInstance(void);
 
 	//静的にインスタンスを取得する
-	static GravityManager* GetInstance(void);
+	static GravityManager& GetInstance(void);
 
 	static void Destroy(void);
 
@@ -25,7 +25,6 @@ public:
 	/// </summary>
 	/// <param name="dir">重力方向</param>
 	/// <param name="pow">重力計算に使う変数</param>
-	/// <param name="per">重力倍率</param>
 	/// <param name="per">重力倍率</param>
 	void CalcGravity(VECTOR& _dir, VECTOR& _pow,float _per = 100.0f);
 

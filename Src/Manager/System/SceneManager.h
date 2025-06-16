@@ -28,15 +28,41 @@ public:
 		MAX
 	};
 	
-	// インスタンスの生成
+	/// <summary>
+	/// インスタンスを生成
+	/// </summary>
+	/// <param name=""></param>
 	static void CreateInstance(void);
 
-	// インスタンスの取得
+	/// <summary>
+	/// インスタンスを取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>インスタンスを返す</returns>
 	static SceneManager& GetInstance(void);
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name=""></param>
 	void Init(void);
+
+	/// <summary>
+	/// 3D関連の初期化
+	/// </summary>
+	/// <param name=""></param>
 	void Init3D(void);
+
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void);
+
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void);
 
 	/// <summary>
@@ -64,46 +90,84 @@ public:
 	/// </summary>
 	void PopScene();
 
-	// リソースの破棄
+	/// <summary>
+	/// リソースの破棄
+	/// </summary>
+	/// <param name=""></param>
 	void Destroy(void);
 
-	// 状態遷移
+	/// <summary>
+	/// シーンの状態遷移
+	/// </summary>
+	/// <param name="nextId">遷移先のシーン</param>
 	void ChangeScene(SCENE_ID nextId);
 	
-	// フェード開始
+	/// <summary>
+	/// フェード開始
+	/// </summary>
+	/// <param name=""></param>
 	void StartFadeIn(void);
 
-	// シーンIDの取得
+	/// <summary>
+	/// 分割描画の設定
+	/// </summary>
+	/// <param name="_isSplitMode">分割する場合true、しない場合false</param>
+	inline void SetIsSplitMode(const bool _isSplitMode) { isSplitMode_ = _isSplitMode; }
+
+	/// <summary>
+	/// シーンIDを返す
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>シーンID</returns>
 	inline SCENE_ID GetSceneID(void) const { return sceneId_; }
 
-	//メインスクリーンを返す
+	/// <summary>
+	/// メインスクリーンを返す
+	/// </summary>
+	/// <returns>メインスクリーン</returns>
 	inline int GetMainScreen() const { return mainScreen_; }
 
-	// デルタタイムの取得
+	/// <summary>
+	/// デルタタイムの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>デルタタイム</returns>
 	inline float GetDeltaTime(void) const { return deltaTime_; }
 
-	// 経過時間を返す
+	/// <summary>
+	/// 経過時間を返す
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>経過時間</returns>
 	inline float GetTotalTime(void) const { return totalTime_; }
 
-	// カメラの取得
-	std::weak_ptr<Camera> GetCamera(void) const { return camera_; }
+	/// <summary>
+	/// カメラを取得
+	/// </summary>
+	/// <param name="_playerIndex">プレイヤー番号</param>
+	/// <returns>指定したプレイヤー番号のカメラ</returns>
+	std::weak_ptr<Camera> GetCamera(const int _playerIndex) const;
 
 private:
+
+	//条件人数
+	static constexpr int CASE_VALUE = 3;
 
 	// 静的インスタンス
 	static SceneManager* instance_;
 
+	//シーンID
 	SCENE_ID sceneId_;
 	SCENE_ID waitSceneId_;
 
-	// フェード
+	// 各種シーン	
 	std::unique_ptr<SceneBase> scene_;
 
-	// 各種シーン
+	// フェード
 	std::unique_ptr<Fader> fader_;
 
 	// カメラ
-	std::shared_ptr<Camera> camera_;
+	std::vector<std::shared_ptr<Camera>> cameras_;
 
 	// シーン遷移中判定
 	bool isSceneChanging_;
@@ -116,7 +180,19 @@ private:
 	float totalTime_;
 
 	//メインスクリーン
-	int mainScreen_;
+	int mainScreen_;	
+	
+	//画面分割を行うか
+	bool isSplitMode_;
+
+	//分割用スクリーン
+	std::vector<int> splitScreens_;
+
+	//カメラ生成
+	void CreateCameras(const int _playerNum);
+
+	//分割スクリーンの生成
+	void CreateSplitScreen(const int _playerNum);
 	
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
@@ -134,5 +210,8 @@ private:
 
 	// フェード
 	void Fade(void);
+
+	//マルチ画面の描画
+	void DrawMultiScreen();
 
 };

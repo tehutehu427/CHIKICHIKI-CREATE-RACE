@@ -41,7 +41,7 @@ public:
 	/// 静的にインスタンス生成
 	/// </summary>
 	/// <param name="_playerNum">プレイヤー人数</param>
-	static void CreateInstance(int _playerNum);
+	static void CreateInstance(void);
 
 	//解放
 	void Destroy(void);
@@ -140,7 +140,7 @@ private:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="playerNum">データバンクから人数を持ってくる</param>
-	PlayerManager(int _playerNum);
+	PlayerManager(void);
 	PlayerManager(const PlayerManager& instance_) = default;
 	~PlayerManager(void);
 	
