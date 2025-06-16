@@ -143,7 +143,7 @@ void Player::Update(void)
 #endif // DEBUG_ON
 	static VECTOR dirDown = trans_.GetDown();
 	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
-	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_,50.0f);
+	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_,20.0f);
 
 
 	//アクション関係
@@ -205,6 +205,7 @@ void Player::DrawDebug(void)
 	//DrawFormatString(0, 80* (playerNum_ + 3), 0, "POS = %f,%f,%f", movedPos_.x, movedPos_.y, movedPos_.z);
 	//DrawFormatString(0, 100* (playerNum_ + 3), 0, "jump = %d", static_cast<int>(isJump_));
 }
+#endif // DEBUG_ON
 void Player::Action(void)
 {
 	Rotate();
@@ -280,6 +281,10 @@ bool Player::IsDeath(void)
 	}
 	return false;
 }
+void Player::ChangeModelColor(const COLOR_F _colorScale)
+{
+	MV1SetEmiColorScale(trans_.modelId, _colorScale);
+}
 void Player::Jump(void)
 {
 	//if (isPunch_)return;
@@ -300,6 +305,10 @@ void Player::Jump(void)
 		isJump_ = true;
 		//ジャンプの入力受付時間を減らす
 		stepJump_ += deltaTime;
+
+		isPunch_ = false;
+		isPunchHitTime_ = false;
+		punchCnt_ = 0.0f;
 	}
 
 	if (stepJump_ > 0.0f)
@@ -379,7 +388,7 @@ void Player::Punch(void)
 		punchedCnt_ = PUNCHED_TIME;
 	}
 }
-#endif // DEBUG_ON
+
 
 
 
@@ -424,13 +433,14 @@ void Player::Collision(void)
 	movedPos_ = VAdd(trans_.pos, movePow_);
 	movedPos_ = VAdd(movedPos_, jumpPow_);
 
-
+#ifdef DEBUG_ON
 	if (CollCube())
 	{
 		movedPos_ = VAdd(movedPos_, cubeMovePos_);
 		jumpPow_ = Utility::VECTOR_ZERO;
 		movedPos_.y = cube_.upPos.y + RADIUS;
 		stepJump_ = 0.0f;
+		isJump_ = false;
 		jumpDeceralation_ = POW_JUMP;
 	}
 	else
@@ -442,6 +452,9 @@ void Player::Collision(void)
 		//}
 	}
 
+#endif // DEBUG_ON
+
+
 
 	MapEditer& mapEdit = MapEditer::GetInstance();
 	IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
@@ -451,9 +464,9 @@ void Player::Collision(void)
 		{
 			for (int z = -COL_RANGE; z <= COL_RANGE; z++)
 			{
-				IntVector3 colPos = mapPos + IntVector3{x, y, z};
-				if (colPos.x < 0 || colPos.y < 0 || colPos.z < 0)continue;
-				HitItem(colPos);
+				colPos_ = mapPos + IntVector3{x, y, z};
+				if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
+				HitItem(colPos_);
 			}
 		}
 	}
@@ -494,7 +507,6 @@ void Player::UpDownColl(const Transform _itemTrans)
 		jumpPow_ = Utility::VECTOR_ZERO;
 		isJump_ = false;
 		itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
-	
 		return;
 	}
 	//else
@@ -541,7 +553,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 	{
 		//当たらなかったら初期化する
 		itemLocalPos_ = Utility::VECTOR_ZERO;
-
+		isJump_ = true;
 		hitItemType_ = ItemBase::ITEM_TYPE::NONE;
 	}
 }
@@ -579,7 +591,7 @@ void Player::ArroundColl(Transform _itemTrans)
 	MV1CollResultPolyDimTerminate(hits);
 }
 
-
+#ifdef DEBUG_ON
 void Player::CubeMove(void)
 {
 	auto& input = InputManager::GetInstance();
@@ -597,13 +609,16 @@ void Player::CubeMove(void)
 
 bool Player::CollCube(void)
 {
-	VECTOR jumpLine = VSub(movedPos_,trans_.pos);
+	VECTOR jumpLine = VSub(movedPos_, trans_.pos);
 	VECTOR diff = VSub(cube_.centerPos, movedPos_);
-	if(fabsf(diff.x) > CUBE_W+RADIUS
-		||fabsf(diff.y) > CUBE_H+RADIUS
+	if (fabsf(diff.x) > CUBE_W + RADIUS
+		|| fabsf(diff.y) > CUBE_H + RADIUS
 		|| fabsf(diff.z) > CUBE_D + RADIUS)
 	{
 		return false;
 	}
 	return true;
 }
+#endif // DEBUG_ON
+
+

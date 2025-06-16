@@ -157,10 +157,10 @@ void MapDataIO::ImportJsonFile()
             IntVector3 mapPos = MapEditer::GetInstance().WorldToMapPos(pos);
 
             //Ši”[
-            itemMng.AddItem(mapPos, Quaternion(), type);
+            itemMng.AddItem(mapPos, Quaternion(), type,0.0f);
 			MapEditer::GetInstance().AddItem(
-				{ mapPos, Quaternion(), type },
-                itemMng.GetItemSize(type));
+				{ mapPos, Quaternion(), type },itemMng.GetItemSize(type),
+                itemMng.GetItemHitSize(type),0.0f);
         }
     }
 }

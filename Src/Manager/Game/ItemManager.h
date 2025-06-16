@@ -29,7 +29,7 @@ public:
 	/// <param name="mapPos">生成させるマップ座標</param>
 	/// <param name="rot">生成させる時の回転情報</param>
 	/// <param name="type">アイテムの種類</param>
-	void AddItem(IntVector3 mapPos,Quaternion rot,ItemBase::ITEM_TYPE type);
+	void AddItem(IntVector3 mapPos,Quaternion rot,ItemBase::ITEM_TYPE type,float rotY);
 
 	/// <summary>
 	/// アイテム消去
@@ -63,6 +63,12 @@ public:
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのマップ座標</returns>
 	IntVector3 GetDummyItemMapPos(int playerNum);
+	/// <summary>
+	/// ダミーアイテムの当たり判定サイズを取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns>ダミーアイテムのサイズ</returns>
+	IntVector3 GetDummyItemHitSize(int playerNum);
 	/// <summary>
 	/// ダミーアイテムのサイズを取得
 	/// </summary>
@@ -142,7 +148,13 @@ public:
 	/// <returns></returns>
 	Transform GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
 	/// <summary>
-	/// 設置済みのアイテムの大きさを取得
+	/// アイテムの当たり判定大きさを取得
+	/// </summary>
+	/// <param name="_type">アイテムの種類</param>
+	/// <returns></returns>
+	IntVector3 GetItemHitSize(ItemBase::ITEM_TYPE _type) const;
+	/// <summary>
+	/// アイテムの大きさを取得
 	/// </summary>
 	/// <param name="_type">アイテムの種類</param>
 	/// <returns></returns>
@@ -163,6 +175,10 @@ public:
 
 	//アイテムの値リセット
 	void ResetItemValue(void);
+
+	float GetDummyItemRotY(int playerNum);
+
+	void SetDummyItemRotY(int playerNum , float rotY);
 
 protected:
 

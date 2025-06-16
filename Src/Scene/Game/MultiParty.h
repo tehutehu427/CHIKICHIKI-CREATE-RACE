@@ -23,6 +23,14 @@ public:
 	//描画処理を画面分割して行う
 	//パレットをマルチ仕様のを呼び出す
 
+
+	/// <summary>
+	/// カメラを取得する関数
+	/// </summary>
+	/// <param name="playerNum_">プレイヤー番号</param>
+	/// <returns>カメラ</returns>
+	std::weak_ptr<Camera> GetCamera(int playerNum_);
+
 private:
 
 	//描画関数
@@ -53,6 +61,8 @@ private:
 
 	//リザルト処理
 	std::unique_ptr<MultiResult> result_;
+	std::map<int, std::function<std::vector<std::shared_ptr<Camera>>(void)>>createCamera_;
+	std::vector<std::shared_ptr<Camera>> cameras_;
 
 };
 

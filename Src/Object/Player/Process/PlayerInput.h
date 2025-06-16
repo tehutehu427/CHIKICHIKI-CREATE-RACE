@@ -21,7 +21,7 @@ public:
     static constexpr InputManager::JOYPAD_BTN PUNCH_BTN = InputManager::JOYPAD_BTN::LEFT;
 
     //ƒWƒƒƒ“ƒv
-    static constexpr int JUMP_KEY = KEY_INPUT_E;
+    static constexpr int JUMP_KEY = KEY_INPUT_SPACE;
     static constexpr InputManager::JOYPAD_BTN JUMP_BTN = InputManager::JOYPAD_BTN::RIGHT;
 
     static constexpr float STICK_MARGIN_DEG = 90.0f;

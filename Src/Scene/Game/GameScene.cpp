@@ -116,7 +116,8 @@ void GameScene::Init(void)
 void GameScene::NormalUpdate(void)
 {
 	//プレイヤー
-	//player_->Update(
+	//player_->Update();
+
 	phaseUpdate_();
 
 
@@ -150,7 +151,7 @@ void GameScene::DebagUpdate(void)
 {
 	// シーン遷移
 	InputManager& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	if (ins.IsTrgDown(KEY_INPUT_RSHIFT))
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
@@ -212,9 +213,10 @@ void GameScene::ChangePhaseAction(void)
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
-	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FIXED_DIAGONAL);
+	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FOLLOW);
 	PlayerManager::GetInstance().Init();
 	PlayerManager::GetInstance().SetInitPos(ItemManager::GetInstance().GetStartWorldPos());
+	SceneManager::GetInstance().GetCamera().lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(0));
 
 	ItemManager::GetInstance().ResetItemValue();
 	//VECTOR pos;
@@ -225,10 +227,11 @@ void GameScene::ChangePhaseAction(void)
 	//angles.x = Utility::Deg2RadF(90.0);
 	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
 
-	VECTOR pos = ACTION_CAMERA_POS;
-	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
-	VECTOR angles = {};
-	angles = Quaternion::FromToRotation(pos, Camera::FIXED_DIAGONAL_TARGET_POS).ToEuler();
+	//VECTOR pos = ACTION_CAMERA_POS;
+	//SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	//VECTOR angles = {};
+	//angles = Quaternion::FromToRotation(pos, Camera::FIXED_DIAGONAL_TARGET_POS).ToEuler();
+
 	//angles.x = Utility::Deg2RadF(90.0);
 	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
 	//SceneManager::GetInstance().GetCamera().lock()->SetTargetPos({ static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2, 0.0f, static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 });
@@ -244,7 +247,11 @@ void GameScene::UpdateEdit(void)
 {
 	//パレット
 	palette_->Update();
-	for (auto& controller : editControllers_) { controller->Update(); }
+
+	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT)
+	{
+		for (auto& controller : editControllers_) { controller->Update(); }
+	}
 }
 
 void GameScene::UpdateAction(void)
@@ -300,9 +307,8 @@ void GameScene::DrawClear()
 
 void GameScene::ChangePlayerClearPhase(void)
 {
-	for (int i = 0; i < PLAYER_NUM; i++)
+	if (PlayerManager::GetInstance().IsPlayersEnd())
 	{
-		if (!PlayerManager::GetInstance().IsGoalPlayers()[i])return;
+		ChangePhase(PHASE::CLEAR_PHASE);
 	}
-	ChangePhase(PHASE::CLEAR_PHASE);
 }

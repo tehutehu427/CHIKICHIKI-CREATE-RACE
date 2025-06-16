@@ -7,7 +7,7 @@
 #include"./Process/PlayerInput.h"
 #include "../ObjectBase.h"
 
-#define DEBUG_ON
+//#define DEBUG_ON
 class Camera;
 class PMove;
 class PJump;
@@ -164,6 +164,12 @@ public:
 	//プレイヤー座標
 	const VECTOR GetPos(void)const { return trans_.pos; }
 
+	//移動後のプレイヤー座標
+	const VECTOR GetMovedPos(void)const { return movedPos_; }
+
+	//当たり判定を確認しているマップ座標
+	const IntVector3 GetColPos(void)const { return colPos_; }
+
 	//死んだ判定
 	bool IsDeath(void);
 
@@ -193,17 +199,20 @@ public:
 	/// </summary>
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
-
-#ifdef DEBUG_ON
+	//コントローラーセット
 	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
+
+	//プレイヤー番号ゲット
 	const int PlayerNum(void) { return playerNum_; }
+#ifdef DEBUG_ON
+
 
 	//デバッグキューブのサイズ
 	static constexpr float CUBE_W = 200.0F;
 	static constexpr float CUBE_H = 10.0F;
 	static constexpr float CUBE_D = 200.0F;
 #endif // DEBUG_ON
-
+	void ChangeModelColor(const COLOR_F _colorScale)override;
 	
 
 private:
@@ -227,6 +236,9 @@ private:
 
 	//アイテムの支点
 	std::vector<IntVector3> itemLPos_;
+
+	//当たり判定で調べる座標
+	IntVector3 colPos_;
 
 	
 

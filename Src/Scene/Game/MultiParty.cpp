@@ -1,4 +1,5 @@
 #include "MultiParty.h"
+#include "../../Manager/System/Camera.h"
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/Game/ScoreManager.h"
@@ -11,6 +12,52 @@ MultiParty::MultiParty(void)
 	result_ = nullptr;
 	phaseChanges_.emplace(PHASE::SELECT_PHASE, std::bind(&MultiParty::ChangePhaseSelect, this));
 	phaseChanges_.emplace(PHASE::RESULT_PHASE, std::bind(&MultiParty::ChangePhaseResult, this));
+}
+
+	//カメラ作成
+	{
+		createCamera_[1] = [this]()
+			{
+				std::vector<std::shared_ptr<Camera>> cameras;
+				std::shared_ptr<Camera> camera = std::make_shared<Camera>();
+				camera->Init();
+				cameras.push_back(camera);
+				return cameras;
+			};
+		createCamera_[2] = [this]()
+			{
+				std::vector<std::shared_ptr<Camera>> cameras;
+				for (int i = 0; i < 2;i++)
+				{
+					std::shared_ptr<Camera> camera = std::make_shared<Camera>();
+					camera->Init();
+					cameras.push_back(camera);
+				}
+				return cameras;
+			};
+		createCamera_[3] = [this]()
+			{
+				std::vector<std::shared_ptr<Camera>> cameras;
+				for (int i = 0; i < 4;i++)
+				{
+					std::shared_ptr<Camera> camera = std::make_shared<Camera>();
+					camera->Init();
+					cameras.push_back(camera);
+				}
+				return cameras;
+			};
+		createCamera_[4] = [this]()
+			{
+				std::vector<std::shared_ptr<Camera>> cameras;
+				for (int i = 0; i < 4;i++)
+				{
+					std::shared_ptr<Camera> camera = std::make_shared<Camera>();
+					camera->Init();
+					cameras.push_back(camera);
+				}
+				return cameras;
+			};
+	}
 }
 
 MultiParty::~MultiParty(void)
@@ -26,7 +73,6 @@ MultiParty::~MultiParty(void)
 
 void MultiParty::Load(void)
 {
-
 	//親クラスの読み込み処理を呼ぶ
 	GameScene::Load();
 
@@ -68,6 +114,11 @@ void MultiParty::Init(void)
 
 	//フェーズ遷移
 	ChangePhase(PHASE::RESULT_PHASE);
+}
+
+std::weak_ptr<Camera> MultiParty::GetCamera(int playerNum_)
+{
+	return cameras_[playerNum_];
 }
 
 void MultiParty::NormalDraw(void)
