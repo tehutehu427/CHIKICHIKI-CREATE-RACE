@@ -42,3 +42,7 @@ void Fence::SetParam(void)
 void Fence::Update(void)
 {
 }
+
+void Fence::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}

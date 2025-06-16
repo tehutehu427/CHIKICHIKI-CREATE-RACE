@@ -1,5 +1,6 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/SceneManager.h"
+#include "../Manager/Game/CollisionManager.h"
 #include "ObjectBase.h"
 
 ObjectBase::ObjectBase(void)
@@ -11,6 +12,8 @@ ObjectBase::ObjectBase(void)
 
 ObjectBase::~ObjectBase(void)
 {
+	//コライダの削除
+	col_.collider_->Kill();
 }
 
 void ObjectBase::ChangeModelColor(const COLOR_F _colorScale)
@@ -23,4 +26,13 @@ void ObjectBase::ChangeModelColor(const COLOR_F _colorScale)
 
 #endif // _DEBUG
 	}
+}
+
+void ObjectBase::MakeCollider(Collider::TAG _tag)
+{
+	//情報を使ってコライダの作成
+	col_.collider_ = std::make_shared<Collider>(*this, _tag, *col_.geometry_);
+
+	//コライダを管理マネージャーに追加
+	CollisionManager::GetInstance().AddCollider(col_.collider_);
 }

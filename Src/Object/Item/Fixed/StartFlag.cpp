@@ -42,3 +42,7 @@ void StartFlag::SetParam(void)
 void StartFlag::Update(void)
 {
 }
+
+void StartFlag::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}

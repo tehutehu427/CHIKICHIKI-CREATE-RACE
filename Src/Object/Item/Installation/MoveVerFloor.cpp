@@ -71,6 +71,10 @@ void MoveVerFloor::Draw(void)
 	MV1DrawModel(trans_.modelId);
 }
 
+void MoveVerFloor::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}
+
 const IntVector3 MoveVerFloor::GetHitSize(void) const
 {
 	return size_ + IntVector3(0, MOVE_Y, 0);
@@ -156,10 +160,4 @@ bool MoveVerFloor::IsBeyondRoute(void)
 	else beyondZ = trans_.pos.z < route_[routeNum_].z + moveVec_.z;
 
 	return beyondX && beyondY && beyondZ;
-}
-
-void MoveVerFloor::Hit(Transform& _hitTrans)
-{
-	//当たったオブジェクトに同じだけ移動させる
-	_hitTrans.pos = VAdd(_hitTrans.pos, movePow_);
 }

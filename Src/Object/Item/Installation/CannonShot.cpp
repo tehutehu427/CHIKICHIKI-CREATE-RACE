@@ -69,10 +69,8 @@ void CannonShot::Draw(void)
 	MV1DrawModel(trans_.modelId);
 }
 
-void CannonShot::Hit(Transform& _hitTrans)
+void CannonShot::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	//’e‚ğíœ
-	Kill();
 }
 
 void CannonShot::Move(void)

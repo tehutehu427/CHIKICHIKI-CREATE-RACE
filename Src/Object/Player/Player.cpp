@@ -5,7 +5,7 @@
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/Camera.h"
-#include "../../Object/Common/Capsule.h"
+#include "../../Object/Common/Geometry/Capsule.h"
 #include "../../Object/Common/AnimationController.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Manager/Game/ItemManager.h"
@@ -162,6 +162,10 @@ void Player::Draw(void)
 #ifdef DEBUG_ON
 	DrawDebug();
 #endif // DEBUG_ON
+}
+
+void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
 }
 
 

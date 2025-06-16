@@ -42,3 +42,7 @@ void Spring::SetParam(void)
 void Spring::Update(void)
 {
 }
+
+void Spring::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}

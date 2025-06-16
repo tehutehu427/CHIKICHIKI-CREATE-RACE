@@ -42,3 +42,7 @@ void BigBomb::SetParam(void)
 void BigBomb::Update(void)
 {
 }
+
+void BigBomb::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}

@@ -44,3 +44,7 @@ void SlimeFloor::SetParam(void)
 void SlimeFloor::Update(void)
 {
 }
+
+void SlimeFloor::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}

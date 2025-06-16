@@ -153,6 +153,10 @@ void Cannon::Draw(void)
 	}
 }
 
+void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}
+
 void Cannon::ChangeModelColor(const COLOR_F _colorScale)
 {
 	//–C‘ä
