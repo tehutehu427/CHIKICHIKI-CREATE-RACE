@@ -49,7 +49,7 @@ void MultiParty::Init(void)
 	result_->Init();
 
 	//フェーズ遷移
-	ChangePhase(PHASE::RESULT_PHASE);
+	ChangePhase(PHASE::SELECT_PHASE);
 
 	//カメラ設定
 	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)

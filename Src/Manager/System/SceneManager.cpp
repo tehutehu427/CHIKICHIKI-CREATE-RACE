@@ -128,27 +128,8 @@ void SceneManager::Draw(void)
 
 	if (isSplitMode_)
 	{
-		//スクリーン数分描画
-		for (int i = 0; i < splitScreens_.size(); i++)
-		{
-			// カメラ設定
-			cameras_[i]->SetBeforeDraw();
-
-			// Effekseerにより再生中のエフェクトを更新する。
-			UpdateEffekseer3D();
-
-			// 描画
-			scene_->Draw();
-
-			// 主にポストエフェクト用
-			cameras_[i]->Draw();
-
-			// Effekseerにより再生中のエフェクトを描画する。
-			DrawEffekseer3D();
-
-			// 暗転・明転
-			fader_->Draw();
-		}
+		//複数画面の描画
+		DrawMultiScreen();
 	}
 	else
 	{
@@ -311,7 +292,6 @@ void SceneManager::CreateSplitScreen(const int _playerNum)
 
 	int createNum = _playerNum;	//生成数
 	int divY = 1;				//Yの分割数
-	const int CASE_VALUE = 3;	//条件値(3人以上の場合)
 	
 	//人数が条件以上の場合
 	if (_playerNum >= CASE_VALUE)
@@ -449,5 +429,60 @@ void SceneManager::Fade(void)
 			fader_->SetFade(Fader::STATE::NONE);
 		}
 		break;
+	}
+}
+
+void SceneManager::DrawMultiScreen()
+{
+	//描画位置（分割スクリーンの左上位置）
+	static const Vector2 screenPos[PlayerManager::PLAYER_NUM] =
+	{
+		{ 0, 0 },													// 1P: 左上
+		{ Application::SCREEN_HALF_X, 0 },							// 2P: 右上
+		{ 0, Application::SCREEN_HALF_Y },							// 3P: 左下
+		{ Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y }	// 4P: 右下
+	};
+
+	//スクリーン数分描画
+	for (int i = 0; i < splitScreens_.size(); i++)
+	{
+		//プレイ人数が3人の時の4つ目の画面を1Pの画面を表示する
+		int index = i;
+		if (CASE_VALUE == DateBank::GetInstance().GetPlayerNum() &&
+			index == PlayerManager::PLAYER_NUM - 1)
+		{
+			index = 1;
+		}
+
+		//分割スクリーンの設定
+		SetDrawScreen(splitScreens_[index]);
+
+		// カメラ設定
+		cameras_[index]->SetBeforeDraw();
+
+		// Effekseerにより再生中のエフェクトを更新する。
+		UpdateEffekseer3D();
+
+		// 描画
+		scene_->Draw();
+
+		// 主にポストエフェクト用
+		cameras_[index]->Draw();
+
+		// Effekseerにより再生中のエフェクトを描画する。
+		DrawEffekseer3D();
+
+		// 暗転・明転
+		fader_->Draw();
+	}
+
+	//メインスクリーンへ描画
+	SetDrawScreen(mainScreen_);
+
+
+	for (int i = 0; i < splitScreens_.size(); i++)
+	{
+		//分割したスクリーンを描画
+		DrawGraph(screenPos[i].x, screenPos[i].y, splitScreens_[i], true);
 	}
 }

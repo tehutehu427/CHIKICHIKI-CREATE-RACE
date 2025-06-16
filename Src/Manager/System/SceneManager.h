@@ -150,6 +150,9 @@ public:
 
 private:
 
+	//条件人数
+	static constexpr int CASE_VALUE = 3;
+
 	// 静的インスタンス
 	static SceneManager* instance_;
 
@@ -207,5 +210,8 @@ private:
 
 	// フェード
 	void Fade(void);
+
+	//マルチ画面の描画
+	void DrawMultiScreen();
 
 };
