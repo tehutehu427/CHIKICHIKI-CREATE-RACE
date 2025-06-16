@@ -185,7 +185,7 @@ void Player::DrawDebug(void)
 		,jumpPow_.x,jumpPow_.y,jumpPow_.z
 		,movedPos_.x,movedPos_.y,movedPos_.z
 		,act_
-		,scnMng_.GetCamera().lock()->GetAngles().y
+		,scnMng_.GetCamera(0).lock()->GetAngles().y
 	);
 	if (IsDeath())
 	{
@@ -298,7 +298,7 @@ void Player::MoveDirFronInput(void)
 	//プレイヤー入力クラスから角度を取得
 	VECTOR getDir = input_->GetDir();
 	float deg = 0.0f;
-	Quaternion cameraRot = scnMng_.GetCamera().lock()->GetQuaRotOutX();
+	Quaternion cameraRot = scnMng_.GetCamera(0).lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
 	deg = input_->GetMoveDeg();
 	dir_ = cameraRot.PosAxis(getDir);
@@ -333,7 +333,7 @@ void Player::Rotate(void)
 void Player::SetGoalRotate(double _deg)
 {
 	//カメラの角度を取得
-	VECTOR cameraRot = scnMng_.GetCamera().lock()->GetAngles();
+	VECTOR cameraRot = scnMng_.GetCamera(0).lock()->GetAngles();
 	Quaternion axis = Quaternion::AngleAxis(
 		(double)cameraRot.y + Utility::Deg2RadF(_deg), Utility::AXIS_Y);
 	// 現在設定されている回転との角度差を取る

@@ -50,6 +50,8 @@ GameScene::~GameScene(void)
 
 void GameScene::Load(void)
 {
+	int playerNum = DateBank::GetInstance().GetPlayerNum();
+
 	//ƒtƒHƒ“ƒg‚Ì¶¬
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 

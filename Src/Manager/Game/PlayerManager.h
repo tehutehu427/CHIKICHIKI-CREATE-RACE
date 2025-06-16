@@ -12,7 +12,7 @@ public:
 	//**************************************
 	//定数
 	//**************************************
-	static constexpr int PLAYER_NUM = 1;
+	static constexpr int PLAYER_NUM = 4;
 
 	//プレイヤー1人
 	static constexpr int PLAYER_SINGLE = 1;
