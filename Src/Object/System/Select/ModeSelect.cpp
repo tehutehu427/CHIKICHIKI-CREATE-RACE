@@ -1,16 +1,17 @@
+#include "ModeSelect.h"
 #include <string>
 #include <DxLib.h>
 #include <cmath>
-#include "../Application.h"
-#include "../Common/FontRegistry.h"
-#include "../Utility/Utility.h"
-#include "../Manager/System/SceneManager.h"
-#include "../Manager/System/ResourceManager.h"
-#include "../Manager/System/InputManager.h"
-#include "../Manager/System/DateBank.h"
-#include "../Shader/Effect/SelectUIGlow.h"
-#include "../Shader/Effect/SelectUIDarkly.h"
-#include "ModeSelect.h"
+#include "../../../Common/FontRegistry.h"
+#include "../../../Utility/Utility.h"
+#include "../../../Manager/System/SceneManager.h"
+#include "../../../Manager/System/ResourceManager.h"
+#include "../../../Manager/System/InputManager.h"
+#include "../../../Manager/System/DateBank.h"
+#include "../../../Shader/Effect/SelectUIGlow.h"
+#include "../../../Shader/Effect/SelectUIDarkly.h"
+#include "../../../Scene/SelectScene.h"
+
 
 namespace
 {
@@ -23,42 +24,8 @@ ModeSelect::ModeSelect()
 	dateBank_(DateBank::GetInstance())
 {
 	//状態別更新関数のセット
-	RegisterArcState(UPD_STATE::SELECT, [this]() { SelectUpdate(); });
-	RegisterArcState(UPD_STATE::ROTATE, [this]() { 	RotateUpdate(); });
-
-	//選択したメニューごとの処理をセット
-	menuFuncTable_ = {
-		{SELECT_MENU::SOLO,[this]()
-		{
-			dateBank_.SetPlayerNum(1);
-			scnMng_.ChangeScene(SceneManager::SCENE_ID::SOLO);
-		}},
-		{SELECT_MENU::MULTI,[this]()
-		{
-			dateBank_.SetPlayerNum(4);
-			scnMng_.ChangeScene(SceneManager::SCENE_ID::MULTI);
-		}},
-		{SELECT_MENU::FREE,[this]()
-		{
-			dateBank_.SetPlayerNum(1);
-			scnMng_.ChangeScene(SceneManager::SCENE_ID::FREE);
-		}},
-		{SELECT_MENU::SETTINGS,[this]()
-		{
-			scnMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
-		}},
-		{SELECT_MENU::EXIT,[this]()
-		{
-			scnMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
-		}}
-	};
-
-	//文字の初期化
-	selectType_[static_cast<int>(SELECT_MENU::SOLO)] = "一人用課題モード";
-	selectType_[static_cast<int>(SELECT_MENU::MULTI)] = "マルチモード";
-	selectType_[static_cast<int>(SELECT_MENU::FREE)] = "フリーモード";
-	selectType_[static_cast<int>(SELECT_MENU::SETTINGS)] = "システム設定";
-	selectType_[static_cast<int>(SELECT_MENU::EXIT)] = "戻る";
+	RegisterArcState(UPD_STATE::SELECT, [&](SelectScene& _parent) { SelectUpdate(_parent); });
+	RegisterArcState(UPD_STATE::ROTATE, [&](SelectScene& _parent) { RotateUpdate(_parent); });
 
 	//変数の初期化
 	for (int i = 0; i < DRAW_ARC_NUM; i++) { arc_[i] = {}; }
@@ -112,7 +79,7 @@ void ModeSelect::Init()
 		arc_[i].img = imgArcs_[i];
 	}
 	//最後の円弧の要素だけメニュー項目の最後の要素にする
-	arc_[DRAW_ARC_NUM - 1].img = imgArcs_[MENU_LIST_NUM - 1];
+	arc_[DRAW_ARC_NUM - 1].img = imgArcs_[SelectScene::MENU_LIST_NUM - 1];
 
 	//選択メニューの初期化
 	ChangeUpdateState(UPD_STATE::SELECT);
@@ -121,14 +88,14 @@ void ModeSelect::Init()
 	targetAngle_ = 0.0f;
 }
 
-void ModeSelect::Update()
+void ModeSelect::Update(SelectScene& _parent)
 {
 #ifdef _DEBUG
 	DebugUpdate();
 #endif
 
 	// 毎フレームのUpdate処理
-	if (selectUpdateFunc_) selectUpdateFunc_();
+	if (selectUpdateFunc_) selectUpdateFunc_(_parent);
 
 	//エフェクトを更新
 	uiGlow_->Update(arc_[arcIndex_].angle, imgArcSize);
@@ -155,7 +122,7 @@ void ModeSelect::Draw()
 	}
 }
 
-void ModeSelect::RegisterArcState(const UPD_STATE _state, std::function<void()> _update)
+void ModeSelect::RegisterArcState(const UPD_STATE _state, std::function<void(SelectScene&)> _update)
 {
 	stateMap_[_state] = _update;
 }
@@ -177,19 +144,14 @@ void ModeSelect::ChangeUpdateState(const UPD_STATE _state)
 	}
 }
 
-void ModeSelect::SelectUpdate()
+void ModeSelect::SelectUpdate(SelectScene& _parent)
 {
 	constexpr int OFFSET_INDEX = 2;	//選択メニューのオフセット
 	InputManager& ins = InputManager::GetInstance();
 	//決定
 	if (ins.IsTrgDown(KEY_INPUT_SPACE))
 	{
-		//選択したメニューの処理を実行
-		auto it = menuFuncTable_.find(static_cast<SELECT_MENU>(menuIndex_));
-		if (it != menuFuncTable_.end())
-		{
-			it->second();
-		}
+		_parent.ProcessMenuFunction(static_cast<SelectScene::SELECT_MENU>(menuIndex_));
 	}
 	//上へ
 	else if (ins.IsTrgDown(KEY_INPUT_UP))
@@ -198,7 +160,7 @@ void ModeSelect::SelectUpdate()
 		SetMenuItem(menuIndex_ - OFFSET_INDEX, arcIndex_ - OFFSET_INDEX);
 
 		//選択メニューの更新
-		menuIndex_ = (menuIndex_ - 1 + MENU_LIST_NUM) % MENU_LIST_NUM;
+		menuIndex_ = (menuIndex_ - 1 + SelectScene::MENU_LIST_NUM) % SelectScene::MENU_LIST_NUM;
 
 		//円弧インデックスの更新
 		arcIndex_ = (arcIndex_ - 1 + DRAW_ARC_NUM) % DRAW_ARC_NUM;
@@ -216,7 +178,7 @@ void ModeSelect::SelectUpdate()
 		SetMenuItem(menuIndex_ + OFFSET_INDEX, arcIndex_ + OFFSET_INDEX);
 
 		//選択メニューの更新		
-		menuIndex_ = (menuIndex_ + 1) % MENU_LIST_NUM;
+		menuIndex_ = (menuIndex_ + 1) % SelectScene::MENU_LIST_NUM;
 
 		//円弧インデックスの更新
 		arcIndex_ = (arcIndex_ + 1) % DRAW_ARC_NUM;
@@ -229,7 +191,7 @@ void ModeSelect::SelectUpdate()
 	}
 }
 
-void ModeSelect::RotateUpdate()
+void ModeSelect::RotateUpdate(SelectScene&)
 {
 	//回転
 	float diff = targetAngle_ - currentAngle_;
@@ -258,7 +220,7 @@ void ModeSelect::RotateUpdate()
 void ModeSelect::SetMenuItem(const int _imgIndex, const int _arcIndex)
 {
 	//引数のインデックスが範囲外の場合の処理
-	const int imgIndex = Utility::WrapIndex(_imgIndex, MENU_LIST_NUM);
+	const int imgIndex = Utility::WrapIndex(_imgIndex, SelectScene::MENU_LIST_NUM);
 	const int arcIndex = Utility::WrapIndex(_arcIndex, DRAW_ARC_NUM);
 
 	//画像の割り当て
@@ -345,15 +307,6 @@ void ModeSelect::DebugDraw()
 		0,
 		Utility::BLACK,
 		"SelectScene"
-	);
-
-	DrawFormatString(
-		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y,
-		Utility::WHITE,
-		"%d,%s",
-		menuIndex_,
-		selectType_[menuIndex_].c_str()
 	);
 	DrawFormatString(
 		Application::SCREEN_HALF_X,

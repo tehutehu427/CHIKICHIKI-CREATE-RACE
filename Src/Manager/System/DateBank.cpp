@@ -21,6 +21,7 @@ void DateBank::Init(void)
 {
 	playerNum_ = 0;
 	maxPlayerNum_ = GetJoypadNum();
+	stageNo_ = 0;
 
 	//–¼‘O‚ÌŠi”[
 	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::NONE)] = "";
@@ -48,12 +49,12 @@ void DateBank::Destroy(void)
 	}
 }
 
-bool DateBank::SetPlayerNum(int num)
+bool DateBank::SetPlayerNum(int _num)
 {
 	//maxPlayerNum_ = GetJoypadNum();
 	//if (num <= maxPlayerNum_)
 	//{
-		playerNum_ = num;
+		playerNum_ = _num;
 		return true;
 	//}
 	return false;
