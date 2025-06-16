@@ -78,8 +78,8 @@ public:
 		MOVE_RIGHT,			//右移動
 		MOVE_UP,			//上移動
 		MOVE_DOWN,			//下移動
-		WHEEL_FRONT,		//ホイール前回転
-		WHEEL_BACK,			//ホイール後ろ回転
+		WHEEL_FRONT,		//ホイール前(奥)回転
+		WHEEL_BACK,			//ホイール後ろ(手前)回転
 		MAX
 	};
 
@@ -131,24 +131,6 @@ public:
 	// マウスのクリック状態を取得(MOUSE_INPUT_LEFT、RIGHT)
 	int GetMouse(void) const;
 
-	// マウスが左クリックされたか
-	bool IsClickMouseLeft(void) const;
-
-	// マウスが右クリックされたか
-	bool IsClickMouseRight(void) const;
-
-	// マウスが左クリックされたか(押しっぱなしはNG)
-	bool IsTrgDownMouseLeft(void) const;
-
-	// マウスが右クリックされたか(押しっぱなしはNG)
-	bool IsTrgDownMouseRight(void) const;
-
-	// マウスが左クリック離されたか(押しっぱなしはNG)
-	bool IsTrgUpMouseLeft(void) const;
-
-	// マウスが右クリック離されたか(押しっぱなしはNG)
-	bool IsTrgUpMouseRight(void) const;
-
 	// コントローラの入力情報を取得する
 	JOYPAD_IN_STATE GetJPadInputState(JOYPAD_NO no);
 
@@ -162,6 +144,9 @@ public:
 	bool IsStickDown(JOYPAD_NO no, JOYPAD_STICK stick) const;
 	bool IsStickUp(JOYPAD_NO no, JOYPAD_STICK stick) const;
 
+	bool IsMouseNew(MOUSE mouse);
+	bool IsMouseTrgUp(MOUSE mouse);
+	bool IsMouseTrgDown(MOUSE mouse);
 private:
 
 	// キー情報
@@ -177,11 +162,10 @@ private:
 	// マウス
 	struct MouseInfo
 	{
-		int key;			// キーID
-		bool keyOld;		// 1フレーム前の押下状態
-		bool keyNew;		// 現フレームの押下状態
-		bool keyTrgDown;	// 現フレームでボタンが押されたか
-		bool keyTrgUp;		// 現フレームでボタンが離されたか
+		bool keyOld = false;		// 1フレーム前の押下状態
+		bool keyNew = false;		// 現フレームの押下状態
+		bool keyTrgDown = false;	// 現フレームでボタンが押されたか
+		bool keyTrgUp = false;		// 現フレームでボタンが離されたか
 	};
 
 	struct StickInfo
@@ -207,15 +191,19 @@ private:
 	InputManager::Info infoEmpty_;
 
 	// マウス情報
-	std::map<int, InputManager::MouseInfo> mouseInfos_;
+	std::map<MOUSE, InputManager::MouseInfo> mouseInfos_;
 	InputManager::MouseInfo mouseInfoEmpty_;
 
 	// スティック情報
 	std::map<JOYPAD_NO, std::vector<InputManager::StickInfo>> stickInfos_;
 
 	// マウスカーソルの位置
+	Vector2 mousePrePos_;
 	Vector2 mousePos_;
 	
+	//マウスホイール回転量
+	int wheelRot_;
+
 	// マウスボタンの入力状態
 	int mouseInput_;
 
@@ -232,7 +220,7 @@ private:
 	const InputManager::Info& Find(int key) const;
 
 	// 配列の中からマウス情報を取得する
-	const InputManager::MouseInfo& FindMouse(int key) const;
+	const InputManager::MouseInfo& FindMouse(MOUSE key) const;
 
 	// 接続されたコントローラの種別を取得する
 	JOYPAD_TYPE GetJPadType(JOYPAD_NO no);

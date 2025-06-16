@@ -145,7 +145,7 @@ void EditController::MoveRotateObjectDraw(void)
 void EditController::ItemNotSelect(void)
 {
 	auto& itemMIns = ItemManager::GetInstance();
-	if (InputManager::GetInstance().IsTrgDownMouseLeft() == true)
+	if (InputManager::GetInstance().IsMouseTrgDown(InputManager::MOUSE::CLICK_LEFT) == true)
 	{
 		//if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
 		if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
@@ -398,7 +398,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 	InputManager& ins = InputManager::GetInstance();
 	if (moveDir_ == MOVE_DIR::NONE)
 	{
-		if (ins.IsClickMouseLeft() == false)
+		if (ins.IsMouseNew(InputManager::MOUSE::CLICK_LEFT) == false)
 		{
 			return moveDir;
 		}
@@ -407,7 +407,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 			return moveDir;
 		}
 	}
-	else if (ins.IsTrgUpMouseLeft() == true)
+	else if (ins.IsMouseTrgUp(InputManager::MOUSE::CLICK_LEFT) == true)
 	{
 		return moveDir;
 	}

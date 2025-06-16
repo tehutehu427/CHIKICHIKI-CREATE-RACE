@@ -170,7 +170,7 @@ void PaletteIcon::UpdateSelect()
 	InputManager& ins = InputManager::GetInstance();
 
 	//クリックしたか調べる
-	if (ins.IsTrgDownMouseLeft()) {
+	if (ins.IsMouseTrgDown(InputManager::MOUSE::CLICK_LEFT)) {
 		//マウス位置を取得
 		Vector2 mousePos = ins.GetMousePos();
 

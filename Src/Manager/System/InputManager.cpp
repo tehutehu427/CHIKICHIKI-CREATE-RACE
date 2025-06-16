@@ -67,26 +67,16 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_RSHIFT);	//タイトルシーン遷移
 
 
-	InputManager::MouseInfo info;
+	InputManager::MouseInfo mouseInfo;
 
-	// 左クリック
-	info = InputManager::MouseInfo();
-	info.key = MOUSE_INPUT_LEFT;
-	info.keyOld = false;
-	info.keyNew = false;
-	info.keyTrgDown = false;
-	info.keyTrgUp = false;
-	mouseInfos_.emplace(info.key, info);
+	// マウス
+	mouseInfo = InputManager::MouseInfo();
+	for (int i = 0;i < static_cast<int>(InputManager::MOUSE::MAX);i++)
+	{
+		mouseInfos_.emplace(static_cast<MOUSE>(i), mouseInfo);
+	}
 
-	// 右クリック
-	info = InputManager::MouseInfo();
-	info.key = MOUSE_INPUT_RIGHT;
-	info.keyOld = false;
-	info.keyNew = false;
-	info.keyTrgDown = false;
-	info.keyTrgUp = false;
-	mouseInfos_.emplace(info.key, info);
-
+	//スティック
 	InputManager::StickInfo stickInfo;
 	stickInfo = InputManager::StickInfo();
 	for (int padNo = 0;padNo <= static_cast<int>(JOYPAD_NO::PAD4);padNo++)
@@ -115,12 +105,44 @@ void InputManager::Update(void)
 
 	// マウス検知
 	mouseInput_ = GetMouseInput();
+	mousePrePos_ = mousePos_;
 	GetMousePoint(&mousePos_.x, &mousePos_.y);
+	wheelRot_ = GetMouseWheelRotVol();
 
 	for (auto& p : mouseInfos_)
 	{
 		p.second.keyOld = p.second.keyNew;
-		p.second.keyNew = mouseInput_ == p.second.key;
+		switch (p.first)
+		{
+		case InputManager::MOUSE::CLICK_RIGHT:
+			p.second.keyNew = (mouseInput_ & MOUSE_INPUT_RIGHT) != 0;
+			break;
+		case InputManager::MOUSE::CLICK_LEFT:
+			p.second.keyNew = (mouseInput_ & MOUSE_INPUT_LEFT) != 0;
+			break;
+		case InputManager::MOUSE::MOVE_LEFT:
+			p.second.keyNew = mousePos_.x < mousePrePos_.x;
+			break;
+		case InputManager::MOUSE::MOVE_RIGHT:
+			p.second.keyNew = mousePos_.x > mousePrePos_.x;
+			break;
+		case InputManager::MOUSE::MOVE_UP:
+			p.second.keyNew = mousePos_.y < mousePrePos_.y;
+			break;
+		case InputManager::MOUSE::MOVE_DOWN:
+			p.second.keyNew = mousePos_.y > mousePrePos_.y;
+			break;
+		case InputManager::MOUSE::WHEEL_FRONT:
+			p.second.keyNew = (wheelRot_ > 0);
+			break;
+		case InputManager::MOUSE::WHEEL_BACK:
+			p.second.keyNew = (wheelRot_ < 0);
+			break;
+		case InputManager::MOUSE::MAX:
+			break;
+		default:
+			break;
+		}
 		p.second.keyTrgDown = p.second.keyNew && !p.second.keyOld;
 		p.second.keyTrgUp = !p.second.keyNew && p.second.keyOld;
 	}
@@ -192,36 +214,6 @@ int InputManager::GetMouse(void) const
 	return mouseInput_;
 }
 
-bool InputManager::IsClickMouseLeft(void) const
-{
-	return mouseInput_ == MOUSE_INPUT_LEFT;
-}
-
-bool InputManager::IsClickMouseRight(void) const
-{
-	return mouseInput_ == MOUSE_INPUT_RIGHT;
-}
-
-bool InputManager::IsTrgDownMouseLeft(void) const
-{
-	return FindMouse(MOUSE_INPUT_LEFT).keyTrgDown;
-}
-
-bool InputManager::IsTrgDownMouseRight(void) const
-{
-	return FindMouse(MOUSE_INPUT_RIGHT).keyTrgDown;
-}
-
-bool InputManager::IsTrgUpMouseLeft(void) const
-{
-	return FindMouse(MOUSE_INPUT_LEFT).keyTrgUp;
-}
-
-bool InputManager::IsTrgUpMouseRight(void) const
-{
-	return FindMouse(MOUSE_INPUT_RIGHT).keyTrgUp;;
-}
-
 InputManager::InputManager(void)
 {
 	mouseInput_ = -1;
@@ -244,7 +236,7 @@ const InputManager::Info& InputManager::Find(int key) const
 
 }
 
-const InputManager::MouseInfo& InputManager::FindMouse(int key) const
+const InputManager::MouseInfo& InputManager::FindMouse(MOUSE key) const
 {
 	auto it = mouseInfos_.find(key);
 	if (it != mouseInfos_.end())
@@ -505,6 +497,21 @@ bool InputManager::IsStickUp(JOYPAD_NO no, JOYPAD_STICK stick) const
 		}
 	}
 	return false;
+}
+
+bool InputManager::IsMouseNew(MOUSE mouse)
+{
+	return FindMouse(mouse).keyNew;
+}
+
+bool InputManager::IsMouseTrgUp(MOUSE mouse)
+{
+	return FindMouse(mouse).keyTrgUp;
+}
+
+bool InputManager::IsMouseTrgDown(MOUSE mouse)
+{
+	return FindMouse(mouse).keyTrgDown;
 }
 
 int InputManager::PadStickOverSize(JOYPAD_NO no, JOYPAD_STICK stick) const

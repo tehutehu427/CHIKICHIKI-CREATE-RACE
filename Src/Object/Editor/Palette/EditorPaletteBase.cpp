@@ -164,7 +164,7 @@ void EditorPaletteBase::UpdateWait()
 	Vector2 leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
 	Vector2 rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
 
-	if(ins.IsTrgDownMouseLeft() &&
+	if(ins.IsMouseTrgDown(InputManager::MOUSE::CLICK_LEFT) &&
 		Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBotm))
 	{
 		ChangeState(STATE::OPEN);
@@ -204,7 +204,7 @@ void EditorPaletteBase::UpdateSelect()
 	//パレット外をクリックしたときパレットを閉じる
 	leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
 	rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
-	if (ins.IsClickMouseLeft() &&
+	if (ins.IsMouseNew(InputManager::MOUSE::CLICK_LEFT) &&
 		!Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBotm)) {
 		ChangeState(STATE::CLOSE);
 	}
