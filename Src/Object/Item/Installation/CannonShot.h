@@ -25,13 +25,13 @@ public:
 	void Draw(void)override;
 
 	//’e‚Ì¶‘¶”»’è
-	const bool IsAlive(void)const { return isAlive_; }
+	inline const bool IsAlive(void)const { return isAlive_; }
 
 	/// <summary>
-	/// “–‚½‚Á‚½ˆ—
+	/// “–‚½‚è”»’èŒã‚Ìˆ—
 	/// </summary>
-	/// <param name="_hitTrans">‘ÎÛ‚Ìƒ‚ƒfƒ‹î•ñ</param>
-	void Hit(Transform& _hitTrans)override;
+	/// <param name="_hitColTag">‘Šè‘¤‚Ì“–‚½‚è”»’è</param>
+	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
 private:
 
@@ -40,9 +40,9 @@ private:
 	VECTOR movePow_;	//ˆÚ“®—Ê
 
 	//ˆÚ“®ˆ—
-	void Move(void);
+	inline void Move(void);
 
 	//íœ
-	void Kill(void);
+	inline void Kill(void);
 };
 

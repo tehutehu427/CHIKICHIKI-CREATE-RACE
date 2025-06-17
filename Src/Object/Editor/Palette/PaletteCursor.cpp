@@ -72,7 +72,7 @@ void PaletteCursor::Update()
 	}
 
 	//Œˆ’è
-	if (ins.IsPadBtnTrgDown(pad_, InputManager::JOYPAD_BTN::RIGHT))
+	if (ins.IsPadBtnTrgDown(pad_, InputManager::JOYPAD_BTN::RIGHTBUTTON_RIGHT))
 	{
 		decide_ = true;
 	}

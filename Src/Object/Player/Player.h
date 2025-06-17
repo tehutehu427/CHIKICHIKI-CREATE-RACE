@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 #include <map>
 #include <functional>
 #include "../Common/AnimationController.h"
@@ -13,6 +12,7 @@ class PMove;
 class PJump;
 class PPunch;
 class PlayerInput;
+class DateBank;
 class Player :public ObjectBase
 {
 public:
@@ -141,11 +141,10 @@ public:
 	/// </summary>
 	/// <param name="_playerNum">プレイヤー番号</param>
 	/// <param name="_cntl">コントローラー識別番号</param>
-	Player(int _playerNum,PlayerInput::CNTL _cntl);
-	
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
+	/// <param name="_tag">プレイヤーごとのタグ</param>
+	Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag);
+
+	// デストラクタ
 	~Player(void);
 
 	/// <summary>
@@ -172,12 +171,18 @@ public:
 	/// <param name=""></param>
 	void Draw(void)override;
 
+	/// <summary>
+	/// 当たり判定後の処理
+	/// </summary>
+	/// <param name="_hitColTag">相手側の当たり判定</param>
+	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
+
 	//ゲッタ
 	//******************************************
 	//プレイヤー番号
 	const int GetPlayerNum(void)const { return playerNum_; }
 
-	const PlayerInput::CNTL GetCntl(void) { return cntl_; }
+	const DateBank::TYPE GetCntl(void) { return cntl_; }
 
 	const VECTOR GetMovePow(void) { return movePow_; }
 	//入力
@@ -228,7 +233,11 @@ public:
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
 	//コントローラーセット
-	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
+	const void SetCntl(DateBank::TYPE _cntl) { cntl_ = _cntl; }
+
+	//状態遷移
+	void ChangeAction(ATK_ACT _act);
+
 
 	//プレイヤー番号ゲット
 	const int PlayerNum(void) { return playerNum_; }
@@ -257,7 +266,7 @@ private:
 	VECTOR itemLocalPos_;
 
 	//入力デバイス
-	PlayerInput::CNTL cntl_;
+	DateBank::TYPE cntl_;
 
 	//ゲームパッド番号
 	InputManager::JOYPAD_NO padNum_;
@@ -354,8 +363,6 @@ private:
 	//------------------------------
 	void Action(void);
 
-	//状態遷移
-	void ChangeAction(ATK_ACT _act);
 
 	//何もしない
 	void NoneUpdate(void);
@@ -364,7 +371,7 @@ private:
 	void ActionInputUpdate(void);
 	void ChangeInput(void);
 
-	//変更
+	//何もなし
 	void ChangeNone(void);
 
 	//移動状態の更新
@@ -375,13 +382,6 @@ private:
 	void ChangeMove(void);
 	//毎フレーム移動方向とスピードを更新する
 	void UpdateMoveDirAndPow(void);
-
-	//回転
-	void Rotate(void);
-
-	//最終的に動かしたい角度の設定
-	void SetGoalRotate(double _deg);
-
 
 
 	//ジャンプ
@@ -396,7 +396,10 @@ private:
 	void KnockBack(void);
 	void ChangeKnockBack(void);
 
-	//
+	//回転
+	void Rotate(void);
+	//最終的に動かしたい角度の設定
+	void SetGoalRotate(double _deg);
 	//------------------------------
 	
 	/// <summary>

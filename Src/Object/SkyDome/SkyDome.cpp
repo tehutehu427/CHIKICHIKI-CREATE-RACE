@@ -48,6 +48,10 @@ void SkyDome::Draw(void)
 	MV1DrawModel(transform_.modelId);
 }
 
+void SkyDome::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}
+
 const Transform& SkyDome::GetTransform() const
 {
 	return transform_;

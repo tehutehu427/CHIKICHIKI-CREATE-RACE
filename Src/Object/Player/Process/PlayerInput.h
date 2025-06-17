@@ -1,6 +1,7 @@
 #pragma once
 #include<DxLib.h>
 #include<memory>
+#include"../Manager/System/DateBank.h"
 #include"../Manager/System/SceneManager.h"
 #include"../Manager/System/InputManager.h"
 class PlayerBase;
@@ -18,11 +19,11 @@ public:
 
     //パンチ
     static constexpr int PUNCH_KEY = KEY_INPUT_RETURN;
-    static constexpr InputManager::JOYPAD_BTN PUNCH_BTN = InputManager::JOYPAD_BTN::LEFT;
+    static constexpr InputManager::JOYPAD_BTN PUNCH_BTN = InputManager::JOYPAD_BTN::RIGHTBUTTON_LEFT;
 
     //ジャンプ
     static constexpr int JUMP_KEY = KEY_INPUT_SPACE;
-    static constexpr InputManager::JOYPAD_BTN JUMP_BTN = InputManager::JOYPAD_BTN::RIGHT;
+    static constexpr InputManager::JOYPAD_BTN JUMP_BTN = InputManager::JOYPAD_BTN::RIGHTBUTTON_RIGHT;
 
     static constexpr float STICK_MARGIN_DEG = 90.0f;
 
@@ -51,7 +52,7 @@ public:
         PAD
     };
     //シングルトン化するために外部で生成されないようにする
-    PlayerInput(InputManager::JOYPAD_NO _padNum, CNTL _cntl);
+    PlayerInput(InputManager::JOYPAD_NO _padNum, DateBank::TYPE _cntl);
     ~PlayerInput(void) = default;
 
     void Update(void);
@@ -65,7 +66,6 @@ public:
     float GetStickDeg(void){ return stickDeg_; }
     float GetMoveDeg(void) { return moveDeg_; }
     VECTOR GetDir(void) { return moveDir_; }
-
 private:
     //メンバ関数
     void InputKeyBoard(void);
@@ -82,7 +82,7 @@ private:
     float moveDeg_;             //移動方向
     VECTOR moveDir_;            //移動方向
 
-    CNTL cntl_;                 //入力デバイス
+    DateBank::TYPE cntl_;                 //入力デバイス
     InputManager::JOYPAD_NO padNum_;                //パッド番号
 
 

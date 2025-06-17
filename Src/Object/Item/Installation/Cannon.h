@@ -39,11 +39,17 @@ public:
 	//•`‰æ
 	void Draw(void)override;
 
+	/// <summary>
+	/// “–‚½‚è”»’èŒã‚Ìˆ—
+	/// </summary>
+	/// <param name="_hitColTag">‘Šè‘¤‚Ì“–‚½‚è”»’è</param>
+	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
+
 	//ƒ‚ƒfƒ‹‚ÌF•Ï‚¦
 	void ChangeModelColor(const COLOR_F _colorScale)override;
 
 	//‘_‚¤‘ÎÛ‚Ìİ’è
-	void SetTargetPos(const VECTOR _targetPos) { targetPos_ = _targetPos; }
+	inline void SetTargetPos(const VECTOR _targetPos) { targetPos_ = _targetPos; }
 
 private:
 

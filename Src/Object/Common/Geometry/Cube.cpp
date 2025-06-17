@@ -1,0 +1,113 @@
+#include "../Transform.h"
+#include"Model.h"
+#include"Sphere.h"
+#include"Capsule.h"
+#include"Line.h"
+#include"Cube.h"
+
+//***************************************************
+//箱
+//***************************************************
+
+Cube::Cube(const Transform& _parent) : Geometry(_parent)
+{
+	halfSize_ = { 0.0f,0.0f,0.0f };
+
+	axis_[0] = { 1.0f,0.0f,0.0f };
+	axis_[1] = { 0.0f,1.0f,0.0f };
+	axis_[2] = { 0.0f,0.0f,1.0f };
+}
+
+Cube::Cube(const Cube& _copyBase, const Transform& _parent) : Geometry(_parent)
+{
+	halfSize_ = _copyBase.GetHalfSize();
+
+	axis_[0] = { 1.0f,0.0f,0.0f };
+	axis_[1] = { 0.0f,1.0f,0.0f };
+	axis_[2] = { 0.0f,0.0f,1.0f };
+}
+
+Cube::~Cube(void)
+{
+
+}
+
+void Cube::Draw(void)
+{
+	VECTOR min = GetRotPos(VScale(halfSize_, -1.0f));
+	VECTOR max = GetRotPos(halfSize_);
+
+	DrawCube3D(min, max, NORMAL_COLOR, NORMAL_COLOR, false);
+}
+
+const bool Cube::IsHit(const Geometry& _geometry) const
+{
+	return _geometry.IsHit(*this);
+}
+
+const bool Cube::IsHit(const Model& _model) const
+{
+	return false;
+}
+
+const bool Cube::IsHit(const Cube& _cube)const
+{
+	const float EPSILON = 1e-6f;
+
+	VECTOR axisToTest[15];
+	int axisCount = 0;
+
+	// 3軸 + 3軸
+	for (int i = 0; i < 3; ++i) {
+		axisToTest[axisCount++] = axis_[i];
+		axisToTest[axisCount++] = _cube.axis_[i];
+	}
+
+	// 外積軸（9本）
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			VECTOR cross = VCross(axis_[i], _cube.axis_[j]);
+			if (std::sqrt(cross.x * cross.x + cross.y * cross.y + cross.z * cross.z) > EPSILON) {
+				axisToTest[axisCount++] = VNorm(cross);
+			}
+		}
+	}
+
+	// 各軸で判定
+	for (int i = 0; i < axisCount; ++i) {
+		VECTOR L = axisToTest[i];
+
+		float aProj =
+			fabs(VDot(L, axis_[0]) * halfSize_.x) +
+			fabs(VDot(L, axis_[1]) * halfSize_.y) +
+			fabs(VDot(L, axis_[2]) * halfSize_.z);
+
+		float bProj =
+			fabs(VDot(L, _cube.axis_[0]) * _cube.halfSize_.x) +
+			fabs(VDot(L, _cube.axis_[1]) * _cube.halfSize_.y) +
+			fabs(VDot(L, _cube.axis_[2]) * _cube.halfSize_.z);
+
+		float dist = fabs(VDot(L, VSub(_cube.transformParent_.pos, transformParent_.pos)));
+
+		if (dist > (aProj + bProj)) {
+			return false; // 衝突していない
+		}
+	}
+
+	return true; // すべての軸で分離できなかった → 衝突している
+}
+
+const bool Cube::IsHit(const Sphere& _sphere) const
+{
+	return false;
+}
+
+const bool Cube::IsHit(const Capsule& _capsule) const
+{
+	return false;
+}
+
+const bool Cube::IsHit(const Line& _line) const
+{
+	return false;
+}

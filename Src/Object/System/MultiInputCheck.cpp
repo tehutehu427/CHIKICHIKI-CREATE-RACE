@@ -1,7 +1,9 @@
 #include "MultiInputCheck.h"
 #include "../../Manager/System/InputManager.h"
+#include "../../Manager/System/KeyConfig.h"
+#include "../../Manager/System/KeyConfig.h"
 
-MultiInputCheck::MultiInputCheck() : input_(InputManager::GetInstance())
+MultiInputCheck::MultiInputCheck() : key_(KeyConfig::GetInstance())
 {
 	allInput_ = false;
 }
@@ -25,7 +27,7 @@ void MultiInputCheck::Update()
 
 #ifdef _DEBUG
 	
-	if (input_.IsTrgDown(KEY_INPUT_RETURN))
+	if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, InputManager::JOYPAD_NO::PAD1))
 	{
 		allInput_ = true;
 	}

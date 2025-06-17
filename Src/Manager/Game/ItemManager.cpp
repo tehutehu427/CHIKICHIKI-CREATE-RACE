@@ -113,6 +113,29 @@ void ItemManager::DeleteItem(VECTOR mapPos, int range)
 
 }
 
+void ItemManager::DeleteItem(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type)
+{
+	for (auto& items : items_)
+	{
+		if (items.first != _type)
+		{
+			continue;
+		}
+		for (auto& item : items.second)
+		{
+			if (item == nullptr)
+			{
+				continue;
+			}
+			if (item->GetInitMapPos() == _mapPos)
+			{
+				item = nullptr;
+			}
+		}
+	}
+
+}
+
 void ItemManager::AllDeleteItem()
 {
 	//アイテム全削除
@@ -446,6 +469,29 @@ IntVector3 ItemManager::GetItemSize(ItemBase::ITEM_TYPE _type) const
 	auto item = GetInstance().CreateItem(_type, { -1,-1,-1 }, {});
 	size =item->GetSize();
 	return size;
+}
+
+float ItemManager::GetItemRotY(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos)
+{
+	for (auto& items : items_)
+	{
+		if (items.first != _type)
+		{
+			continue;
+		}
+		for (auto& item : items.second)
+		{
+			if (item == nullptr)
+			{
+				continue;
+			}
+			if (item->GetInitMapPos() == _mapPos)
+			{
+				return item->GetRotY();
+			}
+		}
+	}
+	return 0.0f;
 }
 
 VECTOR ItemManager::GetStartWorldPos(void) const

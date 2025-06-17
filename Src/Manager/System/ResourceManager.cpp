@@ -39,13 +39,13 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "Palette.png");
 	resourcesMap_.emplace(SRC::PALETTE, std::move(res));
 
-	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "PaletteIcons.png");
-	resourcesMap_.emplace(SRC::PALETTE_ICONS, std::move(res));
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "ItemIcons.png", ITEM_ICONS_DIV_X,ITEM_ICONS_DIV_Y,ITEM_ICON_SIZE,ITEM_ICON_SIZE);
+	resourcesMap_.emplace(SRC::ITEM_ICONS, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "Cursors.png",IMG_CURSORS_DIV_X, IMG_CURSORS_DIV_Y, IMG_CURSORS_SIZE, IMG_CURSORS_SIZE);
 	resourcesMap_.emplace(SRC::CURSORS, std::move(res));
 
-	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "Arcs.png", IMG_ARCS_DIV_X, IMG_ARCS_DIV_Y, IMG_ARC_SIZE, IMG_ARC_SIZE);
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "SelectArcs.png", IMG_ARCS_DIV_X, IMG_ARCS_DIV_Y, IMG_ARC_SIZE, IMG_ARC_SIZE);
 	resourcesMap_.emplace(SRC::ARCS, std::move(res));
 	
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "BackArc.png");

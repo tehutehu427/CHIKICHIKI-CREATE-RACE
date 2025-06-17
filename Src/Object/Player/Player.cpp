@@ -5,14 +5,14 @@
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/Camera.h"
-#include "../../Object/Common/Capsule.h"
+#include "../../Object/Common/Geometry/Sphere.h"
 #include "../../Object/Common/AnimationController.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "./Process/PlayerInput.h"
 #include "Player.h"
 
-Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), cntl_(_cntl)
+Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):playerNum_(_playerNum), cntl_(_cntl)
 {
 #ifdef DEBUG_ON
 	cubeMovePos_=Utility::VECTOR_ZERO;
@@ -21,11 +21,11 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 
 	trans_ = Transform();
 	movedPos_ = Utility::VECTOR_ZERO;
-
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
-	if (cntl_ == PlayerInput::CNTL::PAD)
+	if (cntl_ == DateBank::TYPE::CONTROLLER)
 	{
-		padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_);
+		//パッド番号を設定
+		padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_ + 1);
 	}
 	else
 	{
@@ -43,7 +43,10 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 	changeAction_.emplace(ATK_ACT::KNOCKBACK, std::bind(&Player::ChangeKnockBack, this));
 	//当たり判定
 	isCol_ = false;
+	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_, RADIUS);
+	MakeCollider(_tag, std::move(geo));
 
+	//ジャンプ関係
 	isJump_ = false;
 	stepJump_ = 0.0f;
 	jumpPow_ = Utility::VECTOR_ZERO;
@@ -164,6 +167,11 @@ void Player::Draw(void)
 #endif // DEBUG_ON
 }
 
+void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+
+}
+
 
 #ifdef DEBUG_ON
 void Player::DrawDebug(void)
@@ -178,14 +186,13 @@ void Player::DrawDebug(void)
 	if (isCol_) { color = 0xff0000; }
 	DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
 	DrawFormatString(0, 16*(playerNum_*9), 0x000000
-		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nAction(%d)\nCameraRot(%f)"
+		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nAction(%f,%f)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,jumpDeceralation_
 		,stepJump_
 		,jumpPow_.x,jumpPow_.y,jumpPow_.z
 		,movedPos_.x,movedPos_.y,movedPos_.z
-		,act_
-		,scnMng_.GetCamera(0).lock()->GetAngles().y
+		, input_->GetStickDeg()
 	);
 	if (IsDeath())
 	{
@@ -432,14 +439,6 @@ void Player::Punch(void)
 		punchCoolCnt_ = PUNCH_COOL_TIME;
 		ChangeAction(ATK_ACT::INPUT);
 	}
-
-	////ここは別の状態で考える
-	////パンチを受けた時
-	//if (isPunched_)
-	//{
-	//	punchedCnt_ -= scnMng_.GetDeltaTime();
-	//}
-
 }
 
 void Player::ChangePunch(void)
@@ -455,12 +454,14 @@ void Player::KnockBack(void)
 	if (punchedCnt_ < 0.0f)
 	{
 		punchedCnt_ = PUNCHED_TIME;
+		ChangeAction(ATK_ACT::INPUT);
 	}
 }
 
 void Player::ChangeKnockBack(void)
 {
-	//animationController_->Play()
+	//ダメージアニメーション
+	//animationController_->Play((int)ANIM_TYPE::DAMAGE,true,)
 	speed_ = FLY_AWAY_SPEED;
 	actionUpdate_ = std::bind(&Player::KnockBack, this);
 }
@@ -599,7 +600,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 	VECTOR upPos = movedPos_;
 	upPos.y += (RADIUS);
 	VECTOR downPos = movedPos_;
-	downPos.y -= (RADIUS+ 10.0f);
+	downPos.y -= (RADIUS);
 
 	hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
 

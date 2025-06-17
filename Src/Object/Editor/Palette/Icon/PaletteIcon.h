@@ -146,7 +146,8 @@ protected:
 	//生成判定
 	bool isCreate_;
 
-//private:
+	//除外番号を除いたアイテム種類範囲
+	std::vector<int> candidates_;
 
 	//状態変更処理の管理
 	std::map<STATE, std::function<void()>> stateChanges_;
@@ -160,7 +161,7 @@ protected:
 	//画像
 	int imgScrIcon_;	//スクロール用アイコン
 	int mskPal_;		//マスク画像
-	int imgIcons_;
+	int* imgIcons_;
 
 	//スクロールの制限用ライン
 	int scrLimitLine_;
@@ -187,8 +188,8 @@ protected:
 	void DrawItemIcon();		//アイテムアイコン
 	void DrawScrollIcon();		//スクロールアイコン
 
-	//タイプを割り当てる
-	virtual void AssignType();
+	//除外番号を除いてアイテム配列を生成
+	virtual void SetExcludingItemTypeArray();
 
 	//マスクスクリーンの初期設定
 	void InitMaskScreen();

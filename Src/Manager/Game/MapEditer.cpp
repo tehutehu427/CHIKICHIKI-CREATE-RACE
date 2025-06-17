@@ -77,7 +77,14 @@ bool MapEditer::IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size,IntVector3
 			for (int z = 0;z < _hitSize.z;z++)
 			{
 				IntVector3 sizeLoop = { x,y,z };
-				if (IsObjectAtMapPos(_mapPos + sizeLoop))
+				IntVector3 mapPos = _mapPos + sizeLoop;
+				if (mapPos.x < 0 || mapPos.x > MAP_SIZE.x ||
+					mapPos.y < 0 || mapPos.y >MAP_SIZE.y ||
+					mapPos.z <0 || mapPos.z > MAP_SIZE.z)
+				{
+					return true;
+				}
+				if (IsObjectAtMapPos(mapPos))
 				{
 					return true;
 				}
@@ -154,12 +161,9 @@ void MapEditer::DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos ,float 
 			for (int k = 0; k < _hitSize.z; k++)
 			{
 				IntVector3 mapPos = { _mapPos.x + i,_mapPos.y + j,_mapPos.z + k };
-				if (!IsObjectAtMapPos(mapPos)) 
-				{
-					int a = 0;
-				}
 				isMapPosItem_[mapPos.x][mapPos.y][mapPos.z] = ItemBase::ITEM_TYPE::NONE;
 				leaderMapPos_[mapPos.x][mapPos.y][mapPos.z] = { -1,-1,-1 };
+
 			}
 		}
 	}

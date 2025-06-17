@@ -28,6 +28,14 @@
     <ClCompile Include="Src\Object\System\Result\ScoreGage.cpp" />
     <ClCompile Include="Src\Object\System\Result\Palette.cpp" />
     <ClCompile Include="Src\Object\System\Result\MultiResult.cpp" />
+    <ClCompile Include="Src\Manager\System\KeyConfig.cpp" />
+    <ClCompile Include="Src\Object\Common\Geometry\Cube.cpp" />
+    <ClCompile Include="Src\Object\Common\Geometry\Line.cpp" />
+    <ClCompile Include="Src\Object\Common\Geometry\Model.cpp" />
+    <ClCompile Include="Src\Object\Common\Geometry\Sphere.cpp" />
+    <ClCompile Include="Src\Manager\Game\CollisionManager.cpp" />
+    <ClCompile Include="Src\Object\Common\Geometry\Geometry.cpp" />
+    <ClCompile Include="Src\Object\Common\Geometry\Capsule.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\PaletteCursor.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.cpp" />
     <ClCompile Include="Src\Object\UI\EditorUi.cpp" />
@@ -80,7 +88,6 @@
     <ClCompile Include="Src\Manager\System\ResourceManager.cpp" />
     <ClCompile Include="Src\Manager\System\SceneManager.cpp" />
     <ClCompile Include="Src\Object\Common\AnimationController.cpp" />
-    <ClCompile Include="Src\Object\Common\Capsule.cpp" />
     <ClCompile Include="Src\Object\Common\Collider.cpp" />
     <ClCompile Include="Src\Object\Common\Transform.cpp" />
     <ClCompile Include="Src\Object\Player\Player.cpp" />
@@ -102,7 +109,13 @@
     <ClCompile Include="Src\Object\UI\UiBase.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Manager\System\SoundManager.h" />
+    <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
+    <ClInclude Include="Src\Object\Common\Geometry\Line.h" />
+    <ClInclude Include="Src\Object\Common\Geometry\Model.h" />
+    <ClInclude Include="Src\Object\Common\Geometry\Sphere.h" />
+    <ClInclude Include="Src\Manager\Game\CollisionManager.h" />
+    <ClInclude Include="Src\Object\Common\Geometry\Geometry.h" />
+    <ClInclude Include="Src\Object\Common\Geometry\Capsule.h" />
     <ClInclude Include="Src\Object\System\Select\SelectStage.h" />
     <ClInclude Include="Src\Object\System\Select\MultiReady.h" />
     <ClInclude Include="Src\Object\System\MultiInputCheck.h" />
@@ -111,6 +124,7 @@
     <ClInclude Include="Src\Object\System\Result\ScoreGage.h" />
     <ClInclude Include="Src\Object\System\Result\Palette.h" />
     <ClInclude Include="Src\Object\System\Result\MultiResult.h" />
+    <ClInclude Include="Src\Manager\System\KeyConfig.h" />
     <ClInclude Include="Src\Object\Editor\Palette\PaletteCursor.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.h" />
     <ClInclude Include="Src\Object\UI\EditorUi.h" />
@@ -212,7 +226,6 @@
     <ClInclude Include="Src\Manager\System\ResourceManager.h" />
     <ClInclude Include="Src\Manager\System\SceneManager.h" />
     <ClInclude Include="Src\Object\Common\AnimationController.h" />
-    <ClInclude Include="Src\Object\Common\Capsule.h" />
     <ClInclude Include="Src\Object\Common\Collider.h" />
     <ClInclude Include="Src\Object\Common\Transform.h" />
     <ClInclude Include="Src\Object\Player\Player.h" />
