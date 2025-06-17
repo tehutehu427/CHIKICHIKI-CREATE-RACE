@@ -286,7 +286,7 @@ void SceneManager::CreateSplitScreen(const int _playerNum)
 	// 最大人数を超える場合,
 	// または引数と現在のスクリーン数が同じとき
 	if (_playerNum <= 1 || 
-		_playerNum > PlayerManager::PLAYER_NUM ||
+		_playerNum > PlayerManager::PLAYER_NUM_MAX ||
 		splitScreens_.size() == _playerNum)
 	{
 		isSplitMode_ = false;	//分割しない
@@ -308,7 +308,7 @@ void SceneManager::CreateSplitScreen(const int _playerNum)
 	//人数が条件以上の場合
 	if (_playerNum >= CASE_VALUE)
 	{
-		createNum = PlayerManager::PLAYER_NUM;	//最大人数分生成
+		createNum = PlayerManager::PLAYER_NUM_MAX;	//最大人数分生成
 		divY++;									//画面分割数増加
 	}
 
@@ -447,7 +447,7 @@ void SceneManager::Fade(void)
 void SceneManager::DrawMultiScreen()
 {
 	//描画位置（分割スクリーンの左上位置）
-	static const Vector2 screenPos[PlayerManager::PLAYER_NUM] =
+	static const Vector2 screenPos[PlayerManager::PLAYER_NUM_MAX] =
 	{
 		{ 0, 0 },													// 1P: 左上
 		{ Application::SCREEN_HALF_X, 0 },							// 2P: 右上
@@ -461,7 +461,7 @@ void SceneManager::DrawMultiScreen()
 		//プレイ人数が3人の時の4つ目の画面を1Pの画面を表示する
 		int index = i;
 		if (CASE_VALUE == DateBank::GetInstance().GetPlayerNum() &&
-			index == PlayerManager::PLAYER_NUM - 1)
+			index == PlayerManager::PLAYER_NUM_MAX - 1)
 		{
 			index = 1;
 		}

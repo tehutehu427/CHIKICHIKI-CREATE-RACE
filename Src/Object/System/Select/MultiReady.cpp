@@ -79,7 +79,7 @@ void MultiReady::RegisterProcessFunc(const STATE _state, SceneBase::ProcessFunct
 
 void MultiReady::UpdateNumCheck()
 {
-	static constexpr int PLAYER_NUM_MAX = PlayerManager::PLAYER_NUM;//選べるプレイヤー人数の最大
+	static constexpr int PLAYER_NUM_MAX = PlayerManager::PLAYER_NUM_MAX;//選べるプレイヤー人数の最大
 	static constexpr int PLAYER_NUM_CHOICES = PLAYER_NUM_MAX - PLAYER_NUM_MIN + 1;//定数：選べるプレイヤー人数の数
 
 	//人数の選択
