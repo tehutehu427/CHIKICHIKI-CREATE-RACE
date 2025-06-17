@@ -11,9 +11,9 @@
 TitleScene::TitleScene(void)
 {
 	//更新関数のセット
-	updataFunc_ = std::bind(&TitleScene::LoadingUpdate, this);
+	func_.updataFunc_ = std::bind(&TitleScene::LoadingUpdate, this);
 	//描画関数のセット
-	drawFunc_ = std::bind(&TitleScene::LoadingDraw, this);
+	func_.drawFunc_ = std::bind(&TitleScene::LoadingDraw, this);
 
 	imgTitleLogo_ = -1;
 }
@@ -78,7 +78,7 @@ void TitleScene::NormalDraw(void)
 void TitleScene::ChangeNormal(void)
 {
 	//処理変更
-	updataFunc_ = std::bind(&TitleScene::NormalUpdate, this);
-	drawFunc_ = std::bind(&TitleScene::NormalDraw, this);
+	func_.updataFunc_ = std::bind(&TitleScene::NormalUpdate, this);
+	func_.drawFunc_ = std::bind(&TitleScene::NormalDraw, this);
 }
 

@@ -4,7 +4,7 @@
 #include"../../Object/Common/Transform.h"
 #include"../../Object/Player/Player.h"
 #include"../../Object/Player/Process/PlayerInput.h"
-#include"../../Object/Common/Capsule.h"
+//#include"../../Object/Common/Capsule.h"
 class Player;
 class PlayerManager
 {
@@ -12,16 +12,12 @@ public:
 	//**************************************
 	//定数
 	//**************************************
-	static constexpr int PLAYER_NUM = 4;
+	static constexpr int PLAYER_NUM_MAX = 4;
 
 	//プレイヤー1人
 	static constexpr int PLAYER_SINGLE = 1;
 
-	//プレイヤーの大きさ
-	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
 
-	//初期座標
-	static constexpr float START_POS = 50.0f;
 
 
 	
@@ -41,7 +37,7 @@ public:
 	/// 静的にインスタンス生成
 	/// </summary>
 	/// <param name="_playerNum">プレイヤー人数</param>
-	static void CreateInstance(int _playerNum);
+	static void CreateInstance(void);
 
 	//解放
 	void Destroy(void);
@@ -57,7 +53,7 @@ public:
 	void PlayersCollision(void);
 
 	//カプセル同士の当たり判定(完全ではない)
-	bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
+	//bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
 
 
 	//*****************************************
@@ -97,7 +93,11 @@ public:
 
 
 private:
+	//プレイヤーの大きさ
+	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
 
+	//初期座標
+	static constexpr float START_POS = 50.0f;
 
 	//静的インスタンス
 	static PlayerManager* instance_;
@@ -140,7 +140,7 @@ private:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="playerNum">データバンクから人数を持ってくる</param>
-	PlayerManager(int _playerNum);
+	PlayerManager(void);
 	PlayerManager(const PlayerManager& instance_) = default;
 	~PlayerManager(void);
 	

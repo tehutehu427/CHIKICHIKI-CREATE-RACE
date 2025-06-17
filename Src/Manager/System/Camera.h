@@ -103,7 +103,7 @@ private:
 	MODE mode_;
 
 	// カメラの位置
-	VECTOR pos_;
+	VECTOR pos_= {0.0f,0.0f,0.0f};
 
 	// カメラ角度(rad)
 	VECTOR angles_;

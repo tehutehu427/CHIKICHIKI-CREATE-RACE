@@ -4,6 +4,7 @@
 #include "../Manager/Game/ItemManager.h"
 #include "../Utility/Utility.h"
 #include "../FpsControl/FpsControl.h"
+#include"../../Common/Geometry/Model.h"
 #include "CannonShot.h"
 #include "Cannon.h"
 
@@ -52,6 +53,10 @@ void Cannon::SetParam(void)
 	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
+	//砲台のコライダの作成
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_);
+	MakeCollider(Collider::TAG::CANNON, std::move(geo));
+	
 	//砲身
 	barrelTrans_ = trans_;
 
@@ -81,6 +86,10 @@ void Cannon::SetParam(void)
 
 	//モデルIDのコピー
 	models_.emplace_back(&barrelTrans_.modelId);
+
+	//砲身のコライダの作成
+	geo = std::make_unique<Model>(barrelTrans_);
+	MakeCollider(Collider::TAG::CANNON, std::move(geo));
 }
 
 void Cannon::Update(void)
@@ -153,6 +162,10 @@ void Cannon::Draw(void)
 	}
 }
 
+void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+}
+
 void Cannon::ChangeModelColor(const COLOR_F _colorScale)
 {
 	//砲台
@@ -192,7 +205,7 @@ void Cannon::RotateBarrel(void)
 	barrelAddRot_ = Utility::GetRotAxisToTarget(VAdd(barrelTrans_.pos,barrelTrans_.localPos), targetPos_, Utility::AXIS_Y);
 
 	//距離で補正
-	float distance = Utility::Distance(Utility::GetMoveVec(barrelTrans_.pos, targetPos_), barrelTrans_.pos);
+	double distance = Utility::Distance(Utility::GetMoveVec(barrelTrans_.pos, targetPos_), barrelTrans_.pos);
 	barrelAddRot_ = Quaternion::Euler(barrelAddRot_).AngleAxis(distance, Utility::AXIS_X).ToEuler();
 
 	//砲身回転

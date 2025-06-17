@@ -7,7 +7,9 @@ class PaletteIcon
 {
 public:
 
-	//状態
+	/// <summary>
+	/// 状態
+	/// </summary>
 	enum class STATE
 	{
 		NONE,
@@ -16,7 +18,9 @@ public:
 		SELCT,
 	};
 
-	//スクロール
+	/// <summary>
+	/// スクロール
+	/// </summary>
 	enum class SCROLL
 	{
 		UP,
@@ -91,7 +95,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	virtual void Init() = 0;	
+	virtual void Init();	
 
 	/// <summary>
 	/// 更新
@@ -101,7 +105,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();	
+	virtual void Draw();	
 
 	/// <summary>
 	/// デバッグ描画
@@ -121,10 +125,11 @@ public:
 	inline const bool IsCreate()const { return isCreate_; }
 
 	/// <summary>
-	/// 選択した種類を返す
+	/// 選択したアイテム種類を返す
 	/// </summary>
+	/// <param name="_playerIndex"></param>プレイヤーのインデックス(引数がなければ1P)
 	/// <returns></returns>選択した種類
-	inline const ItemBase::ITEM_TYPE GetSelectType()const { return selectType_; }
+	inline const ItemBase::ITEM_TYPE GetSelectType(const int _playerIndex = 0)const { return selectTypes_[_playerIndex]; }
 
 protected:
 
@@ -135,13 +140,14 @@ protected:
 	EditorPaletteBase::ImgInfo scrIcon_[SCROLL_ICON_NUM];
 
 	//選択してるアイテム
-	int sleCnt_;
-	ItemBase::ITEM_TYPE selectType_;	
+	std::vector<int> sleCnt_;
+	std::vector<ItemBase::ITEM_TYPE> selectTypes_;	
 	
 	//生成判定
 	bool isCreate_;
 
-//private:
+	//除外番号を除いたアイテム種類範囲
+	std::vector<int> candidates_;
 
 	//状態変更処理の管理
 	std::map<STATE, std::function<void()>> stateChanges_;
@@ -155,7 +161,7 @@ protected:
 	//画像
 	int imgScrIcon_;	//スクロール用アイコン
 	int mskPal_;		//マスク画像
-	int imgIcons_;
+	int* imgIcons_;
 
 	//スクロールの制限用ライン
 	int scrLimitLine_;
@@ -176,22 +182,22 @@ protected:
 	void UpdateNone();
 	void UpdateScrollUp();
 	void UpdateScrollDown();
-	void UpdateSelect();
+	virtual void UpdateSelect();
 
 	//各アイコンの描画
-	virtual void DrawItemIcon();		//アイテムアイコン
-	void DrawScrollIcon();				//スクロールアイコン
+	void DrawItemIcon();		//アイテムアイコン
+	void DrawScrollIcon();		//スクロールアイコン
 
-	//タイプを割り当てる
-	virtual void AssignType() = 0;
+	//除外番号を除いてアイテム配列を生成
+	virtual void SetExcludingItemTypeArray();
 
 	//マスクスクリーンの初期設定
 	void InitMaskScreen();
 
 	//クリック位置がスクロールアイコンか調べる
-	void CheckScrollIcon(const Vector2 _mPos);	
+	bool CheckScrollIcon(const Vector2 _mPos);	
 	
 	//アイテムアイコンをクリックしたか調べる
-	virtual void CheckItemIcon(const Vector2 _mPos) = 0;
+	virtual bool CheckItemIcon( const Vector2 _mPosconst, int _playerIndex = 0);
 
 };

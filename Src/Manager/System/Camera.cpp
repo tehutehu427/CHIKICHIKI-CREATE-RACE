@@ -4,7 +4,7 @@
 #include "../../Utility/Utility.h"
 #include "../../Object/Common/Transform.h"
 #include "../../Manager/Game/GravityManager.h"
-#include "../../Manager/System/InputManager.h"
+#include "../../Manager/System/KeyConfig.h"
 #include "../../Application.h"
 #include "Camera.h"
 
@@ -168,7 +168,7 @@ void Camera::SyncFollow(void)
 	VECTOR pos = followTransform_->pos;
 
 	// èdóÕÇÃï˚å¸êßå‰Ç…è]Ç§
-	Quaternion gRot = Quaternion::Euler(VECTOR(0.0, 1.0, 0.0));
+	Quaternion gRot = Quaternion::Euler(VECTOR(0.0, 0.0, 0.0));
 
 	// ê≥ñ Ç©ÇÁê›íËÇ≥ÇÍÇΩYé≤ï™ÅAâÒì]Ç≥ÇπÇÈ
 	rotOutX_ = gRot.Mult(Quaternion::AngleAxis(angles_.y, Utility::AXIS_Y));
@@ -341,7 +341,8 @@ void Camera::SetBeforeDrawFreeControll(void)
 	//}
 	static float moveSpeed = 10.0f;
 	static float moveSpeedFB = 30.0f;
-	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), GetMouseWheelRotVolF() * moveSpeedFB));
+	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), ins.IsMouseNew(InputManager::MOUSE::WHEEL_FRONT) * moveSpeedFB));
+	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetBack(), ins.IsMouseNew(InputManager::MOUSE::WHEEL_BACK) * moveSpeedFB));
 	if (ins.IsNew(KEY_INPUT_A))
 	{
 		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetLeft(), moveSpeed));

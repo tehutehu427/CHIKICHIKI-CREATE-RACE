@@ -1,112 +1,40 @@
 #include "MultiParty.h"
 #include "../../Manager/System/Camera.h"
 #include "../../Manager/System/DateBank.h"
+#include "../../Manager/System/SceneManager.h"
+#include "../../Manager/Game/ScoreManager.h"
+#include "../../Object/Editor/Palette/EditorPaletteBase.h"
+#include "../../Object/Editor/Palette/MultiPalette.h"
+#include "../../Object/System/Result/MultiResult.h"
 
 MultiParty::MultiParty(void)
 {
+	result_ = nullptr;
 	phaseChanges_.emplace(PHASE::SELECT_PHASE, std::bind(&MultiParty::ChangePhaseSelect, this));
 	phaseChanges_.emplace(PHASE::RESULT_PHASE, std::bind(&MultiParty::ChangePhaseResult, this));
-	//スクリーン作成
-	{
-		makeScreens_[1] = [this]()
-			{
-				std::vector<int> screens;
-				int screen = MakeScreen(Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y, true);
-				screens.push_back(screen);
-				return screens;
-			};
-		makeScreens_[2] = [this]()
-			{
-				std::vector<int> screens;
-				for (int i = 0; i < 2; ++i)
-				{
-					int screen = MakeScreen(Application::SCREEN_HALF_X / 2, Application::SCREEN_HALF_Y, true);
-					screens.push_back(screen);
-				}
-				return screens;
-			};
-		makeScreens_[3] = [this]()
-			{
-				std::vector<int> screens;
-				for (int i = 0; i < 4; ++i)
-				{
-					int screen = MakeScreen(Application::SCREEN_HALF_X / 2, Application::SCREEN_HALF_Y / 2, true);
-					screens.push_back(screen);
-				}
-				return screens;
-			};
-		makeScreens_[4] = [this]()
-			{
-				std::vector<int> screens;
-				for (int i = 0; i < 4; ++i)
-				{
-					int screen = MakeScreen(Application::SCREEN_HALF_X / 2, Application::SCREEN_HALF_Y / 2, true);
-					screens.push_back(screen);
-				}
-				return screens;
-			};
-	}
-
-	//カメラ作成
-	{
-		createCamera_[1] = [this]()
-			{
-				std::vector<std::shared_ptr<Camera>> cameras;
-				std::shared_ptr<Camera> camera = std::make_shared<Camera>();
-				camera->Init();
-				cameras.push_back(camera);
-				return cameras;
-			};
-		createCamera_[2] = [this]()
-			{
-				std::vector<std::shared_ptr<Camera>> cameras;
-				for (int i = 0; i < 2;i++)
-				{
-					std::shared_ptr<Camera> camera = std::make_shared<Camera>();
-					camera->Init();
-					cameras.push_back(camera);
-				}
-				return cameras;
-			};
-		createCamera_[3] = [this]()
-			{
-				std::vector<std::shared_ptr<Camera>> cameras;
-				for (int i = 0; i < 4;i++)
-				{
-					std::shared_ptr<Camera> camera = std::make_shared<Camera>();
-					camera->Init();
-					cameras.push_back(camera);
-				}
-				return cameras;
-			};
-		createCamera_[4] = [this]()
-			{
-				std::vector<std::shared_ptr<Camera>> cameras;
-				for (int i = 0; i < 4;i++)
-				{
-					std::shared_ptr<Camera> camera = std::make_shared<Camera>();
-					camera->Init();
-					cameras.push_back(camera);
-				}
-				return cameras;
-			};
-	}
 }
 
 MultiParty::~MultiParty(void)
 {
-	for (auto& screen : screens_)
-	{
-		DeleteGraph(screen);
-	}
+	//スコアマネージャーのインスタンスを削除
+	ScoreManager::GetInstance().Destroy();
 }
 
 void MultiParty::Load(void)
 {
 	//親クラスの読み込み処理を呼ぶ
 	GameScene::Load();
-	//screens_ = makeScreens_[DateBank::GetInstance().GetPlayerNum()]();
-	//cameras_ = createCamera_[DateBank::GetInstance().GetPlayerNum()]();
+
+	//パレット生成
+	palette_ = std::make_unique<MultiPalette>(editControllers_);
+	palette_->Load();
+
+	//リザルト
+	result_ = std::make_unique<MultiResult>();
+	result_->Load();
+
+	//スコアマネージャーを生成
+	ScoreManager::GetInstance().CreateInstance();
 }
 
 void MultiParty::Init(void)
@@ -114,12 +42,21 @@ void MultiParty::Init(void)
 	//親クラスの初期化処理を呼ぶ
 	GameScene::Init();
 
-	ChangePhase(PHASE::SELECT_PHASE);
-}
+	//初期化
+	palette_->Init();
 
-std::weak_ptr<Camera> MultiParty::GetCamera(int playerNum_)
-{
-	return cameras_[playerNum_];
+	//リザルト初期化
+	result_->Init();
+
+	//フェーズ遷移
+	ChangePhase(PHASE::SELECT_PHASE);
+
+	//カメラ設定
+	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
+	{
+		auto camera = SceneManager::GetInstance().GetCamera(i);
+		//各プレイヤーへの設定等をしてください
+	}
 }
 
 void MultiParty::NormalDraw(void)
@@ -140,38 +77,76 @@ void MultiParty::UpdateEdit(void)
 	GameScene::UpdateEdit();
 }
 
+void MultiParty::ChangePhaseEdit()
+{
+	//親クラスの処理を呼びだし
+	GameScene::ChangePhaseEdit();
+
+	//画面を分割する
+	scnMng_.SetIsSplitMode(true);
+}
+
+void MultiParty::ChangePhaseAction()
+{
+	//親クラスの処理を呼びだし
+	GameScene::ChangePhaseEdit();
+
+	//画面を分割する
+	scnMng_.SetIsSplitMode(true);
+}
+
 void MultiParty::ChangePhaseSelect()
 {
 	phaseUpdate_ = std::bind(&MultiParty::UpdateSelect, this);
 	phaseDraw_ = std::bind(&MultiParty::DrawSelect, this);
+
+	//画面分割はしない
+	scnMng_.SetIsSplitMode(false);
 }
 
 void MultiParty::ChangePhaseResult()
 {
 	phaseUpdate_ = std::bind(&MultiParty::UpdateResult, this);
 	phaseDraw_ = std::bind(&MultiParty::DrawResult, this);
+
+	//画面分割はしない
+	scnMng_.SetIsSplitMode(false);
 }
 
 void MultiParty::UpdateSelect()
 {
+	palette_->Update();
+
+	//パレット処理が終了したとき
+	if (palette_->GetState() == EditorPaletteBase::STATE::NONE)
+	{
+		ChangePhase(PHASE::RESULT_PHASE);
+	}
 }
 
 void MultiParty::UpdateResult()
 {
-}
-
-void MultiParty::DrawAction()
-{
-}
-
-void MultiParty::DrawEdit()
-{
+	result_->Update(*this);
 }
 
 void MultiParty::DrawSelect()
 {
+	palette_->Draw();
 }
 
 void MultiParty::DrawResult()
 {
+	result_->Draw();
+}
+
+void MultiParty::DebagUpdate()
+{
+	//次のフェーズへ状態遷移する
+	if (inputMng_.IsTrgDown(KEY_INPUT_RETURN))
+	{
+		int phase = static_cast<int>(phase_);
+		int nextPhase = phase + 1;
+		if (nextPhase == static_cast<int>(PHASE::CLEAR_PHASE)) { nextPhase = 0; }
+		ChangePhase(static_cast<PHASE>(nextPhase));
+	}
 }

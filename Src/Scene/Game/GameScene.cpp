@@ -7,6 +7,7 @@
 #include "../../Manager/System/Camera.h"
 #include "../../Manager/System/InputManager.h"
 #include "../../Manager/System/DateBank.h"
+#include "../../Manager/Game/CollisionManager.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "../../Manager/Game/MapEditer.h"
 #include "../../Manager/Game/GravityManager.h"
@@ -23,12 +24,14 @@
 GameScene::GameScene(void)
 {
 	//更新関数のセット
-	updataFunc_ = std::bind(&GameScene::LoadingUpdate, this);
+	func_.updataFunc_ = std::bind(&GameScene::LoadingUpdate, this);
 	//描画関数のセット
-	drawFunc_ = std::bind(&GameScene::LoadingDraw, this);
+	func_.drawFunc_ = std::bind(&GameScene::LoadingDraw, this);
 
 	sky_ = nullptr;
 	palette_ = nullptr;
+
+	//フェーズの状態遷移処理を登録
 	phaseChanges_.emplace(PHASE::EDIT_PHASE, std::bind(&GameScene::ChangePhaseEdit, this));
 	phaseChanges_.emplace(PHASE::ACTION_PHASE, std::bind(&GameScene::ChangePhaseAction, this));
 	phaseChanges_.emplace(PHASE::CLEAR_PHASE, std::bind(&GameScene::ChangePhaseClear, this));
@@ -40,7 +43,7 @@ GameScene::~GameScene(void)
 	PlayerManager::GetInstance().Destroy();
 	ItemManager::GetInstance().Destroy();
 	MapEditer::GetInstance().Destroy();
-	GravityManager::Destroy();
+	GravityManager::GetInstance().Destroy();
 	DeleteFontToHandle(buttnFontHandle_);
 	phaseChanges_.clear();
 
@@ -48,33 +51,27 @@ GameScene::~GameScene(void)
 
 void GameScene::Load(void)
 {
+	int playerNum = DateBank::GetInstance().GetPlayerNum();
+
 	//フォントの生成
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
-	PlayerManager::CreateInstance(PLAYER_NUM);
+	PlayerManager::CreateInstance();
 	PlayerManager::GetInstance().Load();
 
+	//マップエディター
 	MapEditer::CreateInstance();
 
+	//重力管理クラスを生成
 	GravityManager::CreateInstance();
-	//player_ = std::make_unique<Player>();
-	//player_->Load();
-
-	//for (int i = 0; i < DateBank::GetInstance().GetPlayerNum();i++)
-	//{
-	// 
-	//	editController_ = std::make_shared<EditController>(i);
-	//}	
 	
 	//アイテムマネージャーの生成
 	ItemManager::CreateInstance();
-	
 	//エディットコントローラーの生成
-	editControllers_.push_back(std::make_unique<EditController>(0));
-
-	//パレットの生成
-	palette_ = std::make_unique<EditorPaletteBase>(editControllers_);
-	palette_->Load();
+	for (int i = 0; i < playerNum; i++)
+	{
+		editControllers_.push_back(std::make_unique<EditController>(0));
+	}
 
 	//スカイドームの生成
 	sky_ = std::make_unique<SkyDome>();
@@ -95,32 +92,19 @@ void GameScene::Load(void)
 
 void GameScene::Init(void)
 {
-	//初期化
-	palette_->Init();
+	//各クラスの初期化
 	for (auto& controller : editControllers_) { controller->Init(); }
 	sky_->Init();
 	gameClear_->Init();
 	editorUi_->Init();
-
-	
-
-	//アイテム生成
-	//ItemManager::GetInstance().AddItem({ 0,0,0 }, Quaternion(), ItemBase::ITEM_TYPE::CANNON);
-	//ItemManager::GetInstance().AddItem({ 3,2,3 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
-	//ItemManager::GetInstance().AddItem({ 8,2,8 }, Quaternion(), ItemBase::ITEM_TYPE::FLOOR);
-	//ItemManager::GetInstance().AddItem({ 10,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
-	//ItemManager::GetInstance().AddItem({ 15,3,20 }, Quaternion(), ItemBase::ITEM_TYPE::MOVE_VER_FLOOR);
-	//ChangePhase(PHASE::EDIT_PHASE);
 }
 
 void GameScene::NormalUpdate(void)
 {
-	//プレイヤー
-	//player_->Update();
-
+	//フェーズ別の処理
 	phaseUpdate_();
 
-
+	//スカイドームは常に更新
 	sky_->Update();
 
 	//デバッグ処理
@@ -143,8 +127,8 @@ void GameScene::NormalDraw(void)
 void GameScene::ChangeNormal(void)
 {
 	//処理変更
-	updataFunc_ = std::bind(&GameScene::NormalUpdate, this);
-	drawFunc_ = std::bind(&GameScene::NormalDraw, this);
+	func_.updataFunc_ = std::bind(&GameScene::NormalUpdate, this);
+	func_.drawFunc_ = std::bind(&GameScene::NormalDraw, this);
 }
 
 void GameScene::DebagUpdate(void)
@@ -157,7 +141,6 @@ void GameScene::DebagUpdate(void)
 	}
 
 	//フェーズ遷移は各アップデートに作ったのでここは消し
-
 	else if (ins.IsTrgDown(KEY_INPUT_C))
 	{
 		ChangePhase(PHASE::CLEAR_PHASE);
@@ -199,12 +182,12 @@ void GameScene::ChangePhaseEdit(void)
 {
 	phaseUpdate_ = std::bind(&GameScene::UpdateEdit, this);
 	phaseDraw_ = std::bind(&GameScene::DrawEdit, this);
-	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
+	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
 	VECTOR pos;
 	IntVector3 mPos = MapEditer::MAP_SIZE;
 	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
 	//pos = { 0.0f,250.0f,-500.0f };
-	SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
+	SceneManager::GetInstance().GetCamera(0).lock()->SetPos(pos);
 	ItemManager::GetInstance().ResetItemValue();
 }
 
@@ -213,10 +196,10 @@ void GameScene::ChangePhaseAction(void)
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
-	SceneManager::GetInstance().GetCamera().lock()->ChangeMode(Camera::MODE::FOLLOW);
+	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FOLLOW);
 	PlayerManager::GetInstance().Init();
 	PlayerManager::GetInstance().SetInitPos(ItemManager::GetInstance().GetStartWorldPos());
-	SceneManager::GetInstance().GetCamera().lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(0));
+	SceneManager::GetInstance().GetCamera(0).lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(0));
 
 	ItemManager::GetInstance().ResetItemValue();
 	//VECTOR pos;
@@ -258,6 +241,9 @@ void GameScene::UpdateAction(void)
 {
 	ItemManager::GetInstance().Update();
 	PlayerManager::GetInstance().Update();
+
+	//更新はアクション中のみ
+	CollisionManager::GetInstance().Update();
 	ChangePlayerClearPhase();
 }
 

@@ -10,7 +10,6 @@
 #include "../EditController.h"
 #include "EditorPaletteBase.h"
 #include "Icon/PaletteIcon.h"
-#include "Icon/FreePaletteIcon.h"
 #include "Icon/MultiPaletteIcon.h"
 
 EditorPaletteBase::EditorPaletteBase(std::vector<std::unique_ptr<EditController>>& _editControllers)
@@ -39,20 +38,7 @@ void EditorPaletteBase::Load()
 	imgPalette_ = res.Load(ResourceManager::SRC::PALETTE).handleId_;
 
 	//パレットアイコン
-	SceneManager::SCENE_ID sceneId = SceneManager::GetInstance().GetSceneID();
-	switch (sceneId)
-	{
-	case SceneManager::SCENE_ID::FREE:
-		palIcon_ = std::make_unique<FreePaletteIcon>();
-		break;
-	case SceneManager::SCENE_ID::MULTI:
-		palIcon_ = std::make_unique<MultiPaletteIcon>();
-		break;
-
-	default:
-		palIcon_ = std::make_unique<FreePaletteIcon>();
-		break;
-	}
+	palIcon_ = std::make_unique<PaletteIcon>();
 	palIcon_->Load();
 }
 
@@ -164,7 +150,7 @@ void EditorPaletteBase::UpdateWait()
 	Vector2 leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
 	Vector2 rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
 
-	if(ins.IsTrgDownMouseLeft() &&
+	if(ins.IsMouseTrgDown(InputManager::MOUSE::CLICK_LEFT) &&
 		Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBotm))
 	{
 		ChangeState(STATE::OPEN);
@@ -197,14 +183,13 @@ void EditorPaletteBase::UpdateSelect()
 {	
 	InputManager& ins = InputManager::GetInstance();
 	ItemManager & itemMng = ItemManager::GetInstance();
-	auto camera = SceneManager::GetInstance().GetCamera();
 	Vector2 leftTop = {};		//画像左上
 	Vector2 rightBotm = {};		//画像右下
 
 	//パレット外をクリックしたときパレットを閉じる
 	leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
 	rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
-	if (ins.IsClickMouseLeft() &&
+	if (ins.IsMouseNew(InputManager::MOUSE::CLICK_LEFT) &&
 		!Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBotm)) {
 		ChangeState(STATE::CLOSE);
 	}

@@ -13,7 +13,7 @@ ItemBase::ItemBase()
 
 	rotY_ = 0.0f;
 
-	trans_.MakeCollider(Collider::TYPE::STAGE);
+	//trans_.MakeCollider(Collider::TYPE::STAGE);
 }
 
 ItemBase::~ItemBase()
@@ -61,10 +61,6 @@ void ItemBase::Draw(void)
 {
 	//ƒ‚ƒfƒ‹•`‰æ
 	MV1DrawModel(trans_.modelId);
-}
-
-void ItemBase::Hit(Transform& _hitTrans)
-{
 }
 
 void ItemBase::SetPos(IntVector3 mapPos)

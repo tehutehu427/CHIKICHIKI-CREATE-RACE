@@ -22,13 +22,13 @@ SceneBase::~SceneBase(void)
 
 void SceneBase::Update(void)
 {
-	updataFunc_();
+	func_.updataFunc_();
 	return;
 }
 
 void SceneBase::Draw(void)
 {
-	drawFunc_();
+	func_.drawFunc_();
 	return;
 }
 

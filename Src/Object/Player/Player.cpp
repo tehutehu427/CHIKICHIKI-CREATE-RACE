@@ -5,14 +5,14 @@
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/Camera.h"
-#include "../../Object/Common/Capsule.h"
+#include "../../Object/Common/Geometry/Sphere.h"
 #include "../../Object/Common/AnimationController.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "./Process/PlayerInput.h"
 #include "Player.h"
 
-Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), cntl_(_cntl)
+Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):playerNum_(_playerNum), cntl_(_cntl)
 {
 #ifdef DEBUG_ON
 	cubeMovePos_=Utility::VECTOR_ZERO;
@@ -21,11 +21,11 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 
 	trans_ = Transform();
 	movedPos_ = Utility::VECTOR_ZERO;
-
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
-	if (cntl_ == PlayerInput::CNTL::PAD)
+	if (cntl_ == DateBank::TYPE::CONTROLLER)
 	{
-		padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_);
+		//パッド番号を設定
+		padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_ + 1);
 	}
 	else
 	{
@@ -35,9 +35,18 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 	//オブジェクト生成
 	//操作関連
 	//---------------------------------
+	changeAction_.emplace(ATK_ACT::NONE, std::bind(&Player::ChangeNone, this));
+	changeAction_.emplace(ATK_ACT::MOVE, std::bind(&Player::ChangeMove, this));
+	changeAction_.emplace(ATK_ACT::INPUT, std::bind(&Player::ChangeInput, this));
+	changeAction_.emplace(ATK_ACT::JUMP, std::bind(&Player::ChangeJump, this));
+	changeAction_.emplace(ATK_ACT::PUNCH, std::bind(&Player::ChangePunch, this));
+	changeAction_.emplace(ATK_ACT::KNOCKBACK, std::bind(&Player::ChangeKnockBack, this));
 	//当たり判定
 	isCol_ = false;
+	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_, RADIUS);
+	MakeCollider(_tag, std::move(geo));
 
+	//ジャンプ関係
 	isJump_ = false;
 	stepJump_ = 0.0f;
 	jumpPow_ = Utility::VECTOR_ZERO;
@@ -46,7 +55,6 @@ Player::Player(int _playerNum,PlayerInput::CNTL _cntl):playerNum_(_playerNum), c
 	//パンチ関係の初期化
 	punchCnt_ = 0.0f;
 	punchCoolCnt_ = 0.0f;
-	isPunch_ = false;
 	punchPos_ = Utility::VECTOR_ZERO;
 	isPunched_ = false;
 	punchedCnt_ = PUNCHED_TIME;
@@ -85,7 +93,7 @@ void Player::Init(void)
 	//Transformの設定
 	trans_.quaRot = Quaternion();
 	trans_.scl = MODEL_SCL;
-	trans_.quaRotLocal =
+	trans_.quaRotLocal = 
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
 
 	float posX = PLAYER_ONE_POS_X + DISTANCE_POS * playerNum_;
@@ -111,6 +119,8 @@ void Player::Init(void)
 	isPunched_ = false;
 	punchedCnt_ = PUNCHED_TIME;
 
+	ChangeAction(ATK_ACT::INPUT);
+
 #ifdef DEBUG_ON
 	cube_.centerPos = Utility::VECTOR_ZERO;
 	cubeMovePos_ = Utility::VECTOR_ZERO;
@@ -124,17 +134,8 @@ void Player::Init(void)
 void Player::Update(void)
 {
 	animationController_->Update();
-	if (IsDeath())
-	{
-		//落ちているアニメーション再生0
-		animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
-		
-		if (animationController_->GetAnimStep() >= FALL_ANIM_START)
-		{
-			animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 60.0f);
-		}
-		return;
-	}
+
+
 	//入力更新
 	input_->Update();
 	
@@ -143,12 +144,10 @@ void Player::Update(void)
 #endif // DEBUG_ON
 	static VECTOR dirDown = trans_.GetDown();
 	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
-	GravityManager::GetInstance()->CalcGravity(dirDown, jumpPow_,20.0f);
-
+	GravityManager::GetInstance().CalcGravity(dirDown, jumpPow_,20.0f);
 
 	//アクション関係
 	Action();
-
 
 	//衝突判定
 	Collision();
@@ -168,6 +167,11 @@ void Player::Draw(void)
 #endif // DEBUG_ON
 }
 
+void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
+
+}
+
 
 #ifdef DEBUG_ON
 void Player::DrawDebug(void)
@@ -181,14 +185,14 @@ void Player::DrawDebug(void)
 	else if (playerNum_ == 3) { color = 0x0000ff; }
 	if (isCol_) { color = 0xff0000; }
 	DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
-	DrawFormatString(0, 16*(playerNum_*5), 0x000000
-		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nhitIType(%d)"
+	DrawFormatString(0, 16*(playerNum_*9), 0x000000
+		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nAction(%f,%f)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,jumpDeceralation_
 		,stepJump_
 		,jumpPow_.x,jumpPow_.y,jumpPow_.z
 		,movedPos_.x,movedPos_.y,movedPos_.z
-		,hitItemType_
+		, input_->GetStickDeg()
 	);
 	if (IsDeath())
 	{
@@ -208,49 +212,123 @@ void Player::DrawDebug(void)
 #endif // DEBUG_ON
 void Player::Action(void)
 {
+	//各アクションの更新
+	actionUpdate_();
+
+	//プレイヤーの回転
 	Rotate();
-	Punch();
-	Jump();
-	Move();
+
+	//プレイヤーの方向とスピードの更新
+	UpdateMoveDirAndPow();
 }
 
-void Player::Move(void)
+void Player::ChangeAction(ATK_ACT _act)
 {
-	movePow_ = Utility::VECTOR_ZERO;
-	if (!isPunched_)
+	act_ = _act;
+	changeAction_[act_]();
+}
+
+void Player::NoneUpdate(void)
+{
+	//死んだ時の処理
+	if (IsDeath())
 	{
-		dir_ = Utility::VECTOR_ZERO;
+		//落ちているアニメーション再生
+		animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
+
+		if (animationController_->GetAnimStep() >= FALL_ANIM_START)
+		{
+			animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 60.0f);
+		}
 	}
+}
+
+void Player::ActionInputUpdate(void)
+{
+	using ACT_CNTL = PlayerInput::ACT_CNTL;
+	if (input_->CheckAct(ACT_CNTL::MOVE))
+	{
+		ChangeAction(ATK_ACT::MOVE);
+		return;
+	}
+	if (input_->CheckAct(ACT_CNTL::PUNCH))
+	{
+		ChangeAction(ATK_ACT::PUNCH);
+		return;
+	}
+	if (input_->CheckAct(ACT_CNTL::JUMP))
+	{
+		ChangeAction(ATK_ACT::JUMP);
+		return;
+	}
+}
+
+void Player::ChangeInput(void)
+{
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE));
+	actionUpdate_ = std::bind(&Player::ActionInputUpdate, this);
+}
+
+void Player::ChangeNone(void)
+{
+	actionUpdate_ = std::bind(&Player::NoneUpdate, this);
+}
+
+void Player::MoveUpdate(void)
+{
+	//移動中に入力が入った時の状態遷移
+	if (input_->CheckAct(PlayerInput::ACT_CNTL::JUMP))
+	{
+		ChangeAction(ATK_ACT::JUMP);
+		return;
+	}
+	else if (input_->CheckAct(PlayerInput::ACT_CNTL::PUNCH))
+	{
+		speed_ = 0.0f;
+		ChangeAction(ATK_ACT::PUNCH);
+		return;
+	}
+	else if (!input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
+	{
+		speed_ = 0.0f;
+		ChangeAction(ATK_ACT::INPUT);
+		return;
+	}
+
+	MoveDirFronInput();
+}
+void Player::MoveDirFronInput(void)
+{
+	//移動量を0にリセット
+ 	movePow_ = Utility::VECTOR_ZERO;
+
+	//プレイヤー入力クラスから角度を取得
 	VECTOR getDir = input_->GetDir();
-	float deg = 0;
-	Quaternion cameraRot = scnMng_.GetCamera().lock()->GetQuaRotOutX();
+	float deg = 0.0f;
+	Quaternion cameraRot = scnMng_.GetCamera(0).lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
-	//吹き飛び中でなかったらカメラ方向に移動したい
-	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE)&&!isPunched_&&!isPunch_)
-	{
-		deg = input_->GetMoveDeg();
-		dir_ = cameraRot.PosAxis(getDir);
-		dir_ = VNorm(dir_);
-	}
+	deg = input_->GetMoveDeg();
+	dir_ = cameraRot.PosAxis(getDir);
+	dir_ = VNorm(dir_);
 
 	if (!Utility::EqualsVZero(dir_))
 	{
-		//パンチされてぶっ飛んでる時と通常の移動の時のスピード
-		if (isPunched_){speed_ = FLY_AWAY_SPEED;}
-		else{speed_ = MOVE_SPEED;}
-		
-		if(!isJump_&&!isPunch_)animationController_->Play(static_cast<int>(ANIM_TYPE::WALK));
-		
-		moveDir_ = dir_;
-		//移動量
-		movePow_ = VScale(moveDir_, speed_);
-		SetGoalRotate(Utility::Deg2RadF(deg));
+		//補完角度の設定(入力角度まで方向転換する)
+		SetGoalRotate(deg);
 	}
-	else if(!isJump_&&!isPunch_)
-	{
-		speed_ = 0.0f;
-		animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE));
-	}
+}
+void Player::ChangeMove(void)
+{
+	animationController_->Play(static_cast<int>(ANIM_TYPE::WALK));
+	speed_ = MOVE_SPEED;
+	actionUpdate_ = std::bind(&Player::MoveUpdate, this);
+}
+void Player::UpdateMoveDirAndPow(void)
+{
+	//方向の更新
+	moveDir_ = dir_;
+	//移動量の更新
+	movePow_ = VScale(moveDir_, speed_);
 }
 void Player::Rotate(void)
 {
@@ -261,9 +339,10 @@ void Player::Rotate(void)
 }
 void Player::SetGoalRotate(double _deg)
 {
-	VECTOR cameraRot = scnMng_.GetCamera().lock()->GetAngles();
+	//カメラの角度を取得
+	VECTOR cameraRot = scnMng_.GetCamera(0).lock()->GetAngles();
 	Quaternion axis = Quaternion::AngleAxis(
-		(double)cameraRot.y + _deg, Utility::AXIS_Y);
+		(double)cameraRot.y + Utility::Deg2RadF(_deg), Utility::AXIS_Y);
 	// 現在設定されている回転との角度差を取る
 	double angleDiff = Quaternion::Angle(axis, goalQuaRot_);
 	// しきい値
@@ -287,39 +366,20 @@ void Player::ChangeModelColor(const COLOR_F _colorScale)
 }
 void Player::Jump(void)
 {
-	//if (isPunch_)return;
-	bool isHit = input_->CheckAct(PlayerInput::ACT_CNTL::JUMP);
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
-	if (isJump_)return;
-	if (isHit)
-	{
-		if (!isJump_)
-		{
-			stepJump_ = 0.0f;
-		}
-		//空中で無理やりアニメーションを切り取ってアニメーションをする
-		animationController_->Play(
-			(int)ANIM_TYPE::JUMP, false, 10.0f, 60.0f);
-		animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
+	stepJump_ += deltaTime;
 
-		isJump_ = true;
-		//ジャンプの入力受付時間を減らす
-		stepJump_ += deltaTime;
+	//空中アニメーションステップのループ設定
+	animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
 
-		isPunch_ = false;
-		isPunchHitTime_ = false;
-		punchCnt_ = 0.0f;
-	}
+	//ジャンプ中も移動できるようにする
+	MoveDirFronInput();
 
+	//ジャンプカウントが0以上なら
 	if (stepJump_ > 0.0f)
 	{
-		if (!isJump_)
-		{
-			stepJump_ = 0.0f;
-			return;
-		}
-			
 		stepJump_ += deltaTime;
+		//プレイヤーが落下していたら
 		if (jumpDeceralation_ < 0.0f)
 		{
 			animationController_->Play(static_cast<int>(ANIM_TYPE::LAND));
@@ -329,64 +389,81 @@ void Player::Jump(void)
 		jumpPow_ = VScale(trans_.GetUp(), jumpDeceralation_);
 	}
 
-	// ボタンを離したらジャンプ力に加算しない
-	if(!isJump_)
+	//地面に着いたらジャンプ関係の変数リセット
+	if (!isJump_)
 	{
 		jumpDeceralation_ = POW_JUMP;
 		fallCnt_ = 0.0f;
 		jumpPow_ = Utility::VECTOR_ZERO;
 		stepJump_ = 0.0f;
-	} 
+		
+		//動いていた場合の移動量リセット
+		speed_ = 0.0f;
+		ChangeAction(ATK_ACT::INPUT);
+		return;
+	}
+}
+void Player::ChangeJump(void)
+{
+	//ジャンプ関係
+	isJump_ = true;
+	stepJump_ = 0.0f;
+	//アニメーションの再生
+	animationController_->Play(
+		(int)ANIM_TYPE::JUMP, false, 10.0f, 60.0f);
+	//状態遷移
+	actionUpdate_ = std::bind(&Player::Jump, this);
 }
 void Player::Punch(void)
 {
 	//プレイヤーの手の座標を設定する
-
 	punchPos_ = MV1GetFramePosition(trans_.modelId, 10);
-	if (isJump_ || punchCoolCnt_ >= 0.0f)
+
+	//アニメーション
+	animationController_->Play((int)ANIM_TYPE::PUNCH, false);
+
+	//アニメステップを取得して一定のところで攻撃判定を発生させる
+	float animStep = animationController_->GetAnimStep();
+	if (animStep > PUNCH_HIT_END_ANIM_STEP)
 	{
-		punchCoolCnt_ < 0.0f ? punchCoolCnt_ = 0.0f : punchCoolCnt_ -= scnMng_.GetDeltaTime();
-		return;
+		isPunchHitTime_ = false;
+	}
+	else if (animStep > PUNCH_HIT_START_ANIM_STEP)
+	{
+		isPunchHitTime_ = true;
 	}
 
-	
-	auto isHit = input_->CheckAct(PlayerInput::ACT_CNTL::PUNCH);
-	if (punchCnt_ > PUNCH_TIME_MAX)
+	if (animationController_->IsEnd())
 	{
-		punchCnt_ = 0.0f;
-		isPunch_ = false;
+		//パンチクールタイムセット
 		punchCoolCnt_ = PUNCH_COOL_TIME;
-		return;
+		ChangeAction(ATK_ACT::INPUT);
 	}
-	//パンチキーを押されたらパンチ行動をとる
-	if (isHit){isPunch_ = true;}
-	if (isPunch_)
-	{
-		punchCnt_ += PlayerInput::DELTA_TIME;
-		animationController_->Play((int)ANIM_TYPE::PUNCH,false);
-		float animStep = animationController_->GetAnimStep();
-		if (animStep > PUNCH_HIT_END_ANIM_STEP)
-		{
-			isPunchHitTime_ = false;
-		}
-		else if (animStep > PUNCH_HIT_START_ANIM_STEP)
-		{
+}
 
-			isPunchHitTime_ = true;
-		}	
+void Player::ChangePunch(void)
+{
+	punchCnt_ = 0.0f;
+	punchCoolCnt_ = PUNCH_COOL_TIME;
+	actionUpdate_ = std::bind(&Player::Punch, this);
+}
 
-	}
-
-	//パンチを受けた時
-	if (isPunched_)
-	{
-		punchedCnt_ -= scnMng_.GetDeltaTime();
-	}
+void Player::KnockBack(void)
+{
+	punchedCnt_ -= scnMng_.GetDeltaTime();
 	if (punchedCnt_ < 0.0f)
 	{
-		isPunched_ = false;
 		punchedCnt_ = PUNCHED_TIME;
+		ChangeAction(ATK_ACT::INPUT);
 	}
+}
+
+void Player::ChangeKnockBack(void)
+{
+	//ダメージアニメーション
+	//animationController_->Play((int)ANIM_TYPE::DAMAGE,true,)
+	speed_ = FLY_AWAY_SPEED;
+	actionUpdate_ = std::bind(&Player::KnockBack, this);
 }
 
 
@@ -434,6 +511,8 @@ void Player::Collision(void)
 	movedPos_ = VAdd(movedPos_, jumpPow_);
 
 #ifdef DEBUG_ON
+
+	//デバッグ用床の当たり判定
 	if (CollCube())
 	{
 		movedPos_ = VAdd(movedPos_, cubeMovePos_);
@@ -498,7 +577,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 
 	auto hit = MV1CollCheck_Line(_itemTrans.modelId, -1, prePos, curPos);
 	MapEditer& mapEdit = MapEditer::GetInstance();
-
+	isLandHit_ = false;
 	//当たったら
 	if (hit.HitFlag > 0)
 	{
@@ -507,6 +586,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 		jumpPow_ = Utility::VECTOR_ZERO;
 		isJump_ = false;
 		itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
+		isLandHit_ = true;
 		return;
 	}
 	//else
@@ -520,7 +600,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 	VECTOR upPos = movedPos_;
 	upPos.y += (RADIUS);
 	VECTOR downPos = movedPos_;
-	downPos.y -= (RADIUS+ 10.0f);
+	downPos.y -= (RADIUS);
 
 	hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
 
@@ -546,7 +626,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 			movedPos_.y = hit.HitPosition.y - RADIUS - POSITION_OFFSET;
 		}
 		jumpPow_ = Utility::VECTOR_ZERO;
-		isJump_ = false;
+		//isJump_ = false;
 		itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
 	}
 	else

@@ -1,5 +1,6 @@
 #include "FreePlay.h"
 #include "../../Object/Editor/MapDataIO.h"
+#include "../../Object/Editor/Palette/EditorPaletteBase.h"
 
 FreePlay::FreePlay(void)
 {
@@ -13,12 +14,19 @@ void FreePlay::Load(void)
 {
 	//親クラスの読み込み
 	GameScene::Load();
+
+	//パレットの生成
+	palette_ = std::make_unique<EditorPaletteBase>(editControllers_);
+	palette_->Load();
 }
 
 void FreePlay::Init(void)
 {
 	//親クラスの初期化
 	GameScene::Init();
+
+	//初期化
+	palette_->Init();
 
 	//マップデータの初期化
 	mapIO_->Init();

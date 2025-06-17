@@ -1,4 +1,5 @@
 #include <DxLib.h>
+#include <cmath>
 #include "InputManager.h"
 
 InputManager* InputManager::instance_ = nullptr;
@@ -35,7 +36,6 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_RIGHT);
 	InputManager::GetInstance().Add(KEY_INPUT_DOWN);
 	InputManager::GetInstance().Add(KEY_INPUT_LEFT);
-	InputManager::GetInstance().Add(KEY_INPUT_RSHIFT);
 	InputManager::GetInstance().Add(KEY_INPUT_RCONTROL);
 
 	InputManager::GetInstance().Add(KEY_INPUT_B);
@@ -68,26 +68,28 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_RSHIFT);	//タイトルシーン遷移
 
 
-	InputManager::MouseInfo info;
+	InputManager::MouseInfo mouseInfo;
 
-	// 左クリック
-	info = InputManager::MouseInfo();
-	info.key = MOUSE_INPUT_LEFT;
-	info.keyOld = false;
-	info.keyNew = false;
-	info.keyTrgDown = false;
-	info.keyTrgUp = false;
-	mouseInfos_.emplace(info.key, info);
+	// マウス
+	mouseInfo = InputManager::MouseInfo();
+	for (int i = 0;i < static_cast<int>(InputManager::MOUSE::MAX);i++)
+	{
+		mouseInfos_.emplace(static_cast<MOUSE>(i), mouseInfo);
+	}
 
-	// 右クリック
-	info = InputManager::MouseInfo();
-	info.key = MOUSE_INPUT_RIGHT;
-	info.keyOld = false;
-	info.keyNew = false;
-	info.keyTrgDown = false;
-	info.keyTrgUp = false;
-	mouseInfos_.emplace(info.key, info);
-
+	//スティック
+	InputManager::StickInfo stickInfo;
+	stickInfo = InputManager::StickInfo();
+	for (int padNo = 0;padNo <= static_cast<int>(JOYPAD_NO::PAD4);padNo++)
+	{
+		std::vector<StickInfo>sticks;
+		for (int i = 0; i < static_cast<int>(InputManager::JOYPAD_STICK::MAX);i++)
+		{
+			stickInfo.key = static_cast<JOYPAD_STICK>(i);
+			sticks.push_back(stickInfo);
+		}
+		stickInfos_.emplace(static_cast<JOYPAD_NO>(padNo), sticks);
+	}
 }
 
 void InputManager::Update(void)
@@ -104,12 +106,44 @@ void InputManager::Update(void)
 
 	// マウス検知
 	mouseInput_ = GetMouseInput();
+	mousePrePos_ = mousePos_;
 	GetMousePoint(&mousePos_.x, &mousePos_.y);
+	wheelRot_ = GetMouseWheelRotVol();
 
 	for (auto& p : mouseInfos_)
 	{
 		p.second.keyOld = p.second.keyNew;
-		p.second.keyNew = mouseInput_ == p.second.key;
+		switch (p.first)
+		{
+		case InputManager::MOUSE::CLICK_RIGHT:
+			p.second.keyNew = (mouseInput_ & MOUSE_INPUT_RIGHT) != 0;
+			break;
+		case InputManager::MOUSE::CLICK_LEFT:
+			p.second.keyNew = (mouseInput_ & MOUSE_INPUT_LEFT) != 0;
+			break;
+		case InputManager::MOUSE::MOVE_LEFT:
+			p.second.keyNew = mousePos_.x < mousePrePos_.x;
+			break;
+		case InputManager::MOUSE::MOVE_RIGHT:
+			p.second.keyNew = mousePos_.x > mousePrePos_.x;
+			break;
+		case InputManager::MOUSE::MOVE_UP:
+			p.second.keyNew = mousePos_.y < mousePrePos_.y;
+			break;
+		case InputManager::MOUSE::MOVE_DOWN:
+			p.second.keyNew = mousePos_.y > mousePrePos_.y;
+			break;
+		case InputManager::MOUSE::WHEEL_FRONT:
+			p.second.keyNew = (wheelRot_ > 0);
+			break;
+		case InputManager::MOUSE::WHEEL_BACK:
+			p.second.keyNew = (wheelRot_ < 0);
+			break;
+		case InputManager::MOUSE::MAX:
+			break;
+		default:
+			break;
+		}
 		p.second.keyTrgDown = p.second.keyNew && !p.second.keyOld;
 		p.second.keyTrgUp = !p.second.keyNew && p.second.keyOld;
 	}
@@ -120,7 +154,17 @@ void InputManager::Update(void)
 	SetJPadInState(JOYPAD_NO::PAD2);
 	SetJPadInState(JOYPAD_NO::PAD3);
 	SetJPadInState(JOYPAD_NO::PAD4);
-
+	for (auto& stickInfo : stickInfos_)
+	{
+		for (auto& stick : stickInfo.second)
+		{
+			int overSize = PadStickOverSize(stickInfo.first, stick.key);
+			stick.keyOld = stick.keyNew;
+			stick.keyNew = overSize > STICK_THRESHOLD;
+			stick.keyTrgDown = !stick.keyOld && stick.keyNew;
+			stick.keyTrgUp = stick.keyOld && !stick.keyNew;
+		}
+	}
 }
 
 void InputManager::Destroy(void)
@@ -171,36 +215,6 @@ int InputManager::GetMouse(void) const
 	return mouseInput_;
 }
 
-bool InputManager::IsClickMouseLeft(void) const
-{
-	return mouseInput_ == MOUSE_INPUT_LEFT;
-}
-
-bool InputManager::IsClickMouseRight(void) const
-{
-	return mouseInput_ == MOUSE_INPUT_RIGHT;
-}
-
-bool InputManager::IsTrgDownMouseLeft(void) const
-{
-	return FindMouse(MOUSE_INPUT_LEFT).keyTrgDown;
-}
-
-bool InputManager::IsTrgDownMouseRight(void) const
-{
-	return FindMouse(MOUSE_INPUT_RIGHT).keyTrgDown;
-}
-
-bool InputManager::IsTrgUpMouseLeft(void) const
-{
-	return FindMouse(MOUSE_INPUT_LEFT).keyTrgUp;
-}
-
-bool InputManager::IsTrgUpMouseRight(void) const
-{
-	return FindMouse(MOUSE_INPUT_RIGHT).keyTrgUp;;
-}
-
 InputManager::InputManager(void)
 {
 	mouseInput_ = -1;
@@ -223,7 +237,7 @@ const InputManager::Info& InputManager::Find(int key) const
 
 }
 
-const InputManager::MouseInfo& InputManager::FindMouse(int key) const
+const InputManager::MouseInfo& InputManager::FindMouse(MOUSE key) const
 {
 	auto it = mouseInfos_.find(key);
 	if (it != mouseInfos_.end())
@@ -290,7 +304,7 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 	JOYPAD_IN_STATE ret = JOYPAD_IN_STATE();
 
 	auto type = GetJPadType(no);
-	
+
 	switch (type)
 	{
 	case InputManager::JOYPAD_TYPE::OTHER:
@@ -298,7 +312,7 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 	case InputManager::JOYPAD_TYPE::XBOX_360:
 	{
 	}
-		break;
+	break;
 	case InputManager::JOYPAD_TYPE::XBOX_ONE:
 	{
 
@@ -311,16 +325,16 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 		// X   B
 		//   A
 
-		idx = static_cast<int>(JOYPAD_BTN::TOP);
+		idx = static_cast<int>(JOYPAD_BTN::RIGHTBUTTON_TOP);
 		ret.ButtonsNew[idx] = d.Buttons[3];// Y
 
-		idx = static_cast<int>(JOYPAD_BTN::LEFT);
+		idx = static_cast<int>(JOYPAD_BTN::RIGHTBUTTON_LEFT);
 		ret.ButtonsNew[idx] = d.Buttons[2];// X
 
-		idx = static_cast<int>(JOYPAD_BTN::RIGHT);
+		idx = static_cast<int>(JOYPAD_BTN::RIGHTBUTTON_RIGHT);
 		ret.ButtonsNew[idx] = d.Buttons[1];// B
 
-		idx = static_cast<int>(JOYPAD_BTN::DOWN);
+		idx = static_cast<int>(JOYPAD_BTN::RIGHTBUTTON_DOWN);
 		ret.ButtonsNew[idx] = d.Buttons[0];// A
 
 		idx = static_cast<int>(JOYPAD_BTN::R_TRIGGER);
@@ -329,21 +343,45 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 		idx = static_cast<int>(JOYPAD_BTN::L_TRIGGER);
 		ret.ButtonsNew[idx] = x.LeftTrigger; // L_TRIGGER
 
+		idx = static_cast<int>(JOYPAD_BTN::R_BUTTON);
+		ret.ButtonsNew[idx] = d.Buttons[5];// R_BUTTON
+
+		idx = static_cast<int>(JOYPAD_BTN::L_BUTTON);
+		ret.ButtonsNew[idx] = d.Buttons[4]; // L_BUTTON
+
+		idx = static_cast<int>(JOYPAD_BTN::START_BUTTON);
+		ret.ButtonsNew[idx] = d.Buttons[7];// START
+
+		idx = static_cast<int>(JOYPAD_BTN::SELECT_BUTTON);
+		ret.ButtonsNew[idx] = d.Buttons[6]; // SELECT
+
+		idx = static_cast<int>(JOYPAD_BTN::LEFTBUTTON_TOP);
+		ret.ButtonsNew[idx] = x.Buttons[0]; // LEFTBUTTON_TOP
+
+		idx = static_cast<int>(JOYPAD_BTN::LEFTBUTTON_DOWN);
+		ret.ButtonsNew[idx] = x.Buttons[1]; // LEFTBUTTON_DOWN
+
+		idx = static_cast<int>(JOYPAD_BTN::LEFTBUTTON_LEFT);
+		ret.ButtonsNew[idx] = x.Buttons[2]; // LEFTBUTTON_LEFT
+
+		idx = static_cast<int>(JOYPAD_BTN::LEFTBUTTON_RIGHT);
+		ret.ButtonsNew[idx] = x.Buttons[3]; // LEFTBUTTON_RIGHT
+
 		// 左スティック
 		ret.AKeyLX = d.X;
 		ret.AKeyLY = d.Y;
-		
+
 		// 右スティック
 		ret.AKeyRX = d.Rx;
 		ret.AKeyRY = d.Ry;
 
 	}
-		break;
+	break;
 	case InputManager::JOYPAD_TYPE::DUAL_SHOCK_4:
 		break;
 	case InputManager::JOYPAD_TYPE::DUAL_SENSE:
 	{
-		
+
 		auto d = GetJPadDInputState(no);
 		int idx;
 
@@ -351,28 +389,28 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 		// □  〇
 		//   ×
 
-		idx = static_cast<int>(JOYPAD_BTN::TOP);
+		idx = static_cast<int>(JOYPAD_BTN::RIGHTBUTTON_TOP);
 		ret.ButtonsNew[idx] = d.Buttons[3];// △
 
-		idx = static_cast<int>(JOYPAD_BTN::LEFT);
+		idx = static_cast<int>(JOYPAD_BTN::RIGHTBUTTON_LEFT);
 		ret.ButtonsNew[idx] = d.Buttons[0];// □
 
-		idx = static_cast<int>(JOYPAD_BTN::RIGHT);
+		idx = static_cast<int>(JOYPAD_BTN::RIGHTBUTTON_RIGHT);
 		ret.ButtonsNew[idx] = d.Buttons[2];// 〇
 
-		idx = static_cast<int>(JOYPAD_BTN::DOWN);
+		idx = static_cast<int>(JOYPAD_BTN::RIGHTBUTTON_DOWN);
 		ret.ButtonsNew[idx] = d.Buttons[1];// ×
 
 		// 左スティック
 		ret.AKeyLX = d.X;
 		ret.AKeyLY = d.Y;
-		
+
 		// 右スティック
 		ret.AKeyRX = d.Z;
 		ret.AKeyRY = d.Rz;
 
 	}
-		break;
+	break;
 	case InputManager::JOYPAD_TYPE::SWITCH_JOY_CON_L:
 		break;
 	case InputManager::JOYPAD_TYPE::SWITCH_JOY_CON_R:
@@ -400,4 +438,158 @@ bool InputManager::IsPadBtnTrgDown(JOYPAD_NO no, JOYPAD_BTN btn) const
 bool InputManager::IsPadBtnTrgUp(JOYPAD_NO no, JOYPAD_BTN btn) const
 {
 	return padInfos_[static_cast<int>(no)].IsTrgUp[static_cast<int>(btn)];
+}
+
+bool InputManager::IsStickNew(JOYPAD_NO no, JOYPAD_STICK stick) const
+{
+	for (auto& stickInfo : stickInfos_)
+	{
+		if (stickInfo.first != no)
+		{
+			continue;
+		}
+		for (auto& stickI : stickInfo.second)
+		{
+			if (stickI.key != stick)
+			{
+				continue;
+			}
+			return stickI.keyNew;
+		}
+	}
+	return false;
+}
+
+bool InputManager::IsStickDown(JOYPAD_NO no, JOYPAD_STICK stick) const
+{
+	for (auto& stickInfo : stickInfos_)
+	{
+		if (stickInfo.first != no)
+		{
+			continue;
+		}
+		for (auto& stickI : stickInfo.second)
+		{
+			if (stickI.key != stick)
+			{
+				continue;
+			}
+			return stickI.keyTrgDown;
+		}
+	}
+	return false;
+}
+
+bool InputManager::IsStickUp(JOYPAD_NO no, JOYPAD_STICK stick) const
+{
+	for (auto& stickInfo : stickInfos_)
+	{
+		if (stickInfo.first != no)
+		{
+			continue;
+		}
+		for (auto& stickI : stickInfo.second)
+		{
+			if (stickI.key != stick)
+			{
+				continue;
+			}
+			return stickI.keyTrgUp;
+		}
+	}
+	return false;
+}
+
+bool InputManager::IsMouseNew(MOUSE mouse)
+{
+	return FindMouse(mouse).keyNew;
+}
+
+bool InputManager::IsMouseTrgUp(MOUSE mouse)
+{
+	return FindMouse(mouse).keyTrgUp;
+}
+
+bool InputManager::IsMouseTrgDown(MOUSE mouse)
+{
+	return FindMouse(mouse).keyTrgDown;
+}
+
+float InputManager::GetLStickDeg(JOYPAD_NO no) const
+{
+	float deg = 0.0f;
+	Vector2 knockSize = GetKnockLStickSize(no);
+	if (knockSize.x == 0.0f && knockSize.y == 0.0f)
+	{
+		return deg;
+	}
+	auto rad = std::atan2(knockSize.y, knockSize.x);
+	deg = rad * (180.0f / DX_PI_F);
+	deg += 90.0f;
+	deg = deg < 0 ? deg + 360 : deg;
+	return deg;
+}
+
+float InputManager::GetRStickDeg(JOYPAD_NO no) const
+{
+	float deg = 0.0f;
+	Vector2 knockSize = GetKnockRStickSize(no);
+	if (knockSize.x == 0.0f && knockSize.y == 0.0f)
+	{
+		return deg;
+	}
+	auto rad = std::atan2(knockSize.y, knockSize.x);
+	deg = rad * (180.0f / DX_PI_F);
+	deg += 90.0f;
+	deg = deg < 0 ? deg + 360 : deg;
+	return deg;
+}
+
+Vector2 InputManager::GetKnockLStickSize(JOYPAD_NO no) const
+{
+	auto padInfo = padInfos_[static_cast<int>(no)];
+	return Vector2(padInfo.AKeyLX,padInfo.AKeyLY);
+}
+
+Vector2 InputManager::GetKnockRStickSize(JOYPAD_NO no) const
+{
+	auto padInfo = padInfos_[static_cast<int>(no)];
+	return Vector2(padInfo.AKeyRX, padInfo.AKeyRY);
+}
+
+int InputManager::PadStickOverSize(JOYPAD_NO no, JOYPAD_STICK stick) const
+{
+	int ret = 0;
+	switch (stick)
+	{
+	case InputManager::JOYPAD_STICK::L_STICK_UP:
+		ret = padInfos_[static_cast<int>(no)].AKeyLY < 0 ? padInfos_[static_cast<int>(no)].AKeyLY : 0;
+		break;
+	case InputManager::JOYPAD_STICK::L_STICK_DOWN:
+		ret = padInfos_[static_cast<int>(no)].AKeyLY > 0 ? padInfos_[static_cast<int>(no)].AKeyLY : 0;
+		break;
+	case InputManager::JOYPAD_STICK::L_STICK_LEFT:
+		ret = padInfos_[static_cast<int>(no)].AKeyLX < 0 ? padInfos_[static_cast<int>(no)].AKeyLX : 0;
+		break;
+	case InputManager::JOYPAD_STICK::L_STICK_RIGHT:
+		ret = padInfos_[static_cast<int>(no)].AKeyLX > 0 ? padInfos_[static_cast<int>(no)].AKeyLX : 0;
+		break;
+	case InputManager::JOYPAD_STICK::R_STICK_UP:
+		ret = padInfos_[static_cast<int>(no)].AKeyRY < 0 ? padInfos_[static_cast<int>(no)].AKeyRY : 0;
+		break;
+	case InputManager::JOYPAD_STICK::R_STICK_DOWN:
+		ret = padInfos_[static_cast<int>(no)].AKeyRY > 0 ? padInfos_[static_cast<int>(no)].AKeyRY : 0;
+		break;
+	case InputManager::JOYPAD_STICK::R_STICK_LEFT:
+		ret = padInfos_[static_cast<int>(no)].AKeyRX < 0 ? padInfos_[static_cast<int>(no)].AKeyRX : 0;
+		break;
+	case InputManager::JOYPAD_STICK::R_STICK_RIGHT:
+		ret = padInfos_[static_cast<int>(no)].AKeyRX > 0 ? padInfos_[static_cast<int>(no)].AKeyRX : 0;
+		break;
+	case InputManager::JOYPAD_STICK::MAX:
+		break;
+	default:
+		break;
+	}
+	return abs(ret);
 }

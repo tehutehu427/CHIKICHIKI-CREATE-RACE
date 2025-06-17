@@ -746,3 +746,17 @@ void Utility::DrawPointLine3D(const VECTOR sPos, const VECTOR ePos, int color, f
 		}
 	}
 }
+
+float Utility::EaseInQuad(const float _time, const float _totalTime, const float _start, const float _end)
+{  
+    float distance =  _end - _start;
+    float t = _time / _totalTime;
+    return distance * t * t + _start;
+}
+
+float Utility::EaseOutQuad(const float _time, const float _totalTime, const float _start, const float _end)
+{
+    float distance = _end - _start;
+    float t = _time / _totalTime;
+    return -distance * _time * (_time - 2) + _start;
+}

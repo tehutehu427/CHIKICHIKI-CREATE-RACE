@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 #include <map>
 #include <functional>
 #include "../Common/AnimationController.h"
@@ -7,12 +6,13 @@
 #include"./Process/PlayerInput.h"
 #include "../ObjectBase.h"
 
-//#define DEBUG_ON
+#define DEBUG_ON
 class Camera;
 class PMove;
 class PJump;
 class PPunch;
 class PlayerInput;
+class DateBank;
 class Player :public ObjectBase
 {
 public:
@@ -102,9 +102,11 @@ public:
 
 	enum class ATK_ACT
 	{
-		NONE,
-		MOVE,
-		PUNCH,
+		NONE,	//何もなし
+		INPUT,	//入力
+		MOVE,	//移動
+		PUNCH,	//パンチ
+		KNOCKBACK,//パンチされた状態
 		JUMP
 	};
 
@@ -115,7 +117,7 @@ public:
 		IDLE=1,
 		WALK=2,
 		FALL=4,
-		DAMAGE = 8,
+		DAMAGE = 9,
 		PUNCH = 12,
 		JUMP = 13,
 		LAND=14,
@@ -133,23 +135,54 @@ public:
 	
 
 	//******************************************
-	// コンストラクタ
-	Player(int _playerNum,PlayerInput::CNTL _cntl);
+	
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_playerNum">プレイヤー番号</param>
+	/// <param name="_cntl">コントローラー識別番号</param>
+	/// <param name="_tag">プレイヤーごとのタグ</param>
+	Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag);
 
 	// デストラクタ
 	~Player(void);
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	/// <param name=""></param>
 	void Load(void)override;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name=""></param>
 	void Init(void)override;
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void)override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void)override;
+
+	/// <summary>
+	/// 当たり判定後の処理
+	/// </summary>
+	/// <param name="_hitColTag">相手側の当たり判定</param>
+	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
 	//ゲッタ
 	//******************************************
 	//プレイヤー番号
 	const int GetPlayerNum(void)const { return playerNum_; }
 
-	const PlayerInput::CNTL GetCntl(void) { return cntl_; }
+	const DateBank::TYPE GetCntl(void) { return cntl_; }
 
 	const VECTOR GetMovePow(void) { return movePow_; }
 	//入力
@@ -200,7 +233,11 @@ public:
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
 	//コントローラーセット
-	const void SetCntl(PlayerInput::CNTL _cntl) { cntl_ = _cntl; }
+	const void SetCntl(DateBank::TYPE _cntl) { cntl_ = _cntl; }
+
+	//状態遷移
+	void ChangeAction(ATK_ACT _act);
+
 
 	//プレイヤー番号ゲット
 	const int PlayerNum(void) { return playerNum_; }
@@ -229,7 +266,7 @@ private:
 	VECTOR itemLocalPos_;
 
 	//入力デバイス
-	PlayerInput::CNTL cntl_;
+	DateBank::TYPE cntl_;
 
 	//ゲームパッド番号
 	InputManager::JOYPAD_NO padNum_;
@@ -262,6 +299,17 @@ private:
 
 	//アクション関係
 	//----------------------------------------
+	//状態遷移
+	std::map<ATK_ACT, std::function<void(void)>>changeAction_;
+
+	//状態更新
+	std::function<void(void)>actionUpdate_;
+
+	//状態
+	ATK_ACT act_;
+
+	//地面との当たり判定
+	bool isLandHit_;
 	//移動
 	//------------------------
 	float speed_;			// 移動スピード
@@ -314,22 +362,44 @@ private:
 	//アクション関係
 	//------------------------------
 	void Action(void);
-	//移動
-	void Move(void);
 
-	//回転
-	void Rotate(void);
 
-	//最終的に動かしたい角度の設定
-	void SetGoalRotate(double _deg);
+	//何もしない
+	void NoneUpdate(void);
 
+	//入力
+	void ActionInputUpdate(void);
+	void ChangeInput(void);
+
+	//何もなし
+	void ChangeNone(void);
+
+	//移動状態の更新
+	void MoveUpdate(void);
+	//入力方向に応じて方向を決める
+	void MoveDirFronInput(void);
+	//移動に変更する
+	void ChangeMove(void);
+	//毎フレーム移動方向とスピードを更新する
+	void UpdateMoveDirAndPow(void);
 
 
 	//ジャンプ
 	void Jump(void);
+	void ChangeJump(void);
 
 	//パンチ
 	void Punch(void);
+	void ChangePunch(void);
+
+	//ノックバック
+	void KnockBack(void);
+	void ChangeKnockBack(void);
+
+	//回転
+	void Rotate(void);
+	//最終的に動かしたい角度の設定
+	void SetGoalRotate(double _deg);
 	//------------------------------
 	
 	/// <summary>

@@ -30,7 +30,6 @@ void ResourceManager::Init(void)
 #pragma region ‰æ‘œ
 	std::string path_EditUi = Application::PATH_IMAGE + "EditUI/";
 	std::string path_PlayUi = Application::PATH_IMAGE + "PlayUI/";
-	std::string path_RezaltUi = Application::PATH_IMAGE + "RezaltUI/";
 	std::string path_Title = Application::PATH_IMAGE + "Title/";
 	std::string path_Select = Application::PATH_IMAGE + "Select/";
 
@@ -40,8 +39,8 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "Palette.png");
 	resourcesMap_.emplace(SRC::PALETTE, std::move(res));
 
-	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "PaletteIcons.png");
-	resourcesMap_.emplace(SRC::PALETTE_ICONS, std::move(res));
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "ItemIcons.png", ITEM_ICONS_DIV_X,ITEM_ICONS_DIV_Y,ITEM_ICON_SIZE,ITEM_ICON_SIZE);
+	resourcesMap_.emplace(SRC::ITEM_ICONS, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "Cursors.png",IMG_CURSORS_DIV_X, IMG_CURSORS_DIV_Y, IMG_CURSORS_SIZE, IMG_CURSORS_SIZE);
 	resourcesMap_.emplace(SRC::CURSORS, std::move(res));
