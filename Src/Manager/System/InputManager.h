@@ -128,6 +128,8 @@ public:
 	// マウス座標の取得
 	Vector2 GetMousePos(void) const;
 
+	//マウスの移動距離を取得
+	Vector2 GetMousePosDistance(void)const;
 	// マウスのクリック状態を取得(MOUSE_INPUT_LEFT、RIGHT)
 	int GetMouse(void) const;
 
@@ -148,12 +150,15 @@ public:
 	bool IsMouseTrgUp(MOUSE mouse);
 	bool IsMouseTrgDown(MOUSE mouse);
 
+	//上を0.0度として角度を渡す
 	float GetLStickDeg(JOYPAD_NO no) const;
 
 	float GetRStickDeg(JOYPAD_NO no) const;
-	//上を0.0度として角度を渡す
+
+	//スティックがどれだけ倒れているか
 	Vector2 GetKnockLStickSize(JOYPAD_NO no) const;
 	Vector2 GetKnockRStickSize(JOYPAD_NO no) const;
+
 private:
 
 	// キー情報

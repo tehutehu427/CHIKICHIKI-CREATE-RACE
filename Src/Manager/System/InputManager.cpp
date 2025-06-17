@@ -210,6 +210,11 @@ Vector2 InputManager::GetMousePos(void) const
 	return mousePos_;
 }
 
+Vector2 InputManager::GetMousePosDistance(void) const
+{
+	return { mousePos_.x - mousePrePos_.x ,mousePos_.y - mousePrePos_.y };
+}
+
 int InputManager::GetMouse(void) const
 {
 	return mouseInput_;
