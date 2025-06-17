@@ -78,22 +78,32 @@ void PlayerInput::InputPad(void)
 	actCntl_ = ACT_CNTL::NONE;
 	// 左スティックの横軸
 	//leftStickX_ = ins.GetKnockLStickSize(padNum_);
-	LStickSize_ = ins.GetKnockLStickSize(padNum_);
+	
 	//縦軸
 	//leftStickY_ = ins.GetJPadInputState(padNum_).AKeyLY;
 	//auto stickRad = static_cast<float>(atan2(static_cast<double>(leftStickY_), static_cast<double>(leftStickX_)));
 
-	//スティックの角度を求める
-	stickDeg_ = ins.GetLStickDeg(padNum_);
 
-	if (LStickSize_.x != 0.0f || LStickSize_.y != 0.0f)
+
+	int LstickUpSize = ins.PadStickOverSize(padNum_, InputManager::JOYPAD_STICK::L_STICK_UP);
+	int LstickLeftSize = ins.PadStickOverSize(padNum_, InputManager::JOYPAD_STICK::L_STICK_LEFT);
+	int LstickDownSize = ins.PadStickOverSize(padNum_, InputManager::JOYPAD_STICK::L_STICK_DOWN);
+	int LstickRightSize = ins.PadStickOverSize(padNum_, InputManager::JOYPAD_STICK::L_STICK_RIGHT);
+
+	if (LstickUpSize >= STICK_MOVE_SIZE_MIN || LstickLeftSize >= STICK_MOVE_SIZE_MIN
+	|| LstickDownSize >= STICK_MOVE_SIZE_MIN || LstickRightSize >= STICK_MOVE_SIZE_MIN)
 	{ 
 		actCntl_ = ACT_CNTL::MOVE; 
+
+		//
+		LStickAngleSize_ = ins.GetKnockLStickSize(padNum_);
+		//スティックの角度を求める
+		stickDeg_ = ins.GetLStickDeg(padNum_);
 	}
 
 	//スティックの角度によって移動方向を決める
 	moveDeg_ = stickDeg_;
-	VECTOR stickDir = { LStickSize_.x ,0.0f,-LStickSize_.y };
+	VECTOR stickDir = { LStickAngleSize_.x ,0.0f,-LStickAngleSize_.y };
 	//moveDir_ = { leftStickX_ ,0.0f,leftStickX_ };
 	moveDir_ = VNorm(stickDir);
 

@@ -32,7 +32,9 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 	{
 		padNum_ = InputManager::JOYPAD_NO::INPUT_KEY;
 	}
-	
+	//プレイヤー状態
+	changeStates_.emplace(PLAYER_STATE::ALIVE, std::bind(&Player::ChangeAlive, this));
+	changeStates_.emplace(PLAYER_STATE::DEATH, std::bind(&Player::ChangeDeath, this));
 	//操作関連
 	//----------------------------------------------------
 	changeAction_.emplace(ATK_ACT::NONE, std::bind(&Player::ChangeNone, this));
@@ -114,7 +116,7 @@ void Player::Init(void)
 	trans_.quaRot = Quaternion();
 	trans_.scl = MODEL_SCL;
 	trans_.quaRotLocal = 
-		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
+		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(MODEL_LOCAL_DEG), 0.0f });
 
 	float posX = PLAYER_ONE_POS_X + DISTANCE_POS * playerNum_;
 
@@ -140,6 +142,7 @@ void Player::Init(void)
 	punchedCnt_ = PUNCHED_TIME;
 
 	ChangeAction(ATK_ACT::INPUT);
+	ChangeState(PLAYER_STATE::ALIVE);
 
 #ifdef DEBUG_ON
 	cube_.centerPos = Utility::VECTOR_ZERO;
@@ -154,23 +157,12 @@ void Player::Init(void)
 void Player::Update(void)
 {
 	animationController_->Update();
-
-
-	//入力更新
-	input_->Update();
-	
 #ifdef DEBUG_ON
 	CubeMove();
 #endif // DEBUG_ON
-	static VECTOR dirDown = trans_.GetDown();
-	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
-	GravityManager::GetInstance().CalcGravity(dirDown, jumpPow_,20.0f);
 
-	//アクション関係
-	Action();
-
-	//衝突判定
-	Collision();
+	//プレイヤー状態更新
+	stateUpdate_();
 
 	//回転の同期
 	trans_.quaRot = playerRotY_;
@@ -206,13 +198,13 @@ void Player::DrawDebug(void)
 	if (isCol_) { color = 0xff0000; }
 	DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
 	DrawFormatString(0, 16*(playerNum_*9), 0x000000
-		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nAction(%f,%f)"
+		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nmovePow(%d)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,jumpDeceralation_
 		,stepJump_
 		,jumpPow_.x,jumpPow_.y,jumpPow_.z
 		,movedPos_.x,movedPos_.y,movedPos_.z
-		, input_->GetStickDeg()
+		,input_->GetAct()
 	);
 	if (IsDeath())
 	{
@@ -229,6 +221,56 @@ void Player::DrawDebug(void)
 	//DrawFormatString(0, 80* (playerNum_ + 3), 0, "POS = %f,%f,%f", movedPos_.x, movedPos_.y, movedPos_.z);
 	//DrawFormatString(0, 100* (playerNum_ + 3), 0, "jump = %d", static_cast<int>(isJump_));
 }
+void Player::ChangeState(PLAYER_STATE _state)
+{
+	state_ = _state;
+	changeStates_[state_]();
+}
+void Player::ChangeAlive(void)
+{
+	stateUpdate_ = std::bind(&Player::AliveUpdate, this);
+}
+void Player::AliveUpdate(void)
+{
+	//奈落に落ちたら死に状態へ遷移
+	if (IsDeath())
+	{
+		ChangeState(PLAYER_STATE::DEATH);
+		return;
+	}
+
+	//入力更新
+	input_->Update();
+
+	//プレイヤーの下を設定
+	static VECTOR dirDown = trans_.GetDown();
+
+	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
+	GravityManager::GetInstance().CalcGravity(dirDown, jumpPow_, 20.0f);
+
+	//アクション関係
+	Action();
+
+	//衝突判定
+	Collision();
+}
+void Player::ChangeDeath(void)
+{
+	stateUpdate_ = std::bind(&Player::DeathUpdate, this);
+}
+void Player::DeathUpdate(void)
+{
+	//死んだ時の処理
+	//落ちているアニメーション再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
+
+	//ループ
+	if (animationController_->GetAnimStep() >= FALL_ANIM_START)
+	{
+		animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 60.0f);
+	}
+
+}
 #endif // DEBUG_ON
 void Player::Action(void)
 {
@@ -240,6 +282,12 @@ void Player::Action(void)
 
 	//プレイヤーの方向とスピードの更新
 	UpdateMoveDirAndPow();
+
+	if (IsDeath())
+	{
+		//何もできないようにする
+		ChangeAction(ATK_ACT::NONE);
+	}
 }
 
 void Player::ChangeAction(ATK_ACT _act)
@@ -250,17 +298,7 @@ void Player::ChangeAction(ATK_ACT _act)
 
 void Player::NoneUpdate(void)
 {
-	//死んだ時の処理
-	if (IsDeath())
-	{
-		//落ちているアニメーション再生
-		animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
 
-		if (animationController_->GetAnimStep() >= FALL_ANIM_START)
-		{
-			animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 60.0f);
-		}
-	}
 }
 
 void Player::ActionInputUpdate(void)
@@ -324,10 +362,9 @@ void Player::MoveDirFronInput(void)
 
 	//プレイヤー入力クラスから角度を取得
 	VECTOR getDir = input_->GetDir();
-	float deg = 0.0f;
+	float deg = input_->GetMoveDeg();
 	Quaternion cameraRot = scnMng_.GetCamera(0).lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
-	deg = input_->GetMoveDeg();
 	dir_ = cameraRot.PosAxis(getDir);
 	dir_ = VNorm(dir_);
 
@@ -384,8 +421,18 @@ void Player::ChangeModelColor(const COLOR_F _colorScale)
 {
 	MV1SetEmiColorScale(trans_.modelId, _colorScale);
 }
+void Player::JumpUpdate(void)
+{
+	//ジャンプ中移動キー押されてなかったらスピード0にする
+	if (!input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))speed_ = 0.0f;
+
+	//ジャンプ処理
+	Jump();
+
+}
 void Player::Jump(void)
 {
+	//ステップジャンプを基準にジャンプ減衰量を決める
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 	stepJump_ += deltaTime;
 
@@ -404,8 +451,11 @@ void Player::Jump(void)
 		{
 			animationController_->Play(static_cast<int>(ANIM_TYPE::LAND));
 		}
-		float i = stepJump_ * TIME_JUMP_SCALE;
-		jumpDeceralation_ -= i;
+		//減衰量の計算
+		float deceralation = stepJump_ * TIME_JUMP_SCALE;
+		jumpDeceralation_ -= deceralation;
+
+		//ジャンプ量に掛ける
 		jumpPow_ = VScale(trans_.GetUp(), jumpDeceralation_);
 	}
 
@@ -416,7 +466,7 @@ void Player::Jump(void)
 		fallCnt_ = 0.0f;
 		jumpPow_ = Utility::VECTOR_ZERO;
 		stepJump_ = 0.0f;
-		
+
 		//動いていた場合の移動量リセット
 		speed_ = 0.0f;
 		ChangeAction(ATK_ACT::INPUT);
@@ -432,7 +482,7 @@ void Player::ChangeJump(void)
 	animationController_->Play(
 		(int)ANIM_TYPE::JUMP, false, 10.0f, 60.0f);
 	//状態遷移
-	actionUpdate_ = std::bind(&Player::Jump, this);
+	actionUpdate_ = std::bind(&Player::JumpUpdate, this);
 }
 void Player::Punch(void)
 {

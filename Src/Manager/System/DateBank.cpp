@@ -72,12 +72,14 @@ DateBank::TYPE DateBank::GetType(void)
 	{
 		type = TYPE::KEY_BORD;
 	}
-	if (GetPlayerNum() == 0)
+	else if (GetPlayerNum() == 0)
 	{
 		type = TYPE::ERORE;
 	}
-	type = TYPE::CONTROLLER;
-
+	else
+	{
+		type = TYPE::CONTROLLER;
+	}
 	return type;
 }
 

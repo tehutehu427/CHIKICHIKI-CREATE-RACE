@@ -33,6 +33,8 @@ public:
 	//当たり判定の押し出し回数
 	static constexpr int COL_TRY_CNT_MAX = 10;
 
+	//プレイヤーのローカル角度
+	static constexpr float MODEL_LOCAL_DEG = 180.0f;
 
 	//落ちるアニメーションのスタート
 	static constexpr float FALL_ANIM_START = 32.0f;
@@ -108,6 +110,12 @@ public:
 		PUNCH,	//パンチ
 		KNOCKBACK,//パンチされた状態
 		JUMP
+	};
+
+	enum class PLAYER_STATE
+	{
+		ALIVE
+		,DEATH
 	};
 
 	// アニメーション種別
@@ -295,7 +303,14 @@ private:
 
 	//当たっているアイテムタイプ
 	ItemBase::ITEM_TYPE hitItemType_;	
+	//プレイヤー状態
+	PLAYER_STATE state_;	//プレイヤーの状態(生存状態)
 
+	//プレイヤーの状態遷移
+	std::map<PLAYER_STATE, std::function<void(void)>>changeStates_;
+
+	//状態更新
+	std::function<void(void)>stateUpdate_;
 
 	//アクション関係
 	//----------------------------------------
@@ -364,6 +379,21 @@ private:
 #ifdef DEBUG_ON
 	void DrawDebug(void);
 #endif // DEBUG_ON
+	//プレイヤー状態
+	//**************************************************
+	//状態遷移
+	void ChangeState(PLAYER_STATE _state);
+	//生存しているとき
+	//------------------------------
+	//状態遷移
+	void ChangeAlive(void);
+	void AliveUpdate(void);
+	//死亡しているとき
+	//------------------------------
+	void ChangeDeath(void);
+	void DeathUpdate(void);
+	//**************************************************
+
 	//アクション関係
 	//------------------------------
 	void Action(void);
@@ -390,6 +420,7 @@ private:
 
 
 	//ジャンプ
+	void JumpUpdate(void);
 	void Jump(void);
 	void ChangeJump(void);
 
