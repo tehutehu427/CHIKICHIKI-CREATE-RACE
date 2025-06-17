@@ -293,26 +293,4 @@ void ModeSelect::DebugUpdate()
 
 void ModeSelect::DebugDraw()
 {
-	DrawBox(
-		0,
-		0,
-		Application::SCREEN_SIZE_X,
-		Application::SCREEN_SIZE_Y,
-		Utility::CYAN,
-		true
-	);
-
-	DrawFormatString(
-		0,
-		0,
-		Utility::BLACK,
-		"SelectScene"
-	);
-	DrawFormatString(
-		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y + 16,
-		Utility::WHITE,
-		"arcIndex = %d",
-		arcIndex_
-	);
 }
