@@ -78,6 +78,9 @@ private:
 
     float leftStickX_;          //スティックの角度X
     float leftStickY_;          //スティックの角度Y
+
+    Vector2 LStickSize_;
+
     float stickDeg_;            //パッドのスティックの角度
     float moveDeg_;             //移動方向
     VECTOR moveDir_;            //移動方向
