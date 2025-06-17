@@ -760,3 +760,8 @@ float Utility::EaseOutQuad(const float _time, const float _totalTime, const floa
     float t = _time / _totalTime;
     return -distance * _time * (_time - 2) + _start;
 }
+
+float Utility::GetShake(const float _value, float _time, const float _speed, const float _amplitude)
+{
+    return _value + std::sin(_time * _speed) * _amplitude;
+}
