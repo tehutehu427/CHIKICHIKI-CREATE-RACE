@@ -71,34 +71,28 @@ public:
 	//描画
 	virtual void Draw(void)override;
 
-	/// <summary>
-	/// 当たった処理
-	/// </summary>
-	/// <param name="_hitTrans">対象のモデル情報</param>
-	virtual void Hit(Transform& _hitTrans);
-
 	//全モデルの取得
 	const std::vector<int*> GetModels(void)const { return models_; }
 
 	//アイテムのステータス取得
-	const Status GetStatus(void)const { return status_; }
+	inline const Status GetStatus(void)const { return status_; }
 
 	//座標の設定
-	void SetPos(IntVector3 mapPos);
+	inline void SetPos(IntVector3 mapPos);
 	//回転の設定
-	void SetRotate(Quaternion rot);
+	inline void SetRotate(Quaternion rot);
 
 	//当たり判定サイズ
 	virtual const IntVector3 GetHitSize(void)const { return size_; }
 	
 	//初期マップ座標の取得
-	const IntVector3 GetInitMapPos(void)const { return InitMapPos_; }	
+	inline const IntVector3 GetInitMapPos(void)const { return InitMapPos_; }	
 
 	//Y回転の取得
-	const float GetRotY(void)const { return rotY_; }
+	inline const float GetRotY(void)const { return rotY_; }
 
 	//Y回転の設定
-	void SetRotY(const float _rotY) { rotY_ = _rotY; }
+	inline void SetRotY(const float _rotY) { rotY_ = _rotY; }
 
 	//アイテムの値リセット
 	virtual void ResetValue(void);

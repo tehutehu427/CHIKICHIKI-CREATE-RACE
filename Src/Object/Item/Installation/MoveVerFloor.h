@@ -33,8 +33,11 @@ public:
 	/// <param name="_hitColTag">‘ŠŽè‘¤‚Ì“–‚½‚è”»’è</param>
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
+	//ˆÚ“®—Ê‚ÌŽæ“¾
+	inline const VECTOR GetMovePow(void)const { return movePow_; }
+
 	//ƒTƒCƒY‚ÌŽæ“¾
-	const IntVector3 GetHitSize(void)const override;
+	inline const IntVector3 GetHitSize(void)const override;
 
 private:
 
