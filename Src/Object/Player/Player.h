@@ -341,6 +341,11 @@ private:
 	float punchedCnt_;			//パンチ効果時間カウント
 
 	//当たり判定
+	//----------------------------------
+	std::map<Collider::TAG, std::function<void(void)>>collObjectTables_;
+	std::function<void(void)>colUpdate_;
+
+
 	VECTOR gravHitPosUp_;	//重力上方向の座標
 	VECTOR gravHitPosDown_;	//重力下方向
 
@@ -414,6 +419,19 @@ private:
 	void HitItem(const IntVector3 _colPos);
 
 	//当たり判定
+	//---------------------------------------------------
+	//通常床
+	void CollFloor(void);
+	//動く床
+	void CollMoveFloor(void);
+	//スライム床
+	void CollSlimeFloor(void);
+	//大砲
+	void CollCannon(void);
+	//当たったら死ぬアイテム
+	void CollKillerItem(void);
+
+
 	void Collision(void);
 
 	//地面との当たり判定(動いてる床とか)

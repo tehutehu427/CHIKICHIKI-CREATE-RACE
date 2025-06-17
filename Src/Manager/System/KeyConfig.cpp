@@ -54,6 +54,8 @@ void KeyConfig::Init(void)
 
 	//ƒpƒ“ƒ`
 	Add(CONTROL_TYPE::PLAYER_JUMP, InputManager::JOYPAD_BTN::RIGHTBUTTON_LEFT);
+	//-------------------------------------------
+	//******************************************
 }
 
 void KeyConfig::Update(void)

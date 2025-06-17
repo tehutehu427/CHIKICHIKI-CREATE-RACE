@@ -6,6 +6,7 @@
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/Camera.h"
 #include "../../Object/Common/Geometry/Sphere.h"
+#include "../../Object/Common/Geometry/Line.h"
 #include "../../Object/Common/AnimationController.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Manager/Game/ItemManager.h"
@@ -32,19 +33,38 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 		padNum_ = InputManager::JOYPAD_NO::INPUT_KEY;
 	}
 	
-	//オブジェクト生成
 	//操作関連
-	//---------------------------------
+	//----------------------------------------------------
 	changeAction_.emplace(ATK_ACT::NONE, std::bind(&Player::ChangeNone, this));
 	changeAction_.emplace(ATK_ACT::MOVE, std::bind(&Player::ChangeMove, this));
 	changeAction_.emplace(ATK_ACT::INPUT, std::bind(&Player::ChangeInput, this));
 	changeAction_.emplace(ATK_ACT::JUMP, std::bind(&Player::ChangeJump, this));
 	changeAction_.emplace(ATK_ACT::PUNCH, std::bind(&Player::ChangePunch, this));
 	changeAction_.emplace(ATK_ACT::KNOCKBACK, std::bind(&Player::ChangeKnockBack, this));
+	//----------------------------------------------------
 	//当たり判定
+	//----------------------------------------------------
+	collObjectTables_.emplace(Collider::TAG::MOVE_FLOOR, [this]() {colUpdate_ = std::bind(&Player::CollMoveFloor, this); });
+	collObjectTables_.emplace(Collider::TAG::KILLER_ITEM, [this]() {colUpdate_ = std::bind(&Player::CollKillerItem, this); });
+	collObjectTables_.emplace(Collider::TAG::SLIME_FLOOR, [this]() {colUpdate_ = std::bind(&Player::CollSlimeFloor, this); });
+	collObjectTables_.emplace(Collider::TAG::NORMAL_ITEM, [this]() {colUpdate_ = std::bind(&Player::CollMoveFloor, this); });
+
 	isCol_ = false;
-	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_, RADIUS);
-	MakeCollider(_tag, std::move(geo));
+
+	//球コライダ作成
+	//プレイヤーの体
+	std::unique_ptr<Sphere> bodySphereGeo = std::make_unique<Sphere>(trans_, RADIUS);
+	MakeCollider(_tag, std::move(bodySphereGeo));
+
+	////プレイヤーの手(パンチの当たり判定)
+	//std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(punchPos_, PUNCH_RADIUS);
+	//MakeCollider(_tag, std::move(handSphereGeo));
+
+	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
+	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_, movedPos_,trans_.pos);
+	MakeCollider(_tag, std::move(moveLineGeo));
+
+	
 
 	//ジャンプ関係
 	isJump_ = false;
@@ -169,7 +189,7 @@ void Player::Draw(void)
 
 void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-
+	//_hitCol.lock()->GetTag(),
 }
 
 
@@ -503,6 +523,26 @@ void Player::HitItem(const IntVector3 _colPos)
 
 		itemLPos_.push_back(lPos);
 	}
+}
+
+void Player::CollFloor(void)
+{
+}
+
+void Player::CollMoveFloor(void)
+{
+}
+
+void Player::CollSlimeFloor(void)
+{
+}
+
+void Player::CollCannon(void)
+{
+}
+
+void Player::CollKillerItem(void)
+{
 }
 
 void Player::Collision(void)
