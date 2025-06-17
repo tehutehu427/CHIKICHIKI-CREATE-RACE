@@ -2,13 +2,14 @@
 #include"../../Utility/Utility.h"
 #include"../../Manager/System/ResourceManager.h"
 #include"../../Utility/Utility.h"
+#include"../System/DateBank.h"
 #include "PlayerManager.h"
 PlayerManager* PlayerManager::instance_ = nullptr;
 
 
 PlayerManager::PlayerManager(void)
 {
-	playerNum_ = PLAYER_NUM;
+	playerNum_ = 0;
 	cntl_ = PlayerInput::CNTL::NONE;
 	for (int i = 0; i < playerNum_; i++)
 	{
@@ -44,11 +45,11 @@ PlayerManager& PlayerManager::GetInstance(void)
 
 void PlayerManager::Load(void)
 {
+	//データバンクから人数を取得
+	playerNum_ = DateBank::GetInstance().GetPlayerNum();
 	for (int i = 0; i < playerNum_; i++)
 	{
 #ifdef DEBUG_ON
-
-#endif // DEBUG_ON
 		if (i == 0)
 		{
 			cntl_ = PlayerInput::CNTL::KEYBOARD;
@@ -57,8 +58,13 @@ void PlayerManager::Load(void)
 		{
 			cntl_ = PlayerInput::CNTL::PAD;
 		}
+		//デバッグしやすいようにキーボードに設定
+		DateBank::TYPE cntlType = DateBank::TYPE::KEY_BORD;
+#else
+		DateBank::TYPE cntlType = DateBank::GetInstance().GetType();
+#endif // DEBUG_ON
 		std::unique_ptr<Player> player;
-		player = std::make_unique<Player>(i, cntl_);
+		player = std::make_unique<Player>(i, cntlType, static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
 		player->Load();
 		players_.push_back(std::move(player));
 	}
@@ -121,42 +127,42 @@ void PlayerManager::PlayersCollision(void)
 	}
 }
 
-bool PlayerManager::IsHitCapsules(const std::weak_ptr<Capsule> cap1, const std::weak_ptr<Capsule> cap2)
-{
-	//カプセル１上の球体＆カプセル２
-	if (Utility::IsHitSphereCapsule(cap1.lock()->GetPosTop(), cap1.lock()->GetRadius()
-		, cap2.lock()->GetPosTop(), cap2.lock()->GetPosDown(), cap2.lock()->GetRadius()))
-	{
-		return true;
-	}
-
-	//カプセル１下の球体＆カプセル２
-	if (Utility::IsHitSphereCapsule(cap1.lock()->GetPosDown(), cap1.lock()->GetRadius()
-		, cap2.lock()->GetPosTop(), cap2.lock()->GetPosDown(), cap2.lock()->GetRadius()))
-	{
-		return true;
-	}
-
-	//カプセル２上の球体＆カプセル１
-	if (Utility::IsHitSphereCapsule(cap2.lock()->GetPosTop(), cap2.lock()->GetRadius()
-		, cap1.lock()->GetPosTop(), cap1.lock()->GetPosDown(), cap1.lock()->GetRadius()))
-	{
-		return true;
-	}
-
-	//カプセル２下の球体＆カプセル１
-	if (Utility::IsHitSphereCapsule(cap2.lock()->GetPosDown(), cap2.lock()->GetRadius()
-		, cap1.lock()->GetPosTop(), cap1.lock()->GetPosDown(), cap1.lock()->GetRadius()))
-	{
-		return true;
-	}
-
-	//カプセルがクロスしているときの判定
-	VECTOR cap1PosTop_To_cap1PosDown_Vec = VSub(cap1.lock()->GetPosDown(), cap1.lock()->GetPosTop());
-	VECTOR cap2PosTop_To_cap2PosDownVec = VSub(cap2.lock()->GetPosDown(), cap2.lock()->GetPosTop());
-
-	return false;
-}
+//bool PlayerManager::IsHitCapsules(const std::weak_ptr<Capsule> cap1, const std::weak_ptr<Capsule> cap2)
+//{
+//	//カプセル１上の球体＆カプセル２
+//	if (Utility::IsHitSphereCapsule(cap1.lock()->GetPosTop(), cap1.lock()->GetRadius()
+//		, cap2.lock()->GetPosTop(), cap2.lock()->GetPosDown(), cap2.lock()->GetRadius()))
+//	{
+//		return true;
+//	}
+//
+//	//カプセル１下の球体＆カプセル２
+//	if (Utility::IsHitSphereCapsule(cap1.lock()->GetPosDown(), cap1.lock()->GetRadius()
+//		, cap2.lock()->GetPosTop(), cap2.lock()->GetPosDown(), cap2.lock()->GetRadius()))
+//	{
+//		return true;
+//	}
+//
+//	//カプセル２上の球体＆カプセル１
+//	if (Utility::IsHitSphereCapsule(cap2.lock()->GetPosTop(), cap2.lock()->GetRadius()
+//		, cap1.lock()->GetPosTop(), cap1.lock()->GetPosDown(), cap1.lock()->GetRadius()))
+//	{
+//		return true;
+//	}
+//
+//	//カプセル２下の球体＆カプセル１
+//	if (Utility::IsHitSphereCapsule(cap2.lock()->GetPosDown(), cap2.lock()->GetRadius()
+//		, cap1.lock()->GetPosTop(), cap1.lock()->GetPosDown(), cap1.lock()->GetRadius()))
+//	{
+//		return true;
+//	}
+//
+//	//カプセルがクロスしているときの判定
+//	VECTOR cap1PosTop_To_cap1PosDown_Vec = VSub(cap1.lock()->GetPosDown(), cap1.lock()->GetPosTop());
+//	VECTOR cap2PosTop_To_cap2PosDownVec = VSub(cap2.lock()->GetPosDown(), cap2.lock()->GetPosTop());
+//
+//	return false;
+//}
 
 const std::vector<bool> PlayerManager::GetPlayersIsDeath(void)
 {

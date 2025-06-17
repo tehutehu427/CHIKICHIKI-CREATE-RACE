@@ -4,6 +4,7 @@
 #include "../Manager/Game/ItemManager.h"
 #include "../Utility/Utility.h"
 #include "../FpsControl/FpsControl.h"
+#include"../../Common/Geometry/Model.h"
 #include "CannonShot.h"
 #include "Cannon.h"
 
@@ -52,6 +53,10 @@ void Cannon::SetParam(void)
 	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
+	//ÉRÉâÉCÉ_ÇÃçÏê¨
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_);
+	MakeCollider(Collider::TAG::PLAYER_TARGET, std::move(geo));
+	
 	//ñCêg
 	barrelTrans_ = trans_;
 
@@ -151,6 +156,10 @@ void Cannon::Draw(void)
 		//íeÇÃï`âÊ
 		shot->Draw();
 	}
+}
+
+void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
 }
 
 void Cannon::ChangeModelColor(const COLOR_F _colorScale)

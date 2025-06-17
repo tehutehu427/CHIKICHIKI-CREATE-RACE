@@ -6,12 +6,12 @@ void PlayerInput::Update(void)
 {
 	switch (cntl_)
 	{
-	case CNTL::NONE:
+	case DateBank::TYPE::ERORE:
 		break;
-	case CNTL::KEYBOARD:
+	case DateBank::TYPE::KEY_BORD:
 		InputKeyBoard();
 		break;
-	case CNTL::PAD:
+	case DateBank::TYPE::CONTROLLER:
 		InputPad();
 		break;
 	default:
@@ -19,7 +19,7 @@ void PlayerInput::Update(void)
 	}
 }
 
-PlayerInput::PlayerInput(InputManager::JOYPAD_NO _padNum, CNTL _cntl):padNum_(_padNum),cntl_(_cntl)
+PlayerInput::PlayerInput(InputManager::JOYPAD_NO _padNum, DateBank::TYPE _cntl):padNum_(_padNum),cntl_(_cntl)
 {
 	actCntl_ = ACT_CNTL::NONE;
 	leftStickX_ = -1;
@@ -81,7 +81,9 @@ void PlayerInput::InputPad(void)
 	//縦軸
 	leftStickY_ = ins.GetJPadInputState(padNum_).AKeyLY;
 	auto stickRad = static_cast<float>(atan2(static_cast<double>(leftStickY_), static_cast<double>(leftStickX_)));
-	stickDeg_ = static_cast<float>(Utility::DegIn360(Utility::Rad2DegF(stickRad) + 90.0f));
+
+	//スティックの角度を求める
+	stickDeg_ = static_cast<float>(Utility::DegIn360(Utility::Rad2DegF(stickRad) + STICK_MARGIN_DEG));
 
 	if (leftStickX_ != 0.0f || leftStickY_ != 0.0f)
 	{ 
@@ -94,6 +96,11 @@ void PlayerInput::InputPad(void)
 	//moveDir_ = { leftStickX_ ,0.0f,leftStickX_ };
 	moveDir_ = VNorm(stickDir);
 
-	if (ins.IsPadBtnTrgDown(padNum_, PUNCH_BTN)) { actCntl_ = ACT_CNTL::PUNCH; }
-	if(ins.IsPadBtnTrgDown(padNum_, JUMP_BTN)){ actCntl_ = ACT_CNTL::JUMP; }
+	if (ins.IsPadBtnTrgDown(padNum_, PUNCH_BTN)) 
+	{ 
+		actCntl_ = ACT_CNTL::PUNCH; 
+	}
+	if(ins.IsPadBtnTrgDown(padNum_, JUMP_BTN)){
+		actCntl_ = ACT_CNTL::JUMP; 
+	}
 }

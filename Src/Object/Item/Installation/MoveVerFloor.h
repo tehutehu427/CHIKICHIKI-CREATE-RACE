@@ -27,14 +27,14 @@ public:
 	//描画
 	void Draw(void)override;
 
+	/// <summary>
+	/// 当たり判定後の処理
+	/// </summary>
+	/// <param name="_hitColTag">相手側の当たり判定</param>
+	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
+
 	//サイズの取得
 	const IntVector3 GetHitSize(void)const override;
-
-	/// <summary>
-	/// 当たった処理
-	/// </summary>
-	/// <param name="_hitTrans">対象のモデル情報</param>
-	void Hit(Transform& _hitTrans)override;
 
 private:
 

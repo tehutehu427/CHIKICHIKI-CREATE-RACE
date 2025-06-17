@@ -3,6 +3,7 @@
 #include "../Manager/Game/MapEditer.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
+#include"../../Common/Geometry/Model.h"
 #include "FerrisWheel.h"
 
 FerrisWheel::FerrisWheel()
@@ -52,6 +53,10 @@ void FerrisWheel::SetParam(void)
 	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
+	//コライダの作成
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_);
+	MakeCollider(Collider::TAG::MOVE_FLOOR, std::move(geo));
+	
 	//ルート設定
 	InitRoute();
 }
@@ -76,7 +81,7 @@ const IntVector3 FerrisWheel::GetSize(void) const
 	return size_ + IntVector3(MOVE_X, MOVE_Y, 0);
 }
 
-void FerrisWheel::Hit(Transform& _hitTrans)
+void FerrisWheel::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
 }
 

@@ -3,6 +3,7 @@
 #include "../Manager/Game/MapEditer.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
+#include"../../Common/Geometry/Model.h"
 #include "MoveVerFloor.h"
 
 MoveVerFloor::MoveVerFloor()
@@ -52,6 +53,10 @@ void MoveVerFloor::SetParam(void)
 	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
+	//コライダの作成
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_);
+	MakeCollider(Collider::TAG::MOVE_FLOOR, std::move(geo));
+
 	//ルート設定
 	InitRoute();
 }
@@ -69,6 +74,10 @@ void MoveVerFloor::Draw(void)
 {
 	DrawLine3D(VAdd(route_[0], MAP_LOCALPOS), VAdd(route_[1], MAP_LOCALPOS), Utility::BLACK);
 	MV1DrawModel(trans_.modelId);
+}
+
+void MoveVerFloor::OnHit(const std::weak_ptr<Collider> _hitCol)
+{
 }
 
 const IntVector3 MoveVerFloor::GetHitSize(void) const
@@ -156,10 +165,4 @@ bool MoveVerFloor::IsBeyondRoute(void)
 	else beyondZ = trans_.pos.z < route_[routeNum_].z + moveVec_.z;
 
 	return beyondX && beyondY && beyondZ;
-}
-
-void MoveVerFloor::Hit(Transform& _hitTrans)
-{
-	//当たったオブジェクトに同じだけ移動させる
-	_hitTrans.pos = VAdd(_hitTrans.pos, movePow_);
 }

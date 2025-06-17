@@ -36,5 +36,11 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	void Update(void)override;
+
+	/// <summary>
+	/// “–‚½‚è”»’èŒã‚Ìˆ—
+	/// </summary>
+	/// <param name="_hitColTag">‘Šè‘¤‚Ì“–‚½‚è”»’è</param>
+	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 };
 

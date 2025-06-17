@@ -34,6 +34,12 @@ public:
 	void Draw(void) override;
 
 	/// <summary>
+	/// 当たり判定後の処理
+	/// </summary>
+	/// <param name="_hitColTag">相手側の当たり判定</param>
+	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
+
+	/// <summary>
 	/// トランスフォームを返す
 	/// </summary>
 	/// <returns></returns>トランスフォーム

@@ -7,6 +7,7 @@
 #include "../../Manager/System/Camera.h"
 #include "../../Manager/System/InputManager.h"
 #include "../../Manager/System/DateBank.h"
+#include "../../Manager/Game/CollisionManager.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "../../Manager/Game/MapEditer.h"
 #include "../../Manager/Game/GravityManager.h"
@@ -66,7 +67,6 @@ void GameScene::Load(void)
 	
 	//アイテムマネージャーの生成
 	ItemManager::CreateInstance();
-	
 	//エディットコントローラーの生成
 	for (int i = 0; i < playerNum; i++)
 	{
@@ -241,6 +241,9 @@ void GameScene::UpdateAction(void)
 {
 	ItemManager::GetInstance().Update();
 	PlayerManager::GetInstance().Update();
+
+	//更新はアクション中のみ
+	CollisionManager::GetInstance().Update();
 	ChangePlayerClearPhase();
 }
 
