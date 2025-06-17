@@ -1,4 +1,5 @@
 #include <DxLib.h>
+#include <cmath>
 #include "InputManager.h"
 
 InputManager* InputManager::instance_ = nullptr;
@@ -512,6 +513,48 @@ bool InputManager::IsMouseTrgUp(MOUSE mouse)
 bool InputManager::IsMouseTrgDown(MOUSE mouse)
 {
 	return FindMouse(mouse).keyTrgDown;
+}
+
+float InputManager::GetLStickDeg(JOYPAD_NO no) const
+{
+	float deg = 0.0f;
+	Vector2 knockSize = GetKnockLStickSize(no);
+	if (knockSize.x == 0.0f && knockSize.y == 0.0f)
+	{
+		return deg;
+	}
+	auto rad = std::atan2(knockSize.y, knockSize.x);
+	deg = rad * (180.0f / DX_PI_F);
+	deg += 90.0f;
+	deg = deg < 0 ? deg + 360 : deg;
+	return deg;
+}
+
+float InputManager::GetRStickDeg(JOYPAD_NO no) const
+{
+	float deg = 0.0f;
+	Vector2 knockSize = GetKnockRStickSize(no);
+	if (knockSize.x == 0.0f && knockSize.y == 0.0f)
+	{
+		return deg;
+	}
+	auto rad = std::atan2(knockSize.y, knockSize.x);
+	deg = rad * (180.0f / DX_PI_F);
+	deg += 90.0f;
+	deg = deg < 0 ? deg + 360 : deg;
+	return deg;
+}
+
+Vector2 InputManager::GetKnockLStickSize(JOYPAD_NO no) const
+{
+	auto padInfo = padInfos_[static_cast<int>(no)];
+	return Vector2(padInfo.AKeyLX,padInfo.AKeyLY);
+}
+
+Vector2 InputManager::GetKnockRStickSize(JOYPAD_NO no) const
+{
+	auto padInfo = padInfos_[static_cast<int>(no)];
+	return Vector2(padInfo.AKeyRX, padInfo.AKeyRY);
 }
 
 int InputManager::PadStickOverSize(JOYPAD_NO no, JOYPAD_STICK stick) const

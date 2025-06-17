@@ -39,11 +39,14 @@ void MultiPaletteIcon::Load()
 
 void MultiPaletteIcon::Init()
 {
+	//除外番号を除いたアイテム配列を生成
+	SetExcludingItemTypeArray();
+
 	//初期化
 	for (int i = 0; i < CREATE_NUM; i++)
 	{
 		EditorPaletteBase::ImgInfo info;
-		info.num = 0;
+		info.num = GetRandTypeExcluding();
 		info.angle = 0.0f;
 		info.rate = ICON_RATE;
 		info.pos =
@@ -72,12 +75,6 @@ void MultiPaletteIcon::Init()
 		sleCnt_.push_back(-1);
 	}
 
-	//除外番号を除いたアイテム配列を生成
-	SetExcludingItemTypeArray();
-
-	//タイプの割り当て
-	AssignType();
-
 	//マスクスクリーンの初期設定
 	InitMaskScreen();
 
@@ -94,14 +91,6 @@ void MultiPaletteIcon::Draw()
 	for (auto& cursor : cursors_)
 	{
 		cursor->Draw();
-	}
-}
-
-void MultiPaletteIcon::AssignType()
-{
-	for (auto& ic : icons_)
-	{
-		ic.num = GetRandTypeExcluding();
 	}
 }
 

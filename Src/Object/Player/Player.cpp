@@ -46,6 +46,7 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.pos, RADIUS);
 	MakeCollider(_tag, std::move(geo));
 
+	//ジャンプ関係
 	isJump_ = false;
 	stepJump_ = 0.0f;
 	jumpPow_ = Utility::VECTOR_ZERO;
@@ -168,6 +169,7 @@ void Player::Draw(void)
 
 void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
+
 }
 
 
@@ -437,14 +439,6 @@ void Player::Punch(void)
 		punchCoolCnt_ = PUNCH_COOL_TIME;
 		ChangeAction(ATK_ACT::INPUT);
 	}
-
-	////ここは別の状態で考える
-	////パンチを受けた時
-	//if (isPunched_)
-	//{
-	//	punchedCnt_ -= scnMng_.GetDeltaTime();
-	//}
-
 }
 
 void Player::ChangePunch(void)
@@ -460,12 +454,14 @@ void Player::KnockBack(void)
 	if (punchedCnt_ < 0.0f)
 	{
 		punchedCnt_ = PUNCHED_TIME;
+		ChangeAction(ATK_ACT::INPUT);
 	}
 }
 
 void Player::ChangeKnockBack(void)
 {
-	//animationController_->Play()
+	//ダメージアニメーション
+	//animationController_->Play((int)ANIM_TYPE::DAMAGE,true,)
 	speed_ = FLY_AWAY_SPEED;
 	actionUpdate_ = std::bind(&Player::KnockBack, this);
 }

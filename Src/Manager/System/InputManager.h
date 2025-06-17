@@ -147,6 +147,13 @@ public:
 	bool IsMouseNew(MOUSE mouse);
 	bool IsMouseTrgUp(MOUSE mouse);
 	bool IsMouseTrgDown(MOUSE mouse);
+
+	float GetLStickDeg(JOYPAD_NO no) const;
+
+	float GetRStickDeg(JOYPAD_NO no) const;
+	//上を0.0度として角度を渡す
+	Vector2 GetKnockLStickSize(JOYPAD_NO no) const;
+	Vector2 GetKnockRStickSize(JOYPAD_NO no) const;
 private:
 
 	// キー情報
