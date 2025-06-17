@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\System\SoundManager.cpp" />
     <ClCompile Include="Src\Object\System\Select\SelectStage.cpp" />
     <ClCompile Include="Src\Object\System\Select\MultiReady.cpp" />
     <ClCompile Include="Src\Object\System\MultiInputCheck.cpp" />
@@ -101,6 +102,7 @@
     <ClCompile Include="Src\Object\UI\UiBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\System\SoundManager.h" />
     <ClInclude Include="Src\Object\System\Select\SelectStage.h" />
     <ClInclude Include="Src\Object\System\Select\MultiReady.h" />
     <ClInclude Include="Src\Object\System\MultiInputCheck.h" />
