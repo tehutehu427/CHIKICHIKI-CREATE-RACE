@@ -16,17 +16,18 @@ PaletteIcon::PaletteIcon()
 	stateChanges_.emplace(STATE::SCR_DOWN, std::bind(&PaletteIcon::ChangeStateScrollDown, this));
 	stateChanges_.emplace(STATE::SELCT, std::bind(&PaletteIcon::ChangeStateSelect, this));
 
-	isCreate_ = false;
-	state_ = STATE::NONE;
+	int i = -1;
+	imgIcons_ = &i;
+	fontHandle_ = -1;	
 	imgScrIcon_ = -1;
-	imgIcons_ = -1;
 	mskPal_ = -1;
-	scrLimitLine_ = -1;
-	sleCnt_.clear();
+	scrLimitLine_ = -1;	
 	prePos_ = {};
+	sleCnt_.clear();
 	selectTypes_.clear();
 	icons_.clear();
-	fontHandle_ = -1;
+	isCreate_ = false;
+	state_ = STATE::NONE;
 	for (EditorPaletteBase::ImgInfo& s : scrIcon_) { s = {}; }
 }
 
@@ -41,7 +42,7 @@ void PaletteIcon::Load()
 	//リソースの読みこみ
 	ResourceManager & res = ResourceManager::GetInstance();
 	imgScrIcon_ = res.Load(ResourceManager::SRC::SCROLL_ARROW_ICON).handleId_;
-	imgIcons_ = res.Load(ResourceManager::SRC::PALETTE_ICONS).handleId_;
+	imgIcons_ = res.Load(ResourceManager::SRC::ITEM_ICONS).handleIds_;
 	mskPal_ = res.Load(ResourceManager::SRC::PALETTE_MASK).handleId_;
 
 	//フォント生成
@@ -49,12 +50,15 @@ void PaletteIcon::Load()
 }
 
 void PaletteIcon::Init()
-{
+{	
+	//除外番号を除いたアイテム配列を生成
+	SetExcludingItemTypeArray();
+
 	//初期化
-	for (int i = 0; i < ICON_NUM; i++)
+	for (int i = 0; i < candidates_.size(); i++)
 	{
 		EditorPaletteBase::ImgInfo info;
-		info.num = 0;
+		info.num = candidates_[i];
 		info.angle = 0.0f;
 		info.rate = ICON_RATE;
 		info.pos =
@@ -90,9 +94,6 @@ void PaletteIcon::Init()
 
 	//スクロール制限初期値
 	scrLimitLine_ = 0;
-
-	//タイプの割り当て
-	AssignType();
 
 	//マスクスクリーンの初期設定
 	InitMaskScreen();
@@ -239,7 +240,7 @@ void PaletteIcon::DrawItemIcon()
 			i.pos.y,
 			i.rate,
 			i.angle,
-			imgIcons_,
+			imgIcons_[i.num],
 			true,
 			false);
 
@@ -286,17 +287,23 @@ void PaletteIcon::DrawScrollIcon()
 	}
 }
 
-void PaletteIcon::AssignType()
+void PaletteIcon::SetExcludingItemTypeArray()
 {
-	//種類を割り与える
-	for (int i = 0; i < icons_.size(); i++)
-	{
-		icons_[i].num = i + EXCLUSION;
+	//除外番号
+	const std::vector<int> EXCLUDED_TYPES = {
+		static_cast<int>(ItemBase::ITEM_TYPE::NONE),
+		static_cast<int>(ItemBase::ITEM_TYPE::START),
+		static_cast<int>(ItemBase::ITEM_TYPE::GOAL),
+		static_cast<int>(ItemBase::ITEM_TYPE::MAX),
+		static_cast<int>(ItemBase::ITEM_TYPE::BOMB_BIG),
+		static_cast<int>(ItemBase::ITEM_TYPE::BOMB_SMALL),
+	};
 
-		//用意するアイコン分設定できたら
-		if (i - 1 == ICON_NUM)
+	for (int i = 0; i <= static_cast<int>(ItemBase::ITEM_TYPE::MAX); ++i)
+	{
+		if (std::find(EXCLUDED_TYPES.begin(), EXCLUDED_TYPES.end(), i) == EXCLUDED_TYPES.end())
 		{
-			break;	//for文を抜ける
+			candidates_.push_back(i);
 		}
 	}
 }

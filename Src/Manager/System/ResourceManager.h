@@ -18,6 +18,11 @@ public:
 	static constexpr int IMG_CURSORS_DIV_Y = 1; //分割数Y
 	static constexpr int IMG_CURSORS_SIZE = 64; //サイズ
 
+	static constexpr int ITEM_ICONS_NUM = 13;	//アイコン種類数
+	static constexpr int ITEM_ICONS_DIV_X = 5;	//アイコンスプライト分割数X
+	static constexpr int ITEM_ICONS_DIV_Y = 3;	//アイコンスプライト分割数Y
+	static constexpr int ITEM_ICON_SIZE = 128;	//アイテムアイコンの大きさ
+
 	// リソース名
 	enum class SRC
 	{
@@ -26,7 +31,7 @@ public:
 		//画像
 		PALETTE,
 		SCROLL_ARROW_ICON,
-		PALETTE_ICONS,
+		ITEM_ICONS,
 		PALETTE_MASK,
 
 		//タイトルシーン用画像

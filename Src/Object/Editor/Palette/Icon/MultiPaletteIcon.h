@@ -46,20 +46,14 @@ private:
 	//カーソル画像
 	int* imgCursors_;
 
-	//除外番号を除いたアイテム種類範囲
-	std::vector<int> candidates_;
-
 	//種類ごとにアイテム残数を管理する
 	std::map<ItemBase::ITEM_TYPE, int> itemIconMap_;
 
 	//カーソル
 	std::vector<std::unique_ptr<PaletteCursor>> cursors_;
 
-	//種類の割り当て
-	void AssignType()override;
-
 	//除外番号を除いてアイテム配列を生成
-	void SetExcludingItemTypeArray();
+	void SetExcludingItemTypeArray()override;
 
 	//指定された範囲から除外番号を除いてランダムで値を返す関数
 	int GetRandTypeExcluding();
