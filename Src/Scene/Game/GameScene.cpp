@@ -242,8 +242,12 @@ void GameScene::UpdateAction(void)
 	ItemManager::GetInstance().Update();
 	PlayerManager::GetInstance().Update();
 
+	//終了した当たり判定の消去
+	CollisionManager::GetInstance().Sweep();
+
 	//更新はアクション中のみ
 	CollisionManager::GetInstance().Update();
+
 	ChangePlayerClearPhase();
 }
 
