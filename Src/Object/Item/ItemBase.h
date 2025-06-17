@@ -78,9 +78,9 @@ public:
 	inline const Status GetStatus(void)const { return status_; }
 
 	//座標の設定
-	inline void SetPos(IntVector3 mapPos);
+	void SetPos(IntVector3 mapPos);
 	//回転の設定
-	inline void SetRotate(Quaternion rot);
+	void SetRotate(Quaternion rot);
 
 	//当たり判定サイズ
 	virtual const IntVector3 GetHitSize(void)const { return size_; }

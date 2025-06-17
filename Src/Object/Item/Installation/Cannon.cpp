@@ -205,7 +205,7 @@ void Cannon::RotateBarrel(void)
 	barrelAddRot_ = Utility::GetRotAxisToTarget(VAdd(barrelTrans_.pos,barrelTrans_.localPos), targetPos_, Utility::AXIS_Y);
 
 	//ãóó£Ç≈ï‚ê≥
-	float distance = Utility::Distance(Utility::GetMoveVec(barrelTrans_.pos, targetPos_), barrelTrans_.pos);
+	double distance = Utility::Distance(Utility::GetMoveVec(barrelTrans_.pos, targetPos_), barrelTrans_.pos);
 	barrelAddRot_ = Quaternion::Euler(barrelAddRot_).AngleAxis(distance, Utility::AXIS_X).ToEuler();
 
 	//ñCêgâÒì]
