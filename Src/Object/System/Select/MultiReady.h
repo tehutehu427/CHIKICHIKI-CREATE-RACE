@@ -4,7 +4,7 @@
 #include "../../../Common/Vector2.h"
 #include "../../../Scene/SceneBase.h"
 
-class InputManager;
+class KeyConfig;
 class MultiInputCheck;
 class SelectScene;
 
@@ -59,7 +59,7 @@ private:
 	static constexpr int PLAYER_NUM_MIN = 2;
 
 	//入力管理クラス
-	InputManager& input_;
+	KeyConfig& keyConfig_;
 
 	//プレイヤー人数
 	int playerNum_;

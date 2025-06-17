@@ -7,6 +7,7 @@
 #include "../../../Manager/System/SceneManager.h"
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../../Manager/System/InputManager.h"
+#include "../../../Manager/System/KeyConfig.h"
 #include "../../../Manager/System/DateBank.h"
 #include "../../../Shader/Effect/SelectUIGlow.h"
 #include "../../../Shader/Effect/SelectUIDarkly.h"
@@ -147,14 +148,14 @@ void ModeSelect::ChangeUpdateState(const UPD_STATE _state)
 void ModeSelect::SelectUpdate(SelectScene& _parent)
 {
 	constexpr int OFFSET_INDEX = 2;	//選択メニューのオフセット
-	InputManager& ins = InputManager::GetInstance();
+	KeyConfig& key = KeyConfig::GetInstance();
 	//決定
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, InputManager::JOYPAD_NO::PAD1))
 	{
 		_parent.ProcessMenuFunction(static_cast<SelectScene::SELECT_MENU>(menuIndex_));
 	}
 	//上へ
-	else if (ins.IsTrgDown(KEY_INPUT_UP))
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_UP, InputManager::JOYPAD_NO::PAD1))
 	{
 		//新しく出るメニュー項目を変える
 		SetMenuItem(menuIndex_ - OFFSET_INDEX, arcIndex_ - OFFSET_INDEX);
@@ -172,7 +173,7 @@ void ModeSelect::SelectUpdate(SelectScene& _parent)
 		ChangeUpdateState(UPD_STATE::ROTATE);
 	}
 	//下へ
-	else if (ins.IsTrgDown(KEY_INPUT_DOWN))
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_DOWN, InputManager::JOYPAD_NO::PAD1))
 	{
 		//新しく出るメニュー項目を変える
 		SetMenuItem(menuIndex_ + OFFSET_INDEX, arcIndex_ + OFFSET_INDEX);

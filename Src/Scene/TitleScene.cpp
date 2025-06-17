@@ -5,6 +5,7 @@
 #include "../Utility/Utility.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/KeyConfig.h"
 #include "../Manager/System/InputManager.h"
 #include "TitleScene.h"
 
@@ -40,8 +41,7 @@ void TitleScene::Init(void)
 void TitleScene::NormalUpdate(void)
 {	
 	// ÉVÅ[ÉìëJà⁄
-	InputManager& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER,InputManager::JOYPAD_NO::PAD1))
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
 	}

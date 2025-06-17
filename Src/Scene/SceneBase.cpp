@@ -3,6 +3,7 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/InputManager.h"
+#include "../Manager/System/KeyConfig.h"
 #include "../Utility/Utility.h"
 #include "SceneBase.h"
 
@@ -10,6 +11,7 @@ SceneBase::SceneBase(void) :
 	resMng_(ResourceManager::GetInstance())
 	,scnMng_(SceneManager::GetInstance())
 	,inputMng_(InputManager::GetInstance())
+	,keyConfig_(KeyConfig::GetInstance())
 {
 	buttnFontHandle_ = -1;
 	loadingTime_ = -1;

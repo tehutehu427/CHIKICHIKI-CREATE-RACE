@@ -1,5 +1,6 @@
 #include "SelectStage.h"
 #include "../../../Manager/System/InputManager.h"
+#include "../../../Manager/System/KeyConfig.h"
 #include "../../../Manager/System/DateBank.h"
 #include "../../../Manager/System/SceneManager.h"
 #include "../../../Scene/SelectScene.h"
@@ -23,14 +24,14 @@ void SelectStage::Init()
 
 void SelectStage::Update(SelectScene& _parent)
 {
-	InputManager& input = InputManager::GetInstance();
+	KeyConfig& key = KeyConfig::GetInstance();
 
-	if (input.IsTrgDown(KEY_INPUT_B))
+	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_BACK, InputManager::JOYPAD_NO::PAD1))
 	{
 		//モードセレクトへ戻る
 		_parent.ChangeState(SelectScene::STATE::SELECT_MENU);
 	}
-	else if (input.IsTrgDown(KEY_INPUT_RETURN))
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, InputManager::JOYPAD_NO::PAD1))
 	{
 		//ステージ番号を格納
 		DateBank::GetInstance().SetStageNo(stageIndex_);
@@ -38,19 +39,22 @@ void SelectStage::Update(SelectScene& _parent)
 		//ソロチャレンジにシーン遷移
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SOLO);
 	}
-	else if (input.IsTrgDown(KEY_INPUT_LEFT) && stageIndex_ % LINE != 0)
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, InputManager::JOYPAD_NO::PAD1)
+		&& stageIndex_ % LINE != 0)
 	{
 		stageIndex_--;
 	}
-	else if (input.IsTrgDown(KEY_INPUT_RIGHT) && stageIndex_ % LINE != LINE - 1)
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, InputManager::JOYPAD_NO::PAD1)
+		&& stageIndex_ % LINE != LINE - 1)
 	{
 		stageIndex_++;
 	}
-	else if (input.IsTrgDown(KEY_INPUT_UP) && stageIndex_ >= LINE)
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_UP, InputManager::JOYPAD_NO::PAD1)
+		&& stageIndex_ >= LINE)
 	{
 		stageIndex_ -= LINE;
 	}
-	else if (input.IsTrgDown(KEY_INPUT_DOWN) && stageIndex_ + LINE < LINE * COL)
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_DOWN, InputManager::JOYPAD_NO::PAD1) && stageIndex_ + LINE < LINE * COL)
 	{
 		stageIndex_ += LINE;
 	}

@@ -1,6 +1,6 @@
 #pragma once
 
-class InputManager;
+class KeyConfig;
 
 class MultiInputCheck
 {
@@ -49,8 +49,8 @@ public:
 
 private:
 
-	//入力マネージャー
-	InputManager& input_;	
+	//入力管理
+	KeyConfig& key_;	
 
 	//すべてのプレイヤーが入力したか
 	bool allInput_;

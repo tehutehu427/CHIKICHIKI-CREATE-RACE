@@ -5,6 +5,7 @@
 class SceneManager;
 class ResourceManager;
 class InputManager;
+class KeyConfig;
 
 class SceneBase
 {
@@ -54,6 +55,7 @@ protected:
 	ResourceManager& resMng_;
 	InputManager& inputMng_;
 	SceneManager& scnMng_;
+	KeyConfig& keyConfig_;
 
 	//ˆ—‚ÌŠÇ—
 	ProcessFunction func_;

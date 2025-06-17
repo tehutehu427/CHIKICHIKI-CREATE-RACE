@@ -20,6 +20,7 @@ public:
 		SELECT_DOWN,			//選択　下
 		SELECT_LEFT,			//選択　左
 		SELECT_RIGHT,			//選択　右
+		SELECT_BACK,			//選択	戻る
 		PALETTE_CURSOR_UP,		//パレット時のカーソル上移動
 		PALETTE_CURSOR_DOWN,	//パレット時のカーソル下移動
 		PALETTE_CURSOR_LEFT,	//パレット時のカーソル左移動
@@ -40,6 +41,8 @@ public:
 		PLAY_CAMERA_MOVE_DOWN,	//プレイのカメラ移動下
 		PLAY_CAMERA_MOVE_RIGHT,	//プレイのカメラ移動右
 		PLAY_CAMERA_MOVE_LEFT,	//プレイのカメラ移動左
+		DATA_INPUT,				//データを入力
+		DATA_EXPORT,			//データを出力
 		MAX,
 	};
 
