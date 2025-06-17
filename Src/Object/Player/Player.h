@@ -235,6 +235,10 @@ public:
 	//コントローラーセット
 	const void SetCntl(DateBank::TYPE _cntl) { cntl_ = _cntl; }
 
+	//状態遷移
+	void ChangeAction(ATK_ACT _act);
+
+
 	//プレイヤー番号ゲット
 	const int PlayerNum(void) { return playerNum_; }
 #ifdef DEBUG_ON
@@ -359,8 +363,6 @@ private:
 	//------------------------------
 	void Action(void);
 
-	//状態遷移
-	void ChangeAction(ATK_ACT _act);
 
 	//何もしない
 	void NoneUpdate(void);
@@ -369,7 +371,7 @@ private:
 	void ActionInputUpdate(void);
 	void ChangeInput(void);
 
-	//変更
+	//何もなし
 	void ChangeNone(void);
 
 	//移動状態の更新
@@ -380,13 +382,6 @@ private:
 	void ChangeMove(void);
 	//毎フレーム移動方向とスピードを更新する
 	void UpdateMoveDirAndPow(void);
-
-	//回転
-	void Rotate(void);
-
-	//最終的に動かしたい角度の設定
-	void SetGoalRotate(double _deg);
-
 
 
 	//ジャンプ
@@ -401,7 +396,10 @@ private:
 	void KnockBack(void);
 	void ChangeKnockBack(void);
 
-	//
+	//回転
+	void Rotate(void);
+	//最終的に動かしたい角度の設定
+	void SetGoalRotate(double _deg);
 	//------------------------------
 	
 	/// <summary>

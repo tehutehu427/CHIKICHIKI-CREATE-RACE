@@ -33,14 +33,11 @@ public:
 	/// <param name="_hitColTag">相手側の当たり判定</param>
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
-	//サイズの取得
-	const IntVector3 GetHitSize(void)const override;
+	//移動量の取得
+	inline const VECTOR GetMovePow(void)const { return movePow_; }
 
-	/// <summary>
-	/// 当たった処理
-	/// </summary>
-	/// <param name="_hitTrans">対象のモデル情報</param>
-	void Hit(Transform& _hitTrans)override;
+	//サイズの取得
+	inline const IntVector3 GetHitSize(void)const override;
 
 private:
 
