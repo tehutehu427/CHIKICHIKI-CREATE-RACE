@@ -109,6 +109,7 @@
     <ClCompile Include="Src\Object\UI\UiBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\System\SoundManager.h" />
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
     <ClInclude Include="Src\Object\Common\Geometry\Line.h" />
     <ClInclude Include="Src\Object\Common\Geometry\Model.h" />

@@ -13,14 +13,6 @@ public:
 		BACK	//バックグラウンド再生
 	};
 
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	SoundManager();
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
 	~SoundManager();
 
 	/// <summary>
