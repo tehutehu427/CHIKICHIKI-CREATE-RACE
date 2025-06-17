@@ -22,10 +22,10 @@ public :
 
 		NORMAL_ITEM,	//通常アイテム		
 		MOVE_FLOOR,		//移動床
+		CANNON,			//大砲
 		SLIME_FLOOR,	//スライム床
 		SPRING,			//ばね
 		KILLER_ITEM,	//接触すると死ぬアイテム
-		PLAYER_TARGET,	//プレイヤーを狙う
 
 		DESTROYER,		//アイテムオブジェクトを破壊する
 	};
@@ -41,19 +41,19 @@ public :
 	~Collider(void);
 
 	//衝突用タグの取得
-	const TAG GetTag(void)const { return tag_; }
+	inline const TAG GetTag(void)const { return tag_; }
 
 	//当たり判定の形状を取得
-	const Geometry& GetGeometry(void)const { return geometry_; }
+	inline const Geometry& GetGeometry(void)const { return geometry_; }
 
 	//親を取得
-	const ObjectBase& GetParent(void)const { return parent_; }
+	inline const ObjectBase& GetParent(void)const { return parent_; }
 
 	//終了判定の取得
-	const bool IsDead(void)const { return isDead_; }
+	inline const bool IsDead(void)const { return isDead_; }
 
 	//終了処理(所持者の解放時に置く)
-	void Kill(void) { isDead_ = true; }
+	inline void Kill(void) { isDead_ = true; }
 
 	/// <summary>
 	/// 当たった時の処理

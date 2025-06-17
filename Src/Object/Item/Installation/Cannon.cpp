@@ -53,9 +53,9 @@ void Cannon::SetParam(void)
 	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
-	//コライダの作成
+	//砲台のコライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_);
-	MakeCollider(Collider::TAG::PLAYER_TARGET, std::move(geo));
+	MakeCollider(Collider::TAG::CANNON, std::move(geo));
 	
 	//砲身
 	barrelTrans_ = trans_;
@@ -86,6 +86,10 @@ void Cannon::SetParam(void)
 
 	//モデルIDのコピー
 	models_.emplace_back(&barrelTrans_.modelId);
+
+	//砲身のコライダの作成
+	geo = std::make_unique<Model>(barrelTrans_);
+	MakeCollider(Collider::TAG::CANNON, std::move(geo));
 }
 
 void Cannon::Update(void)

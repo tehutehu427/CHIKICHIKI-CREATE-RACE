@@ -12,16 +12,14 @@ public:
 	//**************************************
 	//定数
 	//**************************************
-	static constexpr int PLAYER_NUM = 4;
+	static constexpr int PLAYER_NUM_MAX = 4;
 
 	//プレイヤー1人
 	static constexpr int PLAYER_SINGLE = 1;
 
-	//プレイヤーの大きさ
-	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
 
-	//初期座標
-	static constexpr float START_POS = 50.0f;
+
+
 	
 	enum class PLAYER
 	{
@@ -95,7 +93,11 @@ public:
 
 
 private:
+	//プレイヤーの大きさ
+	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
 
+	//初期座標
+	static constexpr float START_POS = 50.0f;
 
 	//静的インスタンス
 	static PlayerManager* instance_;

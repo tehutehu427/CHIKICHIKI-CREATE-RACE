@@ -2,13 +2,14 @@
 #include"../../Utility/Utility.h"
 #include"../../Manager/System/ResourceManager.h"
 #include"../../Utility/Utility.h"
+#include"../System/DateBank.h"
 #include "PlayerManager.h"
 PlayerManager* PlayerManager::instance_ = nullptr;
 
 
 PlayerManager::PlayerManager(void)
 {
-	playerNum_ = PLAYER_NUM;
+	playerNum_ = 0;
 	cntl_ = PlayerInput::CNTL::NONE;
 	for (int i = 0; i < playerNum_; i++)
 	{
@@ -44,11 +45,11 @@ PlayerManager& PlayerManager::GetInstance(void)
 
 void PlayerManager::Load(void)
 {
+	//データバンクから人数を取得
+	playerNum_ = DateBank::GetInstance().GetPlayerNum();
 	for (int i = 0; i < playerNum_; i++)
 	{
 #ifdef DEBUG_ON
-
-#endif // DEBUG_ON
 		if (i == 0)
 		{
 			cntl_ = PlayerInput::CNTL::KEYBOARD;
@@ -57,8 +58,13 @@ void PlayerManager::Load(void)
 		{
 			cntl_ = PlayerInput::CNTL::PAD;
 		}
+		//デバッグしやすいようにキーボードに設定
+		DateBank::TYPE cntlType = DateBank::TYPE::KEY_BORD;
+#else
+		DateBank::TYPE cntlType = DateBank::GetInstance().GetType();
+#endif // DEBUG_ON
 		std::unique_ptr<Player> player;
-		player = std::make_unique<Player>(i, cntl_, static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
+		player = std::make_unique<Player>(i, cntlType, static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
 		player->Load();
 		players_.push_back(std::move(player));
 	}
