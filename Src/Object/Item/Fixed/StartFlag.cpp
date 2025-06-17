@@ -40,7 +40,7 @@ void StartFlag::SetParam(void)
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
 	//ÉRÉâÉCÉ_ÇÃçÏê¨
-	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_);
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
 	MakeCollider(Collider::TAG::START, std::move(geo));
 }
 

@@ -40,8 +40,8 @@ void CollisionManager::Update(void)
 		{
 			//当たり判定をする範囲内　又は　タグが同じかどうか
 			if (Utility::SqrMagnitude(
-				colliders_[i]->GetGeometry().GetTransParent().pos,
-				colliders_[j]->GetGeometry().GetTransParent().pos)
+				colliders_[i]->GetGeometry().GetColPos(),
+				colliders_[j]->GetGeometry().GetColPos())
 				>= HIT_DIS_SQUARE
 				|| colliders_[i]->GetTag() == colliders_[j]->GetTag())
 			{

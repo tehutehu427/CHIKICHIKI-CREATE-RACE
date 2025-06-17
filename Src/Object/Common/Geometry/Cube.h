@@ -2,12 +2,6 @@
 
 #include"Geometry.h"
 
-class Transform;
-class Model;
-class Cube;
-class Sphere;
-class Capsule;
-
 class Cube : public Geometry
 {
 public:
@@ -15,15 +9,17 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="_parent">追従する親</param>
-	Cube(const Transform& _parent);
+	/// <param name="_pos">追従する親の座標</param>
+	/// <param name="_rot">追従する親の回転</param>
+	Cube(const VECTOR& _pos, const Quaternion& _rot);
 
 	/// <summary>
 	/// コピーコンストラクタ
 	/// </summary>
 	/// <param name="_copyBase">コピー元</param>
-	/// <param name="_parent">追従する親</param>
-	Cube(const Cube& _copyBase, const Transform& _parent);
+	/// <param name="_pos">追従する親の座標</param>
+	/// <param name="_rot">追従する親の回転</param>
+	Cube(const Cube& _copyBase, const VECTOR& _pos, const Quaternion& _rot);
 
 	//デストラクタ
 	~Cube(void)override;

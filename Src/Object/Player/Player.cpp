@@ -43,7 +43,7 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 	changeAction_.emplace(ATK_ACT::KNOCKBACK, std::bind(&Player::ChangeKnockBack, this));
 	//“–‚½‚è”»’è
 	isCol_ = false;
-	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_, RADIUS);
+	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.pos, RADIUS);
 	MakeCollider(_tag, std::move(geo));
 
 	isJump_ = false;

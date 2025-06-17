@@ -1,4 +1,5 @@
-#include"../Transform.h"
+#include"../Utility/Utility.h"
+#include "../Common/Quaternion.h"
 #include"Model.h"
 #include"Cube.h"
 #include"Sphere.h"
@@ -9,14 +10,14 @@
 //ƒJƒvƒZƒ‹
 //***************************************************
 
-Capsule::Capsule(const Transform& _parent, const VECTOR _localPosTop, const VECTOR _localPosDown, const float _radius) : Geometry(_parent),
+Capsule::Capsule(const VECTOR& _pos, const Quaternion& _rot, const VECTOR _localPosTop, const VECTOR _localPosDown, const float _radius) : Geometry(_pos,_rot),
 	localPosTop_(_localPosTop),
 	localPosDown_(_localPosDown),
 	radius_(_radius)
 {
 }
 
-Capsule::Capsule(const Capsule& _copyBase, const Transform& _parent) : Geometry(_parent)
+Capsule::Capsule(const Capsule& _copyBase, const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos,_rot)
 {
 	radius_ = _copyBase.GetRadius();
 	localPosTop_ = _copyBase.GetLocalPosTop();
@@ -42,25 +43,25 @@ void Capsule::Draw(void)
 	VECTOR e;
 
 	// ‹…‘Ì‚ğŒq‚®ü(X+)
-	dir = transformParent_.GetRight();
+	dir = quaRot_.PosAxis(Utility::DIR_R);
 	s = VAdd(pos1, VScale(dir, radius_));
 	e = VAdd(pos2, VScale(dir, radius_));
 	DrawLine3D(s, e, NORMAL_COLOR);
 
 	// ‹…‘Ì‚ğŒq‚®ü(X-)
-	dir = transformParent_.GetLeft();
+	dir = quaRot_.PosAxis(Utility::DIR_L);
 	s = VAdd(pos1, VScale(dir, radius_));
 	e = VAdd(pos2, VScale(dir, radius_));
 	DrawLine3D(s, e, NORMAL_COLOR);
 
 	// ‹…‘Ì‚ğŒq‚®ü(Z+)
-	dir = transformParent_.GetForward();
+	dir = quaRot_.PosAxis(Utility::DIR_F);
 	s = VAdd(pos1, VScale(dir, radius_));
 	e = VAdd(pos2, VScale(dir, radius_));
 	DrawLine3D(s, e, NORMAL_COLOR);
 
 	// ‹…‘Ì‚ğŒq‚®ü(Z-)
-	dir = transformParent_.GetBack();
+	dir = quaRot_.PosAxis(Utility::DIR_B);
 	s = VAdd(pos1, VScale(dir, radius_));
 	e = VAdd(pos2, VScale(dir, radius_));
 	DrawLine3D(s, e, NORMAL_COLOR);

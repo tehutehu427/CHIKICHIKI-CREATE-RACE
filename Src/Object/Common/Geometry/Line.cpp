@@ -1,4 +1,4 @@
-#include "../Transform.h"
+#include "../Common/Quaternion.h"
 #include"Model.h"
 #include"Cube.h"
 #include"Sphere.h"
@@ -9,14 +9,14 @@
 //ê¸
 //***************************************************
 
-Line::Line(const Transform& _parent, const VECTOR _localPosPoint1, const VECTOR _localPosPoint2) : Geometry(_parent),
+Line::Line(const VECTOR& _pos, const Quaternion& _rot, const VECTOR _localPosPoint1, const VECTOR _localPosPoint2) : Geometry(_pos,_rot),
 	localPosPoint1_(_localPosPoint1),
 	localPosPoint2_(_localPosPoint2)
 {
 	hitInfo_ = {};
 }
 
-Line::Line(const Line& _copyBase, const Transform& _parent) : Geometry(_parent)
+Line::Line(const Line& _copyBase, const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos, _rot)
 {
 	localPosPoint1_ = _copyBase.GetLocalPosPoint1();
 	localPosPoint2_ = _copyBase.GetLocalPosPoint2();

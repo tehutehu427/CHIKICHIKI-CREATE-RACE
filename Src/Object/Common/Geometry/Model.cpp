@@ -1,4 +1,4 @@
-#include"../Transform.h"
+#include "../Common/Quaternion.h"
 #include"Sphere.h"
 #include"Capsule.h"
 #include"Cube.h"
@@ -9,13 +9,14 @@
 //ƒ‚ƒfƒ‹
 //***************************************************
 
-Model::Model(const Transform& _parent) : Geometry(_parent)
+Model::Model(const VECTOR& _pos, const Quaternion& _rot, const int _modelId) : Geometry(_pos, _rot), parentModelId_(_modelId)
 {
 	hitInfo_ = {};
 }
 
-Model::Model(const Model& _copyBase, const Transform& _parent) : Geometry(_parent)
+Model::Model(const Model& _copyBase, const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos,_rot)
 {
+	parentModelId_ = _copyBase.GetParentModel();
 	hitInfo_ = {};
 }
 
@@ -46,7 +47,7 @@ const bool Model::IsHit(const Cube& _cube) const
 const bool Model::IsHit(const Sphere& _sphere) const
 {
 	//”»’è
-	auto col = MV1CollCheck_Sphere(GetParentModel(), -1, _sphere.GetTransParent().pos, _sphere.GetRadius());
+	auto col = MV1CollCheck_Sphere(GetParentModel(), -1, _sphere.GetColPos(), _sphere.GetRadius());
 
 	return col.HitNum >= 1;
 }
@@ -71,9 +72,4 @@ const bool Model::IsHit(Line& _line)
 		SetHitInfo(col);
 	}
 	return col.HitFlag;
-}
-
-inline const int Model::GetParentModel(void) const
-{
-	return transformParent_.modelId;
 }

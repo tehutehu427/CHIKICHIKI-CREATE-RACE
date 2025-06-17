@@ -1,4 +1,4 @@
-#include "../Transform.h"
+#include "../Common/Quaternion.h"
 #include"Model.h"
 #include"Cube.h"
 #include"Capsule.h"
@@ -9,12 +9,12 @@
 //球
 //***************************************************
 
-Sphere::Sphere(const Transform& _parent, const float _radius) : Geometry(_parent),
+Sphere::Sphere(const VECTOR& _pos, const float _radius) : Geometry(_pos,Quaternion()),
 	radius_(_radius)
 {
 }
 
-Sphere::Sphere(const Sphere& _copyBase, const Transform& _parent) : Geometry(_parent)
+Sphere::Sphere(const Sphere& _copyBase, const VECTOR& _pos) : Geometry(_pos, Quaternion())
 {
 	radius_ = _copyBase.GetRadius();
 }
@@ -25,7 +25,7 @@ Sphere::~Sphere(void)
 
 void Sphere::Draw(void)
 {
-	DrawSphere3D(transformParent_.pos, radius_, 10, NORMAL_COLOR, NORMAL_COLOR, false);
+	DrawSphere3D(pos_, radius_, 10, NORMAL_COLOR, NORMAL_COLOR, false);
 }
 
 const bool Sphere::IsHit(const Geometry& _geometry) const
@@ -36,7 +36,7 @@ const bool Sphere::IsHit(const Geometry& _geometry) const
 const bool Sphere::IsHit(const Model& _model) const
 {
 	//球体とモデルの当たり判定
-	auto col = MV1CollCheck_Sphere(_model.GetParentModel(), -1, GetTransParent().pos, GetRadius());
+	auto col = MV1CollCheck_Sphere(_model.GetParentModel(), -1, GetColPos(), GetRadius());
 
 	return col.HitNum >= 1;
 }
@@ -55,7 +55,7 @@ const bool Sphere::IsHit(const Sphere& _sphere) const
 	float radius = GetRadius() + _sphere.GetRadius();
 
 	// 座標の差からお互いの距離を取る
-	VECTOR diff = VSub(_sphere.GetTransParent().pos, GetTransParent().pos);
+	VECTOR diff = VSub(_sphere.GetColPos(), GetColPos());
 
 	// 三平方の定理で比較(SqrMagnitudeと同じ)
 	float dis = (diff.x * diff.x) + (diff.y * diff.y) + (diff.z * diff.z);
@@ -80,7 +80,7 @@ const bool Sphere::IsHit(const Capsule& _capsule) const
 
 	// カプセル繋ぎの単位ベクトルと、
 	// そのベクトル元から球体へのベクトルの内積を取る
-	float dot = VDot(cap1to2ENor, VSub(GetTransParent().pos, _capsule.GetPosTop()));
+	float dot = VDot(cap1to2ENor, VSub(GetColPos(), _capsule.GetPosTop()));
 
 	// 内積で求めた射影距離を使って、カプセル繋ぎ上の座標を取る
 	VECTOR capRidePos = VAdd(_capsule.GetPosTop(), VScale(cap1to2ENor, dot));
@@ -119,7 +119,7 @@ const bool Sphere::IsHit(const Capsule& _capsule) const
 	float radius = GetRadius() + _capsule.GetRadius();
 
 	// 座標の差からお互いの距離を取る
-	VECTOR diff = VSub(centerPos, GetTransParent().pos);
+	VECTOR diff = VSub(centerPos, GetColPos());
 
 	// 三平方の定理で比較(SqrMagnitudeと同じ)
 	float dis = (diff.x * diff.x) + (diff.y * diff.y) + (diff.z * diff.z);
@@ -137,13 +137,13 @@ const bool Sphere::IsHit(const Line& _line) const
 	VECTOR d = VSub(_line.GetPosPoint2(), _line.GetPosPoint1());
 
 	//線の先端から球体の中心まで
-	VECTOR m = VSub(GetTransParent().pos, _line.GetPosPoint1());
+	VECTOR m = VSub(GetColPos(), _line.GetPosPoint1());
 
 	float t = VDot(m, d) / VSquareSize(d);
 	t = std::max<float>(0.0f, std::min<float>(1.0f, t));  // 線分内に制限
 
 	VECTOR closestPoint = VAdd(_line.GetPosPoint1(), VScale(d, t));
-	VECTOR diff = VSub(closestPoint, GetTransParent().pos);
+	VECTOR diff = VSub(closestPoint, GetColPos());
 
 	return VSquareSize(diff) <= std::pow(GetRadius(), 2.0);
 }

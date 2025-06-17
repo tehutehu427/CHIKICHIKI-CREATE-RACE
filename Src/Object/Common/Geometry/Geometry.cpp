@@ -1,4 +1,4 @@
-#include"../Transform.h"
+#include "../Common/Quaternion.h"
 #include "Geometry.h"
 
 //***************************************************
@@ -9,7 +9,7 @@ Geometry::~Geometry(void)
 {
 }
 
-Geometry::Geometry(const Transform& _parent) : transformParent_(_parent)
+Geometry::Geometry(const VECTOR& _pos, const Quaternion& _rot) : pos_(_pos), quaRot_(_rot)
 {
 }
 
@@ -23,8 +23,9 @@ const bool Geometry::IsHit(Line& _line)
 	return false;
 }
 
+
 const VECTOR Geometry::GetRotPos(const VECTOR& _localPos) const
 {
-	VECTOR localRotPos = transformParent_.quaRot.PosAxis(_localPos);
-	return VAdd(transformParent_.pos, localRotPos);
+	VECTOR localRotPos = quaRot_.PosAxis(_localPos);
+	return VAdd(pos_, localRotPos);
 }
