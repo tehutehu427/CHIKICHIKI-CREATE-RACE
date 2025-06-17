@@ -33,7 +33,7 @@ public:
 	~Capsule(void)override;
 
 	// •`‰æ
-	inline void Draw(void)override;
+	void Draw(void)override;
 
 	//ŠeŽí“–‚½‚è”»’è
 	const bool IsHit(const Geometry& _geometry)const override;

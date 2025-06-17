@@ -25,7 +25,7 @@ public:
 	void Draw(void)override;
 
 	//’e‚Ì¶‘¶”»’è
-	const bool IsAlive(void)const { return isAlive_; }
+	inline const bool IsAlive(void)const { return isAlive_; }
 
 	/// <summary>
 	/// “–‚½‚è”»’èŒã‚Ìˆ—
@@ -40,9 +40,9 @@ private:
 	VECTOR movePow_;	//ˆÚ“®—Ê
 
 	//ˆÚ“®ˆ—
-	void Move(void);
+	inline void Move(void);
 
 	//íœ
-	void Kill(void);
+	inline void Kill(void);
 };
 

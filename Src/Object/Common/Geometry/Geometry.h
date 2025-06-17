@@ -25,7 +25,7 @@ public:
 	virtual~Geometry(void) = 0;
 
 	//•`‰æ
-	inline virtual void Draw(void) = 0;
+	virtual void Draw(void) = 0;
 
 	//ŠeŽí“–‚½‚è”»’è
 	virtual const bool IsHit(const Geometry& _geometry)const = 0;

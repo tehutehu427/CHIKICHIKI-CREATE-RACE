@@ -63,10 +63,6 @@ void ItemBase::Draw(void)
 	MV1DrawModel(trans_.modelId);
 }
 
-void ItemBase::Hit(Transform& _hitTrans)
-{
-}
-
 void ItemBase::SetPos(IntVector3 mapPos)
 {
 	trans_.pos = MapEditer::GetInstance().MapToWorldPos(mapPos);
