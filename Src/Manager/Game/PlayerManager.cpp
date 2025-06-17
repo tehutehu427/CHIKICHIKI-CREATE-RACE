@@ -47,6 +47,7 @@ void PlayerManager::Load(void)
 {
 	//データバンクから人数を取得
 	playerNum_ = DateBank::GetInstance().GetPlayerNum();
+	//playerNum_ = PLAYER_NUM_MAX;
 	for (int i = 0; i < playerNum_; i++)
 	{
 #ifdef DEBUG_ON
@@ -59,10 +60,11 @@ void PlayerManager::Load(void)
 			cntl_ = PlayerInput::CNTL::PAD;
 		}
 		//デバッグしやすいようにキーボードに設定
-		DateBank::TYPE cntlType = DateBank::TYPE::KEY_BORD;
+		//DateBank::TYPE cntlType = DateBank::TYPE::KEY_BORD;
 #else
-		DateBank::TYPE cntlType = DateBank::GetInstance().GetType();
+		
 #endif // DEBUG_ON
+		DateBank::TYPE cntlType = DateBank::GetInstance().GetType();
 		std::unique_ptr<Player> player;
 		player = std::make_unique<Player>(i, cntlType, static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
 		player->Load();
@@ -257,18 +259,14 @@ Transform PlayerManager::FixTrans(int _playerNum)
 
 void PlayerManager::PunchPlayersColl(int p1, int p2)
 {
-	//どちらもパンチしていなかったら処理しない
-	//if (!players_[p1]->GetIsPunch() && !players_[p2]->GetIsPunch())return;
-
-	//それぞれのカプセル
-	//auto p1Cap = players_[p1]->GetCapsule().lock();
-	//auto p2Cap = players_[p2]->GetCapsule().lock();
-
 	//当たった時の処理
 	if (Utility::IsHitSpheres(players_[p1]->GetPunchPos(), Player::PUNCH_RADIUS
 		, players_[p2]->GetPos(),Player::RADIUS))
 	{
+		//パンチしたプレイヤーの向いてる方向をセットする
 		players_[p2]->SetDir(Utility::GetMoveVec(players_[p1]->GetPos(), players_[p2]->GetPos()));
-		players_[p2]->SetIsPunched(true);
+
+		//ノックバック状態遷移
+		players_[p2]->ChangeAction(Player::ATK_ACT::KNOCKBACK);
 	}
 }
