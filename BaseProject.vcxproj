@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Object\System\CheckChangePhase.cpp" />
+    <ClCompile Include="Src\Manager\System\SoundManager.cpp" />
     <ClCompile Include="Src\Object\System\Select\SelectStage.cpp" />
     <ClCompile Include="Src\Object\System\Select\MultiReady.cpp" />
     <ClCompile Include="Src\Object\System\MultiInputCheck.cpp" />
@@ -110,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\System\CheckChangePhase.h" />
+    <ClInclude Include="Src\Manager\System\SoundManager.h" />
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
     <ClInclude Include="Src\Object\Common\Geometry\Line.h" />
     <ClInclude Include="Src\Object\Common\Geometry\Model.h" />
