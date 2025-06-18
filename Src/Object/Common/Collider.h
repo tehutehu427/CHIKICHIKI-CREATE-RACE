@@ -22,7 +22,7 @@ public :
 
 		NORMAL_ITEM,	//通常アイテム		
 		MOVE_FLOOR,		//移動床
-		CANNON,			//大砲
+		CANNON_AIM,		//大砲の狙い範囲
 		SLIME_FLOOR,	//スライム床
 		SPRING,			//ばね
 		KILLER_ITEM,	//接触すると死ぬアイテム
