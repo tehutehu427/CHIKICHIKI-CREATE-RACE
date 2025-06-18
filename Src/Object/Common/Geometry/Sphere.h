@@ -2,12 +2,6 @@
 
 #include"Geometry.h"
 
-class Transform;
-class Model;
-class Cube;
-class Sphere;
-class Capsule;
-
 class Sphere : public Geometry
 {
 public:
@@ -15,16 +9,16 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="_parent">追従する親</param>
+	/// <param name="_pos">追従する親の座標</param>
 	/// <param name="_radius">半径</param>
-	Sphere(const Transform& _parent, const float _radius);
+	Sphere(const VECTOR& _pos, const float _radius);
 
 	/// <summary>
 	/// コピーコンストラクタ
 	/// </summary>
 	/// <param name="_copyBase">コピー元</param>
-	/// <param name="_parent">追従する親</param>
-	Sphere(const Sphere& _copyBase, const Transform& _parent);
+	/// <param name="_pos">追従する親の座標</param>
+	Sphere(const Sphere& _copyBase, const VECTOR& _pos);
 
 	//デストラクタ
 	~Sphere(void)override;

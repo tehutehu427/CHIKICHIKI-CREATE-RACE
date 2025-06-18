@@ -2,12 +2,6 @@
 
 #include"Geometry.h"
 
-class Transform;
-class Model;
-class Cube;
-class Sphere;
-class Capsule;
-
 class Capsule : public Geometry
 {
 
@@ -16,18 +10,20 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="_parent">追従する親</param>
+	/// <param name="_pos">追従する親の座標</param>
+	/// <param name="_rot">追従する親の回転</param>
 	/// <param name="_localPosTop">上側の相対座標</param>
 	/// <param name="_localPosDown">下側の相対座標</param>
 	/// <param name="_radius">半径</param>
-	Capsule(const Transform& _parent, const VECTOR _localPosTop, const VECTOR _localPosDown, const float _radius);
+	Capsule(const VECTOR& _pos, const Quaternion& _rot, const VECTOR _localPosTop, const VECTOR _localPosDown, const float _radius);
 
 	/// <summary>
 	/// コピーコンストラクタ
 	/// </summary>
 	/// <param name="_copyBase">コピー元</param>
-	/// <param name="_parent">追従する親</param>
-	Capsule(const Capsule& _copyBase, const Transform& _parent);
+	/// <param name="_pos">追従する親の座標</param>
+	/// <param name="_rot">追従する親の回転</param>
+	Capsule(const Capsule& _copyBase, const VECTOR& _pos, const Quaternion& _rot);
 
 	// デストラクタ
 	~Capsule(void)override;
@@ -75,5 +71,4 @@ private:
 
 	// 半径
 	float radius_;
-
 };

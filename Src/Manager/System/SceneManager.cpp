@@ -113,9 +113,6 @@ void SceneManager::Update(void)
 	//シーンごとの更新
 	scene_->Update();
 
-	//終了した当たり判定の消去
-	CollisionManager::GetInstance().Sweep();
-
 	for (auto& c : cameras_)
 	{
 		c->Update();
