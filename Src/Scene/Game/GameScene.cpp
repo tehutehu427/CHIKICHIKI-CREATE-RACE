@@ -135,14 +135,14 @@ void GameScene::ChangeNormal(void)
 void GameScene::DebagUpdate(void)
 {
 	// シーン遷移
-	InputManager& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_RSHIFT))
+	KeyConfig& ins = KeyConfig::GetInstance();
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHENGE_TITLE, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::PAD))
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
 
 	//フェーズ遷移は各アップデートに作ったのでここは消し
-	else if (ins.IsTrgDown(KEY_INPUT_C))
+	else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHENGE_CLEAR, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::PAD))
 	{
 		ChangePhase(PHASE::CLEAR_PHASE);
 	}
@@ -194,12 +194,17 @@ void GameScene::ChangePhaseEdit(void)
 
 void GameScene::ChangePhaseAction(void)
 {
+
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
+	//カメラをフォローモードにチェンジ
 	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FOLLOW);
+	//プレイヤー初期化
 	PlayerManager::GetInstance().Init();
+	//プレイヤーにスタートオブジェクトにする
 	PlayerManager::GetInstance().SetInitPos(ItemManager::GetInstance().GetStartWorldPos());
+	//カメラの追従対象をプレイヤーに設定
 	SceneManager::GetInstance().GetCamera(0).lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(0));
 
 	ItemManager::GetInstance().ResetItemValue();
@@ -241,10 +246,16 @@ void GameScene::UpdateEdit(void)
 void GameScene::UpdateAction(void)
 {
 	ItemManager::GetInstance().Update();
+
+	//プレイヤーの更新
 	PlayerManager::GetInstance().Update();
+
+	//終了した当たり判定の消去
+	CollisionManager::GetInstance().Sweep();
 
 	//更新はアクション中のみ
 	CollisionManager::GetInstance().Update();
+
 	ChangePlayerClearPhase();
 }
 

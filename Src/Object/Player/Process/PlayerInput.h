@@ -17,13 +17,16 @@ public:
     static constexpr int MOVE_BACK_KEY = KEY_INPUT_S;
     static constexpr int MOVE_RIGHT_KEY = KEY_INPUT_D;
 
+    //移動判定になるスティックの大きさ
+    static constexpr int STICK_MOVE_SIZE_MIN = 200;
+
     //パンチ
     static constexpr int PUNCH_KEY = KEY_INPUT_RETURN;
-    static constexpr InputManager::JOYPAD_BTN PUNCH_BTN = InputManager::JOYPAD_BTN::RIGHTBUTTON_LEFT;
+    static constexpr KeyConfig::JOYPAD_BTN PUNCH_BTN = KeyConfig::JOYPAD_BTN::RIGHTBUTTON_LEFT;
 
     //ジャンプ
     static constexpr int JUMP_KEY = KEY_INPUT_SPACE;
-    static constexpr InputManager::JOYPAD_BTN JUMP_BTN = InputManager::JOYPAD_BTN::RIGHTBUTTON_RIGHT;
+    static constexpr KeyConfig::JOYPAD_BTN JUMP_BTN = KeyConfig::JOYPAD_BTN::RIGHTBUTTON_RIGHT;
 
     static constexpr float STICK_MARGIN_DEG = 90.0f;
 
@@ -52,7 +55,7 @@ public:
         PAD
     };
     //シングルトン化するために外部で生成されないようにする
-    PlayerInput(InputManager::JOYPAD_NO _padNum, DateBank::TYPE _cntl);
+    PlayerInput(KeyConfig::JOYPAD_NO _padNum, DateBank::TYPE _cntl);
     ~PlayerInput(void) = default;
 
     void Update(void);
@@ -78,12 +81,18 @@ private:
 
     float leftStickX_;          //スティックの角度X
     float leftStickY_;          //スティックの角度Y
+
+    //スティックの角度(0～1000を返す)
+    Vector2 LStickAngleSize_;
+
+
+
     float stickDeg_;            //パッドのスティックの角度
     float moveDeg_;             //移動方向
     VECTOR moveDir_;            //移動方向
 
     DateBank::TYPE cntl_;                 //入力デバイス
-    InputManager::JOYPAD_NO padNum_;                //パッド番号
+    KeyConfig::JOYPAD_NO padNum_;                //パッド番号
 
 
 };

@@ -146,11 +146,11 @@ void EditorPaletteBase::UpdateNone()
 
 void EditorPaletteBase::UpdateWait()
 {
-	InputManager& ins = InputManager::GetInstance();
+	KeyConfig& ins = KeyConfig::GetInstance();
 	Vector2 leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
 	Vector2 rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
 
-	if(ins.IsMouseTrgDown(InputManager::MOUSE::CLICK_LEFT) &&
+	if(ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PALETTE_CURSOR_SELECT,KeyConfig::JOYPAD_NO::PAD1) &&
 		Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBotm))
 	{
 		ChangeState(STATE::OPEN);
@@ -181,7 +181,7 @@ void EditorPaletteBase::UpdateOpen()
 
 void EditorPaletteBase::UpdateSelect()
 {	
-	InputManager& ins = InputManager::GetInstance();
+	KeyConfig& ins = KeyConfig::GetInstance();
 	ItemManager & itemMng = ItemManager::GetInstance();
 	Vector2 leftTop = {};		//画像左上
 	Vector2 rightBotm = {};		//画像右下
@@ -189,7 +189,7 @@ void EditorPaletteBase::UpdateSelect()
 	//パレット外をクリックしたときパレットを閉じる
 	leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
 	rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
-	if (ins.IsMouseNew(InputManager::MOUSE::CLICK_LEFT) &&
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PALETTE_CURSOR_SELECT, KeyConfig::JOYPAD_NO::PAD1) &&
 		!Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBotm)) {
 		ChangeState(STATE::CLOSE);
 	}

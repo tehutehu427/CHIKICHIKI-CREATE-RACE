@@ -302,17 +302,17 @@ void MapDataIO::RegisterState(const STATE _state, std::function<void()> _update,
 
 void MapDataIO::UpdateWait()
 {
-    KeyConfig& key = KeyConfig::GetInstance();
+    KeyConfig& ins = KeyConfig::GetInstance();
 
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
-    if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::DATA_EXPORT, InputManager::JOYPAD_NO::PAD1))
+    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL,KeyConfig::JOYPAD_NO::PAD1))
     {
         //確認へ移る
         ChangeState(STATE::CHECK_EXPORT);
         return;
     }
 
-    else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::DATA_INPUT, InputManager::JOYPAD_NO::PAD1))
+    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::READ_FILE, KeyConfig::JOYPAD_NO::PAD1))
     {
         //ファイルを読み込む
         if (!ReadFileBool(selectFile_))
@@ -328,14 +328,13 @@ void MapDataIO::UpdateWait()
 
 void MapDataIO::UpdateCheckExport()
 {  
-    KeyConfig& key = KeyConfig::GetInstance();
+    KeyConfig& ins = KeyConfig::GetInstance();
 
     //コマンドの選択
-    if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, InputManager::JOYPAD_NO::PAD1) || 
-        key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, InputManager::JOYPAD_NO::PAD1))
+    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1) || ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
     {
         //増減方向
-        int dir = key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, InputManager::JOYPAD_NO::PAD1) ? 1 : -1;
+        int dir = ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1) ? 1 : -1;
 
         //ステップ更新
         checkStep_ += dir;
@@ -352,7 +351,7 @@ void MapDataIO::UpdateCheckExport()
     }
 
     //決定
-    else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, InputManager::JOYPAD_NO::PAD1))
+    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER,KeyConfig::JOYPAD_NO::PAD1))
     {
         //選択した内容の処理を行う
         if (checkStep_ == static_cast<int>(CHECK_LIST::YES))
@@ -374,14 +373,13 @@ void MapDataIO::UpdateCheckExport()
 
 void MapDataIO::UpdateCheckImport()
 {
-    KeyConfig& key = KeyConfig::GetInstance();
+    KeyConfig& ins = KeyConfig::GetInstance();
 
     //コマンドの選択
-    if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, InputManager::JOYPAD_NO::PAD1) ||
-        key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, InputManager::JOYPAD_NO::PAD1))
+    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1) || ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
     {
         //増減方向
-        int dir = key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, InputManager::JOYPAD_NO::PAD1) ? 1 : -1;
+        int dir = ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1) ? 1 : -1;
 
         //ステップ更新
         checkStep_ += dir;
@@ -398,7 +396,7 @@ void MapDataIO::UpdateCheckImport()
     }
 
     //決定
-    else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, InputManager::JOYPAD_NO::PAD1))
+    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
     {
         //選択した内容の処理を行う
         if (checkStep_ == static_cast<int>(CHECK_LIST::YES))

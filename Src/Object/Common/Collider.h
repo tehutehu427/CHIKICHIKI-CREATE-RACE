@@ -22,7 +22,7 @@ public :
 
 		NORMAL_ITEM,	//通常アイテム		
 		MOVE_FLOOR,		//移動床
-		CANNON,			//大砲
+		CANNON_AIM,		//大砲の狙い範囲
 		SLIME_FLOOR,	//スライム床
 		SPRING,			//ばね
 		KILLER_ITEM,	//接触すると死ぬアイテム
@@ -49,6 +49,12 @@ public :
 	//親を取得
 	inline const ObjectBase& GetParent(void)const { return parent_; }
 
+	//当たったかの判定の取得
+	inline const bool IsHit(void)const { return isHit_; }
+
+	//当たっていない
+	inline void NotHit(void) { isHit_ = false; }
+
 	//終了判定の取得
 	inline const bool IsDead(void)const { return isDead_; }
 
@@ -71,6 +77,9 @@ private:
 
 	//当たり判定の形状
 	Geometry& geometry_;
+
+	//当たったかの判定
+	bool isHit_;
 
 	//終了判定
 	bool isDead_;

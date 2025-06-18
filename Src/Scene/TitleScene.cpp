@@ -41,7 +41,8 @@ void TitleScene::Init(void)
 void TitleScene::NormalUpdate(void)
 {	
 	// ÉVÅ[ÉìëJà⁄
-	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER,InputManager::JOYPAD_NO::PAD1))
+	KeyConfig& ins = KeyConfig::GetInstance();
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
 	}

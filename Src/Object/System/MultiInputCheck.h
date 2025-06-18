@@ -49,8 +49,8 @@ public:
 
 private:
 
-	//入力管理
-	KeyConfig& key_;	
+	//入力マネージャー
+	KeyConfig& input_;
 
 	//すべてのプレイヤーが入力したか
 	bool allInput_;

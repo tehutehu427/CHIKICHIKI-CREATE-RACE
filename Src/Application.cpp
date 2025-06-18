@@ -58,7 +58,6 @@ void Application::Init(void)
 
 	// キー制御初期化
 	SetUseDirectInputFlag(true);
-	InputManager::CreateInstance();
 
 	// リソース管理初期化
 	ResourceManager::CreateInstance();
@@ -80,7 +79,7 @@ void Application::Run(void)
 {
 	LONGLONG time = GetNowHiPerformanceCount();
 
-	auto& inputManager = InputManager::GetInstance();
+	KeyConfig& keyConfig = KeyConfig::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 
 	// ゲームループ
@@ -89,7 +88,7 @@ void Application::Run(void)
 		//フレームレートを更新
 		if (!fps_->UpdateFrameRate()) continue;
 
-		inputManager.Update();
+		keyConfig.Update();
 		sceneManager.Update();
 
 		sceneManager.Draw();
@@ -105,8 +104,6 @@ void Application::Run(void)
 void Application::Destroy(void)
 {
 	fontReg_->Destroy();
-
-	InputManager::GetInstance().Destroy();
 	ResourceManager::GetInstance().Destroy();
 	SceneManager::GetInstance().Destroy();
 	KeyConfig::GetInstance().Destroy();

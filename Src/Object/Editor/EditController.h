@@ -4,6 +4,7 @@
 #include "../../Common/Vector2.h"
 #include "../../Common/IntVector3.h"
 #include "../../Object/Item/ItemBase.h"
+#include "../../Manager/System/KeyConfig.h"
 
 class EditController
 {
@@ -48,6 +49,8 @@ protected:
 
 private:
 	int playerNum_;	//プレイヤー番号
+	KeyConfig::JOYPAD_NO padNum_;	//パッド番号
+
 	Vector2 mousePos_;	//2Dのマウス座標
 	IntVector3 mapPos_;	//3Dのマップ座標
 	MODE mode_;	//モード

@@ -13,7 +13,7 @@ namespace
 
 GameClear::GameClear():
 	scnMng_(SceneManager::GetInstance()),
-	input_(InputManager::GetInstance())
+	keyConfig_(KeyConfig::GetInstance())
 {
 	//状態別ファンクション処理の初期化と登録
 	stateMap_.clear();
@@ -94,13 +94,13 @@ void GameClear::RegisterStateFunction(const STATE _state, std::function<void()> 
 
 void GameClear::UpdateWaiting()
 {
-	InputManager& ins = InputManager::GetInstance();
+	KeyConfig& ins = KeyConfig::GetInstance();
 
 	//ステップ更新
 	waitStep_ -= SceneManager::GetInstance().GetDeltaTime();
 	
 	//スキップ
-	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_RETURN))
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		waitStep_ = 0.0f;	//ステップを条件値に設定
 		//他は効果音を停止など
@@ -118,22 +118,22 @@ void GameClear::UpdateWaiting()
 
 void GameClear::UpdateMenu()
 {
-	InputManager& ins = InputManager::GetInstance();
+	KeyConfig& ins = KeyConfig::GetInstance();
 
 	//メニューを選択させる
-	if (ins.IsTrgDown(KEY_INPUT_UP))
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_UP,KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//選択メニューの更新
 		menuIndex_ = (menuIndex_ - 1 + MENU_LIST_NUM) % MENU_LIST_NUM;
 	}
-	else if (ins.IsTrgDown(KEY_INPUT_DOWN))
+	else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_DOWN, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//選択メニューの更新		
 		menuIndex_ = (menuIndex_ + 1) % MENU_LIST_NUM;
 	}
 
 	//決定処理
-	if (ins.IsTrgDown(KEY_INPUT_RETURN))
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//選択したメニュー項目の処理に移る
 		menuFuncTabe_[static_cast<MENU>(menuIndex_)]();
