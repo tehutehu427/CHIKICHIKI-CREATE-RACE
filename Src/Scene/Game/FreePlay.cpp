@@ -40,7 +40,7 @@ void FreePlay::UpdateAction(void)
 	GameScene::UpdateAction();
 
 	//フェーズ遷移
-	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_Z))
+	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHENGE,KeyConfig::JOYPAD_NO::KEY_PAD1))
 	{
 		ChangePhase(PHASE::EDIT_PHASE);
 	}
@@ -52,7 +52,7 @@ void FreePlay::UpdateEdit(void)
 	GameScene::UpdateEdit();
 
 	//フェーズ遷移
-	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_Z))
+	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHENGE, KeyConfig::JOYPAD_NO::KEY_PAD1))
 	{
 		ChangePhase(PHASE::ACTION_PHASE);
 	}

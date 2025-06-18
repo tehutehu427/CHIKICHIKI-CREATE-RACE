@@ -96,13 +96,13 @@ void Cannon::Update(void)
 {
 #ifdef _DEBUG
 
-	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_UP))targetPos_.z++;
-	if (ins.IsNew(KEY_INPUT_RIGHT))targetPos_.x++;
-	if (ins.IsNew(KEY_INPUT_DOWN))targetPos_.z--;
-	if (ins.IsNew(KEY_INPUT_LEFT))targetPos_.x--;
-	if (ins.IsNew(KEY_INPUT_RSHIFT))targetPos_.y++;
-	if (ins.IsNew(KEY_INPUT_RCONTROL))targetPos_.y--;
+	//auto& ins = InputManager::GetInstance();
+	//if (ins.IsNew(KEY_INPUT_UP))targetPos_.z++;
+	//if (ins.IsNew(KEY_INPUT_RIGHT))targetPos_.x++;
+	//if (ins.IsNew(KEY_INPUT_DOWN))targetPos_.z--;
+	//if (ins.IsNew(KEY_INPUT_LEFT))targetPos_.x--;
+	//if (ins.IsNew(KEY_INPUT_RSHIFT))targetPos_.y++;
+	//if (ins.IsNew(KEY_INPUT_RCONTROL))targetPos_.y--;
 
 #endif // _DEBUG
 	
