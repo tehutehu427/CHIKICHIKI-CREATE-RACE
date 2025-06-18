@@ -144,6 +144,8 @@ void Cannon::Draw(void)
 
 	//DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
 
+	colParam_[2].geometry_->Draw();
+
 	//’eŠÖŒW
 	for (auto& shot : shots_)
 	{
