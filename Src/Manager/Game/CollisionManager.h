@@ -13,7 +13,7 @@ class CollisionManager
 public:
 
 	//“–‚½‚è”»’è‚ğ‚·‚é”ÍˆÍ
-	static constexpr float HIT_DIS = 500.0f;
+	static constexpr float HIT_DIS = 2500.0f;
 
 	//“–‚½‚è”»’è”ÍˆÍ‚Ì2æ
 	static constexpr float HIT_DIS_SQUARE = HIT_DIS * HIT_DIS;
