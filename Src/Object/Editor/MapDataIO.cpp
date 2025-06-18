@@ -6,10 +6,12 @@
 #include "../../Lib/nlohmann/json.hpp"
 #include "../../Common/IntVector3.h"
 #include "../../Common/Quaternion.h"
+#include "../../Common/FontRegistry.h"
 #include "../../Manager/System/InputManager.h"
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/KeyConfig.h"
+#include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "../../Manager/Game/MapEditer.h"
 
@@ -24,6 +26,11 @@ namespace
 
 MapDataIO::MapDataIO()
 {
+    imgBack_ = -1;
+    imgLoad_ = -1;
+    imgBack_ = -1;
+    font_ = -1;
+
     checkStep_ = 0;
     state_ = STATE::NONE;
     selectFile_ = "";
@@ -32,10 +39,20 @@ MapDataIO::MapDataIO()
     RegisterState(STATE::WAIT, [&]() { UpdateWait(); }, [&]() { DrawWait(); });
     RegisterState(STATE::CHECK_EXPORT, [&]() { UpdateCheckExport(); }, [&]() { DrawCheckExport(); });
     RegisterState(STATE::CHECK_IMPORT, [&]() { UpdateCheckImport(); }, [&]() { DrawCheckImport(); });
+
+    //メッセージを設定
+    messages_[static_cast<int>(MESSAGE_TYPE::IMPORT)] = "今配置してるアイテムは消えますがよろしいですか？";
+    messages_[static_cast<int>(MESSAGE_TYPE::EXPORT)] = "データを保存しますか？";
+    messages_[static_cast<int>(MESSAGE_TYPE::YES)] = "はい";
+    messages_[static_cast<int>(MESSAGE_TYPE::NO)] = "いいえ";
+    messages_[static_cast<int>(MESSAGE_TYPE::REPORT)] = "ファイルに保存されました";
+
 }
 
 MapDataIO::~MapDataIO()
 {
+    DeleteFontToHandle(exportFont_);
+    DeleteFontToHandle(font_);
 }
 
 void MapDataIO::Load()
@@ -43,6 +60,16 @@ void MapDataIO::Load()
     //ファイルパスの指定
     selectFile_ = GetFileName();
     ImportJsonFile();
+
+    //画像
+    ResourceManager& res = ResourceManager::GetInstance();
+    imgLoad_ = res.Load(ResourceManager::SRC::LOAD_ICON).handleId_;
+    imgSave_ = res.Load(ResourceManager::SRC::SAVE_ICON).handleId_;
+    imgBack_ = res.Load(ResourceManager::SRC::EXPLAN_BACK).handleId_;
+
+    //フォント生成
+    font_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), FONT_SIZE, 0);
+    exportFont_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), EXPORT_FONT_SIZE, 0);
 }
 
 void MapDataIO::Init()
@@ -208,35 +235,26 @@ std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItem
 
 void MapDataIO::DrawCheckBackBox()
 {
-    constexpr int alpha = 128;
-    constexpr float lineThickness = 3.0f;
-
-    //白っぽいセロファン
-    SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-    DrawBoxAA(
-        margin_size,
-        margin_size,
-        Application::SCREEN_SIZE_X - margin_size,
-        Application::SCREEN_SIZE_Y - margin_size,
-        Utility::WHITE,
+    constexpr int ALPHA = 128;
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, ALPHA);
+    DrawExtendGraph(0, 0,
+        Application::SCREEN_SIZE_X,
+        Application::SCREEN_SIZE_Y,
+        imgBack_,
         true);
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-    //白枠
-    DrawBoxAA(
-        margin_size,
-        margin_size,
-        Application::SCREEN_SIZE_X - margin_size,
-        Application::SCREEN_SIZE_Y - margin_size,
-        Utility::WHITE,
-        false,
-        lineThickness);
 }
 
 void MapDataIO::DrawCheckCommand()
 {
     //選択コマンドの描画
-    std::string commandMes[static_cast<int>(CHECK_LIST::MAX)] = { "はい","いいえ" };
+    std::string commandMes[static_cast<int>(CHECK_LIST::MAX)] = { 
+        messages_[static_cast<int>(MESSAGE_TYPE::YES)],
+        messages_[static_cast<int>(MESSAGE_TYPE::NO)]
+    };
+
+    const Vector2 OFFSET_POS = { 150, 40 };
+    constexpr int MARGIN = 200;
 
     for (int i = 0; i < static_cast<int>(CHECK_LIST::MAX); i++)
     {
@@ -245,10 +263,11 @@ void MapDataIO::DrawCheckCommand()
         if (i == checkStep_) { commandColor = Utility::RED; }
 
         //コマンドメッセージを描画
-        DrawFormatString(
-            Application::SCREEN_HALF_X - 20 + i * 50,
-            Application::SCREEN_HALF_Y + 40,
+        DrawFormatStringToHandle(
+            Application::SCREEN_HALF_X - OFFSET_POS.x + i * MARGIN,
+            Application::SCREEN_HALF_Y + OFFSET_POS.y,
             commandColor,
+            font_,
             commandMes[i].c_str()
         );
     }
@@ -400,7 +419,25 @@ void MapDataIO::UpdateCheckImport()
 
 void MapDataIO::DrawWait()
 {
-    //特別描画することはなし
+    DrawRotaGraph(
+        ICON_SIZE_X / 2,
+        ICON_SIZE_Y / 2,
+        1.0f,
+        0.0f,
+        imgLoad_,
+        true,
+        false
+     );
+
+    DrawRotaGraph(
+        ICON_SIZE_X + ICON_SIZE_X / 2,
+        ICON_SIZE_Y / 2,
+        1.0f,
+        0.0f,
+        imgSave_,
+        true,
+        false
+    );
 }
 
 void MapDataIO::DrawCheckExport()
@@ -408,13 +445,20 @@ void MapDataIO::DrawCheckExport()
     //背景の描画
     DrawCheckBackBox();
 
+    //メッセージ描画位置調整
+    std::string mes = messages_[static_cast<int>(MESSAGE_TYPE::EXPORT)];
+    const Vector2 OFFSET_POS = { 
+        static_cast<int>(mes.length() * FONT_SIZE / 4),
+        -50
+    };
+
     //メッセージの描画
-    DrawFormatString(
-        Application::SCREEN_HALF_X,
-        Application::SCREEN_HALF_Y,
-        Utility::BLUE,
-        "今の配置で保存しますか？"
-    );
+    DrawFormatStringToHandle(
+        Application::SCREEN_HALF_X - OFFSET_POS.x,
+        Application::SCREEN_HALF_Y + OFFSET_POS.y,
+        Utility::WHITE,
+        font_,
+        mes.c_str());
 
     //確認コマンドの描画
     DrawCheckCommand();
@@ -425,13 +469,20 @@ void MapDataIO::DrawCheckImport()
     //背景描画
     DrawCheckBackBox();
 
+    //メッセージ描画位置調整
+    std::string mes = messages_[static_cast<int>(MESSAGE_TYPE::IMPORT)];
+    const Vector2 OFFSET_POS = {
+        static_cast<int>(mes.length() * EXPORT_FONT_SIZE / 4),
+        -50
+    };
+
     //メッセージの描画
-    DrawFormatString(
-        Application::SCREEN_HALF_X,
-        Application::SCREEN_HALF_Y,
-        Utility::BLUE,
-        "今の配置しているアイテムは消えますがよろしいですか？"
-    );
+    DrawFormatStringToHandle(
+        Application::SCREEN_HALF_X - OFFSET_POS.x,
+        Application::SCREEN_HALF_Y + OFFSET_POS.y,
+        Utility::WHITE,
+        exportFont_,
+        mes.c_str());
 
     //確認コマンドの描画
     DrawCheckCommand();
