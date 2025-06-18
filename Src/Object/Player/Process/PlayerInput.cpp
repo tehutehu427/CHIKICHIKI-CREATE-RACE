@@ -90,13 +90,12 @@ void PlayerInput::InputPad(void)
 	int LstickDownSize = ins.PadStickOverSize(padNum_, InputManager::JOYPAD_STICK::L_STICK_DOWN);
 	int LstickRightSize = ins.PadStickOverSize(padNum_, InputManager::JOYPAD_STICK::L_STICK_RIGHT);
 
-	if (LstickUpSize >= STICK_MOVE_SIZE_MIN || LstickLeftSize >= STICK_MOVE_SIZE_MIN
-	|| LstickDownSize >= STICK_MOVE_SIZE_MIN || LstickRightSize >= STICK_MOVE_SIZE_MIN)
+	LStickAngleSize_ = ins.GetKnockLStickSize(padNum_);
+	if (LStickAngleSize_.x<=-STICK_MOVE_SIZE_MIN|| LStickAngleSize_.x >= STICK_MOVE_SIZE_MIN
+		|| LStickAngleSize_.y <= -STICK_MOVE_SIZE_MIN || LStickAngleSize_.y >= STICK_MOVE_SIZE_MIN)
 	{ 
 		actCntl_ = ACT_CNTL::MOVE; 
 
-		//
-		LStickAngleSize_ = ins.GetKnockLStickSize(padNum_);
 		//スティックの角度を求める
 		stickDeg_ = ins.GetLStickDeg(padNum_);
 	}

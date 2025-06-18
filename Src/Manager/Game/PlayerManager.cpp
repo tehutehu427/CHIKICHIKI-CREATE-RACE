@@ -45,12 +45,12 @@ PlayerManager& PlayerManager::GetInstance(void)
 void PlayerManager::Load(void)
 {
 	//データバンクから人数を取得
-	//playerNum_ = DateBank::GetInstance().GetPlayerNum();
-	playerNum_ = PLAYER_NUM_MAX;
+	playerNum_ = DateBank::GetInstance().GetPlayerNum();
+	//playerNum_ = PLAYER_NUM_MAX;
 	for (int i = 0; i < playerNum_; i++)
 	{
-		//DateBank::TYPE cntlType = DateBank::GetInstance().GetType();
-		DateBank::TYPE cntlType = DateBank::TYPE::CONTROLLER;
+		DateBank::TYPE cntlType = DateBank::GetInstance().GetType();
+		//DateBank::TYPE cntlType = DateBank::TYPE::CONTROLLER;
 		std::unique_ptr<Player> player;
 		player = std::make_unique<Player>(i, cntlType, static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
 		player->Load();

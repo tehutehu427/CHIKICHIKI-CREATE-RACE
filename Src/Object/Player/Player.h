@@ -357,8 +357,14 @@ private:
 
 	//当たり判定
 	//----------------------------------
-	std::map<Collider::TAG, std::function<void(void)>>collObjectTables_;
+	//プレイヤーと当たるタグのテーブル
+	std::map<Collider::TAG, std::function<void(const std::weak_ptr<Collider> _hitCol)>>collObjectTables_;
+
+	//各タグと当たったときのアップデート
 	std::function<void(void)>colUpdate_;
+
+	//現在当たっているタグ
+	Collider::TAG currentTag_;
 
 
 	VECTOR gravHitPosUp_;	//重力上方向の座標
@@ -452,15 +458,15 @@ private:
 	//当たり判定
 	//---------------------------------------------------
 	//通常床
-	void CollFloor(void);
+	void CollFloor(const std::weak_ptr<Collider> _hitCol);
 	//動く床
-	void CollMoveFloor(void);
+	void CollMoveFloor(const std::weak_ptr<Collider> _hitCol);
 	//スライム床
-	void CollSlimeFloor(void);
+	void CollSlimeFloor(const std::weak_ptr<Collider> _hitCol);
 	//大砲
-	void CollCannon(void);
+	void CollCannon(const std::weak_ptr<Collider> _hitCol);
 	//当たったら死ぬアイテム
-	void CollKillerItem(void);
+	void CollKillerItem(const std::weak_ptr<Collider> _hitCol);
 
 
 	void Collision(void);
