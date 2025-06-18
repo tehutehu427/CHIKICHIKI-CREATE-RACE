@@ -7,6 +7,7 @@ Collider::Collider(ObjectBase& _parent, const TAG _tag, Geometry& _geometry) :
 	tag_(_tag),
 	geometry_(_geometry)
 {
+	isHit_ = false;
 	isDead_ = false;
 }
 
@@ -16,6 +17,9 @@ Collider::~Collider(void)
 
 void Collider::OnHit(const std::weak_ptr<Collider> _collider)
 {
+	//この当たり判定が当たった
+	isHit_ = true;
+
 	//親に相手のコライダを渡す
 	parent_.OnHit(_collider);
 }

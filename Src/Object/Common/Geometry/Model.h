@@ -2,12 +2,6 @@
 
 #include"Geometry.h"
 
-class Transform;
-class Model;
-class Cube;
-class Sphere;
-class Capsule;
-
 class Model : public Geometry
 {
 public:
@@ -15,15 +9,19 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="_parent">追従する親</param>
-	Model(const Transform& _parent);
+	/// <param name="_pos">追従する親の座標</param>
+	/// <param name="_rot">追従する親の回転</param>
+	/// <param name="_modelId">追従する親のモデルID</param>
+	Model(const VECTOR& _pos, const Quaternion& _rot, const int _modelId);
 
 	/// <summary>
 	/// コピーコンストラクタ
 	/// </summary>
 	/// <param name="_copyBase">コピー元</param>
-	/// <param name="_parent">追従する親</param>
-	Model(const Model& _copyBase, const Transform& _parent);
+	/// <param name="_pos">追従する親の座標</param>
+	/// <param name="_rot">追従する親の回転</param>
+	/// <param name="_modelId">追従する親のモデルID</param>
+	Model(const Model& _copyBase, const VECTOR& _pos, const Quaternion& _rot);
 
 	//デストラクタ
 	~Model(void)override;
@@ -40,7 +38,7 @@ public:
 	const bool IsHit(Line& _line) override;
 
 	//親モデルIDの取得
-	inline const int GetParentModel(void)const;
+	inline const int GetParentModel(void)const { return parentModelId_; };
 
 	//当たった時の情報取得
 	inline const MV1_COLL_RESULT_POLY& GetHitInfo(void)const { return hitInfo_; }
@@ -49,6 +47,8 @@ public:
 	inline void SetHitInfo(const MV1_COLL_RESULT_POLY _hitInfo) { hitInfo_ = _hitInfo; }
 
 private:
+
+	int parentModelId_;				//親のモデルID
 
 	MV1_COLL_RESULT_POLY hitInfo_;	//当たった時の情報
 };

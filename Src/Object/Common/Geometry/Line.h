@@ -2,12 +2,6 @@
 
 #include"Geometry.h"
 
-class Transform;
-class Model;
-class Cube;
-class Sphere;
-class Capsule;
-
 class Line : public Geometry
 {
 public:
@@ -15,17 +9,19 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="_parent">追従する親</param>
+	/// <param name="_pos">追従する親の座標</param>
+	/// <param name="_rot">追従する親の回転</param>
 	/// <param name="_localPosPoint1">1つ目の点の座標</param>
 	/// <param name="_localPosPoint2">2つ目の点の座標</param>
-	Line(const Transform& _parent, const VECTOR _localPosPoint1, const VECTOR _localPosPoint2);
+	Line(const VECTOR& _pos, const Quaternion& _rot, const VECTOR _localPosPoint1, const VECTOR _localPosPoint2);
 
 	/// <summary>
 	/// コピーコンストラクタ
 	/// </summary>
 	/// <param name="_copyBase">コピー元</param>
-	/// <param name="_parent">追従する親</param>
-	Line(const Line& _copyBase, const Transform& _parent);
+	/// <param name="_pos">追従する親の座標</param>
+	/// <param name="_rot">追従する親の回転</param>
+	Line(const Line& _copyBase, const VECTOR& _pos, const Quaternion& _rot);
 
 	// デストラクタ
 	~Line(void)override;

@@ -1,4 +1,4 @@
-#include "../Transform.h"
+#include "../Common/Quaternion.h"
 #include"Model.h"
 #include"Sphere.h"
 #include"Capsule.h"
@@ -9,7 +9,7 @@
 //” 
 //***************************************************
 
-Cube::Cube(const Transform& _parent) : Geometry(_parent)
+Cube::Cube(const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos, _rot)
 {
 	halfSize_ = { 0.0f,0.0f,0.0f };
 
@@ -18,7 +18,7 @@ Cube::Cube(const Transform& _parent) : Geometry(_parent)
 	axis_[2] = { 0.0f,0.0f,1.0f };
 }
 
-Cube::Cube(const Cube& _copyBase, const Transform& _parent) : Geometry(_parent)
+Cube::Cube(const Cube& _copyBase, const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos, _rot)
 {
 	halfSize_ = _copyBase.GetHalfSize();
 
@@ -87,7 +87,7 @@ const bool Cube::IsHit(const Cube& _cube)const
 			fabs(VDot(L, _cube.axis_[1]) * _cube.halfSize_.y) +
 			fabs(VDot(L, _cube.axis_[2]) * _cube.halfSize_.z);
 
-		float dist = fabs(VDot(L, VSub(_cube.transformParent_.pos, transformParent_.pos)));
+		float dist = fabs(VDot(L, VSub(_cube.GetColPos(), pos_)));
 
 		if (dist > (aProj + bProj)) {
 			return false; // Õ“Ë‚µ‚Ä‚¢‚È‚¢

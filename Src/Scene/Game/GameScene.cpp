@@ -193,12 +193,17 @@ void GameScene::ChangePhaseEdit(void)
 
 void GameScene::ChangePhaseAction(void)
 {
+
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
+	//カメラをフォローモードにチェンジ
 	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FOLLOW);
+	//プレイヤー初期化
 	PlayerManager::GetInstance().Init();
+	//プレイヤーにスタートオブジェクトにする
 	PlayerManager::GetInstance().SetInitPos(ItemManager::GetInstance().GetStartWorldPos());
+	//カメラの追従対象をプレイヤーに設定
 	SceneManager::GetInstance().GetCamera(0).lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(0));
 
 	ItemManager::GetInstance().ResetItemValue();
@@ -240,10 +245,16 @@ void GameScene::UpdateEdit(void)
 void GameScene::UpdateAction(void)
 {
 	ItemManager::GetInstance().Update();
+
+	//プレイヤーの更新
 	PlayerManager::GetInstance().Update();
+
+	//終了した当たり判定の消去
+	CollisionManager::GetInstance().Sweep();
 
 	//更新はアクション中のみ
 	CollisionManager::GetInstance().Update();
+
 	ChangePlayerClearPhase();
 }
 

@@ -33,6 +33,8 @@ public:
 	//当たり判定の押し出し回数
 	static constexpr int COL_TRY_CNT_MAX = 10;
 
+	//プレイヤーのローカル角度
+	static constexpr float MODEL_LOCAL_DEG = 180.0f;
 
 	//落ちるアニメーションのスタート
 	static constexpr float FALL_ANIM_START = 32.0f;
@@ -108,6 +110,12 @@ public:
 		PUNCH,	//パンチ
 		KNOCKBACK,//パンチされた状態
 		JUMP
+	};
+
+	enum class PLAYER_STATE
+	{
+		ALIVE
+		,DEATH
 	};
 
 	// アニメーション種別
@@ -295,7 +303,14 @@ private:
 
 	//当たっているアイテムタイプ
 	ItemBase::ITEM_TYPE hitItemType_;	
+	//プレイヤー状態
+	PLAYER_STATE state_;	//プレイヤーの状態(生存状態)
 
+	//プレイヤーの状態遷移
+	std::map<PLAYER_STATE, std::function<void(void)>>changeStates_;
+
+	//状態更新
+	std::function<void(void)>stateUpdate_;
 
 	//アクション関係
 	//----------------------------------------
@@ -341,6 +356,17 @@ private:
 	float punchedCnt_;			//パンチ効果時間カウント
 
 	//当たり判定
+	//----------------------------------
+	//プレイヤーと当たるタグのテーブル
+	std::map<Collider::TAG, std::function<void(const std::weak_ptr<Collider> _hitCol)>>collObjectTables_;
+
+	//各タグと当たったときのアップデート
+	std::function<void(void)>colUpdate_;
+
+	//現在当たっているタグ
+	Collider::TAG currentTag_;
+
+
 	VECTOR gravHitPosUp_;	//重力上方向の座標
 	VECTOR gravHitPosDown_;	//重力下方向
 
@@ -359,6 +385,21 @@ private:
 #ifdef DEBUG_ON
 	void DrawDebug(void);
 #endif // DEBUG_ON
+	//プレイヤー状態
+	//**************************************************
+	//状態遷移
+	void ChangeState(PLAYER_STATE _state);
+	//生存しているとき
+	//------------------------------
+	//状態遷移
+	void ChangeAlive(void);
+	void AliveUpdate(void);
+	//死亡しているとき
+	//------------------------------
+	void ChangeDeath(void);
+	void DeathUpdate(void);
+	//**************************************************
+
 	//アクション関係
 	//------------------------------
 	void Action(void);
@@ -385,6 +426,7 @@ private:
 
 
 	//ジャンプ
+	void JumpUpdate(void);
 	void Jump(void);
 	void ChangeJump(void);
 
@@ -414,6 +456,19 @@ private:
 	void HitItem(const IntVector3 _colPos);
 
 	//当たり判定
+	//---------------------------------------------------
+	//通常床
+	void CollFloor(const std::weak_ptr<Collider> _hitCol);
+	//動く床
+	void CollMoveFloor(const std::weak_ptr<Collider> _hitCol);
+	//スライム床
+	void CollSlimeFloor(const std::weak_ptr<Collider> _hitCol);
+	//大砲
+	void CollCannon(const std::weak_ptr<Collider> _hitCol);
+	//当たったら死ぬアイテム
+	void CollKillerItem(const std::weak_ptr<Collider> _hitCol);
+
+
 	void Collision(void);
 
 	//地面との当たり判定(動いてる床とか)

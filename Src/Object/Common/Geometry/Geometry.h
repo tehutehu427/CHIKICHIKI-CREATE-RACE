@@ -1,7 +1,8 @@
 #pragma once
 
 #include<DxLib.h>
-class Transform;
+#include"../Common/Quaternion.h"
+
 class Model;
 class Cube;
 class Sphere;
@@ -14,12 +15,6 @@ public:
 
 	//通常色
 	static constexpr int NORMAL_COLOR = 0xffffff;
-
-	/// <summary>
-	/// コンストラクタ(外部で作る必要のない基底なのでprotected)
-	/// </summary>
-	/// <param name="_parent">追従する親</param>
-	Geometry(const Transform& _parent);
 
 	//デストラクタ
 	virtual~Geometry(void) = 0;
@@ -37,12 +32,21 @@ public:
 	virtual const bool IsHit(Line& _line);
 
 	//親情報を返す
-	inline const Transform& GetTransParent(void)const { return transformParent_; }
+	inline const VECTOR& GetColPos(void)const { return pos_; }
+	inline const Quaternion& GetColRot(void)const { return quaRot_; }
 
 protected:
+
+	/// <summary>
+	/// コンストラクタ(外部で作る必要のない基底なのでprotected)
+	/// </summary>
+	/// <param name="_pos">追従する親の座標</param>
+	/// <param name="_rot">追従する親の回転</param>
+	Geometry(const VECTOR& _pos, const Quaternion& _rot);
 
 	// 相対座標を回転させてワールド座標で取得する
 	const VECTOR GetRotPos(const VECTOR& _localPos) const;
 
-	const Transform& transformParent_;	//親の情報
+	const VECTOR& pos_;			//親の座標
+	const Quaternion& quaRot_;	//親の回転
 };
