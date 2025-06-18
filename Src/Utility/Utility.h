@@ -248,4 +248,16 @@ public:
 	/// <param name="_change">I—¹ˆÊ’u</param>
 	/// <returns>•Ï‰»—Ê</returns>
 	static float EaseOutQuad(float _time, const float _totalTime, const float _start, const float _end);
+
+	static constexpr float DEFAULT_SHAKE_SPEED = 5.0f;		//—h‚ê‚ÌU•
+	static constexpr float DEFAULT_SHAKE_AMPLITUDE = 10.0f;	//—h‚ê‚Ì‘¬‚³
+	/// <summary>
+	///	—h‚ç‚·ŒvZ‚µ‚½’l‚ğ•Ô‚·
+	/// </summary>
+	/// <param name="_value">—h‚ç‚µ‚½‚¢’l</param>
+	/// <param name="_time">ŠÔ</param>
+	/// <param name="_speed">‘¬“x</param>
+	/// <param name="_amplitude">U•</param>
+	/// <returns></returns>—h‚ç‚·ŒvZ‚µ‚½’l
+	static float GetShake(const float _value, float _time, const float _speed = DEFAULT_SHAKE_SPEED, const float _amplitude = DEFAULT_SHAKE_AMPLITUDE);
 };

@@ -25,11 +25,11 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 	if (cntl_ == DateBank::TYPE::CONTROLLER)
 	{
 		//パッド番号を設定
-		padNum_ = static_cast<InputManager::JOYPAD_NO>(playerNum_ + 1);
+		padNum_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum_ + 1);
 	}
 	else
 	{
-		padNum_ = InputManager::JOYPAD_NO::INPUT_KEY;
+		padNum_ = KeyConfig::JOYPAD_NO::INPUT_KEY;
 	}
 	
 	//オブジェクト生成
@@ -674,17 +674,17 @@ void Player::ArroundColl(Transform _itemTrans)
 #ifdef DEBUG_ON
 void Player::CubeMove(void)
 {
-	auto& input = InputManager::GetInstance();
-	const float SPD = 8.0f;
-	cubeMovePos_ = Utility::VECTOR_ZERO;
-	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
-	if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.z += SPD;
-	if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.z -= SPD;
-	if (input.IsNew(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
-	if (input.IsNew(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
-	if (input.IsNew(KEY_INPUT_T))cubeMovePos_.y -= SPD;
-	if (input.IsNew(KEY_INPUT_Y))cubeMovePos_.y += SPD;
-	cube_.centerPos = VAdd(cube_.centerPos, cubeMovePos_);
+	//auto& input = KeyConfig::GetInstance();
+	//const float SPD = 8.0f;
+	//cubeMovePos_ = Utility::VECTOR_ZERO;
+	//cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
+	//if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.z += SPD;
+	//if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.z -= SPD;
+	//if (input.IsNew(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
+	//if (input.IsNew(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
+	//if (input.IsNew(KEY_INPUT_T))cubeMovePos_.y -= SPD;
+	//if (input.IsNew(KEY_INPUT_Y))cubeMovePos_.y += SPD;
+	//cube_.centerPos = VAdd(cube_.centerPos, cubeMovePos_);
 }
 
 bool Player::CollCube(void)

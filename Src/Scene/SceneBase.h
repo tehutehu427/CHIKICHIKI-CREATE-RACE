@@ -4,7 +4,7 @@
 
 class SceneManager;
 class ResourceManager;
-class InputManager;
+class KeyConfig;
 
 class SceneBase
 {
@@ -52,7 +52,7 @@ protected:
 
 	// ƒŠƒ\[ƒXŠÇ—
 	ResourceManager& resMng_;
-	InputManager& inputMng_;
+	KeyConfig& keyConfig_;
 	SceneManager& scnMng_;
 
 	//ˆ—‚ÌŠÇ—

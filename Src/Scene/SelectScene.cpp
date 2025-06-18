@@ -12,6 +12,7 @@
 #include "../Object/System/Select/ModeSelect.h"
 #include "../Object/System/Select/MultiReady.h"
 #include "../Object/System/Select/SelectStage.h"
+#include "../Object/SkyDome/SkyDome.h"
 
 SelectScene::SelectScene()
 {
@@ -55,6 +56,7 @@ SelectScene::SelectScene()
 	modeSelect_ = nullptr;
 	multiReady_ = nullptr;
 	selectStage_ = nullptr;
+	skyDome_ = nullptr;
 }
 
 SelectScene::~SelectScene()
@@ -75,6 +77,9 @@ void SelectScene::Load()
 
 	selectStage_ = std::make_unique<SelectStage>();
 	selectStage_->Load();
+
+	skyDome_ = std::make_unique<SkyDome>();
+	skyDome_->Load();
 }
 
 void SelectScene::Init(void)
@@ -82,6 +87,7 @@ void SelectScene::Init(void)
 	modeSelect_->Init();
 	multiReady_->Init();
 	selectStage_->Init();
+	skyDome_->Init();
 
 	//初期化時点で人数を一人に設定しておく
 	DateBank::GetInstance().SetPlayerNum(1);
@@ -104,7 +110,11 @@ void SelectScene::RegisterProcessFunc(const STATE _state, ProcessFunction _funcs
 
 void SelectScene::NormalUpdate()
 {
+	//状態別更新処理
 	funcTable_[state_].updataFunc_();
+
+	//スカイドームを常に更新
+	skyDome_->Update();
 }
 
 void SelectScene::UpdateSelectMenu()
@@ -144,6 +154,7 @@ void SelectScene::DrawCheckPlayer()
 
 void SelectScene::DrawSetting()
 {
+
 }
 
 void SelectScene::NormalDraw()
@@ -151,7 +162,10 @@ void SelectScene::NormalDraw()
 #ifdef _DEBUG
 	DebugDraw();
 #endif
+	//スカイドーム
+	skyDome_->Draw();
 
+	//状態別描画処理
 	funcTable_[state_].drawFunc_();
 }
 

@@ -93,6 +93,6 @@ private:
 	bool decide_;
 
 	//ƒpƒbƒhî•ñ
-	InputManager::JOYPAD_NO pad_;
+	KeyConfig::JOYPAD_NO pad_;
 };
 

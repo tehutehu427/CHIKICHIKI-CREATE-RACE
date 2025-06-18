@@ -212,10 +212,10 @@ void PaletteIcon::UpdateScrollDown()
 
 void PaletteIcon::UpdateSelect()
 {
-	InputManager& ins = InputManager::GetInstance();
+	KeyConfig& ins = KeyConfig::GetInstance();
 
 	//クリックしたか調べる
-	if (ins.IsMouseTrgDown(InputManager::MOUSE::CLICK_LEFT)) {
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PALETTE_CURSOR_SELECT,KeyConfig::JOYPAD_NO::PAD1)) {
 		//マウス位置を取得
 		Vector2 mousePos = ins.GetMousePos();
 

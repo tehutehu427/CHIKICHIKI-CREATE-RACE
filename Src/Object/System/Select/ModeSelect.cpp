@@ -145,50 +145,79 @@ void ModeSelect::ChangeUpdateState(const UPD_STATE _state)
 }
 
 void ModeSelect::SelectUpdate(SelectScene& _parent)
+
 {
+
 	constexpr int OFFSET_INDEX = 2;	//選択メニューのオフセット
-	InputManager& ins = InputManager::GetInstance();
+
+	KeyConfig& key = KeyConfig::GetInstance();
+
 	//決定
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+
+	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
+
 	{
+
 		_parent.ProcessMenuFunction(static_cast<SelectScene::SELECT_MENU>(menuIndex_));
+
 	}
+
 	//上へ
-	else if (ins.IsTrgDown(KEY_INPUT_UP))
+
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_UP, KeyConfig::JOYPAD_NO::PAD1))
+
 	{
+
 		//新しく出るメニュー項目を変える
+
 		SetMenuItem(menuIndex_ - OFFSET_INDEX, arcIndex_ - OFFSET_INDEX);
 
 		//選択メニューの更新
+
 		menuIndex_ = (menuIndex_ - 1 + SelectScene::MENU_LIST_NUM) % SelectScene::MENU_LIST_NUM;
 
 		//円弧インデックスの更新
+
 		arcIndex_ = (arcIndex_ - 1 + DRAW_ARC_NUM) % DRAW_ARC_NUM;
 
 		//ターゲット角度の更新
+
 		targetAngle_ += ROTATE_STEP;
 
 		//状態変更
+
 		ChangeUpdateState(UPD_STATE::ROTATE);
+
 	}
+
 	//下へ
-	else if (ins.IsTrgDown(KEY_INPUT_DOWN))
+
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_DOWN, KeyConfig::JOYPAD_NO::PAD1))
+
 	{
+
 		//新しく出るメニュー項目を変える
+
 		SetMenuItem(menuIndex_ + OFFSET_INDEX, arcIndex_ + OFFSET_INDEX);
 
 		//選択メニューの更新		
+
 		menuIndex_ = (menuIndex_ + 1) % SelectScene::MENU_LIST_NUM;
 
 		//円弧インデックスの更新
+
 		arcIndex_ = (arcIndex_ + 1) % DRAW_ARC_NUM;
 
 		//ターゲット角度の更新
+
 		targetAngle_ -= ROTATE_STEP;
 
 		//状態変更
+
 		ChangeUpdateState(UPD_STATE::ROTATE);
+
 	}
+
 }
 
 void ModeSelect::RotateUpdate(SelectScene&)
@@ -293,26 +322,4 @@ void ModeSelect::DebugUpdate()
 
 void ModeSelect::DebugDraw()
 {
-	DrawBox(
-		0,
-		0,
-		Application::SCREEN_SIZE_X,
-		Application::SCREEN_SIZE_Y,
-		Utility::CYAN,
-		true
-	);
-
-	DrawFormatString(
-		0,
-		0,
-		Utility::BLACK,
-		"SelectScene"
-	);
-	DrawFormatString(
-		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y + 16,
-		Utility::WHITE,
-		"arcIndex = %d",
-		arcIndex_
-	);
 }
