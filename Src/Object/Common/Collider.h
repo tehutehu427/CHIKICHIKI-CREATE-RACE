@@ -49,6 +49,12 @@ public :
 	//親を取得
 	inline const ObjectBase& GetParent(void)const { return parent_; }
 
+	//当たったかの判定の取得
+	inline const bool IsHit(void)const { return isHit_; }
+
+	//当たっていない
+	inline void NotHit(void) { isHit_ = false; }
+
 	//終了判定の取得
 	inline const bool IsDead(void)const { return isDead_; }
 
@@ -71,6 +77,9 @@ private:
 
 	//当たり判定の形状
 	Geometry& geometry_;
+
+	//当たったかの判定
+	bool isHit_;
 
 	//終了判定
 	bool isDead_;

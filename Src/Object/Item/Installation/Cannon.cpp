@@ -5,6 +5,7 @@
 #include "../Utility/Utility.h"
 #include "../FpsControl/FpsControl.h"
 #include"../../Common/Geometry/Model.h"
+#include"../../Common/Geometry/Sphere.h"
 #include "CannonShot.h"
 #include "Cannon.h"
 
@@ -93,23 +94,11 @@ void Cannon::SetParam(void)
 
 	//大砲のエイム範囲
 	std::unique_ptr<Sphere>aimGeo = std::make_unique<Sphere>(trans_.pos, AIM_RADIUS);
-	MakeCollider(Collider::TAG::CANNON_AIM, std::move(geo));
+	MakeCollider(Collider::TAG::CANNON_AIM, std::move(aimGeo));
 }
 
 void Cannon::Update(void)
-{
-#ifdef _DEBUG
-
-	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_UP))targetPos_.z++;
-	if (ins.IsNew(KEY_INPUT_RIGHT))targetPos_.x++;
-	if (ins.IsNew(KEY_INPUT_DOWN))targetPos_.z--;
-	if (ins.IsNew(KEY_INPUT_LEFT))targetPos_.x--;
-	if (ins.IsNew(KEY_INPUT_RSHIFT))targetPos_.y++;
-	if (ins.IsNew(KEY_INPUT_RCONTROL))targetPos_.y--;
-
-#endif // _DEBUG
-	
+{	
 	//弾の削除処理
 	DeleteShot();
 
@@ -168,6 +157,20 @@ void Cannon::Draw(void)
 
 void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
+	switch (_hitCol.lock()->GetTag())
+	{
+	case Collider::TAG::PLAYER1:
+	case Collider::TAG::PLAYER2:
+	case Collider::TAG::PLAYER3:
+	case Collider::TAG::PLAYER4:
+		//当たったのがエイム範囲ならプレイヤーを狙う
+		if (colParam_[AIM_COL_NUM].collider_->IsHit())
+			targetPos_ = _hitCol.lock()->GetParent().GetTransform().pos;
+		break;
+
+	default:
+		break;
+	}
 }
 
 void Cannon::ChangeModelColor(const COLOR_F _colorScale)

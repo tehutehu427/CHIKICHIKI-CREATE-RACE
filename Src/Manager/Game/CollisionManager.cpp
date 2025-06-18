@@ -46,6 +46,8 @@ void CollisionManager::Update(void)
 				|| colliders_[i]->GetTag() == colliders_[j]->GetTag())
 			{
 				//範囲外　又は　同一タグだったので飛ばす
+				colliders_[i]->NotHit();
+				colliders_[j]->NotHit();
 				continue;
 			}
 
