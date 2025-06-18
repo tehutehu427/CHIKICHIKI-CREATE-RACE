@@ -54,7 +54,6 @@ protected:
 	ResourceManager& resMng_;
 	KeyConfig& keyConfig_;
 	SceneManager& scnMng_;
-	KeyConfig& keyConfig_;
 
 	//ˆ—‚ÌŠÇ—
 	ProcessFunction func_;

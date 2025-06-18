@@ -4,6 +4,7 @@
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/InputManager.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Utility/Utility.h"
 //#include "../../Scene/Game/GameScene.h"
 
 CheckChangePhase::CheckChangePhase()
@@ -78,7 +79,23 @@ void CheckChangePhase::SetNextPhase(const GameScene::PHASE _nextPhase)
 bool CheckChangePhase::IsCheckChangePhase()
 {
 	KeyConfig& key = KeyConfig::GetInstance();
-	//key.IsTrgDown(KeyConfig::CONTROL_TYPE::MOUSE)
+	Vector2 rightTop = {
+		pos_.x - ICON_SIZE_X / 2,
+		pos_.y - ICON_SIZE_Y / 2,
+	};
+
+	Vector2 leftBottom = {
+		pos_.x + ICON_SIZE_X / 2,
+		pos_.y + ICON_SIZE_Y / 2,
+	};
+
+	//特定のキーを押す、もしくはアイコンをクリックする
+	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHENGE, KeyConfig::JOYPAD_NO::PAD1) ||
+		(key.IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHENGE_CHECK, KeyConfig::JOYPAD_NO::PAD1) &&
+		(Utility::IsPointInRect(key.GetMousePos(), rightTop, leftBottom))))
+	{
+		return true;
+	}
 
 	return false;
 }

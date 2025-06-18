@@ -82,8 +82,10 @@ public:
 		CANCEL,					//キャンセル
 
 		PHASE_CHENGE,			//フェーズ変更
+		PHASE_CHENGE_CHECK,		//フェーズ変更
 
-		READ_FILE,			//ファイル読み込み
+		READ_FILE,				//ファイル読み込み
+		EXPORT_FILE,			//ファイル出力
 
 		SELECT_UP,				//選択　上
 		SELECT_DOWN,			//選択　下
