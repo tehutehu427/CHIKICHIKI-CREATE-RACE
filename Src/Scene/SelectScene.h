@@ -5,6 +5,7 @@
 class MultiReady;
 class ModeSelect;
 class SelectStage;
+class SkyDome;
 
 class SelectScene : public SceneBase
 {
@@ -84,6 +85,9 @@ private:
 
 	//ステージセレクト
 	std::unique_ptr<SelectStage> selectStage_;
+
+	//スカイドーム
+	std::unique_ptr<SkyDome> skyDome_;
 
 	//処理の登録
 	void RegisterProcessFunc(const STATE _state, ProcessFunction _funcs);
