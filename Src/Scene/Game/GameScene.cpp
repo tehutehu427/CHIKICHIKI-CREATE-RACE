@@ -182,12 +182,15 @@ void GameScene::ChangePhaseEdit(void)
 {
 	phaseUpdate_ = std::bind(&GameScene::UpdateEdit, this);
 	phaseDraw_ = std::bind(&GameScene::DrawEdit, this);
-	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
-	VECTOR pos;
-	IntVector3 mPos = MapEditer::MAP_SIZE;
-	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
-	//pos = { 0.0f,250.0f,-500.0f };
-	SceneManager::GetInstance().GetCamera(0).lock()->SetPos(pos);
+	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
+	{
+		SceneManager::GetInstance().GetCamera(i).lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
+		VECTOR pos;
+		IntVector3 mPos = MapEditer::MAP_SIZE;
+		pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
+		//pos = { 0.0f,250.0f,-500.0f };
+		SceneManager::GetInstance().GetCamera(i).lock()->SetPos(pos);
+	}
 	ItemManager::GetInstance().ResetItemValue();
 }
 
@@ -197,15 +200,19 @@ void GameScene::ChangePhaseAction(void)
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
-	//カメラをフォローモードにチェンジ
-	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FOLLOW);
 	//プレイヤー初期化
 	PlayerManager::GetInstance().Init();
+
 	//プレイヤーにスタートオブジェクトにする
 	PlayerManager::GetInstance().SetInitPos(ItemManager::GetInstance().GetStartWorldPos());
-	//カメラの追従対象をプレイヤーに設定
-	SceneManager::GetInstance().GetCamera(0).lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(0));
 
+	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
+	{
+		//カメラをフォローモードにチェンジ
+		SceneManager::GetInstance().GetCamera(i).lock()->ChangeMode(Camera::MODE::FOLLOW);
+		//カメラの追従対象をプレイヤーに設定
+		SceneManager::GetInstance().GetCamera(i).lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(i));
+	}
 	ItemManager::GetInstance().ResetItemValue();
 	//VECTOR pos;
 	//IntVector3 mPos = MapEditer::MAP_SIZE;
