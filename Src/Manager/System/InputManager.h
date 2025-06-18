@@ -159,6 +159,9 @@ public:
 	Vector2 GetKnockLStickSize(JOYPAD_NO no) const;
 	Vector2 GetKnockRStickSize(JOYPAD_NO no) const;
 
+	//指定の方向に倒れた度合い0から1000
+	int PadStickOverSize(JOYPAD_NO no, JOYPAD_STICK stick)const;
+
 private:
 
 	// キー情報
@@ -245,7 +248,4 @@ private:
 
 	// コントローラの入力情報を更新する
 	void SetJPadInState(JOYPAD_NO jpNo);
-
-	//指定の方向に倒れた度合い0から1000
-	int PadStickOverSize(JOYPAD_NO no, JOYPAD_STICK stick)const;
 };
