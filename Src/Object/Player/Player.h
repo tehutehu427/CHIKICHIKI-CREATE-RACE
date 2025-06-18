@@ -26,73 +26,11 @@ public:
 	static constexpr float RADIUS = 25.0f;
 	//プレイヤーの大きさ
 	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
-	//プレイヤー１のX座標
-	static constexpr float PLAYER_ONE_POS_X = -20.0f;
-	//座標の間隔
-	static constexpr float DISTANCE_POS = 50.0f;
-	//当たり判定の押し出し回数
-	static constexpr int COL_TRY_CNT_MAX = 10;
 
-	//プレイヤーのローカル角度
-	static constexpr float MODEL_LOCAL_DEG = 180.0f;
-
-	//落ちるアニメーションのスタート
-	static constexpr float FALL_ANIM_START = 32.0f;
-	//落ちるアニメーションの終わり
-	static constexpr float FALL_ANIM_END = 59.0f;
-
-	//死ぬ判定の座標の基準
-	static constexpr float DEATH_POS_Y = -600.0f;
-	//移動
-	//----------------------------------
-	//移動スピード
-	static constexpr float MOVE_SPEED = 7.0f;
-	//ぶっ飛ぶスピード
-	static constexpr float FLY_AWAY_SPEED = 12.0f;
-	//落ちているときの重力制限(jumpPowに加算しているのでjumpPowに適用)
-	static constexpr float LIMIT_GRAVITY = -20.0f;
-
-	//----------------------------------
-	//ジャンプ
-	//----------------------------------
-	//ジャンプ力
-	static constexpr float POW_JUMP = 20.0f;
-	//ジャンプ加速の倍率
-	static constexpr float TIME_JUMP_SCALE = 1.0f;
-	//ジャンプ時間
-	static constexpr float TIME_JUMP = 3.0f;
-
-	//----------------------------------
-	//パンチ
-	//----------------------------------
-	//パンチ有効時間
-	static constexpr float PUNCH_TIME_MAX = 0.5f;
-	//パンチクールタイム
-	static constexpr float PUNCH_COOL_TIME = 0.5f;
-	// 回転完了までの時間
-	static constexpr float TIME_ROT = 0.1f;
-	//パンチの当たり判定時間中フラグを始めるアニメーションステップ
-	static constexpr float PUNCH_HIT_START_ANIM_STEP = 22.0f;
-	//パンチの当たり判定時間中フラグを終えるアニメーションステップ
-	static constexpr float PUNCH_HIT_END_ANIM_STEP = 35.0f;
 	//パンチの範囲
 	static constexpr float PUNCH_RADIUS = 20.0f;
-	//吹き飛び効果時間
-	static constexpr float PUNCHED_TIME = 0.2f;
 
-	//--------------------------------------------------
-	//当たり判定
-	//--------------------------------------------------
-	//当たり判定のめりこみ防止用
-	static constexpr float POSITION_OFFSET = 0.1f;
 
-	//***********************************
-	//アニメーション関連
-	//***********************************
-	static constexpr float DEFAULT_SPD = 60.0f;
-
-	//当たり判定を行う範囲
-	static constexpr int COL_RANGE = 1;
 
 
 	enum class FLOOR_COL
@@ -261,6 +199,86 @@ public:
 	
 
 private:
+	//***********************************************
+	//定数
+	//***********************************************
+	//プレイヤー１のX座標
+	static constexpr float PLAYER_ONE_POS_X = -20.0f;
+	//座標の間隔
+	static constexpr float DISTANCE_POS = 50.0f;
+	//当たり判定の押し出し回数
+	static constexpr int COL_TRY_CNT_MAX = 10;
+
+	//プレイヤーのローカル角度
+	static constexpr float MODEL_LOCAL_DEG = 180.0f;
+
+	//落ちるアニメーションのスタート
+	static constexpr float FALL_ANIM_START = 32.0f;
+	//落ちるアニメーションの終わり
+	static constexpr float FALL_ANIM_END = 59.0f;
+
+	//死ぬ判定の座標の基準
+	static constexpr float DEATH_POS_Y = -600.0f;
+	//移動
+	//----------------------------------
+	//移動スピード
+	static constexpr float MOVE_SPEED = 7.0f;
+	//ぶっ飛ぶスピード
+	static constexpr float FLY_AWAY_SPEED = 12.0f;
+	//落ちているときの重力制限(jumpPowに加算しているのでjumpPowに適用)
+	static constexpr float LIMIT_GRAVITY = -20.0f;
+
+	//----------------------------------
+	//ジャンプ
+	//----------------------------------
+	//ジャンプ力
+	static constexpr float POW_JUMP = 20.0f;
+	//ジャンプ加速の倍率
+	static constexpr float TIME_JUMP_SCALE = 1.0f;
+	//ジャンプ時間
+	static constexpr float TIME_JUMP = 3.0f;
+
+	//----------------------------------
+	//パンチ
+	//----------------------------------
+	//パンチ有効時間
+	static constexpr float PUNCH_TIME_MAX = 0.5f;
+	//パンチクールタイム
+	static constexpr float PUNCH_COOL_TIME = 0.5f;
+	// 回転完了までの時間
+	static constexpr float TIME_ROT = 0.1f;
+	//パンチの当たり判定時間中フラグを始めるアニメーションステップ
+	static constexpr float PUNCH_HIT_START_ANIM_STEP = 22.0f;
+	//パンチの当たり判定時間中フラグを終えるアニメーションステップ
+	static constexpr float PUNCH_HIT_END_ANIM_STEP = 35.0f;
+
+	//吹き飛び効果時間
+	static constexpr float PUNCHED_TIME = 0.2f;
+	//--------------------------------------------------
+	//当たり判定
+	//--------------------------------------------------
+	//プレイヤーの体の球
+	static constexpr int BODY_SPHERE_COL_NO = 0;
+
+	//プレイヤーの手の座標
+	static constexpr int HAND_SPHERE_COL_NO = 1;
+
+	//現在の座標と移動後座標を結んだ線のコライダ
+	static constexpr int MOVE_LINE_COL_NO = 2;
+
+	//接地しているときのラインのコライダ
+	static constexpr int UP_AND_DOWN_LINE_COL_NO = 3;
+
+	//当たり判定のめりこみ防止用
+	static constexpr float POSITION_OFFSET = 0.1f;
+
+	//***********************************
+	//アニメーション関連
+	//***********************************
+	static constexpr float DEFAULT_SPD = 60.0f;
+
+	//当たり判定を行う範囲
+	static constexpr int COL_RANGE = 1;
 	//******************************************
 	//メンバ変数
 	//******************************************
@@ -290,7 +308,7 @@ private:
 	//オブジェクト関連
 	//--------------------------------------------
 	// アニメーション
-	std::shared_ptr<AnimationController> animationController_;
+	std::unique_ptr<AnimationController> animationController_;
 
 	//操作入力
 	std::shared_ptr<PlayerInput> input_;
@@ -365,6 +383,9 @@ private:
 
 	//現在当たっているタグ
 	Collider::TAG currentTag_;
+
+	VECTOR upPos_;
+	VECTOR downPos_;
 
 
 	VECTOR gravHitPosUp_;	//重力上方向の座標
