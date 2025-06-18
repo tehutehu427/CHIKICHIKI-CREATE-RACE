@@ -269,7 +269,7 @@ private:
 	DateBank::TYPE cntl_;
 
 	//ゲームパッド番号
-	InputManager::JOYPAD_NO padNum_;
+	KeyConfig::JOYPAD_NO padNum_;
 
 	//アイテムの支点
 	std::vector<IntVector3> itemLPos_;

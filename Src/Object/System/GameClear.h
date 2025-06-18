@@ -5,7 +5,7 @@
 #include <vector>
 
 class SceneManager;
-class InputManager;
+class KeyConfig;
 
 class GameClear
 {
@@ -115,7 +115,7 @@ private:
 	SceneManager& scnMng_;
 
 	//“ü—ÍŠÇ—
-	InputManager& input_;
+	KeyConfig& keyConfig_;
 
 	//ó‘Ô•ÊXVˆ—‚ğ“o˜^
 	void RegisterStateFunction(const STATE _state, std::function<void()> _update, std::function<void()> _draw);

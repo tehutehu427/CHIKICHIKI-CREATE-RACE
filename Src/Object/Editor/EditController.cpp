@@ -1,11 +1,12 @@
 #include "../../Utility/Utility.h"
-#include "../../Manager/System/InputManager.h"
+#include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/Game/MapEditer.h"
 #include "EditController.h"
 
 EditController::EditController(int playerNum)
 {
 	playerNum_ = playerNum;
+	padNum_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum + 1);
 	mousePos_ = Vector2();
 	mapPos_ = {};
 	moveDir_ = MOVE_DIR::NONE;
@@ -32,7 +33,7 @@ void EditController::Init(void)
 void EditController::Update(void)
 {
 	//マウス位置取得
-	mousePos_ = InputManager::GetInstance().GetMousePos();
+	mousePos_ = KeyConfig::GetInstance().GetMousePos();
 	DebugUpdate();
 
 	//モード別更新処理
@@ -62,7 +63,7 @@ void EditController::ChengeMode(MODE mode)
 void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 {
 
-	mousePos_ = InputManager::GetInstance().GetMousePos();
+	mousePos_ = KeyConfig::GetInstance().GetMousePos();
 	itemType_ = itemType;
 	if (itemType_ == ItemBase::ITEM_TYPE::NONE)
 	{
@@ -156,7 +157,7 @@ void EditController::MoveRotateObjectDraw(void)
 void EditController::ItemNotSelect(void)
 {
 	auto& itemMIns = ItemManager::GetInstance();
-	if (InputManager::GetInstance().IsMouseTrgDown(InputManager::MOUSE::CLICK_LEFT) == true)
+	if (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
 	{
 		if (itemMIns.GetDummyItemStatus(playerNum_).effType != ItemBase::EFFECT_TYPE::DESTROYER)
 		{
@@ -416,10 +417,10 @@ void EditController::MoveItem(void)
 EditController::MOVE_DIR EditController::GetMoveDir(void) const
 {
 	MOVE_DIR moveDir = MOVE_DIR::NONE;
-	InputManager& ins = InputManager::GetInstance();
+	KeyConfig& ins = KeyConfig::GetInstance();
 	if (moveDir_ == MOVE_DIR::NONE)
 	{
-		if (ins.IsMouseNew(InputManager::MOUSE::CLICK_LEFT) == false)
+		if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT,padNum_) == false)
 		{
 			return moveDir;
 		}
@@ -428,7 +429,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 			return moveDir;
 		}
 	}
-	else if (ins.IsMouseTrgUp(InputManager::MOUSE::CLICK_LEFT) == true)
+	else if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
 	{
 		return moveDir;
 	}
@@ -477,14 +478,14 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 
 void EditController::DebugUpdate(void)
 {
-	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_X))
-	{
-		SetItemType(ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
-	}
-	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_RETURN))
-	{
-		ChengeMode(MODE::ITEM_SELECT);
-	}
+	//if (KeyConfig::GetInstance().IsTrgDown(KEY_INPUT_X))
+	//{
+	//	SetItemType(ItemBase::ITEM_TYPE::MOVE_HORI_FLOOR);
+	//}
+	//if (KeyConfig::GetInstance().IsTrgDown(KEY_INPUT_RETURN))
+	//{
+	//	ChengeMode(MODE::ITEM_SELECT);
+	//}
 }
 
 void EditController::DebugDraw(void)
@@ -501,8 +502,8 @@ void EditController::DebugDraw(void)
 
 void EditController::RotateObject(void) const
 {
-	InputManager& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_R))
+	KeyConfig& ins = KeyConfig::GetInstance();
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ITEM_ROTATE,padNum_))
 	{
 		Quaternion rot = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
 		float rotScale = Utility::Deg2RadF(90.0f);

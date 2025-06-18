@@ -1,6 +1,6 @@
 #include "MultiReady.h"
 #include "../../../Manager/System/ResourceManager.h"
-#include "../../../Manager/System/InputManager.h"
+#include "../../../Manager/System/KeyConfig.h"
 #include "../../../Manager/System/DateBank.h"
 #include "../../../Manager/Game/PlayerManager.h"
 #include "../../../Scene/SelectScene.h"
@@ -9,7 +9,7 @@
 
 
 MultiReady::MultiReady() :
-	 input_(InputManager::GetInstance())
+	 keyConfig_(KeyConfig::GetInstance())
 {
 	//状態別処理の登録
 	RegisterProcessFunc(STATE::NUM_CHECK, SceneBase::ProcessFunction{ [&]() { UpdateNumCheck(); },  [&]() { DrawNumCheck(); } });
@@ -42,7 +42,7 @@ void MultiReady::Update(SelectScene& _parent)
 	stateTables_[state_].updataFunc_();
 
 	//戻る処理
-	if (input_.IsTrgDown(KEY_INPUT_B))
+	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//ひとつ前の状態を取得
 		int state = static_cast<int>(state_) - 1;
@@ -83,17 +83,17 @@ void MultiReady::UpdateNumCheck()
 	static constexpr int PLAYER_NUM_CHOICES = PLAYER_NUM_MAX - PLAYER_NUM_MIN + 1;//定数：選べるプレイヤー人数の数
 
 	//人数の選択
-	if (input_.IsTrgDown(KEY_INPUT_LEFT))
+	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//左キーで選択をひとつ戻す（範囲内でループ）
 		playerNum_ = (playerNum_ - 1 + PLAYER_NUM_CHOICES) % PLAYER_NUM_CHOICES;
 	}
-	else if (input_.IsTrgDown(KEY_INPUT_RIGHT))
+	else if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//右キーで選択をひとつ進める（範囲内でループ）
 		playerNum_ = (playerNum_ + 1) % PLAYER_NUM_CHOICES;
 	}
-	else if (input_.IsTrgDown(KEY_INPUT_RETURN))
+	else if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//データ格納（実際の人数は MIN を加算）
 		DateBank::GetInstance().SetPlayerNum(playerNum_ + PLAYER_NUM_MIN);
@@ -118,7 +118,7 @@ void MultiReady::UpdatePadCheck()
 void MultiReady::UpdateFinalCheck()
 {
 	//最終確認
-	if (input_.IsTrgDown(KEY_INPUT_RETURN))
+	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER,KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//シーン遷移
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::MULTI);

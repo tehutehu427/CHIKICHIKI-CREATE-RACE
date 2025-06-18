@@ -19,11 +19,11 @@ public:
 
     //パンチ
     static constexpr int PUNCH_KEY = KEY_INPUT_RETURN;
-    static constexpr InputManager::JOYPAD_BTN PUNCH_BTN = InputManager::JOYPAD_BTN::RIGHTBUTTON_LEFT;
+    static constexpr KeyConfig::JOYPAD_BTN PUNCH_BTN = KeyConfig::JOYPAD_BTN::RIGHTBUTTON_LEFT;
 
     //ジャンプ
     static constexpr int JUMP_KEY = KEY_INPUT_SPACE;
-    static constexpr InputManager::JOYPAD_BTN JUMP_BTN = InputManager::JOYPAD_BTN::RIGHTBUTTON_RIGHT;
+    static constexpr KeyConfig::JOYPAD_BTN JUMP_BTN = KeyConfig::JOYPAD_BTN::RIGHTBUTTON_RIGHT;
 
     static constexpr float STICK_MARGIN_DEG = 90.0f;
 
@@ -52,7 +52,7 @@ public:
         PAD
     };
     //シングルトン化するために外部で生成されないようにする
-    PlayerInput(InputManager::JOYPAD_NO _padNum, DateBank::TYPE _cntl);
+    PlayerInput(KeyConfig::JOYPAD_NO _padNum, DateBank::TYPE _cntl);
     ~PlayerInput(void) = default;
 
     void Update(void);
@@ -83,7 +83,7 @@ private:
     VECTOR moveDir_;            //移動方向
 
     DateBank::TYPE cntl_;                 //入力デバイス
-    InputManager::JOYPAD_NO padNum_;                //パッド番号
+    KeyConfig::JOYPAD_NO padNum_;                //パッド番号
 
 
 };

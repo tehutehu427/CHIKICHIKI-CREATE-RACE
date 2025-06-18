@@ -7,7 +7,7 @@ PaletteCursor::PaletteCursor(const int _plNum, const int _img) :
 	img_(_img)
 {
 	//初期化
-	pad_ = InputManager::JOYPAD_NO::PAD1;
+	pad_ = KeyConfig::JOYPAD_NO::PAD1;
 	pos_ = { -1,-1 };
 	decide_ = false;
 	rate_ = -1.0f;
@@ -20,7 +20,7 @@ PaletteCursor::~PaletteCursor()
 void PaletteCursor::Init()
 {
 	//パッド情報
-	pad_ = static_cast<InputManager::JOYPAD_NO>(playerNum_ + 1);
+	pad_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum_ + 1);
 
 	//初期設定
 	Reset();
@@ -31,14 +31,15 @@ void PaletteCursor::Update()
 	//決定済みの場合
 	if (decide_) { return; }
 
-	auto& ins = InputManager::GetInstance();
+	auto& ins = KeyConfig::GetInstance();
 
 	//スティック
-	int stickX = ins.GetJPadInputState(pad_).AKeyLX;
-	int stickY = ins.GetJPadInputState(pad_).AKeyLY;
+	Vector2 stick = ins.GetKnockLStickSize(pad_);
+	//int stickX = ins.GetJPadInputState(pad_).AKeyLX;
+	//int stickY = ins.GetJPadInputState(pad_).AKeyLY;
 
 	//操作処理
-	if (stickX > 0)
+	if (stick.x > 0)
 	{
 		pos_.x += MOVE_POW;
 		if (pos_.x > Application::SCREEN_SIZE_X)
@@ -46,7 +47,7 @@ void PaletteCursor::Update()
 			pos_.x = Application::SCREEN_SIZE_X;
 		}
 	}
-	if (stickX < 0)
+	if (stick.x < 0)
 	{
 		pos_.x -= MOVE_POW;
 		if (pos_.x < 0)
@@ -54,7 +55,7 @@ void PaletteCursor::Update()
 			pos_.x = 0;
 		}
 	}
-	if (stickY < 0)
+	if (stick.y < 0)
 	{
 		pos_.y -= MOVE_POW;
 		if (pos_.y < 0)
@@ -62,7 +63,7 @@ void PaletteCursor::Update()
 			pos_.y = 0;
 		}
 	}
-	if (stickY > 0)
+	if (stick.y > 0)
 	{
 		pos_.y += MOVE_POW;
 		if (pos_.y > Application::SCREEN_SIZE_Y)
@@ -72,7 +73,7 @@ void PaletteCursor::Update()
 	}
 
 	//決定
-	if (ins.IsPadBtnTrgDown(pad_, InputManager::JOYPAD_BTN::RIGHTBUTTON_RIGHT))
+	if (ins.IsTrgDown( KeyConfig::CONTROL_TYPE::ENTER,pad_))
 	{
 		decide_ = true;
 	}
