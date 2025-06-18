@@ -102,18 +102,11 @@ void Cannon::Update(void)
 	//’e‚Ìíœˆ—
 	DeleteShot();
 
-	//Ë’ö“à‚È‚ç
-	if (IsWithinRange())
-	{
-		//’e‚Ì¶¬
-		CreateShot();
+	//–C‘ä‚Ì‰ñ“]
+	RotateTurret();
 
-		//–C‘ä‚Ì‰ñ“]
-		RotateTurret();
-
-		//–Cg‚Ì‰ñ“]
-		RotateBarrel();
-	}
+	//–Cg‚Ì‰ñ“]
+	RotateBarrel();
 
 	//’e‚ÌXV
 	for (auto& shot : shots_)
@@ -165,9 +158,14 @@ void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
 	case Collider::TAG::PLAYER2:
 	case Collider::TAG::PLAYER3:
 	case Collider::TAG::PLAYER4:
+
 		//“–‚½‚Á‚½‚Ì‚ªƒGƒCƒ€”ÍˆÍ‚È‚çƒvƒŒƒCƒ„[‚ğ‘_‚¤
 		if (colParam_[AIM_COL_NUM].collider_->IsHit())
 			targetPos_ = _hitCol.lock()->GetParent().GetTransform().pos;
+
+		//’e‚Ì¶¬
+		CreateShot();
+
 		break;
 
 	default:
@@ -274,9 +272,4 @@ void Cannon::DeleteShot(void)
 		//’eƒJƒEƒ“ƒgŒ¸­
 		shotNum_--;
 	}
-}
-
-bool Cannon::IsWithinRange(void)
-{
-	return Utility::MagnitudeF(targetPos_) <= AIM_RADIUS;
 }

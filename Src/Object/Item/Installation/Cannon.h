@@ -19,7 +19,7 @@ public:
 	static constexpr VECTOR MODEL_SIZE = { 120.0f,100.0f,80.0f };	//モデルのサイズ
 
 	//エイム
-	static constexpr float  AIM_RADIUS = 500.0f;	//狙う範囲半径
+	static constexpr float  AIM_RADIUS = 1000.0f;	//狙う範囲半径
 	static constexpr float AIM_TIME_TURRET = 1.0f;	//対象に向くまでの時間
 	static constexpr float AIM_TIME_BARREL = 1.0f;	//対象に向くまでの時間
 
@@ -82,8 +82,5 @@ private:
 
 	//弾の削除
 	void DeleteShot(void);
-
-	//射程内かの判定
-	bool IsWithinRange(void);
 };
 
