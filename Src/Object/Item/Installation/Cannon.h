@@ -81,8 +81,5 @@ private:
 
 	//’e‚Ìíœ
 	void DeleteShot(void);
-
-	//Ë’ö“à‚©‚Ì”»’è
-	bool IsWithinRange(void);
 };
 
