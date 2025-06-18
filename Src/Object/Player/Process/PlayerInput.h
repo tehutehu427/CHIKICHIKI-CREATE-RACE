@@ -17,6 +17,9 @@ public:
     static constexpr int MOVE_BACK_KEY = KEY_INPUT_S;
     static constexpr int MOVE_RIGHT_KEY = KEY_INPUT_D;
 
+    //移動判定になるスティックの大きさ
+    static constexpr int STICK_MOVE_SIZE_MIN = 200;
+
     //パンチ
     static constexpr int PUNCH_KEY = KEY_INPUT_RETURN;
     static constexpr KeyConfig::JOYPAD_BTN PUNCH_BTN = KeyConfig::JOYPAD_BTN::RIGHTBUTTON_LEFT;
@@ -78,6 +81,12 @@ private:
 
     float leftStickX_;          //スティックの角度X
     float leftStickY_;          //スティックの角度Y
+
+    //スティックの角度(0～1000を返す)
+    Vector2 LStickAngleSize_;
+
+
+
     float stickDeg_;            //パッドのスティックの角度
     float moveDeg_;             //移動方向
     VECTOR moveDir_;            //移動方向
