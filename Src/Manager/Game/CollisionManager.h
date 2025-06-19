@@ -13,10 +13,13 @@ class CollisionManager
 public:
 
 	//当たり判定をする範囲
-	static constexpr float HIT_DIS = 500.0f;
+	static constexpr float HIT_RANGE_NORMAL = 300.0f;
+	static constexpr float HIT_RANGE_TARGET = 2500.0f;
 
 	//当たり判定範囲の2乗
-	static constexpr float HIT_DIS_SQUARE = HIT_DIS * HIT_DIS;
+	static constexpr float HIT_DIS_SQUARE = HIT_RANGE_NORMAL * HIT_RANGE_NORMAL;
+
+	
 	
 	//インスタンス生成
 	static void CreateInstance(void);
@@ -44,6 +47,9 @@ private:
 	//当たり判定格納
 	std::vector<std::shared_ptr<Collider>>colliders_;
 
+	//当たり判定距離の2乗
+	std::map<Collider::TAG, float>hitRange_;
+
 	//コンストラクタ
 	CollisionManager(void);
 
@@ -56,5 +62,8 @@ private:
 
 	//当たり判定
 	bool IsCollision(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2);
+
+	const bool IsWithInHitRange(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2) const;
+
 };
 
