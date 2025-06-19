@@ -258,16 +258,21 @@ private:
 	//当たり判定
 	//--------------------------------------------------
 	//プレイヤーの体の球
-	static constexpr int BODY_SPHERE_COL_NO = 0;
+	static constexpr int BODY_SPHERE_COL_NO = 1;
 
 	//プレイヤーの手の座標
-	static constexpr int HAND_SPHERE_COL_NO = 1;
+	static constexpr int HAND_SPHERE_COL_NO = 2;
 
 	//現在の座標と移動後座標を結んだ線のコライダ
-	static constexpr int MOVE_LINE_COL_NO = 2;
+	static constexpr int MOVE_LINE_COL_NO = 3;
 
 	//接地しているときのラインのコライダ
-	static constexpr int UP_AND_DOWN_LINE_COL_NO = 3;
+	static constexpr int UP_AND_DOWN_LINE_COL_NO = 0;
+	//プレイヤーの上の座標
+	static constexpr VECTOR LOCAL_UP_POS = { 0.0f,RADIUS+70,0.0f };
+	//プレイヤーの下
+	static constexpr VECTOR LOCAL_DOWN_POS = { 0.0f,-RADIUS-70,0.0f };
+
 
 	//当たり判定のめりこみ防止用
 	static constexpr float POSITION_OFFSET = 0.1f;

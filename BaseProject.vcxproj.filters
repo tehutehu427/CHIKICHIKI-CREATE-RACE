@@ -1,764 +1,249 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ソース ファイル">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="リソース ファイル">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="ソース ファイル\_debug">
-      <UniqueIdentifier>{692afc8e-a6d7-4835-84be-0a22e67b516d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Common">
-      <UniqueIdentifier>{17ebc4b5-4894-4fd2-b50b-bd2b8ed18bdb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Manager">
-      <UniqueIdentifier>{7f661b68-2ac1-46f0-a72e-2c5b31d1c61f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Object">
-      <UniqueIdentifier>{600f44ad-e11e-4fc6-b165-fde3b508648d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Scene">
-      <UniqueIdentifier>{1c6f465c-0c6c-4886-b758-f7e0681f0a4a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Utility">
-      <UniqueIdentifier>{e2873e1a-e651-4a1d-9c66-b9823792c6aa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\_debug">
-      <UniqueIdentifier>{6cb19f13-f6fc-46e1-87c1-793b7ec640e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Common">
-      <UniqueIdentifier>{16171512-ac06-49c0-8668-623c501b7833}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Manager">
-      <UniqueIdentifier>{c46d3100-17c5-4849-839b-754795e9709b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Object">
-      <UniqueIdentifier>{604e2437-eac4-4057-ad42-8b1af55e7c79}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Scene">
-      <UniqueIdentifier>{438a9bb0-9805-48c9-8cb7-8da84d09f24e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Utility">
-      <UniqueIdentifier>{92d9e735-7050-4ee3-b223-779bcd3392de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\Object\Common">
-      <UniqueIdentifier>{49d30192-0529-4327-83ba-c4b3342f9c47}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Object\Common">
-      <UniqueIdentifier>{e1d2c310-5096-4122-b6f2-acf3b54d243c}</UniqueIdentifier>
-    </Filter>
+    <FxCompile Include="Src\Shader\hlsl\DarklyRotateSprites.hlsl" />
+    <FxCompile Include="Src\Shader\hlsl\RotateGlow.hlsl" />
+    <FxCompile Include="Src\Shader\hlsl\Blur.hlsl" />
+    <FxCompile Include="Src\Shader\hlsl\Damage.hlsl" />
+    <FxCompile Include="Src\Shader\hlsl\Glow.hlsl" />
+    <FxCompile Include="Src\Shader\hlsl\GlowRotateSprite.hlsl" />
+    <FxCompile Include="Src\Shader\hlsl\Monotone.hlsl" />
+    <FxCompile Include="Src\Shader\hlsl\ScanLine.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\Application.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Common\Fader.cpp">
-      <Filter>ソース ファイル\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Common\Quaternion.cpp">
-      <Filter>ソース ファイル\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\System\Resource.cpp">
-      <Filter>ソース ファイル\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\System\ResourceManager.cpp">
-      <Filter>ソース ファイル\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\System\SceneManager.cpp">
-      <Filter>ソース ファイル\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Scene\Game\GameScene.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Scene\SceneBase.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Scene\TitleScene.cpp">
-      <Filter>ソース ファイル\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\System\Camera.cpp">
-      <Filter>ソース ファイル\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Common\AnimationController.cpp">
-      <Filter>ソース ファイル\Object\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Common\Collider.cpp">
-      <Filter>ソース ファイル\Object\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Common\Transform.cpp">
-      <Filter>ソース ファイル\Object\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\System\InputManager.cpp">
-      <Filter>ソース ファイル\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Common\Vector2.cpp">
-      <Filter>ソース ファイル\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Utility\Utility.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\ObjectBase.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\FpsControl\FpsControl.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Player\Player.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\Game\GravityManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\Game\MapEditer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\Game\ItemManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Common\IntVector3.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\ItemBase.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Installation\Floor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Editor\MapDataIO.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Editor\Palette\EditorPaletteBase.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Installation\MoveHoriFloor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\System\DateBank.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Grid.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Installation\MoveVerFloor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Installation\Fence.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Installation\Cannon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\Game\PlayerManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Player\Process\PlayerInput.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Editor\Palette\Icon\PaletteIcon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Editor\EditController.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\SkyDome\SkyDome.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Installation\SlimeFloor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Scene\Game\FreePlay.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Installation\Spiky.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Installation\Fan.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Installation\CannonShot.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Scene\Game\SoloChallenge.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Scene\Game\MultiParty.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Scene\SelectScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-
-    <ClCompile Include="Src\Common\FontRegistry.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\System\GameClear.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Fixed\StartFlag.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Fixed\GoalFlag.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Destroyer\SmallBomb.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Shader\PixelMaterial.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Shader\PixelRenderer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Shader\PostEffect\PostEffectBase.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Shader\PostEffect\PostEffectBlur.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Shader\PostEffect\PostEffectDamage.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Shader\PostEffect\PostEffectMonotone.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Shader\PostEffect\PostEffectScanLine.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\System\Select\ModeSelect.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Shader\Effect\SelectUIGlow.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Shader\Effect\EffectBase.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Shader\Effect\SelectUIDarkly.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Installation\Spring.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\UI\EditorUi.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\UI\UiBase.cpp">
-    <ClCompile Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Editor\Palette\PaletteCursor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\System\Result\MultiResult.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\System\Result\Palette.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\System\Result\ScoreGage.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\Game\ScoreManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\System\Result\ScoreGageManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\System\MultiInputCheck.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\System\Select\MultiReady.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\System\Select\SelectStage.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\System\KeyConfig.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Editor\Palette\PaletteCursor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Item\Installation\FerrisWheel.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Common\Geometry\Geometry.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\Game\CollisionManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Common\Geometry\Model.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Common\Geometry\Cube.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Common\Geometry\Sphere.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Common\Geometry\Capsule.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Common\Geometry\Line.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
+    <ClCompile Include="Src\Object\System\Select\SelectStage.cpp" />
+    <ClCompile Include="Src\Object\System\Select\MultiReady.cpp" />
+    <ClCompile Include="Src\Object\System\MultiInputCheck.cpp" />
+    <ClCompile Include="Src\Object\System\Result\ScoreGageManager.cpp" />
+    <ClCompile Include="Src\Manager\Game\ScoreManager.cpp" />
+    <ClCompile Include="Src\Object\System\Result\ScoreGage.cpp" />
+    <ClCompile Include="Src\Object\System\Result\Palette.cpp" />
+    <ClCompile Include="Src\Object\System\Result\MultiResult.cpp" />
+    <ClCompile Include="Src\Manager\System\KeyConfig.cpp" />
+    <ClCompile Include="Src\Object\Common\Geometry\Cube.cpp" />
+    <ClCompile Include="Src\Object\Common\Geometry\Line.cpp" />
+    <ClCompile Include="Src\Object\Common\Geometry\Model.cpp" />
+    <ClCompile Include="Src\Object\Common\Geometry\Sphere.cpp" />
+    <ClCompile Include="Src\Manager\Game\CollisionManager.cpp" />
+    <ClCompile Include="Src\Object\Common\Geometry\Geometry.cpp" />
+    <ClCompile Include="Src\Object\Common\Geometry\Capsule.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\PaletteCursor.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.cpp" />
+    <ClCompile Include="Src\Object\UI\EditorUi.cpp" />
+    <ClCompile Include="Src\Shader\Effect\SelectUIDarkly.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\FerrisWheel.cpp" />
+    <ClCompile Include="Src\Shader\Effect\EffectBase.cpp" />
+    <ClCompile Include="Src\Object\System\Select\ModeSelect.cpp" />
+    <ClCompile Include="Src\Object\System\GameClear.cpp" />
+    <ClCompile Include="Src\Common\FontRegistry.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Spring.cpp" />
+    <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp" />
+    <ClCompile Include="Src\Object\Item\Destroyer\SmallBomb.cpp" />
+    <ClCompile Include="Src\Object\Item\Fixed\GoalFlag.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\CannonShot.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Fan.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Spiky.cpp" />
+    <ClCompile Include="Src\Scene\SelectScene.cpp" />
+    <ClCompile Include="Src\Scene\Game\MultiParty.cpp" />
+    <ClCompile Include="Src\Scene\Game\SoloChallenge.cpp" />
+    <ClCompile Include="Src\Scene\Game\FreePlay.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\SlimeFloor.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Cannon.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Fence.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\MoveVerFloor.cpp" />
+    <ClCompile Include="Src\Manager\Game\PlayerManager.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\Icon\PaletteIcon.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\EditorPaletteBase.cpp" />
+    <ClCompile Include="Src\Manager\System\DateBank.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\MoveHoriFloor.cpp" />
+    <ClCompile Include="Src\Object\Editor\MapDataIO.cpp" />
+    <ClCompile Include="Src\Object\Item\Installation\Floor.cpp" />
+    <ClCompile Include="Src\Object\Grid.cpp" />
+    <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
+    <ClCompile Include="Src\Manager\Game\ItemManager.cpp" />
+    <ClCompile Include="Src\Object\Editor\EditController.cpp" />
+    <ClCompile Include="Src\Manager\Game\MapEditer.cpp" />
+    <ClCompile Include="Src\Common\IntVector3.cpp" />
+    <ClCompile Include="Src\FpsControl\FpsControl.cpp" />
+    <ClCompile Include="Src\Manager\Game\GravityManager.cpp" />
+    <ClCompile Include="Src\Object\ObjectBase.cpp" />
+    <ClCompile Include="Src\Application.cpp" />
+    <ClCompile Include="Src\Common\Fader.cpp" />
+    <ClCompile Include="Src\Common\Quaternion.cpp" />
+    <ClCompile Include="Src\Common\Vector2.cpp" />
+    <ClCompile Include="Src\main.cpp" />
+    <ClCompile Include="Src\Manager\System\Camera.cpp" />
+    <ClCompile Include="Src\Manager\System\InputManager.cpp" />
+    <ClCompile Include="Src\Manager\System\Resource.cpp" />
+    <ClCompile Include="Src\Manager\System\ResourceManager.cpp" />
+    <ClCompile Include="Src\Manager\System\SceneManager.cpp" />
+    <ClCompile Include="Src\Object\Common\AnimationController.cpp" />
+    <ClCompile Include="Src\Object\Common\Collider.cpp" />
+    <ClCompile Include="Src\Object\Common\Transform.cpp" />
+    <ClCompile Include="Src\Object\Player\Player.cpp" />
+    <ClCompile Include="Src\Object\Player\Process\PlayerInput.cpp" />
+    <ClCompile Include="Src\Object\SkyDome\SkyDome.cpp" />
+    <ClCompile Include="Src\Scene\Game\GameScene.cpp" />
+    <ClCompile Include="Src\Scene\SceneBase.cpp" />
+    <ClCompile Include="Src\Scene\TitleScene.cpp" />
+    <ClCompile Include="Src\Shader\PixelMaterial.cpp" />
+    <ClCompile Include="Src\Shader\PixelRenderer.cpp" />
+    <ClCompile Include="Src\Shader\PostEffect\PostEffectBase.cpp" />
+    <ClCompile Include="Src\Shader\PostEffect\PostEffectBlur.cpp" />
+    <ClCompile Include="Src\Shader\PostEffect\PostEffectDamage.cpp" />
+    <ClCompile Include="Src\Shader\PostEffect\PostEffectMonotone.cpp" />
+    <ClCompile Include="Src\Shader\PostEffect\PostEffectScanLine.cpp" />
+    <ClCompile Include="Src\Utility\Utility.cpp" />
+    <ClCompile Include="Src\Object\Item\Fixed\StartFlag.cpp" />
+    <ClCompile Include="Src\Shader\Effect\SelectUIGlow.cpp" />
+    <ClCompile Include="Src\Object\UI\UiBase.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Common\Fader.h">
-      <Filter>ヘッダー ファイル\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Common\Quaternion.h">
-      <Filter>ヘッダー ファイル\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\System\Resource.h">
-      <Filter>ヘッダー ファイル\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\System\ResourceManager.h">
-      <Filter>ヘッダー ファイル\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\System\SceneManager.h">
-      <Filter>ヘッダー ファイル\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Scene\Game\GameScene.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Scene\SceneBase.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Scene\TitleScene.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\System\Camera.h">
-      <Filter>ヘッダー ファイル\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Common\AnimationController.h">
-      <Filter>ヘッダー ファイル\Object\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Common\Collider.h">
-      <Filter>ヘッダー ファイル\Object\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Common\Transform.h">
-      <Filter>ヘッダー ファイル\Object\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\System\InputManager.h">
-      <Filter>ヘッダー ファイル\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Common\Vector2.h">
-      <Filter>ヘッダー ファイル\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\main.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Utility\Utility.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\ObjectBase.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\FpsControl\FpsControl.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Player\Player.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\Game\GravityManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\Game\MapEditer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\Game\ItemManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Common\IntVector3.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Grid.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\conversions\from_json.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\conversions\to_chars.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\conversions\to_json.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\input\binary_reader.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\input\input_adapters.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\input\json_sax.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\input\lexer.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\input\parser.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\input\position_t.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\internal_iterator.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\iter_impl.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\iteration_proxy.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\iterator_traits.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\json_reverse_iterator.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\primitive_iterator.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\meta\call_std\begin.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\meta\call_std\end.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\meta\cpp_future.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\meta\detected.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\meta\identity_tag.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\meta\is_sax.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\meta\std_fs.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\meta\type_traits.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\meta\void_t.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\output\binary_writer.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\output\output_adapters.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\output\serializer.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\abi_macros.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\exceptions.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\hash.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\json_custom_base_class.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\json_pointer.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\json_ref.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\macro_scope.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\macro_unscope.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\string_concat.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\string_escape.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\string_utils.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\detail\value_t.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley_undef.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\byte_container_with_subtype.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\json.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\json_fwd.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Lib\nlohmann\ordered_map.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\ItemBase.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\Floor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\MapDataIO.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\System\DateBank.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\EditorPaletteBase.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\MoveHoriFloor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\ItemBase.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Player\Process\PlayerInput.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\Icon\PaletteIcon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\EditController.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\SkyDome\SkyDome.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Scene\Game\FreePlay.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Scene\Game\SoloChallenge.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Scene\Game\MultiParty.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Scene\SelectScene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h">
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\Spiky.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\Fan.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\CannonShot.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Fixed\StartFlag.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Fixed\GoalFlag.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Destroyer\SmallBomb.h">
-      <Filter>ヘッダー ファイル</Filter>
-    <ClInclude Include="Src\Object\Item\Installation\Spring.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h">
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Destroyer\BigBomb.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\Spring.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Common\FontRegistry.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\Cannon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\Fence.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\MoveVerFloor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\SlimeFloor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\Game\PlayerManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\System\GameClear.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Shader\PixelMaterial.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Shader\PixelRenderer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Shader\PostEffect\PostEffectBase.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Shader\PostEffect\PostEffectBlur.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Shader\PostEffect\PostEffectDamage.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Shader\PostEffect\PostEffectMonotone.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Shader\PostEffect\PostEffectScanLine.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\System\Select\ModeSelect.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Shader\Effect\SelectUIGlow.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Shader\Effect\EffectBase.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Shader\Effect\SelectUIDarkly.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\UI\EditorUi.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\UI\UiBase.h">
-    <ClInclude Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Utility\UtilityTemplates.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\System\Result\MultiResult.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\System\Result\Palette.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\System\Result\ScoreGage.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\Game\ScoreManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\System\Result\ScoreGageManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\System\MultiInputCheck.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\System\Select\MultiReady.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\System\Select\SelectStage.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\System\KeyConfig.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Editor\Palette\PaletteCursor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Item\Installation\FerrisWheel.h">
-    <ClInclude Include="Src\Manager\System\KeyConfig.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Common\Geometry\Geometry.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\Game\CollisionManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Common\Geometry\Model.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Common\Geometry\Cube.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Common\Geometry\Sphere.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Common\Geometry\Capsule.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Common\Geometry\Line.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
+    <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
+    <ClInclude Include="Src\Object\Common\Geometry\Line.h" />
+    <ClInclude Include="Src\Object\Common\Geometry\Model.h" />
+    <ClInclude Include="Src\Object\Common\Geometry\Sphere.h" />
+    <ClInclude Include="Src\Manager\Game\CollisionManager.h" />
+    <ClInclude Include="Src\Object\Common\Geometry\Geometry.h" />
+    <ClInclude Include="Src\Object\Common\Geometry\Capsule.h" />
+    <ClInclude Include="Src\Object\System\Select\SelectStage.h" />
+    <ClInclude Include="Src\Object\System\Select\MultiReady.h" />
+    <ClInclude Include="Src\Object\System\MultiInputCheck.h" />
+    <ClInclude Include="Src\Object\System\Result\ScoreGageManager.h" />
+    <ClInclude Include="Src\Manager\Game\ScoreManager.h" />
+    <ClInclude Include="Src\Object\System\Result\ScoreGage.h" />
+    <ClInclude Include="Src\Object\System\Result\Palette.h" />
+    <ClInclude Include="Src\Object\System\Result\MultiResult.h" />
+    <ClInclude Include="Src\Manager\System\KeyConfig.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\PaletteCursor.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.h" />
+    <ClInclude Include="Src\Object\UI\EditorUi.h" />
+    <ClInclude Include="Src\Object\Item\Installation\FerrisWheel.h" />
+    <ClInclude Include="Src\Manager\Game\PlayerManager.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Floor.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Cannon.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Fence.h" />
+    <ClInclude Include="Src\Object\Item\Installation\MoveHoriFloor.h" />
+    <ClInclude Include="Src\Object\Item\Installation\MoveVerFloor.h" />
+    <ClInclude Include="Src\Object\Item\Installation\SlimeFloor.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Spring.h" />
+    <ClInclude Include="Src\Object\Item\Destroyer\BigBomb.h" />
+    <ClInclude Include="Src\Object\Item\Destroyer\SmallBomb.h" />
+    <ClInclude Include="Src\Object\Item\Fixed\StartFlag.h" />
+    <ClInclude Include="Src\Object\Item\Fixed\GoalFlag.h" />
+    <ClInclude Include="Src\Object\Item\Installation\CannonShot.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Fan.h" />
+    <ClInclude Include="Src\Object\Item\Installation\Spiky.h" />
+    <ClInclude Include="Src\Shader\Effect\SelectUIDarkly.h" />
+    <ClInclude Include="Src\Shader\Effect\EffectBase.h" />
+    <ClInclude Include="Src\Object\System\Select\ModeSelect.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\Icon\PaletteIcon.h" />
+    <ClInclude Include="Src\Object\System\GameClear.h" />
+    <ClInclude Include="Src\Common\FontRegistry.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h" />
+    <ClInclude Include="Src\Scene\SelectScene.h" />
+    <ClInclude Include="Src\Scene\Game\MultiParty.h" />
+    <ClInclude Include="Src\Scene\Game\SoloChallenge.h" />
+    <ClInclude Include="Src\Scene\Game\FreePlay.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\EditorPaletteBase.h" />
+    <ClInclude Include="Src\Manager\System\DateBank.h" />
+    <ClInclude Include="Src\Object\Editor\MapDataIO.h" />
+    <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\byte_container_with_subtype.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\abi_macros.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\conversions\from_json.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\conversions\to_chars.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\conversions\to_json.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\exceptions.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\hash.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\input\binary_reader.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\input\input_adapters.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\input\json_sax.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\input\lexer.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\input\parser.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\input\position_t.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\internal_iterator.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\iteration_proxy.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\iterator_traits.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\iter_impl.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\json_reverse_iterator.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\primitive_iterator.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\json_custom_base_class.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\json_pointer.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\json_ref.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\macro_scope.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\macro_unscope.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\call_std\begin.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\call_std\end.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\cpp_future.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\detected.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\identity_tag.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\is_sax.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\std_fs.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\type_traits.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\void_t.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\output\binary_writer.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\output\output_adapters.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\output\serializer.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\string_concat.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\string_escape.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\string_utils.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\value_t.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\json.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\json_fwd.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\ordered_map.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
+    <ClInclude Include="Src\Object\Grid.h" />
+    <ClInclude Include="Src\Object\Item\ItemBase.h" />
+    <ClInclude Include="Src\Manager\Game\ItemManager.h" />
+    <ClInclude Include="Src\Object\Editor\EditController.h" />
+    <ClInclude Include="Src\Manager\Game\MapEditer.h" />
+    <ClInclude Include="Src\Common\IntVector3.h" />
+    <ClInclude Include="Src\FpsControl\FpsControl.h" />
+    <ClInclude Include="Src\Manager\Game\GravityManager.h" />
+    <ClInclude Include="Src\Object\ObjectBase.h" />
+    <ClInclude Include="Src\Application.h" />
+    <ClInclude Include="Src\Common\Fader.h" />
+    <ClInclude Include="Src\Common\Quaternion.h" />
+    <ClInclude Include="Src\Common\Vector2.h" />
+    <ClInclude Include="Src\main.h" />
+    <ClInclude Include="Src\Manager\System\Camera.h" />
+    <ClInclude Include="Src\Manager\System\InputManager.h" />
+    <ClInclude Include="Src\Manager\System\Resource.h" />
+    <ClInclude Include="Src\Manager\System\ResourceManager.h" />
+    <ClInclude Include="Src\Manager\System\SceneManager.h" />
+    <ClInclude Include="Src\Object\Common\AnimationController.h" />
+    <ClInclude Include="Src\Object\Common\Collider.h" />
+    <ClInclude Include="Src\Object\Common\Transform.h" />
+    <ClInclude Include="Src\Object\Player\Player.h" />
+    <ClInclude Include="Src\Object\Player\Process\PlayerInput.h" />
+    <ClInclude Include="Src\Object\SkyDome\SkyDome.h" />
+    <ClInclude Include="Src\Scene\Game\GameScene.h" />
+    <ClInclude Include="Src\Scene\SceneBase.h" />
+    <ClInclude Include="Src\Scene\TitleScene.h" />
+    <ClInclude Include="Src\Shader\PixelMaterial.h" />
+    <ClInclude Include="Src\Shader\PixelRenderer.h" />
+    <ClInclude Include="Src\Shader\PostEffect\PostEffectBase.h" />
+    <ClInclude Include="Src\Shader\PostEffect\PostEffectBlur.h" />
+    <ClInclude Include="Src\Shader\PostEffect\PostEffectDamage.h" />
+    <ClInclude Include="Src\Shader\PostEffect\PostEffectMonotone.h" />
+    <ClInclude Include="Src\Shader\PostEffect\PostEffectScanLine.h" />
+    <ClInclude Include="Src\Utility\Utility.h" />
+    <ClInclude Include="Src\Shader\Effect\SelectUIGlow.h" />
+    <ClInclude Include="Src\Object\UI\UiBase.h" />
+    <ClInclude Include="Src\Utility\UtilityTemplates.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
     <None Include="Src\Shader\Common\Pixel\PixelShader3DHeader.hlsli" />
+    <None Include="Src\Shader\Common\VertexToPixelHeader.hlsli" />
     <None Include="Src\Shader\Common\Vertex\CommonShader3DHeader.hlsli" />
     <None Include="Src\Shader\Common\Vertex\VertexInput.hlsli" />
     <None Include="Src\Shader\Common\Vertex\VertexInputType.hlsli" />
     <None Include="Src\Shader\Common\Vertex\VertexShader3DHeader.hlsli" />
-    <None Include="Src\Shader\Common\VertexToPixelHeader.hlsli" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Src\Shader\hlsl\Blur.hlsl" />
-    <FxCompile Include="Src\Shader\hlsl\Damage.hlsl" />
-    <FxCompile Include="Src\Shader\hlsl\Monotone.hlsl" />
-    <FxCompile Include="Src\Shader\hlsl\ScanLine.hlsl" />
-    <FxCompile Include="Src\Shader\hlsl\Glow.hlsl" />
-    <FxCompile Include="Src\Shader\hlsl\GlowRotateSprite.hlsl" />
-    <FxCompile Include="Src\Shader\hlsl\RotateGlow.hlsl" />
-    <FxCompile Include="Src\Shader\hlsl\DarklyRotateSprites.hlsl" />
   </ItemGroup>
 </Project>

@@ -187,6 +187,7 @@ std::vector<bool> PlayerManager::IsGoalPlayers(void)
 
 bool PlayerManager::IsPlayersEnd(void)
 {
+	//プレイヤーがゴールするか、奈落に落ちたら終わる
 	for (int i = 0; i < playerNum_; i++)
 	{
 		if (!players_[i]->IsDeath() && players_[i]->GetHitItemType() != ItemBase::ITEM_TYPE::GOAL)

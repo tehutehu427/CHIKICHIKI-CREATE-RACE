@@ -82,6 +82,10 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 	isCol_ = false;
 	//コライダ作成
 	//*****************************************************
+	//接地しているときのライン(床上にとどまっているとき)
+	//Lineを引くための上と下の座標をとる
+	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
+	MakeCollider(_tag, std::move(lineGeo));
 	//球コライダ作成
 	//プレイヤーの体
 	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
@@ -92,18 +96,10 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 	MakeCollider(_tag, std::move(handSphereGeo));
 
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
-	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.rot, movedPos_,trans_.pos);
+	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, movedPos_,trans_.pos);
 	MakeCollider(_tag, std::move(moveLineGeo));
 
 
-	//接地しているときのライン(床上にとどまっているとき)
-	//Lineを引くための上と下の座標をとる
-	upPos_ = movedPos_;
-	upPos_.y += (RADIUS);
-	downPos_ = movedPos_;
-	downPos_.y -= (RADIUS);
-	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos,trans_.rot, upPos_, downPos_);
-	MakeCollider(_tag, std::move(lineGeo));
 
 	//*****************************************************
 	
@@ -221,7 +217,6 @@ void Player::Draw(void)
 
 void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	int i = 0;
 	collObjectTables_[_hitCol.lock()->GetTag()](_hitCol);
 	colUpdate_();
 }
@@ -347,6 +342,7 @@ void Player::NoneUpdate(void)
 
 void Player::ActionInputUpdate(void)
 {
+	//入力に応じてアクションを変える
 	using ACT_CNTL = PlayerInput::ACT_CNTL;
 	if (input_->CheckAct(ACT_CNTL::MOVE))
 	{
@@ -396,7 +392,7 @@ void Player::MoveUpdate(void)
 		ChangeAction(ATK_ACT::INPUT);
 		return;
 	}
-
+	//入力方向の移動
 	MoveDirFronInput();
 }
 void Player::MoveDirFronInput(void)
@@ -564,6 +560,7 @@ void Player::ChangePunch(void)
 
 void Player::KnockBack(void)
 {
+	//カウントの減算
 	punchedCnt_ -= scnMng_.GetDeltaTime();
 	if (punchedCnt_ < 0.0f)
 	{
@@ -632,9 +629,8 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 	auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
 	auto& moveLineCol= colParam_[MOVE_LINE_COL_NO].collider_;
 	auto& upDownLineCol = colParam_[UP_AND_DOWN_LINE_COL_NO].collider_;
-	Model& upDownLine = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
-	VECTOR hitPos = upDownLine.GetHitInfo().HitPosition;
-
+	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
+	auto hitInfo = hitModel.GetHitInfo();
 
 	if (upDownLineCol->IsHit())
 	{
@@ -649,20 +645,49 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 		}
 		//Y座標のみ半径分上に移動させる
 
-		if (movedPos_.y > hitPos.y)
+		if (movedPos_.y > hitInfo.HitPosition.y)
 		{
-			movedPos_.y = hitPos.y + RADIUS + POSITION_OFFSET;
+			movedPos_.y = hitInfo.HitPosition.y + RADIUS + POSITION_OFFSET;
 		}
 		else
 		{
-			movedPos_.y = hitPos.y - RADIUS - POSITION_OFFSET;
+			movedPos_.y = hitInfo.HitPosition.y - RADIUS - POSITION_OFFSET;
 		}
 		jumpPow_ = Utility::VECTOR_ZERO;
 		//isJump_ = false;
 		itemLocalPos_ = VSub(movedPos_, itemPos);
 	}
 
+	if (bodyShere->IsHit())
+	{
+		//移動後座標を一回格納し、移動前をとる
+		Transform trans = Transform(trans_);
+		trans.pos = movedPos_;
+		trans.Update();
 
+		//movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
+		// カプセルを移動させる
+		trans.pos = movedPos_;
+		trans.Update();
+
+		//for (int i = 0; i < hitInfo.HitNum; i++)
+		//{
+		//	auto hit = hits.Dim[i];
+		//	for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
+		//	{
+		//		int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
+		//			, hit.Position[0], hit.Position[1], hit.Position[2]);
+		//		if (pHit)
+		//		{
+
+		//			continue;
+		//		}
+
+		//		break;
+		//	}
+
+		//}
+	}
 
 
 	////Y座標のみ半径分上に移動させる
@@ -832,6 +857,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 	downPos.y -= (RADIUS);
 
 	hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
+	int i=std::min(1, 2);
 
 	//当たったら
 	if (hit.HitFlag > 0)
@@ -869,50 +895,50 @@ void Player::UpDownColl(const Transform _itemTrans)
 
 void Player::ArroundColl(Transform _itemTrans)
 {
-	//移動後座標を一回格納し、移動前をとる
-	Transform trans = Transform(trans_);
-	trans.pos = movedPos_;
-	trans.Update();
+	////移動後座標を一回格納し、移動前をとる
+	//Transform trans = Transform(trans_);
+	//trans.pos = movedPos_;
+	//trans.Update();
 
-	auto hits = MV1CollCheck_Sphere(_itemTrans.modelId, -1, trans.pos
-		, RADIUS);
-	for (int i = 0; i < hits.HitNum; i++)
-	{
-		auto hit = hits.Dim[i];
-		for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
-		{
-			int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
-				, hit.Position[0], hit.Position[1], hit.Position[2]);
-			if (pHit)
-			{
-				movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
-				// カプセルを移動させる
-				trans.pos = movedPos_;
-				trans.Update();
-				continue;
-			}
+	//auto hits = MV1CollCheck_Sphere(_itemTrans.modelId, -1, trans.pos
+	//	, RADIUS);
+	//for (int i = 0; i < hits.HitNum; i++)
+	//{
+	//	auto hit = hits.Dim[i];
+	//	for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
+	//	{
+	//		int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
+	//			, hit.Position[0], hit.Position[1], hit.Position[2]);
+	//		if (pHit)
+	//		{
+	//			movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
+	//			// カプセルを移動させる
+	//			trans.pos = movedPos_;
+	//			trans.Update();
+	//			continue;
+	//		}
 
-			break;
-		}
-		
-	}
-	MV1CollResultPolyDimTerminate(hits);
+	//		break;
+	//	}
+	//	
+	//}
+	//MV1CollResultPolyDimTerminate(hits);
 }
 
 #ifdef DEBUG_ON
 void Player::CubeMove(void)
 {
-	//auto& input = KeyConfig::GetInstance();
-	//const float SPD = 8.0f;
-	//cubeMovePos_ = Utility::VECTOR_ZERO;
-	//cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
-	//if (input.IsNew(KEY_INPUT_UP))cubeMovePos_.z += SPD;
-	//if (input.IsNew(KEY_INPUT_DOWN))cubeMovePos_.z -= SPD;
-	//if (input.IsNew(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
-	//if (input.IsNew(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
-	//if (input.IsNew(KEY_INPUT_T))cubeMovePos_.y -= SPD;
-	//if (input.IsNew(KEY_INPUT_Y))cubeMovePos_.y += SPD;
-	//cube_.centerPos = VAdd(cube_.centerPos, cubeMovePos_);
+	auto& input = KeyConfig::GetInstance();
+	const float SPD = 8.0f;
+	cubeMovePos_ = Utility::VECTOR_ZERO;
+	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
+	if (CheckHitKey(KEY_INPUT_UP))cubeMovePos_.z += SPD;
+	if (CheckHitKey(KEY_INPUT_DOWN))cubeMovePos_.z -= SPD;
+	if (CheckHitKey(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
+	if (CheckHitKey(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
+	if (CheckHitKey(KEY_INPUT_T))cubeMovePos_.y -= SPD;
+	if (CheckHitKey(KEY_INPUT_Y))cubeMovePos_.y += SPD;
+	cube_.centerPos = VAdd(cube_.centerPos, cubeMovePos_);
 }
 
 bool Player::CollCube(void)
