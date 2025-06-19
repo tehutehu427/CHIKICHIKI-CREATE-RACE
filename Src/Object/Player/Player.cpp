@@ -114,7 +114,6 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 	punchCnt_ = 0.0f;
 	punchCoolCnt_ = 0.0f;
 	punchPos_ = Utility::VECTOR_ZERO;
-	isPunched_ = false;
 	punchedCnt_ = PUNCHED_TIME;
 	
 	itemLocalPos_ = Utility::VECTOR_ZERO;
@@ -172,9 +171,7 @@ void Player::Init(void)
 	//ÉpÉìÉ`ä÷åWÇÃèâä˙âª
 	punchCnt_ = 0.0f;
 	punchCoolCnt_ = 0.0f;
-	isPunch_ = false;
 	punchPos_ = Utility::VECTOR_ZERO;
-	isPunched_ = false;
 	punchedCnt_ = PUNCHED_TIME;
 
 	ChangeAction(ATK_ACT::INPUT);
@@ -503,7 +500,6 @@ void Player::Jump(void)
 	if (!isJump_)
 	{
 		jumpDeceralation_ = POW_JUMP;
-		fallCnt_ = 0.0f;
 		jumpPow_ = Utility::VECTOR_ZERO;
 		stepJump_ = 0.0f;
 

@@ -98,6 +98,7 @@
     <ClCompile Include="Src\Object\Item\Fixed\StartFlag.cpp" />
     <ClCompile Include="Src\Shader\Effect\SelectUIGlow.cpp" />
     <ClCompile Include="Src\Object\UI\UiBase.cpp" />
+    <ClCompile Include="Src\Object\Player\PlayerAction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -236,6 +237,7 @@
     <ClInclude Include="Src\Shader\Effect\SelectUIGlow.h" />
     <ClInclude Include="Src\Object\UI\UiBase.h" />
     <ClInclude Include="Src\Utility\UtilityTemplates.h" />
+    <ClInclude Include="Src\Object\Player\PlayerAction.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

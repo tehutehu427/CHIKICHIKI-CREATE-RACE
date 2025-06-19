@@ -167,8 +167,6 @@ public:
 	//移動量セット(マネージャ用)
 	void SetMovePow(const VECTOR _vec) { movePow_ = _vec; }
 
-	//パンチされたフラグ
-	void SetIsPunched(const bool _isPunched) { isPunched_ = _isPunched; }
 
 	//方向
 	void SetDir(const VECTOR _dir) { dir_ = _dir; }
@@ -366,16 +364,13 @@ private:
 	float stepJump_;		// ジャンプの入力受付時間
 	VECTOR jumpPow_;		// ジャンプ量
 	float jumpDeceralation_;	//ジャンプ減衰量
-	float fallCnt_;			//落下カウント
 
 	//パンチ
 	//-----------------------
-	bool isPunch_;			//パンチ中フラグ
 	bool isPunchHitTime_;		//パンチ当たり判定の時間フラグ
 	float punchCnt_;				//パンチカウント
 	float punchCoolCnt_;			//パンチクールタイム
 	VECTOR punchPos_;			//攻撃座標
-	bool isPunched_;			//他プレイヤーからのパンチを受けたか
 	float punchedCnt_;			//パンチ効果時間カウント
 
 	//当たり判定
