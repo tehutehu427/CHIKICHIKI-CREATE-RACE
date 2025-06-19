@@ -136,7 +136,12 @@ const bool Capsule::IsHit(const Capsule& _capsule) const
 	return distance <= (GetRadius() + _capsule.GetRadius());
 }
 
-const bool Capsule::IsHit(const Line& _line) const
+const bool Capsule::IsHit(Line& _line)
+{
+	return false;
+}
+
+const bool Capsule::IsHit(Line& _line)
 {
 	VECTOR u = VSub(_line.GetPosPoint2(), _line.GetPosPoint1());
 	VECTOR v = VSub(GetPosDown(), GetPosTop());

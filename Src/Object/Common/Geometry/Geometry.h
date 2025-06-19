@@ -28,7 +28,6 @@ public:
 	virtual const bool IsHit(const Cube& _cube)const = 0;
 	virtual const bool IsHit(const Sphere& _sphere)const = 0;
 	virtual const bool IsHit(const Capsule& _capsule)const = 0;
-	virtual const bool IsHit(const Line& _line)const;
 	virtual const bool IsHit(Line& _line);
 
 	//eî•ñ‚ğ•Ô‚·

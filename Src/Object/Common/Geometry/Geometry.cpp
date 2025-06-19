@@ -13,11 +13,6 @@ Geometry::Geometry(const VECTOR& _pos, const Quaternion& _rot) : pos_(_pos), qua
 {
 }
 
-const bool Geometry::IsHit(const Line& _line) const
-{
-	return false;
-}
-
 const bool Geometry::IsHit(Line& _line)
 {
 	return false;
