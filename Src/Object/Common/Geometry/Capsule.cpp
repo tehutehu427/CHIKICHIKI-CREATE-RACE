@@ -138,11 +138,6 @@ const bool Capsule::IsHit(const Capsule& _capsule) const
 
 const bool Capsule::IsHit(Line& _line)
 {
-	return false;
-}
-
-const bool Capsule::IsHit(Line& _line)
-{
 	VECTOR u = VSub(_line.GetPosPoint2(), _line.GetPosPoint1());
 	VECTOR v = VSub(GetPosDown(), GetPosTop());
 	VECTOR w = VSub(_line.GetPosPoint1(), GetPosTop());
