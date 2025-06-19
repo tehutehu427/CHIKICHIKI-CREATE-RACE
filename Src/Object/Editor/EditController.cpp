@@ -157,7 +157,8 @@ void EditController::MoveRotateObjectDraw(void)
 void EditController::ItemNotSelect(void)
 {
 	auto& itemMIns = ItemManager::GetInstance();
-	if (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
+	//if (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
+	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
 	{
 		if (itemMIns.GetDummyItemStatus(playerNum_).effType != ItemBase::EFFECT_TYPE::DESTROYER)
 		{
@@ -429,7 +430,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 			return moveDir;
 		}
 	}
-	else if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
+	else if (ins.IsTrgUp(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
 	{
 		return moveDir;
 	}

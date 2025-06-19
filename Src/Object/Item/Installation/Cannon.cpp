@@ -99,21 +99,20 @@ void Cannon::SetParam(void)
 
 void Cannon::Update(void)
 {	
+	//デルタタイム取得
+	float delta = SceneManager::GetInstance().GetDeltaTime();
+
+	//生成間隔カウント
+	shotCreateCnt_ += delta;
+
 	//弾の削除処理
 	DeleteShot();
 
-	//射程内なら
-	if (IsWithinRange())
-	{
-		//弾の生成
-		CreateShot();
+	//砲台の回転
+	RotateTurret();
 
-		//砲台の回転
-		RotateTurret();
-
-		//砲身の回転
-		RotateBarrel();
-	}
+	//砲身の回転
+	RotateBarrel();
 
 	//弾の更新
 	for (auto& shot : shots_)
@@ -166,6 +165,8 @@ void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
 		//当たったのがエイム範囲ならプレイヤーを狙う
 		if (colParam_[AIM_COL_NUM].collider_->IsHit())
 			targetPos_ = _hitCol.lock()->GetParent().GetTransform().pos;
+		//弾の生成
+		CreateShot();
 		break;
 
 	default:
@@ -221,12 +222,6 @@ void Cannon::RotateBarrel(void)
 
 void Cannon::CreateShot(void)
 {
-	//デルタタイム取得
-	float delta = SceneManager::GetInstance().GetDeltaTime();
-
-	//生成間隔カウント
-	shotCreateCnt_ += delta;
-
 	//弾が最大数生成されている　又は　生成間隔を達していないなら生成処理をしない
 	if (shotNum_ >= SHOT_MAX || shotCreateCnt_ < SHOT_INTERVAL)return;
 
@@ -272,9 +267,4 @@ void Cannon::DeleteShot(void)
 		//弾カウント減少
 		shotNum_--;
 	}
-}
-
-bool Cannon::IsWithinRange(void)
-{
-	return Utility::MagnitudeF(targetPos_) <= AIM_RADIUS;
 }
