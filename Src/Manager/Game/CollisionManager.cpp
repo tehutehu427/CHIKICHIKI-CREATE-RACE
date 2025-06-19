@@ -112,10 +112,10 @@ const bool CollisionManager::IsWithInHitRange(const std::weak_ptr<Collider> _col
 bool CollisionManager::IsCollision(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2)
 {
 	//1‚Â–Ú‚Ì“–‚½‚è”»’èŒ`ó
-	const auto& geo1 = _col1.lock()->GetGeometry();
+	auto& geo1 = _col1.lock()->GetGeometry();
 	
 	//2‚Â–Ú‚Ì“–‚½‚è”»’èŒ`ó
-	const auto& geo2 = _col2.lock()->GetGeometry();
+	auto& geo2 = _col2.lock()->GetGeometry();
 
 	//“–‚½‚è”»’è
 	return geo1.IsHit(geo2);
