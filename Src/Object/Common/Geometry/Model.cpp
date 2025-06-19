@@ -11,13 +11,13 @@
 
 Model::Model(const VECTOR& _pos, const Quaternion& _rot, const int _modelId) : Geometry(_pos, _rot), parentModelId_(_modelId)
 {
-	hitInfo_ = {};
+	hitLineInfo_ = {};
 }
 
 Model::Model(const Model& _copyBase, const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos,_rot)
 {
 	parentModelId_ = _copyBase.GetParentModel();
-	hitInfo_ = {};
+	hitLineInfo_ = {};
 }
 
 Model::~Model(void)
@@ -51,7 +51,17 @@ const bool Model::IsHit(const Sphere& _sphere) const
 	//判定
 	auto col = MV1CollCheck_Sphere(GetParentModel(), -1, _sphere.GetColPos(), _sphere.GetRadius());
 
-	return col.HitNum >= 1;
+	//当たったか
+	bool ret = col.HitNum >= 1;
+
+	//当たっていたら情報更新
+	if (ret)
+	{
+		_sphere.SetHitInfo(col);
+		SetHitInfo(col);
+	}
+
+	return ret;
 }
 
 const bool Model::IsHit(const Capsule& _capsule) const
@@ -59,7 +69,17 @@ const bool Model::IsHit(const Capsule& _capsule) const
 	//判定
 	auto col = MV1CollCheck_Capsule(GetParentModel(), -1, _capsule.GetPosTop(), _capsule.GetPosDown(), _capsule.GetRadius());
 
-	return col.HitNum >= 1;
+	//当たったか
+	bool ret = col.HitNum >= 1;
+
+	//当たっていたら情報更新
+	if (ret)
+	{
+		_capsule.SetHitInfo(col);
+		SetHitInfo(col);
+	}
+
+	return ret;
 }
 
 const bool Model::IsHit(Line& _line)
@@ -71,7 +91,7 @@ const bool Model::IsHit(Line& _line)
 	if (col.HitFlag)
 	{
 		_line.SetHitInfo(col);
-		SetHitInfo(col);
+		SetHitLineInfo(col);
 	}
 	return col.HitFlag;
 }
