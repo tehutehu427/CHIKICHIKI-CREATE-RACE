@@ -625,11 +625,12 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 	auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
 	auto& moveLineCol= colParam_[MOVE_LINE_COL_NO].collider_;
 	auto& upDownLineCol = colParam_[UP_AND_DOWN_LINE_COL_NO].collider_;
-	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
-	auto hitLineInfo = hitModel.GetHitLineInfo();
+
 
 	if (upDownLineCol->IsHit())
 	{
+		Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
+		auto hitLineInfo = hitModel.GetHitLineInfo();
 		//座標をワールド座標とアイテムローカル座標を足した分移動させる
 		if (!Utility::EqualsVZero(itemLocalPos_))
 		{
@@ -651,7 +652,7 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 		}
 		jumpPow_ = Utility::VECTOR_ZERO;
 		//isJump_ = false;
-		itemLocalPos_ = VSub(movedPos_, itemPos);
+		//itemLocalPos_ = VSub(movedPos_, itemPos);
 	}
 
 	if (bodyShere->IsHit())
