@@ -8,6 +8,7 @@ void InputManager::Init(void)
 	// Ž–‘O‚É‚±‚±‚Å“o˜^‚µ‚Ä‚¨‚¢‚Ä‚­‚¾‚³‚¢
 	Add(KEY_INPUT_SPACE);
 	Add(KEY_INPUT_N);
+	Add(KEY_INPUT_M);
 	Add(KEY_INPUT_Z);
 	Add(KEY_INPUT_X);
 
