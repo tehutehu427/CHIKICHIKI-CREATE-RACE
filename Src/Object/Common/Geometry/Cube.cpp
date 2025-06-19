@@ -42,7 +42,9 @@ void Cube::Draw(void)
 
 const bool Cube::IsHit(const Geometry& _geometry) const
 {
-	return _geometry.IsHit(*this);
+	bool ret = _geometry.IsHit(*this);
+
+	return ret;
 }
 
 const bool Cube::IsHit(const Model& _model) const

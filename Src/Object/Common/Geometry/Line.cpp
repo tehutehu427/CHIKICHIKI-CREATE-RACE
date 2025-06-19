@@ -37,12 +37,16 @@ void Line::Draw(void)
 
 const bool Line::IsHit(const Geometry& _geometry) const
 {
-	return _geometry.IsHit(*this);
+	bool ret = _geometry.IsHit(*this);
+
+	return ret;
 }
 
 const bool Line::IsHit(const Model& _model) const
 {
-	return _model.IsHit(*this);
+	bool ret = _model.IsHit(*this);
+
+	return ret;
 }
 
 const bool Line::IsHit(const Cube& _cube) const
@@ -52,12 +56,16 @@ const bool Line::IsHit(const Cube& _cube) const
 
 const bool Line::IsHit(const Sphere& _sphere) const
 {
-	return _sphere.IsHit(*this);
+	bool ret = _sphere.IsHit(*this);
+
+	return ret;
 }
 
 const bool Line::IsHit(const Capsule& _capsule) const
 {
-	return _capsule.IsHit(*this);
+	bool ret = _capsule.IsHit(*this);
+
+	return ret;
 }
 
 const bool Line::IsHit(Line& _line)

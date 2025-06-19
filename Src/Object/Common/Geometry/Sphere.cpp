@@ -30,7 +30,9 @@ void Sphere::Draw(void)
 
 const bool Sphere::IsHit(const Geometry& _geometry) const
 {
-	return _geometry.IsHit(*this);
+	bool ret = _geometry.IsHit(*this);
+
+	return ret;
 }
 
 const bool Sphere::IsHit(const Model& _model) const
