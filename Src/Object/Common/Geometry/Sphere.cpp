@@ -30,7 +30,9 @@ void Sphere::Draw(void)
 
 const bool Sphere::IsHit(const Geometry& _geometry) const
 {
-	return _geometry.IsHit(*this);
+	bool ret = _geometry.IsHit(*this);
+
+	return ret;
 }
 
 const bool Sphere::IsHit(const Model& _model) const
@@ -131,7 +133,7 @@ const bool Sphere::IsHit(const Capsule& _capsule) const
 	return ret;
 }
 
-const bool Sphere::IsHit(const Line& _line) const
+const bool Sphere::IsHit(Line& _line)
 {
 	//ü‚ÌƒxƒNƒgƒ‹
 	VECTOR d = VSub(_line.GetPosPoint2(), _line.GetPosPoint1());

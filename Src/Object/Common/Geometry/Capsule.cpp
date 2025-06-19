@@ -72,12 +72,16 @@ void Capsule::Draw(void)
 
 const bool Capsule::IsHit(const Geometry& _geometry) const
 {
-	return _geometry.IsHit(*this);
+	bool ret = _geometry.IsHit(*this);
+
+	return ret;
 }
 
 const bool Capsule::IsHit(const Model& _model) const
 {
-	return _model.IsHit(*this);
+	bool ret = _model.IsHit(*this);
+
+	return ret;
 }
 
 const bool Capsule::IsHit(const Cube& _cube) const
@@ -87,7 +91,9 @@ const bool Capsule::IsHit(const Cube& _cube) const
 
 const bool Capsule::IsHit(const Sphere& _sphere) const
 {
-	return _sphere.IsHit(*this);
+	bool ret = _sphere.IsHit(*this);
+
+	return ret;
 }
 
 const bool Capsule::IsHit(const Capsule& _capsule) const
@@ -136,7 +142,7 @@ const bool Capsule::IsHit(const Capsule& _capsule) const
 	return distance <= (GetRadius() + _capsule.GetRadius());
 }
 
-const bool Capsule::IsHit(const Line& _line) const
+const bool Capsule::IsHit(Line& _line)
 {
 	VECTOR u = VSub(_line.GetPosPoint2(), _line.GetPosPoint1());
 	VECTOR v = VSub(GetPosDown(), GetPosTop());
