@@ -626,7 +626,7 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 	auto& moveLineCol= colParam_[MOVE_LINE_COL_NO].collider_;
 	auto& upDownLineCol = colParam_[UP_AND_DOWN_LINE_COL_NO].collider_;
 	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
-	auto hitInfo = hitModel.GetHitInfo();
+	auto hitLineInfo = hitModel.GetHitLineInfo();
 
 	if (upDownLineCol->IsHit())
 	{
@@ -641,13 +641,13 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 		}
 		//YÀ•W‚Ì‚Ý”¼Œa•ªã‚ÉˆÚ“®‚³‚¹‚é
 
-		if (movedPos_.y > hitInfo.HitPosition.y)
+		if (movedPos_.y > hitLineInfo.HitPosition.y)
 		{
-			movedPos_.y = hitInfo.HitPosition.y + RADIUS + POSITION_OFFSET;
+			movedPos_.y = hitLineInfo.HitPosition.y + RADIUS + POSITION_OFFSET;
 		}
 		else
 		{
-			movedPos_.y = hitInfo.HitPosition.y - RADIUS - POSITION_OFFSET;
+			movedPos_.y = hitLineInfo.HitPosition.y - RADIUS - POSITION_OFFSET;
 		}
 		jumpPow_ = Utility::VECTOR_ZERO;
 		//isJump_ = false;

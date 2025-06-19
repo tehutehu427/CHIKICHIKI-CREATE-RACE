@@ -113,5 +113,44 @@ private:
 	VECTOR punchPos_;			//攻撃座標
 	float punchedCnt_;			//パンチ効果時間カウント
 	//-------------------------------------------------
+	//メンバ関数
+	//-------------------------------------------------
+	//何もしない
+	void NoneUpdate(void);
+
+	//入力
+	void ActionInputUpdate(void);
+	void ChangeInput(void);
+
+	//何もなし
+	void ChangeNone(void);
+
+	//移動状態の更新
+	void MoveUpdate(void);
+	//入力方向に応じて方向を決める
+	void MoveDirFronInput(void);
+	//移動に変更する
+	void ChangeMove(void);
+	//毎フレーム移動方向とスピードを更新する
+	void UpdateMoveDirAndPow(void);
+
+
+	//ジャンプ
+	void JumpUpdate(void);
+	void Jump(void);
+	void ChangeJump(void);
+
+	//パンチ
+	void Punch(void);
+	void ChangePunch(void);
+
+	//ノックバック
+	void KnockBack(void);
+	void ChangeKnockBack(void);
+
+	//回転
+	void Rotate(void);
+	//最終的に動かしたい角度の設定
+	void SetGoalRotate(double _deg);
 };
 
