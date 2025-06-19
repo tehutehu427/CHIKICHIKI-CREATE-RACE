@@ -13,12 +13,6 @@ Geometry::Geometry(const VECTOR& _pos, const Quaternion& _rot) : pos_(_pos), qua
 {
 }
 
-const bool Geometry::IsHit(Line& _line)
-{
-	return false;
-}
-
-
 const VECTOR Geometry::GetRotPos(const VECTOR& _localPos) const
 {
 	VECTOR localRotPos = quaRot_.PosAxis(_localPos);
