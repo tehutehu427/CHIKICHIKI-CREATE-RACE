@@ -71,7 +71,5 @@ private:
 	/// <returns>true:“–‚½‚Á‚½</returns>
 	bool IsCollision(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2);
 
-	const bool IsWithInHitRange(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2) const;
-
 };
 
