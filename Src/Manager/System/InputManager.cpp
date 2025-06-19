@@ -40,6 +40,9 @@ void InputManager::Init(void)
 	Add(KEY_INPUT_T);
 	Add(KEY_INPUT_Y);
 
+	//タブキー
+	Add(KEY_INPUT_TAB);
+
 	//---------------------------------------------------
 
 	//デバッグ

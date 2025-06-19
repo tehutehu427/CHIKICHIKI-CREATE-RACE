@@ -193,6 +193,44 @@ void MapDataIO::ImportJsonFile()
     }
 }
 
+bool MapDataIO::IsTriggerExport() const
+{
+    KeyConfig& ins = KeyConfig::GetInstance();
+
+    //アイコンクリック用
+    const Vector2 rightPos = { ICON_SIZE_X, 0 };
+    const Vector2 leftDown = { ICON_SIZE_X * 2, ICON_SIZE_Y };
+
+    //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
+    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EXPORT_FILE, KeyConfig::JOYPAD_NO::PAD1) || 
+        ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EXPORT_FILE_CLICK, KeyConfig::JOYPAD_NO::PAD1) && 
+        Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool MapDataIO::IsTriggerImport() const
+{
+    KeyConfig& ins = KeyConfig::GetInstance();
+
+    //アイコンクリック用
+    const Vector2 rightPos = { 0, 0 };
+    const Vector2 leftDown = { ICON_SIZE_X, ICON_SIZE_Y };
+
+    //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
+    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::IMPORT_FILE, KeyConfig::JOYPAD_NO::PAD1) ||
+        ins.IsTrgDown(KeyConfig::CONTROL_TYPE::IMPORT_FILE_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
+        Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown))
+    {
+        return true;
+    }
+
+    return false;
+}
+
 std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItemsFromJson(const std::string& _filepath)
 {
     std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> items = {};
@@ -305,14 +343,14 @@ void MapDataIO::UpdateWait()
     KeyConfig& ins = KeyConfig::GetInstance();
 
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
-    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL,KeyConfig::JOYPAD_NO::PAD1))
+    if (IsTriggerExport())
     {
         //確認へ移る
         ChangeState(STATE::CHECK_EXPORT);
         return;
     }
 
-    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::READ_FILE, KeyConfig::JOYPAD_NO::PAD1))
+    else if (IsTriggerImport())
     {
         //ファイルを読み込む
         if (!ReadFileBool(selectFile_))
@@ -320,7 +358,6 @@ void MapDataIO::UpdateWait()
             //読み込まない場合処理を終える
             return;
         }
-
         //確認へ移る
         ChangeState(STATE::CHECK_IMPORT);
     }
@@ -351,7 +388,7 @@ void MapDataIO::UpdateCheckExport()
     }
 
     //決定
-    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER,KeyConfig::JOYPAD_NO::PAD1))
+    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD,KeyConfig::JOYPAD_NO::PAD1))
     {
         //選択した内容の処理を行う
         if (checkStep_ == static_cast<int>(CHECK_LIST::YES))

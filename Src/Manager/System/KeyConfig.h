@@ -79,18 +79,24 @@ public:
 	enum class CONTROL_TYPE //操作の種類	
 	{
 		ENTER,					//決定
+		DECISION_KEY_AND_PAD,	//決定(PAD or KEYBOARDD onry)
 		CANCEL,					//キャンセル
 
 		PHASE_CHENGE,			//フェーズ変更
 		PHASE_CHENGE_CHECK,		//フェーズ変更
 
-		READ_FILE,				//ファイル読み込み
+		IMPORT_FILE,			//ファイル入力
+		IMPORT_FILE_CLICK,		//ファイル入力クリック
 		EXPORT_FILE,			//ファイル出力
+		EXPORT_FILE_CLICK,		//ファイル出力クリック
 
 		SELECT_UP,				//選択　上
 		SELECT_DOWN,			//選択　下
 		SELECT_LEFT,			//選択　左
 		SELECT_RIGHT,			//選択　右
+
+		MANUAL,					//マニュアルを開く
+		MANUAL_ICON_CLICK,		//マニュアルをクリックで開く
 
 		PALETTE_CURSOR_UP,		//パレット時のカーソル上移動
 		PALETTE_CURSOR_DOWN,	//パレット時のカーソル下移動

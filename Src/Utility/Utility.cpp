@@ -656,11 +656,17 @@ void Utility::LookAtTarget(Transform& _trans, const VECTOR _toTargetAxis, const 
     _trans.Update();
 }
 
-bool Utility::IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vector2 rightBotm)
+bool Utility::IsPointInRect(const Vector2 _pos, const Vector2 _leftTop, const Vector2 _rightBotm)
 {
     //Žw’è‚Ì”ÍˆÍ“à‚ÉÀ•W‚ª‚ ‚é‚©’²‚×‚é
-    return pos.x > leftTop.x && pos.x < rightBotm.x &&
-            pos.y > leftTop.y && pos.y < rightBotm.y;
+    return _pos.x > _leftTop.x && _pos.x < _rightBotm.x &&
+        _pos.y > _leftTop.y && _pos.y < _rightBotm.y;
+}
+
+bool Utility::IsPointInRectCircle(const Vector2 _pos, const Vector2 _circlePos, const float _radius)
+{
+    //À•W‚ª‰~‚Ì”ÍˆÍ“à‚©’²‚×‚é(‹——£‚Æ‰~‚Ì”¼Œa‚ð”ä‚×‚é)
+    return Distance(_pos, _circlePos) <= _radius;
 }
 
 VECTOR Utility::GetWorldPosAtScreen(const Vector2 screenPos, const float distance, const VECTOR cameraPos, const VECTOR cameraDir)

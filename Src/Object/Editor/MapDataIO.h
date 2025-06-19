@@ -105,6 +105,8 @@ private:
 	//入出力確認用ステップ
 	int checkStep_;
 
+	//入力アイコンの配置座標
+
 	//状態
 	STATE state_;
 
@@ -141,6 +143,12 @@ private:
 
 	//JSONファイルを読み込む
 	void ImportJsonFile();
+
+	//出力を行うトリガーの条件を満たしたか
+	bool IsTriggerExport() const;
+
+	//入力を行うトリガーの条件を満たしたか
+	bool IsTriggerImport() const;
 
 	/// <summary>
 	/// JSONからアイテム種類ごとに座標を読み込む
