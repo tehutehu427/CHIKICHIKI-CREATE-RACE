@@ -61,14 +61,17 @@ public:
 	// カプセルの中心座標
 	inline const VECTOR GetCenter(void) const;
 
+	//当たった時の情報取得
+	inline const MV1_COLL_RESULT_POLY_DIM& GetHitInfo(void)const { return hitInfo_; }
+
+	//当たった時の情報設定
+	inline void SetHitInfo(const MV1_COLL_RESULT_POLY_DIM _hitInfo) { hitInfo_ = _hitInfo; }
+
 private:
 
-	// 親Transformからの相対位置(上側)
-	VECTOR localPosTop_;
+	VECTOR localPosTop_;	// 親Transformからの相対位置(上側)
+	VECTOR localPosDown_;	// 親Transformからの相対位置(下側)
+	float radius_;			// 半径
 
-	// 親Transformからの相対位置(下側)
-	VECTOR localPosDown_;
-
-	// 半径
-	float radius_;
+	MV1_COLL_RESULT_POLY_DIM hitInfo_;	//当たった時の情報(球、カプセル)
 };

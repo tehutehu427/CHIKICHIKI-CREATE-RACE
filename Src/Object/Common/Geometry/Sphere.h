@@ -40,7 +40,14 @@ public:
 	//”¼Œa‚Ìİ’è
 	inline void SetRadius(const float _radius) { radius_ = _radius; }
 
+	//“–‚½‚Á‚½‚Ìî•ñæ“¾
+	inline const MV1_COLL_RESULT_POLY_DIM& GetHitInfo(void)const { return hitInfo_; }
+
+	//“–‚½‚Á‚½‚Ìî•ñİ’è
+	inline void SetHitInfo(const MV1_COLL_RESULT_POLY_DIM _hitInfo) { hitInfo_ = _hitInfo; }
+
 private:
 
-	float radius_;	//”¼Œa
+	float radius_;						//”¼Œa
+	MV1_COLL_RESULT_POLY_DIM hitInfo_;	//“–‚½‚Á‚½‚Ìî•ñ(ƒ‚ƒfƒ‹)
 };

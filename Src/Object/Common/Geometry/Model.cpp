@@ -29,24 +29,24 @@ void Model::Draw(void)
 {
 }
 
-const bool Model::IsHit(const Geometry& _geometry) const
+const bool Model::IsHit(Geometry& _geometry)
 {
 	bool ret = _geometry.IsHit(*this);
 
 	return ret;
 }
 
-const bool Model::IsHit(const Model& _model) const
+const bool Model::IsHit(Model& _model)
 {
 	return false;
 }
 
-const bool Model::IsHit(const Cube& _cube) const
+const bool Model::IsHit(Cube& _cube)
 {
 	return false;
 }
 
-const bool Model::IsHit(const Sphere& _sphere) const
+const bool Model::IsHit(Sphere& _sphere)
 {
 	//”»’è
 	auto col = MV1CollCheck_Sphere(GetParentModel(), -1, _sphere.GetColPos(), _sphere.GetRadius());
@@ -64,7 +64,7 @@ const bool Model::IsHit(const Sphere& _sphere) const
 	return ret;
 }
 
-const bool Model::IsHit(const Capsule& _capsule) const
+const bool Model::IsHit(Capsule& _capsule)
 {
 	//”»’è
 	auto col = MV1CollCheck_Capsule(GetParentModel(), -1, _capsule.GetPosTop(), _capsule.GetPosDown(), _capsule.GetRadius());
