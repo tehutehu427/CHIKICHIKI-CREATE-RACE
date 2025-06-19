@@ -60,7 +60,7 @@ const bool Line::IsHit(const Capsule& _capsule) const
 	return _capsule.IsHit(*this);
 }
 
-const bool Line::IsHit(const Line& _line) const
+const bool Line::IsHit(Line& _line)
 {
 	//å¿ÇËÇ»Ç≠è¨Ç≥Ç¢êî
 	const float EPSILON = 1e-6f;
