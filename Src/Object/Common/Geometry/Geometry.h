@@ -23,11 +23,11 @@ public:
 	virtual void Draw(void) = 0;
 
 	//Šeí“–‚½‚è”»’è
-	virtual const bool IsHit(const Geometry& _geometry)const = 0;
-	virtual const bool IsHit(const Model& _model)const = 0;
-	virtual const bool IsHit(const Cube& _cube)const = 0;
-	virtual const bool IsHit(const Sphere& _sphere)const = 0;
-	virtual const bool IsHit(const Capsule& _capsule)const = 0;
+	virtual const bool IsHit(Geometry& _geometry) = 0;
+	virtual const bool IsHit(Model& _model) = 0;
+	virtual const bool IsHit(Cube& _cube) = 0;
+	virtual const bool IsHit(Sphere& _sphere) = 0;
+	virtual const bool IsHit(Capsule& _capsule) = 0;
 	virtual const bool IsHit(Line& _line) = 0;
 
 	//eî•ñ‚ğ•Ô‚·

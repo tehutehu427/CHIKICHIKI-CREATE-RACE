@@ -27,11 +27,11 @@ public:
 	void Draw(void)override;
 
 	//Šeí“–‚½‚è”»’è
-	const bool IsHit(const Geometry& _geometry)const override;
-	const bool IsHit(const Model& _model)const override;
-	const bool IsHit(const Cube& _cube)const override;
-	const bool IsHit(const Sphere& _sphere)const override;
-	const bool IsHit(const Capsule& _capsule)const override;
+	const bool IsHit(Geometry& _geometry)override;
+	const bool IsHit(Model& _model)override;
+	const bool IsHit(Cube& _cube)override;
+	const bool IsHit(Sphere& _sphere)override;
+	const bool IsHit(Capsule& _capsule)override;
 	const bool IsHit(Line& _line)override;
 
 	//”¼Œa‚Ìæ“¾
@@ -40,7 +40,14 @@ public:
 	//”¼Œa‚Ìİ’è
 	inline void SetRadius(const float _radius) { radius_ = _radius; }
 
+	//“–‚½‚Á‚½‚Ìî•ñæ“¾
+	inline const MV1_COLL_RESULT_POLY_DIM& GetHitInfo(void)const { return hitInfo_; }
+
+	//“–‚½‚Á‚½‚Ìî•ñİ’è
+	inline void SetHitInfo(const MV1_COLL_RESULT_POLY_DIM _hitInfo) { hitInfo_ = _hitInfo; }
+
 private:
 
-	float radius_;	//”¼Œa
+	float radius_;						//”¼Œa
+	MV1_COLL_RESULT_POLY_DIM hitInfo_;	//“–‚½‚Á‚½‚Ìî•ñ(ƒ‚ƒfƒ‹)
 };
