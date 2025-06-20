@@ -3,7 +3,7 @@
 #include "../../../Manager/System/SceneManager.h"
 #include "../../../Scene/Game/MultiParty.h"
 #include "../MultiInputCheck.h"
-#include "Palette.h"
+#include "../../Editor/Palette/Palette.h"
 #include "ScoreGage.h"
 #include "ScoreGageManager.h"
 
@@ -48,6 +48,9 @@ void MultiResult::Init()
 
 	//スコアゲージ
 	scoreGages_->Init();
+
+	//入力確認
+	inputCheck_->Init();
 
 	//デバッグ
 	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
@@ -132,8 +135,8 @@ void MultiResult::UpdateStateScore(MultiParty& _parent)
 		//状態遷移
 		ChangeState(STATE::RESULT);
 
-		//入力確認のリセット
-		inputCheck_->Reset();
+		//パッド入力状況のリセット
+		inputCheck_->ResetInput();
 	}
 }
 

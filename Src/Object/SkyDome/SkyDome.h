@@ -9,9 +9,11 @@ class SkyDome : public ObjectBase
 {
 public:
 
+	//回転速度
 	static constexpr float ROT_SPEED = 0.05f;
 
-	static constexpr float SCALE = 50.0f;
+	//大きさ
+	static constexpr float SCALE = 100.0f;
 	static constexpr VECTOR SCALES = { SCALE, SCALE, SCALE };
 
 	// 状態
@@ -22,15 +24,39 @@ public:
 		FOLLOW
 	};
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	SkyDome();
 
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	~SkyDome(void)override;
 
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	/// <param name=""></param>
 	void Load(void) override;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name=""></param>
 	void Init(void) override;
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void) override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void) override;
 
 	/// <summary>

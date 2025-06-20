@@ -28,7 +28,7 @@
     <ClCompile Include="Src\Object\System\Result\ScoreGageManager.cpp" />
     <ClCompile Include="Src\Manager\Game\ScoreManager.cpp" />
     <ClCompile Include="Src\Object\System\Result\ScoreGage.cpp" />
-    <ClCompile Include="Src\Object\System\Result\Palette.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\Palette.cpp" />
     <ClCompile Include="Src\Object\System\Result\MultiResult.cpp" />
     <ClCompile Include="Src\Manager\System\KeyConfig.cpp" />
     <ClCompile Include="Src\Object\Common\Geometry\Cube.cpp" />
@@ -125,7 +125,7 @@
     <ClInclude Include="Src\Object\System\Result\ScoreGageManager.h" />
     <ClInclude Include="Src\Manager\Game\ScoreManager.h" />
     <ClInclude Include="Src\Object\System\Result\ScoreGage.h" />
-    <ClInclude Include="Src\Object\System\Result\Palette.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\Palette.h" />
     <ClInclude Include="Src\Object\System\Result\MultiResult.h" />
     <ClInclude Include="Src\Manager\System\KeyConfig.h" />
     <ClInclude Include="Src\Object\Editor\Palette\PaletteCursor.h" />

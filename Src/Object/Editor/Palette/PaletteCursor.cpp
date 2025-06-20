@@ -73,7 +73,7 @@ void PaletteCursor::Update()
 	}
 
 	//Œˆ’è
-	if (ins.IsTrgDown( KeyConfig::CONTROL_TYPE::ENTER,pad_))
+	if (ins.IsTrgDown( KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD,pad_))
 	{
 		decide_ = true;
 	}

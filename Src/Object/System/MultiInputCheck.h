@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+#include "../../Common/Vector2.h"
 
 class KeyConfig;
 
@@ -39,21 +41,36 @@ public:
 	/// <summary>
 	/// リセット
 	/// </summary>
-	void Reset();
+	void Reset();	
+	
+	/// <summary>
+	/// 入力状況のみリセットする
+	/// </summary>
+	void ResetInput();
 
 	/// <summary>
 	/// 全体入力が終えたか返す
 	/// </summary>
 	/// <returns>全員が終えてたらtrue, そうでなければfalse</returns>
-	inline const bool IsAllInput() const { return allInput_; }
+	bool IsAllInput();
 
 private:
 
 	//入力マネージャー
-	KeyConfig& input_;
+	KeyConfig& key_;
 
-	//すべてのプレイヤーが入力したか
-	bool allInput_;
+	//各プレイヤーの入力確認構造体
+	struct PlayerCheckInput
+	{
+		//入力確認
+		bool isInput = false;
+
+		//UI座標位置
+		Vector2 uiPos = {};
+	};
+
+	//各プレイヤーの入力確認配列
+	std::vector<PlayerCheckInput> players_;
 
 };
 
