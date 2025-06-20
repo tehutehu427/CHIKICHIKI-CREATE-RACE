@@ -94,7 +94,7 @@ protected:
 	std::function<void(void)> phaseDraw_;	
 	
 	//XVŠÖ”
-	void NormalUpdate(void) override;
+	virtual void NormalUpdate(void) override;
 
 	//’Êí‚Ì•`‰æˆ—
 	virtual void NormalDraw(void) override;	

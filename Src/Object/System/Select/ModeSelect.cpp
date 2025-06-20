@@ -7,6 +7,7 @@
 #include "../../../Manager/System/SceneManager.h"
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../../Manager/System/InputManager.h"
+#include "../../../Manager/System/KeyConfig.h"
 #include "../../../Manager/System/DateBank.h"
 #include "../../../Shader/Effect/SelectUIGlow.h"
 #include "../../../Shader/Effect/SelectUIDarkly.h"

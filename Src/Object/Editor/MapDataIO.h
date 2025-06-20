@@ -11,7 +11,17 @@ class MapDataIO
 {
 public:
 
-	//状態
+	//フォントサイズ
+	static constexpr int FONT_SIZE = 48;
+	static constexpr int EXPORT_FONT_SIZE = 32;	//出力用
+
+	//アイコンサイズ
+	static constexpr int ICON_SIZE_X = 128;
+	static constexpr int ICON_SIZE_Y = 64;
+
+	/// <summary>
+	/// 状態
+	/// </summary>
 	enum class STATE
 	{
 		NONE,
@@ -20,12 +30,28 @@ public:
 		CHECK_EXPORT,
 	};
 
-	//確認
+	/// <summary>
+	/// 確認
+	/// </summary>
 	enum class CHECK_LIST
 	{
 		YES,
 		NO,
 		MAX
+	};
+
+	/// <summary>
+	/// メッセージタイプ
+	/// </summary>
+	enum class MESSAGE_TYPE
+	{
+		IMPORT,
+		EXPORT,
+		YES,
+		NO,
+		SAVE,
+		REPORT,
+		MAX,
 	};
 	
 	/// <summary>
@@ -58,7 +84,16 @@ public:
 	/// </summary>
 	void Draw();
 
-private:
+private:	
+	
+	//画像関係 
+	int imgSave_;	//セーブ
+	int imgLoad_;	//読み込み
+	int imgBack_;	//背景
+	
+	//フォント
+	int font_;
+	int exportFont_;
 	
 	// 状態ごとの構造体（更新と描画を分けて保持）
 	struct StateFuncs
@@ -75,6 +110,9 @@ private:
 
 	//選択したファイル
 	std::string selectFile_;
+
+	//メッセージ種類
+	std::string messages_[static_cast<int>(MESSAGE_TYPE::MAX)];
 
 	//状態変更処理の管理
 	std::unordered_map<STATE, StateFuncs> stateMap_;

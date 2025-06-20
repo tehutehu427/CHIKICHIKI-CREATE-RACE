@@ -31,7 +31,9 @@ void Model::Draw(void)
 
 const bool Model::IsHit(const Geometry& _geometry) const
 {
-	return _geometry.IsHit(*this);
+	bool ret = _geometry.IsHit(*this);
+
+	return ret;
 }
 
 const bool Model::IsHit(const Model& _model) const

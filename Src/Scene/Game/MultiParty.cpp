@@ -73,8 +73,10 @@ void MultiParty::UpdateAction(void)
 
 void MultiParty::UpdateEdit(void)
 {
-	//親クラスのエディット時の更新処理を呼ぶ
-	GameScene::UpdateEdit();
+	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT)
+	{
+		for (auto& controller : editControllers_) { controller->Update(); }
+	}
 }
 
 void MultiParty::ChangePhaseEdit()
@@ -89,7 +91,7 @@ void MultiParty::ChangePhaseEdit()
 void MultiParty::ChangePhaseAction()
 {
 	//親クラスの処理を呼びだし
-	GameScene::ChangePhaseEdit();
+	GameScene::ChangePhaseAction();
 
 	//画面を分割する
 	scnMng_.SetIsSplitMode(true);

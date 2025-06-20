@@ -6,6 +6,14 @@ class Cube : public Geometry
 {
 public:
 
+	//バウンディングボックス
+	struct BB
+	{
+		VECTOR vMin;
+		VECTOR vMax;
+		VECTOR axis[3];
+	};
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -33,7 +41,7 @@ public:
 	const bool IsHit(const Cube& _cube)const override;
 	const bool IsHit(const Sphere& _sphere)const override;
 	const bool IsHit(const Capsule& _capsule)const override;
-	const bool IsHit(const Line& _line)const override;
+	const bool IsHit(Line& _line) override;
 
 	//サイズの半分の取得
 	inline const VECTOR GetHalfSize(void)const { return halfSize_; }
@@ -43,6 +51,7 @@ public:
 
 private:
 
+	BB bb_;				//バウンディングボックス
+
 	VECTOR halfSize_;	//箱の半分サイズ
-	VECTOR axis_[3];	//回転軸(X,Y,Z)
 };
