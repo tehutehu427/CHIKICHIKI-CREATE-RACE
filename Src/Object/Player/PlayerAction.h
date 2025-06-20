@@ -5,6 +5,7 @@
 #include<map>
 
 class Player;
+class PlayerInput;
 class PlayerAction
 {
 public:
@@ -83,6 +84,9 @@ private:
 
 	//ó‘ÔXV
 	std::function<void(void)>actionUpdate_;
+
+	//‘€ì“ü—Í
+	std::shared_ptr<PlayerInput> input_;
 
 	//ó‘Ô
 	ATK_ACT act_;

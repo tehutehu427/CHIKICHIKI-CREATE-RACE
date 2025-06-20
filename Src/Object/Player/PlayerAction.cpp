@@ -31,6 +31,8 @@ void PlayerAction::Init(void)
 	punchCoolCnt_ = 0.0f;
 	punchPos_ = Utility::VECTOR_ZERO;
 	punchedCnt_ = PUNCHED_TIME;
+
+
 }
 
 void PlayerAction::Update(void)

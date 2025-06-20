@@ -655,35 +655,37 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 		//itemLocalPos_ = VSub(movedPos_, itemPos);
 	}
 
+	//移動後座標を一回格納し、移動前をとる
+	Transform trans = Transform(trans_);
+	trans.pos = movedPos_;
+	trans.Update();
 	if (bodyShere->IsHit())
 	{
-		//移動後座標を一回格納し、移動前をとる
-		Transform trans = Transform(trans_);
-		trans.pos = movedPos_;
-		trans.Update();
+		Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
 
-		//movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
-		// カプセルを移動させる
-		trans.pos = movedPos_;
-		trans.Update();
+		auto& hitInfo = hitModel.GetHitInfo();
 
-		//for (int i = 0; i < hitInfo.HitNum; i++)
-		//{
-		//	auto hit = hits.Dim[i];
-		//	for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
-		//	{
-		//		int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
-		//			, hit.Position[0], hit.Position[1], hit.Position[2]);
-		//		if (pHit)
-		//		{
+		for (int i = 0; i < hitInfo.HitNum; i++)
+		{
+			auto hit = hitInfo.Dim[i];
+			for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
+			{
+				int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
+					, hit.Position[0], hit.Position[1], hit.Position[2]);
+				if (pHit)
+				{
+					movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
+					// カプセルを移動させる
+					trans.pos = movedPos_;
+					trans.Update();
+					continue;
+				}
 
-		//			continue;
-		//		}
-
-		//		break;
-		//	}
-
-		//}
+				break;
+			}
+			
+		}
+		MV1CollResultPolyDimTerminate(hitInfo);
 	}
 
 
@@ -731,6 +733,15 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 	//	isJump_ = true;
 	//	hitItemType_ = ItemBase::ITEM_TYPE::NONE;
 	//}
+
+
+
+	//移動前の座標を格納する
+	moveDiff_ = VSub(movedPos_, trans_.pos);
+	// 移動
+	trans_.pos = movedPos_;
+	// 現在座標を起点に移動後座標を決める
+
 }
 
 void Player::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
@@ -800,7 +811,12 @@ void Player::Collision(void)
 	//		}
 	//	}
 	//}
-	itemLPos_.clear();
+
+	//移動前の座標を格納する
+	moveDiff_ = VSub(movedPos_, trans_.pos);
+	// 移動
+	trans_.pos = movedPos_;
+	// 現在座標を起点に移動後座標を決める
 
 #ifdef DEBUG_ON
 
@@ -811,11 +827,7 @@ void Player::Collision(void)
 	//	stepJump_ = 0.0f;
 	//}
 #endif // DEBUG_ON
-	//移動前の座標を格納する
-	moveDiff_ = VSub(movedPos_, trans_.pos);
-	// 移動
-	trans_.pos = movedPos_;
-	// 現在座標を起点に移動後座標を決める
+
 }
 
 void Player::UpDownColl(const Transform _itemTrans)
