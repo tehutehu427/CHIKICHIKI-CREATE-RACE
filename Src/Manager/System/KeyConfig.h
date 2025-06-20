@@ -80,6 +80,7 @@ public:
 	{
 		ENTER,					//決定
 		DECISION_KEY_AND_PAD,	//決定(PAD or KEYBOARDD onry)
+		DECISION_MOUSE,			//決定(MOUSE)
 		CANCEL,					//キャンセル
 
 		PHASE_CHENGE,			//フェーズ変更
