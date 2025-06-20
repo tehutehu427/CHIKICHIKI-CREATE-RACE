@@ -32,7 +32,7 @@ public:
 	const bool IsHit(const Cube& _cube)const override;
 	const bool IsHit(const Sphere& _sphere)const override;
 	const bool IsHit(const Capsule& _capsule)const override;
-	const bool IsHit(const Line& _line)const override;
+	const bool IsHit(Line& _line)override;
 
 	//”¼Œa‚ÌŽæ“¾
 	inline const float GetRadius(void)const { return radius_; }

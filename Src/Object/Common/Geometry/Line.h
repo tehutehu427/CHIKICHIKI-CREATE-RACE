@@ -35,7 +35,7 @@ public:
 	const bool IsHit(const Cube& _cube)const override;
 	const bool IsHit(const Sphere& _sphere)const override;
 	const bool IsHit(const Capsule& _capsule)const override;
-	const bool IsHit(const Line& _line)const override;
+	const bool IsHit(Line& _line) override;
 
 	//1‚Â–Ú‚Ì“_‚ÌÀ•W‚ğæ“¾
 	inline const VECTOR GetLocalPosPoint1(void)const { return localPosPoint1_; }

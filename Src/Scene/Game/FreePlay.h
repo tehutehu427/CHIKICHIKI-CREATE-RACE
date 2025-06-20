@@ -1,6 +1,8 @@
 #pragma once
 #include "GameScene.h"
 
+class CheckChangePhase;
+
 class FreePlay : public GameScene
 {
 public:
@@ -22,12 +24,24 @@ public:
 
 private:
 
+	//フェーズをプレイに変える
+	std::unique_ptr<CheckChangePhase> changePhasePlay_;
+
 	//アクション時の更新処理
 	void UpdateAction(void) override;
 
 	//エディット時の更新処理
-	void UpdateEdit(void) override;	
+	void UpdateEdit(void) override;		
 	
+	//アクションへの状態遷移
+	void ChangePhaseAction(void);	
+	
+	//エディットへ状態遷移
+	void ChangePhaseEdit(void);
+
+	//更新関数
+	void NormalUpdate() override;
+
 	//描画関数
 	void NormalDraw(void) override;
 
