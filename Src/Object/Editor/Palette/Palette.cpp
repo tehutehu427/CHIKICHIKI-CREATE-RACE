@@ -125,10 +125,10 @@ void Palette::ChangeStateReduction()
 	pos_ = centerPos;
 
 	//Šg‘å—¦‚ğ‰Šú‰»
-	rate_ = 0.0f;
+	rate_ = RATE_MAX;
 
 	//Ÿ‚Ìó‘Ô‘JˆÚæ‚ğİ’è
-	nextState_ = STATE::CENTER;
+	nextState_ = STATE::NONE;
 
 	stateUpdate_ = std::bind(&Palette::UpdateStateReduction, this);
 }

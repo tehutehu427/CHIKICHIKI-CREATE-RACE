@@ -25,6 +25,10 @@ void MultiPalette::Load(void)
 	//パレットアイコン
 	palIcon_ = std::make_unique<MultiPaletteIcon>();
 	palIcon_->Load();
+
+	//パレット
+	pal_ = std::make_unique<Palette>();
+	pal_->Load();
 }
 
 void MultiPalette::Init(void)

@@ -24,7 +24,7 @@ public:
 	static constexpr float RATE_MAX = 1.8f;
 
 	//Šg‘å‘¬“x
-	static constexpr float RATE_SPEED = 3.0f;
+	static constexpr float RATE_SPEED = 0.03f;
 
 	//ˆÚ“®‘¬“x
 	static constexpr float MOVE_SPEED = 800.0f;

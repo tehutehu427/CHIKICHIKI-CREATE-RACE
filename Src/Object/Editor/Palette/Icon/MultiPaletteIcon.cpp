@@ -190,7 +190,7 @@ bool MultiPaletteIcon::CheckItemIcon(const Vector2 _cPos, const int _playerIndex
 		leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
 		rightBotm = { ic.pos.x + ic.size.x / 2, ic.pos.y + ic.size.y / 2 };
 		//位置の確認
-		if (Utility::IsPointInRect(_cPos, leftTop, rightBotm))
+		if (Utility::IsPointInRect(_cPos, leftTop, rightBotm) && !IsChosenByOtherPlayer(i, _playerIndex))
 		{
 			selectTypes_[_playerIndex] = static_cast<ItemBase::ITEM_TYPE>(ic.num);
 			sleCnt_[_playerIndex] = i;
@@ -198,5 +198,18 @@ bool MultiPaletteIcon::CheckItemIcon(const Vector2 _cPos, const int _playerIndex
 		}
 	}
 
+	return false;
+}
+
+bool MultiPaletteIcon::IsChosenByOtherPlayer(const int _iconIndex, const int _playerIndex)
+{
+	//他のプレイヤーが既に選択していないか調べる
+	for (int i = 0; i < sleCnt_.size(); i++)
+	{
+		if (sleCnt_[i] == _iconIndex&& i != _playerIndex)
+		{
+			return true;	//既に選択済み
+		}
+	}
 	return false;
 }

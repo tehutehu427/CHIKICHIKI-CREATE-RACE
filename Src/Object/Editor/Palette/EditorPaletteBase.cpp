@@ -193,6 +193,7 @@ void EditorPaletteBase::UpdatePaletteAnim()
 		//ëOÇÃèÛë‘Ç≤Ç∆Ç…èÛë‘ëJà⁄
 		switch (preState)
 		{
+		case Palette::STATE::EXPANSION:
 		case Palette::STATE::ADMISSION_EDGE:
 			ChangeState(STATE::SELECT);
 			break;
@@ -200,6 +201,9 @@ void EditorPaletteBase::UpdatePaletteAnim()
 		case Palette::STATE::EXIT_EDGE:
 			ChangeState(STATE::WAIT);
 			break;
+
+		case Palette::STATE::REDUCTION:
+			ChangeState(STATE::NONE);
 
 		default:
 			break;
