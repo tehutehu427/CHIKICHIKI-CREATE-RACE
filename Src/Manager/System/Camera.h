@@ -1,6 +1,7 @@
 #pragma once
 #include <DxLib.h>
 #include "../../Common/Quaternion.h"
+#include "KeyConfig.h"
 class Transform;
 
 class Camera
@@ -60,7 +61,7 @@ public:
 		FIXED_DIAGONAL,	//斜め固定
 	};
 
-	Camera(void);
+	Camera(int _playerNum);
 	~Camera(void);
 
 	void Init(void);
@@ -98,6 +99,9 @@ private:
 
 	// カメラが追従対象とするTransform
 	const Transform* followTransform_;
+
+	//PADの番号
+	KeyConfig::JOYPAD_NO padNo_;
 
 	// カメラモード
 	MODE mode_;
