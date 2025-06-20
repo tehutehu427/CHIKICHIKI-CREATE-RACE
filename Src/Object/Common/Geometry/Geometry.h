@@ -14,7 +14,7 @@ class Geometry
 public:
 
 	//通常色
-	static constexpr int NORMAL_COLOR = 0xffffff;
+	static constexpr int NORMAL_COLOR = 0x000000;
 
 	//デストラクタ
 	virtual~Geometry(void) = 0;

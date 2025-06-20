@@ -1,16 +1,15 @@
 #pragma once
 #include <map>
 #include <functional>
-#include "../Common/AnimationController.h"
 #include "../Object/item/ItemBase.h"
 #include"./Process/PlayerInput.h"
+#include"./PlayerAction.h"
 #include "../ObjectBase.h"
 
 #define DEBUG_ON
+class AnimationController;
 class Camera;
-class PMove;
-class PJump;
-class PPunch;
+class PlayerAction;
 class PlayerInput;
 class DateBank;
 class Player :public ObjectBase
@@ -126,34 +125,37 @@ public:
 	//ゲッタ
 	//******************************************
 	//プレイヤー番号
-	const int GetPlayerNum(void)const { return playerNum_; }
+	inline const int GetPlayerNum(void)const { return playerNum_; }
 
-	const DateBank::TYPE GetCntl(void) { return cntl_; }
+	inline const DateBank::TYPE GetCntl(void) { return cntl_; }
 
-	const VECTOR GetMovePow(void) { return movePow_; }
+	inline const VECTOR GetMovePow(void) { return movePow_; }
 	//入力
-	const std::weak_ptr<PlayerInput> GetInput(void)const { return input_; }
+	inline const std::weak_ptr<PlayerInput> GetInput(void)const { return input_; }
 
 	//パンチ中ゲッタ
-	const bool GetIsPunch(void) { return isPunchHitTime_; }
+	inline const bool GetIsPunch(void) { return isPunchHitTime_; }
 
 	//パンチ座標
-	const VECTOR GetPunchPos(void) { return punchPos_; }
+	inline const VECTOR GetPunchPos(void) { return punchPos_; }
 
 	//プレイヤー座標
-	const VECTOR GetPos(void)const { return trans_.pos; }
+	inline const VECTOR GetPos(void)const { return trans_.pos; }
 
 	//移動後のプレイヤー座標
-	const VECTOR GetMovedPos(void)const { return movedPos_; }
+	inline const VECTOR GetMovedPos(void)const { return movedPos_; }
 
 	//当たり判定を確認しているマップ座標
-	const IntVector3 GetColPos(void)const { return colPos_; }
+	inline const IntVector3 GetColPos(void)const { return colPos_; }
+
+	//コントローラー番号
+	inline const KeyConfig::JOYPAD_NO GetPadNum(void)const { return padNum_; }
 
 	//死んだ判定
-	bool IsDeath(void);
+	inline bool IsDeath(void);
 
 	//当たったアイテム
-	const ItemBase::ITEM_TYPE GetHitItemType(void)const { return hitItemType_; }
+	inline const ItemBase::ITEM_TYPE GetHitItemType(void)const { return hitItemType_; }
 
 	//******************************************
 	//セッタ
@@ -180,11 +182,8 @@ public:
 	const void SetCntl(DateBank::TYPE _cntl) { cntl_ = _cntl; }
 
 	//状態遷移
-	void ChangeAction(ATK_ACT _act);
+	void ChangeAction(PlayerAction::ATK_ACT _act);
 
-
-	//プレイヤー番号ゲット
-	const int PlayerNum(void) { return playerNum_; }
 #ifdef DEBUG_ON
 
 
@@ -200,6 +199,10 @@ private:
 	//***********************************************
 	//定数
 	//***********************************************
+	//重力の割合
+	static constexpr float GRAVITY_PER = 20.0f;
+
+
 	//プレイヤー１のX座標
 	static constexpr float PLAYER_ONE_POS_X = -20.0f;
 	//座標の間隔
@@ -266,10 +269,12 @@ private:
 
 	//接地しているときのラインのコライダ
 	static constexpr int UP_AND_DOWN_LINE_COL_NO = 0;
+	//ラインの長さ
+	static constexpr float LINE_RANGE = 10.0f;
 	//プレイヤーの上の座標
-	static constexpr VECTOR LOCAL_UP_POS = { 0.0f,RADIUS+10,0.0f };
+	static constexpr VECTOR LOCAL_UP_POS = { 0.0f,RADIUS+ LINE_RANGE,0.0f };
 	//プレイヤーの下
-	static constexpr VECTOR LOCAL_DOWN_POS = { 0.0f,-RADIUS-10,0.0f };
+	static constexpr VECTOR LOCAL_DOWN_POS = { 0.0f,-RADIUS- LINE_RANGE,0.0f };
 
 
 	//当たり判定のめりこみ防止用
@@ -335,6 +340,7 @@ private:
 
 	//アクション関係
 	//----------------------------------------
+	std::unique_ptr<PlayerAction>action_;
 	//状態遷移
 	std::map<ATK_ACT, std::function<void(void)>>changeAction_;
 
@@ -425,53 +431,6 @@ private:
 	//------------------------------
 	void Action(void);
 
-
-	//何もしない
-	void NoneUpdate(void);
-
-	//入力
-	void ActionInputUpdate(void);
-	void ChangeInput(void);
-
-	//何もなし
-	void ChangeNone(void);
-
-	//移動状態の更新
-	void MoveUpdate(void);
-	//入力方向に応じて方向を決める
-	void MoveDirFronInput(void);
-	//移動に変更する
-	void ChangeMove(void);
-	//毎フレーム移動方向とスピードを更新する
-	void UpdateMoveDirAndPow(void);
-
-
-	//ジャンプ
-	void JumpUpdate(void);
-	void Jump(void);
-	void ChangeJump(void);
-
-	//パンチ
-	void Punch(void);
-	void ChangePunch(void);
-
-	//ノックバック
-	void KnockBack(void);
-	void ChangeKnockBack(void);
-
-	//回転
-	void Rotate(void);
-	//最終的に動かしたい角度の設定
-	void SetGoalRotate(double _deg);
-	//------------------------------
-	
-	/// <summary>
-	/// 座標を足して回転
-	/// </summary>
-	/// <param name="_followPos">追従対象の座標</param>
-	/// <param name="_followRot">追従対象の角度</param>
-	/// <param name="_localPos">相対座標</param>
-	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot,VECTOR _localPos);
 
 	//アイテム都の当たり判定
 	void HitItem(const IntVector3 _colPos);

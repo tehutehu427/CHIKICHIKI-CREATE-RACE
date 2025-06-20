@@ -20,6 +20,7 @@ PlayerManager::PlayerManager(void)
 PlayerManager::~PlayerManager(void)
 {
 	instance_ = nullptr;
+
 }
 
 void PlayerManager::CreateInstance(void)
@@ -33,8 +34,9 @@ void PlayerManager::CreateInstance(void)
 
 void PlayerManager::Destroy(void)
 {
-	instance_ = nullptr;
+	//deleteしてからnullptr
 	delete instance_;
+	instance_ = nullptr;
 }
 
 PlayerManager& PlayerManager::GetInstance(void)
@@ -252,6 +254,6 @@ void PlayerManager::PunchPlayersColl(int p1, int p2)
 		players_[p2]->SetDir(Utility::GetMoveVec(players_[p1]->GetPos(), players_[p2]->GetPos()));
 
 		//ノックバック状態遷移
-		players_[p2]->ChangeAction(Player::ATK_ACT::KNOCKBACK);
+		//players_[p2]->ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
 	}
 }

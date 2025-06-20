@@ -6,6 +6,7 @@
 
 class Player;
 class PlayerInput;
+class AnimationController;
 class PlayerAction
 {
 public:
@@ -18,7 +19,7 @@ public:
 		KNOCKBACK,//パンチされた状態
 		JUMP
 	};
-	PlayerAction(Player& _player);
+	PlayerAction(Player& _player, SceneManager& _scnMng,AnimationController& _animationController);
 	~PlayerAction(void);
 
 	/// <summary>
@@ -33,14 +34,48 @@ public:
 	/// <param name=""></param>
 	void Update(void);
 	
+	//状態遷移
+	void ChangeAction(ATK_ACT _act);
 
 
+	//*****************************************
+	//ゲッタ
+	//*****************************************
+	//移動量
+	inline const VECTOR GetMovePow(void) { return movePow_; }
+
+	//ジャンプ力
+	inline const VECTOR GetJumpPow(void) { return jumpPow_; }
+
+	//プレイヤーの角度Y
+	inline const Quaternion GetPlayerRotY(void) { return playerRotY_; }
+
+	//*****************************************
+	//セッタ
+	//*****************************************
+	//ジャンプ力
+	void SetJumpPow(const VECTOR _jumpPow) { jumpPow_ = _jumpPow;};
+
+	//空中かどうか
+	void SetIsJump(const bool _isJump) { isJump_ = _isJump; }
+
+	//ジャンプ減速
+	void SetJumpDecel(const float _decel) { jumpDeceralation_ = _decel; }
+
+	//ジャンプ時間
+	void SetStepJump(const float _step) { stepJump_ = _step; }
+
+	//デバッグ
+	float GetJumpDecel(void) { return jumpDeceralation_; }
+	float GetStepJump(void) {return stepJump_;}
 
 private:
 	//*******************************************
 	//定数
 	//*******************************************
-		//移動
+	//重力の割合
+	static constexpr float GRAVITY_PER = 20.0f;
+	//移動
 	//----------------------------------
 	//移動スピード
 	static constexpr float MOVE_SPEED = 7.0f;
@@ -79,6 +114,15 @@ private:
 	//-------------------------------------------------
 	//メンバ変数
 	//-------------------------------------------------
+	// シーンマネージャ参照
+	SceneManager& scnMng_;
+
+	//プレイヤー
+	Player& player_;
+
+	//アニメーションコントローラー
+	AnimationController& animationController_;
+
 	//状態遷移
 	std::map<ATK_ACT, std::function<void(void)>>changeAction_;
 
@@ -100,7 +144,12 @@ private:
 	VECTOR movePow_;		// 移動量
 	VECTOR dir_;			//方向
 
+	//回転
+	Quaternion playerRotY_;
+	Quaternion goalQuaRot_;
 	float stepRotTime_;
+
+
 
 	//ジャンプ
 	//-----------------------
@@ -151,6 +200,15 @@ private:
 	//ノックバック
 	void KnockBack(void);
 	void ChangeKnockBack(void);
+
+	/// <summary>
+	/// 座標を足して回転
+	/// </summary>
+	/// <param name="_followPos">追従対象の座標</param>
+	/// <param name="_followRot">追従対象の角度</param>
+	/// <param name="_localPos">相対座標</param>
+	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _localPos);
+
 
 	//回転
 	void Rotate(void);

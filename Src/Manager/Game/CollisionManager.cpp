@@ -39,8 +39,7 @@ void CollisionManager::Update(void)
 		for (int j = i + 1; j < colliders_.size(); j++)
 		{
 			//当たり判定をする範囲内　又は　タグが同じかどうか
-			if (!IsWithInHitRange(colliders_[i],colliders_[j])
-				|| colliders_[i]->GetTag() == colliders_[j]->GetTag())
+			if (!IsWithInHitRange(colliders_[i],colliders_[j])|| colliders_[i]->GetTag() == colliders_[j]->GetTag())
 			{
 				//範囲外　又は　同一タグだったので飛ばす
 				colliders_[i]->NotHit();
@@ -75,14 +74,16 @@ CollisionManager::CollisionManager(void)
 	hitRange_[Collider::TAG::PLAYER2] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::PLAYER3] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::PLAYER4] = HIT_RANGE_NORMAL;
-	hitRange_[Collider::TAG::START] = HIT_RANGE_NORMAL;
-	hitRange_[Collider::TAG::GOAL] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::NORMAL_ITEM] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::MOVE_FLOOR] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::KILLER_ITEM] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::DESTROYER] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::SLIME_FLOOR] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::SPRING] = HIT_RANGE_NORMAL;
+
+
+	hitRange_[Collider::TAG::START] = HIT_RANGE_START;
+	hitRange_[Collider::TAG::GOAL] = HIT_RANGE_GOAL;
 
 	hitRange_[Collider::TAG::CANNON_AIM] = HIT_RANGE_TARGET;
 }
@@ -93,6 +94,8 @@ CollisionManager::~CollisionManager(void)
 
 const bool CollisionManager::IsWithInHitRange(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2) const
 {
+	VECTOR a = _col1.lock()->GetGeometry().GetColPos();
+	VECTOR b= _col2.lock()->GetGeometry().GetColPos();
 	//双方の距離
 	double sqrtDis = Utility::SqrMagnitude(
 		_col1.lock()->GetGeometry().GetColPos(),

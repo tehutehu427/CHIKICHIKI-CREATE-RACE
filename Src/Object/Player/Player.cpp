@@ -18,6 +18,7 @@
 #include "../../Object/Editor/EditController.h"
 
 #include "../../Manager/Game/ItemManager.h"
+#include"./PlayerAction.h"
 #include "./Process/PlayerInput.h"
 
 #include<algorithm>
@@ -47,14 +48,6 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 	//プレイヤー状態
 	changeStates_.emplace(PLAYER_STATE::ALIVE, [this]() {ChangeAlive();});
 	changeStates_.emplace(PLAYER_STATE::DEATH, [this]() {ChangeDeath(); });
-	//操作関連
-	//----------------------------------------------------
-	changeAction_.emplace(ATK_ACT::NONE, [this]() {ChangeNone(); });
-	changeAction_.emplace(ATK_ACT::MOVE, [this]() {ChangeMove(); });
-	changeAction_.emplace(ATK_ACT::INPUT, [this]() {ChangeInput(); });
-	changeAction_.emplace(ATK_ACT::JUMP, [this]() {ChangeJump(); });
-	changeAction_.emplace(ATK_ACT::PUNCH, [this]() {ChangePunch(); });
-	changeAction_.emplace(ATK_ACT::KNOCKBACK, [this]() {ChangeKnockBack(); });
 	//----------------------------------------------------
 	//当たり判定
 	//----------------------------------------------------
@@ -103,23 +96,6 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 
 	//*****************************************************
 	
-
-	//ジャンプ関係
-	isJump_ = false;
-	stepJump_ = 0.0f;
-	jumpPow_ = Utility::VECTOR_ZERO;
-	jumpDeceralation_ = POW_JUMP;
-
-	//パンチ関係の初期化
-	punchCnt_ = 0.0f;
-	punchCoolCnt_ = 0.0f;
-	punchPos_ = Utility::VECTOR_ZERO;
-	punchedCnt_ = PUNCHED_TIME;
-	
-	itemLocalPos_ = Utility::VECTOR_ZERO;
-	hitItemType_ = ItemBase::ITEM_TYPE::NONE;
-
-	input_ = nullptr;
 }
 
 Player::~Player(void)
@@ -141,8 +117,8 @@ void Player::Load(void)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_SPD / PUNCH_TIME_MAX);
 
 
-	//入力
-	input_ = std::make_shared<PlayerInput>(padNum_, cntl_);
+	//アクション系
+	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
 }
 
 void Player::Init(void)
@@ -163,19 +139,9 @@ void Player::Init(void)
 	//当たり判定
 	isCol_ = false;
 
-	isJump_ = false;
-	stepJump_ = 0.0f;
-	jumpPow_ = Utility::VECTOR_ZERO;
-	jumpDeceralation_ = POW_JUMP;
 
-	//パンチ関係の初期化
-	punchCnt_ = 0.0f;
-	punchCoolCnt_ = 0.0f;
-	punchPos_ = Utility::VECTOR_ZERO;
-	punchedCnt_ = PUNCHED_TIME;
-
-	ChangeAction(ATK_ACT::INPUT);
 	ChangeState(PLAYER_STATE::ALIVE);
+	action_->Init();
 
 #ifdef DEBUG_ON
 	cube_.centerPos = Utility::VECTOR_ZERO;
@@ -198,7 +164,7 @@ void Player::Update(void)
 	stateUpdate_();
 
 	//回転の同期
-	trans_.quaRot = playerRotY_;
+	trans_.quaRot = action_->GetPlayerRotY();
 	
 
 	trans_.Update();
@@ -236,9 +202,9 @@ void Player::DrawDebug(void)
 	DrawFormatString(0, 16*(playerNum_*9), 0x000000
 		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nmovePow(%d,%d)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
-		,jumpDeceralation_
-		,stepJump_
-		,jumpPow_.x,jumpPow_.y,jumpPow_.z
+		,action_->GetJumpDecel()
+		,action_->GetStepJump()
+		,action_->GetJumpPow().x, action_->GetJumpPow().y, action_->GetJumpPow().z
 		,movedPos_.x,movedPos_.y,movedPos_.z
 //		,InputManager::GetInstance().GetKnockLStickSize(padNum_).x, InputManager::GetInstance().GetKnockLStickSize(padNum_).y
 	);
@@ -274,16 +240,6 @@ void Player::AliveUpdate(void)
 		ChangeState(PLAYER_STATE::DEATH);
 		return;
 	}
-
-	//入力更新
-	input_->Update();
-
-	//プレイヤーの下を設定
-	static VECTOR dirDown = trans_.GetDown();
-
-	//重力(各アクションに重力を反映させたいので先に重力を先に書く)
-	GravityManager::GetInstance().CalcGravity(dirDown, jumpPow_, 20.0f);
-
 	//アクション関係
 	Action();
 
@@ -310,142 +266,20 @@ void Player::DeathUpdate(void)
 #endif // DEBUG_ON
 void Player::Action(void)
 {
-	//各アクションの更新
-	actionUpdate_();
+	action_->Update();
 
-	//プレイヤーの回転
-	Rotate();
-
-	//プレイヤーの方向とスピードの更新
-	UpdateMoveDirAndPow();
 
 	if (IsDeath())
 	{
 		//何もできないようにする
-		ChangeAction(ATK_ACT::NONE);
+		action_->ChangeAction(PlayerAction::ATK_ACT::NONE);
 	}
 }
 
-void Player::ChangeAction(ATK_ACT _act)
-{
-	act_ = _act;
-	changeAction_[act_]();
-}
 
-void Player::NoneUpdate(void)
-{
 
-}
 
-void Player::ActionInputUpdate(void)
-{
-	//入力に応じてアクションを変える
-	using ACT_CNTL = PlayerInput::ACT_CNTL;
-	if (input_->CheckAct(ACT_CNTL::MOVE))
-	{
-		ChangeAction(ATK_ACT::MOVE);
-		return;
-	}
-	if (input_->CheckAct(ACT_CNTL::PUNCH))
-	{
-		ChangeAction(ATK_ACT::PUNCH);
-		return;
-	}
-	if (input_->CheckAct(ACT_CNTL::JUMP))
-	{
-		ChangeAction(ATK_ACT::JUMP);
-		return;
-	}
-}
 
-void Player::ChangeInput(void)
-{
-	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE));
-	actionUpdate_ = std::bind(&Player::ActionInputUpdate, this);
-}
-
-void Player::ChangeNone(void)
-{
-	actionUpdate_ = std::bind(&Player::NoneUpdate, this);
-}
-
-void Player::MoveUpdate(void)
-{
-	//移動中に入力が入った時の状態遷移
-	if (input_->CheckAct(PlayerInput::ACT_CNTL::JUMP))
-	{
-		ChangeAction(ATK_ACT::JUMP);
-		return;
-	}
-	else if (input_->CheckAct(PlayerInput::ACT_CNTL::PUNCH))
-	{
-		speed_ = 0.0f;
-		ChangeAction(ATK_ACT::PUNCH);
-		return;
-	}
-	else if (!input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
-	{
-		speed_ = 0.0f;
-		ChangeAction(ATK_ACT::INPUT);
-		return;
-	}
-	//入力方向の移動
-	MoveDirFronInput();
-}
-void Player::MoveDirFronInput(void)
-{
-	//移動量を0にリセット
- 	movePow_ = Utility::VECTOR_ZERO;
-
-	//プレイヤー入力クラスから角度を取得
-	VECTOR getDir = input_->GetDir();
-	float deg = input_->GetMoveDeg();
-	Quaternion cameraRot = scnMng_.GetCamera(playerNum_).lock()->GetQuaRotOutX();
-	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
-	dir_ = cameraRot.PosAxis(getDir);
-	dir_ = VNorm(dir_);
-
-	if (!Utility::EqualsVZero(dir_))
-	{
-		//補完角度の設定(入力角度まで方向転換する)
-		SetGoalRotate(deg);
-	}
-}
-void Player::ChangeMove(void)
-{
-	animationController_->Play(static_cast<int>(ANIM_TYPE::WALK));
-	speed_ = MOVE_SPEED;
-	actionUpdate_ = std::bind(&Player::MoveUpdate, this);
-}
-void Player::UpdateMoveDirAndPow(void)
-{
-	//方向の更新
-	moveDir_ = dir_;
-	//移動量の更新
-	movePow_ = VScale(moveDir_, speed_);
-}
-void Player::Rotate(void)
-{
-	stepRotTime_ -= PlayerInput::DELTA_TIME;
-	// 回転の球面補間
-	playerRotY_ = Quaternion::Slerp(
-		playerRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);
-}
-void Player::SetGoalRotate(double _deg)
-{
-	//カメラの角度を取得
-	VECTOR cameraRot = scnMng_.GetCamera(playerNum_).lock()->GetAngles();
-	Quaternion axis = Quaternion::AngleAxis(
-		(double)cameraRot.y + Utility::Deg2RadF(_deg), Utility::AXIS_Y);
-	// 現在設定されている回転との角度差を取る
-	double angleDiff = Quaternion::Angle(axis, goalQuaRot_);
-	// しきい値
-	if (angleDiff > 0.1)
-	{
-		stepRotTime_ = TIME_ROT;
-	}
-	goalQuaRot_ = axis;
-}
 bool Player::IsDeath(void)
 {
 	if (trans_.pos.y <= DEATH_POS_Y)
@@ -454,136 +288,12 @@ bool Player::IsDeath(void)
 	}
 	return false;
 }
+
 void Player::ChangeModelColor(const COLOR_F _colorScale)
 {
 	MV1SetEmiColorScale(trans_.modelId, _colorScale);
 }
-void Player::JumpUpdate(void)
-{
-	//ジャンプ中移動キー押されてなかったらスピード0にする
-	if (!input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))speed_ = 0.0f;
 
-	//ジャンプ処理
-	Jump();
-
-}
-void Player::Jump(void)
-{
-	//ステップジャンプを基準にジャンプ減衰量を決める
-	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
-	stepJump_ += deltaTime;
-
-	//空中アニメーションステップのループ設定
-	animationController_->SetEndLoop(23.0f, 25.0f, 5.0f);
-
-	//ジャンプ中も移動できるようにする
-	MoveDirFronInput();
-
-	//ジャンプカウントが0以上なら
-	if (stepJump_ > 0.0f)
-	{
-		stepJump_ += deltaTime;
-		//プレイヤーが落下していたら
-		if (jumpDeceralation_ < 0.0f)
-		{
-			animationController_->Play(static_cast<int>(ANIM_TYPE::LAND));
-		}
-		//減衰量の計算
-		float deceralation = stepJump_ * TIME_JUMP_SCALE;
-		jumpDeceralation_ -= deceralation;
-
-		//ジャンプ量に掛ける
-		jumpPow_ = VScale(trans_.GetUp(), jumpDeceralation_);
-	}
-
-	//地面に着いたらジャンプ関係の変数リセット
-	if (!isJump_)
-	{
-		jumpDeceralation_ = POW_JUMP;
-		jumpPow_ = Utility::VECTOR_ZERO;
-		stepJump_ = 0.0f;
-
-		//動いていた場合の移動量リセット
-		speed_ = 0.0f;
-		ChangeAction(ATK_ACT::INPUT);
-		return;
-	}
-}
-void Player::ChangeJump(void)
-{
-	//ジャンプ関係
-	isJump_ = true;
-	stepJump_ = 0.0f;
-	//アニメーションの再生
-	animationController_->Play(
-		(int)ANIM_TYPE::JUMP, false, 10.0f, 60.0f);
-	//状態遷移
-	actionUpdate_ = std::bind(&Player::JumpUpdate, this);
-}
-void Player::Punch(void)
-{
-	//プレイヤーの手の座標を設定する
-	punchPos_ = MV1GetFramePosition(trans_.modelId, 10);
-
-	//アニメーション
-	animationController_->Play((int)ANIM_TYPE::PUNCH, false);
-
-	//アニメステップを取得して一定のところで攻撃判定を発生させる
-	float animStep = animationController_->GetAnimStep();
-	if (animStep > PUNCH_HIT_END_ANIM_STEP)
-	{
-		isPunchHitTime_ = false;
-	}
-	else if (animStep > PUNCH_HIT_START_ANIM_STEP)
-	{
-		isPunchHitTime_ = true;
-	}
-
-	if (animationController_->IsEnd())
-	{
-		//パンチクールタイムセット
-		punchCoolCnt_ = PUNCH_COOL_TIME;
-		ChangeAction(ATK_ACT::INPUT);
-	}
-}
-
-void Player::ChangePunch(void)
-{
-	punchCnt_ = 0.0f;
-	punchCoolCnt_ = PUNCH_COOL_TIME;
-	actionUpdate_ = std::bind(&Player::Punch, this);
-}
-
-void Player::KnockBack(void)
-{
-	//カウントの減算
-	punchedCnt_ -= scnMng_.GetDeltaTime();
-	if (punchedCnt_ < 0.0f)
-	{
-		punchedCnt_ = PUNCHED_TIME;
-		ChangeAction(ATK_ACT::INPUT);
-	}
-}
-
-void Player::ChangeKnockBack(void)
-{
-	//ダメージアニメーション
-	//animationController_->Play((int)ANIM_TYPE::DAMAGE,true,)
-	speed_ = FLY_AWAY_SPEED;
-	actionUpdate_ = std::bind(&Player::KnockBack, this);
-}
-
-
-
-
-VECTOR Player::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _localPos)
-{
-	//座標回転
-	VECTOR addPos = _followRot.PosAxis(_localPos);
-
-	//足したものを返す
-	return VAdd(_followPos, addPos);
-}
 
 void Player::HitItem(const IntVector3 _colPos)
 {
@@ -650,7 +360,7 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 		{
 			movedPos_.y = hitLineInfo.HitPosition.y - RADIUS - POSITION_OFFSET;
 		}
-		jumpPow_ = Utility::VECTOR_ZERO;
+		action_->SetJumpPow(Utility::VECTOR_ZERO);
 		//isJump_ = false;
 		//itemLocalPos_ = VSub(movedPos_, itemPos);
 	}
@@ -769,8 +479,8 @@ void Player::CollKillerItem(const std::weak_ptr<Collider> _hitCol)
 
 void Player::Collision(void)
 {
-	movedPos_ = VAdd(trans_.pos, movePow_);
-	movedPos_ = VAdd(movedPos_, jumpPow_);
+	movedPos_ = VAdd(trans_.pos, action_->GetMovePow());
+	movedPos_ = VAdd(movedPos_, action_->GetJumpPow());
 
 #ifdef DEBUG_ON
 
@@ -778,15 +488,15 @@ void Player::Collision(void)
 	if (CollCube())
 	{
 		movedPos_ = VAdd(movedPos_, cubeMovePos_);
-		jumpPow_ = Utility::VECTOR_ZERO;
+		action_->SetJumpPow(Utility::VECTOR_ZERO);
 		movedPos_.y = cube_.upPos.y + RADIUS;
-		stepJump_ = 0.0f;
-		isJump_ = false;
-		jumpDeceralation_ = POW_JUMP;
+		action_->SetStepJump(0.0f);
+		action_->SetIsJump(false);
+		action_->SetJumpDecel(POW_JUMP);
 	}
 	else
 	{
-		isJump_ = true;
+		action_->SetIsJump(true);
 		//if (jumpPow_.y <= LIMIT_GRAVITY)
 		//{
 		//	jumpPow_.y = LIMIT_GRAVITY;
@@ -797,20 +507,20 @@ void Player::Collision(void)
 
 
 
-	//MapEditer& mapEdit = MapEditer::GetInstance();
-	//IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
-	//for (int x = -COL_RANGE; x <= COL_RANGE; x++)
-	//{
-	//	for (int y = -COL_RANGE; y <= COL_RANGE; y++)
-	//	{
-	//		for (int z = -COL_RANGE; z <= COL_RANGE; z++)
-	//		{
-	//			colPos_ = mapPos + IntVector3{x, y, z};
-	//			if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
-	//			HitItem(colPos_);
-	//		}
-	//	}
-	//}
+	MapEditer& mapEdit = MapEditer::GetInstance();
+	IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
+	for (int x = -COL_RANGE; x <= COL_RANGE; x++)
+	{
+		for (int y = -COL_RANGE; y <= COL_RANGE; y++)
+		{
+			for (int z = -COL_RANGE; z <= COL_RANGE; z++)
+			{
+				colPos_ = mapPos + IntVector3{x, y, z};
+				if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
+				HitItem(colPos_);
+			}
+		}
+	}
 
 	//移動前の座標を格納する
 	moveDiff_ = VSub(movedPos_, trans_.pos);
@@ -846,8 +556,8 @@ void Player::UpDownColl(const Transform _itemTrans)
 	{
 		//Y座標のみ半径分上に移動させる
 		movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
-		jumpPow_ = Utility::VECTOR_ZERO;
-		isJump_ = false;
+		action_->SetJumpPow(Utility::VECTOR_ZERO);
+		action_->SetIsJump(false);
 		itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
 		isLandHit_ = true;
 		return;
@@ -863,10 +573,9 @@ void Player::UpDownColl(const Transform _itemTrans)
 	VECTOR upPos = movedPos_;
 	upPos.y += (RADIUS);
 	VECTOR downPos = movedPos_;
-	downPos.y -= (RADIUS);
+	downPos.y -= (RADIUS+10.0f);
 
 	hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
-	int i=std::min(1, 2);
 
 	//当たったら
 	if (hit.HitFlag > 0)
@@ -889,7 +598,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 		{
 			movedPos_.y = hit.HitPosition.y - RADIUS - POSITION_OFFSET;
 		}
-		jumpPow_ = Utility::VECTOR_ZERO;
+		action_->SetJumpPow(Utility::VECTOR_ZERO);
 		//isJump_ = false;
 		itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
 	}
@@ -897,7 +606,7 @@ void Player::UpDownColl(const Transform _itemTrans)
 	{
 		//当たらなかったら初期化する
 		itemLocalPos_ = Utility::VECTOR_ZERO;
-		isJump_ = true;
+		action_->SetIsJump(true);
 		hitItemType_ = ItemBase::ITEM_TYPE::NONE;
 	}
 }
