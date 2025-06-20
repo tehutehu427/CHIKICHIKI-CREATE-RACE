@@ -1,13 +1,21 @@
+#include "../Application.h"
 #include "../../Utility/Utility.h"
+#include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/KeyConfig.h"
+#include "../../Manager/System/DateBank.h"
 #include "../../Manager/Game/MapEditer.h"
 #include "EditController.h"
 
 EditController::EditController(int playerNum)
 {
 	playerNum_ = playerNum;
+	playerMaxNum_ = DateBank::GetInstance().GetPlayerNum();
 	padNum_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum + 1);
 	mousePos_ = Vector2();
+	screenSize_ = playerMaxNum_ == 1 ?Vector2(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y) :
+		playerMaxNum_ == 2 ? Vector2(Application::SCREEN_HALF_X, Application::SCREEN_SIZE_Y) : 
+		Vector2(Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y);
+	cursorPos_ = Vector2(screenSize_.x / 2 , screenSize_.y / 2);	//カーソル位置は画面の中央に設定
 	mapPos_ = {};
 	moveDir_ = MOVE_DIR::NONE;
 	//モード管理(遷移時の初期処理)
@@ -32,8 +40,24 @@ void EditController::Init(void)
 
 void EditController::Update(void)
 {
-	//マウス位置取得
-	mousePos_ = KeyConfig::GetInstance().GetMousePos();
+	//カーソル位置更新
+	auto lStick = KeyConfig::GetInstance().GetKnockLStickSize(padNum_);
+	cursorPos_.x += lStick.x * PAD_STICK_RATE;
+	cursorPos_.y += lStick.y * PAD_STICK_RATE;
+	cursorPos_.x = cursorPos_.x < 0 ? 0 : cursorPos_.x > screenSize_.x ? screenSize_.x : cursorPos_.x;	//カーソル位置の制限
+	cursorPos_.y = cursorPos_.y < 0 ? 0 : cursorPos_.y > screenSize_.y ? screenSize_.y : cursorPos_.y;	//カーソル位置の制限
+	if (playerMaxNum_ == 1)
+	{
+		//マウス位置を取得
+		mousePos_ = KeyConfig::GetInstance().GetMousePos();
+		//カーソル位置を取得
+		mousePos_ = cursorPos_;
+	}
+	else
+	{
+		//カーソル位置を取得
+		mousePos_ = cursorPos_;
+	}
 	DebugUpdate();
 
 	//モード別更新処理
@@ -48,6 +72,8 @@ void EditController::Update(void)
 void EditController::Draw(void)
 {
 	DebugDraw();
+	//DrawRotaGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y), 1.0f, 0.0f,ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],true);	//カーソル描画
+	DrawGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y),ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],true);	//カーソル描画
 	modeDraw_();
 }
 
@@ -62,8 +88,19 @@ void EditController::ChengeMode(MODE mode)
 
 void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 {
+	if (playerMaxNum_ == 1)
+	{
+		//マウス位置を取得
+		mousePos_ = KeyConfig::GetInstance().GetMousePos();
 
-	mousePos_ = KeyConfig::GetInstance().GetMousePos();
+		//カーソル位置を取得
+		mousePos_ = cursorPos_;
+	}
+	else
+	{
+		//カーソル位置を取得
+		mousePos_ = cursorPos_;
+	}
 	itemType_ = itemType;
 	if (itemType_ == ItemBase::ITEM_TYPE::NONE)
 	{
@@ -439,6 +476,19 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 		return moveDir_;
 	}
 	Vector2 mousePos = ins.GetMousePos();
+	if (playerMaxNum_ == 1)
+	{
+		//マウス位置を取得
+		mousePos = KeyConfig::GetInstance().GetMousePos();
+
+		//カーソル位置を取得
+		mousePos = cursorPos_;
+	}
+	else
+	{
+		//カーソル位置を取得
+		mousePos = cursorPos_;
+	}
 	VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
 	worldPos = VAdd(worldPos, { MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
 	VECTOR x = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)));

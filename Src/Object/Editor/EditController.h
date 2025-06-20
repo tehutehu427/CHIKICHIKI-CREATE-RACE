@@ -9,6 +9,7 @@
 class EditController
 {
 public:
+	static constexpr float PAD_STICK_RATE = 0.0251f;	//パッドスティックの感度
 	static constexpr float MOVE_ARROW_LENGTH = 75.0f;	//移動矢印の長さ
 	static constexpr float MOVE_ARROW_SIZE = 10.0f;		//移動矢印の先端の大きさ
 	static constexpr int DELAY_MOVE_ARROW = 20;			//移動矢印の先端からの猶予座標
@@ -45,13 +46,19 @@ public:
 	void ChengeMode(MODE mode);
 	//アイテム設定
 	void SetItemType(ItemBase::ITEM_TYPE itemType);
+
+	Vector2 GetCursorPos(void) const { return cursorPos_; }	//カーソル位置取得
 protected:
 
 private:
 	int playerNum_;	//プレイヤー番号
+	int playerMaxNum_;	//プレイヤーの最大数
 	KeyConfig::JOYPAD_NO padNum_;	//パッド番号
 
+	Vector2 screenSize_;	//スクリーンサイズ
+
 	Vector2 mousePos_;	//2Dのマウス座標
+	Vector2 cursorPos_;	//2Dのカーソル座標
 	IntVector3 mapPos_;	//3Dのマップ座標
 	MODE mode_;	//モード
 	ItemBase::ITEM_TYPE itemType_;	//アイテムの種類

@@ -331,6 +331,12 @@ void Camera::SetBeforeDrawFreeControll(void)
 	{
 		angles_.x = FPS_LIMIT_X_DW_RAD;
 	}
+
+	auto rStick = ins.GetKnockRStickSize(padNo_);
+	rotPow = SPEED_PAD;
+	angles_.x += Utility::Deg2RadF(rStick.y *rotPow);
+	angles_.y += Utility::Deg2RadF(rStick.x *rotPow);
+
 	//if (ins.IsNew(KEY_INPUT_W)) 
 	//{
 	//	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), 3.0f));
