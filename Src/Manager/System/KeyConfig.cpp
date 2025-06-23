@@ -409,7 +409,7 @@ Vector2 KeyConfig::GetMouseMove(void) const
 
 void KeyConfig::SetMousePosScreen(void)
 {
-	inputManager_->SetMousePosScreen();
+	//inputManager_->SetMousePosScreen();
 }
 
 float KeyConfig::GetLStickDeg(KeyConfig::JOYPAD_NO no) const

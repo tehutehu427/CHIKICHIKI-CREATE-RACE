@@ -21,7 +21,8 @@ public :
 		GOAL,			//終了地点
 
 		NORMAL_ITEM,	//通常アイテム		
-		MOVE_FLOOR,		//移動床
+		MOVE_VER_FLOOR,		//縦移動床
+		MOVE_HORI_FLOOR,	//横移動床
 		CANNON_AIM,		//大砲の狙い範囲
 		SLIME_FLOOR,	//スライム床
 		SPRING,			//ばね

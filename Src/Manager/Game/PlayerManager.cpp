@@ -51,8 +51,8 @@ void PlayerManager::Load(void)
 	//playerNum_ = PLAYER_NUM_MAX;
 	for (int i = 0; i < playerNum_; i++)
 	{
-		DateBank::TYPE cntlType = DateBank::GetInstance().GetType();
-		//DateBank::TYPE cntlType = DateBank::TYPE::CONTROLLER;
+		//DateBank::TYPE cntlType = DateBank::GetInstance().GetType();
+		DateBank::TYPE cntlType = DateBank::TYPE::CONTROLLER;
 		std::unique_ptr<Player> player;
 		player = std::make_unique<Player>(i, cntlType, static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
 		player->Load();
@@ -106,11 +106,17 @@ void PlayerManager::PlayersCollision(void)
 				//P2PPush(i, j);
 			}
 
-			//どちらがパンチ中かで吹っ飛ばす対象を決める
-			if (players_[i]->GetIsPunch())
-			{
-				PunchPlayersColl(i, j);
-			}
+
+
+			////どちらがパンチ中かで吹っ飛ばす対象を決める
+			//if (players_[i]->GetIsPunch())
+			//{
+			//	PunchPlayersColl(i, j);
+			//}
+
+
+
+
 		}
 	}
 }
@@ -246,14 +252,20 @@ Transform PlayerManager::FixTrans(int _playerNum)
 
 void PlayerManager::PunchPlayersColl(int p1, int p2)
 {
-	//当たった時の処理
-	if (Utility::IsHitSpheres(players_[p1]->GetPunchPos(), Player::PUNCH_RADIUS
-		, players_[p2]->GetPos(),Player::RADIUS))
-	{
-		//パンチしたプレイヤーの向いてる方向をセットする
-		players_[p2]->SetDir(Utility::GetMoveVec(players_[p1]->GetPos(), players_[p2]->GetPos()));
+	////当たった時の処理
+	//if (Utility::IsHitSpheres(players_[p1]->GetPunchPos(), Player::PUNCH_RADIUS
+	//	, players_[p2]->GetPos(),Player::RADIUS))
+	//{
 
-		//ノックバック状態遷移
-		//players_[p2]->ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
-	}
+
+	//	//パンチしたプレイヤーの向いてる方向をセットする
+	//	//players_[p2]->SetDir(Utility::GetMoveVec(players_[p1]->GetPos(), players_[p2]->GetPos()));
+
+
+
+
+
+	//	//ノックバック状態遷移
+	//	//players_[p2]->ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
+	//}
 }

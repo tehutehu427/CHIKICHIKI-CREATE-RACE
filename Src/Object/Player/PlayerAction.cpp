@@ -46,7 +46,9 @@ PlayerAction::~PlayerAction(void)
 
 void PlayerAction::Init(void)
 {
-	input_ = std::make_shared<PlayerInput>(player_.GetPadNum(), player_.GetCntl());
+	auto num = player_.GetPadNum();
+	auto cntl = player_.GetCntl();
+	input_ = std::make_shared<PlayerInput>(num, cntl);
 	ChangeAction(ATK_ACT::INPUT);
 }
 
@@ -167,8 +169,6 @@ void PlayerAction::MoveDirFronInput(void)
 void PlayerAction::ChangeMove(void)
 {
 
-
-
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
 	speed_ = MOVE_SPEED;
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
@@ -219,7 +219,6 @@ void PlayerAction::Jump(void)
 		//ÉvÉåÉCÉÑÅ[Ç™óéâ∫ÇµÇƒÇ¢ÇΩÇÁ
 		if (jumpDeceralation_ < 0.0f)
 		{
-
 
 			animationController_.Play(static_cast<int>(Player::ANIM_TYPE::LAND));
 
