@@ -16,8 +16,7 @@
 #include"../Item/Installation/MoveVerFloor.h"
 
 #include "../../Object/Editor/EditController.h"
-#include "../../Object/Editor/EditController.h"
-#include "../../Object/Editor/EditController.h"
+
 
 #include "../../Manager/Game/ItemManager.h"
 #include"./PlayerAction.h"
@@ -28,7 +27,10 @@
 
 #include "Player.h"
 
-Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):playerNum_(_playerNum), cntl_(_cntl)
+Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag)
+	:playerNum_(_playerNum)
+	, cntl_(_cntl)
+	, tag_(_tag)
 {
 #ifdef DEBUG_ON
 	cubeMovePos_=Utility::VECTOR_ZERO;
@@ -84,29 +86,25 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 	isCol_ = false;
 
 
+
 	//コライダ作成
 	//*****************************************************
-	//接地しているときのライン(床上にとどまっているとき)
-	//Lineを引くための上と下の座標をとる
-	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
-	MakeCollider(_tag, std::move(lineGeo));
 	//球コライダ作成
 	//プレイヤーの体
 	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
-	MakeCollider(_tag, std::move(bodySphereGeo));
+	MakeCollider(tag_, std::move(bodySphereGeo));
 
 
 
-	////プレイヤーの手(パンチの当たり判定)
-	std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(Utility::VECTOR_ZERO, PUNCH_RADIUS);
-	MakeCollider(_tag, std::move(handSphereGeo));
-
-
+	//接地しているときのライン(床上にとどまっているとき)
+	//Lineを引くための上と下の座標をとる
+	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
+	MakeCollider(tag_, std::move(lineGeo));
 
 
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
 	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,movedPos_);
-	MakeCollider(_tag, std::move(moveLineGeo));
+	MakeCollider(tag_, std::move(moveLineGeo));
 
 	moveDiff_ = Utility::VECTOR_ZERO;
 
@@ -133,8 +131,12 @@ void Player::Load(void)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_SPD / PUNCH_TIME_MAX);
 
 
-	//アクション系
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
+
+	////プレイヤーの手(パンチの当たり判定)
+	std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(action_->GetPunchPos(), PUNCH_RADIUS);
+	MakeCollider(tag_, std::move(handSphereGeo));
+
 }
 
 void Player::Init(void)
@@ -225,6 +227,7 @@ void Player::DrawDebug(void)
 	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
 	colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
 	colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
+	colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();
 	//DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
 
 	VECTOR pow = action_->GetMovePow();
@@ -277,10 +280,6 @@ void Player::AliveUpdate(void)
 	}
 	//アクション関係
 	Action();
-
-	
-
-
 
 	//衝突判定
 	Collision();
@@ -361,61 +360,6 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 {
 	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
 	HitModelCommon(hitModel);
-
-
-
-
-
-	////Y座標のみ半径分上に移動させる
-	//movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
-	//jumpPow_ = Utility::VECTOR_ZERO;
-	//isJump_ = false;
-	//itemLocalPos_ = VSub(movedPos_, itemPos);
-	//isLandHit_ = true;
-	//return;
-	//
-	////else
-	////{
-	////	//当たらなかったら初期化する
-	////	itemLocalPos_ = Utility::VECTOR_ZERO;
-	////}
-
-
-	//	//座標をワールド座標とアイテムローカル座標を足した分移動させる
-	//	if (!Utility::EqualsVZero(itemLocalPos_))
-	//	{
-	//		VECTOR itemLocalPos = VSub(movedPos_, _itemTrans.pos);
-	//		movedPos_ = VAdd(itemLocalPos_, _itemTrans.pos);
-	//		movedPos_ = VAdd(movedPos_, vec);
-	//		//hitItemType_ = mapEdit.GetItemType(mapEdit.WorldToMapPos(hit.HitPosition));
-	//	}
-	//	//Y座標のみ半径分上に移動させる
-
-	//	if (movedPos_.y > hit.HitPosition.y)
-	//	{
-	//		movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
-	//	}
-	//	else
-	//	{
-	//		movedPos_.y = hit.HitPosition.y - RADIUS - POSITION_OFFSET;
-	//	}
-	//	jumpPow_ = Utility::VECTOR_ZERO;
-	//	//isJump_ = false;
-	//	itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
-	//}
-	//else
-	//{
-	//	//当たらなかったら初期化する
-	//	itemLocalPos_ = Utility::VECTOR_ZERO;
-	//	isJump_ = true;
-	//	hitItemType_ = ItemBase::ITEM_TYPE::NONE;
-	//}
-
-
-	//移動前の座標を格納する
-	moveDiff_ = trans_.pos;
-	//移動
-	trans_.pos = movedPos_;
 }
 
 void Player::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
@@ -423,17 +367,13 @@ void Player::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 	if (_hitCol.lock()->GetTag() == Collider::TAG::MOVE_HORI_FLOOR|| _hitCol.lock()->GetTag() == Collider::TAG::MOVE_VER_FLOOR)
 	{
 		ItemBase& floor = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
-		movedPos_ = VAdd(movedPos_, floor.GetMovePow());
+		VECTOR movePow = floor.GetMovePow();
+		movedPos_ = VAdd(movedPos_, VScale(floor.GetMovePow(),0.5f));
 	}
 	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
 	HitModelCommon(hitModel);
-	////座標をワールド座標とアイテムローカル座標を足した分移動させる
-	//if (!Utility::EqualsVZero(itemLocalPos_))
-	//{
-	//	movedPos_ = itemLocalPos_;
-	//	//movedPos_ = VAdd(movedPos_, vec);
-	//	//hitItemType_ = mapEdit.GetItemType(mapEdit.WorldToMapPos(hit.HitPosition));
-	//}
+
+
 
 }
 

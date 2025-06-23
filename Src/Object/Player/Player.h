@@ -261,16 +261,17 @@ private:
 	//当たり判定
 	//--------------------------------------------------
 	//プレイヤーの体の球
-	static constexpr int BODY_SPHERE_COL_NO = 1;
+	static constexpr int BODY_SPHERE_COL_NO = 0;
 
-	//プレイヤーの手の座標
-	static constexpr int HAND_SPHERE_COL_NO = 2;
-
-	//現在の座標と移動後座標を結んだ線のコライダ
-	static constexpr int MOVE_LINE_COL_NO = 3;
 
 	//接地しているときのラインのコライダ
-	static constexpr int UP_AND_DOWN_LINE_COL_NO = 0;
+	static constexpr int UP_AND_DOWN_LINE_COL_NO = 1;
+
+	//現在の座標と移動後座標を結んだ線のコライダ
+	static constexpr int MOVE_LINE_COL_NO = 2;
+
+	//プレイヤーの手の座標
+	static constexpr int HAND_SPHERE_COL_NO = 3;
 	//ラインの長さ
 	static constexpr float LINE_RANGE = 10.0f;
 	//プレイヤーの上の座標
@@ -340,6 +341,8 @@ private:
 	//状態更新
 	std::function<void(void)>stateUpdate_;
 
+	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
+
 	//アクション関係
 	//----------------------------------------
 	std::unique_ptr<PlayerAction>action_;
@@ -354,32 +357,7 @@ private:
 
 	//地面との当たり判定
 	bool isLandHit_;
-	////移動
-	////------------------------
-	//float speed_;			// 移動スピード
-	//VECTOR moveDir_;		// 移動方向
-	//VECTOR movePow_;		// 移動量
-	//VECTOR dir_;			//方向
 
-	////回転
-	//Quaternion playerRotY_;
-	//Quaternion goalQuaRot_;
-	//float stepRotTime_;
-
-	////ジャンプ
-	////-----------------------
-	//bool isJump_;			// ジャンプ判定
-	//float stepJump_;		// ジャンプの入力受付時間
-	//VECTOR jumpPow_;		// ジャンプ量
-	//float jumpDeceralation_;	//ジャンプ減衰量
-
-	////パンチ
-	////-----------------------
-	//bool isPunchHitTime_;		//パンチ当たり判定の時間フラグ
-	//float punchCnt_;				//パンチカウント
-	//float punchCoolCnt_;			//パンチクールタイム
-	//VECTOR punchPos_;			//攻撃座標
-	//float punchedCnt_;			//パンチ効果時間カウント
 
 	//当たり判定
 	//----------------------------------

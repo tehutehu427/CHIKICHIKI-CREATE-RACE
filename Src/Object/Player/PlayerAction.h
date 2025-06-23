@@ -52,7 +52,7 @@ public:
 
 
 	//パンチ座標
-	const VECTOR GetPunchPos(void) { return punchPos_; }
+	const VECTOR& GetPunchPos(void) { return punchPos_; }
 
 	//パンチ中か
 	const bool GetIsHitPunch(void) { return isPunchHitTime_; }
