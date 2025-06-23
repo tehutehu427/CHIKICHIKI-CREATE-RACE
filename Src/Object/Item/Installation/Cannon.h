@@ -50,9 +50,6 @@ public:
 	//ƒ‚ƒfƒ‹‚ÌF•Ï‚¦
 	void ChangeModelColor(const COLOR_F _colorScale)override;
 
-	//‘_‚¤‘ÎÛ‚Ìİ’è
-	inline void SetTargetPos(const VECTOR _targetPos) { targetPos_ = _targetPos; }
-
 private:
 
 	//’eŠÖŒW

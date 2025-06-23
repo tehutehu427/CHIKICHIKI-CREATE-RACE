@@ -15,6 +15,9 @@ public:
 	//当たり判定をする範囲
 	static constexpr float HIT_RANGE_NORMAL = 300.0f;	//通常の当たり判定距離
 	static constexpr float HIT_RANGE_TARGET = 2500.0f;	//ターゲット用の当たり判定距離
+
+	//更新用
+	static constexpr int COL_UPDATE_FRAME = 5;		//更新フレーム
 	
 	//インスタンス生成
 	static void CreateInstance(void);
@@ -23,7 +26,7 @@ public:
 	static CollisionManager& GetInstance(void) { return *instance_; }
 
 	//コライダの追加
-	void AddCollider(const std::shared_ptr<Collider> _collider) { colliders_.push_back(_collider); }
+	void AddCollider(const std::shared_ptr<Collider> _collider);
 
 	//必要なくなったコライダの削除(更新の最後に置く)
 	void Sweep(void);
@@ -34,7 +37,28 @@ public:
 	//削除
 	void Destroy(void);
 
+	/// <summary>
+	/// そのタグがプレイヤーかどうか調べる
+	/// </summary>
+	/// <param name="_tag">調べるタグ</param>
+	/// <returns>true:プレイヤーだった</returns>
+	const bool IsPlayer(const Collider::TAG _tag)const;
+
+	/// <summary>
+	/// そのタグがアイテムかどうか調べる
+	/// </summary>
+	/// <param name="_tag">調べるタグ</param>
+	/// <returns>true:アイテムだった</returns>
+	const bool IsItem(const Collider::TAG _tag)const;
+
 private:
+
+	//前フレームの当たり判定情報
+	struct PreColParam
+	{
+		VECTOR pos;
+		Quaternion rot;
+	};
 
 	//静的インスタンス
 	static CollisionManager* instance_;
@@ -42,8 +66,14 @@ private:
 	//当たり判定格納
 	std::vector<std::shared_ptr<Collider>>colliders_;
 
+	//位置格納
+	std::vector<PreColParam>preColParam_;
+
 	//当たり判定距離の二乗
 	std::map<Collider::TAG, float> hitRange_;
+
+	//当たり判定するフレーム
+	int updateFrame_;
 
 	//コンストラクタ
 	CollisionManager(void);
@@ -62,6 +92,22 @@ private:
 	/// <param name="_col2">2つ目のコライダ</param>
 	/// <returns>true:範囲内</returns>
 	const bool IsWithInHitRange(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2)const;
+
+	/// <summary>
+	/// 当たり判定をするか
+	/// </summary>
+	/// <param name="_col1">1つ目のコライダ番号</param>
+	/// <param name="_col2">2つ目のコライダ番号</param>
+	/// <returns>true:当たり判定をする</returns>
+	const bool JudgeIsCollision(const int _col1Num, const int _col2Num)const;
+
+	/// <summary>
+	/// タグごとでの当たり判定するかどうか
+	/// </summary>
+	/// <param name="_tag1">1つ目のタグ</param>
+	/// <param name="_tag2">2つ目のタグ</param>
+	/// <returns>true:当たり判定をする</returns>
+	const bool JudgeIsColTag(const Collider::TAG _tag1, const Collider::TAG _tag2)const;
 
 	/// <summary>
 	/// 当たり判定

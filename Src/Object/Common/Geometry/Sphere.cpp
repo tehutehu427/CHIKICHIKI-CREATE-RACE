@@ -12,11 +12,13 @@
 Sphere::Sphere(const VECTOR& _pos, const float _radius) : Geometry(_pos,Quaternion()),
 	radius_(_radius)
 {
+	hitInfo_ = {};
 }
 
 Sphere::Sphere(const Sphere& _copyBase, const VECTOR& _pos) : Geometry(_pos, Quaternion())
 {
 	radius_ = _copyBase.GetRadius();
+	hitInfo_ = _copyBase.GetHitInfo();
 }
 
 Sphere::~Sphere(void)
