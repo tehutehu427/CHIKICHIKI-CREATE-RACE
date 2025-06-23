@@ -99,6 +99,7 @@
     <ClCompile Include="Src\Object\System\CheckChangePhase.cpp" />
     <ClCompile Include="Src\Manager\System\SoundManager.cpp" />
     <ClCompile Include="Src\Object\System\ManualTab.cpp" />
+    <ClCompile Include="Src\Object\Player\PlayerAction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -238,6 +239,7 @@
     <ClInclude Include="Src\Object\System\CheckChangePhase.h" />
     <ClInclude Include="Src\Manager\System\SoundManager.h" />
     <ClInclude Include="Src\Object\System\ManualTab.h" />
+    <ClInclude Include="Src\Object\Player\PlayerAction.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

@@ -35,32 +35,40 @@ void Line::Draw(void)
 	DrawLine3D(point1, point2, NORMAL_COLOR);
 }
 
-const bool Line::IsHit(const Geometry& _geometry) const
+const bool Line::IsHit(Geometry& _geometry)
 {
-	return _geometry.IsHit(*this);
+	bool ret = _geometry.IsHit(*this);
+
+	return ret;
 }
 
-const bool Line::IsHit(const Model& _model) const
+const bool Line::IsHit(Model& _model)
 {
-	return _model.IsHit(*this);
+	bool ret = _model.IsHit(*this);
+
+	return ret;
 }
 
-const bool Line::IsHit(const Cube& _cube) const
+const bool Line::IsHit(Cube& _cube)
 {
 	return false;
 }
 
-const bool Line::IsHit(const Sphere& _sphere) const
+const bool Line::IsHit(Sphere& _sphere)
 {
-	return _sphere.IsHit(*this);
+	bool ret = _sphere.IsHit(*this);
+
+	return ret;
 }
 
-const bool Line::IsHit(const Capsule& _capsule) const
+const bool Line::IsHit(Capsule& _capsule)
 {
-	return _capsule.IsHit(*this);
+	bool ret = _capsule.IsHit(*this);
+
+	return ret;
 }
 
-const bool Line::IsHit(const Line& _line) const
+const bool Line::IsHit(Line& _line)
 {
 	//å¿ÇËÇ»Ç≠è¨Ç≥Ç¢êî
 	const float EPSILON = 1e-6f;

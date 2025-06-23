@@ -13,18 +13,18 @@ Cube::Cube(const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos, _rot)
 {
 	halfSize_ = { 0.0f,0.0f,0.0f };
 
-	axis_[0] = { 1.0f,0.0f,0.0f };
-	axis_[1] = { 0.0f,1.0f,0.0f };
-	axis_[2] = { 0.0f,0.0f,1.0f };
+	bb_.axis[0] = { 1.0f,0.0f,0.0f };
+	bb_.axis[1] = { 0.0f,1.0f,0.0f };
+	bb_.axis[2] = { 0.0f,0.0f,1.0f };
 }
 
 Cube::Cube(const Cube& _copyBase, const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos, _rot)
 {
 	halfSize_ = _copyBase.GetHalfSize();
 
-	axis_[0] = { 1.0f,0.0f,0.0f };
-	axis_[1] = { 0.0f,1.0f,0.0f };
-	axis_[2] = { 0.0f,0.0f,1.0f };
+	bb_.axis[0] = { 1.0f,0.0f,0.0f };
+	bb_.axis[1] = { 0.0f,1.0f,0.0f };
+	bb_.axis[2] = { 0.0f,0.0f,1.0f };
 }
 
 Cube::~Cube(void)
@@ -40,17 +40,19 @@ void Cube::Draw(void)
 	DrawCube3D(min, max, NORMAL_COLOR, NORMAL_COLOR, false);
 }
 
-const bool Cube::IsHit(const Geometry& _geometry) const
+const bool Cube::IsHit(Geometry& _geometry)
 {
-	return _geometry.IsHit(*this);
+	bool ret = _geometry.IsHit(*this);
+
+	return ret;
 }
 
-const bool Cube::IsHit(const Model& _model) const
+const bool Cube::IsHit(Model& _model)
 {
 	return false;
 }
 
-const bool Cube::IsHit(const Cube& _cube)const
+const bool Cube::IsHit(Cube& _cube)
 {
 	const float EPSILON = 1e-6f;
 
@@ -59,14 +61,14 @@ const bool Cube::IsHit(const Cube& _cube)const
 
 	// 3軸 + 3軸
 	for (int i = 0; i < 3; ++i) {
-		axisToTest[axisCount++] = axis_[i];
-		axisToTest[axisCount++] = _cube.axis_[i];
+		axisToTest[axisCount++] = bb_.axis[i];
+		axisToTest[axisCount++] = _cube.bb_.axis[i];
 	}
 
 	// 外積軸（9本）
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			VECTOR cross = VCross(axis_[i], _cube.axis_[j]);
+			VECTOR cross = VCross(bb_.axis[i], _cube.bb_.axis[j]);
 			if (std::sqrt(cross.x * cross.x + cross.y * cross.y + cross.z * cross.z) > EPSILON) {
 				axisToTest[axisCount++] = VNorm(cross);
 			}
@@ -78,14 +80,14 @@ const bool Cube::IsHit(const Cube& _cube)const
 		VECTOR L = axisToTest[i];
 
 		float aProj =
-			fabs(VDot(L, axis_[0]) * halfSize_.x) +
-			fabs(VDot(L, axis_[1]) * halfSize_.y) +
-			fabs(VDot(L, axis_[2]) * halfSize_.z);
+			fabs(VDot(L, bb_.axis[0]) * halfSize_.x) +
+			fabs(VDot(L, bb_.axis[1]) * halfSize_.y) +
+			fabs(VDot(L, bb_.axis[2]) * halfSize_.z);
 
 		float bProj =
-			fabs(VDot(L, _cube.axis_[0]) * _cube.halfSize_.x) +
-			fabs(VDot(L, _cube.axis_[1]) * _cube.halfSize_.y) +
-			fabs(VDot(L, _cube.axis_[2]) * _cube.halfSize_.z);
+			fabs(VDot(L, _cube.bb_.axis[0]) * _cube.halfSize_.x) +
+			fabs(VDot(L, _cube.bb_.axis[1]) * _cube.halfSize_.y) +
+			fabs(VDot(L, _cube.bb_.axis[2]) * _cube.halfSize_.z);
 
 		float dist = fabs(VDot(L, VSub(_cube.GetColPos(), pos_)));
 
@@ -97,17 +99,17 @@ const bool Cube::IsHit(const Cube& _cube)const
 	return true; // すべての軸で分離できなかった → 衝突している
 }
 
-const bool Cube::IsHit(const Sphere& _sphere) const
+const bool Cube::IsHit(Sphere& _sphere)
 {
 	return false;
 }
 
-const bool Cube::IsHit(const Capsule& _capsule) const
+const bool Cube::IsHit(Capsule& _capsule)
 {
 	return false;
 }
 
-const bool Cube::IsHit(const Line& _line) const
+const bool Cube::IsHit(Line& _line)
 {
 	return false;
 }

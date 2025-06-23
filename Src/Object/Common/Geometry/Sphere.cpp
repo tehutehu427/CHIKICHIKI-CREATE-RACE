@@ -28,12 +28,14 @@ void Sphere::Draw(void)
 	DrawSphere3D(pos_, radius_, 10, NORMAL_COLOR, NORMAL_COLOR, false);
 }
 
-const bool Sphere::IsHit(const Geometry& _geometry) const
+const bool Sphere::IsHit(Geometry& _geometry)
 {
-	return _geometry.IsHit(*this);
+	bool ret = _geometry.IsHit(*this);
+
+	return ret;
 }
 
-const bool Sphere::IsHit(const Model& _model) const
+const bool Sphere::IsHit(Model& _model)
 {
 	//球体とモデルの当たり判定
 	auto col = MV1CollCheck_Sphere(_model.GetParentModel(), -1, GetColPos(), GetRadius());
@@ -41,12 +43,12 @@ const bool Sphere::IsHit(const Model& _model) const
 	return col.HitNum >= 1;
 }
 
-const bool Sphere::IsHit(const Cube& _cube) const
+const bool Sphere::IsHit(Cube& _cube)
 {
 	return false;
 }
 
-const bool Sphere::IsHit(const Sphere& _sphere) const
+const bool Sphere::IsHit(Sphere& _sphere)
 {
 	// 球体同士の衝突判定
 	bool ret = false;
@@ -67,7 +69,7 @@ const bool Sphere::IsHit(const Sphere& _sphere) const
 	return ret;
 }
 
-const bool Sphere::IsHit(const Capsule& _capsule) const
+const bool Sphere::IsHit(Capsule& _capsule)
 {
 	//球体とカプセルの当たり判定
 	bool ret = false;
@@ -131,7 +133,7 @@ const bool Sphere::IsHit(const Capsule& _capsule) const
 	return ret;
 }
 
-const bool Sphere::IsHit(const Line& _line) const
+const bool Sphere::IsHit(Line& _line)
 {
 	//線のベクトル
 	VECTOR d = VSub(_line.GetPosPoint2(), _line.GetPosPoint1());

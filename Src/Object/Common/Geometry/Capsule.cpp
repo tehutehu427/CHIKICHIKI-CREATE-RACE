@@ -70,27 +70,33 @@ void Capsule::Draw(void)
 	DrawSphere3D(GetCenter(), 5.0f, 10, NORMAL_COLOR, NORMAL_COLOR, true);
 }
 
-const bool Capsule::IsHit(const Geometry& _geometry) const
+const bool Capsule::IsHit(Geometry& _geometry)
 {
-	return _geometry.IsHit(*this);
+	bool ret = _geometry.IsHit(*this);
+
+	return ret;
 }
 
-const bool Capsule::IsHit(const Model& _model) const
+const bool Capsule::IsHit(Model& _model)
 {
-	return _model.IsHit(*this);
+	bool ret = _model.IsHit(*this);
+
+	return ret;
 }
 
-const bool Capsule::IsHit(const Cube& _cube) const
+const bool Capsule::IsHit(Cube& _cube)
 {
 	return false;
 }
 
-const bool Capsule::IsHit(const Sphere& _sphere) const
+const bool Capsule::IsHit(Sphere& _sphere)
 {
-	return _sphere.IsHit(*this);
+	bool ret = _sphere.IsHit(*this);
+
+	return ret;
 }
 
-const bool Capsule::IsHit(const Capsule& _capsule) const
+const bool Capsule::IsHit(Capsule& _capsule)
 {
 	VECTOR d1 = VSub(GetPosDown(), GetPosTop());					// 線分1の方向ベクトル
 	VECTOR d2 = VSub(_capsule.GetPosDown(), _capsule.GetPosTop());	// 線分2の方向ベクトル
@@ -136,7 +142,7 @@ const bool Capsule::IsHit(const Capsule& _capsule) const
 	return distance <= (GetRadius() + _capsule.GetRadius());
 }
 
-const bool Capsule::IsHit(const Line& _line) const
+const bool Capsule::IsHit(Line& _line)
 {
 	VECTOR u = VSub(_line.GetPosPoint2(), _line.GetPosPoint1());
 	VECTOR v = VSub(GetPosDown(), GetPosTop());

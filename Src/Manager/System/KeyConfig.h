@@ -159,7 +159,11 @@ public:
 
 	// マウス座標の取得
 	Vector2 GetMousePos(void) const;
+	//マウスの移動量を取得
+	Vector2 GetMouseMove(void) const;
 
+	//マウスの座標を設定
+	void SetMousePosScreen(void);
 	float GetLStickDeg(KeyConfig::JOYPAD_NO no) const;
 
 	float GetRStickDeg(KeyConfig::JOYPAD_NO no) const;

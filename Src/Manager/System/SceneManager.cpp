@@ -270,7 +270,7 @@ void SceneManager::CreateCameras(const int _playerNum)
 	for (int i = 0; i < _playerNum; i++)
 	{
 		std::shared_ptr<Camera> camera;
-		camera = std::make_shared<Camera>();
+		camera = std::make_shared<Camera>(i);
 		camera->Init();
 		cameras_.push_back(std::move(camera));
 	}

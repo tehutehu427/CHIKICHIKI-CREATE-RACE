@@ -13,10 +13,10 @@ class CollisionManager
 public:
 
 	//当たり判定をする範囲
-	static constexpr float HIT_DIS = 500.0f;
-
-	//当たり判定範囲の2乗
-	static constexpr float HIT_DIS_SQUARE = HIT_DIS * HIT_DIS;
+	static constexpr float HIT_RANGE_NORMAL = 1000.0f;	//通常の当たり判定距離
+	static constexpr float HIT_RANGE_START = 600.0f;	//通常の当たり判定距離
+	static constexpr float HIT_RANGE_GOAL = 600.0f;	//通常の当たり判定距離
+	static constexpr float HIT_RANGE_TARGET = 2500.0f;	//ターゲット用の当たり判定距離
 	
 	//インスタンス生成
 	static void CreateInstance(void);
@@ -44,6 +44,9 @@ private:
 	//当たり判定格納
 	std::vector<std::shared_ptr<Collider>>colliders_;
 
+	//当たり判定距離の二乗
+	std::map<Collider::TAG, float> hitRange_;
+
 	//コンストラクタ
 	CollisionManager(void);
 
@@ -54,7 +57,21 @@ private:
 	//デストラクタ
 	~CollisionManager(void);
 
-	//当たり判定
+	/// <summary>
+	/// 当たり判定距離内にいるか
+	/// </summary>
+	/// <param name="_col1">1つ目のコライダ</param>
+	/// <param name="_col2">2つ目のコライダ</param>
+	/// <returns>true:範囲内</returns>
+	const bool IsWithInHitRange(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2)const;
+
+	/// <summary>
+	/// 当たり判定
+	/// </summary>
+	/// <param name="_col1">1つ目のコライダ</param>
+	/// <param name="_col2">2つ目のコライダ</param>
+	/// <returns>true:当たった</returns>
 	bool IsCollision(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2);
+
 };
 

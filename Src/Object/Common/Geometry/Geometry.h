@@ -14,7 +14,7 @@ class Geometry
 public:
 
 	//通常色
-	static constexpr int NORMAL_COLOR = 0xffffff;
+	static constexpr int NORMAL_COLOR = 0x000000;
 
 	//デストラクタ
 	virtual~Geometry(void) = 0;
@@ -23,13 +23,12 @@ public:
 	virtual void Draw(void) = 0;
 
 	//各種当たり判定
-	virtual const bool IsHit(const Geometry& _geometry)const = 0;
-	virtual const bool IsHit(const Model& _model)const = 0;
-	virtual const bool IsHit(const Cube& _cube)const = 0;
-	virtual const bool IsHit(const Sphere& _sphere)const = 0;
-	virtual const bool IsHit(const Capsule& _capsule)const = 0;
-	virtual const bool IsHit(const Line& _line)const;
-	virtual const bool IsHit(Line& _line);
+	virtual const bool IsHit(Geometry& _geometry) = 0;
+	virtual const bool IsHit(Model& _model) = 0;
+	virtual const bool IsHit(Cube& _cube) = 0;
+	virtual const bool IsHit(Sphere& _sphere) = 0;
+	virtual const bool IsHit(Capsule& _capsule) = 0;
+	virtual const bool IsHit(Line& _line) = 0;
 
 	//親情報を返す
 	inline const VECTOR& GetColPos(void)const { return pos_; }

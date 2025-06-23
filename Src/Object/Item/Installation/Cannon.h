@@ -8,7 +8,6 @@ class Cannon : public ItemBase
 public:
 
 	//’e
-	static constexpr int SHOT_MAX = 3;				//’e‚Ì¶¬”
 	static constexpr float SHOT_INTERVAL = 5.0f;	//’e‚Ì¶¬Š´Šo
 
 	//ƒ}ƒbƒv
@@ -57,9 +56,8 @@ public:
 private:
 
 	//’eŠÖŒW
-	std::unique_ptr<CannonShot> shots_[SHOT_MAX];		//’e
-	int shotNum_;										//’e‚Ì”
-	float shotCreateCnt_;								//’e‚Ì¶¬ŠÔŠuƒJƒEƒ“ƒ^
+	std::unique_ptr<CannonShot> shot_;		//’e
+	float shotCreateCnt_;					//’e‚Ì¶¬ŠÔŠuƒJƒEƒ“ƒ^
 	
 	//ƒ‚ƒfƒ‹ŠÖŒW
 	Transform barrelTrans_;	//–Cg—pƒ‚ƒfƒ‹î•ñ
@@ -81,8 +79,5 @@ private:
 
 	//’e‚Ìíœ
 	void DeleteShot(void);
-
-	//Ë’ö“à‚©‚Ì”»’è
-	bool IsWithinRange(void);
 };
 
