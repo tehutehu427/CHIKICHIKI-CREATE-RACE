@@ -12,6 +12,7 @@ public:
 	// カメラスピード(度)
 	static constexpr float SPEED = 1.0f;
 	static constexpr float SPEED_PAD = 0.0015f;
+	static constexpr float SPEED_MOUSE = 0.1f;
 
 	// カメラクリップ：NEAR
 	static constexpr float CAMERA_NEAR = 10.0f;
