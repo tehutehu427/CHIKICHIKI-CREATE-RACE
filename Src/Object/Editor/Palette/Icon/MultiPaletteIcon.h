@@ -63,5 +63,11 @@ private:
 
 	//アイテムアイコンをクリックしたか調べる
 	bool CheckItemIcon(const Vector2 _cPos, const int _playerIndex = 0) override;
+
+	//他のプレイヤーが選択していないか調べる
+	bool IsChosenByOtherPlayer(const int _iconIndex, const int _playerIndex);
+
+	//アイコンを描画する
+	void DrawItemIcon()override;
 };
 

@@ -18,7 +18,6 @@
 #include "../../Object/Grid.h"
 #include "../../Object/SkyDome/SkyDome.h"
 #include "../../Object/System/GameClear.h"
-#include "../../Object/UI/EditorUi.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -85,10 +84,6 @@ void GameScene::Load(void)
 	//マップデータの入出力
 	mapIO_ = std::make_unique<MapDataIO>();
 	mapIO_->Load();
-
-	//エディターモード
-	editorUi_ = std::make_unique<EditorUi>();
-	editorUi_->Load();
 }
 
 void GameScene::Init(void)
@@ -97,7 +92,6 @@ void GameScene::Init(void)
 	for (auto& controller : editControllers_) { controller->Init(); }
 	sky_->Init();
 	gameClear_->Init();
-	editorUi_->Init();
 }
 
 void GameScene::NormalUpdate(void)
@@ -287,9 +281,6 @@ void GameScene::DrawEdit(void)
 	
 	//パレット
 	palette_->Draw();
-
-	//エディターモード用のUI
-	editorUi_->Draw();
 }
 
 void GameScene::DrawAction(void)

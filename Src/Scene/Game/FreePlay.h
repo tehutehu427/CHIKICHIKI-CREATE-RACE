@@ -2,6 +2,7 @@
 #include "GameScene.h"
 
 class CheckChangePhase;
+class ManualTab;
 
 class FreePlay : public GameScene
 {
@@ -26,6 +27,9 @@ private:
 
 	//フェーズをプレイに変える
 	std::unique_ptr<CheckChangePhase> changePhasePlay_;
+	
+	//マニュアル
+	std::unique_ptr<ManualTab> manual_;
 
 	//アクション時の更新処理
 	void UpdateAction(void) override;
@@ -44,6 +48,9 @@ private:
 
 	//描画関数
 	void NormalDraw(void) override;
+
+	//エディット中の描画
+	void DrawEdit() override;
 
 };
 

@@ -9,6 +9,7 @@ class DateBank;
 class SelectScene;
 class SelectUIGlow;
 class SelectUIDarkly;
+class ManualTab;
 
 class ModeSelect
 {
@@ -114,6 +115,9 @@ private:
 
 	//エフェクトダークリー
 	std::unique_ptr<SelectUIDarkly> uiDarkly_;
+
+	//マニュアル
+	std::unique_ptr<ManualTab> manual_;
 
 	//状態の処理を登録
 	void RegisterArcState(const UPD_STATE _state, std::function<void(SelectScene&)> _update);

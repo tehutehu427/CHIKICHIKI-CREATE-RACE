@@ -50,11 +50,16 @@ void MultiReady::Update(SelectScene& _parent)
 		{
 			//モードのセレクトに戻る
 			_parent.ChangeState(SelectScene::STATE::SELECT_MENU);
+			return;
 		}
 		else
 		{
 			//状態を戻る
 			ChangeState(static_cast<STATE>(state));
+
+			//パッド入力状況のリセット
+			multiInputChecks_->ResetInput();
+			return;
 		}
 	}
 }
@@ -98,6 +103,9 @@ void MultiReady::UpdateNumCheck()
 		//データ格納（実際の人数は MIN を加算）
 		DateBank::GetInstance().SetPlayerNum(playerNum_ + PLAYER_NUM_MIN);
 
+		//パッド確認のリセット
+		multiInputChecks_->Reset();
+
 		//状態遷移
 		ChangeState(STATE::PAD_CHECK);
 	}
@@ -137,5 +145,7 @@ void MultiReady::DrawPadCheck()
 
 void MultiReady::DrawFinalCheck()
 {
+	multiInputChecks_->Draw();
+
 	DrawFormatString(300, 300, Utility::RED, "Are You OK ?");
 }

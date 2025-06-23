@@ -194,7 +194,16 @@ public:
 	/// <param name="leftTop">”ÍˆÍ¶ã</param>
 	/// <param name="rightBotm">”ÍˆÍ‰E‰º</param>
 	/// <returns>”»’èŒ‹‰Ê‚ğ•Ô‚·</returns>
-	static bool IsPointInRect(const Vector2 pos, const Vector2 leftTop, const Vector2 rightBotm);
+	static bool IsPointInRect(const Vector2 _pos, const Vector2 _leftTop, const Vector2 _rightBotm);
+
+	/// <summary>
+	/// “Á’è‚Ì‰~‚Ì”ÍˆÍ“à‚ÉÀ•W‚ªŠÜ‚Ü‚ê‚Ä‚é‚©’²‚×‚é
+	/// </summary>
+	/// <param name="_pos"></param>
+	/// <param name="_circlePos"></param>
+	/// <param name="_radius"></param>
+	/// <returns></returns>
+	static bool IsPointInRectCircle(const Vector2 _pos, const Vector2 _circlePos, const float _radius);
 
 	static VECTOR GetWorldPosAtScreen(const Vector2 screenPos, const float distance, const VECTOR cameraPos, const VECTOR cameraDir);
 

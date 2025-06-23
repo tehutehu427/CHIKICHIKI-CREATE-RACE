@@ -19,9 +19,12 @@ using json = nlohmann::json;
 
 namespace
 {
-    constexpr int appear_interval = 30;	//出現までのフレーム
-    constexpr int menu_line_height = 40;//メニュー1つ当たりの高さ
-    constexpr int margin_size = 20;		//ポーズメニュー枠の太さ
+    constexpr int MARGIN = 200;             //間   
+    const Vector2 OFFSET_POS = { 150, 40 }; //座標調整用
+    const Vector2 YES_POS = {               
+            Application::SCREEN_HALF_X - OFFSET_POS.x,
+            Application::SCREEN_HALF_Y + OFFSET_POS.y,
+    };
 }
 
 MapDataIO::MapDataIO()
@@ -29,9 +32,11 @@ MapDataIO::MapDataIO()
     imgBack_ = -1;
     imgLoad_ = -1;
     imgBack_ = -1;
+    messageType_ = -1;
     font_ = -1;
 
     checkStep_ = 0;
+    messageDisplayCnt_ = 0.0f;
     state_ = STATE::NONE;
     selectFile_ = "";
 
@@ -45,7 +50,8 @@ MapDataIO::MapDataIO()
     messages_[static_cast<int>(MESSAGE_TYPE::EXPORT)] = "データを保存しますか？";
     messages_[static_cast<int>(MESSAGE_TYPE::YES)] = "はい";
     messages_[static_cast<int>(MESSAGE_TYPE::NO)] = "いいえ";
-    messages_[static_cast<int>(MESSAGE_TYPE::REPORT)] = "ファイルに保存されました";
+    messages_[static_cast<int>(MESSAGE_TYPE::REPORT_EXPORT)] = "ファイルに保存されました";
+    messages_[static_cast<int>(MESSAGE_TYPE::REPORT_IMPORT)] = "ファイルをインポートしました";
 
 }
 
@@ -74,6 +80,9 @@ void MapDataIO::Load()
 
 void MapDataIO::Init()
 {
+    //メッセージ表示カウントを初期化
+    messageDisplayCnt_ = 0.0f;
+
     //最初の状態を設定
     ChangeState(STATE::WAIT); 
 }
@@ -102,6 +111,12 @@ void MapDataIO::Draw()
 
 void MapDataIO::ExportJsonFile(const std::string _fileName)
 {
+    //メッセージカウントを設定
+    messageDisplayCnt_ = MES_DISPLAY_TIME;
+
+    //表示メッセージを設定
+    messageType_ = static_cast<int>(MESSAGE_TYPE::REPORT_EXPORT);
+
     nlohmann::json j;
     constexpr int INDENT = 4;
 
@@ -170,6 +185,12 @@ void MapDataIO::ImportJsonFile()
 {
     ItemManager& itemMng = ItemManager::GetInstance();
 
+    //メッセージカウントを設定
+    messageDisplayCnt_ = MES_DISPLAY_TIME;
+
+    //表示メッセージを設定
+    messageType_ = static_cast<int>(MESSAGE_TYPE::REPORT_IMPORT);
+
     //今あるオブジェクトを削除
     itemMng.AllDeleteItem();
 
@@ -191,6 +212,44 @@ void MapDataIO::ImportJsonFile()
                 itemMng.GetItemHitSize(type),0.0f);
         }
     }
+}
+
+bool MapDataIO::IsTriggerExport() const
+{
+    KeyConfig& ins = KeyConfig::GetInstance();
+
+    //アイコンクリック用
+    const Vector2 rightPos = { ICON_SIZE_X, 0 };
+    const Vector2 leftDown = { ICON_SIZE_X * 2, ICON_SIZE_Y };
+
+    //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
+    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EXPORT_FILE, KeyConfig::JOYPAD_NO::PAD1) || 
+        ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EXPORT_FILE_CLICK, KeyConfig::JOYPAD_NO::PAD1) && 
+        Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool MapDataIO::IsTriggerImport() const
+{
+    KeyConfig& ins = KeyConfig::GetInstance();
+
+    //アイコンクリック用
+    const Vector2 rightPos = { 0, 0 };
+    const Vector2 leftDown = { ICON_SIZE_X, ICON_SIZE_Y };
+
+    //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
+    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::IMPORT_FILE, KeyConfig::JOYPAD_NO::PAD1) ||
+        ins.IsTrgDown(KeyConfig::CONTROL_TYPE::IMPORT_FILE_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
+        Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown))
+    {
+        return true;
+    }
+
+    return false;
 }
 
 std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItemsFromJson(const std::string& _filepath)
@@ -305,14 +364,14 @@ void MapDataIO::UpdateWait()
     KeyConfig& ins = KeyConfig::GetInstance();
 
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
-    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL,KeyConfig::JOYPAD_NO::PAD1))
+    if (IsTriggerExport())
     {
         //確認へ移る
         ChangeState(STATE::CHECK_EXPORT);
         return;
     }
 
-    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::READ_FILE, KeyConfig::JOYPAD_NO::PAD1))
+    else if (IsTriggerImport())
     {
         //ファイルを読み込む
         if (!ReadFileBool(selectFile_))
@@ -320,10 +379,12 @@ void MapDataIO::UpdateWait()
             //読み込まない場合処理を終える
             return;
         }
-
         //確認へ移る
         ChangeState(STATE::CHECK_IMPORT);
     }
+
+    if (messageDisplayCnt_ <= 0.0f) { return; }
+    messageDisplayCnt_ -= SceneManager::GetInstance().GetDeltaTime();
 }
 
 void MapDataIO::UpdateCheckExport()
@@ -331,7 +392,8 @@ void MapDataIO::UpdateCheckExport()
     KeyConfig& ins = KeyConfig::GetInstance();
 
     //コマンドの選択
-    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1) || ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
+    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1) || 
+        ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
     {
         //増減方向
         int dir = ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1) ? 1 : -1;
@@ -348,10 +410,11 @@ void MapDataIO::UpdateCheckExport()
         {
             checkStep_ = 0;
         }
+        return;
     }
 
     //決定
-    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER,KeyConfig::JOYPAD_NO::PAD1))
+    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, KeyConfig::JOYPAD_NO::PAD1))
     {
         //選択した内容の処理を行う
         if (checkStep_ == static_cast<int>(CHECK_LIST::YES))
@@ -367,6 +430,44 @@ void MapDataIO::UpdateCheckExport()
             //状態遷移
             ChangeState(STATE::WAIT);
         }
+        return;
+    }
+
+    //クリックでも選べる
+    for (int i = 0; i < static_cast<int>(CHECK_LIST::MAX); i++)
+    {
+        //座標設定
+        Vector2 leftTop = { YES_POS.x + MARGIN * i,YES_POS.y };
+        Vector2 rightBottom = { static_cast<int>(leftTop.x + messages_[i].length() * FONT_SIZE),
+            YES_POS.y + FONT_SIZE };
+
+        //マウスが範囲内か調べる
+        if (Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBottom))
+        {
+            //ステップを設定
+            checkStep_ = i;
+
+            //クリックしたか調べる
+            if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_MOUSE, KeyConfig::JOYPAD_NO::PAD1))
+            {
+                //選択した内容の処理を行う
+                if (checkStep_ == static_cast<int>(CHECK_LIST::YES))
+                {
+                    //現在の配置データを出力する
+                    ExportJsonFile("3DStageDataFile.json");
+
+                    //状態遷移
+                    ChangeState(STATE::WAIT);
+                }
+                else
+                {
+                    //状態遷移
+                    ChangeState(STATE::WAIT);
+                }
+            }
+            //処理終了
+            return;
+        }
     }
 
 }
@@ -376,7 +477,8 @@ void MapDataIO::UpdateCheckImport()
     KeyConfig& ins = KeyConfig::GetInstance();
 
     //コマンドの選択
-    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1) || ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
+    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1) || 
+        ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
     {
         //増減方向
         int dir = ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1) ? 1 : -1;
@@ -393,10 +495,11 @@ void MapDataIO::UpdateCheckImport()
         {
             checkStep_ = 0;
         }
+        return;
     }
 
     //決定
-    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
+    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, KeyConfig::JOYPAD_NO::PAD1))
     {
         //選択した内容の処理を行う
         if (checkStep_ == static_cast<int>(CHECK_LIST::YES))
@@ -411,6 +514,44 @@ void MapDataIO::UpdateCheckImport()
         {
             //状態遷移
             ChangeState(STATE::WAIT);
+        }
+        return;
+    }
+
+    //クリックでも選べる
+    for (int i = 0; i < static_cast<int>(CHECK_LIST::MAX); i++)
+    {
+        //座標設定
+        Vector2 leftTop = { YES_POS.x + MARGIN * i,YES_POS.y };
+        Vector2 rightBottom = { static_cast<int>(leftTop.x + messages_[i].length() * FONT_SIZE),
+            YES_POS.y + FONT_SIZE };
+
+        //マウスが範囲内か調べる
+        if (Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBottom))
+        {
+            //ステップを設定
+            checkStep_ = i;
+
+            //クリックしたか調べる
+            if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_MOUSE, KeyConfig::JOYPAD_NO::PAD1))
+            {
+                //選択した内容の処理を行う
+                if (checkStep_ == static_cast<int>(CHECK_LIST::YES))
+                {
+                    //外部データを読み込む    
+                    ImportJsonFile();
+
+                    //状態遷移
+                    ChangeState(STATE::WAIT);
+                }
+                else
+                {
+                    //状態遷移
+                    ChangeState(STATE::WAIT);
+                }
+            }
+            //処理終了
+            return;
         }
     }
 }
@@ -436,6 +577,15 @@ void MapDataIO::DrawWait()
         true,
         false
     );
+    if (messageDisplayCnt_ <= 0.0f) { return; }
+    constexpr int MESSAGE_POS_X = 10;
+    constexpr int MESSAGE_POS_Y = Application::SCREEN_SIZE_Y - 145;
+    DrawFormatStringToHandle(
+        MESSAGE_POS_X,
+        MESSAGE_POS_Y,
+        Utility::CYAN,
+        font_,
+        messages_[messageType_].c_str());
 }
 
 void MapDataIO::DrawCheckExport()

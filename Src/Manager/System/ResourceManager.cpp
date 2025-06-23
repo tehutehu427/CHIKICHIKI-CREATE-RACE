@@ -46,7 +46,7 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "LoadIcon.png");
 	resourcesMap_.emplace(SRC::LOAD_ICON, std::move(res));
 
-	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "MaunualIcon.png");
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "ManualIcon.png");
 	resourcesMap_.emplace(SRC::MANUAL_ICON, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "SaveIcon.png");

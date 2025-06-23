@@ -12,6 +12,7 @@
 #include "../../../Shader/Effect/SelectUIGlow.h"
 #include "../../../Shader/Effect/SelectUIDarkly.h"
 #include "../../../Scene/SelectScene.h"
+#include "../ManualTab.h"
 
 
 namespace
@@ -41,6 +42,7 @@ ModeSelect::ModeSelect()
 	uiDarkly_ = nullptr;
 	imgBackArc_ = 0;
 	imgShadowArc_ = 0;
+	manual_ = nullptr;
 }
 
 ModeSelect::~ModeSelect()
@@ -61,6 +63,9 @@ void ModeSelect::Load()
 
 	uiDarkly_ = std::make_unique<SelectUIDarkly>();
 	uiDarkly_->Load();
+
+	manual_ = std::make_unique<ManualTab>();
+	manual_->Load();
 }
 
 void ModeSelect::Init()
@@ -87,6 +92,9 @@ void ModeSelect::Init()
 
 	//ターゲット角度を初期化
 	targetAngle_ = 0.0f;
+
+	//マニュアル初期化
+	manual_->Init();
 }
 
 void ModeSelect::Update(SelectScene& _parent)
@@ -96,11 +104,14 @@ void ModeSelect::Update(SelectScene& _parent)
 #endif
 
 	// 毎フレームのUpdate処理
-	if (selectUpdateFunc_) selectUpdateFunc_(_parent);
+	if (selectUpdateFunc_ && !manual_->IsDisplay()) selectUpdateFunc_(_parent);
 
 	//エフェクトを更新
 	uiGlow_->Update(arc_[arcIndex_].angle, imgArcSize);
 	uiDarkly_->Update(arcIndex_, arc_[arcIndex_].angle, imgArcSize, imgArcDivs);
+
+	//マニュアル更新
+	manual_->Update();
 }
 
 void ModeSelect::Draw()
@@ -109,6 +120,7 @@ void ModeSelect::Draw()
 	DebugDraw();
 #endif
 
+	//UIの描画
 	for (int i = 0; i < DRAW_ARC_NUM; i++)
 	{
 		if (i == arcIndex_)
@@ -121,6 +133,9 @@ void ModeSelect::Draw()
 			DrawDarkly(i);
 		}
 	}
+
+	//マニュアル描画
+	manual_->Draw();
 }
 
 void ModeSelect::RegisterArcState(const UPD_STATE _state, std::function<void(SelectScene&)> _update)
@@ -148,77 +163,53 @@ void ModeSelect::ChangeUpdateState(const UPD_STATE _state)
 void ModeSelect::SelectUpdate(SelectScene& _parent)
 
 {
-
 	constexpr int OFFSET_INDEX = 2;	//選択メニューのオフセット
 
 	KeyConfig& key = KeyConfig::GetInstance();
 
 	//決定
-
-	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
-
+	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, KeyConfig::JOYPAD_NO::PAD1))
 	{
-
 		_parent.ProcessMenuFunction(static_cast<SelectScene::SELECT_MENU>(menuIndex_));
-
 	}
 
 	//上へ
-
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_UP, KeyConfig::JOYPAD_NO::PAD1))
-
 	{
-
 		//新しく出るメニュー項目を変える
-
 		SetMenuItem(menuIndex_ - OFFSET_INDEX, arcIndex_ - OFFSET_INDEX);
 
 		//選択メニューの更新
-
 		menuIndex_ = (menuIndex_ - 1 + SelectScene::MENU_LIST_NUM) % SelectScene::MENU_LIST_NUM;
 
 		//円弧インデックスの更新
-
 		arcIndex_ = (arcIndex_ - 1 + DRAW_ARC_NUM) % DRAW_ARC_NUM;
 
 		//ターゲット角度の更新
-
 		targetAngle_ += ROTATE_STEP;
 
 		//状態変更
-
 		ChangeUpdateState(UPD_STATE::ROTATE);
-
 	}
 
 	//下へ
-
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_DOWN, KeyConfig::JOYPAD_NO::PAD1))
-
 	{
-
 		//新しく出るメニュー項目を変える
-
 		SetMenuItem(menuIndex_ + OFFSET_INDEX, arcIndex_ + OFFSET_INDEX);
 
 		//選択メニューの更新		
-
 		menuIndex_ = (menuIndex_ + 1) % SelectScene::MENU_LIST_NUM;
 
 		//円弧インデックスの更新
-
 		arcIndex_ = (arcIndex_ + 1) % DRAW_ARC_NUM;
 
 		//ターゲット角度の更新
-
 		targetAngle_ -= ROTATE_STEP;
 
 		//状態変更
-
 		ChangeUpdateState(UPD_STATE::ROTATE);
-
 	}
-
 }
 
 void ModeSelect::RotateUpdate(SelectScene&)

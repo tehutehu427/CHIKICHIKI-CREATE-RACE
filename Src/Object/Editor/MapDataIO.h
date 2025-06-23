@@ -44,13 +44,14 @@ public:
 	/// メッセージタイプ
 	/// </summary>
 	enum class MESSAGE_TYPE
-	{
-		IMPORT,
-		EXPORT,
+	{		
 		YES,
 		NO,
+		IMPORT,
+		EXPORT,
 		SAVE,
-		REPORT,
+		REPORT_EXPORT,
+		REPORT_IMPORT,
 		MAX,
 	};
 	
@@ -85,7 +86,11 @@ public:
 	void Draw();
 
 private:	
-	
+
+	//保尊メッセージ表示時間
+	static constexpr float MES_DISPLAY_TIME = 2.0f;
+
+
 	//画像関係 
 	int imgSave_;	//セーブ
 	int imgLoad_;	//読み込み
@@ -94,6 +99,9 @@ private:
 	//フォント
 	int font_;
 	int exportFont_;
+
+	//メッセージタイプ
+	int messageType_;
 	
 	// 状態ごとの構造体（更新と描画を分けて保持）
 	struct StateFuncs
@@ -104,6 +112,11 @@ private:
 
 	//入出力確認用ステップ
 	int checkStep_;
+
+	//保存メッセージ表示カウント
+	float messageDisplayCnt_;
+
+	//入力アイコンの配置座標
 
 	//状態
 	STATE state_;
@@ -141,6 +154,12 @@ private:
 
 	//JSONファイルを読み込む
 	void ImportJsonFile();
+
+	//出力を行うトリガーの条件を満たしたか
+	bool IsTriggerExport() const;
+
+	//入力を行うトリガーの条件を満たしたか
+	bool IsTriggerImport() const;
 
 	/// <summary>
 	/// JSONからアイテム種類ごとに座標を読み込む

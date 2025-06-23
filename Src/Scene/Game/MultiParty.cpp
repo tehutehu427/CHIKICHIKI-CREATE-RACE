@@ -144,7 +144,7 @@ void MultiParty::DrawResult()
 void MultiParty::DebagUpdate()
 {
 	//次のフェーズへ状態遷移する
-	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER,KeyConfig::JOYPAD_NO::PAD1))
+	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_MOUSE,KeyConfig::JOYPAD_NO::PAD1))
 	{
 		int phase = static_cast<int>(phase_);
 		int nextPhase = phase + 1;

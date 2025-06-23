@@ -26,6 +26,15 @@ SoundManager& SoundManager::GetInstance(void)
     return *instance_;
 }
 
+void SoundManager::Destroy()
+{
+    if (instance_ != nullptr)
+    {
+        delete instance_;
+        instance_ = nullptr;
+    }
+}
+
 void SoundManager::Play(const int& _sound, const PLAYTYPE _playType)
 {
     PlaySoundMem(_sound, GetPlayType(_playType));

@@ -9,6 +9,7 @@ void InputManager::Init(void)
 	// 事前にここで登録しておいてください
 	Add(KEY_INPUT_SPACE);
 	Add(KEY_INPUT_N);
+	Add(KEY_INPUT_M);
 	Add(KEY_INPUT_Z);
 	Add(KEY_INPUT_X);
 
@@ -19,6 +20,7 @@ void InputManager::Init(void)
 	Add(KEY_INPUT_RCONTROL);
 
 	Add(KEY_INPUT_B);
+	Add(KEY_INPUT_BACK);
 
 	//プレイヤー操作関連
 	//---------------------------------------------------
@@ -40,6 +42,9 @@ void InputManager::Init(void)
 	Add(KEY_INPUT_RETURN);
 	Add(KEY_INPUT_T);
 	Add(KEY_INPUT_Y);
+
+	//タブキー
+	Add(KEY_INPUT_TAB);
 
 	//---------------------------------------------------
 

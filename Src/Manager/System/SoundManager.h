@@ -29,6 +29,11 @@ public:
 	static SoundManager& GetInstance(void);
 
 	/// <summary>
+	/// ‰ğ•ú
+	/// </summary>
+	void Destroy();
+
+	/// <summary>
 	/// ‰¹Œ¹‚ÌÄ¶
 	/// </summary>
 	/// <param name="_sound">‰¹Œ¹</param>

@@ -2,10 +2,12 @@
 #include "../../Object/Editor/MapDataIO.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/System/CheckChangePhase.h"
+#include "../../Object/System/ManualTab.h"
 
 FreePlay::FreePlay(void)
 {
 	changePhasePlay_ = nullptr;
+	manual_ = nullptr;
 }
 
 FreePlay::~FreePlay(void)
@@ -24,6 +26,10 @@ void FreePlay::Load(void)
 	//フェーズ遷移
 	changePhasePlay_ = std::make_unique<CheckChangePhase>();
 	changePhasePlay_->Load();
+
+	//マニュアル
+	manual_ = std::make_unique<ManualTab>();
+	manual_->Load();
 }
 
 void FreePlay::Init(void)
@@ -40,6 +46,9 @@ void FreePlay::Init(void)
 	//マップデータの初期化
 	mapIO_->Init();
 
+	//マニュアルの初期化
+	manual_->Init();
+
 	ChangePhase(PHASE::EDIT_PHASE);
 }
 
@@ -50,12 +59,16 @@ void FreePlay::UpdateAction(void)
 }
 
 void FreePlay::UpdateEdit(void)
-{
-	//親クラスの更新
-	GameScene::UpdateEdit();
+{	
+	//マニュアル
+	manual_->Update();
+	if (manual_->IsDisplay()) { return; }	//表示中は処理を止める
 
 	//マップデータの更新
 	mapIO_->Update();
+	
+	//親クラスの更新
+	GameScene::UpdateEdit();
 }
 
 void FreePlay::ChangePhaseAction(void)
@@ -90,9 +103,18 @@ void FreePlay::NormalDraw(void)
 	//親クラスの描画
 	GameScene::NormalDraw();
 
+	//フェーズ遷移アイコン
+	changePhasePlay_->Draw();
+}
+
+void FreePlay::DrawEdit()
+{
+	//親クラスの描画
+	GameScene::DrawEdit();
+
 	//マップデータの描画
 	mapIO_->Draw();
 
-	//フェーズ遷移アイコン
-	changePhasePlay_->Draw();
+	//マニュアルの描画
+	manual_->Draw();
 }
