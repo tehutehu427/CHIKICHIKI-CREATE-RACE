@@ -70,5 +70,6 @@ private:
 	/// <param name="_col2">2‚Â–Ú‚ÌƒRƒ‰ƒCƒ_</param>
 	/// <returns>true:“–‚½‚Á‚½</returns>
 	bool IsCollision(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2);
+
 };
 

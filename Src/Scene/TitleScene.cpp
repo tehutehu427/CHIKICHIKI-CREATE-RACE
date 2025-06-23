@@ -5,6 +5,7 @@
 #include "../Utility/Utility.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/KeyConfig.h"
 #include "../Manager/System/InputManager.h"
 #include "TitleScene.h"
 

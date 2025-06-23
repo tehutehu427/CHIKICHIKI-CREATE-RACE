@@ -82,8 +82,10 @@ public:
 		CANCEL,					//キャンセル
 
 		PHASE_CHENGE,			//フェーズ変更
+		PHASE_CHENGE_CHECK,		//フェーズ変更
 
-		READ_FILE,			//ファイル読み込み
+		READ_FILE,				//ファイル読み込み
+		EXPORT_FILE,			//ファイル出力
 
 		SELECT_UP,				//選択　上
 		SELECT_DOWN,			//選択　下
@@ -123,6 +125,8 @@ public:
 
 		DEBUG_CHENGE_TITLE,		//デバッグ用タイトル画面に戻る
 		DEBUG_CHENGE_CLEAR,		//デバッグ用クリア画面に戻る
+		DATA_INPUT,				//データを入力
+		DATA_EXPORT,			//データを出力
 		MAX,
 	};
 

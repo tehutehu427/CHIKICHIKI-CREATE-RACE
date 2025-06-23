@@ -8,7 +8,6 @@ class Cannon : public ItemBase
 public:
 
 	//弾
-	static constexpr int SHOT_MAX = 3;				//弾の生成数
 	static constexpr float SHOT_INTERVAL = 5.0f;	//弾の生成感覚
 
 	//マップ
@@ -26,7 +25,6 @@ public:
 	//砲身
 	static constexpr VECTOR BARREL_LOCAL_POS = { 0.0f, 75.0f, -0.0f };	//砲身の相対座標
 	static constexpr VECTOR BARREL_LOCAL_ROT = { 20.0f, 0.0f, 0.0f };	//砲身の相対回転
-	static constexpr VECTOR BARREL_ROT_CORRECTION = { 45.0f, 0.0f, 0.0f };	//砲身の回転補正
 
 	//コライダ
 	static constexpr int AIM_COL_NUM = 2;	//エイムのコライダ番号
@@ -58,9 +56,8 @@ public:
 private:
 
 	//弾関係
-	std::unique_ptr<CannonShot> shots_[SHOT_MAX];		//弾
-	int shotNum_;										//弾の数
-	float shotCreateCnt_;								//弾の生成間隔カウンタ
+	std::unique_ptr<CannonShot> shot_;		//弾
+	float shotCreateCnt_;					//弾の生成間隔カウンタ
 	
 	//モデル関係
 	Transform barrelTrans_;	//砲身用モデル情報
