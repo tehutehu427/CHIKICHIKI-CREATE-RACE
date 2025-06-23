@@ -13,7 +13,7 @@ ItemBase::ItemBase()
 
 	rotY_ = 0.0f;
 
-	//trans_.MakeCollider(Collider::TYPE::STAGE);
+	movePow_ = Utility::VECTOR_ZERO;
 }
 
 ItemBase::~ItemBase()
