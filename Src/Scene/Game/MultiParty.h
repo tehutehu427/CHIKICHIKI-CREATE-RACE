@@ -35,6 +35,12 @@ private:
 	//エディット時の更新処理
 	void UpdateEdit(void) override;
 
+	//あくしょん時の描画処理
+	void DrawAction(void) override;
+
+	//エディット時の描画処理
+	void DrawEdit(void) override;
+
 	//状態遷移
 	void ChangePhaseEdit() override;
 	void ChangePhaseAction() override;

@@ -64,6 +64,8 @@ void SceneManager::Init(void)
 
 	// 初期シーンの設定
 	DoChangeScene(SCENE_ID::TITLE);
+
+	screenIndex_ = 0;
 }
 
 void SceneManager::Init3D(void)
@@ -456,6 +458,7 @@ void SceneManager::DrawMultiScreen()
 	for (int i = 0; i < splitScreens_.size(); i++)
 	{
 		//プレイ人数が3人の時の4つ目の画面を1Pの画面を表示する
+		screenIndex_ = i;	//分割スクリーンのインデックス
 		int index = i;
 		if (CASE_VALUE == DateBank::GetInstance().GetPlayerNum() &&
 			index == PlayerManager::PLAYER_NUM_MAX - 1)
@@ -465,6 +468,8 @@ void SceneManager::DrawMultiScreen()
 
 		//分割スクリーンの設定
 		SetDrawScreen(splitScreens_[index]);
+
+		ClearDrawScreen();
 
 		// カメラ設定
 		cameras_[index]->SetBeforeDraw();

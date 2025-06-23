@@ -471,6 +471,29 @@ IntVector3 ItemManager::GetItemSize(ItemBase::ITEM_TYPE _type) const
 	return size;
 }
 
+ItemBase::Status ItemManager::GetItemStatus(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type) const
+{
+	for (auto& items : items_)
+	{
+		if (items.first != _type)
+		{
+			continue;
+		}
+		for (auto& item : items.second)
+		{
+			if (item == nullptr)
+			{
+				continue;
+			}
+			if (item->GetInitMapPos() == _mapPos)
+			{
+				return item->GetStatus();
+			}
+		}
+	}
+	return ItemBase::Status{};
+}
+
 float ItemManager::GetItemRotY(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos)
 {
 	for (auto& items : items_)

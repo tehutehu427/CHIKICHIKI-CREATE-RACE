@@ -73,10 +73,23 @@ void MultiParty::UpdateAction(void)
 
 void MultiParty::UpdateEdit(void)
 {
-	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT)
+	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum() ; i++)
 	{
-		for (auto& controller : editControllers_) { controller->Update(); }
+		SetDrawScreen(SceneManager::GetInstance().GetScreen(i));
+		SceneManager::GetInstance().GetCamera(i).lock()->CameraSetting(); // カメラの更新
+		editControllers_[i]->Update();
 	}
+	SetDrawScreen(SceneManager::GetInstance().GetMainScreen());
+}
+
+void MultiParty::DrawAction(void)
+{
+
+}
+
+void MultiParty::DrawEdit(void)
+{
+	GameScene::DrawEdit();
 }
 
 void MultiParty::ChangePhaseEdit()
@@ -122,7 +135,7 @@ void MultiParty::UpdateSelect()
 	//パレット処理が終了したとき
 	if (palette_->GetState() == EditorPaletteBase::STATE::NONE)
 	{
-		ChangePhase(PHASE::RESULT_PHASE);
+		ChangePhase(PHASE::EDIT_PHASE);
 	}
 }
 

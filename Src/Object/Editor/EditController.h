@@ -14,6 +14,10 @@ public:
 	static constexpr float MOVE_ARROW_SIZE = 10.0f;		//移動矢印の先端の大きさ
 	static constexpr int DELAY_MOVE_ARROW = 20;			//移動矢印の先端からの猶予座標
 	static constexpr IntVector3 ERROR_POS = { -1,-1,-1 };	//生成不可の座標
+	static constexpr IntVector3 PLAYER1_INIT_EDIT_POS = { 5,0,0 };	//プレイヤー1のエディター初期座標
+	static constexpr IntVector3 PLAYER2_INIT_EDIT_POS = { 10,0,0 };	//プレイヤー1のエディター初期座標
+	static constexpr IntVector3 PLAYER3_INIT_EDIT_POS = { 15,0,0 };	//プレイヤー1のエディター初期座標
+	static constexpr IntVector3 PLAYER4_INIT_EDIT_POS = { 20,0,0 };	//プレイヤー1のエディター初期座標
 
 	enum class MODE
 	{
@@ -60,6 +64,8 @@ private:
 	Vector2 mousePos_;	//2Dのマウス座標
 	Vector2 cursorPos_;	//2Dのカーソル座標
 	IntVector3 mapPos_;	//3Dのマップ座標
+	IntVector3 initMapPos_;	//初期マップ座標
+
 	MODE mode_;	//モード
 	ItemBase::ITEM_TYPE itemType_;	//アイテムの種類
 	bool isClickObject_;	//オブジェクトをクリックしたか

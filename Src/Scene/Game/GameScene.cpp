@@ -70,7 +70,7 @@ void GameScene::Load(void)
 	//エディットコントローラーの生成
 	for (int i = 0; i < playerNum; i++)
 	{
-		editControllers_.push_back(std::make_unique<EditController>(0));
+		editControllers_.push_back(std::make_unique<EditController>(i));
 	}
 
 	//スカイドームの生成
@@ -272,13 +272,17 @@ void GameScene::DrawEdit(void)
 {
 	//グリッド
 	grid_->Draw();
-	
+
 	//エディットコントローラー
-	for (auto& controller : editControllers_) { controller->Draw(); }
+	//for (auto& controller : editControllers_) 
+	//{ 
+	auto screenIndex = SceneManager::GetInstance().GetScreenIndex();
+	editControllers_[screenIndex]->Draw();
+	//}
 
 	//アイテム
 	ItemManager::GetInstance().Draw();
-	
+
 	//パレット
 	palette_->Draw();
 }
