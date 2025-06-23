@@ -420,10 +420,13 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 
 void Player::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 {
-	if (_hitCol.lock()->GetTag() == Collider::TAG::MOVE_HORI_FLOOR)
+	if (_hitCol.lock()->GetTag() == Collider::TAG::MOVE_HORI_FLOOR|| _hitCol.lock()->GetTag() == Collider::TAG::MOVE_VER_FLOOR)
 	{
-		
+		ItemBase& floor = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
+		movedPos_ = VAdd(movedPos_, floor.GetMovePow());
 	}
+	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
+	HitModelCommon(hitModel);
 	////座標をワールド座標とアイテムローカル座標を足した分移動させる
 	//if (!Utility::EqualsVZero(itemLocalPos_))
 	//{
@@ -663,7 +666,7 @@ void Player::HitModelCommon(Model& _hitModel)
 	trans.Update();
 	if (bodyShere->IsHit())
 	{
-		auto hitInfo = _hitModel.GetHitInfo();
+		auto& hitInfo = _hitModel.GetHitInfo();
 
 		for (int i = 0; i < hitInfo.HitNum; i++)
 		{
@@ -680,13 +683,16 @@ void Player::HitModelCommon(Model& _hitModel)
 					trans.Update();
 					continue;
 				}
-
 				break;
 			}
 		}
 		//当たり判定情報の解放
-		MV1CollResultPolyDimTerminate(hitInfo);
+		//MV1CollResultPolyDimTerminate(hitInfo);
 	}
+	//移動前の座標を格納する
+	moveDiff_ = trans_.pos;
+	//移動
+	trans_.pos = movedPos_;
 }
 
 #ifdef DEBUG_ON

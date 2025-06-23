@@ -19,7 +19,7 @@ public:
 	static constexpr float HIT_RANGE_TARGET = 2500.0f;	//ターゲット用の当たり判定距離
 
 	//更新用
-	static constexpr int COL_UPDATE_FRAME = 5;		//更新フレーム
+	static constexpr int COL_UPDATE_FRAME = 0;		//更新フレーム
 	
 	//インスタンス生成
 	static void CreateInstance(void);
