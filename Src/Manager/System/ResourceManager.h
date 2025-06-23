@@ -50,6 +50,7 @@ public:
 		MANUAL_ICON,
 		EXPLAN_BACK,
 		CHANGE_PHASE_ICONS,
+		CANCEL_ICON,
 
 		//ÉNÉäÉA
 		CLEAR,
