@@ -39,7 +39,7 @@ void KeyConfig::Init(void)
 
 
 	//キャンセル
-	Add(CONTROL_TYPE::CANCEL, KEY_INPUT_B);	//キャンセル
+	Add(CONTROL_TYPE::CANCEL, KEY_INPUT_BACK);	//キャンセル
 	Add(CONTROL_TYPE::CANCEL, KeyConfig::JOYPAD_BTN::RIGHTBUTTON_DOWN);
 
 

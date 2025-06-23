@@ -66,5 +66,8 @@ private:
 
 	//他のプレイヤーが選択していないか調べる
 	bool IsChosenByOtherPlayer(const int _iconIndex, const int _playerIndex);
+
+	//アイコンを描画する
+	void DrawItemIcon()override;
 };
 

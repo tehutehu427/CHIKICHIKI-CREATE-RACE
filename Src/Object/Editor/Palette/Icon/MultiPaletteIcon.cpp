@@ -4,6 +4,7 @@
 #include "../../../../Manager/System/ResourceManager.h"
 #include "../../../../Manager/System/DateBank.h"
 #include "../Utility/Utility.h"
+#include "../Utility/UtilityTemplates.h"
 #include "../PaletteCursor.h"
 
 // ランダム生成器の初期化
@@ -212,4 +213,55 @@ bool MultiPaletteIcon::IsChosenByOtherPlayer(const int _iconIndex, const int _pl
 		}
 	}
 	return false;
+}
+
+void MultiPaletteIcon::DrawItemIcon()
+{
+	//アイコンの描画のみマスク処理
+	SetUseMaskScreenFlag(true);
+	int index = 0;
+	for (EditorPaletteBase::ImgInfo& i : icons_)
+	{
+		//既に誰かが選択済みの場合描画しない
+		if (IsChosenByOtherPlayer(index, -1))	//全てのプレイやーを調べるため-1を設定
+		{
+			index++;
+			continue;
+		}
+
+		//アイコン
+		DrawRotaGraph(
+			i.pos.x,
+			i.pos.y,
+			i.rate,
+			i.angle,
+			imgIcons_[i.num],
+			true,
+			false);
+
+		int nameColor = Utility::WHITE;		//デフォルトネームカラー
+		std::string name = DateBank::GetInstance().GetItemName(static_cast<ItemBase::ITEM_TYPE>(i.num));	//名前を取得	
+
+		//選択しているアイコンの場合名前を赤にする
+		if (UtilityTemplates::ContainsValue(selectTypes_, static_cast<ItemBase::ITEM_TYPE>(i.num)) &&	//配列内に条件の値がないか調べる
+			UtilityTemplates::ContainsValue(sleCnt_, index))
+		{
+			//色を赤にする
+			nameColor = Utility::RED;
+		}
+
+		//名前を描画
+		int offSetX = name.size() * NAME_FONT_SIZE / 4;
+		constexpr int OFFSET_Y = ICON_SIZE / 2 + 20;
+		DrawFormatStringToHandle(
+			i.pos.x - offSetX,
+			i.pos.y + OFFSET_Y,
+			nameColor,
+			fontHandle_,
+			name.c_str());
+
+		//インデックス更新
+		index++;
+	}
+	SetUseMaskScreenFlag(false);
 }

@@ -19,6 +19,7 @@ void InputManager::Init(void)
 	Add(KEY_INPUT_RCONTROL);
 
 	Add(KEY_INPUT_B);
+	Add(KEY_INPUT_BACK);
 
 	//プレイヤー操作関連
 	//---------------------------------------------------

@@ -185,7 +185,7 @@ protected:
 	virtual void UpdateSelect();
 
 	//各アイコンの描画
-	void DrawItemIcon();		//アイテムアイコン
+	virtual void DrawItemIcon();		//アイテムアイコン
 	void DrawScrollIcon();		//スクロールアイコン
 
 	//除外番号を除いてアイテム配列を生成
