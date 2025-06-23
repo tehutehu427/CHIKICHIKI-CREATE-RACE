@@ -54,7 +54,7 @@ void Cannon::SetParam(void)
 
 	//砲台のコライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::CANNON_AIM, std::move(geo));
+	MakeCollider(Collider::TAG::NORMAL_ITEM, std::move(geo));
 	
 	//砲身
 	barrelTrans_ = trans_;
@@ -88,7 +88,7 @@ void Cannon::SetParam(void)
 
 	//砲身のコライダの作成
 	geo = std::make_unique<Model>(barrelTrans_.pos, barrelTrans_.quaRot, barrelTrans_.modelId);
-	MakeCollider(Collider::TAG::CANNON_AIM, std::move(geo));
+	MakeCollider(Collider::TAG::NORMAL_ITEM, std::move(geo));
 
 	//大砲のエイム範囲
 	std::unique_ptr<Sphere>aimGeo = std::make_unique<Sphere>(trans_.pos, AIM_RADIUS);

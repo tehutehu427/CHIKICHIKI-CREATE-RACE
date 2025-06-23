@@ -95,6 +95,9 @@ public:
 	//Y回転の設定
 	inline void SetRotY(const float _rotY) { rotY_ = _rotY; }
 
+	//移動量の取得
+	inline const VECTOR GetMovePow(void)const { return movePow_; }
+
 	//アイテムの値リセット
 	virtual void ResetValue(void);
 
@@ -104,6 +107,7 @@ protected:
 	Status status_;				//ステータス
 	IntVector3 InitMapPos_;		//初期マップ座標
 	float rotY_;				//Y回転
+	VECTOR movePow_;			//移動量
 	std::vector<int*> models_;	//全モデル
 
 	//サイズの倍率調整

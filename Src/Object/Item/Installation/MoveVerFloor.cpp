@@ -18,7 +18,6 @@ MoveVerFloor::MoveVerFloor()
 	speed_ = 0.0f;
 	distance_ = 0.0;
 	moveVec_ = Utility::VECTOR_ZERO;
-	movePow_ = Utility::VECTOR_ZERO;
 }
 
 MoveVerFloor::~MoveVerFloor()
