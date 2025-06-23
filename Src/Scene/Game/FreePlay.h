@@ -26,7 +26,7 @@ public:
 private:
 
 	//フェーズをプレイに変える
-	std::unique_ptr<CheckChangePhase> changePhasePlay_;
+	std::unique_ptr<CheckChangePhase> checkChangePhase_;
 	
 	//マニュアル
 	std::unique_ptr<ManualTab> manual_;

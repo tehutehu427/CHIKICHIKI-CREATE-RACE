@@ -15,5 +15,21 @@ public:
 	// ƒfƒXƒgƒ‰ƒNƒ^
 	~Vector2(void);
 
+	/// <summary>
+	/// Vector2“¯Žm‚Ì‘«‚µŽZ
+	/// </summary>
+	/// <param name="_value1">‰ÁŽZ‚·‚é’l</param>
+	/// <param name="_value2">‰ÁŽZ‚·‚é’l</param>
+	/// <returns>‰ÁŽZ‚µ‚½’l</returns>
+	static Vector2 AddVector2(const Vector2& _value1, const Vector2& _value2);
+
+	/// <summary>
+	/// Vector2“¯Žm‚Ìˆø‚«ŽZ
+	/// </summary>
+	/// <param name="_value1">ˆø‚©‚ê‚é’l</param>
+	/// <param name="_value2">ˆø‚­’l</param>
+	/// <returns>Œ¸ŽZ‚µ‚½’l</returns>
+	static Vector2 SubVector2(const Vector2& _value1, const Vector2& _value2);
+
 };
 

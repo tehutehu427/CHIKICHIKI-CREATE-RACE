@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Editor\EditEscape.cpp" />
     <ClCompile Include="Src\Object\Player\PlayerAction.cpp" />
     <ClCompile Include="Src\Object\System\CheckChangePhase.cpp" />
     <ClCompile Include="Src\Manager\System\SoundManager.cpp" />
@@ -108,8 +109,10 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
     <ClCompile Include="Src\Object\Item\Fixed\StartFlag.cpp" />
     <ClCompile Include="Src\Shader\Effect\SelectUIGlow.cpp" />
+    <ClCompile Include="Src\Object\System\YesNoResponder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Editor\EditEscape.h" />
     <ClInclude Include="Src\Object\Player\PlayerAction.h" />
     <ClInclude Include="Src\Object\System\ManualTab.h" />
     <ClInclude Include="Src\Object\System\CheckChangePhase.h" />
@@ -248,6 +251,7 @@
     <ClInclude Include="Src\Utility\Utility.h" />
     <ClInclude Include="Src\Shader\Effect\SelectUIGlow.h" />
     <ClInclude Include="Src\Utility\UtilityTemplates.h" />
+    <ClInclude Include="Src\Object\System\YesNoResponder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

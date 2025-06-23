@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
+#include "../../Common/Vector2.h"
 #include "../Item/ItemBase.h"
 
 class ItemName;
@@ -58,7 +59,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	MapDataIO();
+	MapDataIO(const Vector2& _padCursolPos);
 
 	/// <summary>
 	/// デストラクタ
@@ -90,6 +91,8 @@ private:
 	//保尊メッセージ表示時間
 	static constexpr float MES_DISPLAY_TIME = 2.0f;
 
+	//カーソル座標
+	const Vector2& padCursolPos_;
 
 	//画像関係 
 	int imgSave_;	//セーブ

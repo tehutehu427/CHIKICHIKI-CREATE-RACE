@@ -444,7 +444,7 @@ void SceneManager::Fade(void)
 void SceneManager::DrawMultiScreen()
 {
 	//描画位置（分割スクリーンの左上位置）
-	static const Vector2 screenPos[PlayerManager::PLAYER_NUM_MAX] =
+	const Vector2 screenPos[PlayerManager::PLAYER_NUM_MAX] =
 	{
 		{ 0, 0 },													// 1P: 左上
 		{ Application::SCREEN_HALF_X, 0 },							// 2P: 右上
@@ -465,6 +465,9 @@ void SceneManager::DrawMultiScreen()
 
 		//分割スクリーンの設定
 		SetDrawScreen(splitScreens_[index]);
+
+		//画面クリア
+		ClearDrawScreen();
 
 		// カメラ設定
 		cameras_[index]->SetBeforeDraw();

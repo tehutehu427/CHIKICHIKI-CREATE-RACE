@@ -5,8 +5,10 @@
 #include "../../Utility/Utility.h"
 
 
-ManualTab::ManualTab() : 
-	key_(KeyConfig::GetInstance())
+
+ManualTab::ManualTab(const Vector2& _padCursolPos) :
+	key_(KeyConfig::GetInstance()),
+	padCursolPos_(_padCursolPos)
 {
 	imgIcon_ = -1;
 	imgManual_ = -1;
@@ -14,7 +16,7 @@ ManualTab::ManualTab() :
 	uiPos_ = {};
 
 	//èàóùÇÃìoò^
-	RegisterStateFunction(STATE::WAIT,  SceneBase::ProcessFunction{ [&]() { UpdateWait(); },  [&]() { DrawWait(); } });
+	RegisterStateFunction(STATE::WAIT, SceneBase::ProcessFunction{ [&]() { UpdateWait(); },  [&]() { DrawWait(); } });
 	RegisterStateFunction(STATE::DISPLAY, SceneBase::ProcessFunction{ [&]() { UpdateDisplay(); },  [&]() { DrawDisplay(); } });
 }
 
@@ -56,7 +58,8 @@ void ManualTab::UpdateWait()
 {
 	if(key_.IsTrgDown(KeyConfig::CONTROL_TYPE::MANUAL, KeyConfig::JOYPAD_NO::PAD1) ||
 		key_.IsTrgDown(KeyConfig::CONTROL_TYPE::MANUAL_ICON_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
-		Utility::IsPointInRectCircle(key_.GetMousePos(), uiPos_, RADIUS))
+		(Utility::IsPointInRectCircle(key_.GetMousePos(), uiPos_, RADIUS) || 
+			Utility::IsPointInRectCircle(padCursolPos_, uiPos_, RADIUS)))
 	{
 		ChangeState(STATE::DISPLAY);
 	}

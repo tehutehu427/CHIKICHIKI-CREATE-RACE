@@ -27,7 +27,8 @@ namespace
     };
 }
 
-MapDataIO::MapDataIO()
+MapDataIO::MapDataIO(const Vector2& _padCursolPos):
+    padCursolPos_(_padCursolPos)
 {
     imgBack_ = -1;
     imgLoad_ = -1;
@@ -54,6 +55,8 @@ MapDataIO::MapDataIO()
     messages_[static_cast<int>(MESSAGE_TYPE::REPORT_IMPORT)] = "ファイルをインポートしました";
 
 }
+
+
 
 MapDataIO::~MapDataIO()
 {
@@ -219,13 +222,13 @@ bool MapDataIO::IsTriggerExport() const
     KeyConfig& ins = KeyConfig::GetInstance();
 
     //アイコンクリック用
-    const Vector2 rightPos = { ICON_SIZE_X, 0 };
-    const Vector2 leftDown = { ICON_SIZE_X * 2, ICON_SIZE_Y };
+    const Vector2 rightPos = { ICON_SIZE_X * 2, 0 };
+    const Vector2 leftDown = { ICON_SIZE_X * 3, ICON_SIZE_Y };
 
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EXPORT_FILE, KeyConfig::JOYPAD_NO::PAD1) || 
         ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EXPORT_FILE_CLICK, KeyConfig::JOYPAD_NO::PAD1) && 
-        Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown))
+       ( Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown) || Utility::IsPointInRect(padCursolPos_, rightPos, leftDown)))
     {
         return true;
     }
@@ -233,18 +236,23 @@ bool MapDataIO::IsTriggerExport() const
     return false;
 }
 
-bool MapDataIO::IsTriggerImport() const
+inline bool MapDataIO::IsTriggerImport() const
 {
     KeyConfig& ins = KeyConfig::GetInstance();
 
     //アイコンクリック用
-    const Vector2 rightPos = { 0, 0 };
-    const Vector2 leftDown = { ICON_SIZE_X, ICON_SIZE_Y };
+    const Vector2 rightPos = { ICON_SIZE_X, 0 };
+    const Vector2 leftDown = { ICON_SIZE_X * 2, ICON_SIZE_Y };
+
+    if (Utility::IsPointInRect(padCursolPos_, rightPos, leftDown))
+    {
+        int x = 0;
+    }
 
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::IMPORT_FILE, KeyConfig::JOYPAD_NO::PAD1) ||
         ins.IsTrgDown(KeyConfig::CONTROL_TYPE::IMPORT_FILE_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
-        Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown))
+        (Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown) || Utility::IsPointInRect(padCursolPos_, rightPos, leftDown)))
     {
         return true;
     }
@@ -559,7 +567,7 @@ void MapDataIO::UpdateCheckImport()
 void MapDataIO::DrawWait()
 {
     DrawRotaGraph(
-        ICON_SIZE_X / 2,
+        ICON_SIZE_X + ICON_SIZE_X / 2,
         ICON_SIZE_Y / 2,
         1.0f,
         0.0f,
@@ -569,7 +577,7 @@ void MapDataIO::DrawWait()
      );
 
     DrawRotaGraph(
-        ICON_SIZE_X + ICON_SIZE_X / 2,
+        ICON_SIZE_X * 2 + ICON_SIZE_X / 2,
         ICON_SIZE_Y / 2,
         1.0f,
         0.0f,

@@ -47,7 +47,7 @@ public:
 	//アイテム設定
 	void SetItemType(ItemBase::ITEM_TYPE itemType);
 
-	Vector2 GetCursorPos(void) const { return cursorPos_; }	//カーソル位置取得
+	inline const Vector2& GetCursorPos(void) const { return cursorPos_; }	//カーソル位置取得
 protected:
 
 private:

@@ -25,7 +25,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	CheckChangePhase();
+	CheckChangePhase(const Vector2& _padCursolPos = {});
 
 	/// <summary>
 	/// デストラクタ
@@ -60,6 +60,9 @@ public:
 	void SetNextPhase(const GameScene::PHASE _nextPhase);
 
 private:
+
+	//パッドのカーソル位置
+	const Vector2& padCursolPos_;
 
 	//アイコン
 	int* imgIcons_;
