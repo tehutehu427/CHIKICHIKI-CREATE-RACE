@@ -430,6 +430,8 @@ private:
 	//当たったら死ぬアイテム
 	void CollKillerItem(const std::weak_ptr<Collider> _hitCol);
 
+	//パンチの当たり処理
+	void ColPunch(const std::weak_ptr<Collider> _hitCol);
 
 	void Collision(void);
 
@@ -441,6 +443,7 @@ private:
 
 	//モデルの当たった時の共通処理
 	void HitModelCommon(Model& _hitModel);
+
 
 #ifdef DEBUG_ON
 	void CubeMove(void);

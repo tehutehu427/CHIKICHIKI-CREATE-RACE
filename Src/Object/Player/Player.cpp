@@ -394,6 +394,18 @@ void Player::CollKillerItem(const std::weak_ptr<Collider> _hitCol)
 
 
 
+void Player::ColPunch(const std::weak_ptr<Collider> _hitCol)
+{
+	//パンチしたプレイヤーの向いてる方向をセットする
+	VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
+
+	//パンチしたプレイヤーの位置と自分の位置を比較して、
+	action_->SetDir(Utility::GetMoveVec(punchedPlayerPos, trans_.pos));
+
+	//ノックバック状態遷移
+	action_->ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
+}
+
 void Player::Collision(void)
 {
 	VECTOR pow = action_->GetMovePow();
