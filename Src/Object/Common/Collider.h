@@ -44,7 +44,7 @@ public :
 	inline const TAG GetTag(void)const { return tag_; }
 
 	//“–‚½‚è”»’è‚ÌŒ`ó‚ğæ“¾
-	inline const Geometry& GetGeometry(void)const { return geometry_; }
+	inline Geometry& GetGeometry(void)const { return geometry_; }
 
 	//e‚ğæ“¾
 	inline const ObjectBase& GetParent(void)const { return parent_; }

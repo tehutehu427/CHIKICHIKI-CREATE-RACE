@@ -40,19 +40,19 @@ void Cube::Draw(void)
 	DrawCube3D(min, max, NORMAL_COLOR, NORMAL_COLOR, false);
 }
 
-const bool Cube::IsHit(const Geometry& _geometry) const
+const bool Cube::IsHit(Geometry& _geometry)
 {
 	bool ret = _geometry.IsHit(*this);
 
 	return ret;
 }
 
-const bool Cube::IsHit(const Model& _model) const
+const bool Cube::IsHit(Model& _model)
 {
 	return false;
 }
 
-const bool Cube::IsHit(const Cube& _cube)const
+const bool Cube::IsHit(Cube& _cube)
 {
 	const float EPSILON = 1e-6f;
 
@@ -99,12 +99,12 @@ const bool Cube::IsHit(const Cube& _cube)const
 	return true; // ‚·‚×‚Ä‚Ì²‚Å•ª—£‚Å‚«‚È‚©‚Á‚½ ¨ Õ“Ë‚µ‚Ä‚¢‚é
 }
 
-const bool Cube::IsHit(const Sphere& _sphere) const
+const bool Cube::IsHit(Sphere& _sphere)
 {
 	return false;
 }
 
-const bool Cube::IsHit(const Capsule& _capsule) const
+const bool Cube::IsHit(Capsule& _capsule)
 {
 	return false;
 }

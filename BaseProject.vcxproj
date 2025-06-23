@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Player\PlayerAction.cpp" />
     <ClCompile Include="Src\Object\System\CheckChangePhase.cpp" />
     <ClCompile Include="Src\Manager\System\SoundManager.cpp" />
     <ClCompile Include="Src\Object\System\Select\SelectStage.cpp" />
@@ -110,6 +111,7 @@
     <ClCompile Include="Src\Object\UI\UiBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Player\PlayerAction.h" />
     <ClInclude Include="Src\Object\System\CheckChangePhase.h" />
     <ClInclude Include="Src\Manager\System\SoundManager.h" />
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -389,7 +391,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DXLIB_DIR);$(ProjectDir)Src/Lib/</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -426,7 +428,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DXLIB_DIR);$(ProjectDir)Src/Lib/</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>

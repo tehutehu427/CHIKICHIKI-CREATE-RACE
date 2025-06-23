@@ -99,6 +99,12 @@ void Cannon::SetParam(void)
 
 void Cannon::Update(void)
 {	
+	//デルタタイム取得
+	float delta = SceneManager::GetInstance().GetDeltaTime();
+
+	//生成間隔カウント
+	shotCreateCnt_ += delta;
+
 	//弾の削除処理
 	DeleteShot();
 
@@ -137,8 +143,6 @@ void Cannon::Draw(void)
 
 	//DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
 
-	colParam_[2].geometry_->Draw();
-
 	//弾関係
 	for (auto& shot : shots_)
 	{
@@ -158,14 +162,11 @@ void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
 	case Collider::TAG::PLAYER2:
 	case Collider::TAG::PLAYER3:
 	case Collider::TAG::PLAYER4:
-
 		//当たったのがエイム範囲ならプレイヤーを狙う
 		if (colParam_[AIM_COL_NUM].collider_->IsHit())
 			targetPos_ = _hitCol.lock()->GetParent().GetTransform().pos;
-
 		//弾の生成
 		CreateShot();
-
 		break;
 
 	default:
@@ -221,12 +222,6 @@ void Cannon::RotateBarrel(void)
 
 void Cannon::CreateShot(void)
 {
-	//デルタタイム取得
-	float delta = SceneManager::GetInstance().GetDeltaTime();
-
-	//生成間隔カウント
-	shotCreateCnt_ += delta;
-
 	//弾が最大数生成されている　又は　生成間隔を達していないなら生成処理をしない
 	if (shotNum_ >= SHOT_MAX || shotCreateCnt_ < SHOT_INTERVAL)return;
 
