@@ -57,7 +57,7 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 		});
 	collObjectTables_.emplace(Collider::TAG::MOVE_FLOOR, [this](const std::weak_ptr<Collider> _hitCol)
 		{
-			colUpdate_ = [this, _hitCol]() {CollMoveFloor(_hitCol); };
+			colUpdate_ = [this, _hitCol]() {CollFloor(_hitCol); };
 		});
 	collObjectTables_.emplace(Collider::TAG::KILLER_ITEM, [this](const std::weak_ptr<Collider> _hitCol) 
 		{
@@ -89,7 +89,7 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag):pl
 	MakeCollider(_tag, std::move(handSphereGeo));
 
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
-	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, movedPos_,trans_.pos);
+	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,movedPos_);
 	MakeCollider(_tag, std::move(moveLineGeo));
 
 
@@ -197,6 +197,7 @@ void Player::DrawDebug(void)
 	else if (playerNum_ == 3) { color = 0x0000ff; }
 	if (isCol_) { color = 0xff0000; }
 	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
+	colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
 	colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
 	//DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
 	DrawFormatString(0, 16*(playerNum_*9), 0x000000
@@ -359,12 +360,12 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 	{
 		Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
 		auto hitLineInfo = hitModel.GetHitLineInfo();
+		VECTOR itemLocalPos = VSub(movedPos_, _hitCol.lock()->GetParent().GetTransform().pos);
 		//座標をワールド座標とアイテムローカル座標を足した分移動させる
-		if (!Utility::EqualsVZero(itemLocalPos_))
+		if (!Utility::EqualsVZero(itemLocalPos))
 		{
 
-			VECTOR itemLocalPos = VSub(movedPos_, _hitCol.lock()->GetParent().GetTransform().pos);
-			movedPos_ = VAdd(itemLocalPos_, itemPos);
+			movedPos_ = VAdd(itemLocalPos, itemPos);
 			movedPos_ = VAdd(movedPos_, vec);
 			//hitItemType_ = mapEdit.GetItemType(mapEdit.WorldToMapPos(hit.HitPosition));
 		}
@@ -523,29 +524,29 @@ void Player::Collision(void)
 
 #endif // DEBUG_ON
 
-
-	VECTOR moveVec = VSub(trans_.pos, movedPos_);
+	//移動量ラインの更新
+	VECTOR moveVec = VSub(movedPos_, trans_.pos);
 	if (!Utility::EqualsVZero(moveVec))
 	{
 		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
-		moveLine.SetLocalPosPoint1(movedPos_);
-		moveLine.SetLocalPosPoint2(trans_.pos);
+		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
+		moveLine.SetLocalPosPoint2(moveVec);
 	}
 
-	MapEditer& mapEdit = MapEditer::GetInstance();
-	IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
-	for (int x = -COL_RANGE; x <= COL_RANGE; x++)
-	{
-		for (int y = -COL_RANGE; y <= COL_RANGE; y++)
-		{
-			for (int z = -COL_RANGE; z <= COL_RANGE; z++)
-			{
-				colPos_ = mapPos + IntVector3{x, y, z};
-				if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
-				HitItem(colPos_);
-			}
-		}
-	}
+	//MapEditer& mapEdit = MapEditer::GetInstance();
+	//IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
+	//for (int x = -COL_RANGE; x <= COL_RANGE; x++)
+	//{
+	//	for (int y = -COL_RANGE; y <= COL_RANGE; y++)
+	//	{
+	//		for (int z = -COL_RANGE; z <= COL_RANGE; z++)
+	//		{
+	//			colPos_ = mapPos + IntVector3{x, y, z};
+	//			if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
+	//			HitItem(colPos_);
+	//		}
+	//	}
+	//}
 
 	//移動前の座標を格納する
 	moveDiff_ = VSub(movedPos_, trans_.pos);
