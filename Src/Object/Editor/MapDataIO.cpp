@@ -14,6 +14,7 @@
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "../System/YesNoResponder.h"
 
 using json = nlohmann::json;
 
@@ -40,6 +41,7 @@ MapDataIO::MapDataIO(const Vector2& _padCursolPos):
     messageDisplayCnt_ = 0.0f;
     state_ = STATE::NONE;
     selectFile_ = "";
+    responder_ = nullptr;
 
     //状態ごとの処理を登録
     RegisterState(STATE::WAIT, [&]() { UpdateWait(); }, [&]() { DrawWait(); });
@@ -79,12 +81,19 @@ void MapDataIO::Load()
     //フォント生成
     font_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), FONT_SIZE, 0);
     exportFont_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), EXPORT_FONT_SIZE, 0);
+
+    //回答を返す
+    responder_ = std::make_unique<YesNoResponder>();
+    responder_->Load();
 }
 
 void MapDataIO::Init()
 {
     //メッセージ表示カウントを初期化
     messageDisplayCnt_ = 0.0f;
+
+    //初期化
+    responder_->Init();
 
     //最初の状態を設定
     ChangeState(STATE::WAIT); 
@@ -300,46 +309,6 @@ std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItem
     return items;
 }
 
-void MapDataIO::DrawCheckBackBox()
-{
-    constexpr int ALPHA = 128;
-    SetDrawBlendMode(DX_BLENDMODE_ALPHA, ALPHA);
-    DrawExtendGraph(0, 0,
-        Application::SCREEN_SIZE_X,
-        Application::SCREEN_SIZE_Y,
-        imgBack_,
-        true);
-    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-}
-
-void MapDataIO::DrawCheckCommand()
-{
-    //選択コマンドの描画
-    std::string commandMes[static_cast<int>(CHECK_LIST::MAX)] = { 
-        messages_[static_cast<int>(MESSAGE_TYPE::YES)],
-        messages_[static_cast<int>(MESSAGE_TYPE::NO)]
-    };
-
-    const Vector2 OFFSET_POS = { 150, 40 };
-    constexpr int MARGIN = 200;
-
-    for (int i = 0; i < static_cast<int>(CHECK_LIST::MAX); i++)
-    {
-        //選択しているのを色を変える
-        int commandColor = Utility::BLUE;  //初期カラー 
-        if (i == checkStep_) { commandColor = Utility::RED; }
-
-        //コマンドメッセージを描画
-        DrawFormatStringToHandle(
-            Application::SCREEN_HALF_X - OFFSET_POS.x + i * MARGIN,
-            Application::SCREEN_HALF_Y + OFFSET_POS.y,
-            commandColor,
-            font_,
-            commandMes[i].c_str()
-        );
-    }
-}
-
 std::string MapDataIO::GetFileName()
 {
     //パス指定
@@ -374,6 +343,9 @@ void MapDataIO::UpdateWait()
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (IsTriggerExport())
     {
+        //リセット
+        responder_->Reset();
+
         //確認へ移る
         ChangeState(STATE::CHECK_EXPORT);
         return;
@@ -387,8 +359,13 @@ void MapDataIO::UpdateWait()
             //読み込まない場合処理を終える
             return;
         }
+
+        //リセット
+        responder_->Reset();
+
         //確認へ移る
         ChangeState(STATE::CHECK_IMPORT);
+        return;
     }
 
     if (messageDisplayCnt_ <= 0.0f) { return; }
@@ -397,170 +374,54 @@ void MapDataIO::UpdateWait()
 
 void MapDataIO::UpdateCheckExport()
 {  
-    KeyConfig& ins = KeyConfig::GetInstance();
-
-    //コマンドの選択
-    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1) || 
-        ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
+    YesNoResponder::RESPON res = responder_->GetRespon();
+    if (res == YesNoResponder::RESPON::NONE)
     {
-        //増減方向
-        int dir = ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1) ? 1 : -1;
-
-        //ステップ更新
-        checkStep_ += dir;
-
-        //範囲の巻き戻し
-        if (checkStep_ < 0)
-        {
-            checkStep_ = static_cast<int>(CHECK_LIST::MAX) - 1;
-        }
-        else if (checkStep_ >= static_cast<int>(CHECK_LIST::MAX))
-        {
-            checkStep_ = 0;
-        }
+        //選択処理
+        responder_->Update();
         return;
     }
-
-    //決定
-    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, KeyConfig::JOYPAD_NO::PAD1))
+    else if (res == YesNoResponder::RESPON::YES)
     {
-        //選択した内容の処理を行う
-        if (checkStep_ == static_cast<int>(CHECK_LIST::YES))
-        {
-            //現在の配置データを出力する
-            ExportJsonFile("3DStageDataFile.json");
 
-            //状態遷移
-            ChangeState(STATE::WAIT);
-        }
-        else
-        {
-            //状態遷移
-            ChangeState(STATE::WAIT);
-        }
+        //現在の配置データを出力する
+        ExportJsonFile("3DStageDataFile.json");
+
+        //状態遷移
+        ChangeState(STATE::WAIT);
         return;
     }
-
-    //クリックでも選べる
-    for (int i = 0; i < static_cast<int>(CHECK_LIST::MAX); i++)
+    else
     {
-        //座標設定
-        Vector2 leftTop = { YES_POS.x + MARGIN * i,YES_POS.y };
-        Vector2 rightBottom = { static_cast<int>(leftTop.x + messages_[i].length() * FONT_SIZE),
-            YES_POS.y + FONT_SIZE };
-
-        //マウスが範囲内か調べる
-        if (Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBottom))
-        {
-            //ステップを設定
-            checkStep_ = i;
-
-            //クリックしたか調べる
-            if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_MOUSE, KeyConfig::JOYPAD_NO::PAD1))
-            {
-                //選択した内容の処理を行う
-                if (checkStep_ == static_cast<int>(CHECK_LIST::YES))
-                {
-                    //現在の配置データを出力する
-                    ExportJsonFile("3DStageDataFile.json");
-
-                    //状態遷移
-                    ChangeState(STATE::WAIT);
-                }
-                else
-                {
-                    //状態遷移
-                    ChangeState(STATE::WAIT);
-                }
-            }
-            //処理終了
-            return;
-        }
+        //状態遷移
+        ChangeState(STATE::WAIT);
+        return;
     }
-
 }
 
 void MapDataIO::UpdateCheckImport()
 {
-    KeyConfig& ins = KeyConfig::GetInstance();
-
-    //コマンドの選択
-    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1) || 
-        ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
+    YesNoResponder::RESPON res = responder_->GetRespon();
+    if (res == YesNoResponder::RESPON::NONE)
     {
-        //増減方向
-        int dir = ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1) ? 1 : -1;
-
-        //ステップ更新
-        checkStep_ += dir;
-
-        //範囲の巻き戻し
-        if (checkStep_ < 0)
-        {
-            checkStep_ = static_cast<int>(CHECK_LIST::MAX) - 1;
-        }
-        else if (checkStep_ >= static_cast<int>(CHECK_LIST::MAX))
-        {
-            checkStep_ = 0;
-        }
+        //選択処理
+        responder_->Update();
         return;
     }
-
-    //決定
-    else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, KeyConfig::JOYPAD_NO::PAD1))
+    else if (res == YesNoResponder::RESPON::YES)
     {
-        //選択した内容の処理を行う
-        if (checkStep_ == static_cast<int>(CHECK_LIST::YES))
-        {
-            //外部データを読み込む    
-            ImportJsonFile();
+        //外部データを読み込む    
+        ImportJsonFile();
 
-            //状態遷移
-            ChangeState(STATE::WAIT);
-        }
-        else
-        {
-            //状態遷移
-            ChangeState(STATE::WAIT);
-        }
+        //状態遷移
+        ChangeState(STATE::WAIT);
         return;
     }
-
-    //クリックでも選べる
-    for (int i = 0; i < static_cast<int>(CHECK_LIST::MAX); i++)
+    else
     {
-        //座標設定
-        Vector2 leftTop = { YES_POS.x + MARGIN * i,YES_POS.y };
-        Vector2 rightBottom = { static_cast<int>(leftTop.x + messages_[i].length() * FONT_SIZE),
-            YES_POS.y + FONT_SIZE };
-
-        //マウスが範囲内か調べる
-        if (Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBottom))
-        {
-            //ステップを設定
-            checkStep_ = i;
-
-            //クリックしたか調べる
-            if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_MOUSE, KeyConfig::JOYPAD_NO::PAD1))
-            {
-                //選択した内容の処理を行う
-                if (checkStep_ == static_cast<int>(CHECK_LIST::YES))
-                {
-                    //外部データを読み込む    
-                    ImportJsonFile();
-
-                    //状態遷移
-                    ChangeState(STATE::WAIT);
-                }
-                else
-                {
-                    //状態遷移
-                    ChangeState(STATE::WAIT);
-                }
-            }
-            //処理終了
-            return;
-        }
+        //状態遷移
+        ChangeState(STATE::WAIT);
+        return;
     }
 }
 
@@ -598,8 +459,8 @@ void MapDataIO::DrawWait()
 
 void MapDataIO::DrawCheckExport()
 {
-    //背景の描画
-    DrawCheckBackBox();
+    //確認画面の描画
+    responder_->Draw();
 
     //メッセージ描画位置調整
     std::string mes = messages_[static_cast<int>(MESSAGE_TYPE::EXPORT)];
@@ -612,18 +473,15 @@ void MapDataIO::DrawCheckExport()
     DrawFormatStringToHandle(
         Application::SCREEN_HALF_X - OFFSET_POS.x,
         Application::SCREEN_HALF_Y + OFFSET_POS.y,
-        Utility::WHITE,
+        Utility::BLUE,
         font_,
         mes.c_str());
-
-    //確認コマンドの描画
-    DrawCheckCommand();
 }
 
 void MapDataIO::DrawCheckImport()
 {
-    //背景描画
-    DrawCheckBackBox();
+    //確認画面の描画
+    responder_->Draw();
 
     //メッセージ描画位置調整
     std::string mes = messages_[static_cast<int>(MESSAGE_TYPE::IMPORT)];
@@ -639,9 +497,6 @@ void MapDataIO::DrawCheckImport()
         Utility::WHITE,
         exportFont_,
         mes.c_str());
-
-    //確認コマンドの描画
-    DrawCheckCommand();
 }
 
 bool MapDataIO::ReadFileBool(std::string &_file)

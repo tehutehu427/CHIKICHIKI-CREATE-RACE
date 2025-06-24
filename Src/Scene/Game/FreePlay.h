@@ -3,6 +3,7 @@
 
 class CheckChangePhase;
 class ManualTab;
+class EditEscape;
 
 class FreePlay : public GameScene
 {
@@ -30,6 +31,9 @@ private:
 	
 	//マニュアル
 	std::unique_ptr<ManualTab> manual_;
+
+	//編集をやめる
+	std::unique_ptr<EditEscape> editEscape_;
 
 	//アクション時の更新処理
 	void UpdateAction(void) override;

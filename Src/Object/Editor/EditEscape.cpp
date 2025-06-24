@@ -11,8 +11,8 @@ namespace
 {
 	Vector2 iconHalfSize =
 	{
-		ICON_SIZE_X / 2,
-		ICON_SIZE_Y / 2
+		EditEscape::ICON_SIZE_X / 2,
+		EditEscape::ICON_SIZE_Y / 2
 	};
 }
 
@@ -75,13 +75,17 @@ void EditEscape::RegisterStateFunction(const STATE _state, SceneBase::ProcessFun
 void EditEscape::UpdateWait()
 {
 	//座標設定
-	Vector2 leftTop = Vector2::SubVector2(pos_, padCursolPos_);
-	Vector2 rightBottom = Vector2::AddVector2(pos_, padCursolPos_);
+	Vector2 leftTop = Vector2::SubVector2(pos_, iconHalfSize);
+	Vector2 rightBottom = Vector2::AddVector2(pos_, iconHalfSize);
 
 	if(key_.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ESCAPE, KeyConfig::JOYPAD_NO::PAD1) ||
 		key_.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ESCAPE_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
 		(Utility::IsPointInRect(key_.GetMousePos(), leftTop, rightBottom) || Utility::IsPointInRect(padCursolPos_, leftTop, rightBottom)))
 	{
+		//リセット
+		responder_->Reset();
+
+		//状態遷移
 		ChangeState(STATE::CHECK);
 		return;
 	}
@@ -100,6 +104,7 @@ void EditEscape::UpdateCheck()
 	{
 		//シーンをセレクトシーンへ遷移
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
+		ChangeState(STATE::WAIT);
 		return;
 	}
 	else
@@ -132,15 +137,15 @@ void EditEscape::DrawCheck()
 	//メッセージの描画
 	std::string mes = "本当に今のモードをやめますか？";
 
-	Vector2 pos = {
-		Application::SCREEN_HALF_X - mes.length() * FONT_SIZE,
-		Application::SCREEN_HALF_Y,
+	const Vector2 pos = {
+		static_cast<int>(Application::SCREEN_HALF_X - mes.length() * FONT_SIZE / 4),
+		Application::SCREEN_HALF_Y - 50,
 	};
 
 	DrawFormatStringToHandle(
 		pos.x,
 		pos.y,
-		Utility::CYAN,
+		Utility::BLUE,
 		font_,
 		mes.c_str()
 	);

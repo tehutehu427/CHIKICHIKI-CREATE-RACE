@@ -9,7 +9,11 @@ class YesNoResponder;
 
 class EditEscape
 {
-public:
+public:	
+	
+	//アイコンのサイズ
+	static constexpr int ICON_SIZE_X = 128;
+	static constexpr int ICON_SIZE_Y = 64;
 
 	/// <summary>
 	/// 状態
@@ -53,12 +57,10 @@ public:
 
 private:
 
-	//アイコンのサイズ
-	static constexpr int ICON_SIZE_X = 128;
-	static constexpr int ICON_SIZE_Y = 64;
+
 
 	//フォントサイズ
-	static constexpr int FONT_SIZE = 32;
+	static constexpr int FONT_SIZE = 48;
 
 	//パッドのカーソル位置
 	const Vector2& padCursolPos_;

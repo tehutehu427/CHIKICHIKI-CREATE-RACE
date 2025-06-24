@@ -58,7 +58,7 @@ public:
 private:
 
 	//フォント大きさ
-	static constexpr int FONT_SIZE = 32;
+	static constexpr int FONT_SIZE = 48;
 
 	//選択インデックス
 	int index_;

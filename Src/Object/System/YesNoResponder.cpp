@@ -35,6 +35,8 @@ YesNoResponder::~YesNoResponder()
 
 void YesNoResponder::Load()
 {
+    ResourceManager& res = ResourceManager::GetInstance();
+    imgBack_ = res.Load(ResourceManager::SRC::EXPLAN_BACK).handleId_;
     font_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), FONT_SIZE, 0);
 }
 

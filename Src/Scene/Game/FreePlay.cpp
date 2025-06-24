@@ -3,11 +3,13 @@
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/System/CheckChangePhase.h"
 #include "../../Object/System/ManualTab.h"
+#include "../../Object/Editor/EditEscape.h"
 
 FreePlay::FreePlay(void)
 {
 	checkChangePhase_ = nullptr;
 	manual_ = nullptr;
+	editEscape_ = nullptr;
 }
 
 FreePlay::~FreePlay(void)
@@ -30,6 +32,10 @@ void FreePlay::Load(void)
 	//マニュアル
 	manual_ = std::make_unique<ManualTab>(editControllers_[0]->GetCursorPos());
 	manual_->Load();
+
+	//編集終了
+	editEscape_ = std::make_unique<EditEscape>(editControllers_[0]->GetCursorPos());
+	editEscape_->Load();
 }
 
 void FreePlay::Init(void)
@@ -49,6 +55,9 @@ void FreePlay::Init(void)
 	//マニュアルの初期化
 	manual_->Init();
 
+	//編集
+	editEscape_->Init();
+
 	ChangePhase(PHASE::EDIT_PHASE);
 }
 
@@ -66,6 +75,9 @@ void FreePlay::UpdateEdit(void)
 
 	//マップデータの更新
 	mapIO_->Update();
+
+	//編集終了
+	editEscape_->Update();
 	
 	//親クラスの更新
 	GameScene::UpdateEdit();
@@ -117,4 +129,7 @@ void FreePlay::DrawEdit()
 
 	//マニュアルの描画
 	manual_->Draw();
+
+	//編集終了
+	editEscape_->Draw();
 }
