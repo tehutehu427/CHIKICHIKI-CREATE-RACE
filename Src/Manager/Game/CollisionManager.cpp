@@ -20,14 +20,6 @@ void CollisionManager::AddCollider(const std::shared_ptr<Collider> _collider)
 {
 	//コライダの追加
 	colliders_.push_back(_collider);
-
-	//当たり判定情報
-	PreColParam preCol;
-	preCol.pos = _collider->GetParent().GetTransform().pos;
-	preCol.rot = _collider->GetParent().GetTransform().quaRot;
-
-	//当たり判定情報保存
-	preColParam_.push_back(preCol);
 }
 
 void CollisionManager::Sweep(void)
@@ -76,7 +68,6 @@ void CollisionManager::Update(void)
 			}
 		}
 	}
-
 	//カウンタの初期化
 	updateFrame_ = 0;
 }
@@ -163,7 +154,7 @@ const bool CollisionManager::JudgeIsCollision(const int _col1Num, const int _col
 	bool diffTag = colliders_[_col1Num]->GetTag() != colliders_[_col2Num]->GetTag();
 
 	//限りなく小さい数
-	const float EPSILON = 1e-6f;
+	const float EPSILON = 1.0f;
 
 	//各当たり判定情報
 	VECTOR pos1 = colliders_[_col1Num]->GetParent().GetTransform().pos;
@@ -171,17 +162,11 @@ const bool CollisionManager::JudgeIsCollision(const int _col1Num, const int _col
 	VECTOR pos2 = colliders_[_col2Num]->GetParent().GetTransform().pos;
 	VECTOR rot2 = colliders_[_col2Num]->GetParent().GetTransform().quaRot.ToEuler();
 
-	//どちらかでも動いているか
-	bool isMove = VSize(VSub(pos1, preColParam_[_col1Num].pos)) > EPSILON
-		|| VSize(VSub(rot1, preColParam_[_col1Num].rot.ToEuler())) > EPSILON
-		|| VSize(VSub(pos2, preColParam_[_col2Num].pos)) > EPSILON
-		|| VSize(VSub(rot2, preColParam_[_col2Num].rot.ToEuler())) > EPSILON;
-
 	//設定されたタグの組み合わせか
 	bool settingTag = JudgeIsColTag(colliders_[_col1Num]->GetTag(), colliders_[_col2Num]->GetTag());
 
 	//総合
-	ret = inRange && diffTag && isMove && settingTag;
+	ret = inRange && diffTag  && settingTag;
 
 	return ret;
 }
