@@ -4,10 +4,12 @@
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "EditItemReady.h"
 #include "EditController.h"
 
 EditController::EditController(int playerNum)
 {
+	ready_ = std::make_unique<EditItemReady>(*this);
 	playerNum_ = playerNum;
 	playerMaxNum_ = DateBank::GetInstance().GetPlayerNum();
 	padNum_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum + 1);
@@ -33,12 +35,12 @@ EditController::EditController(int playerNum)
 
 EditController::~EditController()
 {
+	ready_.reset();
 }
 
 void EditController::Init(void)
 {
-	//モード変更
-	ChengeMode(MODE::ITEM_SELECT);
+	Reset();
 }
 
 void EditController::Update(void)
@@ -49,6 +51,7 @@ void EditController::Update(void)
 	cursorPos_.y += lStick.y * PAD_STICK_RATE;
 	cursorPos_.x = cursorPos_.x < 0 ? 0 : cursorPos_.x > screenSize_.x ? screenSize_.x : cursorPos_.x;	//カーソル位置の制限
 	cursorPos_.y = cursorPos_.y < 0 ? 0 : cursorPos_.y > screenSize_.y ? screenSize_.y : cursorPos_.y;	//カーソル位置の制限
+	ready_->Update();
 	if (playerMaxNum_ == 1)
 	{
 		//マウス位置を取得
@@ -63,6 +66,12 @@ void EditController::Update(void)
 	}
 	DebugUpdate();
 
+	if (GetReady())
+	{
+		//マルチプレイ時にアイテムを置き終わった
+		return;
+	}
+
 	//モード別更新処理
 	modeUpdate_();
 	
@@ -76,8 +85,27 @@ void EditController::Draw(void)
 {
 	DebugDraw();
 	//DrawRotaGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y), 1.0f, 0.0f,ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],true);	//カーソル描画
-	DrawGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y),ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],true);	//カーソル描画
+	//DrawGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y),ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],true);	//カーソル描画
 	modeDraw_();
+	//ready_->Draw();
+}
+
+void EditController::DrawUI(void)
+{
+	DrawGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y), ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_], true);	//カーソル描画
+	if (playerMaxNum_ == 1)
+	{
+		return;
+	}
+	ready_->Draw();
+}
+
+void EditController::Reset(void)
+{
+	cursorPos_ = Vector2(screenSize_.x / 2, screenSize_.y / 2);	//カーソル位置は画面の中央に設定
+	ready_->Init();
+	//モード変更
+	ChengeMode(MODE::ITEM_SELECT);
 }
 
 void EditController::ChengeMode(MODE mode)
@@ -145,6 +173,11 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	itemMIns.CreateDummyItem(mapPos, rot, itemType_, playerNum_);
 	mapPos_ = mapPos;
 	ChengeMode(MODE::MOVE_ROTATE);
+}
+
+bool EditController::GetReady(void) const
+{
+	return ready_->GetReady() == EditItemReady::READY_PHASE::READY;
 }
 
 void EditController::ChengeModeItemSelect(void)

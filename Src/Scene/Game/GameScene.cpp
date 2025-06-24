@@ -185,6 +185,7 @@ void GameScene::ChangePhaseEdit(void)
 		pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
 		//pos = { 0.0f,250.0f,-500.0f };
 		SceneManager::GetInstance().GetCamera(i).lock()->SetPos(pos);
+		editControllers_[i]->Init();
 	}
 	ItemManager::GetInstance().ResetItemValue();
 }
@@ -285,6 +286,8 @@ void GameScene::DrawEdit(void)
 
 	//ƒpƒŒƒbƒg
 	palette_->Draw();
+
+	editControllers_[screenIndex]->DrawUI();
 }
 
 void GameScene::DrawAction(void)

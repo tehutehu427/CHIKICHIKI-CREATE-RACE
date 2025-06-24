@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Editor\EditItemReady.cpp" />
     <ClCompile Include="Src\Object\Player\PlayerAction.cpp" />
     <ClCompile Include="Src\Object\System\CheckChangePhase.cpp" />
     <ClCompile Include="Src\Manager\System\SoundManager.cpp" />
@@ -110,6 +111,7 @@
     <ClCompile Include="Src\Shader\Effect\SelectUIGlow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Editor\EditItemReady.h" />
     <ClInclude Include="Src\Object\Player\PlayerAction.h" />
     <ClInclude Include="Src\Object\System\ManualTab.h" />
     <ClInclude Include="Src\Object\System\CheckChangePhase.h" />
