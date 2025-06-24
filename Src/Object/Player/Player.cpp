@@ -83,9 +83,10 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag)
 		{
 			colUpdate_ = [this, _hitCol]() {CollFloor(_hitCol); };
 		});
+	using TAG = Collider::TAG;
+	//colUpdates_[TAG::START]=[this](){CollFloor(_hitCol); }
+
 	isCol_ = false;
-
-
 
 	//コライダ作成
 	//*****************************************************
@@ -101,9 +102,6 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag)
 	//プレイヤーの体
 	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
 	MakeCollider(tag_, std::move(bodySphereGeo));
-
-
-
 
 
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
@@ -238,7 +236,7 @@ void Player::DrawDebug(void)
 
 
 	DrawFormatString(0, 16*(playerNum_*9), 0x000000
-		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nmovePow(%f,%f,%f)\nMoveDiff(%f,%f,%f)"
+		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nmovePow(%f,%f,%f)\nMoveDiff(%f,%f,%f)\nact(%d)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,action_->GetJumpDecel()
 		,action_->GetStepJump()
@@ -248,7 +246,7 @@ void Player::DrawDebug(void)
 		,moveDiff_.x,moveDiff_.y,moveDiff_.z
 	);
 
-
+	//action_->DrawDebug();
 
 	if (IsDeath())
 	{
@@ -308,9 +306,10 @@ void Player::DeathUpdate(void)
 #endif // DEBUG_ON
 void Player::Action(void)
 {
+	//アクション関係の更新
 	action_->Update();
 
-
+	//死んだら何もしないようにする
 	if (IsDeath())
 	{
 		//何もできないようにする

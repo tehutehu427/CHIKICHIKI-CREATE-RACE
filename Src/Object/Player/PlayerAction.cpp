@@ -42,6 +42,7 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 
 PlayerAction::~PlayerAction(void)
 {
+	
 }
 
 void PlayerAction::Init(void)
@@ -73,6 +74,11 @@ void PlayerAction::Update(void)
 	UpdateMoveDirAndPow();
 }
 
+void PlayerAction::DrawDebug(void)
+{
+	DrawFormatString(0, 300, 0x000000, "act(%d)", (int)input_->GetAct());
+}
+
 void PlayerAction::NoneUpdate(void)
 {
 	//何もしない
@@ -82,7 +88,7 @@ void PlayerAction::ActionInputUpdate(void)
 {
 	//入力に応じてアクションを変える
 	using ACT_CNTL = PlayerInput::ACT_CNTL;
-	if (input_->CheckAct(ACT_CNTL::MOVE))
+	if (input_->CheckAct(ACT_CNTL::MOVE)|| input_->CheckAct(ACT_CNTL::DASHMOVE))
 	{
 		ChangeAction(ATK_ACT::MOVE);
 		return;
@@ -119,6 +125,11 @@ void PlayerAction::ChangeNone(void)
 
 void PlayerAction::MoveUpdate(void)
 {
+	speed_ = MOVE_SPEED;
+	if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
+	{
+		speed_ = DASH_SPEED;
+	}
 	//移動中に入力が入った時の状態遷移
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::JUMP))
 	{
@@ -131,7 +142,8 @@ void PlayerAction::MoveUpdate(void)
 		ChangeAction(ATK_ACT::PUNCH);
 		return;
 	}
-	else if (!input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
+	else if (!input_->CheckAct(PlayerInput::ACT_CNTL::MOVE)
+		&&!input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
 	{
 		speed_ = 0.0f;
 		ChangeAction(ATK_ACT::INPUT);
@@ -157,8 +169,6 @@ void PlayerAction::MoveDirFronInput(void)
 	dir_ = cameraRot.PosAxis(getDir);
 	dir_ = VNorm(dir_);
 
-
-
 	if (!Utility::EqualsVZero(dir_))
 	{
 		//補完角度の設定(入力角度まで方向転換する)
@@ -168,14 +178,8 @@ void PlayerAction::MoveDirFronInput(void)
 
 void PlayerAction::ChangeMove(void)
 {
-
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
-	speed_ = MOVE_SPEED;
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
-
-
-
-
 }
 
 void PlayerAction::UpdateMoveDirAndPow(void)
@@ -188,9 +192,20 @@ void PlayerAction::UpdateMoveDirAndPow(void)
 
 void PlayerAction::JumpUpdate(void)
 {
-	//ジャンプ中移動キー押されてなかったらスピード0にする
-	if (!input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))speed_ = 0.0f;
-
+	//移動入力があったらスピードセット
+	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
+	{
+		speed_ = MOVE_SPEED;
+	}
+	else if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
+	{
+		speed_ = DASH_SPEED;
+	}
+	else
+	{
+		speed_ = 0.0f;
+	}
+		
 	//ジャンプ処理
 	Jump();
 }
@@ -201,13 +216,8 @@ void PlayerAction::Jump(void)
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 	stepJump_ += deltaTime;
 
-
-
 	//空中アニメーションステップのループ設定
 	animationController_.SetEndLoop(23.0f, 25.0f, 5.0f);
-
-
-
 
 	//ジャンプ中も移動できるようにする
 	MoveDirFronInput();
@@ -219,18 +229,11 @@ void PlayerAction::Jump(void)
 		//プレイヤーが落下していたら
 		if (jumpDeceralation_ < 0.0f)
 		{
-
 			animationController_.Play(static_cast<int>(Player::ANIM_TYPE::LAND));
-
-
 		}
 		//減衰量の計算
 		float deceralation = stepJump_ * TIME_JUMP_SCALE;
 		jumpDeceralation_ -= deceralation;
-
-
-
-
 
 		//ジャンプ量に掛ける
 		jumpPow_ = VScale(player_.GetTransform().GetUp(), jumpDeceralation_);
@@ -264,16 +267,11 @@ void PlayerAction::ChangeJump(void)
 
 void PlayerAction::Punch(void)
 {
-
-
 	//プレイヤーの手の座標を設定する
 	punchPos_ = MV1GetFramePosition(player_.GetTransform().modelId, 10);
 
-
 	//アニメーション
 	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
-
-
 
 	//アニメステップを取得して一定のところで攻撃判定を発生させる
 	float animStep = animationController_.GetAnimStep();
@@ -344,9 +342,6 @@ void PlayerAction::Rotate(void)
 
 void PlayerAction::SetGoalRotate(double _deg)
 {
-
-
-
 	//カメラの角度を取得
 	VECTOR cameraRot = scnMng_.GetCamera(player_.GetPlayerNum()).lock()->GetAngles();
 	Quaternion axis = Quaternion::AngleAxis(
@@ -356,15 +351,10 @@ void PlayerAction::SetGoalRotate(double _deg)
 	 //現在設定されている回転との角度差を取る
 	double angleDiff = Quaternion::Angle(axis, goalQuaRot_);
 
-
-
 	// しきい値
 	if (angleDiff > 0.1)
 	{
 		stepRotTime_ = TIME_ROT;
 	}
 	goalQuaRot_ = axis;
-
-
-
 }

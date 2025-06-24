@@ -350,6 +350,7 @@ private:
 
 	//ó‘ÔXV
 	std::function<void(void)>actionUpdate_;
+	std::map<Collider::TAG, std::function<void()>>colUpdates_;
 
 	//ó‘Ô
 	ATK_ACT act_;

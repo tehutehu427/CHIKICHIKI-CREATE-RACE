@@ -44,8 +44,9 @@ public:
     {
         NONE    //何もしていないとき
         , MOVE   //移動
-        , PUNCH
-        , JUMP
+        , DASHMOVE   //ダッシュ
+        , PUNCH  //パンチ
+        , JUMP   //ジャンプ
     };
 
     enum class CNTL

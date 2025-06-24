@@ -41,6 +41,10 @@ void PlayerInput::InputKeyBoard(void)
 		|| ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_RIGHT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
 	{
 		actCntl_ = ACT_CNTL::MOVE; 
+		if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_FRONT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
+		{
+			actCntl_ = ACT_CNTL::DASHMOVE;
+		}
 	}
 
 	//移動角度を決める
@@ -92,11 +96,16 @@ void PlayerInput::InputPad(void)
 	int LstickRightSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_RIGHT);
 
 	LStickAngleSize_ = ins.GetKnockLStickSize(padNum_);
+
+	//スティックの倒れ値が200以上だったら
 	if (LStickAngleSize_.x<=-STICK_MOVE_SIZE_MIN|| LStickAngleSize_.x >= STICK_MOVE_SIZE_MIN
 		|| LStickAngleSize_.y <= -STICK_MOVE_SIZE_MIN || LStickAngleSize_.y >= STICK_MOVE_SIZE_MIN)
 	{ 
-		actCntl_ = ACT_CNTL::MOVE; 
-
+		actCntl_ = ACT_CNTL::MOVE;
+		if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_DASH, padNum_, KeyConfig::TYPE::PAD))
+		{
+			actCntl_ = ACT_CNTL::DASHMOVE;
+		}
 		//スティックの角度を求める
 		stickDeg_ = ins.GetLStickDeg(padNum_);
 	}
@@ -111,7 +120,8 @@ void PlayerInput::InputPad(void)
 	{ 
 		actCntl_ = ACT_CNTL::PUNCH; 
 	}
-	if(ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PLAYER_JUMP, padNum_, KeyConfig::TYPE::PAD)){
+	if(ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PLAYER_JUMP, padNum_, KeyConfig::TYPE::PAD))
+	{
 		actCntl_ = ACT_CNTL::JUMP; 
 	}
 }

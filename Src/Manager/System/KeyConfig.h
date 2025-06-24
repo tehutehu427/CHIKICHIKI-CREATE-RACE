@@ -119,6 +119,7 @@ public:
 
 		PLAYER_JUMP,			//プレイヤーのジャンプ
 		PLAYER_PUNCH,			//プレイヤーのパンチ
+		PLAYER_DASH,
 		PLAYER_MOVE_FRONT,		//プレイヤーの移動前
 		PLAYER_MOVE_BACK,		//プレイヤーの移動後ろ
 		PLAYER_MOVE_RIGHT,		//プレイヤーの移動右

@@ -33,6 +33,11 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	void Update(void);
+
+
+	void DrawDebug(void);
+
+
 	
 	//状態遷移
 	void ChangeAction(ATK_ACT _act);
@@ -88,6 +93,8 @@ private:
 	//----------------------------------
 	//移動スピード
 	static constexpr float MOVE_SPEED = 7.0f;
+	//ダッシュスピード
+	static constexpr float DASH_SPEED = 10.0f;
 	//ぶっ飛ぶスピード
 	static constexpr float FLY_AWAY_SPEED = 12.0f;
 	//落ちているときの重力制限(jumpPowに加算しているのでjumpPowに適用)
