@@ -494,7 +494,7 @@ void MapDataIO::DrawCheckImport()
     DrawFormatStringToHandle(
         Application::SCREEN_HALF_X - OFFSET_POS.x,
         Application::SCREEN_HALF_Y + OFFSET_POS.y,
-        Utility::WHITE,
+        Utility::BLUE,
         exportFont_,
         mes.c_str());
 }
