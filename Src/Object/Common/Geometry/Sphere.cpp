@@ -23,6 +23,8 @@ Sphere::Sphere(const Sphere& _copyBase, const VECTOR& _pos) : Geometry(_pos, Qua
 
 Sphere::~Sphere(void)
 {
+	//“–‚½‚è”»’èî•ñ‚Ì‰ğ•ú
+	MV1CollResultPolyDimTerminate(hitInfo_);
 }
 
 void Sphere::Draw(void)
