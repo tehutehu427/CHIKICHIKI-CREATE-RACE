@@ -24,7 +24,7 @@ public:
 
 	//砲身
 	static constexpr VECTOR BARREL_LOCAL_POS = { 0.0f, 75.0f, -0.0f };	//砲身の相対座標
-	static constexpr VECTOR BARREL_LOCAL_ROT = { 20.0f, 0.0f, 0.0f };	//砲身の相対回転
+	static constexpr VECTOR BARREL_LOCAL_ROT = { 0.0f, 0.0f, 0.0f };	//砲身の相対回転
 
 	//コライダ
 	static constexpr int AIM_COL_NUM = 2;	//エイムのコライダ番号

@@ -83,6 +83,9 @@ void Cannon::SetParam(void)
 	barrelTrans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_BARREL));
 
+	//砲身の初期更新
+	barrelTrans_.Update();
+
 	//モデルIDのコピー
 	models_.emplace_back(&barrelTrans_.modelId);
 
@@ -204,7 +207,7 @@ void Cannon::RotateBarrel(void)
 	barrelAddRot_ = Quaternion::Euler(barrelAddRot_).AngleAxis(distance, Utility::AXIS_X).ToEuler();
 
 	//砲身回転
-	Utility::LookAtTarget(barrelTrans_, VAdd(barrelAddRot_, turretAddRot_), AIM_TIME_BARREL);
+	Utility::LookAtTarget(barrelTrans_, turretAddRot_/*VAdd(barrelAddRot_, turretAddRot_)*/, AIM_TIME_BARREL);
 }
 
 void Cannon::CreateShot(void)
