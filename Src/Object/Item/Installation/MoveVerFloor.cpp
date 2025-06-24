@@ -117,8 +117,8 @@ void MoveVerFloor::InitRoute(void)
 	//次の位置保存
 	route_[routeNum_ + 1] = goalPos;
 
-	//距離を取得
-	distance_ = Utility::Distance(route_[routeNum_], route_[routeNum_ + 1]);
+	//距離を取得(微妙な小数点を消すために四捨五入処理)
+	distance_ = static_cast<float>(Utility::Round(Utility::Distance(route_[routeNum_], route_[routeNum_ + 1])));
 
 	//速度設定
 	speed_ = static_cast<float>(distance_) / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
