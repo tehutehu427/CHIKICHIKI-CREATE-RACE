@@ -3,9 +3,11 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
+#include "../../Common/Vector2.h"
 #include "../Item/ItemBase.h"
 
 class ItemName;
+class YesNoResponder;
 
 class MapDataIO
 {
@@ -58,7 +60,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	MapDataIO();
+	MapDataIO(const Vector2& _padCursolPos);
 
 	/// <summary>
 	/// デストラクタ
@@ -90,6 +92,8 @@ private:
 	//保尊メッセージ表示時間
 	static constexpr float MES_DISPLAY_TIME = 2.0f;
 
+	//カーソル座標
+	const Vector2& padCursolPos_;
 
 	//画像関係 
 	int imgSave_;	//セーブ
@@ -116,8 +120,6 @@ private:
 	//保存メッセージ表示カウント
 	float messageDisplayCnt_;
 
-	//入力アイコンの配置座標
-
 	//状態
 	STATE state_;
 
@@ -126,6 +128,9 @@ private:
 
 	//メッセージ種類
 	std::string messages_[static_cast<int>(MESSAGE_TYPE::MAX)];
+
+	//回答を返す
+	std::unique_ptr<YesNoResponder>responder_;
 
 	//状態変更処理の管理
 	std::unordered_map<STATE, StateFuncs> stateMap_;
@@ -167,12 +172,6 @@ private:
 	/// <param name="filepath">ファイルネーム</param>
 	/// <returns>読み込んだ種類別配置情報を返す</returns>
 	std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> LoadItemsFromJson(const std::string& _filepath);
-
-	//確認画面の背景
-	void DrawCheckBackBox();
-
-	//確認画面のコマンドの描画
-	void DrawCheckCommand();
 
 	//ファイルネームを取得
 	std::string GetFileName();

@@ -91,6 +91,9 @@ public:
 		EXPORT_FILE,			//ファイル出力
 		EXPORT_FILE_CLICK,		//ファイル出力クリック
 
+		EDIT_ESCAPE,			//エディットをやめる
+		EDIT_ESCAPE_CLICK,		//エディットをやめる時のクリック用
+
 		SELECT_UP,				//選択　上
 		SELECT_DOWN,			//選択　下
 		SELECT_LEFT,			//選択　左

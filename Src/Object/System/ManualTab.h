@@ -21,7 +21,8 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	ManualTab();
+	/// <param name="_padCursolPos">パッドコントローラーの座標</param>
+	ManualTab(const Vector2& _padCursolPos = {});
 
 	/// <summary>
 	/// デストラクタ
@@ -61,6 +62,9 @@ private:
 	
 	//半径
 	static constexpr float RADIUS = 64.0f;
+
+	//パッドのカーソル位置
+	const  Vector2& padCursolPos_;
 
 	//入力管理
 	KeyConfig& key_;

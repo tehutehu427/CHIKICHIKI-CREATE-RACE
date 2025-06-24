@@ -82,7 +82,7 @@ void GameScene::Load(void)
 	gameClear_->Load();	
 
 	//マップデータの入出力
-	mapIO_ = std::make_unique<MapDataIO>();
+	mapIO_ = std::make_unique<MapDataIO>(editControllers_[0]->GetCursorPos());
 	mapIO_->Load();
 }
 

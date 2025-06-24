@@ -7,7 +7,8 @@
 #include "../../Utility/Utility.h"
 //#include "../../Scene/Game/GameScene.h"
 
-CheckChangePhase::CheckChangePhase()
+CheckChangePhase::CheckChangePhase(const Vector2& _padCursolPos):
+	padCursolPos_(_padCursolPos)
 {
 	int i = -1;
 	imgIcons_ = &i;
@@ -92,7 +93,7 @@ bool CheckChangePhase::IsCheckChangePhase()
 	//特定のキーを押す、もしくはアイコンをクリックする
 	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHENGE, KeyConfig::JOYPAD_NO::PAD1) ||
 		(key.IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHENGE_CHECK, KeyConfig::JOYPAD_NO::PAD1) &&
-		(Utility::IsPointInRect(key.GetMousePos(), rightTop, leftBottom))))
+		(Utility::IsPointInRect(key.GetMousePos(), rightTop, leftBottom) || (Utility::IsPointInRect(padCursolPos_, rightTop, leftBottom)))))
 	{
 		return true;
 	}

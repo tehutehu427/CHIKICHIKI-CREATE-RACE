@@ -3,11 +3,13 @@
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/System/CheckChangePhase.h"
 #include "../../Object/System/ManualTab.h"
+#include "../../Object/Editor/EditEscape.h"
 
 FreePlay::FreePlay(void)
 {
-	changePhasePlay_ = nullptr;
+	checkChangePhase_ = nullptr;
 	manual_ = nullptr;
+	editEscape_ = nullptr;
 }
 
 FreePlay::~FreePlay(void)
@@ -24,12 +26,16 @@ void FreePlay::Load(void)
 	palette_->Load();
 
 	//フェーズ遷移
-	changePhasePlay_ = std::make_unique<CheckChangePhase>();
-	changePhasePlay_->Load();
+	checkChangePhase_ = std::make_unique<CheckChangePhase>(editControllers_[0]->GetCursorPos());
+	checkChangePhase_->Load();
 
 	//マニュアル
-	manual_ = std::make_unique<ManualTab>();
+	manual_ = std::make_unique<ManualTab>(editControllers_[0]->GetCursorPos());
 	manual_->Load();
+
+	//編集終了
+	editEscape_ = std::make_unique<EditEscape>(editControllers_[0]->GetCursorPos());
+	editEscape_->Load();
 }
 
 void FreePlay::Init(void)
@@ -41,13 +47,16 @@ void FreePlay::Init(void)
 	palette_->Init();
 
 	//初期化
-	changePhasePlay_->Init();
+	checkChangePhase_->Init();
 
 	//マップデータの初期化
 	mapIO_->Init();
 
 	//マニュアルの初期化
 	manual_->Init();
+
+	//編集
+	editEscape_->Init();
 
 	ChangePhase(PHASE::EDIT_PHASE);
 }
@@ -66,6 +75,9 @@ void FreePlay::UpdateEdit(void)
 
 	//マップデータの更新
 	mapIO_->Update();
+
+	//編集終了
+	editEscape_->Update();
 	
 	//親クラスの更新
 	GameScene::UpdateEdit();
@@ -77,7 +89,7 @@ void FreePlay::ChangePhaseAction(void)
 	GameScene::ChangePhaseAction();
 
 	//次のフェーズ遷移の設定
-	changePhasePlay_->SetNextPhase(PHASE::EDIT_PHASE);
+	checkChangePhase_->SetNextPhase(PHASE::EDIT_PHASE);
 }
 
 void FreePlay::ChangePhaseEdit(void)
@@ -86,7 +98,7 @@ void FreePlay::ChangePhaseEdit(void)
 	GameScene::ChangePhaseEdit();
 
 	//次のフェーズ遷移の設定
-	changePhasePlay_->SetNextPhase(PHASE::ACTION_PHASE);
+	checkChangePhase_->SetNextPhase(PHASE::ACTION_PHASE);
 }
 
 void FreePlay::NormalUpdate()
@@ -95,7 +107,7 @@ void FreePlay::NormalUpdate()
 	GameScene::NormalUpdate();
 
 	//フェーズ遷移
-	changePhasePlay_->Update(*this);
+	checkChangePhase_->Update(*this);
 }
 
 void FreePlay::NormalDraw(void)
@@ -104,7 +116,7 @@ void FreePlay::NormalDraw(void)
 	GameScene::NormalDraw();
 
 	//フェーズ遷移アイコン
-	changePhasePlay_->Draw();
+	checkChangePhase_->Draw();
 }
 
 void FreePlay::DrawEdit()
@@ -117,4 +129,7 @@ void FreePlay::DrawEdit()
 
 	//マニュアルの描画
 	manual_->Draw();
+
+	//編集終了
+	editEscape_->Draw();
 }
