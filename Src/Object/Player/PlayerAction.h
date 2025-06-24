@@ -42,14 +42,20 @@ public:
 	//ゲッタ
 	//*****************************************
 	//移動量
-	inline const VECTOR GetMovePow(void) { return movePow_; }
+	const VECTOR GetMovePow(void) { return movePow_; }
 
 	//ジャンプ力
-	inline const VECTOR GetJumpPow(void) { return jumpPow_; }
+	const VECTOR GetJumpPow(void) { return jumpPow_; }
 
 	//プレイヤーの角度Y
-	inline const Quaternion GetPlayerRotY(void) { return playerRotY_; }
+	const Quaternion GetPlayerRotY(void) { return playerRotY_; }
 
+
+	//パンチ座標
+	const VECTOR& GetPunchPos(void) { return punchPos_; }
+
+	//パンチ中か
+	const bool GetIsHitPunch(void) { return isPunchHitTime_; }
 	//*****************************************
 	//セッタ
 	//*****************************************
@@ -64,6 +70,9 @@ public:
 
 	//ジャンプ時間
 	void SetStepJump(const float _step) { stepJump_ = _step; }
+
+	//方向
+	void SetDir(const VECTOR _dir) { dir_ = _dir; }
 
 	//デバッグ
 	float GetJumpDecel(void) { return jumpDeceralation_; }

@@ -16,6 +16,20 @@ void CollisionManager::CreateInstance(void)
 	}
 }
 
+void CollisionManager::AddCollider(const std::shared_ptr<Collider> _collider)
+{
+	//コライダの追加
+	colliders_.push_back(_collider);
+
+	//当たり判定情報
+	PreColParam preCol;
+	preCol.pos = _collider->GetParent().GetTransform().pos;
+	preCol.rot = _collider->GetParent().GetTransform().quaRot;
+
+	//当たり判定情報保存
+	preColParam_.push_back(preCol);
+}
+
 void CollisionManager::Sweep(void)
 {
 	//終了したコライダを並び変える
@@ -34,16 +48,22 @@ void CollisionManager::Update(void)
 	//コライダが一つもないなら処理を飛ばす
 	if (colliders_.size() <= 0)return;
 
+	//当たり判定フレーム
+	if (updateFrame_ < COL_UPDATE_FRAME)
+	{
+		//カウンタ
+		updateFrame_++;
+		return;
+	}
+
 	for (int i = 0; i < colliders_.size() - 1; i++)
 	{
 		for (int j = i + 1; j < colliders_.size(); j++)
 		{
-			//当たり判定をする範囲内　又は　タグが同じかどうか
-			if (!IsWithInHitRange(colliders_[i],colliders_[j])|| colliders_[i]->GetTag() == colliders_[j]->GetTag())
+			//当たり判定をするか
+			if (!JudgeIsCollision(i, j))
 			{
-				//範囲外　又は　同一タグだったので飛ばす
-				colliders_[i]->NotHit();
-				colliders_[j]->NotHit();
+				//当たり判定の条件に合わなかったので飛ばす
 				continue;
 			}
 
@@ -56,6 +76,9 @@ void CollisionManager::Update(void)
 			}
 		}
 	}
+
+	//カウンタの初期化
+	updateFrame_ = 0;
 }
 
 void CollisionManager::Destroy(void)
@@ -68,14 +91,32 @@ void CollisionManager::Destroy(void)
 	instance_ = nullptr;
 }
 
+const bool CollisionManager::IsPlayer(const Collider::TAG _tag)const
+{
+	return _tag == Collider::TAG::PLAYER1 || _tag == Collider::TAG::PLAYER2 || _tag == Collider::TAG::PLAYER3 || _tag == Collider::TAG::PLAYER4;
+}
+
+const bool CollisionManager::IsItem(const Collider::TAG _tag) const
+{
+	//今のところはプレイヤー以外がアイテム
+	return !IsPlayer(_tag);
+}
+
 CollisionManager::CollisionManager(void)
 {
+	updateFrame_ = 0;
+
+	//**********************************************************
+	//ここに当たり判定する範囲の広さをタグごとで設定する
+	//**********************************************************
+
 	hitRange_[Collider::TAG::PLAYER1] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::PLAYER2] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::PLAYER3] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::PLAYER4] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::NORMAL_ITEM] = HIT_RANGE_NORMAL;
-	hitRange_[Collider::TAG::MOVE_FLOOR] = HIT_RANGE_NORMAL;
+	hitRange_[Collider::TAG::MOVE_HORI_FLOOR] = HIT_RANGE_NORMAL;
+	hitRange_[Collider::TAG::MOVE_VER_FLOOR] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::KILLER_ITEM] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::DESTROYER] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::SLIME_FLOOR] = HIT_RANGE_NORMAL;
@@ -94,8 +135,6 @@ CollisionManager::~CollisionManager(void)
 
 const bool CollisionManager::IsWithInHitRange(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2) const
 {
-	VECTOR a = _col1.lock()->GetGeometry().GetColPos();
-	VECTOR b= _col2.lock()->GetGeometry().GetColPos();
 	//双方の距離
 	double sqrtDis = Utility::SqrMagnitude(
 		_col1.lock()->GetGeometry().GetColPos(),
@@ -112,6 +151,58 @@ const bool CollisionManager::IsWithInHitRange(const std::weak_ptr<Collider> _col
 	return sqrtDis <= range * range;
 }
 
+const bool CollisionManager::JudgeIsCollision(const int _col1Num, const int _col2Num)const
+{
+	//総合判定
+	bool ret = false;
+
+	//範囲内か
+	bool inRange = IsWithInHitRange(colliders_[_col1Num], colliders_[_col2Num]);
+	
+	//タグが違うか
+	bool diffTag = colliders_[_col1Num]->GetTag() != colliders_[_col2Num]->GetTag();
+
+	//限りなく小さい数
+	const float EPSILON = 1e-6f;
+
+	//各当たり判定情報
+	VECTOR pos1 = colliders_[_col1Num]->GetParent().GetTransform().pos;
+	VECTOR rot1 = colliders_[_col1Num]->GetParent().GetTransform().quaRot.ToEuler();
+	VECTOR pos2 = colliders_[_col2Num]->GetParent().GetTransform().pos;
+	VECTOR rot2 = colliders_[_col2Num]->GetParent().GetTransform().quaRot.ToEuler();
+
+	//どちらかでも動いているか
+	bool isMove = VSize(VSub(pos1, preColParam_[_col1Num].pos)) > EPSILON
+		|| VSize(VSub(rot1, preColParam_[_col1Num].rot.ToEuler())) > EPSILON
+		|| VSize(VSub(pos2, preColParam_[_col2Num].pos)) > EPSILON
+		|| VSize(VSub(rot2, preColParam_[_col2Num].rot.ToEuler())) > EPSILON;
+
+	//設定されたタグの組み合わせか
+	bool settingTag = JudgeIsColTag(colliders_[_col1Num]->GetTag(), colliders_[_col2Num]->GetTag());
+
+	//総合
+	ret = inRange && diffTag && isMove && settingTag;
+
+	return ret;
+}
+
+const bool CollisionManager::JudgeIsColTag(const Collider::TAG _tag1, const Collider::TAG _tag2) const
+{
+	//ここにタグごとの正確な判定の取る取らないを決める
+
+	//総合
+	bool ret = true;
+
+	//どちらともアイテムなら
+	if (IsItem(_tag1) && IsItem(_tag2))
+	{
+		//当たり判定しない
+		ret = false;
+	}
+
+	return ret;
+}
+
 bool CollisionManager::IsCollision(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2)
 {
 	//1つ目の当たり判定形状
@@ -121,5 +212,16 @@ bool CollisionManager::IsCollision(const std::weak_ptr<Collider> _col1, const st
 	auto& geo2 = _col2.lock()->GetGeometry();
 
 	//当たり判定
-	return geo1.IsHit(geo2);
+	bool ret = geo1.IsHit(geo2);
+
+	//当たっていないなら
+	if (!ret)
+	{
+		//当たっていないことを返す
+		_col1.lock()->NotHit();
+		_col2.lock()->NotHit();
+	}
+	
+	//当たり判定
+	return ret;
 }
