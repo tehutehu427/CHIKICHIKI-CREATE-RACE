@@ -25,7 +25,7 @@ Model::Model(const Model& _copyBase, const VECTOR& _pos, const Quaternion& _rot)
 Model::~Model(void)
 {
 	//当たり判定情報の解放(球、カプセル)
-	MV1CollResultPolyDimTerminate(hitInfo_);
+	//MV1CollResultPolyDimTerminate(hitInfo_);
 }
 
 void Model::Draw(void)

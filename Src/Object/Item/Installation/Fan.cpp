@@ -2,6 +2,7 @@
 #include"../Manager/System/Resource.h"
 #include"../Manager/System/ResourceManager.h"
 #include"../../Common/Geometry/Model.h"
+#include "../SubItem/Wind.h"
 #include "Fan.h"
 
 Fan::Fan()
@@ -10,6 +11,7 @@ Fan::Fan()
 
 Fan::~Fan()
 {
+	wind_.reset();
 }
 
 void Fan::SetParam(void)
@@ -47,6 +49,8 @@ void Fan::SetParam(void)
 
 void Fan::Update(void)
 {
+	//•—‚ğˆê‚Â¶¬
+	if (wind_ == nullptr)CreateWind();
 }
 
 void Fan::Draw(void)
@@ -54,14 +58,19 @@ void Fan::Draw(void)
 	//‹¤’Ê
 	ItemBase::Draw();
 
-	VECTOR fanCenterPos = VAdd(trans_.pos, trans_.localPos);
-
 	//•—
-	DrawCube3D(VAdd(fanCenterPos, { MODEL_SIZE.x / 2.0f,-MODEL_SIZE.y/2.0f,30.0f }),
-		VAdd(fanCenterPos, { -MODEL_SIZE.x / 2.0f,MODEL_SIZE.y / 2.0f,400.0f }),
-		Utility::WHITE, Utility::WHITE, false);
+	if (wind_ != nullptr)wind_->Draw();
 }
 
 void Fan::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
+}
+
+void Fan::CreateWind(void)
+{
+	//•—¶¬
+	wind_ = std::make_unique<Wind>(trans_.pos, trans_.quaRot, trans_.scl, MODEL_SIZE);
+
+	//‰Šúİ’è
+	wind_->SetParam();
 }

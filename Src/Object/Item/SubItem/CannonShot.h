@@ -12,8 +12,14 @@ public:
 	static constexpr float SPEED = 15.0f;		//弾の速度
 	static constexpr float SCALE = 0.3f;		//弾の大きさ
 
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_pos">親の座標</param>
+	/// <param name="_quaRot">親の回転</param>
+	/// <param name="_scl">親の大きさ</param>
 	CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl);
+
 	//デストラクタ
 	~CannonShot()override;
 
@@ -37,7 +43,6 @@ private:
 
 	float cnt_;			//生存カウンタ
 	bool isAlive_;		//生存判定
-	VECTOR movePow_;	//移動量
 
 	//移動処理
 	inline void Move(void);

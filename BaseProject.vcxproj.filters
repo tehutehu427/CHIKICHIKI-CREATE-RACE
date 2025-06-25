@@ -40,7 +40,7 @@
     <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp" />
     <ClCompile Include="Src\Object\Item\Destroyer\SmallBomb.cpp" />
     <ClCompile Include="Src\Object\Item\Fixed\GoalFlag.cpp" />
-    <ClCompile Include="Src\Object\Item\Installation\CannonShot.cpp" />
+    <ClCompile Include="Src\Object\Item\SubItem\CannonShot.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\Fan.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\Spiky.cpp" />
     <ClCompile Include="Src\Scene\SelectScene.cpp" />
@@ -100,6 +100,7 @@
     <ClCompile Include="Src\Manager\System\SoundManager.cpp" />
     <ClCompile Include="Src\Object\System\ManualTab.cpp" />
     <ClCompile Include="Src\Object\Player\PlayerAction.cpp" />
+    <ClCompile Include="Src\Object\Item\SubItem\Wind.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -133,7 +134,7 @@
     <ClInclude Include="Src\Object\Item\Destroyer\SmallBomb.h" />
     <ClInclude Include="Src\Object\Item\Fixed\StartFlag.h" />
     <ClInclude Include="Src\Object\Item\Fixed\GoalFlag.h" />
-    <ClInclude Include="Src\Object\Item\Installation\CannonShot.h" />
+    <ClInclude Include="Src\Object\Item\SubItem\CannonShot.h" />
     <ClInclude Include="Src\Object\Item\Installation\Fan.h" />
     <ClInclude Include="Src\Object\Item\Installation\Spiky.h" />
     <ClInclude Include="Src\Shader\Effect\SelectUIDarkly.h" />
@@ -240,6 +241,7 @@
     <ClInclude Include="Src\Manager\System\SoundManager.h" />
     <ClInclude Include="Src\Object\System\ManualTab.h" />
     <ClInclude Include="Src\Object\Player\PlayerAction.h" />
+    <ClInclude Include="Src\Object\Item\SubItem\Wind.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
