@@ -80,6 +80,15 @@ void MultiParty::UpdateEdit(void)
 		editControllers_[i]->Update();
 	}
 	SetDrawScreen(SceneManager::GetInstance().GetMainScreen());
+	for (auto& controller : editControllers_)
+	{
+		if (!controller->GetReady())
+		{
+			break;
+		}
+		ChangePhase(PHASE::ACTION_PHASE);
+
+	}
 }
 
 void MultiParty::DrawAction(void)

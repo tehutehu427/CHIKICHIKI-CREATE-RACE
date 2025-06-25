@@ -6,6 +6,8 @@
 #include "../../Object/Item/ItemBase.h"
 #include "../../Manager/System/KeyConfig.h"
 
+class EditItemReady;
+
 class EditController
 {
 public:
@@ -46,15 +48,29 @@ public:
 	void Update(void);		//更新
 	void Draw(void);		//描画
 
+	void DrawUI(void);	//UI描画
+
+	void Reset(void);	//リセット
 	//モード変更
 	void ChengeMode(MODE mode);
 	//アイテム設定
 	void SetItemType(ItemBase::ITEM_TYPE itemType);
 
-	inline const Vector2& GetCursorPos(void) const { return cursorPos_; }	//カーソル位置取得
+	Vector2 GetCursorPos(void) const { return cursorPos_; }	//カーソル位置取得
+
+	bool GetReady(void) const;	//マルチ時にアイテムを置き終わったか
+
+	KeyConfig::JOYPAD_NO GetPadNum(void) const { return padNum_; }	//パッド番号取得
+
+	Vector2 GetScreenSize(void) const { return screenSize_; }	//スクリーンサイズ取得
+
+	void SetReady(void);	//マルチ時に準備完了の処理
 protected:
 
 private:
+
+	std::unique_ptr<EditItemReady> ready_;	//マルチ時にアイテムを置き終わったか
+
 	int playerNum_;	//プレイヤー番号
 	int playerMaxNum_;	//プレイヤーの最大数
 	KeyConfig::JOYPAD_NO padNum_;	//パッド番号

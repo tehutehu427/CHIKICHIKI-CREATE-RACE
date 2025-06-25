@@ -4,10 +4,12 @@
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "EditItemReady.h"
 #include "EditController.h"
 
 EditController::EditController(int playerNum)
 {
+	ready_ = std::make_unique<EditItemReady>(*this);
 	playerNum_ = playerNum;
 	playerMaxNum_ = DateBank::GetInstance().GetPlayerNum();
 	padNum_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum + 1);
@@ -33,18 +35,21 @@ EditController::EditController(int playerNum)
 
 EditController::~EditController()
 {
+	ready_.reset();
 }
 
 void EditController::Init(void)
 {
 	//モード変更
 	ChengeMode(MODE::ITEM_SELECT);
+	Reset();
 }
 
 void EditController::Update(void)
 {
 	//カーソル位置更新
 	auto lStick = KeyConfig::GetInstance().GetKnockLStickSize(padNum_);
+	auto& itemMIns = ItemManager::GetInstance();
 	cursorPos_.x += lStick.x * PAD_STICK_RATE;
 	cursorPos_.y += lStick.y * PAD_STICK_RATE;
 	cursorPos_.x = cursorPos_.x < 0 ? 0 : cursorPos_.x > screenSize_.x ? screenSize_.x : cursorPos_.x;	//カーソル位置の制限
@@ -58,10 +63,20 @@ void EditController::Update(void)
 	}
 	else
 	{
+		if (!MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+		{
+			ready_->Update();
+		}
 		//カーソル位置を取得
 		mousePos_ = cursorPos_;
 	}
 	DebugUpdate();
+
+	if (GetReady())
+	{
+		//マルチプレイ時にアイテムを置き終わった
+		return;
+	}
 
 	//モード別更新処理
 	modeUpdate_();
@@ -76,8 +91,24 @@ void EditController::Draw(void)
 {
 	DebugDraw();
 	//DrawRotaGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y), 1.0f, 0.0f,ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],true);	//カーソル描画
-	DrawGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y),ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],true);	//カーソル描画
+	//DrawGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y),ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],true);	//カーソル描画
 	modeDraw_();
+	//ready_->Draw();
+}
+
+void EditController::DrawUI(void)
+{
+	if (playerMaxNum_ != 1)
+	{
+		ready_->Draw();
+	}
+	DrawGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y), ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_], true);	//カーソル描画
+}
+
+void EditController::Reset(void)
+{
+	cursorPos_ = Vector2(screenSize_.x / 2, screenSize_.y / 2);	//カーソル位置は画面の中央に設定
+	ready_->Init();
 }
 
 void EditController::ChengeMode(MODE mode)
@@ -147,6 +178,30 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	ChengeMode(MODE::MOVE_ROTATE);
 }
 
+bool EditController::GetReady(void) const
+{
+	return ready_->GetReady() == EditItemReady::READY_PHASE::READY;
+}
+
+void EditController::SetReady(void)
+{
+	auto& itemMIns = ItemManager::GetInstance();
+	MapEditer::STATUS status;
+	status.mapPos = mapPos_;
+	status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
+	status.type = itemType_;
+
+	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
+	{
+		DeleteItems(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+	}
+	else
+	{
+		MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+	}
+	itemMIns.DummyItemAddItems(playerNum_);
+}
+
 void EditController::ChengeModeItemSelect(void)
 {
 	modeUpdate_ = std::bind(&EditController::ItemSelectUpdate, this);
@@ -196,6 +251,10 @@ void EditController::MoveRotateObjectDraw(void)
 
 void EditController::ItemNotSelect(void)
 {
+	if (playerMaxNum_ > 1)
+	{
+		return;
+	}
 	auto& itemMIns = ItemManager::GetInstance();
 	//if (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
 	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
