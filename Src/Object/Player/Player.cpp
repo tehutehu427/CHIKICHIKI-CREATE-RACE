@@ -3,8 +3,11 @@
 
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "../../Manager/Game/PlayerManager.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SceneManager.h"
+#include"../../Manager/System/DateBank.h"
+
 #include "../../Manager/System/Camera.h"
 
 #include "../../Object/Common/Geometry/Sphere.h"
@@ -27,7 +30,7 @@
 
 #include "Player.h"
 
-Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag)
+Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	:playerNum_(_playerNum)
 	, cntl_(_cntl)
 	, tag_(_tag)
@@ -39,67 +42,52 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag)
 
 	trans_ = Transform();
 	movedPos_ = Utility::VECTOR_ZERO;
+
+
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
-	if (cntl_ == DateBank::TYPE::CONTROLLER)
-	{
-		//パッド番号を設定
-		padNum_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum_ + 1);
-	}
-	else
-	{
-		padNum_ = KeyConfig::JOYPAD_NO::INPUT_KEY;
-	}
+	//パッド番号を設定
+	padNum_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum_ + 1);
+
+
 	//プレイヤー状態
 	changeStates_.emplace(PLAYER_STATE::ALIVE, [this]() {ChangeAlive();});
 	changeStates_.emplace(PLAYER_STATE::DEATH, [this]() {ChangeDeath(); });
-	//----------------------------------------------------
-	//当たり判定
-	//----------------------------------------------------
-	collObjectTables_.emplace(Collider::TAG::START, [this](const std::weak_ptr<Collider> _hitCol)
-		{
-			colUpdate_ = [this, _hitCol]() {CollFloor(_hitCol); };
-		});
-	collObjectTables_.emplace(Collider::TAG::MOVE_HORI_FLOOR, [this](const std::weak_ptr<Collider> _hitCol)
-		{
-			colUpdate_ = [this, _hitCol]() {CollMoveFloor(_hitCol); };
-		});
-	collObjectTables_.emplace(Collider::TAG::MOVE_VER_FLOOR, [this](const std::weak_ptr<Collider> _hitCol)
-		{
-			colUpdate_ = [this, _hitCol]() {CollMoveFloor(_hitCol); };
-		});
-	collObjectTables_.emplace(Collider::TAG::KILLER_ITEM, [this](const std::weak_ptr<Collider> _hitCol) 
-		{
-			colUpdate_ = [this, _hitCol]() {CollKillerItem(_hitCol); };
-		});
-	collObjectTables_.emplace(Collider::TAG::SLIME_FLOOR, [this](const std::weak_ptr<Collider> _hitCol) 
-		{
-			colUpdate_ = [this, _hitCol]() {CollSlimeFloor(_hitCol); };
-		});
-	collObjectTables_.emplace(Collider::TAG::NORMAL_ITEM, [this](const std::weak_ptr<Collider> _hitCol) 
-		{
-			colUpdate_ = [this, _hitCol]() {CollFloor(_hitCol); };
-		});
-	collObjectTables_.emplace(Collider::TAG::GOAL, [this](const std::weak_ptr<Collider> _hitCol)
-		{
-			colUpdate_ = [this, _hitCol]() {CollFloor(_hitCol); };
-		});
+
+	using TAG = Collider::TAG;
+	colUpdates_[TAG::START] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
+	colUpdates_[TAG::GOAL] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
+	colUpdates_[TAG::NORMAL_ITEM] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
+	colUpdates_[TAG::KILLER_ITEM] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
+	colUpdates_[TAG::MOVE_HORI_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
+	colUpdates_[TAG::MOVE_VER_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
+	colUpdates_[TAG::SLIME_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); };
+
+
+	int playerNum = DateBank::GetInstance().GetPlayerNum();
+	for (int i = static_cast<int>(TAG::PLAYER1); i < PlayerManager::PLAYER_NUM_MAX; i++)
+	{
+		//同じタグだったら設定しない
+		if ((int)tag_ == i)continue;
+
+		colUpdates_[(TAG)i] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
+	}
+
 	isCol_ = false;
-
-
 
 	//コライダ作成
 	//*****************************************************
+	// 
 	//球コライダ作成
-	//プレイヤーの体
-	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
-	MakeCollider(tag_, std::move(bodySphereGeo));
-
-
 
 	//接地しているときのライン(床上にとどまっているとき)
 	//Lineを引くための上と下の座標をとる
 	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
 	MakeCollider(tag_, std::move(lineGeo));
+
+
+	//プレイヤーの体
+	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
+	MakeCollider(tag_, std::move(bodySphereGeo));
 
 
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
@@ -132,10 +120,10 @@ void Player::Load(void)
 
 
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
-
 	////プレイヤーの手(パンチの当たり判定)
 	std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(action_->GetPunchPos(), PUNCH_RADIUS);
 	MakeCollider(tag_, std::move(handSphereGeo));
+
 
 }
 
@@ -198,8 +186,8 @@ void Player::Draw(void)
 
 void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	collObjectTables_[_hitCol.lock()->GetTag()](_hitCol);
-	colUpdate_();
+	Collider::TAG tag = _hitCol.lock()->GetTag();
+	colUpdates_[tag](_hitCol);
 }
 
 inline const bool Player::GetIsPunch(void)
@@ -234,7 +222,7 @@ void Player::DrawDebug(void)
 
 
 	DrawFormatString(0, 16*(playerNum_*9), 0x000000
-		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nmovePow(%f,%f,%f)\nMoveDiff(%f,%f,%f)"
+		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nmovePow(%f,%f,%f)\nMoveDiff(%f,%f,%f)\nact(%d)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,action_->GetJumpDecel()
 		,action_->GetStepJump()
@@ -244,7 +232,7 @@ void Player::DrawDebug(void)
 		,moveDiff_.x,moveDiff_.y,moveDiff_.z
 	);
 
-
+	//action_->DrawDebug();
 
 	if (IsDeath())
 	{
@@ -304,9 +292,10 @@ void Player::DeathUpdate(void)
 #endif // DEBUG_ON
 void Player::Action(void)
 {
+	//アクション関係の更新
 	action_->Update();
 
-
+	//死んだら何もしないようにする
 	if (IsDeath())
 	{
 		//何もできないようにする
@@ -329,31 +318,11 @@ void Player::ChangeModelColor(const COLOR_F _colorScale)
 }
 
 
-void Player::HitItem(const IntVector3 _colPos)
+
+
+void Player::CollNone(void)
 {
-	MapEditer& mapEdit = MapEditer::GetInstance();
-	ItemManager& itemMng = ItemManager::GetInstance();
-	if (mapEdit.IsObjectAtMapPos(_colPos))
-	{
-		IntVector3 lPos=mapEdit.GetLeaderMapPos(_colPos);
-		for (auto& iLPos : itemLPos_)
-		{
-			if (iLPos == lPos)return;
-		}
-		
-		
-		//アイテムタイプ取得
-		ItemBase::ITEM_TYPE type = mapEdit.GetItemType(_colPos);
-
-		
-		//アイテムのTransform取得
-		Transform itemTrans = itemMng.GetItemTransform(lPos,type);
-
-		UpDownColl(itemTrans);
-		ArroundColl(itemTrans);
-
-		itemLPos_.push_back(lPos);
-	}
+	int i = 0;
 }
 
 void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
@@ -368,13 +337,10 @@ void Player::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 	{
 		ItemBase& floor = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
 		VECTOR movePow = floor.GetMovePow();
-		movedPos_ = VAdd(movedPos_, VScale(floor.GetMovePow(),0.5f));
+		movedPos_ = VAdd(movedPos_, floor.GetMovePow());
 	}
 	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
 	HitModelCommon(hitModel);
-
-
-
 }
 
 void Player::CollSlimeFloor(const std::weak_ptr<Collider> _hitCol)
@@ -443,22 +409,6 @@ void Player::Collision(void)
 		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
 		moveLine.SetLocalPosPoint2(moveVec);
 	}
-
-	//MapEditer& mapEdit = MapEditer::GetInstance();
-	//IntVector3 mapPos = mapEdit.WorldToMapPos(movedPos_);
-	//for (int x = -COL_RANGE; x <= COL_RANGE; x++)
-	//{
-	//	for (int y = -COL_RANGE; y <= COL_RANGE; y++)
-	//	{
-	//		for (int z = -COL_RANGE; z <= COL_RANGE; z++)
-	//		{
-	//			colPos_ = mapPos + IntVector3{x, y, z};
-	//			if (colPos_.x < 0 || colPos_.y < 0 || colPos_.z < 0)continue;
-	//			HitItem(colPos_);
-	//		}
-	//	}
-	//}
-
 	//移動前の座標を格納する
 	moveDiff_ = trans_.pos;
 	//移動
@@ -476,108 +426,7 @@ void Player::Collision(void)
 
 }
 
-void Player::UpDownColl(const Transform _itemTrans)
-{
-	////移動後と移動前をとる
-	//VECTOR prePos = trans_.pos;
-	//VECTOR curPos = movedPos_;
-	//
-	//VECTOR vec = VSub(curPos, prePos);
 
-	//auto hit = MV1CollCheck_Line(_itemTrans.modelId, -1, prePos, curPos);
-	//MapEditer& mapEdit = MapEditer::GetInstance();
-	//isLandHit_ = false;
-	////当たったら
-	//if (hit.HitFlag > 0)
-	//{
-	//	//Y座標のみ半径分上に移動させる
-	//	movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
-	//	action_->SetJumpPow(Utility::VECTOR_ZERO);
-	//	action_->SetIsJump(false);
-	//	itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
-	//	isLandHit_ = true;
-	//	return;
-	//}
-	////else
-	////{
-	////	//当たらなかったら初期化する
-	////	itemLocalPos_ = Utility::VECTOR_ZERO;
-	////}
-
-
-	////Lineを引くための上と下の座標をとる
-	//VECTOR upPos = movedPos_;
-	//upPos.y += (RADIUS);
-	//VECTOR downPos = movedPos_;
-	//downPos.y -= (RADIUS+10.0f);
-
-	//hit = MV1CollCheck_Line(_itemTrans.modelId, -1, upPos, downPos);
-
-	////当たったら
-	//if (hit.HitFlag > 0)
-	//{
-	//	//座標をワールド座標とアイテムローカル座標を足した分移動させる
-	//	if (!Utility::EqualsVZero(itemLocalPos_))
-	//	{
-	//		VECTOR itemLocalPos = VSub(movedPos_, _itemTrans.pos);
-	//		movedPos_ = VAdd(itemLocalPos_, _itemTrans.pos);
-	//		movedPos_ = VAdd(movedPos_, vec);
-	//		hitItemType_ =mapEdit.GetItemType(mapEdit.WorldToMapPos(hit.HitPosition));
-	//	}
-	//	//Y座標のみ半径分上に移動させる
-
-	//	if (movedPos_.y > hit.HitPosition.y)
-	//	{
-	//		movedPos_.y = hit.HitPosition.y + RADIUS + POSITION_OFFSET;
-	//	}
-	//	else
-	//	{
-	//		movedPos_.y = hit.HitPosition.y - RADIUS - POSITION_OFFSET;
-	//	}
-	//	action_->SetJumpPow(Utility::VECTOR_ZERO);
-	//	//isJump_ = false;
-	//	itemLocalPos_ = VSub(movedPos_, _itemTrans.pos);
-	//}
-	//else
-	//{
-	//	//当たらなかったら初期化する
-	//	itemLocalPos_ = Utility::VECTOR_ZERO;
-	//	action_->SetIsJump(true);
-	//	hitItemType_ = ItemBase::ITEM_TYPE::NONE;
-	//}
-}
-
-void Player::ArroundColl(Transform _itemTrans)
-{
-	////移動後座標を一回格納し、移動前をとる
-	//Transform trans = Transform(trans_);
-	//trans.pos = movedPos_;
-	//trans.Update();
-
-	//auto hits = MV1CollCheck_Sphere(_itemTrans.modelId, -1, trans.pos
-	//	, RADIUS);
-	//for (int i = 0; i < hits.HitNum; i++)
-	//{
-	//	auto hit = hits.Dim[i];
-	//	for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
-	//	{
-	//		int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
-	//			, hit.Position[0], hit.Position[1], hit.Position[2]);
-	//		if (pHit)
-	//		{
-	//			movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
-	//			// カプセルを移動させる
-	//			trans.pos = movedPos_;
-	//			trans.Update();
-	//			continue;
-	//		}
-
-	//		break;
-	//	}
-	//	
-	//}
-	//MV1CollResultPolyDimTerminate(hits);
-}
 
 void Player::HitModelCommon(Model& _hitModel)
 {
@@ -598,7 +447,7 @@ void Player::HitModelCommon(Model& _hitModel)
 	{
 		Line& upDown = dynamic_cast<Line&>(upDownLine->GetGeometry());
 		VECTOR hitLinePos = upDown.GetHitInfo().HitPosition;
-		if (movedPos_.y >= hitLinePos.y)
+		if (movedPos_.y > hitLinePos.y)
 		{
 			movedPos_.y = hitLinePos.y + RADIUS + POSITION_OFFSET;
 		}

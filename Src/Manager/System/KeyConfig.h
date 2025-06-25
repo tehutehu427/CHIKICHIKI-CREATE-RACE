@@ -122,6 +122,7 @@ public:
 
 		PLAYER_JUMP,			//プレイヤーのジャンプ
 		PLAYER_PUNCH,			//プレイヤーのパンチ
+		PLAYER_DASH,
 		PLAYER_MOVE_FRONT,		//プレイヤーの移動前
 		PLAYER_MOVE_BACK,		//プレイヤーの移動後ろ
 		PLAYER_MOVE_RIGHT,		//プレイヤーの移動右
@@ -132,9 +133,12 @@ public:
 		PLAY_CAMERA_MOVE_RIGHT,	//プレイのカメラ移動右
 		PLAY_CAMERA_MOVE_LEFT,	//プレイのカメラ移動左
 
+		
+
 
 		DEBUG_CHENGE_TITLE,		//デバッグ用タイトル画面に戻る
 		DEBUG_CHENGE_CLEAR,		//デバッグ用クリア画面に戻る
+		DEBUG_CHANGE_INPUT,			//デバッグ用入力デバイス切り替え
 		DATA_INPUT,				//データを入力
 		DATA_EXPORT,			//データを出力
 		MAX,

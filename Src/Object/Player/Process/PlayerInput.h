@@ -4,6 +4,8 @@
 #include"../Manager/System/DateBank.h"
 #include"../Manager/System/SceneManager.h"
 #include"../Manager/System/InputManager.h"
+
+#define DEBUG_ON
 class PlayerBase;
 class PlayerInput
 {
@@ -44,8 +46,9 @@ public:
     {
         NONE    //何もしていないとき
         , MOVE   //移動
-        , PUNCH
-        , JUMP
+        , DASHMOVE   //ダッシュ
+        , PUNCH  //パンチ
+        , JUMP   //ジャンプ
     };
 
     enum class CNTL
@@ -55,13 +58,22 @@ public:
         PAD
     };
     //シングルトン化するために外部で生成されないようにする
-    PlayerInput(KeyConfig::JOYPAD_NO _padNum, DateBank::TYPE _cntl);
+    PlayerInput(KeyConfig::JOYPAD_NO _padNum, KeyConfig::TYPE _cntl);
     ~PlayerInput(void) = default;
+
+    //変更時の初期化
+    void Init(void);
 
     void Update(void);
 
     //コントロール判定
     bool CheckAct(ACT_CNTL _actCntl) { return actCntl_ == _actCntl ? true : false; }
+#ifdef _DEBUG
+    //デバイス変更
+    void ChangeInput(KeyConfig::TYPE _type);
+#endif // _DEBUG_ON
+
+ 
 
     //ゲッタ
     //----------------------------------------------------------------
@@ -72,7 +84,11 @@ public:
 private:
     //メンバ関数
     void InputKeyBoard(void);
+    void InputAll(void);
     void InputPad(void);
+
+    void KeyBoard(void);
+    void Pad(void);
 
     //メンバ変数
     //-----------------------------------------------------------------------
@@ -91,8 +107,10 @@ private:
     float moveDeg_;             //移動方向
     VECTOR moveDir_;            //移動方向
 
-    DateBank::TYPE cntl_;                 //入力デバイス
+    KeyConfig::TYPE cntl_;                 //入力デバイス
     KeyConfig::JOYPAD_NO padNum_;                //パッド番号
+
+    std::map<KeyConfig::TYPE, std::function<void(void)>>inputUpdates_;
 
 
 };
