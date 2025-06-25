@@ -56,6 +56,7 @@ void EditItemReady::ChengePhaseReady(void)
 {
 	phaseUpdate_ = std::bind(&EditItemReady::UpdateReady, this);
 	phaseDraw_ = std::bind(&EditItemReady::DrawReady, this);
+	parent_.SetReady(); //EditController‚É€”õŠ®—¹‚ğ’Ê’m
 }
 
 void EditItemReady::UpdateNotReady(void)

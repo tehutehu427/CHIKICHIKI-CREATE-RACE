@@ -40,6 +40,8 @@ EditController::~EditController()
 
 void EditController::Init(void)
 {
+	//モード変更
+	ChengeMode(MODE::ITEM_SELECT);
 	Reset();
 }
 
@@ -47,11 +49,11 @@ void EditController::Update(void)
 {
 	//カーソル位置更新
 	auto lStick = KeyConfig::GetInstance().GetKnockLStickSize(padNum_);
+	auto& itemMIns = ItemManager::GetInstance();
 	cursorPos_.x += lStick.x * PAD_STICK_RATE;
 	cursorPos_.y += lStick.y * PAD_STICK_RATE;
 	cursorPos_.x = cursorPos_.x < 0 ? 0 : cursorPos_.x > screenSize_.x ? screenSize_.x : cursorPos_.x;	//カーソル位置の制限
 	cursorPos_.y = cursorPos_.y < 0 ? 0 : cursorPos_.y > screenSize_.y ? screenSize_.y : cursorPos_.y;	//カーソル位置の制限
-	ready_->Update();
 	if (playerMaxNum_ == 1)
 	{
 		//マウス位置を取得
@@ -61,6 +63,10 @@ void EditController::Update(void)
 	}
 	else
 	{
+		if (!MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+		{
+			ready_->Update();
+		}
 		//カーソル位置を取得
 		mousePos_ = cursorPos_;
 	}
@@ -92,20 +98,17 @@ void EditController::Draw(void)
 
 void EditController::DrawUI(void)
 {
-	DrawGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y), ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_], true);	//カーソル描画
-	if (playerMaxNum_ == 1)
+	if (playerMaxNum_ != 1)
 	{
-		return;
+		ready_->Draw();
 	}
-	ready_->Draw();
+	DrawGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y), ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_], true);	//カーソル描画
 }
 
 void EditController::Reset(void)
 {
 	cursorPos_ = Vector2(screenSize_.x / 2, screenSize_.y / 2);	//カーソル位置は画面の中央に設定
 	ready_->Init();
-	//モード変更
-	ChengeMode(MODE::ITEM_SELECT);
 }
 
 void EditController::ChengeMode(MODE mode)
@@ -180,6 +183,25 @@ bool EditController::GetReady(void) const
 	return ready_->GetReady() == EditItemReady::READY_PHASE::READY;
 }
 
+void EditController::SetReady(void)
+{
+	auto& itemMIns = ItemManager::GetInstance();
+	MapEditer::STATUS status;
+	status.mapPos = mapPos_;
+	status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
+	status.type = itemType_;
+
+	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
+	{
+		DeleteItems(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+	}
+	else
+	{
+		MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+	}
+	itemMIns.DummyItemAddItems(playerNum_);
+}
+
 void EditController::ChengeModeItemSelect(void)
 {
 	modeUpdate_ = std::bind(&EditController::ItemSelectUpdate, this);
@@ -229,6 +251,10 @@ void EditController::MoveRotateObjectDraw(void)
 
 void EditController::ItemNotSelect(void)
 {
+	if (playerMaxNum_ > 1)
+	{
+		return;
+	}
 	auto& itemMIns = ItemManager::GetInstance();
 	//if (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
 	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)

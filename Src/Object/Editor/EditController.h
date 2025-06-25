@@ -63,6 +63,8 @@ public:
 	KeyConfig::JOYPAD_NO GetPadNum(void) const { return padNum_; }	//パッド番号取得
 
 	Vector2 GetScreenSize(void) const { return screenSize_; }	//スクリーンサイズ取得
+
+	void SetReady(void);	//マルチ時に準備完了の処理
 protected:
 
 private:
