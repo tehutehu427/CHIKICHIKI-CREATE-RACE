@@ -12,17 +12,20 @@
 Model::Model(const VECTOR& _pos, const Quaternion& _rot, const int _modelId) : Geometry(_pos, _rot), parentModelId_(_modelId)
 {
 	hitLineInfo_ = {};
+	hitInfo_ = {};
 }
 
 Model::Model(const Model& _copyBase, const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos,_rot)
 {
 	parentModelId_ = _copyBase.GetParentModel();
 	hitLineInfo_ = {};
+	hitInfo_ = {};
 }
 
 Model::~Model(void)
 {
-
+	//当たり判定情報の解放(球、カプセル)
+	MV1CollResultPolyDimTerminate(hitInfo_);
 }
 
 void Model::Draw(void)

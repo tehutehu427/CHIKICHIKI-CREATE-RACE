@@ -15,6 +15,7 @@ Capsule::Capsule(const VECTOR& _pos, const Quaternion& _rot, const VECTOR _local
 	localPosDown_(_localPosDown),
 	radius_(_radius)
 {
+	hitInfo_ = {};
 }
 
 Capsule::Capsule(const Capsule& _copyBase, const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos,_rot)
@@ -22,10 +23,13 @@ Capsule::Capsule(const Capsule& _copyBase, const VECTOR& _pos, const Quaternion&
 	radius_ = _copyBase.GetRadius();
 	localPosTop_ = _copyBase.GetLocalPosTop();
 	localPosDown_ = _copyBase.GetLocalPosDown();
+	hitInfo_ = {};
 }
 
 Capsule::~Capsule(void)
 {
+	//ìñÇΩÇËîªíËèÓïÒÇÃâï˙
+	MV1CollResultPolyDimTerminate(hitInfo_);
 }
 
 void Capsule::Draw(void)
