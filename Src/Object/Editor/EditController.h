@@ -6,13 +6,20 @@
 #include "../../Object/Item/ItemBase.h"
 #include "../../Manager/System/KeyConfig.h"
 
+class EditItemReady;
+
 class EditController
 {
 public:
+	static constexpr float PAD_STICK_RATE = 0.0251f;	//パッドスティックの感度
 	static constexpr float MOVE_ARROW_LENGTH = 75.0f;	//移動矢印の長さ
 	static constexpr float MOVE_ARROW_SIZE = 10.0f;		//移動矢印の先端の大きさ
 	static constexpr int DELAY_MOVE_ARROW = 20;			//移動矢印の先端からの猶予座標
 	static constexpr IntVector3 ERROR_POS = { -1,-1,-1 };	//生成不可の座標
+	static constexpr IntVector3 PLAYER1_INIT_EDIT_POS = { 5,0,0 };	//プレイヤー1のエディター初期座標
+	static constexpr IntVector3 PLAYER2_INIT_EDIT_POS = { 10,0,0 };	//プレイヤー1のエディター初期座標
+	static constexpr IntVector3 PLAYER3_INIT_EDIT_POS = { 15,0,0 };	//プレイヤー1のエディター初期座標
+	static constexpr IntVector3 PLAYER4_INIT_EDIT_POS = { 20,0,0 };	//プレイヤー1のエディター初期座標
 
 	enum class MODE
 	{
@@ -41,18 +48,40 @@ public:
 	void Update(void);		//更新
 	void Draw(void);		//描画
 
+	void DrawUI(void);	//UI描画
+
+	void Reset(void);	//リセット
 	//モード変更
 	void ChengeMode(MODE mode);
 	//アイテム設定
 	void SetItemType(ItemBase::ITEM_TYPE itemType);
+
+	Vector2 GetCursorPos(void) const { return cursorPos_; }	//カーソル位置取得
+
+	bool GetReady(void) const;	//マルチ時にアイテムを置き終わったか
+
+	KeyConfig::JOYPAD_NO GetPadNum(void) const { return padNum_; }	//パッド番号取得
+
+	Vector2 GetScreenSize(void) const { return screenSize_; }	//スクリーンサイズ取得
+
+	void SetReady(void);	//マルチ時に準備完了の処理
 protected:
 
 private:
+
+	std::unique_ptr<EditItemReady> ready_;	//マルチ時にアイテムを置き終わったか
+
 	int playerNum_;	//プレイヤー番号
+	int playerMaxNum_;	//プレイヤーの最大数
 	KeyConfig::JOYPAD_NO padNum_;	//パッド番号
 
+	Vector2 screenSize_;	//スクリーンサイズ
+
 	Vector2 mousePos_;	//2Dのマウス座標
+	Vector2 cursorPos_;	//2Dのカーソル座標
 	IntVector3 mapPos_;	//3Dのマップ座標
+	IntVector3 initMapPos_;	//初期マップ座標
+
 	MODE mode_;	//モード
 	ItemBase::ITEM_TYPE itemType_;	//アイテムの種類
 	bool isClickObject_;	//オブジェクトをクリックしたか

@@ -19,13 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Editor\EditItemReady.cpp" />
+    <ClCompile Include="Src\Object\Editor\EditEscape.cpp" />
+    <ClCompile Include="Src\Object\Player\PlayerAction.cpp" />
+    <ClCompile Include="Src\Object\System\CheckChangePhase.cpp" />
+    <ClCompile Include="Src\Manager\System\SoundManager.cpp" />
+    <ClCompile Include="Src\Object\System\ManualTab.cpp" />
     <ClCompile Include="Src\Object\System\Select\SelectStage.cpp" />
     <ClCompile Include="Src\Object\System\Select\MultiReady.cpp" />
     <ClCompile Include="Src\Object\System\MultiInputCheck.cpp" />
     <ClCompile Include="Src\Object\System\Result\ScoreGageManager.cpp" />
     <ClCompile Include="Src\Manager\Game\ScoreManager.cpp" />
     <ClCompile Include="Src\Object\System\Result\ScoreGage.cpp" />
-    <ClCompile Include="Src\Object\System\Result\Palette.cpp" />
+    <ClCompile Include="Src\Object\Editor\Palette\Palette.cpp" />
     <ClCompile Include="Src\Object\System\Result\MultiResult.cpp" />
     <ClCompile Include="Src\Manager\System\KeyConfig.cpp" />
     <ClCompile Include="Src\Object\Common\Geometry\Cube.cpp" />
@@ -37,7 +43,6 @@
     <ClCompile Include="Src\Object\Common\Geometry\Capsule.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\PaletteCursor.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.cpp" />
-    <ClCompile Include="Src\Object\UI\EditorUi.cpp" />
     <ClCompile Include="Src\Shader\Effect\SelectUIDarkly.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\FerrisWheel.cpp" />
     <ClCompile Include="Src\Shader\Effect\EffectBase.cpp" />
@@ -105,9 +110,15 @@
     <ClCompile Include="Src\Utility\Utility.cpp" />
     <ClCompile Include="Src\Object\Item\Fixed\StartFlag.cpp" />
     <ClCompile Include="Src\Shader\Effect\SelectUIGlow.cpp" />
-    <ClCompile Include="Src\Object\UI\UiBase.cpp" />
+    <ClCompile Include="Src\Object\System\YesNoResponder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Editor\EditEscape.h" />
+    <ClInclude Include="Src\Object\Editor\EditItemReady.h" />
+    <ClInclude Include="Src\Object\Player\PlayerAction.h" />
+    <ClInclude Include="Src\Object\System\ManualTab.h" />
+    <ClInclude Include="Src\Object\System\CheckChangePhase.h" />
+    <ClInclude Include="Src\Manager\System\SoundManager.h" />
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
     <ClInclude Include="Src\Object\Common\Geometry\Line.h" />
     <ClInclude Include="Src\Object\Common\Geometry\Model.h" />
@@ -121,12 +132,11 @@
     <ClInclude Include="Src\Object\System\Result\ScoreGageManager.h" />
     <ClInclude Include="Src\Manager\Game\ScoreManager.h" />
     <ClInclude Include="Src\Object\System\Result\ScoreGage.h" />
-    <ClInclude Include="Src\Object\System\Result\Palette.h" />
+    <ClInclude Include="Src\Object\Editor\Palette\Palette.h" />
     <ClInclude Include="Src\Object\System\Result\MultiResult.h" />
     <ClInclude Include="Src\Manager\System\KeyConfig.h" />
     <ClInclude Include="Src\Object\Editor\Palette\PaletteCursor.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.h" />
-    <ClInclude Include="Src\Object\UI\EditorUi.h" />
     <ClInclude Include="Src\Object\Item\Installation\FerrisWheel.h" />
     <ClInclude Include="Src\Manager\Game\PlayerManager.h" />
     <ClInclude Include="Src\Object\Item\Installation\Floor.h" />
@@ -242,8 +252,8 @@
     <ClInclude Include="Src\Shader\PostEffect\PostEffectScanLine.h" />
     <ClInclude Include="Src\Utility\Utility.h" />
     <ClInclude Include="Src\Shader\Effect\SelectUIGlow.h" />
-    <ClInclude Include="Src\Object\UI\UiBase.h" />
     <ClInclude Include="Src\Utility\UtilityTemplates.h" />
+    <ClInclude Include="Src\Object\System\YesNoResponder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
@@ -385,7 +395,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DXLIB_DIR);$(ProjectDir)Src/Lib/</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -422,7 +432,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DXLIB_DIR);$(ProjectDir)Src/Lib/</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>

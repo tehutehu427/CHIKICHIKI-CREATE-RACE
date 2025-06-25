@@ -23,19 +23,46 @@ public:
 	static constexpr int ITEM_ICONS_DIV_Y = 3;	//アイコンスプライト分割数Y
 	static constexpr int ITEM_ICON_SIZE = 128;	//アイテムアイコンの大きさ
 
+	static constexpr int PLAYER_PLATES_NUM = 4;	//プレイヤープレート種類数
+	static constexpr int PLAYER_PLATES_DIV_X = 1;//プレイヤープレート分割数X
+	static constexpr int PLAYER_PLATES_DIV_Y = 4;//プレイヤープレート分割数Y
+	static constexpr int PLAYER_PLATES_SIZE_X = 512;//プレイヤープレートの大きさX
+	static constexpr int PLAYER_PLATES_SIZE_Y = 128;//プレイヤープレートの大きさY
+
+	static constexpr int CHANGE_PHASE_ICONS_NUM = 2;//フェーズ遷移用アイコン数
+	static constexpr int CHANGE_PHASE_ICONS_DIV_X = 1;//フェーズ遷移用アイコン分割数X
+	static constexpr int CHANGE_PHASE_ICONS_DIV_Y = 2;//フェーズ遷移用アイコン分割数Y
+	static constexpr int CHANGE_PHASE_ICONS_SIZE_X = 160;//フェーズ遷移用アイコン大きさX
+	static constexpr int CHANGE_PHASE_ICONS_SIZE_Y = 80;//フェーズ遷移用アイコン大きさY
+
 	// リソース名
 	enum class SRC
 	{
 		NONE,
 
-		//画像
+		//エディット画像
 		PALETTE,
 		SCROLL_ARROW_ICON,
 		ITEM_ICONS,
 		PALETTE_MASK,
+		SAVE_ICON,
+		LOAD_ICON,
+		MANUAL_ICON,
+		EXPLAN_BACK,
+		CHANGE_PHASE_ICONS,
+		CANCEL_ICON,
+
+		//クリア
+		CLEAR,
+		PLAYER_PLATES,
+		WIN,
+
+		//ゲームオーバー
+		GAMEOVER,
 
 		//タイトルシーン用画像
 		TITLE_LOGO,
+		PUSHSPACE,
 
 		//セレクトシーン用画像
 		ARC,

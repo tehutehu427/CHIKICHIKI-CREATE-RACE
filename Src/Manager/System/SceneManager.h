@@ -126,6 +126,11 @@ public:
 	/// </summary>
 	/// <returns>メインスクリーン</returns>
 	inline int GetMainScreen() const { return mainScreen_; }
+	/// <summary>
+	/// スクリーンを返す
+	/// </summary>
+	/// <returns>メインスクリーン</returns>
+	inline int GetScreen(int _screenNum) const { return splitScreens_[_screenNum]; }
 
 	/// <summary>
 	/// デルタタイムの取得
@@ -147,6 +152,8 @@ public:
 	/// <param name="_playerIndex">プレイヤー番号</param>
 	/// <returns>指定したプレイヤー番号のカメラ</returns>
 	std::weak_ptr<Camera> GetCamera(const int _playerIndex) const;
+
+	int GetScreenIndex(void)const { return screenIndex_; }
 
 private:
 
@@ -184,6 +191,9 @@ private:
 	
 	//画面分割を行うか
 	bool isSplitMode_;
+
+	//分割スクリーンのインデックス
+	int screenIndex_ ;
 
 	//分割用スクリーン
 	std::vector<int> splitScreens_;

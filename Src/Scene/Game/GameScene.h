@@ -10,7 +10,6 @@ class Grid;
 class SkyDome;
 class GameClear;
 class MapDataIO;
-class EditorUi;
 
 class GameScene : public SceneBase
 {
@@ -77,9 +76,6 @@ protected:
 	//ゲームクリア
 	std::unique_ptr<GameClear> gameClear_;
 
-	//エディター用UI
-	std::unique_ptr<EditorUi> editorUi_;
-
 	//パレット
 	std::unique_ptr<EditorPaletteBase> palette_;
 
@@ -94,7 +90,7 @@ protected:
 	std::function<void(void)> phaseDraw_;	
 	
 	//更新関数
-	void NormalUpdate(void) override;
+	virtual void NormalUpdate(void) override;
 
 	//通常時の描画処理
 	virtual void NormalDraw(void) override;	

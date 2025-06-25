@@ -1,6 +1,7 @@
 #pragma once
 #include <DxLib.h>
 #include "../../Common/Quaternion.h"
+#include "KeyConfig.h"
 class Transform;
 
 class Camera
@@ -10,6 +11,8 @@ public:
 
 	// カメラスピード(度)
 	static constexpr float SPEED = 1.0f;
+	static constexpr float SPEED_PAD = 0.0015f;
+	static constexpr float SPEED_MOUSE = 0.1f;
 
 	// カメラクリップ：NEAR
 	static constexpr float CAMERA_NEAR = 10.0f;
@@ -60,7 +63,7 @@ public:
 		FIXED_DIAGONAL,	//斜め固定
 	};
 
-	Camera(void);
+	Camera(int _playerNum);
 	~Camera(void);
 
 	void Init(void);
@@ -98,6 +101,9 @@ private:
 
 	// カメラが追従対象とするTransform
 	const Transform* followTransform_;
+
+	//PADの番号
+	KeyConfig::JOYPAD_NO padNo_;
 
 	// カメラモード
 	MODE mode_;

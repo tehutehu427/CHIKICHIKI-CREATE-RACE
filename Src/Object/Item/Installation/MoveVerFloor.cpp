@@ -18,7 +18,6 @@ MoveVerFloor::MoveVerFloor()
 	speed_ = 0.0f;
 	distance_ = 0.0;
 	moveVec_ = Utility::VECTOR_ZERO;
-	movePow_ = Utility::VECTOR_ZERO;
 }
 
 MoveVerFloor::~MoveVerFloor()
@@ -55,7 +54,7 @@ void MoveVerFloor::SetParam(void)
 
 	//コライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::MOVE_FLOOR, std::move(geo));
+	MakeCollider(Collider::TAG::MOVE_VER_FLOOR, std::move(geo));
 
 	//ルート設定
 	InitRoute();

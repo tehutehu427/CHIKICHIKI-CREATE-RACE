@@ -1,13 +1,23 @@
+#include "../Application.h"
 #include "../../Utility/Utility.h"
+#include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/KeyConfig.h"
+#include "../../Manager/System/DateBank.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "EditItemReady.h"
 #include "EditController.h"
 
 EditController::EditController(int playerNum)
 {
+	ready_ = std::make_unique<EditItemReady>(*this);
 	playerNum_ = playerNum;
+	playerMaxNum_ = DateBank::GetInstance().GetPlayerNum();
 	padNum_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum + 1);
 	mousePos_ = Vector2();
+	screenSize_ = playerMaxNum_ == 1 ?Vector2(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y) :
+		playerMaxNum_ == 2 ? Vector2(Application::SCREEN_HALF_X, Application::SCREEN_SIZE_Y) : 
+		Vector2(Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y);
+	cursorPos_ = Vector2(screenSize_.x / 2 , screenSize_.y / 2);	//カーソル位置は画面の中央に設定
 	mapPos_ = {};
 	moveDir_ = MOVE_DIR::NONE;
 	//モード管理(遷移時の初期処理)
@@ -18,23 +28,55 @@ EditController::EditController(int playerNum)
 	itemType_ = ItemBase::ITEM_TYPE::NONE;
 	isClickObject_ = false;
 	moveDir_ = MOVE_DIR::NONE;
+	initMapPos_ = playerNum_ == 0 ? PLAYER1_INIT_EDIT_POS :
+		playerNum_ == 1 ? PLAYER2_INIT_EDIT_POS :
+		playerNum_ == 2 ? PLAYER3_INIT_EDIT_POS : PLAYER4_INIT_EDIT_POS;
 }
 
 EditController::~EditController()
 {
+	ready_.reset();
 }
 
 void EditController::Init(void)
 {
 	//モード変更
 	ChengeMode(MODE::ITEM_SELECT);
+	Reset();
 }
 
 void EditController::Update(void)
 {
-	//マウス位置取得
-	mousePos_ = KeyConfig::GetInstance().GetMousePos();
+	//カーソル位置更新
+	auto lStick = KeyConfig::GetInstance().GetKnockLStickSize(padNum_);
+	auto& itemMIns = ItemManager::GetInstance();
+	cursorPos_.x += lStick.x * PAD_STICK_RATE;
+	cursorPos_.y += lStick.y * PAD_STICK_RATE;
+	cursorPos_.x = cursorPos_.x < 0 ? 0 : cursorPos_.x > screenSize_.x ? screenSize_.x : cursorPos_.x;	//カーソル位置の制限
+	cursorPos_.y = cursorPos_.y < 0 ? 0 : cursorPos_.y > screenSize_.y ? screenSize_.y : cursorPos_.y;	//カーソル位置の制限
+	if (playerMaxNum_ == 1)
+	{
+		//マウス位置を取得
+		mousePos_ = KeyConfig::GetInstance().GetMousePos();
+		//カーソル位置を取得
+		//mousePos_ = cursorPos_;
+	}
+	else
+	{
+		if (!MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+		{
+			ready_->Update();
+		}
+		//カーソル位置を取得
+		mousePos_ = cursorPos_;
+	}
 	DebugUpdate();
+
+	if (GetReady())
+	{
+		//マルチプレイ時にアイテムを置き終わった
+		return;
+	}
 
 	//モード別更新処理
 	modeUpdate_();
@@ -48,7 +90,25 @@ void EditController::Update(void)
 void EditController::Draw(void)
 {
 	DebugDraw();
+	//DrawRotaGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y), 1.0f, 0.0f,ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],true);	//カーソル描画
+	//DrawGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y),ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],true);	//カーソル描画
 	modeDraw_();
+	//ready_->Draw();
+}
+
+void EditController::DrawUI(void)
+{
+	if (playerMaxNum_ != 1)
+	{
+		ready_->Draw();
+	}
+	DrawGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y), ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_], true);	//カーソル描画
+}
+
+void EditController::Reset(void)
+{
+	cursorPos_ = Vector2(screenSize_.x / 2, screenSize_.y / 2);	//カーソル位置は画面の中央に設定
+	ready_->Init();
 }
 
 void EditController::ChengeMode(MODE mode)
@@ -62,15 +122,25 @@ void EditController::ChengeMode(MODE mode)
 
 void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 {
+	if (playerMaxNum_ == 1)
+	{
+		//マウス位置を取得
+		mousePos_ = KeyConfig::GetInstance().GetMousePos();
 
-	mousePos_ = KeyConfig::GetInstance().GetMousePos();
-	itemType_ = itemType;
-	if (itemType_ == ItemBase::ITEM_TYPE::NONE)
+		//カーソル位置を取得
+		//mousePos_ = cursorPos_;
+	}
+	else
+	{
+		//カーソル位置を取得
+		mousePos_ = cursorPos_;
+	}
+	if (itemType == ItemBase::ITEM_TYPE::NONE)
 	{
 		return;
 	}
 	auto& itemMIns = ItemManager::GetInstance();
-	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
+	if (itemMIns.GetDummyItemStatus(playerNum_).effType != ItemBase::EFFECT_TYPE::DESTROYER)
 	{
 		if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
 		{
@@ -78,6 +148,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 			return;
 		}
 	}
+	itemType_ = itemType;
 	//アイテムを追加
 	//ダミーアイテムを変更する
 	MapEditer::STATUS status;
@@ -95,7 +166,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	}
 	itemMIns.DummyItemAddItems(playerNum_);
 	itemMIns.CreateDummyItem({}, {}, itemType, playerNum_);
-	IntVector3 mapPos = NearObjectFrontPos();
+	IntVector3 mapPos = playerMaxNum_ == 1 ? NearObjectFrontPos() : initMapPos_ ;
 	Quaternion rot = {};
 	if (mapPos == ERROR_POS)
 	{
@@ -105,6 +176,30 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	itemMIns.CreateDummyItem(mapPos, rot, itemType_, playerNum_);
 	mapPos_ = mapPos;
 	ChengeMode(MODE::MOVE_ROTATE);
+}
+
+bool EditController::GetReady(void) const
+{
+	return ready_->GetReady() == EditItemReady::READY_PHASE::READY;
+}
+
+void EditController::SetReady(void)
+{
+	auto& itemMIns = ItemManager::GetInstance();
+	MapEditer::STATUS status;
+	status.mapPos = mapPos_;
+	status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
+	status.type = itemType_;
+
+	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
+	{
+		DeleteItems(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+	}
+	else
+	{
+		MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+	}
+	itemMIns.DummyItemAddItems(playerNum_);
 }
 
 void EditController::ChengeModeItemSelect(void)
@@ -156,8 +251,13 @@ void EditController::MoveRotateObjectDraw(void)
 
 void EditController::ItemNotSelect(void)
 {
+	if (playerMaxNum_ > 1)
+	{
+		return;
+	}
 	auto& itemMIns = ItemManager::GetInstance();
-	if (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
+	//if (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
+	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
 	{
 		if (itemMIns.GetDummyItemStatus(playerNum_).effType != ItemBase::EFFECT_TYPE::DESTROYER)
 		{
@@ -429,7 +529,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 			return moveDir;
 		}
 	}
-	else if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
+	else if (ins.IsTrgUp(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
 	{
 		return moveDir;
 	}
@@ -438,6 +538,19 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 		return moveDir_;
 	}
 	Vector2 mousePos = ins.GetMousePos();
+	if (playerMaxNum_ == 1)
+	{
+		//マウス位置を取得
+		mousePos = KeyConfig::GetInstance().GetMousePos();
+
+		//カーソル位置を取得
+		//mousePos = cursorPos_;
+	}
+	else
+	{
+		//カーソル位置を取得
+		mousePos = cursorPos_;
+	}
 	VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
 	worldPos = VAdd(worldPos, { MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
 	VECTOR x = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)));
@@ -554,11 +667,17 @@ void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector
 				float rotY = itemM.GetItemRotY(type, lPos);
 				IntVector3 size = itemM.GetItemSize(type);
 				IntVector3 hitSize = itemM.GetItemHitSize(type);
-				editer.DeleteItem(type, lPos, rotY, size, hitSize);
+				if (itemM.GetItemStatus(lPos, type).effType == ItemBase::EFFECT_TYPE::FIXED)
+				{
+					//固定アイテムは削除しない
+					continue;
+				}
 				itemM.DeleteItem(lPos, type);
 				itemM.DeleteDummyItem(playerNum_);
+				editer.DeleteItem(type, lPos, rotY, size, hitSize);
 			}
 		}
 	}
+	itemM.DeleteDummyItem(playerNum_);
 }
 

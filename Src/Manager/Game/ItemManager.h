@@ -162,6 +162,8 @@ public:
 	/// <returns></returns>
 	IntVector3 GetItemSize(ItemBase::ITEM_TYPE _type) const;
 
+	ItemBase::Status GetItemStatus(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type) const;
+
 	float GetItemRotY(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos);
 	/// <summary>
 	/// スタートのワールド座標を返す

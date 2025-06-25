@@ -68,6 +68,10 @@ public:
 
 	//マウスの移動距離を取得
 	Vector2 GetMousePosDistance(void)const;
+
+	//マウスの座標を設定
+	void SetMousePosScreen(void);
+
 	// マウスのクリック状態を取得(MOUSE_INPUT_LEFT、RIGHT)
 	int GetMouse(void) const;
 

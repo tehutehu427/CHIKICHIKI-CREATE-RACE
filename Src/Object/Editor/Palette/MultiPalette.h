@@ -31,17 +31,9 @@ public:
 	/// <param name=""></param>
 	void Init(void) override;
 
-	/// <summary>
-	/// 描画処理
-	/// </summary>
-	/// <param name=""></param>
-	void Draw(void) override;
-
 private:
 
 	//状態別更新
-	void UpdateClose()override;			//閉じる
-	void UpdateOpen()override;			//開ける
 	void UpdateSelect()override;		//選ぶ
 };
 

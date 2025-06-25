@@ -1,7 +1,6 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/InputManager.h"
 #include "../Manager/System/SceneManager.h"
-#include "../Manager/Game/ItemManager.h"
 #include "../Utility/Utility.h"
 #include "../FpsControl/FpsControl.h"
 #include"../../Common/Geometry/Model.h"
@@ -11,7 +10,6 @@
 
 Cannon::Cannon()
 {
-	shotNum_ = 0;
 	shotCreateCnt_ = 0.0f;
 	targetPos_ = { 0.0f,0.0f,0.0f };
 	turretAddRot_ = Utility::VECTOR_ZERO;
@@ -99,30 +97,25 @@ void Cannon::SetParam(void)
 
 void Cannon::Update(void)
 {	
-	//弾の削除処理
-	DeleteShot();
+	//デルタタイム取得
+	float delta = SceneManager::GetInstance().GetDeltaTime();
 
-	//射程内なら
-	if (IsWithinRange())
+	//生成間隔カウント
+	shotCreateCnt_ += delta;
+
+	//砲台の回転
+	RotateTurret();
+
+	//砲身の回転
+	RotateBarrel();
+
+	if (shot_ != nullptr)
 	{
-		//弾の生成
-		CreateShot();
-
-		//砲台の回転
-		RotateTurret();
-
-		//砲身の回転
-		RotateBarrel();
-	}
-
-	//弾の更新
-	for (auto& shot : shots_)
-	{
-		//弾がないならスキップ
-		if (shot == nullptr)continue;
-
 		//弾の更新
-		shot->Update();
+		shot_->Update();
+
+		//弾の削除処理
+		DeleteShot();
 	}
 }
 
@@ -143,16 +136,9 @@ void Cannon::Draw(void)
 	//DrawLine3D(VAdd(barrelTrans_.pos, barrelTrans_.localPos), VScale(barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal).GetForward(),1000.0f), 0x666666);
 
 	//DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
-
-	//弾関係
-	for (auto& shot : shots_)
-	{
-		//弾がないならスキップ
-		if (shot == nullptr)continue;
-
-		//弾の描画
-		shot->Draw();
-	}
+	
+	//弾の描画	
+	if (shot_ != nullptr)shot_->Draw();
 }
 
 void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
@@ -166,6 +152,8 @@ void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
 		//当たったのがエイム範囲ならプレイヤーを狙う
 		if (colParam_[AIM_COL_NUM].collider_->IsHit())
 			targetPos_ = _hitCol.lock()->GetParent().GetTransform().pos;
+		//弾の生成
+		CreateShot();
 		break;
 
 	default:
@@ -221,36 +209,20 @@ void Cannon::RotateBarrel(void)
 
 void Cannon::CreateShot(void)
 {
-	//デルタタイム取得
-	float delta = SceneManager::GetInstance().GetDeltaTime();
-
-	//生成間隔カウント
-	shotCreateCnt_ += delta;
-
-	//弾が最大数生成されている　又は　生成間隔を達していないなら生成処理をしない
-	if (shotNum_ >= SHOT_MAX || shotCreateCnt_ < SHOT_INTERVAL)return;
-
-	//アイテムマネージャー
-	ItemManager& itemMng = ItemManager::GetInstance();
+	//生成間隔を達していないなら生成処理をしない
+	if (shotCreateCnt_ < SHOT_INTERVAL)return;
 
 	//砲身の全回転
 	Quaternion barrelAllRot = barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal);
 
 	//弾の生成
 	std::unique_ptr<CannonShot> shot = std::make_unique<CannonShot>(VAdd(barrelTrans_.pos,barrelTrans_.localPos), barrelAllRot,barrelTrans_.scl);
-	//std::shared_ptr<CannonShot> shot = std::make_shared<CannonShot>(barrelTrans_.pos, barrelAllRot, this);
 
 	//弾の初期化
 	shot->Init();
 
 	//配列にセット
-	shots_[shotNum_] = std::move(shot);
-
-	//生成数カウント増加
-	shotNum_++;
-
-	//マネージャーに所有権を渡す
-	//itemMng.MoveSubItemOwner(ITEM_TYPE::CANNON_SHOT, std::move(shot));
+	shot_ = std::move(shot);
 
 	//生成間隔カウンタ初期化
 	shotCreateCnt_ = 0;
@@ -258,23 +230,9 @@ void Cannon::CreateShot(void)
 
 void Cannon::DeleteShot(void)
 {
-	for (int i = 0 ; i < SHOT_MAX ; i++)
-	{
-		//弾がない 又は 弾が生きてるならならスキップ
-		if (shots_[i] == nullptr || shots_[i]->IsAlive())continue;
-
-		//弾消去
-		shots_[i].reset();
-
-		//配列が空いたので一番後ろの弾を代入
-		shots_[i] = std::move(shots_[shotNum_ - 1]);
-
-		//弾カウント減少
-		shotNum_--;
-	}
-}
-
-bool Cannon::IsWithinRange(void)
-{
-	return Utility::MagnitudeF(targetPos_) <= AIM_RADIUS;
+	//弾が生きてるならならスキップ
+	if (shot_->IsAlive())return;
+	
+	//弾消去
+	shot_.reset();
 }

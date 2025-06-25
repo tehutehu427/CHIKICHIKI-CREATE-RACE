@@ -9,6 +9,7 @@
 
 class EditController;
 class PaletteIcon;
+class Palette;
 
 class EditorPaletteBase
 {
@@ -21,8 +22,7 @@ public:
 	{
 		NONE,	
 		WAIT,	//クリック待ち
-		CLOSE,	//閉じる
-		OPEN,	//開ける
+		PALETTE_ANIM,
 		SELECT	//選ぶ処理
 	};
 
@@ -52,6 +52,7 @@ public:
 		int num = 0;
 		float rate = 0.0f;
 		float angle= 0.0f;
+		bool selected = false;
 		Vector2 pos = {};
 		Vector2 size = {};
 	};
@@ -107,7 +108,7 @@ public:
 protected:
 
 	//パレット
-	ImgInfo pal_;
+	std::unique_ptr<Palette> pal_;
 
 	//パレットアイコン
 	std::unique_ptr<PaletteIcon> palIcon_;
@@ -130,16 +131,14 @@ private:
 	STATE state_;
 
 	//状態変更
-	void ChangeStateNone();		//なし
-	void ChangeStateWait();		//クリック待ち
-	void ChangeStateClose();	//閉じる
-	void ChangeStateOpen();		//開ける
-	void ChangeStateSelect();	//選ぶ
+	void ChangeStateNone();			//なし
+	void ChangeStateWait();			//クリック待ち
+	void ChangeStateSelect();		//選ぶ
+	void ChangeStatePaletteAnim();	//パレットアニメーション
 
 	//更新処理
-	void UpdateNone();			//なし
+	void UpdateNone();					//なし
 	virtual void UpdateWait();			//クリック待ち
-	virtual void UpdateClose();			//閉じる
-	virtual void UpdateOpen();			//開ける
 	virtual void UpdateSelect();		//選ぶ
+	virtual void UpdatePaletteAnim();	//パレットアニメーション
 };

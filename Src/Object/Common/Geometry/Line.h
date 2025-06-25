@@ -30,12 +30,12 @@ public:
 	void Draw(void)override;
 
 	//各種当たり判定
-	const bool IsHit(const Geometry& _geometry)const override;
-	const bool IsHit(const Model& _model)const override;
-	const bool IsHit(const Cube& _cube)const override;
-	const bool IsHit(const Sphere& _sphere)const override;
-	const bool IsHit(const Capsule& _capsule)const override;
-	const bool IsHit(const Line& _line)const override;
+	const bool IsHit(Geometry& _geometry)override;
+	const bool IsHit(Model& _model)override;
+	const bool IsHit(Cube& _cube)override;
+	const bool IsHit(Sphere& _sphere)override;
+	const bool IsHit(Capsule& _capsule) override;
+	const bool IsHit(Line& _line) override;
 
 	//1つ目の点の座標を取得
 	inline const VECTOR GetLocalPosPoint1(void)const { return localPosPoint1_; }
@@ -66,5 +66,5 @@ private:
 	VECTOR localPosPoint1_;	//1つ目の点の座標
 	VECTOR localPosPoint2_;	//2つ目の点の座標
 
-	MV1_COLL_RESULT_POLY hitInfo_;	//当たった時の情報
+	MV1_COLL_RESULT_POLY hitInfo_;	//当たった時の情報(モデル)
 };

@@ -18,7 +18,6 @@
 #include "../../Object/Grid.h"
 #include "../../Object/SkyDome/SkyDome.h"
 #include "../../Object/System/GameClear.h"
-#include "../../Object/UI/EditorUi.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -56,6 +55,7 @@ void GameScene::Load(void)
 	//フォントの生成
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
+	//プレイヤー管理クラス
 	PlayerManager::CreateInstance();
 	PlayerManager::GetInstance().Load();
 
@@ -70,7 +70,7 @@ void GameScene::Load(void)
 	//エディットコントローラーの生成
 	for (int i = 0; i < playerNum; i++)
 	{
-		editControllers_.push_back(std::make_unique<EditController>(0));
+		editControllers_.push_back(std::make_unique<EditController>(i));
 	}
 
 	//スカイドームの生成
@@ -82,12 +82,8 @@ void GameScene::Load(void)
 	gameClear_->Load();	
 
 	//マップデータの入出力
-	mapIO_ = std::make_unique<MapDataIO>();
+	mapIO_ = std::make_unique<MapDataIO>(editControllers_[0]->GetCursorPos());
 	mapIO_->Load();
-
-	//エディターモード
-	editorUi_ = std::make_unique<EditorUi>();
-	editorUi_->Load();
 }
 
 void GameScene::Init(void)
@@ -96,7 +92,6 @@ void GameScene::Init(void)
 	for (auto& controller : editControllers_) { controller->Init(); }
 	sky_->Init();
 	gameClear_->Init();
-	editorUi_->Init();
 }
 
 void GameScene::NormalUpdate(void)
@@ -135,13 +130,13 @@ void GameScene::DebagUpdate(void)
 {
 	// シーン遷移
 	KeyConfig& ins = KeyConfig::GetInstance();
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHENGE_TITLE, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::PAD))
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHENGE_TITLE, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
 
 	//フェーズ遷移は各アップデートに作ったのでここは消し
-	else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHENGE_CLEAR, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::PAD))
+	else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHENGE_CLEAR, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		ChangePhase(PHASE::CLEAR_PHASE);
 	}
@@ -168,11 +163,13 @@ void GameScene::DebagDraw(void)
 }
 void GameScene::ChangePhase(const PHASE phase)
 {
-	if (!ItemManager::GetInstance().AllDummyItemAddItems())
+	if (phase == PHASE::ACTION_PHASE)
 	{
-		return;
+		if (!ItemManager::GetInstance().AllDummyItemAddItems())
+		{
+			return;
+		}
 	}
-
 	phase_ = phase;
 
 	phaseChanges_[phase_]();
@@ -182,12 +179,16 @@ void GameScene::ChangePhaseEdit(void)
 {
 	phaseUpdate_ = std::bind(&GameScene::UpdateEdit, this);
 	phaseDraw_ = std::bind(&GameScene::DrawEdit, this);
-	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
-	VECTOR pos;
-	IntVector3 mPos = MapEditer::MAP_SIZE;
-	pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
-	//pos = { 0.0f,250.0f,-500.0f };
-	SceneManager::GetInstance().GetCamera(0).lock()->SetPos(pos);
+	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
+	{
+		SceneManager::GetInstance().GetCamera(i).lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
+		VECTOR pos;
+		IntVector3 mPos = MapEditer::MAP_SIZE;
+		pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
+		//pos = { 0.0f,250.0f,-500.0f };
+		SceneManager::GetInstance().GetCamera(i).lock()->SetPos(pos);
+		editControllers_[i]->Reset();
+	}
 	ItemManager::GetInstance().ResetItemValue();
 }
 
@@ -197,15 +198,19 @@ void GameScene::ChangePhaseAction(void)
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
-	//カメラをフォローモードにチェンジ
-	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FOLLOW);
 	//プレイヤー初期化
 	PlayerManager::GetInstance().Init();
+
 	//プレイヤーにスタートオブジェクトにする
 	PlayerManager::GetInstance().SetInitPos(ItemManager::GetInstance().GetStartWorldPos());
-	//カメラの追従対象をプレイヤーに設定
-	SceneManager::GetInstance().GetCamera(0).lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(0));
 
+	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
+	{
+		//カメラをフォローモードにチェンジ
+		SceneManager::GetInstance().GetCamera(i).lock()->ChangeMode(Camera::MODE::FOLLOW);
+		//カメラの追従対象をプレイヤーに設定
+		SceneManager::GetInstance().GetCamera(i).lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(i));
+	}
 	ItemManager::GetInstance().ResetItemValue();
 	//VECTOR pos;
 	//IntVector3 mPos = MapEditer::MAP_SIZE;
@@ -270,18 +275,21 @@ void GameScene::DrawEdit(void)
 {
 	//グリッド
 	grid_->Draw();
-	
+
 	//エディットコントローラー
-	for (auto& controller : editControllers_) { controller->Draw(); }
+	//for (auto& controller : editControllers_) 
+	//{ 
+	auto screenIndex = SceneManager::GetInstance().GetScreenIndex();
+	editControllers_[screenIndex]->Draw();
+	//}
 
 	//アイテム
 	ItemManager::GetInstance().Draw();
-	
+
 	//パレット
 	palette_->Draw();
 
-	//エディターモード用のUI
-	editorUi_->Draw();
+	editControllers_[screenIndex]->DrawUI();
 }
 
 void GameScene::DrawAction(void)

@@ -29,9 +29,10 @@ void ResourceManager::Init(void)
 
 #pragma region ‰æ‘œ
 	std::string path_EditUi = Application::PATH_IMAGE + "EditUI/";
-	std::string path_PlayUi = Application::PATH_IMAGE + "PlayUI/";
 	std::string path_Title = Application::PATH_IMAGE + "Title/";
 	std::string path_Select = Application::PATH_IMAGE + "Select/";
+	std::string path_Clear = Application::PATH_IMAGE + "Clear/";
+	std::string path_GameOver = Application::PATH_IMAGE + "GameOver/";
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "ScrollArrowIcon.png");
 	resourcesMap_.emplace(SRC::SCROLL_ARROW_ICON, std::move(res));
@@ -41,6 +42,24 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "ItemIcons.png", ITEM_ICONS_DIV_X,ITEM_ICONS_DIV_Y,ITEM_ICON_SIZE,ITEM_ICON_SIZE);
 	resourcesMap_.emplace(SRC::ITEM_ICONS, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "LoadIcon.png");
+	resourcesMap_.emplace(SRC::LOAD_ICON, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "ManualIcon.png");
+	resourcesMap_.emplace(SRC::MANUAL_ICON, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "SaveIcon.png");
+	resourcesMap_.emplace(SRC::SAVE_ICON, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "CancelIcon.png");
+	resourcesMap_.emplace(SRC::CANCEL_ICON, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "ChangePhaseIcons.png", CHANGE_PHASE_ICONS_DIV_X, CHANGE_PHASE_ICONS_DIV_Y, CHANGE_PHASE_ICONS_SIZE_X, CHANGE_PHASE_ICONS_SIZE_Y);
+	resourcesMap_.emplace(SRC::CHANGE_PHASE_ICONS, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "ExplanBack.png");
+	resourcesMap_.emplace(SRC::EXPLAN_BACK, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "Cursors.png",IMG_CURSORS_DIV_X, IMG_CURSORS_DIV_Y, IMG_CURSORS_SIZE, IMG_CURSORS_SIZE);
 	resourcesMap_.emplace(SRC::CURSORS, std::move(res));
@@ -56,6 +75,18 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Title + "TitleLogo.png");
 	resourcesMap_.emplace(SRC::TITLE_LOGO, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Title + "PushSpace.png");
+	resourcesMap_.emplace(SRC::PUSHSPACE, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Clear + "Clear.png");
+	resourcesMap_.emplace(SRC::CLEAR, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Clear + "Win.png");
+	resourcesMap_.emplace(SRC::WIN, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Clear + "PlayerPlates.png", PLAYER_PLATES_DIV_X, PLAYER_PLATES_DIV_Y, PLAYER_PLATES_SIZE_X, PLAYER_PLATES_SIZE_Y);;
+	resourcesMap_.emplace(SRC::PLAYER_PLATES, std::move(res));
 
 #pragma endregion 
 

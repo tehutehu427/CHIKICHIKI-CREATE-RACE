@@ -64,6 +64,8 @@ void SceneManager::Init(void)
 
 	// 初期シーンの設定
 	DoChangeScene(SCENE_ID::TITLE);
+
+	screenIndex_ = 0;
 }
 
 void SceneManager::Init3D(void)
@@ -270,7 +272,7 @@ void SceneManager::CreateCameras(const int _playerNum)
 	for (int i = 0; i < _playerNum; i++)
 	{
 		std::shared_ptr<Camera> camera;
-		camera = std::make_shared<Camera>();
+		camera = std::make_shared<Camera>(i);
 		camera->Init();
 		cameras_.push_back(std::move(camera));
 	}
@@ -444,7 +446,7 @@ void SceneManager::Fade(void)
 void SceneManager::DrawMultiScreen()
 {
 	//描画位置（分割スクリーンの左上位置）
-	static const Vector2 screenPos[PlayerManager::PLAYER_NUM_MAX] =
+	const Vector2 screenPos[PlayerManager::PLAYER_NUM_MAX] =
 	{
 		{ 0, 0 },													// 1P: 左上
 		{ Application::SCREEN_HALF_X, 0 },							// 2P: 右上
@@ -456,6 +458,7 @@ void SceneManager::DrawMultiScreen()
 	for (int i = 0; i < splitScreens_.size(); i++)
 	{
 		//プレイ人数が3人の時の4つ目の画面を1Pの画面を表示する
+		screenIndex_ = i;	//分割スクリーンのインデックス
 		int index = i;
 		if (CASE_VALUE == DateBank::GetInstance().GetPlayerNum() &&
 			index == PlayerManager::PLAYER_NUM_MAX - 1)
@@ -465,6 +468,9 @@ void SceneManager::DrawMultiScreen()
 
 		//分割スクリーンの設定
 		SetDrawScreen(splitScreens_[index]);
+
+		//画面クリア
+		ClearDrawScreen();
 
 		// カメラ設定
 		cameras_[index]->SetBeforeDraw();

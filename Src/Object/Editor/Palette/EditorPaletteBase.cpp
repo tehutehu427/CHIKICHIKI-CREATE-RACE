@@ -9,6 +9,7 @@
 #include "../../../Utility/Utility.h"
 #include "../EditController.h"
 #include "EditorPaletteBase.h"
+#include "Palette.h"
 #include "Icon/PaletteIcon.h"
 #include "Icon/MultiPaletteIcon.h"
 
@@ -17,12 +18,11 @@ EditorPaletteBase::EditorPaletteBase(std::vector<std::unique_ptr<EditController>
 {
 	stateChanges_.emplace(STATE::NONE, std::bind(&EditorPaletteBase::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::WAIT, std::bind(&EditorPaletteBase::ChangeStateWait, this));
-	stateChanges_.emplace(STATE::CLOSE, std::bind(&EditorPaletteBase::ChangeStateClose, this));
-	stateChanges_.emplace(STATE::OPEN, std::bind(&EditorPaletteBase::ChangeStateOpen, this));
 	stateChanges_.emplace(STATE::SELECT, std::bind(&EditorPaletteBase::ChangeStateSelect, this));
+	stateChanges_.emplace(STATE::PALETTE_ANIM, std::bind(&EditorPaletteBase::ChangeStatePaletteAnim, this));
 
 	imgPalette_ = -1;
-	pal_ = {};
+	pal_ = nullptr;
 	palIcon_ = nullptr;
 	state_ = STATE::NONE;
 }
@@ -40,17 +40,19 @@ void EditorPaletteBase::Load()
 	//パレットアイコン
 	palIcon_ = std::make_unique<PaletteIcon>();
 	palIcon_->Load();
+
+	//パレット
+	pal_ = std::make_unique<Palette>();
+	pal_->Load();
 }
 
 void EditorPaletteBase::Init()
 {
-	//初期化
-	pal_.pos = { CLOSE_POS_X,CLOSE_POS_Y };
-	pal_.rate = PALETTE_RATE;
-	pal_.size = { 
-		static_cast<int>(static_cast<float>(PALETTE_SIZE_X) * pal_.rate),
-		static_cast<int>(static_cast<float>(PALETTE_SIZE_Y) * pal_.rate) };
+	//パレット
+	pal_->Init();
+	pal_->ChangeState(Palette::STATE::EDGE);
 
+	//アイコン
 	palIcon_->Init();
 
 	//初期状態
@@ -64,35 +66,16 @@ void EditorPaletteBase::Update()
 
 void EditorPaletteBase::Draw()
 {
-	//描画処理
-	DrawRotaGraph(
-		pal_.pos.x,
-		pal_.pos.y,
-		pal_.rate,
-		pal_.angle,
-		imgPalette_,
-		true,
-		false);
+	//パレット
+	pal_->Draw();
 
-	//選択描画
+	//アイコン
 	palIcon_->Draw();
 }
 
 void EditorPaletteBase::DebagDraw()
 {
 #ifdef _DEBUG
-	Vector2 leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
-	Vector2 rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
-
-	DrawBox(
-		leftTop.x,
-		leftTop.y,
-		rightBotm.x,
-		rightBotm.y,
-		Utility::RED,
-		false
-	);
-
 	palIcon_->DebagDraw();
 #endif 
 }
@@ -116,20 +99,7 @@ void EditorPaletteBase::ChangeStateNone()
 
 void EditorPaletteBase::ChangeStateWait()
 {
-	stateUpdate_ = std::bind(&EditorPaletteBase::UpdateWait, this);
-}
-
-void EditorPaletteBase::ChangeStateClose()
-{
-	stateUpdate_ = std::bind(&EditorPaletteBase::UpdateClose, this);
-
-	//パレットアイコンの状態をNONEにする
-	palIcon_->ChangeState(PaletteIcon::STATE::NONE);
-}
-
-void EditorPaletteBase::ChangeStateOpen()
-{
-	stateUpdate_ = std::bind(&EditorPaletteBase::UpdateOpen, this);
+	stateUpdate_ = std::bind(&EditorPaletteBase::UpdateWait, this);	
 }
 
 void EditorPaletteBase::ChangeStateSelect()
@@ -140,58 +110,53 @@ void EditorPaletteBase::ChangeStateSelect()
 	palIcon_->ChangeState(PaletteIcon::STATE::SELCT);
 }
 
+void EditorPaletteBase::ChangeStatePaletteAnim()
+{
+	stateUpdate_ = std::bind(&EditorPaletteBase::UpdatePaletteAnim, this);
+
+	//アイコンの状態変更
+	palIcon_->ChangeState(PaletteIcon::STATE::NONE);
+}
+
 void EditorPaletteBase::UpdateNone()
 {
+	//処理はなし
 }
 
 void EditorPaletteBase::UpdateWait()
 {
 	KeyConfig& ins = KeyConfig::GetInstance();
-	Vector2 leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
-	Vector2 rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
-
+	
 	if(ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PALETTE_CURSOR_SELECT,KeyConfig::JOYPAD_NO::PAD1) &&
-		Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBotm))
+		pal_->IsInsidePalette(ins.GetMousePos()))
 	{
-		ChangeState(STATE::OPEN);
-	}
-}
-
-void EditorPaletteBase::UpdateClose()
-{
-	pal_.pos.x += PALETTE_MOVE;
-
-	//定位置に来たら
-	if (pal_.pos.x >= CLOSE_POS_X)
-	{
-		ChangeState(STATE::WAIT);
-	}
-}
-
-void EditorPaletteBase::UpdateOpen()
-{
-	pal_.pos.x -= PALETTE_MOVE;
-
-	//中心に来たら
-	if (pal_.pos.x <= OPEN_POS_X)
-	{
-		ChangeState(STATE::SELECT);
+		//状態遷移
+		ChangeState(STATE::PALETTE_ANIM);
+		
+		//パレットの状態遷移
+		pal_->ChangeState(Palette::STATE::ADMISSION_EDGE);
 	}
 }
 
 void EditorPaletteBase::UpdateSelect()
 {	
 	KeyConfig& ins = KeyConfig::GetInstance();
-	ItemManager & itemMng = ItemManager::GetInstance();
-	Vector2 leftTop = {};		//画像左上
-	Vector2 rightBotm = {};		//画像右下
 
 	//パレット外をクリックしたときパレットを閉じる
-	leftTop = { pal_.pos.x - pal_.size.x / 2, pal_.pos.y - pal_.size.y / 2 };
-	rightBotm = { pal_.pos.x + pal_.size.x / 2, pal_.pos.y + pal_.size.y / 2 };
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PALETTE_CURSOR_SELECT, KeyConfig::JOYPAD_NO::PAD1) &&
-		!Utility::IsPointInRect(ins.GetMousePos(), leftTop, rightBotm)) {
-		ChangeState(STATE::CLOSE);
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PALETTE_CURSOR_SELECT, KeyConfig::JOYPAD_NO::PAD1) &&
+		!pal_->IsInsidePalette(ins.GetMousePos()))
+	{
+		//状態遷移
+		ChangeState(STATE::PALETTE_ANIM);
+
+		//パレットの状態遷移
+		pal_->ChangeState(Palette::STATE::EXIT_EDGE);
+
+		//アイコンの状態変更
+		palIcon_->ChangeState(PaletteIcon::STATE::NONE);
+
+		//処理終了
+		return;
 	}
 
 	//パレットアイコンに関する処理
@@ -204,7 +169,44 @@ void EditorPaletteBase::UpdateSelect()
 		editControllers_[0]->SetItemType(palIcon_->GetSelectType());
 
 		//状態変更
-		ChangeState(STATE::CLOSE);
+		ChangeState(STATE::PALETTE_ANIM);
+
+		//パレットの状態変更
+		pal_->ChangeState(Palette::STATE::EXIT_EDGE);
+
+		//アイコンの状態変更
 		palIcon_->ChangeState(PaletteIcon::STATE::NONE);
+	}
+}
+
+void EditorPaletteBase::UpdatePaletteAnim()
+{
+	//前状態を保持
+	Palette::STATE preState = pal_->GetState();
+
+	//更新処理
+	pal_->Update();
+
+	//更新後の状態と前の状態を比較して異なるとき
+	if (pal_->GetState() != preState)
+	{
+		//前の状態ごとに状態遷移
+		switch (preState)
+		{
+		case Palette::STATE::EXPANSION:
+		case Palette::STATE::ADMISSION_EDGE:
+			ChangeState(STATE::SELECT);
+			break;
+
+		case Palette::STATE::EXIT_EDGE:
+			ChangeState(STATE::WAIT);
+			break;
+
+		case Palette::STATE::REDUCTION:
+			ChangeState(STATE::NONE);
+
+		default:
+			break;
+		}
 	}
 }

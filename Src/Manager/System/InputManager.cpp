@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include <cmath>
+#include "../Application.h"
 #include "InputManager.h"
 void InputManager::Init(void)
 {
@@ -8,6 +9,7 @@ void InputManager::Init(void)
 	// 事前にここで登録しておいてください
 	Add(KEY_INPUT_SPACE);
 	Add(KEY_INPUT_N);
+	Add(KEY_INPUT_M);
 	Add(KEY_INPUT_Z);
 	Add(KEY_INPUT_X);
 
@@ -18,6 +20,7 @@ void InputManager::Init(void)
 	Add(KEY_INPUT_RCONTROL);
 
 	Add(KEY_INPUT_B);
+	Add(KEY_INPUT_BACK);
 
 	//プレイヤー操作関連
 	//---------------------------------------------------
@@ -39,6 +42,9 @@ void InputManager::Init(void)
 	Add(KEY_INPUT_RETURN);
 	Add(KEY_INPUT_T);
 	Add(KEY_INPUT_Y);
+
+	//タブキー
+	Add(KEY_INPUT_TAB);
 
 	//---------------------------------------------------
 
@@ -192,6 +198,15 @@ Vector2 InputManager::GetMousePos(void) const
 Vector2 InputManager::GetMousePosDistance(void) const
 {
 	return { mousePos_.x - mousePrePos_.x ,mousePos_.y - mousePrePos_.y };
+}
+
+void InputManager::SetMousePosScreen(void)
+{
+	mousePos_.x = (mousePos_.x + Application::SCREEN_SIZE_X * 2)% Application::SCREEN_SIZE_X;
+	mousePos_.y = (mousePos_.y + Application::SCREEN_SIZE_Y * 2) % Application::SCREEN_SIZE_Y;
+	mousePrePos_.x = (mousePrePos_.x + Application::SCREEN_SIZE_X * 2) % Application::SCREEN_SIZE_X;
+	mousePrePos_.y = (mousePrePos_.y + Application::SCREEN_SIZE_Y * 2) % Application::SCREEN_SIZE_Y;
+	SetMousePoint(static_cast<int>(mousePos_.x), static_cast<int>(mousePos_.y));
 }
 
 int InputManager::GetMouse(void) const

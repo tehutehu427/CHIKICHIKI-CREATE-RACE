@@ -33,9 +33,6 @@ public:
 	/// <param name="_hitColTag">相手側の当たり判定</param>
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
-	//移動量の取得
-	inline const VECTOR GetMovePow(void)const { return movePow_; }
-
 	//サイズの取得
 	inline const IntVector3 GetHitSize(void)const override;
 
@@ -51,7 +48,6 @@ private:
 	float speed_;		//移動速度
 	double distance_;	//ルートまでの距離
 	VECTOR moveVec_;	//移動方向
-	VECTOR movePow_;	//移動量
 
 	//移動
 	void Move(void);

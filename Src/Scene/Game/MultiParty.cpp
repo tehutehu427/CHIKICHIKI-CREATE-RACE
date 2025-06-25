@@ -73,8 +73,32 @@ void MultiParty::UpdateAction(void)
 
 void MultiParty::UpdateEdit(void)
 {
-	//親クラスのエディット時の更新処理を呼ぶ
-	GameScene::UpdateEdit();
+	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum() ; i++)
+	{
+		SetDrawScreen(SceneManager::GetInstance().GetScreen(i));
+		SceneManager::GetInstance().GetCamera(i).lock()->CameraSetting(); // カメラの更新
+		editControllers_[i]->Update();
+	}
+	SetDrawScreen(SceneManager::GetInstance().GetMainScreen());
+	for (auto& controller : editControllers_)
+	{
+		if (!controller->GetReady())
+		{
+			break;
+		}
+		ChangePhase(PHASE::ACTION_PHASE);
+
+	}
+}
+
+void MultiParty::DrawAction(void)
+{
+
+}
+
+void MultiParty::DrawEdit(void)
+{
+	GameScene::DrawEdit();
 }
 
 void MultiParty::ChangePhaseEdit()
@@ -89,7 +113,7 @@ void MultiParty::ChangePhaseEdit()
 void MultiParty::ChangePhaseAction()
 {
 	//親クラスの処理を呼びだし
-	GameScene::ChangePhaseEdit();
+	GameScene::ChangePhaseAction();
 
 	//画面を分割する
 	scnMng_.SetIsSplitMode(true);
@@ -120,7 +144,7 @@ void MultiParty::UpdateSelect()
 	//パレット処理が終了したとき
 	if (palette_->GetState() == EditorPaletteBase::STATE::NONE)
 	{
-		ChangePhase(PHASE::RESULT_PHASE);
+		ChangePhase(PHASE::EDIT_PHASE);
 	}
 }
 
@@ -142,7 +166,7 @@ void MultiParty::DrawResult()
 void MultiParty::DebagUpdate()
 {
 	//次のフェーズへ状態遷移する
-	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER,KeyConfig::JOYPAD_NO::PAD1))
+	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_MOUSE,KeyConfig::JOYPAD_NO::PAD1))
 	{
 		int phase = static_cast<int>(phase_);
 		int nextPhase = phase + 1;
