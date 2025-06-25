@@ -333,7 +333,7 @@ private:
 	//“–‚½‚è”»’è
 	//----------------------------------
 	//“–‚½‚è”»’è
-	//std::unique_ptr<PlayerOnHit>onHitCol_;
+	std::unique_ptr<PlayerOnHit>onHitCol_;
 	//“–‚½‚è”»’è‚²‚Æ‚ÌXV
 	std::map<Collider::TAG, std::function<void(const std::weak_ptr<Collider> _hitCol)>>colUpdates_;
 

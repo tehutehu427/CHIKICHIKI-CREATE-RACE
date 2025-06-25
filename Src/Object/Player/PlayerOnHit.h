@@ -10,7 +10,7 @@ class PlayerOnHit
 {
 public:
 	//コンストラクタ
-	PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>_colParam,Transform& _trans,VECTOR& _movedPos, VECTOR& _moveDiff);
+	PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>&_colParam,Transform& _trans,VECTOR& _movedPos, VECTOR& _moveDiff);
 
 	//デストラクタ
 	~PlayerOnHit(void);
@@ -25,6 +25,12 @@ public:
 	/// 更新
 	/// </summary>
 	void Update(const std::weak_ptr<Collider> _hitCol);
+
+	void PosUpdate(void);
+	//ゲッタ
+	const VECTOR GetMovedPos(void) const { return movedPos_; }
+	//セッタ
+	void SetMovedPos(const VECTOR& _movedPos) { movedPos_ = _movedPos; }
 
 private:
 	//--------------------------------------
@@ -64,19 +70,19 @@ private:
 	PlayerAction& action_;
 
 	//移動量
-	VECTOR movedPos_;
+	VECTOR& movedPos_;
 
 	//移動前
-	VECTOR moveDiff_;
+	VECTOR& moveDiff_;
 
 	//プレイヤーの情報
 	Transform trans_;
 
-	////当たり判定ごとの更新
-	//std::map<Collider::TAG, std::function<void(const std::weak_ptr<Collider> _hitCol)>>colUpdates_;
+	//当たり判定ごとの更新
+	std::map<Collider::TAG, std::function<void(const std::weak_ptr<Collider> _hitCol)>>colUpdates_;
 
-	////当たり判定関係
-	//std::vector<ObjectBase::ColParam> colParam_;
+	//当たり判定関係
+	std::vector<ObjectBase::ColParam>& colParam_;
 
 	//ゴール判定
 	bool isGoal_;
@@ -109,7 +115,7 @@ private:
 	//パンチの当たり処理
 	void ColPunch(const std::weak_ptr<Collider> _hitCol);
 
-	void PosUpdate(void);
+	
 
 	//モデルの当たった時の共通処理
 	void HitModelCommon(Model& _hitModel);

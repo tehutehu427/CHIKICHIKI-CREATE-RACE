@@ -102,6 +102,7 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	isGoal_ = false;
 	isDeath_ = false;
 	//*****************************************************
+
 	
 }
 
@@ -152,6 +153,11 @@ void Player::Init(void)
 	ChangeState(PLAYER_STATE::ALIVE);
 	action_->Init();
 
+	//“–‚½‚è”»’è
+	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_, movedPos_, moveDiff_);
+	onHitCol_->Init();
+
+
 #ifdef DEBUG_ON
 	cube_.centerPos = Utility::VECTOR_ZERO;
 	cubeMovePos_ = Utility::VECTOR_ZERO;
@@ -188,6 +194,7 @@ void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
 	Collider::TAG tag = _hitCol.lock()->GetTag();
 	colUpdates_[tag](_hitCol);
+	//onHitCol_->Update(_hitCol);
 }
 
 #ifdef DEBUG_ON
@@ -260,6 +267,8 @@ void Player::AliveUpdate(void)
 
 	//Õ“Ë”»’è
 	PosUpdate();
+
+	//onHitCol_->PosUpdate();
 }
 void Player::ChangeDeath(void)
 {
@@ -380,6 +389,7 @@ void Player::PosUpdate(void)
 	VECTOR pow = action_->GetMovePow();
 	movedPos_ = VAdd(trans_.pos, action_->GetMovePow());
 	movedPos_ = VAdd(movedPos_, action_->GetJumpPow());
+
 
 #ifdef DEBUG_ON
 
