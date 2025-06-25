@@ -118,6 +118,8 @@ CollisionManager::CollisionManager(void)
 	hitRange_[Collider::TAG::GOAL] = HIT_RANGE_GOAL;
 
 	hitRange_[Collider::TAG::CANNON_AIM] = HIT_RANGE_TARGET;
+	
+	hitRange_[Collider::TAG::WIND] = HIT_RANGE_WIND;
 }
 
 CollisionManager::~CollisionManager(void)

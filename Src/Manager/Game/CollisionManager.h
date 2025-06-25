@@ -17,6 +17,7 @@ public:
 	static constexpr float HIT_RANGE_START = 600.0f;	//開始地点の当たり判定距離
 	static constexpr float HIT_RANGE_GOAL = 600.0f;		//終了地点の当たり判定距離
 	static constexpr float HIT_RANGE_TARGET = 2500.0f;	//ターゲット用の当たり判定距離
+	static constexpr float HIT_RANGE_WIND = 2500.0f;	//風用の当たり判定距離
 
 	//更新用
 	static constexpr int COL_UPDATE_FRAME = 0;		//更新フレーム
