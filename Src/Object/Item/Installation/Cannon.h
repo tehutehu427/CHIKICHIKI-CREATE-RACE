@@ -63,7 +63,6 @@ private:
 
 	//対象
 	VECTOR targetPos_;		//狙う対象の位置情報
-	VECTOR targetVec_;		//狙う対象に対しての方向ベクトル
 
 	//砲台の回転
 	void RotateTurret(void);

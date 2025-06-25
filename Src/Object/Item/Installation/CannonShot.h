@@ -9,7 +9,7 @@ public:
 
 	//ステータス
 	static constexpr float ALIVE_TIME = 5.0f;	//生存時間	
-	static constexpr float SPEED = 5.0f;		//弾の速度
+	static constexpr float SPEED = 15.0f;		//弾の速度
 	static constexpr float SCALE = 0.3f;		//弾の大きさ
 
 	//コンストラクタ
