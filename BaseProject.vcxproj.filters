@@ -100,6 +100,9 @@
     <ClCompile Include="Src\Manager\System\SoundManager.cpp" />
     <ClCompile Include="Src\Object\System\ManualTab.cpp" />
     <ClCompile Include="Src\Object\Player\PlayerAction.cpp" />
+    <ClCompile Include="Src\Object\Editor\EditEscape.cpp" />
+    <ClCompile Include="Src\Object\System\YesNoResponder.cpp" />
+    <ClCompile Include="Src\Object\System\RoundDisplay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -240,6 +243,9 @@
     <ClInclude Include="Src\Manager\System\SoundManager.h" />
     <ClInclude Include="Src\Object\System\ManualTab.h" />
     <ClInclude Include="Src\Object\Player\PlayerAction.h" />
+    <ClInclude Include="Src\Object\Editor\EditEscape.h" />
+    <ClInclude Include="Src\Object\System\YesNoResponder.h" />
+    <ClInclude Include="Src\Object\System\RoundDisplay.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

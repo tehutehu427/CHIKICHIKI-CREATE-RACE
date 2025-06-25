@@ -3,11 +3,13 @@
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SceneManager.h"
 #include "../../Utility/Utility.h"
 
 MultiInputCheck::MultiInputCheck() : key_(KeyConfig::GetInstance())
 {
 	players_.clear();
+	imgOk_ = -1;
 }
 
 MultiInputCheck::~MultiInputCheck()
@@ -18,6 +20,7 @@ void MultiInputCheck::Load()
 {
 	//リソースの読み込み
 	ResourceManager& res = ResourceManager::GetInstance();
+	imgOk_ = res.Load(ResourceManager::SRC::OK).handleId_;
 }
 
 void MultiInputCheck::Init()
@@ -32,39 +35,46 @@ void MultiInputCheck::Update()
 
 	//全員の入力を確認する
 	constexpr int OFFSET = static_cast<int>(KeyConfig::JOYPAD_NO::PAD1);
+	constexpr float TIME = 1.0f;
+
 	for (int i = 0; i < players_.size(); i++)
 	{
 		if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, static_cast<KeyConfig::JOYPAD_NO>(OFFSET + i)))
 		{
-			players_[i].isInput = true;
+			players_[i].isProcess = true;
+		}
+		//画像の拡大イージング処理
+		if (players_[i].isProcess)
+		{	
+			//時間更新
+			players_[i].step+= SceneManager::GetInstance().GetDeltaTime();
+
+			//拡大率の更新
+			players_[i].rate = Utility::EaseInOutBack(players_[i].step, TIME, 0.0f, RATE);
+
+			//拡大率が一定以上になったら
+			if (players_[i].step >= TIME)
+			{
+				players_[i].isInput = true;
+			}
 		}
 	}
 }
 
 void MultiInputCheck::Draw()
 {
-	int index = 0;
-	int color = 0;
 	for (auto& player : players_)
 	{
-		if (!player.isInput) { break; }
-		switch (index)
-		{
-		case 0:
-			color = Utility::BLUE;
-			break;
-		case 1:
-			color = Utility::RED;
-			break;
-		case 2:
-			color = Utility::YELLOW;
-			break;
-		case 3:
-			color = Utility::GREEN;
-			break;
-		}
-		DrawFormatString(player.uiPos.x, player.uiPos.y, color, "OK");
-		index++;
+		if (!player.isProcess) { continue; }
+
+		DrawRotaGraph(
+			player.uiPos.x, 
+			player.uiPos.y, 
+			player.rate,
+			0.0f,
+			imgOk_,
+			true,
+			false);
 	}
 }
 
@@ -107,5 +117,8 @@ void MultiInputCheck::ResetInput()
 	for (auto& player : players_)
 	{
 		player.isInput = false;
+		player.isProcess = false;
+		player.rate = 0.0f;
+		player.step = 0.0f;
 	}
 }

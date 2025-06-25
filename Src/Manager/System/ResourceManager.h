@@ -35,6 +35,15 @@ public:
 	static constexpr int CHANGE_PHASE_ICONS_SIZE_X = 160;//フェーズ遷移用アイコン大きさX
 	static constexpr int CHANGE_PHASE_ICONS_SIZE_Y = 80;//フェーズ遷移用アイコン大きさY
 
+	static constexpr int NUMBERS_DIV_X = 5;	//ナンバーの分割数X
+	static constexpr int NUMBERS_DIV_Y = 2;	//ナンバーの分割数Y
+	static constexpr int NUMBERS_SIZE = 128; //ナンバーの各画像サイズ
+
+	static constexpr int SELECT_MES_DIV_X = 1;	//セレクトシーン用メッセージ分割数X
+	static constexpr int SELECT_MES_DIV_Y = 4;	//セレクトシーン用メッセージ分割数Y
+	static constexpr int SELECT_MES_SIZE_X = 1180; //セレクトシーン用メッセージ各画像サイズX
+	static constexpr int SELECT_MES_SIZE_Y = 128; //セレクトシーン用メッセージ各画像サイズY
+
 	// リソース名
 	enum class SRC
 	{
@@ -70,6 +79,12 @@ public:
 		BACK_ARC,
 		SHADOW_ARC,
 		CURSORS,
+		SELECT_MESSAGES,
+
+		//ゲームシーン用画像
+		NUMBERS,
+		OK,
+		ROUND,
 
 		//アイテムモデル
 		FLOOR,				//足場
@@ -87,6 +102,9 @@ public:
 		FAN,				//扇風機
 		SKY_DOME,			//スカイドーム
 		CHICKEN,			//チキンモデル
+
+		TEST_SE,			//テスト
+		TEST2_SE,			//テスト2
 	};
 
 	// 明示的にインステンスを生成する

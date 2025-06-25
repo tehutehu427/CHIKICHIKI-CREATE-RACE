@@ -35,17 +35,17 @@ void SoundManager::Destroy()
     }
 }
 
-void SoundManager::Play(const int& _sound, const PLAYTYPE _playType)
+void SoundManager::Play(const int _sound, const PLAYTYPE _playType)
 {
     PlaySoundMem(_sound, GetPlayType(_playType));
 }
 
-void SoundManager::Stop(const int& _sound)
+void SoundManager::Stop(const int _sound)
 {
     StopSoundMem(_sound);
 }
 
-void SoundManager::ChangeVolume(const int& _sound, const int _volumeParcent)
+void SoundManager::ChangeVolume(const int _sound, const int _volumeParcent)
 {
     static constexpr int VOLUME_MAX = 255;
     static constexpr int DIV = 100;

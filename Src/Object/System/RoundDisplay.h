@@ -1,23 +1,17 @@
 #pragma once
-
-class SelectScene;
-
-class SelectStage
+class RoundDisplay
 {
 public:
-
-	static constexpr int COL = 2;
-	static constexpr int LINE = 2;
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	SelectStage();
+	RoundDisplay();
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~SelectStage();
+	~RoundDisplay();
 
 	/// <summary>
 	/// 読み込み
@@ -32,30 +26,32 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	/// <param name="_parent">親クラス</param>
-	void Update(SelectScene& _parent);
+	void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// ナンバーインデックスに値を追加
+	/// </summary>
+	/// <param name="_addIndex">追加値</param>
+	void AddNumberIndex(const int _addIndex);
+
 private:
 
-	//メッセージ画像
-	int* imgMessages_;
+	//ラウンド画像
+	int imgRound_;
 
 	//ナンバー画像
 	int* imgNumbers_;
 
-	//選択用アイコン
-	int selectIcon_;
+	//ナンバー用インデックス
+	int numberIndex_;
 
-	//選択してるステージインデックス
-	int stageIndex_;
-
-	//メッセージの描画
-	void DrawMessage();
+	//ナンバーの描画桁数
+	int numberDigit_;
 
 };
 

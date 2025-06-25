@@ -56,8 +56,17 @@ public:
 
 private:
 
+	//画像サイズ
+	static constexpr int SIZE = 128;
+
+	//拡大率
+	static constexpr float RATE = 0.75f;
+
 	//入力マネージャー
 	KeyConfig& key_;
+
+	//画像
+	int imgOk_;
 
 	//各プレイヤーの入力確認構造体
 	struct PlayerCheckInput
@@ -65,8 +74,17 @@ private:
 		//入力確認
 		bool isInput = false;
 
+		//処理を実行
+		bool isProcess = false;
+
 		//UI座標位置
 		Vector2 uiPos = {};
+
+		//拡大率
+		float rate = 0.0f;
+
+		//ステップ
+		float step = 0.0f;
 	};
 
 	//各プレイヤーの入力確認配列

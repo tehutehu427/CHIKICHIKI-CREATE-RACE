@@ -254,9 +254,19 @@ public:
 	/// <param name="_time">経過時間</param>
 	/// <param name="_totalTime">アニメーション総時間</param>
 	/// <param name="_start">開始位置</param>
-	/// <param name="_change">終了位置</param>
+	/// <param name="_end">終了位置</param>
 	/// <returns>変化量</returns>
 	static float EaseOutQuad(float _time, const float _totalTime, const float _start, const float _end);
+
+	/// <summary>
+	/// イーズインアウトバック
+	/// </summary>
+	/// <param name="_time">経過時間</param>
+	/// <param name="_totalTime">アニメーション総時間</param>
+	/// <param name="_start">開始位置</param>
+	/// <param name="_end">終了位置</param>
+	/// <returns>変化量</returns>
+	static float EaseInOutBack(float _time, const float _totalTime, const float _start, const float _end);
 
 	static constexpr float DEFAULT_SHAKE_SPEED = 5.0f;		//揺れの振幅
 	static constexpr float DEFAULT_SHAKE_AMPLITUDE = 10.0f;	//揺れの速さ
@@ -269,4 +279,11 @@ public:
 	/// <param name="_amplitude">振幅</param>
 	/// <returns></returns>揺らす計算した値
 	static float GetShake(const float _value, float _time, const float _speed = DEFAULT_SHAKE_SPEED, const float _amplitude = DEFAULT_SHAKE_AMPLITUDE);
+
+	/// <summary>
+	/// 桁数を返す
+	/// </summary>
+	/// <param name="_value">桁数を調べる値</param>
+	/// <returns>桁数</returns>
+	static int GetDigitCount(const int _value);
 };

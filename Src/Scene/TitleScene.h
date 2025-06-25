@@ -24,6 +24,9 @@ private:
 	//タイトル画像
 	int imgTitleLogo_;
 
+	int seTest_;
+	int seTest2_;
+
 	//更新関数
 	void NormalUpdate(void) override;
 

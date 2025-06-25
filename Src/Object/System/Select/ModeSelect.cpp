@@ -33,6 +33,7 @@ ModeSelect::ModeSelect()
 	for (int i = 0; i < DRAW_ARC_NUM; i++) { arc_[i] = {}; }
 	int i = -1;
 	imgArcs_ = &i;
+	imgMessages_ = &i;
 	currentAngle_ = 0.0f;
 	targetAngle_ = 0.0f;
 	arcIndex_ = 0;
@@ -54,6 +55,7 @@ void ModeSelect::Load()
 	ResourceManager& res = ResourceManager::GetInstance();
 
 	//リソースの読み込み
+	imgMessages_ = res.Load(ResourceManager::SRC::SELECT_MESSAGES).handleIds_;
 	imgArcs_ = res.Load(ResourceManager::SRC::ARCS).handleIds_;
 	imgBackArc_ = res.Load(ResourceManager::SRC::BACK_ARC).handleId_;
 	imgShadowArc_ = res.Load(ResourceManager::SRC::SHADOW_ARC).handleId_;
@@ -133,6 +135,9 @@ void ModeSelect::Draw()
 			DrawDarkly(i);
 		}
 	}
+
+	//メッセージの描画
+	DrawMessage();
 
 	//マニュアル描画
 	manual_->Draw();
@@ -246,6 +251,25 @@ void ModeSelect::SetMenuItem(const int _imgIndex, const int _arcIndex)
 
 	//画像の割り当て
 	arc_[arcIndex].img = imgArcs_[imgIndex];
+}
+
+void ModeSelect::DrawMessage()
+{
+	//描画位置
+	constexpr float RATE = 0.7f;
+	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * RATE / 2 + Application::SCREEN_HALF_X - 130);
+	constexpr int POS_Y = 64;
+	
+
+	DrawRotaGraph(
+		POS_X,
+		POS_Y,
+		RATE,
+		0.0f,
+		imgMessages_[static_cast<int>(SelectScene::SELECT_MES::MODE_SELECT)],
+		true,
+		false
+	);
 }
 
 void ModeSelect::DrawDarkly(const int _index)

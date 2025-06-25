@@ -84,7 +84,8 @@ void ManualTab::DrawWait()
 		0.0f,
 		imgIcon_,
 		true,
-		false);
+		false
+	);
 }
 
 void ManualTab::DrawDisplay()
@@ -97,13 +98,4 @@ void ManualTab::DrawDisplay()
 		Utility::BLUE,
 		true
 	);
-
-	/*DrawRotaGraph(
-		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y,
-		1.0f,
-		0.0f,
-		imgManual_,
-		true,
-		false);*/
 }

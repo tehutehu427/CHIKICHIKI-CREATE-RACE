@@ -24,6 +24,7 @@ public:
 	/// </summary>
 	enum class PHASE
 	{		
+		ROUND_PHASE,	//ラウンドを表示
 		SELECT_PHASE,	//選択(マルチのみ)
 		EDIT_PHASE,		//エディット
 		ACTION_PHASE,	//アクション
@@ -56,7 +57,10 @@ public:
 	/// <param name=""></param>
 	virtual void Init(void) override;	
 	
-	//フェーズ遷移
+	/// <summary>
+	/// フェーズ遷移
+	/// </summary>
+	/// <param name="phase">フェーズ</param>
 	void ChangePhase(const PHASE phase);
 
 protected:

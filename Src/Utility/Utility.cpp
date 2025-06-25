@@ -767,7 +767,60 @@ float Utility::EaseOutQuad(const float _time, const float _totalTime, const floa
     return -distance * _time * (_time - 2) + _start;
 }
 
+float Utility::EaseInOutBack(float _time, const float _totalTime, const float _start, const float _end)
+{
+    // 補間定数1
+    constexpr float C1 = 1.70158f;
+
+    // 補間定数2（オーバーシュート調整用）
+    constexpr float C2 = C1 * 1.525f;
+
+    // 開始から終了までの距離
+    float distance = _end - _start;
+
+    // 補間係数
+    float t = _time / _totalTime;
+
+    // Clamp t to [0, 1]
+    if (t < 0.0f) t = 0.0f;
+    if (t > 1.0f) t = 1.0f;
+
+    // 補間の実行（EaseInOutBack）
+    float easedT;
+    if (t < 0.5f)
+    {
+        float twoT = 2.0f * t;
+        easedT = (twoT * twoT * ((C2 + 1.0f) * twoT - C2)) / 2.0f;
+    }
+    else
+    {
+        float twoTMinus2 = 2.0f * t - 2.0f;
+        easedT = (twoTMinus2 * twoTMinus2 * ((C2 + 1.0f) * twoTMinus2 + C2) + 2.0f) / 2.0f;
+    }
+
+    // 値の補間
+    return distance * easedT + _start;
+}
+
 float Utility::GetShake(const float _value, float _time, const float _speed, const float _amplitude)
 {
     return _value + std::sin(_time * _speed) * _amplitude;
+}
+
+int Utility::GetDigitCount(const int _value)
+{
+    // 0 の桁数は 1
+    if (_value == 0) return 1;
+
+    // マイナス値は絶対値に変換
+    int ret = std::abs(_value);
+
+    int digit = 0;
+    while (_value > 0)
+    {
+        ret /= 10;
+        ++digit;
+    }
+
+    return digit;
 }

@@ -6,10 +6,14 @@
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Editor/Palette/MultiPalette.h"
 #include "../../Object/System/Result/MultiResult.h"
+#include "../../Object/System/RoundDisplay.h"
 
 MultiParty::MultiParty(void)
 {
 	result_ = nullptr;
+	round_ = nullptr;
+	phaseChangeTimer_ = 0.0f;
+	phaseChanges_.emplace(PHASE::ROUND_PHASE, std::bind(&MultiParty::ChangePhaseRound, this));
 	phaseChanges_.emplace(PHASE::SELECT_PHASE, std::bind(&MultiParty::ChangePhaseSelect, this));
 	phaseChanges_.emplace(PHASE::RESULT_PHASE, std::bind(&MultiParty::ChangePhaseResult, this));
 }
@@ -33,6 +37,10 @@ void MultiParty::Load(void)
 	result_ = std::make_unique<MultiResult>();
 	result_->Load();
 
+	//ラウンド
+	round_ = std::make_unique<RoundDisplay>();
+	round_->Load();
+
 	//スコアマネージャーを生成
 	ScoreManager::GetInstance().CreateInstance();
 }
@@ -48,8 +56,11 @@ void MultiParty::Init(void)
 	//リザルト初期化
 	result_->Init();
 
+	//ラウンドを初期化
+	round_->Init();
+
 	//フェーズ遷移
-	ChangePhase(PHASE::SELECT_PHASE);
+	ChangePhase(PHASE::ROUND_PHASE);
 
 	//カメラ設定
 	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
@@ -110,11 +121,21 @@ void MultiParty::ChangePhaseAction()
 	scnMng_.SetIsSplitMode(true);
 }
 
+void MultiParty::ChangePhaseRound()
+{
+	//処理を登録
+	phaseUpdate_ = std::bind(&MultiParty::UpdateRound, this);
+	phaseDraw_ = std::bind(&MultiParty::DrawRound, this);
+	//画面分割はしない
+	scnMng_.SetIsSplitMode(false);
+	//ラウンドを追加
+	round_->AddNumberIndex(1);
+}
+
 void MultiParty::ChangePhaseSelect()
 {
 	phaseUpdate_ = std::bind(&MultiParty::UpdateSelect, this);
 	phaseDraw_ = std::bind(&MultiParty::DrawSelect, this);
-
 	//画面分割はしない
 	scnMng_.SetIsSplitMode(false);
 }
@@ -126,6 +147,25 @@ void MultiParty::ChangePhaseResult()
 
 	//画面分割はしない
 	scnMng_.SetIsSplitMode(false);
+}
+
+void MultiParty::UpdateRound()
+{
+	//ラウンドを更新
+	round_->Update();
+
+	//フェーズ遷移用タイマーを更新
+	phaseChangeTimer_ += SceneManager::GetInstance().GetDeltaTime();
+
+	//時間になったらフェーズ遷移
+	if (phaseChangeTimer_ > ROUND_CHANGE_TIME)
+	{
+		//初期化
+		phaseChangeTimer_ = 0.0f;
+
+		//セレクトへ遷移
+		ChangePhase(PHASE::SELECT_PHASE);
+	}
 }
 
 void MultiParty::UpdateSelect()
@@ -142,6 +182,11 @@ void MultiParty::UpdateSelect()
 void MultiParty::UpdateResult()
 {
 	result_->Update(*this);
+}
+
+void MultiParty::DrawRound()
+{
+	round_->Draw();
 }
 
 void MultiParty::DrawSelect()

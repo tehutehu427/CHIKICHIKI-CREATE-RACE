@@ -31,6 +31,16 @@ public:
 		SETTING,		//設定
 	};	
 
+	//メッセージ種類
+	enum class SELECT_MES
+	{
+		MODE_SELECT,
+		PLAYER_NUM,
+		PUSH_BUTTON,
+		STAGE_SELECT,
+		MAX
+	};
+
 	//セレクトメニューの項目数
 	static constexpr int MENU_LIST_NUM = static_cast<int>(SELECT_MENU::MAX);	//項目数
 
