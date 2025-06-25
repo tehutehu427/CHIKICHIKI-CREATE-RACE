@@ -72,6 +72,8 @@ public:
 	//マウスの座標を設定
 	void SetMousePosScreen(void);
 
+	void SetMousePos(const Vector2& pos);
+
 	// マウスのクリック状態を取得(MOUSE_INPUT_LEFT、RIGHT)
 	int GetMouse(void) const;
 

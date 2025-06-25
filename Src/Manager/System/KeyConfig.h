@@ -171,6 +171,8 @@ public:
 
 	//マウスの座標を設定
 	void SetMousePosScreen(void);
+
+	void SetMousePos(const Vector2& pos);
 	float GetLStickDeg(KeyConfig::JOYPAD_NO no) const;
 
 	float GetRStickDeg(KeyConfig::JOYPAD_NO no) const;

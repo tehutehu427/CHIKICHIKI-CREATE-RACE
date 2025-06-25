@@ -47,29 +47,7 @@ void EditController::Init(void)
 
 void EditController::Update(void)
 {
-	//カーソル位置更新
-	auto lStick = KeyConfig::GetInstance().GetKnockLStickSize(padNum_);
-	auto& itemMIns = ItemManager::GetInstance();
-	cursorPos_.x += lStick.x * PAD_STICK_RATE;
-	cursorPos_.y += lStick.y * PAD_STICK_RATE;
-	cursorPos_.x = cursorPos_.x < 0 ? 0 : cursorPos_.x > screenSize_.x ? screenSize_.x : cursorPos_.x;	//カーソル位置の制限
-	cursorPos_.y = cursorPos_.y < 0 ? 0 : cursorPos_.y > screenSize_.y ? screenSize_.y : cursorPos_.y;	//カーソル位置の制限
-	if (playerMaxNum_ == 1)
-	{
-		//マウス位置を取得
-		mousePos_ = KeyConfig::GetInstance().GetMousePos();
-		//カーソル位置を取得
-		//mousePos_ = cursorPos_;
-	}
-	else
-	{
-		if (!MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
-		{
-			ready_->Update();
-		}
-		//カーソル位置を取得
-		mousePos_ = cursorPos_;
-	}
+	CursorUpdate();	//カーソル更新
 	DebugUpdate();
 
 	if (GetReady())
@@ -102,7 +80,13 @@ void EditController::DrawUI(void)
 	{
 		ready_->Draw();
 	}
-	DrawGraph(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y), ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_], true);	//カーソル描画
+	int sizeX;
+	int sizeY;
+	GetGraphSize(ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],&sizeX,&sizeY);
+	Vector2 cursorPos = Vector2::SubVector2(cursorPos_,Vector2(CURSOR_LOCAL_POS_X,CURSOR_LOCAL_POS_Y));
+	DrawExtendGraph(static_cast<int>(cursorPos.x), static_cast<int>(cursorPos.y), static_cast<int>(cursorPos.x) + sizeX / 2, static_cast<int>(cursorPos.y) + sizeY / 2, ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_], true);	//カーソル描画
+	DrawPixel(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y), Utility::BLACK);	//カーソル位置のピクセル描画
+	DrawBox(static_cast<int>(cursorPos_.x) - CURSOR_POINT, static_cast<int>(cursorPos_.y) - CURSOR_POINT, static_cast<int>(cursorPos_.x) + CURSOR_POINT, static_cast<int>(cursorPos_.y) + CURSOR_POINT, Utility::BLACK, true);	//カーソル位置のピクセル描画
 }
 
 void EditController::Reset(void)
@@ -122,19 +106,19 @@ void EditController::ChengeMode(MODE mode)
 
 void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 {
-	if (playerMaxNum_ == 1)
-	{
-		//マウス位置を取得
-		mousePos_ = KeyConfig::GetInstance().GetMousePos();
+	//if (playerMaxNum_ == 1)
+	//{
+	//	//マウス位置を取得
+	//	mousePos_ = KeyConfig::GetInstance().GetMousePos();
 
-		//カーソル位置を取得
-		//mousePos_ = cursorPos_;
-	}
-	else
-	{
-		//カーソル位置を取得
-		mousePos_ = cursorPos_;
-	}
+	//	//カーソル位置を取得
+	//	cursorPos_ = mousePos_;
+	//}
+	//else
+	//{
+	//	//カーソル位置を取得
+	//	mousePos_ = cursorPos_;
+	//}
 	if (itemType == ItemBase::ITEM_TYPE::NONE)
 	{
 		return;
@@ -200,6 +184,37 @@ void EditController::SetReady(void)
 		MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
 	}
 	itemMIns.DummyItemAddItems(playerNum_);
+}
+
+void EditController::CursorUpdate(void)
+{
+	//カーソル位置更新
+	auto lStick = KeyConfig::GetInstance().GetKnockLStickSize(padNum_);
+	auto& itemMIns = ItemManager::GetInstance();
+	Vector2 cursorMove;
+	cursorMove.x += lStick.x * PAD_STICK_RATE;
+	cursorMove.y += lStick.y * PAD_STICK_RATE;
+	Vector2 mouseMove = KeyConfig::GetInstance().GetMouseMove();
+
+	if (playerMaxNum_ == 1)
+	{
+		//カーソル位置を取得
+		cursorPos_ = Vector2::AddVector2(cursorPos_, cursorMove);	//カーソル位置の更新
+		cursorPos_ = Vector2::AddVector2(cursorPos_, mouseMove);	//カーソル位置の更新
+		cursorPos_.x = cursorPos_.x < 0.0f ? 0.0f : cursorPos_.x > screenSize_.x ? screenSize_.x:cursorPos_.x;	//カーソル位置の更新
+		cursorPos_.y = cursorPos_.y < 0.0f ? 0.0f : cursorPos_.y > screenSize_.y ? screenSize_.y:cursorPos_.y;	//カーソル位置の更新
+		KeyConfig::GetInstance().SetMousePos(cursorPos_);	//カーソル位置をマウス位置に設定
+	}
+	else
+	{
+		//カーソル位置を取得
+		cursorPos_ = Vector2::AddVector2(cursorPos_, cursorMove);	//カーソル位置の更新
+		if (!MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+		{
+			ready_->Update();
+		}
+	}
+	mousePos_ = cursorPos_;
 }
 
 void EditController::ChengeModeItemSelect(void)
@@ -514,7 +529,7 @@ void EditController::MoveItem(void)
 
 }
 
-EditController::MOVE_DIR EditController::GetMoveDir(void) const
+EditController::MOVE_DIR EditController::GetMoveDir(void)
 {
 	MOVE_DIR moveDir = MOVE_DIR::NONE;
 	KeyConfig& ins = KeyConfig::GetInstance();
@@ -538,20 +553,19 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 	{
 		return moveDir_;
 	}
-	Vector2 mousePos = ins.GetMousePos();
-	if (playerMaxNum_ == 1)
-	{
-		//マウス位置を取得
-		mousePos = KeyConfig::GetInstance().GetMousePos();
+	//if (playerMaxNum_ == 1)
+	//{
+	//	//マウス位置を取得
+	//	mousePos_ = KeyConfig::GetInstance().GetMousePos();
 
-		//カーソル位置を取得
-		//mousePos = cursorPos_;
-	}
-	else
-	{
-		//カーソル位置を取得
-		mousePos = cursorPos_;
-	}
+	//	//カーソル位置を取得
+	//	cursorPos_ = mousePos_;
+	//}
+	//else
+	//{
+	//	//カーソル位置を取得
+	//	mousePos_ = cursorPos_;
+	//}
 	VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
 	worldPos = VAdd(worldPos, { MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
 	VECTOR x = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)));
@@ -561,7 +575,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 	if (x.z > 0.0f || x.z < 1.0f)
 	{
 		Vector2 x2D = { static_cast<int>(x.x),static_cast<int>( x.y) };
-		if (Utility::Distance(mousePos, x2D) < DELAY_MOVE_ARROW)
+		if (Utility::Distance(mousePos_, x2D) < DELAY_MOVE_ARROW)
 		{
 			moveDir = MOVE_DIR::X;
 			return moveDir;
@@ -571,7 +585,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 	if (y.z > 0.0f || y.z < 1.0f)
 	{
 		Vector2 y2D = {static_cast<int>( y.x),static_cast<int>( y.y )};
-		if (Utility::Distance(mousePos, y2D) < DELAY_MOVE_ARROW)
+		if (Utility::Distance(mousePos_, y2D) < DELAY_MOVE_ARROW)
 		{
 			moveDir = MOVE_DIR::Y;
 			return moveDir;
@@ -581,7 +595,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 	if (z.z > 0.0f || z.z < 1.0f)
 	{
 		Vector2 z2D = {static_cast<int>( z.x),static_cast<int>( z.y )};
-		if (Utility::Distance(mousePos, z2D) < DELAY_MOVE_ARROW)
+		if (Utility::Distance(mousePos_, z2D) < DELAY_MOVE_ARROW)
 		{
 			moveDir = MOVE_DIR::Z;
 			return moveDir;
@@ -611,6 +625,7 @@ void EditController::DebugDraw(void)
 	IntVector3 size = ItemManager::GetInstance().GetDummyItemSize(playerNum_);
 	DrawFormatString(0, 80, 0x000000, "%d,%d,%d",size.x,size.y,size.z);
 	DrawFormatString(0, 100, 0x000000, "%d", static_cast<int>(ItemManager::GetInstance().GetDummyItemRotY(playerNum_)));
+	DrawFormatString(0, 120, 0x000000, "%d,%d",cursorPos_.x,cursorPos_.y );
 
 }
 

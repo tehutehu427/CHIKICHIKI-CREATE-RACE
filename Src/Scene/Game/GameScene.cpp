@@ -177,6 +177,7 @@ void GameScene::ChangePhase(const PHASE phase)
 
 void GameScene::ChangePhaseEdit(void)
 {
+	SetMouseDispFlag(false);	//マウスカーソルを非表示にする
 	phaseUpdate_ = std::bind(&GameScene::UpdateEdit, this);
 	phaseDraw_ = std::bind(&GameScene::DrawEdit, this);
 	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
@@ -195,6 +196,7 @@ void GameScene::ChangePhaseEdit(void)
 void GameScene::ChangePhaseAction(void)
 {
 
+	SetMouseDispFlag(true);	//マウスカーソルを非表示にする
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
@@ -244,6 +246,10 @@ void GameScene::UpdateEdit(void)
 	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT)
 	{
 		for (auto& controller : editControllers_) { controller->Update(); }
+	}
+	else
+	{
+		for (auto& controller : editControllers_) { controller->CursorUpdate(); }
 	}
 }
 

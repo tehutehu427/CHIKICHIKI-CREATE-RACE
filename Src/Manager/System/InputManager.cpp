@@ -209,6 +209,13 @@ void InputManager::SetMousePosScreen(void)
 	SetMousePoint(static_cast<int>(mousePos_.x), static_cast<int>(mousePos_.y));
 }
 
+void InputManager::SetMousePos(const Vector2& pos)
+{
+	mousePos_ = pos;
+	mousePrePos_ = pos;
+	SetMousePoint(static_cast<int>(mousePos_.x), static_cast<int>(mousePos_.y));
+}
+
 int InputManager::GetMouse(void) const
 {
 	return mouseInput_;
