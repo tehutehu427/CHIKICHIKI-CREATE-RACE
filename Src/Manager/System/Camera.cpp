@@ -4,6 +4,7 @@
 #include "../../Utility/Utility.h"
 #include "../../Object/Common/Transform.h"
 #include "../../Manager/Game/GravityManager.h"
+#include "../../Manager/System/DateBank.h"
 #include "../../Application.h"
 #include "Camera.h"
 
@@ -226,10 +227,10 @@ void Camera::ProcessRot(void)
 {
 	auto& ins = KeyConfig::GetInstance();
 	float rotPow = Utility::Deg2RadF(SPEED);
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_RIGHT, padNo_)) { angles_.y += rotPow; }
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_LEFT, padNo_)) { angles_.y -= rotPow; }
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_UP, padNo_)) { angles_.x += rotPow; }
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_DOWN, padNo_)) { angles_.x -= rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_RIGHT, padNo_,KeyConfig::TYPE::KEYBORD_MOUSE)) { angles_.y += rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_LEFT, padNo_, KeyConfig::TYPE::KEYBORD_MOUSE)) { angles_.y -= rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_UP, padNo_, KeyConfig::TYPE::KEYBORD_MOUSE)) { angles_.x += rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_DOWN, padNo_, KeyConfig::TYPE::KEYBORD_MOUSE)) { angles_.x -= rotPow; }
 
 
 	auto rStick = ins.GetKnockRStickSize(padNo_);
@@ -329,10 +330,12 @@ void Camera::SetBeforeDrawFreeControll(void)
 {
 	auto& ins = KeyConfig::GetInstance();
 	float rotPow = Utility::Deg2RadF(SPEED);
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_ROT_RIGHT, padNo_)) { angles_.y += rotPow; }
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_ROT_LEFT, padNo_)) { angles_.y -= rotPow; }
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_ROT_UP, padNo_)) { angles_.x -= rotPow; }
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_ROT_DOWN, padNo_)) { angles_.x += rotPow; }
+	auto playerMaxNum = DateBank::GetInstance().GetPlayerNum();
+	auto keyType = playerMaxNum == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_ROT_RIGHT, padNo_,keyType)) { angles_.y += rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_ROT_LEFT, padNo_,keyType)) { angles_.y -= rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_ROT_UP, padNo_,keyType)) { angles_.x -= rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_ROT_DOWN, padNo_,keyType)) { angles_.x += rotPow; }
 
 	if (angles_.x <= FPS_LIMIT_X_UP_RAD)
 	{
@@ -342,7 +345,7 @@ void Camera::SetBeforeDrawFreeControll(void)
 	{
 		angles_.x = FPS_LIMIT_X_DW_RAD;
 	}
-
+	
 	auto rStick = ins.GetKnockRStickSize(padNo_);
 	rotPow = SPEED_PAD;
 	angles_.x += Utility::Deg2RadF(rStick.y *rotPow);
@@ -358,13 +361,13 @@ void Camera::SetBeforeDrawFreeControll(void)
 	//}
 	static float moveSpeed = 10.0f;
 	static float moveSpeedFB = 30.0f;
-	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_FRONT, padNo_) * moveSpeedFB));
-	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetBack(), ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_BACK, padNo_) * moveSpeedFB));
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_LEFT, padNo_))
+	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetForward(), ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_FRONT, padNo_,keyType) * moveSpeedFB));
+	pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetBack(), ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_BACK, padNo_,keyType) * moveSpeedFB));
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_LEFT, padNo_,keyType))
 	{
 		pos_ = VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetLeft(), moveSpeed));
 	}
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_RIGHT, padNo_))
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_RIGHT, padNo_,keyType))
 	{
 		pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetRight(), moveSpeed));
 	}
