@@ -5,7 +5,7 @@
 #include "../FpsControl/FpsControl.h"
 #include"../../Common/Geometry/Model.h"
 #include"../../Common/Geometry/Sphere.h"
-#include "CannonShot.h"
+#include "../SubItem/CannonShot.h"
 #include "Cannon.h"
 
 Cannon::Cannon()
@@ -14,7 +14,6 @@ Cannon::Cannon()
 	targetPos_ = { 0.0f,0.0f,0.0f };
 	turretAddRot_ = Utility::VECTOR_ZERO;
 	barrelAddRot_ = Utility::VECTOR_ZERO;
-	targetVec_ = Utility::VECTOR_ZERO;
 }
 
 Cannon::~Cannon()
@@ -82,6 +81,9 @@ void Cannon::SetParam(void)
 	//–Cg‚Ìƒ‚ƒfƒ‹İ’è
 	barrelTrans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_BARREL));
+
+	//–Cg‚Ì‰ŠúXV
+	barrelTrans_.Update();
 
 	//ƒ‚ƒfƒ‹ID‚ÌƒRƒs[
 	models_.emplace_back(&barrelTrans_.modelId);
@@ -188,23 +190,23 @@ void Cannon::ChangeModelColor(const COLOR_F _colorScale)
 void Cannon::RotateTurret(void)
 {
 	//‘ÎÛ‚Ü‚Å‚Ì‰ñ“]²
-	turretAddRot_ = Utility::GetRotAxisToTarget(VAdd(trans_.pos,trans_.localPos), targetPos_,Utility::AXIS_XZ);
+	turretAddRot_ = Utility::GetRotAxisToTarget(VAdd(trans_.pos,trans_.localPos), targetPos_);
 
 	//–C‘ä‰ñ“]
-	Utility::LookAtTarget(trans_, turretAddRot_, AIM_TIME_TURRET);
+	Utility::LookAtTarget(trans_, VGet(0.0f, turretAddRot_.y, 0.0f), AIM_TIME_TURRET);
 }
 
 void Cannon::RotateBarrel(void)
 {
 	//‘ÎÛ‚Ü‚Å‚Ì‰ñ“]²
-	barrelAddRot_ = Utility::GetRotAxisToTarget(VAdd(barrelTrans_.pos,barrelTrans_.localPos), targetPos_, Utility::AXIS_Y);
+	barrelAddRot_ = Utility::GetRotAxisToTarget(VAdd(barrelTrans_.pos, barrelTrans_.localPos), targetPos_);
 
 	//‹——£‚Å•â³
-	double distance = Utility::Distance(Utility::GetMoveVec(barrelTrans_.pos, targetPos_), barrelTrans_.pos);
-	barrelAddRot_ = Quaternion::Euler(barrelAddRot_).AngleAxis(distance, Utility::AXIS_X).ToEuler();
+	VECTOR targetVec = Utility::GetMoveVec(barrelTrans_.pos, targetPos_);
+	double dis = Utility::Distance(targetVec, Utility::VECTOR_ZERO);
 
 	//–Cg‰ñ“]
-	Utility::LookAtTarget(barrelTrans_, VAdd(barrelAddRot_, turretAddRot_), AIM_TIME_BARREL);
+	Utility::LookAtTarget(barrelTrans_, VGet(barrelAddRot_.x / dis,turretAddRot_.y, 0.0f), AIM_TIME_BARREL);
 }
 
 void Cannon::CreateShot(void)

@@ -51,8 +51,16 @@ void PlayerManager::Load(void)
 	//playerNum_ = PLAYER_NUM_MAX;
 	for (int i = 0; i < playerNum_; i++)
 	{
-		//DateBank::TYPE cntlType = DateBank::GetInstance().GetType();
-		DateBank::TYPE cntlType = DateBank::TYPE::CONTROLLER;
+		KeyConfig::TYPE cntlType;
+		//DateBank::TYPE cntlType = DateBank::TYPE::CONTROLLER;
+  		if (playerNum_==1)
+		{
+			cntlType = KeyConfig::TYPE::ALL;
+		}
+		else
+		{
+			cntlType = KeyConfig::TYPE::PAD;
+		}
 		std::unique_ptr<Player> player;
 		player = std::make_unique<Player>(i, cntlType, static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
 		player->Load();

@@ -117,8 +117,8 @@ void MoveHoriFloor::InitRoute(void)
 	//Ÿ‚ÌˆÊ’u•Û‘¶
 	route_[routeNum_ + 1] = goalPos;
 
-	//‹——£‚ğæ“¾
-	distance_ = Utility::Distance(route_[routeNum_], route_[routeNum_ + 1]);
+	//‹——£‚ğæ“¾(”÷–­‚È¬”“_‚ğÁ‚·‚½‚ß‚ÉlÌŒÜ“üˆ—)
+	distance_ = static_cast<float>(Utility::Round(Utility::Distance(route_[routeNum_], route_[routeNum_ + 1])));
 
 	//‘¬“xİ’è
 	speed_ = static_cast<float>(distance_) / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
@@ -151,17 +151,17 @@ bool MoveHoriFloor::IsBeyondRoute(void)
 	//X‚Ì”äŠr
 	bool beyondX;
 	if (moveVec_.x >= 0.0f)beyondX = trans_.pos.x >= route_[routeNum_].x + moveVec_.x;
-	else beyondX = trans_.pos.x < route_[routeNum_].x + moveVec_.x;
+	else beyondX = trans_.pos.x <= route_[routeNum_].x + moveVec_.x;
 
 	//Y‚Ì”äŠr
 	bool beyondY;
 	if (moveVec_.y >= 0.0f)beyondY = trans_.pos.y >= route_[routeNum_].y + moveVec_.y;
-	else beyondY = trans_.pos.y < route_[routeNum_].y + moveVec_.y;
+	else beyondY = trans_.pos.y <= route_[routeNum_].y + moveVec_.y;
 
 	//Z‚Ì”äŠr
 	bool beyondZ;
 	if (moveVec_.z >= 0.0f)beyondZ = trans_.pos.z >= route_[routeNum_].z + moveVec_.z;
-	else beyondZ = trans_.pos.z < route_[routeNum_].z + moveVec_.z;
+	else beyondZ = trans_.pos.z <= route_[routeNum_].z + moveVec_.z;
 
 	return beyondX && beyondY && beyondZ;
 }

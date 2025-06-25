@@ -26,6 +26,7 @@ public :
 		CANNON_AIM,		//大砲の狙い範囲
 		SLIME_FLOOR,	//スライム床
 		SPRING,			//ばね
+		WIND,
 		KILLER_ITEM,	//接触すると死ぬアイテム
 
 		DESTROYER,		//アイテムオブジェクトを破壊する

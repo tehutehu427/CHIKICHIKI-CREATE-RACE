@@ -518,9 +518,10 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 {
 	MOVE_DIR moveDir = MOVE_DIR::NONE;
 	KeyConfig& ins = KeyConfig::GetInstance();
+	auto type = playerMaxNum_ == 1 ? KeyConfig::TYPE::ALL: KeyConfig::TYPE::PAD;
 	if (moveDir_ == MOVE_DIR::NONE)
 	{
-		if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT,padNum_) == false)
+		if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT,padNum_,type) == false)
 		{
 			return moveDir;
 		}
@@ -529,7 +530,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void) const
 			return moveDir;
 		}
 	}
-	else if (ins.IsTrgUp(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_) == true)
+	else if (ins.IsTrgUp(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_,type) == true)
 	{
 		return moveDir;
 	}
@@ -616,7 +617,8 @@ void EditController::DebugDraw(void)
 void EditController::RotateObject(void) const
 {
 	KeyConfig& ins = KeyConfig::GetInstance();
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ITEM_ROTATE,padNum_))
+	auto type = playerMaxNum_ == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ITEM_ROTATE,padNum_,type))
 	{
 		Quaternion rot = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
 		float rotScale = Utility::Deg2RadF(90.0f);

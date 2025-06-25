@@ -1,6 +1,8 @@
 #pragma once
 #include "../ItemBase.h"
 
+class Wind;
+
 class Fan : public ItemBase
 {
 public:
@@ -31,5 +33,10 @@ public:
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
 private:
+
+	std::unique_ptr<Wind> wind_;	//風オブジェクト
+
+	//風の生成
+	void CreateWind(void);
 };
 

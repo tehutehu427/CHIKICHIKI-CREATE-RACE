@@ -33,6 +33,8 @@ public:
 	static constexpr VECTOR AXIS_Y = { 0.0f, 1.0f, 0.0f };
 	static constexpr VECTOR AXIS_Z = { 0.0f, 0.0f, 1.0f };
 	static constexpr VECTOR AXIS_XZ = { 1.0f, 0.0f, 1.0f };
+	static constexpr VECTOR AXIS_XY = { 1.0f, 1.0f, 1.0f };
+	static constexpr VECTOR AXIS_YZ = { 0.0f, 1.0f, 1.0f };
 	static constexpr VECTOR AXIS_XYZ = { 1.0f, 1.0f, 1.0f };
 
 	// •ûŒü
