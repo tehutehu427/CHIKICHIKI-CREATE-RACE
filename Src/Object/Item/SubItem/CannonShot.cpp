@@ -38,7 +38,7 @@ void CannonShot::SetParam(void)
 
 	//ÉRÉâÉCÉ_ÇÃçÏê¨
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::KILLER_ITEM, std::move(geo));
+	MakeCollider({ Collider::TAG::KILLER_ITEM }, std::move(geo));
 }
 
 void CannonShot::Update(void)

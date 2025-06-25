@@ -82,17 +82,17 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	//接地しているときのライン(床上にとどまっているとき)
 	//Lineを引くための上と下の座標をとる
 	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
-	MakeCollider(tag_, std::move(lineGeo));
+	MakeCollider({ tag_ }, std::move(lineGeo));
 
 
 	//プレイヤーの体
 	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
-	MakeCollider(tag_, std::move(bodySphereGeo));
+	MakeCollider({ tag_ }, std::move(bodySphereGeo));
 
 
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
 	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,movedPos_);
-	MakeCollider(tag_, std::move(moveLineGeo));
+	MakeCollider({ tag_ }, std::move(moveLineGeo));
 
 	moveDiff_ = Utility::VECTOR_ZERO;
 
@@ -122,7 +122,7 @@ void Player::Load(void)
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
 	////プレイヤーの手(パンチの当たり判定)
 	std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(action_->GetPunchPos(), PUNCH_RADIUS);
-	MakeCollider(tag_, std::move(handSphereGeo));
+	MakeCollider({ tag_ }, std::move(handSphereGeo));
 
 
 }
@@ -186,8 +186,10 @@ void Player::Draw(void)
 
 void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	Collider::TAG tag = _hitCol.lock()->GetTag();
-	colUpdates_[tag](_hitCol);
+	for (const auto tag : _hitCol.lock()->GetTags())
+	{
+		colUpdates_[tag](_hitCol);
+	}
 }
 
 inline const bool Player::GetIsPunch(void)
@@ -333,12 +335,10 @@ void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 
 void Player::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 {
-	if (_hitCol.lock()->GetTag() == Collider::TAG::MOVE_HORI_FLOOR|| _hitCol.lock()->GetTag() == Collider::TAG::MOVE_VER_FLOOR)
-	{
-		ItemBase& floor = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
-		VECTOR movePow = floor.GetMovePow();
-		movedPos_ = VAdd(movedPos_, floor.GetMovePow());
-	}
+	ItemBase& floor = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
+	VECTOR movePow = floor.GetMovePow();
+	movedPos_ = VAdd(movedPos_, floor.GetMovePow());
+
 	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
 	HitModelCommon(hitModel);
 }
