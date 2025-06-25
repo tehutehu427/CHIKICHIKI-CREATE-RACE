@@ -20,16 +20,15 @@
 
 #include "../../Object/Editor/EditController.h"
 
-
 #include "../../Manager/Game/ItemManager.h"
 #include"./PlayerAction.h"
+#include"./PlayerOnHit.h"
 #include "./Process/PlayerInput.h"
 
 #include<algorithm>
 
 
 #include "Player.h"
-
 Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	:playerNum_(_playerNum)
 	, cntl_(_cntl)
@@ -53,14 +52,19 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	changeStates_.emplace(PLAYER_STATE::ALIVE, [this]() {ChangeAlive();});
 	changeStates_.emplace(PLAYER_STATE::DEATH, [this]() {ChangeDeath(); });
 
+	//それぞれの当たった処理を格納する
 	using TAG = Collider::TAG;
 	colUpdates_[TAG::START] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
 	colUpdates_[TAG::GOAL] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
 	colUpdates_[TAG::NORMAL_ITEM] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
-	colUpdates_[TAG::KILLER_ITEM] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
+	colUpdates_[TAG::KILLER_ITEM] = [this](const std::weak_ptr<Collider> _hitCol) {CollKillerItem(_hitCol); };
 	colUpdates_[TAG::MOVE_HORI_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
 	colUpdates_[TAG::MOVE_VER_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
 	colUpdates_[TAG::SLIME_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); };
+	colUpdates_[TAG::CANNON_AIM] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
+	colUpdates_[TAG::WIND] = [this](const std::weak_ptr<Collider> _hitCol) {CollWind(_hitCol); };
+	colUpdates_[TAG::SPRING] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
+	
 
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
@@ -95,7 +99,8 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	MakeCollider(tag_, std::move(moveLineGeo));
 
 	moveDiff_ = Utility::VECTOR_ZERO;
-
+	isGoal_ = false;
+	isDeath_ = false;
 	//*****************************************************
 	
 }
@@ -123,8 +128,6 @@ void Player::Load(void)
 	////プレイヤーの手(パンチの当たり判定)
 	std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(action_->GetPunchPos(), PUNCH_RADIUS);
 	MakeCollider(tag_, std::move(handSphereGeo));
-
-
 }
 
 void Player::Init(void)
@@ -140,12 +143,12 @@ void Player::Init(void)
 	trans_.pos={ posX,0.0f,0.0f };
 
 	trans_.localPos = { 0.0f,-Player::RADIUS,0.0f };
-	//操作関連
-	//---------------------------------
 	//当たり判定
+	//---------------------------------
 	isCol_ = false;
-
-
+	isGoal_ = false;
+	isDeath_ = false;
+	//----------------------------------
 	ChangeState(PLAYER_STATE::ALIVE);
 	action_->Init();
 
@@ -153,8 +156,6 @@ void Player::Init(void)
 	cube_.centerPos = Utility::VECTOR_ZERO;
 	cubeMovePos_ = Utility::VECTOR_ZERO;
 #endif // DEBUG_ON
-
-
 	itemLocalPos_ = Utility::VECTOR_ZERO;
 	trans_.Update();
 }
@@ -172,7 +173,6 @@ void Player::Update(void)
 	//回転の同期
 	trans_.quaRot = action_->GetPlayerRotY();
 	
-
 	trans_.Update();
 }
 
@@ -189,17 +189,6 @@ void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
 	Collider::TAG tag = _hitCol.lock()->GetTag();
 	colUpdates_[tag](_hitCol);
 }
-
-inline const bool Player::GetIsPunch(void)
-{
-	return action_->GetIsHitPunch();
-}
-
-inline const VECTOR Player::GetPunchPos(void)
-{
-	return action_->GetPunchPos();
-}
-
 
 #ifdef DEBUG_ON
 void Player::DrawDebug(void)
@@ -270,7 +259,7 @@ void Player::AliveUpdate(void)
 	Action();
 
 	//衝突判定
-	Collision();
+	PosUpdate();
 }
 void Player::ChangeDeath(void)
 {
@@ -285,7 +274,7 @@ void Player::DeathUpdate(void)
 	//アニメーションループ
 	if (animationController_->GetAnimStep() >= FALL_ANIM_START)
 	{
-		animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, 60.0f);
+		animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_SPD);
 	}
 
 }
@@ -305,7 +294,8 @@ void Player::Action(void)
 
 bool Player::IsDeath(void)
 {
-	if (trans_.pos.y <= DEATH_POS_Y)
+	//奈落に落ちるorデスオブジェクトに当たったら
+	if (trans_.pos.y <= DEATH_POS_Y||isDeath_)
 	{
 		return true;
 	}
@@ -317,12 +307,9 @@ void Player::ChangeModelColor(const COLOR_F _colorScale)
 	MV1SetEmiColorScale(trans_.modelId, _colorScale);
 }
 
-
-
-
 void Player::CollNone(void)
 {
-	int i = 0;
+	//なにもしない
 }
 
 void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
@@ -345,7 +332,8 @@ void Player::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 
 void Player::CollSlimeFloor(const std::weak_ptr<Collider> _hitCol)
 {
-
+	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
+	HitModelCommon(hitModel);
 }
 
 void Player::CollCannon(const std::weak_ptr<Collider> _hitCol)
@@ -355,6 +343,19 @@ void Player::CollCannon(const std::weak_ptr<Collider> _hitCol)
 
 void Player::CollKillerItem(const std::weak_ptr<Collider> _hitCol)
 {
+	isDeath_ = true;
+	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
+	HitModelCommon(hitModel);
+}
+
+void Player::CollWind(const std::weak_ptr<Collider> _hitCol)
+{
+	//風オブジェクトから移動量を取得
+	ItemBase& wind = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
+	action_->SetMovePow(wind.GetMovePow());
+
+	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
+	HitModelCommon(hitModel);
 
 }
 
@@ -362,6 +363,8 @@ void Player::CollKillerItem(const std::weak_ptr<Collider> _hitCol)
 
 void Player::ColPunch(const std::weak_ptr<Collider> _hitCol)
 {
+	//パンチ中じゃなければ何もしない
+	if (!action_->GetIsHitPunch())return;
 	//パンチしたプレイヤーの向いてる方向をセットする
 	VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
 
@@ -372,7 +375,7 @@ void Player::ColPunch(const std::weak_ptr<Collider> _hitCol)
 	action_->ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
 }
 
-void Player::Collision(void)
+void Player::PosUpdate(void)
 {
 	VECTOR pow = action_->GetMovePow();
 	movedPos_ = VAdd(trans_.pos, action_->GetMovePow());
@@ -414,16 +417,6 @@ void Player::Collision(void)
 	//移動
 	trans_.pos = movedPos_;
 	// 現在座標を起点に移動後座標を決める
-#ifdef DEBUG_ON
-
-	//if (movedPos_.y < 0.0f/*||!CollCube()*/)
-	//{
-	//	movedPos_.y = 0.0f;
-	//	isJump_ = false;
-	//	stepJump_ = 0.0f;
-	//}
-#endif // DEBUG_ON
-
 }
 
 

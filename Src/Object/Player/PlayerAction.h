@@ -67,6 +67,9 @@ public:
 	//ƒWƒƒƒ“ƒv—Í
 	void SetJumpPow(const VECTOR _jumpPow) { jumpPow_ = _jumpPow;};
 
+	//ˆÚ“®—Ê
+	void SetMovePow(const VECTOR _movePow) { movePow_ = _movePow; }
+
 	//‹ó’†‚©‚Ç‚¤‚©
 	void SetIsJump(const bool _isJump) { isJump_ = _isJump; }
 
