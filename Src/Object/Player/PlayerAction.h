@@ -92,9 +92,9 @@ private:
 	//移動
 	//----------------------------------
 	//移動スピード
-	static constexpr float MOVE_SPEED = 7.0f;
+	static constexpr float MOVE_SPEED = 6.0f;
 	//ダッシュスピード
-	static constexpr float DASH_SPEED = 10.0f;
+	static constexpr float DASH_SPEED = 11.0f;
 	//ぶっ飛ぶスピード
 	static constexpr float FLY_AWAY_SPEED = 12.0f;
 	//落ちているときの重力制限(jumpPowに加算しているのでjumpPowに適用)

@@ -10,7 +10,6 @@
 class AnimationController;
 class Camera;
 class PlayerAction;
-class PlayerInput;
 class DateBank;
 class Player :public ObjectBase
 {
@@ -87,7 +86,7 @@ public:
 	/// <param name="_playerNum">プレイヤー番号</param>
 	/// <param name="_cntl">コントローラー識別番号</param>
 	/// <param name="_tag">プレイヤーごとのタグ</param>
-	Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag);
+	Player(int _playerNum,KeyConfig::TYPE _cntl, const Collider::TAG _tag);
 
 	// デストラクタ
 	~Player(void);
@@ -127,7 +126,7 @@ public:
 	//プレイヤー番号
 	inline const int GetPlayerNum(void)const { return playerNum_; }
 
-	inline const DateBank::TYPE GetCntl(void) { return cntl_; }
+	inline const KeyConfig::TYPE GetCntl(void) { return cntl_; }
 
 	//移動量
 	inline const VECTOR GetMovePow(void);
@@ -180,8 +179,6 @@ public:
 	/// </summary>
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
-	//コントローラーセット
-	const void SetCntl(DateBank::TYPE _cntl) { cntl_ = _cntl; }
 
 	//状態遷移
 	void ChangeAction(PlayerAction::ATK_ACT _act);
@@ -302,7 +299,7 @@ private:
 	VECTOR itemLocalPos_;
 
 	//入力デバイス
-	DateBank::TYPE cntl_;
+	KeyConfig::TYPE cntl_;
 
 	//ゲームパッド番号
 	KeyConfig::JOYPAD_NO padNum_;
@@ -348,9 +345,7 @@ private:
 	//状態遷移
 	std::map<ATK_ACT, std::function<void(void)>>changeAction_;
 
-	//状態更新
-	std::function<void(void)>actionUpdate_;
-	std::map<Collider::TAG, std::function<void()>>colUpdates_;
+
 
 	//状態
 	ATK_ACT act_;
@@ -361,11 +356,8 @@ private:
 
 	//当たり判定
 	//----------------------------------
-	//プレイヤーと当たるタグのテーブル
-	std::map<Collider::TAG, std::function<void(const std::weak_ptr<Collider> _hitCol)>>collObjectTables_;
-
-	//各タグと当たったときのアップデート
-	std::function<void(void)>colUpdate_;
+	//当たり判定ごとの更新
+	std::map<Collider::TAG, std::function<void(const std::weak_ptr<Collider> _hitCol)>>colUpdates_;
 
 	//現在当たっているタグ
 	Collider::TAG currentTag_;
@@ -418,7 +410,7 @@ private:
 	//当たり判定
 	//---------------------------------------------------
 	//当たっても何もしない(プレイヤー側で何も起きない)
-	void CollNone(void){};
+	void CollNone(void);
 	//通常床
 	void CollFloor(const std::weak_ptr<Collider> _hitCol);
 	//動く床

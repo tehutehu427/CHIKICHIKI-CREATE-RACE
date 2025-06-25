@@ -3,8 +3,11 @@
 
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "../../Manager/Game/PlayerManager.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SceneManager.h"
+#include"../../Manager/System/DateBank.h"
+
 #include "../../Manager/System/Camera.h"
 
 #include "../../Object/Common/Geometry/Sphere.h"
@@ -27,7 +30,7 @@
 
 #include "Player.h"
 
-Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag)
+Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	:playerNum_(_playerNum)
 	, cntl_(_cntl)
 	, tag_(_tag)
@@ -39,52 +42,35 @@ Player::Player(int _playerNum,DateBank::TYPE _cntl, const Collider::TAG _tag)
 
 	trans_ = Transform();
 	movedPos_ = Utility::VECTOR_ZERO;
+
+
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
-	if (cntl_ == DateBank::TYPE::CONTROLLER)
-	{
-		//パッド番号を設定
-		padNum_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum_ + 1);
-	}
-	else
-	{
-		padNum_ = KeyConfig::JOYPAD_NO::INPUT_KEY;
-	}
+	//パッド番号を設定
+	padNum_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum_ + 1);
+
+
 	//プレイヤー状態
 	changeStates_.emplace(PLAYER_STATE::ALIVE, [this]() {ChangeAlive();});
 	changeStates_.emplace(PLAYER_STATE::DEATH, [this]() {ChangeDeath(); });
-	//----------------------------------------------------
-	//当たり判定
-	//----------------------------------------------------
-	collObjectTables_.emplace(Collider::TAG::START, [this](const std::weak_ptr<Collider> _hitCol)
-		{
-			colUpdate_ = [this, _hitCol]() {CollFloor(_hitCol); };
-		});
-	collObjectTables_.emplace(Collider::TAG::MOVE_HORI_FLOOR, [this](const std::weak_ptr<Collider> _hitCol)
-		{
-			colUpdate_ = [this, _hitCol]() {CollMoveFloor(_hitCol); };
-		});
-	collObjectTables_.emplace(Collider::TAG::MOVE_VER_FLOOR, [this](const std::weak_ptr<Collider> _hitCol)
-		{
-			colUpdate_ = [this, _hitCol]() {CollMoveFloor(_hitCol); };
-		});
-	collObjectTables_.emplace(Collider::TAG::KILLER_ITEM, [this](const std::weak_ptr<Collider> _hitCol) 
-		{
-			colUpdate_ = [this, _hitCol]() {CollKillerItem(_hitCol); };
-		});
-	collObjectTables_.emplace(Collider::TAG::SLIME_FLOOR, [this](const std::weak_ptr<Collider> _hitCol) 
-		{
-			colUpdate_ = [this, _hitCol]() {CollSlimeFloor(_hitCol); };
-		});
-	collObjectTables_.emplace(Collider::TAG::NORMAL_ITEM, [this](const std::weak_ptr<Collider> _hitCol) 
-		{
-			colUpdate_ = [this, _hitCol]() {CollFloor(_hitCol); };
-		});
-	collObjectTables_.emplace(Collider::TAG::GOAL, [this](const std::weak_ptr<Collider> _hitCol)
-		{
-			colUpdate_ = [this, _hitCol]() {CollFloor(_hitCol); };
-		});
+
 	using TAG = Collider::TAG;
-	//colUpdates_[TAG::START]=[this](){CollFloor(_hitCol); }
+	colUpdates_[TAG::START] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
+	colUpdates_[TAG::GOAL] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
+	colUpdates_[TAG::NORMAL_ITEM] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
+	colUpdates_[TAG::KILLER_ITEM] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
+	colUpdates_[TAG::MOVE_HORI_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
+	colUpdates_[TAG::MOVE_VER_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
+	colUpdates_[TAG::SLIME_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); };
+
+
+	int playerNum = DateBank::GetInstance().GetPlayerNum();
+	for (int i = static_cast<int>(TAG::PLAYER1); i < PlayerManager::PLAYER_NUM_MAX; i++)
+	{
+		//同じタグだったら設定しない
+		if ((int)tag_ == i)continue;
+
+		colUpdates_[(TAG)i] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
+	}
 
 	isCol_ = false;
 
@@ -200,8 +186,8 @@ void Player::Draw(void)
 
 void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	collObjectTables_[_hitCol.lock()->GetTag()](_hitCol);
-	colUpdate_();
+	Collider::TAG tag = _hitCol.lock()->GetTag();
+	colUpdates_[tag](_hitCol);
 }
 
 inline const bool Player::GetIsPunch(void)
@@ -229,7 +215,7 @@ void Player::DrawDebug(void)
 	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
 	colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
 	colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
-	/*colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();*/
+	colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();
 	//DrawSphere3D(trans_.pos, RADIUS, 10, color, color, false);
 
 	VECTOR pow = action_->GetMovePow();
@@ -333,6 +319,11 @@ void Player::ChangeModelColor(const COLOR_F _colorScale)
 
 
 
+
+void Player::CollNone(void)
+{
+	int i = 0;
+}
 
 void Player::CollFloor(const std::weak_ptr<Collider> _hitCol)
 {
@@ -456,7 +447,7 @@ void Player::HitModelCommon(Model& _hitModel)
 	{
 		Line& upDown = dynamic_cast<Line&>(upDownLine->GetGeometry());
 		VECTOR hitLinePos = upDown.GetHitInfo().HitPosition;
-		if (movedPos_.y >= hitLinePos.y)
+		if (movedPos_.y > hitLinePos.y)
 		{
 			movedPos_.y = hitLinePos.y + RADIUS + POSITION_OFFSET;
 		}
