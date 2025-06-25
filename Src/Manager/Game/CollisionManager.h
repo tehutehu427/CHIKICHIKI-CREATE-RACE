@@ -14,8 +14,8 @@ public:
 
 	//当たり判定をする範囲
 	static constexpr float HIT_RANGE_NORMAL = 1000.0f;	//通常の当たり判定距離
-	static constexpr float HIT_RANGE_START = 600.0f;	//通常の当たり判定距離
-	static constexpr float HIT_RANGE_GOAL = 600.0f;	//通常の当たり判定距離
+	static constexpr float HIT_RANGE_START = 600.0f;	//開始地点の当たり判定距離
+	static constexpr float HIT_RANGE_GOAL = 600.0f;		//終了地点の当たり判定距離
 	static constexpr float HIT_RANGE_TARGET = 2500.0f;	//ターゲット用の当たり判定距離
 
 	//更新用
@@ -55,21 +55,11 @@ public:
 
 private:
 
-	//前フレームの当たり判定情報
-	struct PreColParam
-	{
-		VECTOR pos;
-		Quaternion rot;
-	};
-
 	//静的インスタンス
 	static CollisionManager* instance_;
 
 	//当たり判定格納
 	std::vector<std::shared_ptr<Collider>>colliders_;
-
-	//位置格納
-	std::vector<PreColParam>preColParam_;
 
 	//当たり判定距離の二乗
 	std::map<Collider::TAG, float> hitRange_;

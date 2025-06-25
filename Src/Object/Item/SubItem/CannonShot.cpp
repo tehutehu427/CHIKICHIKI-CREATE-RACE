@@ -3,7 +3,6 @@
 #include "../Manager/System/Resource.h"
 #include "../Manager/System/ResourceManager.h"
 #include"../../Common/Geometry/Model.h"
-#include "Cannon.h"
 #include "CannonShot.h"
 
 CannonShot::CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl)
@@ -13,7 +12,6 @@ CannonShot::CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR
 	trans_.quaRot = _quaRot;
 	trans_.scl = _scl;
 	isAlive_ = false;
-	movePow_ = Utility::VECTOR_ZERO;
 	cnt_ = 0.0f;
 }
 

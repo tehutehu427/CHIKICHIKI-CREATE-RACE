@@ -608,16 +608,18 @@ const VECTOR Utility::GetRotAxisToTarget(const VECTOR _pos, const VECTOR _target
     //対象までの方向ベクトル
     VECTOR targetVec = GetMoveVec(_pos, _targetPos);
 
-    //必要ない軸は除去
-    targetVec.x *= _needAxis.x;
-    targetVec.y *= _needAxis.y;
-    targetVec.z *= _needAxis.z;
-
     //回転量
     Quaternion turQuaRot = Quaternion::LookRotation(targetVec);
 
     //VECTOR変換
-   return turQuaRot.ToEuler();
+    VECTOR ret = turQuaRot.ToEuler();
+
+    //必要ない軸は除去
+    ret.x *= _needAxis.x;
+    ret.y *= _needAxis.y;
+    ret.z *= _needAxis.z;
+
+   return ret;
 }
 
 void Utility::LookAtTarget(Transform& _trans, const VECTOR _toTargetAxis, const float _time, const VECTOR _relativePos)
