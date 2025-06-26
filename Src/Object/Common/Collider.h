@@ -18,10 +18,7 @@ public :
 		PLAYER3,		//プレイヤー3
 		PLAYER4,		//プレイヤー4
 
-		PUNCH_PLAYER1,		//プレイヤー1のパンチ
-		PUNCH_PLAYER2,		//プレイヤー2のパンチ
-		PUNCH_PLAYER3,		//プレイヤー3のパンチ
-		PUNCH_PLAYER4,		//プレイヤー4のパンチ
+		PUNCH,			//パンチ
 
 		START,			//開始地点
 		GOAL,			//終了地点

@@ -61,7 +61,7 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	colUpdates_[TAG::MOVE_HORI_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
 	colUpdates_[TAG::MOVE_VER_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
 	colUpdates_[TAG::SLIME_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); };
-
+	colUpdates_[TAG::PUNCH] = [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); };
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = static_cast<int>(TAG::PLAYER1); i < PlayerManager::PLAYER_NUM_MAX; i++)
@@ -122,7 +122,7 @@ void Player::Load(void)
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
 	////プレイヤーの手(パンチの当たり判定)
 	std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(action_->GetPunchPos(), PUNCH_RADIUS);
-	MakeCollider({ tag_ }, std::move(handSphereGeo));
+	MakeCollider({ tag_,Collider::TAG::PUNCH }, std::move(handSphereGeo));
 
 
 }
