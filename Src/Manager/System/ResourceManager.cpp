@@ -24,6 +24,7 @@ void ResourceManager::Init(void)
 	std::string PATH_IMG = Application::PATH_IMAGE;
 	std::string PATH_MDL = Application::PATH_MODEL;
 	std::string PATH_EFF = Application::PATH_EFFECT;
+	std::string PATH_SOUND = Application::PATH_SOUND;
 
 	std::unique_ptr<Resource> res;
 
@@ -33,6 +34,7 @@ void ResourceManager::Init(void)
 	std::string path_Select = Application::PATH_IMAGE + "Select/";
 	std::string path_Clear = Application::PATH_IMAGE + "Clear/";
 	std::string path_GameOver = Application::PATH_IMAGE + "GameOver/";
+	std::string path_Game = Application::PATH_IMAGE + "Game/";
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "ScrollArrowIcon.png");
 	resourcesMap_.emplace(SRC::SCROLL_ARROW_ICON, std::move(res));
@@ -66,12 +68,18 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "SelectArcs.png", IMG_ARCS_DIV_X, IMG_ARCS_DIV_Y, IMG_ARC_SIZE, IMG_ARC_SIZE);
 	resourcesMap_.emplace(SRC::ARCS, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "SelectMessages.png", SELECT_MES_DIV_X, SELECT_MES_DIV_Y, SELECT_MES_SIZE_X, SELECT_MES_SIZE_Y);
+	resourcesMap_.emplace(SRC::SELECT_MESSAGES, std::move(res));
 	
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "BackArc.png");
 	resourcesMap_.emplace(SRC::BACK_ARC, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "ShadowArc.png");
 	resourcesMap_.emplace(SRC::SHADOW_ARC, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "Win.png");
+	resourcesMap_.emplace(SRC::WIN, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Title + "TitleLogo.png");
 	resourcesMap_.emplace(SRC::TITLE_LOGO, std::move(res));
@@ -88,6 +96,14 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Clear + "PlayerPlates.png", PLAYER_PLATES_DIV_X, PLAYER_PLATES_DIV_Y, PLAYER_PLATES_SIZE_X, PLAYER_PLATES_SIZE_Y);;
 	resourcesMap_.emplace(SRC::PLAYER_PLATES, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Game + "Numbers.png", NUMBERS_DIV_X, NUMBERS_DIV_Y, NUMBERS_SIZE, NUMBERS_SIZE);
+	resourcesMap_.emplace(SRC::NUMBERS, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "Ok.png");
+	resourcesMap_.emplace(SRC::OK, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "Round.png");
+	resourcesMap_.emplace(SRC::ROUND, std::move(res));
 #pragma endregion 
 
 #pragma region ƒ}ƒXƒN‰æ‘œ
@@ -144,6 +160,12 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Chicken.mv1");
 	resourcesMap_.emplace(SRC::CHICKEN, std::move(res));
 #pragma endregion 
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "test.mp3");
+	resourcesMap_.emplace(SRC::TEST_SE, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "test2.mp3");
+	resourcesMap_.emplace(SRC::TEST2_SE, std::move(res));
 
 }
 

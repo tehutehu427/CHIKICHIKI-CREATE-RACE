@@ -4,6 +4,7 @@
 #include "Manager/System/KeyConfig.h"
 #include "Manager/System/ResourceManager.h"
 #include "Manager/System/SceneManager.h"
+#include "Manager/System/SoundManager.h"
 #include "FpsControl/FpsControl.h"
 #include "Common/FontRegistry.h"
 #include "Application.h"
@@ -65,7 +66,12 @@ void Application::Init(void)
 	// シーン管理初期化
 	SceneManager::CreateInstance();
 
+	//入力管理の初期化
 	KeyConfig::CreateInstance();
+
+	//サウンド関係の初期化
+	SoundManager::CreateInstance();
+
 	// FPS初期化
 	fps_ = std::make_unique<FpsControl>();
 	fps_->Init();
@@ -107,6 +113,7 @@ void Application::Destroy(void)
 	ResourceManager::GetInstance().Destroy();
 	SceneManager::GetInstance().Destroy();
 	KeyConfig::GetInstance().Destroy();
+	SoundManager::GetInstance().Destroy();
 	// Effekseerを終了する。
 	Effkseer_End();
 

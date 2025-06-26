@@ -28,12 +28,17 @@ MultiReady::~MultiReady()
 
 void MultiReady::Load()
 {
+	ResourceManager& res = ResourceManager::GetInstance();
+	imgMessages_ = res.Load(ResourceManager::SRC::SELECT_MESSAGES).handleIds_;
+	imgNumbers_ = res.Load(ResourceManager::SRC::NUMBERS).handleIds_;
+	imgSelectIcon_ = res.Load(ResourceManager::SRC::SCROLL_ARROW_ICON).handleId_;
 	multiInputChecks_ = std::make_unique<MultiInputCheck>();
 	multiInputChecks_->Load();
 }
 
 void MultiReady::Init()
 {
+	//初期化
 	multiInputChecks_->Init();
 }
 
@@ -66,14 +71,6 @@ void MultiReady::Update(SelectScene& _parent)
 
 void MultiReady::Draw()
 {
-	DrawBox(
-		0, 0,
-		Application::SCREEN_SIZE_X,
-		Application::SCREEN_SIZE_Y,
-		Utility::LIME,
-		true
-	);
-
 	stateTables_[state_].drawFunc_();
 }
 
@@ -135,12 +132,52 @@ void MultiReady::UpdateFinalCheck()
 
 void MultiReady::DrawNumCheck()
 {
-	DrawFormatString(300, 300, Utility::WHITE, "プレイヤー人数 : %d", playerNum_ + PLAYER_NUM_MIN);
+	//描画位置
+	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * MESSAGE_RATE / 2 + 180);
+	constexpr int OFFSET_POS_Y = 64;
+	DrawMessage(POS_X, OFFSET_POS_Y, static_cast<int>(SelectScene::SELECT_MES::PLAYER_NUM));
+
+	//選択用アイコンの描画
+	for (int i = 0; i < ICON_NUM; i++)
+	{
+		int inversion = -1;
+		float angle = 270.0f;
+		if( i == 0)
+		{
+			inversion *= -1;
+			angle = 90.0f;
+		}
+
+		DrawRotaGraph(
+			Application::SCREEN_HALF_X + inversion* 300,
+			Application::SCREEN_HALF_Y,
+			1.0f,
+			Utility::Deg2RadF(angle),
+			imgSelectIcon_,
+			true,
+			false
+		);
+	}
+
+	//人数の描画
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y,
+		NUMBER_RATE,
+		0.0f,
+		imgNumbers_[playerNum_ + PLAYER_NUM_MIN],
+		true,
+		false
+	);
 }
 
 void MultiReady::DrawPadCheck()
 {
 	multiInputChecks_->Draw();
+	//描画位置
+	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * MESSAGE_RATE / 2 + 130);
+	constexpr int POS_Y = 64;
+	DrawMessage(POS_X, POS_Y, static_cast<int>(SelectScene::SELECT_MES::PUSH_BUTTON));
 }
 
 void MultiReady::DrawFinalCheck()
@@ -148,4 +185,22 @@ void MultiReady::DrawFinalCheck()
 	multiInputChecks_->Draw();
 
 	DrawFormatString(300, 300, Utility::RED, "Are You OK ?");
+}
+
+void MultiReady::DrawMessage(const int _posX, const int _posY, const int _imgIndex_)
+{	
+	//描画位置
+	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * MESSAGE_RATE / 2 + Application::SCREEN_HALF_X - 130);
+	constexpr int POS_Y = 64;
+
+
+	DrawRotaGraph(
+		_posX,
+		_posY,
+		MESSAGE_RATE,
+		0.0f,
+		imgMessages_[_imgIndex_],
+		true,
+		false
+	);
 }

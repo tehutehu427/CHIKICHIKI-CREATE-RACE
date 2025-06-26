@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Object\Editor\EditItemReady.cpp" />
+    <ClCompile Include="Src\Object\System\RoundDisplay.cpp" />
     <ClCompile Include="Src\Object\Editor\EditEscape.cpp" />
     <ClCompile Include="Src\Object\Player\PlayerAction.cpp" />
     <ClCompile Include="Src\Object\System\CheckChangePhase.cpp" />
@@ -114,6 +115,7 @@
     <ClCompile Include="Src\Object\Item\SubItem\Wind.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\System\RoundDisplay.h" />
     <ClInclude Include="Src\Object\Editor\EditEscape.h" />
     <ClInclude Include="Src\Object\Editor\EditItemReady.h" />
     <ClInclude Include="Src\Object\Player\PlayerAction.h" />

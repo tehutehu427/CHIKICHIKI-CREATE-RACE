@@ -2,6 +2,7 @@
 #include "GameScene.h"
 
 class MultiResult;
+class RoundDisplay;
 
 class MultiParty : public GameScene
 {
@@ -26,6 +27,9 @@ public:
 
 private:
 
+	//ラウンド遷移タイム
+	static constexpr float ROUND_CHANGE_TIME = 3.5f;
+
 	//描画関数
 	void NormalDraw(void) override;
 
@@ -44,22 +48,29 @@ private:
 	//状態遷移
 	void ChangePhaseEdit() override;
 	void ChangePhaseAction() override;
+	void ChangePhaseRound();
 	void ChangePhaseSelect();
 	void ChangePhaseResult();
 
 	//状態別更新処理
+	void UpdateRound();
 	void UpdateSelect();
 	void UpdateResult();
 
 	//状態別描画処理
+	void DrawRound();
 	void DrawSelect();
 	void DrawResult();
 
 	//デバッグ処理
 	void DebagUpdate() override;
 
+	//フェーズ遷移タイマー更新
+	float phaseChangeTimer_;
+
 	//リザルト処理
 	std::unique_ptr<MultiResult> result_;
+	std::unique_ptr<RoundDisplay> round_;
 	std::map<int, std::function<std::vector<std::shared_ptr<Camera>>(void)>>createCamera_;
 };
 

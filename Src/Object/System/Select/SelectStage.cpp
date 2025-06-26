@@ -2,11 +2,13 @@
 #include "../../../Manager/System/KeyConfig.h"
 #include "../../../Manager/System/DateBank.h"
 #include "../../../Manager/System/SceneManager.h"
+#include "../../../Manager/System/ResourceManager.h"
 #include "../../../Scene/SelectScene.h"
 
 SelectStage::SelectStage()
 {
 	stageIndex_ = 0;
+	selectIcon_ = -1;
 }
 
 SelectStage::~SelectStage()
@@ -15,6 +17,9 @@ SelectStage::~SelectStage()
 
 void SelectStage::Load()
 {
+	ResourceManager& res = ResourceManager::GetInstance();
+	imgMessages_ = res.Load(ResourceManager::SRC::SELECT_MESSAGES).handleIds_;
+
 }
 
 void SelectStage::Init()
@@ -61,6 +66,9 @@ void SelectStage::Update(SelectScene& _parent)
 
 void SelectStage::Draw()
 {
+	//メッセージの描画
+	DrawMessage();
+
 	int size = 50;
 	int index = 0;
 	for (int y = 0; y < COL; y++)
@@ -79,4 +87,21 @@ void SelectStage::Draw()
 			index++;
 		}
 	}
+}
+
+void SelectStage::DrawMessage()
+{
+	constexpr float RATE = 0.7f;
+	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * RATE / 2 + Application::SCREEN_HALF_X - 320);
+	constexpr int POS_Y = 64;
+
+	DrawRotaGraph(
+		POS_X,
+		POS_Y,
+		RATE,
+		0.0f,
+		imgMessages_[static_cast<int>(SelectScene::SELECT_MES::STAGE_SELECT)],
+		true,
+		false
+	);
 }

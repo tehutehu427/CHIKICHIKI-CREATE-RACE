@@ -82,8 +82,9 @@ private:
 	};
 
 	//画像のハンドル
-	int imgBackArc_;
+	int* imgMessages_;
 	int* imgArcs_;
+	int imgBackArc_;
 	int imgShadowArc_;
 
 	//移動角度
@@ -131,6 +132,9 @@ private:
 
 	//次に表示される円弧にメニュー項目を与える
 	void SetMenuItem(const int _imgIndex, const int _arcIndex);
+
+	//メッセージを描画させる関数
+	void DrawMessage();
 
 	//画像を暗く描画する
 	void DrawDarkly(const int _index);

@@ -58,8 +58,26 @@ private:
 	//選べるプレイヤー人数の最小
 	static constexpr int PLAYER_NUM_MIN = 2;
 
+	//メッセージ画像拡大率
+	static constexpr float MESSAGE_RATE = 0.7f;
+
+	//ナンバー画像の拡大率
+	static constexpr float NUMBER_RATE = 2.0f;
+
+	//アイコンの数
+	static constexpr int ICON_NUM = 2;
+
 	//入力管理クラス
 	KeyConfig& keyConfig_;
+
+	//メッセージ画像
+	int* imgMessages_;
+
+	//ナンバー画像
+	int* imgNumbers_;
+
+	//選択画像
+	int imgSelectIcon_;
 
 	//プレイヤー人数
 	int playerNum_;
@@ -88,6 +106,9 @@ private:
 	void DrawNumCheck();
 	void DrawPadCheck();
 	void DrawFinalCheck();
+
+	//メッセージの描画
+	void DrawMessage(const int _posX, const int _posY, const int _imgIndex_);
 
 };
 
