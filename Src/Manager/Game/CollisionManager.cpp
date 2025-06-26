@@ -65,6 +65,10 @@ void CollisionManager::Update(void)
 				//‚»‚ê‚¼‚ê‚Ì“–‚½‚Á‚½ˆ—
 				colliders_[i]->OnHit(colliders_[j]);
 				colliders_[j]->OnHit(colliders_[i]);
+				
+				//“–‚½‚Á‚½Œã‚Ìˆ—
+				colliders_[i]->GetGeometry().HitAfter();
+				colliders_[j]->GetGeometry().HitAfter();
 			}
 		}
 	}

@@ -37,6 +37,9 @@ public:
 	const bool IsHit(Capsule& _capsule)override;
 	const bool IsHit(Line& _line) override;
 
+	//ヒット後の処理
+	void HitAfter(void)override;
+
 	//親モデルIDの取得
 	inline const int GetParentModel(void)const { return parentModelId_; };
 
@@ -50,7 +53,7 @@ public:
 	inline void SetHitLineInfo(const MV1_COLL_RESULT_POLY _hitInfo) { hitLineInfo_ = _hitInfo; }
 
 	//当たった時の情報設定
-	inline void SetHitInfo(const MV1_COLL_RESULT_POLY_DIM _hitInfo) { hitInfo_ = _hitInfo; }
+	inline void SetHitInfo(MV1_COLL_RESULT_POLY_DIM _hitInfo) { std::swap(hitInfo_, _hitInfo); }
 
 private:
 

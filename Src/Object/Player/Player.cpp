@@ -61,7 +61,8 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	colUpdates_[TAG::MOVE_HORI_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
 	colUpdates_[TAG::MOVE_VER_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
 	colUpdates_[TAG::SLIME_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); };
-	colUpdates_[TAG::PUNCH] = [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); };
+	colUpdates_[TAG::PUNCH] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
+	colUpdates_[TAG::CANNON_AIM] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = static_cast<int>(TAG::PLAYER1); i < PlayerManager::PLAYER_NUM_MAX; i++)

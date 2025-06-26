@@ -39,6 +39,9 @@ public:
 	const bool IsHit(Capsule& _capsule) override;
 	const bool IsHit(Line& _line) override;
 
+	//ヒット後の処理
+	void HitAfter(void)override;
+
 	// 親Transformからの相対位置を取得
 	inline const VECTOR GetLocalPosTop(void) const { return localPosTop_; }
 	inline const VECTOR GetLocalPosDown(void) const { return localPosDown_; }
@@ -65,7 +68,7 @@ public:
 	inline const MV1_COLL_RESULT_POLY_DIM& GetHitInfo(void)const { return hitInfo_; }
 
 	//当たった時の情報設定
-	inline void SetHitInfo(const MV1_COLL_RESULT_POLY_DIM _hitInfo) { hitInfo_ = _hitInfo; }
+	inline void SetHitInfo(MV1_COLL_RESULT_POLY_DIM _hitInfo) { std::swap(hitInfo_, _hitInfo); }
 
 private:
 

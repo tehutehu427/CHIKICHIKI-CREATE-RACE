@@ -12,19 +12,17 @@
 Sphere::Sphere(const VECTOR& _pos, const float _radius) : Geometry(_pos,Quaternion()),
 	radius_(_radius)
 {
-	hitInfo_ = {};
+	std::memset(&hitInfo_, 0, sizeof(hitInfo_));
 }
 
 Sphere::Sphere(const Sphere& _copyBase, const VECTOR& _pos) : Geometry(_pos, Quaternion())
 {
 	radius_ = _copyBase.GetRadius();
-	hitInfo_ = _copyBase.GetHitInfo();
+	std::memset(&hitInfo_, 0, sizeof(hitInfo_));
 }
 
 Sphere::~Sphere(void)
 {
-	//“–‚½‚è”»’èî•ñ‚Ì‰ğ•ú
-	MV1CollResultPolyDimTerminate(hitInfo_);
 }
 
 void Sphere::Draw(void)
@@ -152,4 +150,16 @@ const bool Sphere::IsHit(Line& _line)
 	VECTOR diff = VSub(closestPoint, GetColPos());
 
 	return VSquareSize(diff) <= std::pow(GetRadius(), 2.0);
+}
+
+void Sphere::HitAfter(void)
+{
+	if (hitInfo_.HitNum > 0 && hitInfo_.Dim != nullptr)
+	{
+		//“–‚½‚è”»’èî•ñ‚Ì‰ğ•ú
+		MV1CollResultPolyDimTerminate(hitInfo_);
+
+		//Ä‰Šú‰»
+		std::memset(&hitInfo_, 0, sizeof(hitInfo_));
+	}
 }

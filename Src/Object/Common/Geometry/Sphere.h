@@ -34,6 +34,9 @@ public:
 	const bool IsHit(Capsule& _capsule)override;
 	const bool IsHit(Line& _line)override;
 
+	//ƒqƒbƒgŒã‚Ìˆ—
+	void HitAfter(void)override;
+
 	//”¼Œa‚Ìæ“¾
 	inline const float GetRadius(void)const { return radius_; }
 
@@ -44,7 +47,7 @@ public:
 	inline const MV1_COLL_RESULT_POLY_DIM& GetHitInfo(void)const { return hitInfo_; }
 
 	//“–‚½‚Á‚½‚Ìî•ñİ’è
-	inline void SetHitInfo(const MV1_COLL_RESULT_POLY_DIM _hitInfo) { hitInfo_ = _hitInfo; }
+	inline void SetHitInfo(MV1_COLL_RESULT_POLY_DIM _hitInfo) { std::swap(hitInfo_, _hitInfo); }
 
 private:
 
