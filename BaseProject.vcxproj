@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Player\PlayerOnHit.cpp" />
     <ClCompile Include="Src\Object\Editor\EditItemReady.cpp" />
     <ClCompile Include="Src\Object\System\RoundDisplay.cpp" />
     <ClCompile Include="Src\Object\Editor\EditEscape.cpp" />
@@ -116,6 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\System\RoundDisplay.h" />
+    <ClInclude Include="Src\Object\Player\PlayerOnHit.h" />
     <ClInclude Include="Src\Object\Editor\EditEscape.h" />
     <ClInclude Include="Src\Object\Editor\EditItemReady.h" />
     <ClInclude Include="Src\Object\Player\PlayerAction.h" />

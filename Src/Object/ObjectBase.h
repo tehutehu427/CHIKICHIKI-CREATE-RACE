@@ -70,6 +70,6 @@ protected:
 	/// </summary>
 	/// <param name="_tag">自身の当たり判定タグ</param>
 	/// <param name="_Geometry">自身の形状情報</param>
-	void MakeCollider(const Collider::TAG _tag, std::unique_ptr<Geometry> _geometry);
+	void MakeCollider(const std::vector<Collider::TAG> _tag, std::unique_ptr<Geometry> _geometry);
 };
 

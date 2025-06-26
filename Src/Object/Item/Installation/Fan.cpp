@@ -29,6 +29,9 @@ void Fan::SetParam(void)
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
 
+	//前方へ回転
+	trans_.quaRot.PosAxis(Utility::AXIS_Z);
+
 	//サイズ倍率
 	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
 
@@ -44,7 +47,7 @@ void Fan::SetParam(void)
 
 	//コライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::NORMAL_ITEM, std::move(geo));
+	MakeCollider({ Collider::TAG::NORMAL_ITEM }, std::move(geo));
 }
 
 void Fan::Update(void)

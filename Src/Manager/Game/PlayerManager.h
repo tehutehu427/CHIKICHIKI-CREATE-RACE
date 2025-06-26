@@ -62,8 +62,8 @@ public:
 	//モデル情報ゲッタ
 	const Transform& GetPlayerTransform(const int _num) { return players_[_num]->GetTransform(); }
 
-	//移動後座標
-	const VECTOR GetPlayerMovedPos(const int _num) { return players_[_num]->GetMovedPos(); }
+	////移動後座標
+	//const VECTOR GetPlayerMovedPos(const int _num) { return players_[_num]->GetMovedPos(); }
 
 	const std::vector<bool>GetPlayersIsDeath(void);
 
@@ -84,8 +84,6 @@ public:
 	/// <returns>true:全員ゴールに行った　false:誰か一人でもゴールに行ってない</returns>
 	std::vector<bool> IsGoalPlayers(void);
 
-	//当たり判定で調べる座標
-	IntVector3 GetPlayerColPos(const int _num) { return players_[_num]->GetColPos(); }
 
 	//全員がゴールしてるか死んでるか
 	bool IsPlayersEnd(void);

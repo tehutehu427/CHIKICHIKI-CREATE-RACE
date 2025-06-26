@@ -104,6 +104,7 @@
     <ClCompile Include="Src\Object\Item\SubItem\Wind.cpp" />
     <ClCompile Include="Src\Object\Editor\EditEscape.cpp" />
     <ClCompile Include="Src\Object\System\YesNoResponder.cpp" />
+    <ClCompile Include="Src\Object\Player\PlayerOnHit.cpp" />
     <ClCompile Include="Src\Object\System\RoundDisplay.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +251,7 @@
     <ClInclude Include="Src\Object\Editor\EditEscape.h" />
     <ClInclude Include="Src\Object\System\YesNoResponder.h" />
     <ClInclude Include="Src\Object\System\RoundDisplay.h" />
+    <ClInclude Include="Src\Object\Player\PlayerOnHit.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

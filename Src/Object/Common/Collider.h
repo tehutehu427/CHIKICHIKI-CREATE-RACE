@@ -1,5 +1,6 @@
 #pragma once
 
+#include<vector>
 #include"Geometry/Geometry.h"
 
 class ObjectBase;
@@ -16,6 +17,8 @@ public :
 		PLAYER2,		//プレイヤー2
 		PLAYER3,		//プレイヤー3
 		PLAYER4,		//プレイヤー4
+
+		PUNCH,			//パンチ
 
 		START,			//開始地点
 		GOAL,			//終了地点
@@ -37,13 +40,13 @@ public :
 	/// </summary>
 	/// <param name="type">衝突用タグ</param>
 	/// <param name="geometry">当たり判定の形状</param>
-	Collider(ObjectBase& _parent, const TAG _tag, Geometry& _geometry);
+	Collider(ObjectBase& _parent, const std::vector<TAG> _tags, Geometry& _geometry);
 
 	// デストラクタ
 	~Collider(void);
 
 	//衝突用タグの取得
-	inline const TAG GetTag(void)const { return tag_; }
+	inline const std::vector<TAG> GetTags(void)const { return tags_; }
 
 	//当たり判定の形状を取得
 	inline Geometry& GetGeometry(void)const { return geometry_; }
@@ -75,7 +78,7 @@ private:
 	ObjectBase& parent_;
 
 	// 衝突用タグ
-	TAG tag_;
+	std::vector<TAG> tags_;
 
 	//当たり判定の形状
 	Geometry& geometry_;

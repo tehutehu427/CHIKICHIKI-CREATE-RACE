@@ -17,6 +17,7 @@ public:
 	static constexpr float HIT_RANGE_START = 600.0f;	//開始地点の当たり判定距離
 	static constexpr float HIT_RANGE_GOAL = 600.0f;		//終了地点の当たり判定距離
 	static constexpr float HIT_RANGE_TARGET = 2500.0f;	//ターゲット用の当たり判定距離
+	static constexpr float HIT_RANGE_WIND = 2500.0f;	//風用の当たり判定距離
 
 	//更新用
 	static constexpr int COL_UPDATE_FRAME = 0;		//更新フレーム
@@ -72,7 +73,7 @@ private:
 
 	//コピーの禁止
 	CollisionManager(const CollisionManager& _copy) = delete;
-	void operator= (const CollisionManager& _copy) = delete;
+	CollisionManager& operator= (const CollisionManager& _copy) = delete;
 
 	//デストラクタ
 	~CollisionManager(void);
@@ -86,7 +87,7 @@ private:
 	const bool IsWithInHitRange(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2)const;
 
 	/// <summary>
-	/// 当たり判定をするか
+	/// 当たり判定をするか(全部当てはまったらtrue)
 	/// </summary>
 	/// <param name="_col1">1つ目のコライダ番号</param>
 	/// <param name="_col2">2つ目のコライダ番号</param>

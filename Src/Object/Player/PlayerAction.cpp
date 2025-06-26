@@ -50,6 +50,20 @@ void PlayerAction::Init(void)
 	auto num = player_.GetPadNum();
 	auto cntl = player_.GetCntl();
 	input_ = std::make_shared<PlayerInput>(num, cntl);
+	
+	//ジャンプ関係
+	isJump_ = false;
+	stepJump_ = 0.0f;
+	jumpPow_ = Utility::VECTOR_ZERO;
+	jumpDeceralation_ = POW_JUMP;
+	movePow_ = Utility::VECTOR_ZERO;
+
+	//パンチ関係の初期化
+	punchCnt_ = 0.0f;
+	punchCoolCnt_ = 0.0f;
+	punchPos_ = Utility::VECTOR_ZERO;
+	punchedCnt_ = PUNCHED_TIME;
+
 	ChangeAction(ATK_ACT::INPUT);
 }
 

@@ -62,7 +62,16 @@ void PlayerManager::Load(void)
 			cntlType = KeyConfig::TYPE::PAD;
 		}
 		std::unique_ptr<Player> player;
+		std::vector<Collider::TAG>tags;
+
+		//自分の持つタグを設定する
+		tags.push_back(static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
+		//tags.push_back(static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::) + i)
 		player = std::make_unique<Player>(i, cntlType, static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
+
+		//使い終わったら解放
+		tags.clear();
+
 		player->Load();
 		players_.push_back(std::move(player));
 	}
