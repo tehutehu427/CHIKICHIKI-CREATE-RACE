@@ -29,9 +29,9 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	for (int i = static_cast<int>(TAG::PLAYER1); i < playerNum; i++)
 	{
 		//“¯‚¶ƒ^ƒO‚¾‚Á‚½‚çÝ’è‚µ‚È‚¢
-		if ((int)tag_ == i)continue;
+		if (static_cast<int>(tag_)== i)continue;
 
-		colUpdates_[(TAG)i] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
+		colUpdates_[static_cast<TAG>(i)] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	}
 
 
