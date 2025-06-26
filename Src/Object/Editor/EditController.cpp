@@ -213,6 +213,10 @@ void EditController::CursorUpdate(void)
 		{
 			ready_->Update();
 		}
+		else
+		{
+			ready_->ChangeReady(EditItemReady::READY_PHASE::NOT_READY);	//アイテムを置く準備ができていない
+		}
 	}
 	mousePos_ = cursorPos_;
 }

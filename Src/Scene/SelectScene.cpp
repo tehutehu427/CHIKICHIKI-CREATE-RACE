@@ -9,6 +9,7 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/InputManager.h"
 #include "../Manager/System/DateBank.h"
+#include "../Manager/System/Camera.h"
 #include "../Object/System/Select/ModeSelect.h"
 #include "../Object/System/Select/MultiReady.h"
 #include "../Object/System/Select/SelectStage.h"
@@ -91,6 +92,7 @@ void SelectScene::Init(void)
 
 	//‰Šú‰»Žž“_‚Ål”‚ðˆêl‚ÉÝ’è‚µ‚Ä‚¨‚­
 	DateBank::GetInstance().SetPlayerNum(1);
+	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FIXED_POINT);
 }
 
 void SelectScene::ProcessMenuFunction(const SELECT_MENU _menu)
