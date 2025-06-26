@@ -180,10 +180,13 @@ const bool Capsule::IsHit(Line& _line)
 
 void Capsule::HitAfter(void)
 {
-	if (hitInfo_.HitNum > 0)
+	if (hitInfo_.HitNum > 0 && hitInfo_.Dim != nullptr)
 	{
 		//“–‚½‚è”»’èî•ñ‚Ì‰ğ•ú
 		MV1CollResultPolyDimTerminate(hitInfo_);
+
+		//Ä‰Šú‰»
+		std::memset(&hitInfo_, 0, sizeof(hitInfo_));
 	}
 }
 
