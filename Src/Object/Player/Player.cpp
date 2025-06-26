@@ -64,8 +64,7 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO, Utility::VECTOR_ZERO);
 	MakeCollider(tag_, std::move(moveLineGeo));
 
-	isGoal_ = false;
-	isDeath_ = false;
+
 	//*****************************************************
 }
 
@@ -108,9 +107,6 @@ void Player::Init(void)
 
 	trans_.localPos = { 0.0f,-Player::RADIUS,0.0f };
 
-	isCol_ = false;
-	isGoal_ = false;
-	isDeath_ = false;
 
 	//生存状態
 	ChangeState(PLAYER_STATE::ALIVE);
@@ -253,7 +249,7 @@ void Player::Action(void)
 bool Player::IsDeath(void)
 {
 	//奈落に落ちるorデスオブジェクトに当たったら
-	if (trans_.pos.y <= DEATH_POS_Y||isDeath_)
+	if (trans_.pos.y <= DEATH_POS_Y||onHitCol_->GetIsDeath())
 	{
 		return true;
 	}

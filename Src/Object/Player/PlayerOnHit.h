@@ -42,7 +42,15 @@ public:
 
 	void PosUpdate(void);
 	//ゲッタ
+	//移動後座標の取得
 	const VECTOR GetMovedPos(void) const { return movedPos_; }
+
+	//死亡判定の取得
+	const bool GetIsDeath(void)const { return isDeath_; }
+
+	//ゴール判定の取得
+	const bool GetIsGoal(void)const { return isGoal_; }
+
 	//セッタ
 	void SetMovedPos(const VECTOR& _movedPos) { movedPos_ = _movedPos; }
 

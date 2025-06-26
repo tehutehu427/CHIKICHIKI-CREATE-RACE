@@ -32,6 +32,10 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 		colUpdates_[(TAG)i] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	}
 
+
+	isGoal_ = false;
+	isDeath_ = false;
+
 }
 
 PlayerOnHit::~PlayerOnHit(void)
@@ -40,6 +44,8 @@ PlayerOnHit::~PlayerOnHit(void)
 
 void PlayerOnHit::Init(void)
 {
+	isGoal_ = false;
+	isDeath_ = false;
 }
 
 void PlayerOnHit::Update(const std::weak_ptr<Collider> _hitCol)
