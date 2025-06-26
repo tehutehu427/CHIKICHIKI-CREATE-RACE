@@ -61,7 +61,7 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 
 
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
-	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,movedPos_);
+	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,Utility::VECTOR_ZERO);
 	MakeCollider({ tag_ }, std::move(moveLineGeo));
 
 
@@ -147,13 +147,7 @@ void Player::Draw(void)
 
 void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	Collider::TAG tag = _hitCol.lock()->GetTag();
 	onHitCol_->Update(_hitCol);
-}
-	for (const auto tag : _hitCol.lock()->GetTags())
-	{
-		colUpdates_[tag](_hitCol);
-	}
 }
 
 #ifdef DEBUG_ON

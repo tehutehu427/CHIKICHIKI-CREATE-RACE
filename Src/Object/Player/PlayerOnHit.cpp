@@ -50,8 +50,10 @@ void PlayerOnHit::Init(void)
 
 void PlayerOnHit::Update(const std::weak_ptr<Collider> _hitCol)
 {
-	Collider::TAG tag = _hitCol.lock()->GetTag();
-	colUpdates_[tag](_hitCol);
+	for (const auto tag : _hitCol.lock()->GetTags())
+	{
+		colUpdates_[tag](_hitCol);
+	}
 }
 
 inline void PlayerOnHit::CollNone(void)
@@ -67,12 +69,11 @@ void PlayerOnHit::CollFloor(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 {
-	if (_hitCol.lock()->GetTag() == Collider::TAG::MOVE_HORI_FLOOR || _hitCol.lock()->GetTag() == Collider::TAG::MOVE_VER_FLOOR)
-	{
-		ItemBase& floor = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
-		VECTOR movePow = floor.GetMovePow();
-		movedPos_ = VAdd(movedPos_, floor.GetMovePow());
-	}
+
+	ItemBase& floor = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
+	VECTOR movePow = floor.GetMovePow();
+	movedPos_ = VAdd(movedPos_, floor.GetMovePow());
+
 	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
 	HitModelCommon(hitModel);
 }
