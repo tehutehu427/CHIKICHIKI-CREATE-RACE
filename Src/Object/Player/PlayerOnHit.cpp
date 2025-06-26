@@ -25,6 +25,16 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_[TAG::CANNON_AIM] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	colUpdates_[TAG::WIND] = [this](const std::weak_ptr<Collider> _hitCol) {CollWind(_hitCol); };
 	colUpdates_[TAG::SPRING] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
+
+	int playerNum = DateBank::GetInstance().GetPlayerNum();
+	for (int i = static_cast<int>(TAG::PLAYER1); i < playerNum; i++)
+	{
+		//同じタグだったら設定しない
+		if ((int)tag_ == i)continue;
+
+		colUpdates_[(TAG)i] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
+	}
+
 }
 
 PlayerOnHit::~PlayerOnHit(void)
@@ -105,50 +115,58 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
 }
 
-void PlayerOnHit::PosUpdate(void)
+void PlayerOnHit::DrawDebug(void)
 {
-	VECTOR pow = action_.GetMovePow();
-	movedPos_ = VAdd(trans_.pos, action_.GetMovePow());
-	movedPos_ = VAdd(movedPos_, action_.GetJumpPow());
-
-
-#ifdef DEBUG_ON
-
-	////デバッグ用床の当たり判定
-	//if (CollCube())
-	//{
-	//	movedPos_ = VAdd(movedPos_, cubeMovePos_);
-	//	action_->SetJumpPow(Utility::VECTOR_ZERO);
-	//	movedPos_.y = cube_.upPos.y + RADIUS;
-	//	action_->SetStepJump(0.0f);
-	//	action_->SetIsJump(false);
-	//	action_->SetJumpDecel(POW_JUMP);
-	//}
-	//else
-	//{
-	//	action_->SetIsJump(true);
-	//	//if (jumpPow_.y <= LIMIT_GRAVITY)
-	//	//{
-	//	//	jumpPow_.y = LIMIT_GRAVITY;
-	//	//}
-	//}
-
-#endif // DEBUG_ON
-
-	//移動量ラインの更新
-	VECTOR moveVec = VSub(movedPos_, trans_.pos);
-	if (!Utility::EqualsVZero(moveVec))
-	{
-		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
-		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
-		moveLine.SetLocalPosPoint2(moveVec);
-	}
-	//移動前の座標を格納する
-	moveDiff_ = trans_.pos;
-	//移動
-	trans_.pos = movedPos_;
-	// 現在座標を起点に移動後座標を決める
+	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
+	colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
+	colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
+	colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();
 }
+
+//void PlayerOnHit::PosUpdate(void)
+//{
+//	VECTOR pow = action_.GetMovePow();
+//	movedPos_ = VAdd(trans_.pos, action_.GetMovePow());
+//	movedPos_ = VAdd(movedPos_, action_.GetJumpPow());
+//
+//
+//#ifdef DEBUG_ON
+//
+//	////デバッグ用床の当たり判定
+//	//if (CollCube())
+//	//{
+//	//	movedPos_ = VAdd(movedPos_, cubeMovePos_);
+//	//	action_->SetJumpPow(Utility::VECTOR_ZERO);
+//	//	movedPos_.y = cube_.upPos.y + RADIUS;
+//	//	action_->SetStepJump(0.0f);
+//	//	action_->SetIsJump(false);
+//	//	action_->SetJumpDecel(POW_JUMP);
+//	//}
+//	//else
+//	//{
+//	//	action_->SetIsJump(true);
+//	//	//if (jumpPow_.y <= LIMIT_GRAVITY)
+//	//	//{
+//	//	//	jumpPow_.y = LIMIT_GRAVITY;
+//	//	//}
+//	//}
+//
+//#endif // DEBUG_ON
+//
+//	//移動量ラインの更新
+//	VECTOR moveVec = VSub(movedPos_, trans_.pos);
+//	if (!Utility::EqualsVZero(moveVec))
+//	{
+//		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
+//		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
+//		moveLine.SetLocalPosPoint2(moveVec);
+//	}
+//	//移動前の座標を格納する
+//	moveDiff_ = trans_.pos;
+//	//移動
+//	trans_.pos = movedPos_;
+//	// 現在座標を起点に移動後座標を決める
+//}
 
 void PlayerOnHit::HitModelCommon(Model& _hitModel)
 {

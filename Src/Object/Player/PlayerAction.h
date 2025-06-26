@@ -10,6 +10,15 @@ class AnimationController;
 class PlayerAction
 {
 public:
+	//定数
+	//****************************************
+	//パンチ有効時間
+	static constexpr float PUNCH_TIME_MAX = 0.5f;
+
+	//ジャンプ力
+	static constexpr float POW_JUMP = 20.0f;
+	//****************************************
+
 	enum class ATK_ACT
 	{
 		NONE,	//何もなし
@@ -106,8 +115,7 @@ private:
 	//----------------------------------
 	//ジャンプ
 	//----------------------------------
-	//ジャンプ力
-	static constexpr float POW_JUMP = 20.0f;
+
 	//ジャンプ加速の倍率
 	static constexpr float TIME_JUMP_SCALE = 1.0f;
 	//ジャンプ時間
@@ -116,8 +124,7 @@ private:
 	//----------------------------------
 	//パンチ
 	//----------------------------------
-	//パンチ有効時間
-	static constexpr float PUNCH_TIME_MAX = 0.5f;
+
 	//パンチクールタイム
 	static constexpr float PUNCH_COOL_TIME = 0.5f;
 	// 回転完了までの時間

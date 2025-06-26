@@ -26,6 +26,11 @@ public:
 	/// </summary>
 	void Update(const std::weak_ptr<Collider> _hitCol);
 
+	/// <summary>
+	/// デバッグ表示
+	/// </summary>
+	void DrawDebug(void);
+
 	void PosUpdate(void);
 	//ゲッタ
 	const VECTOR GetMovedPos(void) const { return movedPos_; }
@@ -76,7 +81,7 @@ private:
 	VECTOR& moveDiff_;
 
 	//プレイヤーの情報
-	Transform trans_;
+	Transform& trans_;
 
 	//当たり判定ごとの更新
 	std::map<Collider::TAG, std::function<void(const std::weak_ptr<Collider> _hitCol)>>colUpdates_;
