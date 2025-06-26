@@ -115,18 +115,18 @@ public:
 	//ゲッタ
 	//******************************************
 	//プレイヤー番号
-	inline const int GetPlayerNum(void)const { return playerNum_; }
+	const int GetPlayerNum(void)const { return playerNum_; }
 
-	inline const KeyConfig::TYPE GetCntl(void) { return cntl_; }
+	const KeyConfig::TYPE GetCntl(void) { return cntl_; }
 
 	//プレイヤー座標
-	inline const VECTOR GetPos(void)const { return trans_.pos; }
+	const VECTOR GetPos(void)const { return trans_.pos; }
 
 	//コントローラー番号
-	inline const KeyConfig::JOYPAD_NO GetPadNum(void)const { return padNum_; }
+	const KeyConfig::JOYPAD_NO GetPadNum(void)const { return padNum_; }
 
 	//死んだ判定
-	inline bool IsDeath(void);
+	bool IsDeath(void);
 
 	//当たったアイテム
 	inline const ItemBase::ITEM_TYPE GetHitItemType(void)const { return hitItemType_; }
@@ -134,9 +134,6 @@ public:
 	//******************************************
 	//セッタ
 	//******************************************
-	//モデル情報をマネージャからセット
-	void SetTrans(const Transform _trans) { trans_ = _trans; }
-
 	//当たり判定
 	void SetCollision(const bool _isCol) { isCol_ = _isCol; }
 
@@ -149,7 +146,6 @@ public:
 	//モデル色を変更
 	void ChangeModelColor(const COLOR_F _colorScale)override;
 	
-
 private:
 	//***********************************************
 	//定数
@@ -183,12 +179,6 @@ private:
 	static constexpr VECTOR LOCAL_UP_POS = { 0.0f,RADIUS+ LINE_RANGE,0.0f };
 	//プレイヤーの下
 	static constexpr VECTOR LOCAL_DOWN_POS = { 0.0f,-RADIUS- LINE_RANGE,0.0f };
-
-	//当たり判定の押し出し回数
-	static constexpr int COL_TRY_CNT_MAX = 10;
-
-	//当たり判定のめりこみ防止用
-	static constexpr float POSITION_OFFSET = 0.1f;
 
 	//***********************************
 	//アニメーション関連
@@ -229,33 +219,14 @@ private:
 	//状態更新
 	std::function<void(void)>stateUpdate_;
 
-
-
-	//アクション関係
-	//----------------------------------------
+	//行動系
 	std::unique_ptr<PlayerAction>action_;
-	//状態遷移
-	std::map<ATK_ACT, std::function<void(void)>>changeAction_;
 
-	//状態
-	ATK_ACT act_;
-
-
-	//当たり判定
-	//----------------------------------
-	//当たり判定
+	//当たった時の処理クラス
 	std::unique_ptr<PlayerOnHit>onHitCol_;
 
 
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
-
-//#ifdef DEBUG_ON
-//	VECTOR cubeMovePos_;
-//	VECTOR cubePos_;
-//	CUBE cube_;
-//#endif // DEBUG_ON
-
-
 
 	//--------------------------------------------
 	//******************************************
@@ -274,19 +245,18 @@ private:
 	void ChangeAlive(void);
 	//生存更新
 	void AliveUpdate(void);
+	//------------------------------
 	//死亡しているとき
 	//------------------------------
 	void ChangeDeath(void);
 	void DeathUpdate(void);
+	//------------------------------
 	//**************************************************
-
+	
 	//アクション関係
 	//------------------------------
 	void Action(void);
 
-
-	//移動後座標の更新
-	void PosUpdate(void);
 
 };
 

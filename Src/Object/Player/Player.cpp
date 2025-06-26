@@ -86,7 +86,6 @@ void Player::Load(void)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_SPD / PlayerAction::PUNCH_TIME_MAX);
 
-
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
 	////プレイヤーの手(パンチの当たり判定)
 	std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(action_->GetPunchPos(), PUNCH_RADIUS);
