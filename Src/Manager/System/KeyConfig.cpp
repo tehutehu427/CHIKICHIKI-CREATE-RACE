@@ -429,6 +429,11 @@ void KeyConfig::SetMousePosScreen(void)
 	//inputManager_->SetMousePosScreen();
 }
 
+void KeyConfig::SetMousePos(const Vector2& pos)
+{
+	inputManager_->SetMousePos(pos);
+}
+
 float KeyConfig::GetLStickDeg(KeyConfig::JOYPAD_NO no) const
 {
 	float deg = 0.0f;

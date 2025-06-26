@@ -15,6 +15,9 @@ public:
 	static constexpr float MOVE_ARROW_LENGTH = 75.0f;	//移動矢印の長さ
 	static constexpr float MOVE_ARROW_SIZE = 10.0f;		//移動矢印の先端の大きさ
 	static constexpr int DELAY_MOVE_ARROW = 20;			//移動矢印の先端からの猶予座標
+	static constexpr int CURSOR_LOCAL_POS_X = 16;	//カーソルのローカル座標X
+	static constexpr int CURSOR_LOCAL_POS_Y = 16;	//カーソルのローカル座標X
+	static constexpr int CURSOR_POINT = 2;			//カーソルのポイントサイズ
 	static constexpr IntVector3 ERROR_POS = { -1,-1,-1 };	//生成不可の座標
 	static constexpr IntVector3 PLAYER1_INIT_EDIT_POS = { 5,0,0 };	//プレイヤー1のエディター初期座標
 	static constexpr IntVector3 PLAYER2_INIT_EDIT_POS = { 10,0,0 };	//プレイヤー1のエディター初期座標
@@ -65,6 +68,8 @@ public:
 	Vector2 GetScreenSize(void) const { return screenSize_; }	//スクリーンサイズ取得
 
 	void SetReady(void);	//マルチ時に準備完了の処理
+
+	void CursorUpdate(void);	//カーソル更新
 protected:
 
 private:
@@ -118,7 +123,7 @@ private:
 	void  MoveItem(void);			
 
 	//移動方向を取得
-	MOVE_DIR GetMoveDir(void) const;			
+	MOVE_DIR GetMoveDir(void) ;			
 
 	void DebugUpdate(void);	//デバッグ用更新
 	void DebugDraw(void);	//デバッグ用描画

@@ -353,9 +353,11 @@ void MapDataIO::UpdateWait()
 
     else if (IsTriggerImport())
     {
+        SetMouseDispFlag(true);
         //ファイルを読み込む
         if (!ReadFileBool(selectFile_))
         {
+            SetMouseDispFlag(false);
             //読み込まない場合処理を終える
             return;
         }
@@ -365,6 +367,8 @@ void MapDataIO::UpdateWait()
 
         //確認へ移る
         ChangeState(STATE::CHECK_IMPORT);
+
+        SetMouseDispFlag(false);
         return;
     }
 
@@ -410,6 +414,7 @@ void MapDataIO::UpdateCheckImport()
     }
     else if (res == YesNoResponder::RESPON::YES)
     {
+   
         //外部データを読み込む    
         ImportJsonFile();
 
