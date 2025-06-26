@@ -118,9 +118,12 @@ void FreePlay::NormalDraw(void)
 	//フェーズ遷移アイコン
 	checkChangePhase_->Draw();
 
-	//矢印等の描画
-	auto screenIndex = SceneManager::GetInstance().GetScreenIndex();
-	editControllers_[screenIndex]->DrawUI();
+	if (phase_ == PHASE::EDIT_PHASE)
+	{
+		//矢印等の描画
+		auto screenIndex = SceneManager::GetInstance().GetScreenIndex();
+		editControllers_[screenIndex]->DrawUI();
+	}
 }
 
 void FreePlay::DrawEdit()
