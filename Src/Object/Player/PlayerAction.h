@@ -70,6 +70,10 @@ public:
 
 	//パンチ中か
 	const bool GetIsHitPunch(void) { return isPunchHitTime_; }
+
+	//ジャンプ中
+	const bool GetIsJump(void) { return isJump_; }
+
 	//*****************************************
 	//セッタ
 	//*****************************************
