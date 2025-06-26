@@ -9,8 +9,17 @@ class PlayerAction;
 class PlayerOnHit
 {
 public:
+
+	struct CUBE
+	{
+		VECTOR centerPos;
+		VECTOR leftPos;
+		VECTOR rightPos;
+		VECTOR upPos;
+		VECTOR downPos;
+	};
 	//コンストラクタ
-	PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>&_colParam,Transform& _trans,VECTOR& _movedPos, VECTOR& _moveDiff);
+	PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>&_colParam,Transform& _trans);
 
 	//デストラクタ
 	~PlayerOnHit(void);
@@ -41,13 +50,19 @@ private:
 	//--------------------------------------
 	//定数
 	//--------------------------------------
+	//デバッグキューブのサイズ
+	static constexpr float CUBE_W = 200.0F;
+	static constexpr float CUBE_H = 10.0F;
+	static constexpr float CUBE_D = 200.0F;
+
+
 	//プレイヤーの大きさ
 	static constexpr float RADIUS = 25.0f;
-	//プレイヤーの体の球
-	static constexpr int BODY_SPHERE_COL_NO = 1;
 
 	//当たり判定の押し出し回数
 	static constexpr int COL_TRY_CNT_MAX = 10;
+	//プレイヤーの体の球
+	static constexpr int BODY_SPHERE_COL_NO = 1;
 
 	//プレイヤーの手の座標
 	static constexpr int HAND_SPHERE_COL_NO = 3;
@@ -71,14 +86,20 @@ private:
 	//--------------------------------------
 	//メンバ変数
 	//----------------------------------
+#ifdef DEBUG_ON
+	VECTOR cubeMovePos_;
+	VECTOR cubePos_;
+	CUBE cube_;
+#endif // DEBUG_ON
+
 	//プレイヤー
 	PlayerAction& action_;
 
 	//移動量
-	VECTOR& movedPos_;
+	VECTOR movedPos_;
 
 	//移動前
-	VECTOR& moveDiff_;
+	VECTOR moveDiff_;
 
 	//プレイヤーの情報
 	Transform& trans_;
@@ -94,6 +115,9 @@ private:
 
 	//死亡判定
 	bool isDeath_;
+
+
+
 
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
 
@@ -113,16 +137,21 @@ private:
 	void CollCannon(const std::weak_ptr<Collider> _hitCol);
 	//当たったら死ぬアイテム
 	void CollKillerItem(const std::weak_ptr<Collider> _hitCol);
-
 	//風
 	void CollWind(const std::weak_ptr<Collider> _hitCol);
 
 	//パンチの当たり処理
 	void ColPunch(const std::weak_ptr<Collider> _hitCol);
 
-	
+	//ゴールした時の処理
+	void ColGoal(const std::weak_ptr<Collider> _hitCol);
 
 	//モデルの当たった時の共通処理
 	void HitModelCommon(Model& _hitModel);
+
+#ifdef DEBUG_ON
+	void CubeMove(void);
+	bool CollCube(void);
+#endif // DEBUG_ON
 };
 

@@ -34,14 +34,8 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	, cntl_(_cntl)
 	, tag_(_tag)
 {
-#ifdef DEBUG_ON
-	cubeMovePos_=Utility::VECTOR_ZERO;
-	cubePos_=Utility::VECTOR_ZERO;
-#endif // DEBUG_ON
 
 	trans_ = Transform();
-	movedPos_ = Utility::VECTOR_ZERO;
-
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
 	//パッド番号を設定
@@ -56,9 +50,6 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 
 	//コライダ作成
 	//*****************************************************
-	// 
-	//球コライダ作成
-
 	//接地しているときのライン(床上にとどまっているとき)
 	//Lineを引くための上と下の座標をとる
 	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
@@ -69,16 +60,13 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	MakeCollider(tag_, std::move(bodySphereGeo));
 
 
-	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
-	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,movedPos_);
+	//現在の座標と移動後座標を結んだ線のコライダ(移動後座標はOnHitクラスのPosUpdate関数で更新する)
+	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO, Utility::VECTOR_ZERO);
 	MakeCollider(tag_, std::move(moveLineGeo));
 
-	moveDiff_ = Utility::VECTOR_ZERO;
 	isGoal_ = false;
 	isDeath_ = false;
 	//*****************************************************
-
-	
 }
 
 Player::~Player(void)
@@ -119,25 +107,20 @@ void Player::Init(void)
 	trans_.pos={ posX,0.0f,0.0f };
 
 	trans_.localPos = { 0.0f,-Player::RADIUS,0.0f };
-	//当たり判定
-	//---------------------------------
+
 	isCol_ = false;
 	isGoal_ = false;
 	isDeath_ = false;
-	//----------------------------------
+
+	//生存状態
 	ChangeState(PLAYER_STATE::ALIVE);
+
 	action_->Init();
 
 	//当たり判定
-	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_, movedPos_, moveDiff_);
+	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_);
 	onHitCol_->Init();
 
-
-#ifdef DEBUG_ON
-	cube_.centerPos = Utility::VECTOR_ZERO;
-	cubeMovePos_ = Utility::VECTOR_ZERO;
-#endif // DEBUG_ON
-	itemLocalPos_ = Utility::VECTOR_ZERO;
 	trans_.Update();
 }
 
@@ -145,7 +128,7 @@ void Player::Update(void)
 {
 	animationController_->Update();
 #ifdef DEBUG_ON
-	CubeMove();
+	//CubeMove();
 #endif // DEBUG_ON
 
 	//プレイヤー状態更新
@@ -187,17 +170,16 @@ void Player::DrawDebug(void)
 
 
 	VECTOR pow = action_->GetMovePow();
-
-
+	VECTOR jumpPow = action_->GetJumpPow();
+	VECTOR movedPos = onHitCol_->GetMovedPos();
 	DrawFormatString(0, 16*(playerNum_*9), 0x000000
-		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nmovePow(%f,%f,%f)\nMoveDiff(%f,%f,%f)\nact(%d)"
+		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nmovePow(%f,%f,%f)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,action_->GetJumpDecel()
 		,action_->GetStepJump()
-		,action_->GetJumpPow().x, action_->GetJumpPow().y, action_->GetJumpPow().z
-		,movedPos_.x,movedPos_.y,movedPos_.z
+		, jumpPow.x, jumpPow.y, jumpPow.z
+		,movedPos.x,movedPos.y,movedPos.z
 		, pow.x, pow.y, pow.z
-		,moveDiff_.x,moveDiff_.y,moveDiff_.z
 	);
 
 	//action_->DrawDebug();
@@ -211,9 +193,6 @@ void Player::DrawDebug(void)
 	
 
 	//DrawSphere3D(punchPos_, PUNCH_RADIUS, 4, 0xff0000, 0xff0000, isPunchHitTime_);
-
-	DrawCube3D({ cube_.centerPos.x - CUBE_W,cube_.centerPos.y - CUBE_H,cube_.centerPos.z - CUBE_D }
-	, { cube_.centerPos.x + CUBE_W,cube_.centerPos.y + CUBE_H,cube_.centerPos.z + CUBE_D }, 0xff0000, 0xff0000, true);
 	//DrawFormatString(0, 80* (playerNum_ + 3), 0, "POS = %f,%f,%f", movedPos_.x, movedPos_.y, movedPos_.z);
 	//DrawFormatString(0, 100* (playerNum_ + 3), 0, "jump = %d", static_cast<int>(isJump_));
 }
@@ -237,10 +216,8 @@ void Player::AliveUpdate(void)
 	//アクション関係
 	Action();
 
-	//衝突判定
-	PosUpdate();
-
-	//onHitCol_->PosUpdate();
+	//移動後座標の更新
+	onHitCol_->PosUpdate();
 }
 void Player::ChangeDeath(void)
 {
@@ -287,82 +264,3 @@ void Player::ChangeModelColor(const COLOR_F _colorScale)
 {
 	MV1SetEmiColorScale(trans_.modelId, _colorScale);
 }
-
-
-void Player::PosUpdate(void)
-{
-	VECTOR pow = action_->GetMovePow();
-	movedPos_ = VAdd(trans_.pos, action_->GetMovePow());
-	movedPos_ = VAdd(movedPos_, action_->GetJumpPow());
-
-
-#ifdef DEBUG_ON
-
-	//デバッグ用床の当たり判定
-	if (CollCube())
-	{
-		movedPos_ = VAdd(movedPos_, cubeMovePos_);
-		action_->SetJumpPow(Utility::VECTOR_ZERO);
-		movedPos_.y = cube_.upPos.y + RADIUS;
-		action_->SetStepJump(0.0f);
-		action_->SetIsJump(false);
-		action_->SetJumpDecel(PlayerAction::POW_JUMP);
-	}
-	else
-	{
-		action_->SetIsJump(true);
-		//if (jumpPow_.y <= LIMIT_GRAVITY)
-		//{
-		//	jumpPow_.y = LIMIT_GRAVITY;
-		//}
-	}
-
-#endif // DEBUG_ON
-
-	//移動量ラインの更新
-	VECTOR moveVec = VSub(movedPos_, trans_.pos);
-	if (!Utility::EqualsVZero(moveVec))
-	{
-		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
-		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
-		moveLine.SetLocalPosPoint2(moveVec);
-	}
-	//移動前の座標を格納する
-	moveDiff_ = trans_.pos;
-	//移動
-	trans_.pos = movedPos_;
-	// 現在座標を起点に移動後座標を決める
-}
-
-
-#ifdef DEBUG_ON
-void Player::CubeMove(void)
-{
-	auto& input = KeyConfig::GetInstance();
-	const float SPD = 8.0f;
-	cubeMovePos_ = Utility::VECTOR_ZERO;
-	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
-	if (CheckHitKey(KEY_INPUT_UP))cubeMovePos_.z += SPD;
-	if (CheckHitKey(KEY_INPUT_DOWN))cubeMovePos_.z -= SPD;
-	if (CheckHitKey(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
-	if (CheckHitKey(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
-	if (CheckHitKey(KEY_INPUT_T))cubeMovePos_.y -= SPD;
-	if (CheckHitKey(KEY_INPUT_Y))cubeMovePos_.y += SPD;
-	cube_.centerPos = VAdd(cube_.centerPos, cubeMovePos_);
-}
-
-bool Player::CollCube(void)
-{
-	VECTOR jumpLine = VSub(movedPos_, trans_.pos);
-	VECTOR diff = VSub(cube_.centerPos, movedPos_);
-	if (fabsf(diff.x) > CUBE_W + RADIUS
-		|| fabsf(diff.y) > CUBE_H + RADIUS
-		|| fabsf(diff.z) > CUBE_D + RADIUS)
-	{
-		return false;
-	}
-	return true;
-}
-#endif // DEBUG_ON
-
-

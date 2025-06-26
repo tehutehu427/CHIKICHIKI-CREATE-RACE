@@ -68,16 +68,6 @@ public:
 		LAND=14,
 	};
 
-	struct CUBE
-	{
-		VECTOR centerPos;
-		VECTOR leftPos;
-		VECTOR rightPos;
-		VECTOR upPos;
-		VECTOR downPos;
-	};
-
-	
 
 	//******************************************
 	
@@ -150,30 +140,12 @@ public:
 	//当たり判定
 	void SetCollision(const bool _isCol) { isCol_ = _isCol; }
 
-	////移動量セット(マネージャ用)
-	//void SetMovePow(const VECTOR _vec) { movePow_ = _vec; }
-
-
-	//方向
-	//void SetDir(const VECTOR _dir) { dir_ = _dir; }
-
 	/// <summary>
 	/// 座標
 	/// </summary>
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
 
-	//状態遷移
-	void ChangeAction(PlayerAction::ATK_ACT _act);
-
-#ifdef DEBUG_ON
-
-
-	//デバッグキューブのサイズ
-	static constexpr float CUBE_W = 200.0F;
-	static constexpr float CUBE_H = 10.0F;
-	static constexpr float CUBE_D = 200.0F;
-#endif // DEBUG_ON
 	//モデル色を変更
 	void ChangeModelColor(const COLOR_F _colorScale)override;
 	
@@ -205,17 +177,6 @@ private:
 	//--------------------------------------------------
 	//当たり判定
 	//--------------------------------------------------
-	////プレイヤーの体の球
-	//static constexpr int BODY_SPHERE_COL_NO = 1;
-
-	////プレイヤーの手の座標
-	//static constexpr int HAND_SPHERE_COL_NO = 3;
-
-	//現在の座標と移動後座標を結んだ線のコライダ
-	static constexpr int MOVE_LINE_COL_NO = 2;
-
-	////接地しているときのラインのコライダ
-	//static constexpr int UP_AND_DOWN_LINE_COL_NO = 0;
 	//ラインの長さ
 	static constexpr float LINE_RANGE = 10.0f;
 	//プレイヤーの上の座標
@@ -239,15 +200,6 @@ private:
 	//******************************************
 	//メンバ変数
 	//******************************************
-	// 移動後の座標
-	VECTOR movedPos_;
-
-	//移動座標
-	VECTOR moveDiff_;
-
-	//アイテムとのローカル座標
-	VECTOR itemLocalPos_;
-
 	//入力デバイス
 	KeyConfig::TYPE cntl_;
 
@@ -294,19 +246,14 @@ private:
 	//当たり判定
 	std::unique_ptr<PlayerOnHit>onHitCol_;
 
-	//ゴール判定
-	bool isGoal_;
-
-	//死亡判定
-	bool isDeath_;
 
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
 
-#ifdef DEBUG_ON
-	VECTOR cubeMovePos_;
-	VECTOR cubePos_;
-	CUBE cube_;
-#endif // DEBUG_ON
+//#ifdef DEBUG_ON
+//	VECTOR cubeMovePos_;
+//	VECTOR cubePos_;
+//	CUBE cube_;
+//#endif // DEBUG_ON
 
 
 
@@ -340,14 +287,6 @@ private:
 
 	//移動後座標の更新
 	void PosUpdate(void);
-
-
-
-
-#ifdef DEBUG_ON
-	void CubeMove(void);
-	bool CollCube(void);
-#endif // DEBUG_ON
 
 };
 
