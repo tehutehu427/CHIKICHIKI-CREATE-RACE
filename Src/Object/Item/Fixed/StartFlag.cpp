@@ -41,7 +41,7 @@ void StartFlag::SetParam(void)
 
 	//ƒRƒ‰ƒCƒ_‚Ìì¬
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::START, std::move(geo));
+	MakeCollider({ Collider::TAG::START }, std::move(geo));
 }
 
 void StartFlag::Update(void)

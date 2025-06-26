@@ -53,7 +53,7 @@ void Cannon::SetParam(void)
 
 	//砲台のコライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::NORMAL_ITEM, std::move(geo));
+	MakeCollider({ Collider::TAG::NORMAL_ITEM }, std::move(geo));
 	
 	//砲身
 	barrelTrans_ = trans_;
@@ -90,11 +90,11 @@ void Cannon::SetParam(void)
 
 	//砲身のコライダの作成
 	geo = std::make_unique<Model>(barrelTrans_.pos, barrelTrans_.quaRot, barrelTrans_.modelId);
-	MakeCollider(Collider::TAG::NORMAL_ITEM, std::move(geo));
+	MakeCollider({ Collider::TAG::NORMAL_ITEM }, std::move(geo));
 
 	//大砲のエイム範囲
 	std::unique_ptr<Sphere>aimGeo = std::make_unique<Sphere>(trans_.pos, AIM_RADIUS);
-	MakeCollider(Collider::TAG::CANNON_AIM, std::move(aimGeo));
+	MakeCollider({ Collider::TAG::CANNON_AIM }, std::move(aimGeo));
 }
 
 void Cannon::Update(void)
@@ -145,22 +145,14 @@ void Cannon::Draw(void)
 
 void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	switch (_hitCol.lock()->GetTag())
+	//当たったのがエイム範囲ならプレイヤーを狙う
+	if (colParam_[AIM_COL_NUM].collider_->IsHit())
 	{
-	case Collider::TAG::PLAYER1:
-	case Collider::TAG::PLAYER2:
-	case Collider::TAG::PLAYER3:
-	case Collider::TAG::PLAYER4:
-		//当たったのがエイム範囲ならプレイヤーを狙う
-		if (colParam_[AIM_COL_NUM].collider_->IsHit())
-			targetPos_ = _hitCol.lock()->GetParent().GetTransform().pos;
-		//弾の生成
-		CreateShot();
-		break;
-
-	default:
-		break;
+		targetPos_ = _hitCol.lock()->GetParent().GetTransform().pos;
 	}
+
+	//弾の生成
+	CreateShot();
 }
 
 void Cannon::ChangeModelColor(const COLOR_F _colorScale)

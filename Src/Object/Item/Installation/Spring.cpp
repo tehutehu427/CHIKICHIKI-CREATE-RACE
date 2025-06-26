@@ -41,7 +41,7 @@ void Spring::SetParam(void)
 
 	//ƒRƒ‰ƒCƒ_‚Ìì¬
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::SPRING, std::move(geo));
+	MakeCollider({ Collider::TAG::SPRING }, std::move(geo));
 }
 
 void Spring::Update(void)
