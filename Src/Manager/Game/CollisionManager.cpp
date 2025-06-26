@@ -105,6 +105,7 @@ CollisionManager::CollisionManager(void)
 	hitRange_[Collider::TAG::PLAYER2] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::PLAYER3] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::PLAYER4] = HIT_RANGE_NORMAL;
+	hitRange_[Collider::TAG::PUNCH] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::NORMAL_ITEM] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::MOVE_HORI_FLOOR] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::MOVE_VER_FLOOR] = HIT_RANGE_NORMAL;
@@ -118,7 +119,6 @@ CollisionManager::CollisionManager(void)
 	hitRange_[Collider::TAG::GOAL] = HIT_RANGE_GOAL;
 
 	hitRange_[Collider::TAG::CANNON_AIM] = HIT_RANGE_TARGET;
-	
 	hitRange_[Collider::TAG::WIND] = HIT_RANGE_WIND;
 }
 
@@ -169,9 +169,6 @@ const bool CollisionManager::JudgeIsCollision(const int _col1Num, const int _col
 		return false;
 	}
 	
-	//設定されたタグか
-	bool settingTag = false;
-
 	//双方のタグ
 	for (auto tag1 : colliders_[_col1Num]->GetTags())
 	{
@@ -184,19 +181,16 @@ const bool CollisionManager::JudgeIsCollision(const int _col1Num, const int _col
 				return false;
 			}
 
-			//設定されたタグの組み合わせか(trueになったら判定終了)
-			if(!settingTag)settingTag = JudgeIsColTag(tag1, tag2);
+			//設定されたタグか
+			if (!JudgeIsColTag(tag1, tag2))
+			{
+				//設定されたタグではなかった
+				return false;
+			}
 		}
 	}
 
-	//設定されたタグか
-	if (!settingTag)
-	{
-		//設定されたタグではなかった
-		return false;
-	}
-
-	//全判定をクリアした
+	//全判定をクリアしたので当たり判定をする
 	return true;
 }
 
