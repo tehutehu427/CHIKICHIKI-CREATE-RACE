@@ -121,6 +121,13 @@ private:
 	//ジャンプ時間
 	static constexpr float TIME_JUMP = 3.0f;
 
+	//ジャンプアニメーションループ開始
+	static constexpr float JUMP_ANIM_LOOP_START_FRAME = 23.0f;
+	//ジャンプアニメーションループ完了
+	static constexpr float JUMP_ANIM_LOOP_END_FRAME = 25.0f;
+	//ジャンプアニメーションループ中のスピード
+	static constexpr float JUMP_ANIM_ATTACK_BLEND_TIME = 5.0f;
+
 	//----------------------------------
 	//パンチ
 	//----------------------------------

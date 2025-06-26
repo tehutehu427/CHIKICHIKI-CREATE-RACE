@@ -231,7 +231,8 @@ void PlayerAction::Jump(void)
 	stepJump_ += deltaTime;
 
 	//空中アニメーションステップのループ設定
-	animationController_.SetEndLoop(23.0f, 25.0f, 5.0f);
+	animationController_.SetEndLoop(JUMP_ANIM_LOOP_START_FRAME
+		, JUMP_ANIM_LOOP_END_FRAME, JUMP_ANIM_ATTACK_BLEND_TIME);
 
 	//ジャンプ中も移動できるようにする
 	MoveDirFronInput();

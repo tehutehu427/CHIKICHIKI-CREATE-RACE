@@ -66,7 +66,6 @@ void PlayerManager::Load(void)
 
 		//自分の持つタグを設定する
 		tags.push_back(static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
-		//tags.push_back(static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::) + i)
 		player = std::make_unique<Player>(i, cntlType, static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
 
 		//使い終わったら解放

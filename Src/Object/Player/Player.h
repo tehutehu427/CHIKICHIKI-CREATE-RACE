@@ -125,6 +125,8 @@ public:
 	//コントローラー番号
 	const KeyConfig::JOYPAD_NO GetPadNum(void)const { return padNum_; }
 
+	//
+
 	//死んだ判定
 	bool IsDeath(void);
 
