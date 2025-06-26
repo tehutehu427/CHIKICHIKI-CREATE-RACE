@@ -816,7 +816,7 @@ int Utility::GetDigitCount(const int _value)
     int ret = std::abs(_value);
 
     int digit = 0;
-    while (_value > 0)
+    while (ret > 0)
     {
         ret /= 10;
         ++digit;

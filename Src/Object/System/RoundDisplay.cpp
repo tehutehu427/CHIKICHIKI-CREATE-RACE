@@ -27,7 +27,7 @@ void RoundDisplay::Load()
 void RoundDisplay::Init()
 {
 	//初期値
-	numberIndex_ = 1;
+	numberIndex_ = 0;
 }
 
 void RoundDisplay::Update()
@@ -38,8 +38,8 @@ void RoundDisplay::Update()
 void RoundDisplay::Draw()
 {
 	//縦座標を固定
-	constexpr int ROUND_POS_X = Application::SCREEN_HALF_X - 300;
-	constexpr int NUMBER_POS_X = Application::SCREEN_HALF_X + 200;
+	constexpr int ROUND_POS_X = Application::SCREEN_HALF_X - 100;
+	constexpr int NUMBER_POS_X = Application::SCREEN_HALF_X + 250;
 	constexpr int POS_Y = Application::SCREEN_HALF_Y;
 
 	//ラウンドの描画
