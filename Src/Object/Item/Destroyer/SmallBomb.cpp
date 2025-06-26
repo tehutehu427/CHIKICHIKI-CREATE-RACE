@@ -38,10 +38,6 @@ void SmallBomb::SetParam(void)
 	trans_.localPos.x = MAP_LOCALPOS.x * trans_.scl.x;
 	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
-
-	//ÉRÉâÉCÉ_ÇÃçÏê¨
-	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::DESTROYER, std::move(geo));
 }
 
 void SmallBomb::Update(void)

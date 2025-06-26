@@ -73,7 +73,7 @@ private:
 
 	//コピーの禁止
 	CollisionManager(const CollisionManager& _copy) = delete;
-	void operator= (const CollisionManager& _copy) = delete;
+	CollisionManager& operator= (const CollisionManager& _copy) = delete;
 
 	//デストラクタ
 	~CollisionManager(void);
@@ -87,7 +87,7 @@ private:
 	const bool IsWithInHitRange(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2)const;
 
 	/// <summary>
-	/// 当たり判定をするか
+	/// 当たり判定をするか(全部当てはまったらtrue)
 	/// </summary>
 	/// <param name="_col1">1つ目のコライダ番号</param>
 	/// <param name="_col2">2つ目のコライダ番号</param>

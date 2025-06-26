@@ -128,49 +128,76 @@ CollisionManager::~CollisionManager(void)
 
 const bool CollisionManager::IsWithInHitRange(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2) const
 {
+	//総合
+	bool ret = false;
+
 	//双方の距離
 	double sqrtDis = Utility::SqrMagnitude(
 		_col1.lock()->GetGeometry().GetColPos(),
 		_col2.lock()->GetGeometry().GetColPos());
 
 	//双方のタグ
-	Collider::TAG tag1 = _col1.lock()->GetTag();
-	Collider::TAG tag2 = _col2.lock()->GetTag();
+	for (const auto tag1 : _col1.lock()->GetTags())
+	{
+		for (const auto tag2 : _col2.lock()->GetTags())
+		{
+			//距離範囲の比較
+			float range = hitRange_.at(tag1) >= hitRange_.at(tag2) ? hitRange_.at(tag1) : hitRange_.at(tag2);
 
-	//距離範囲の比較
-	float range = hitRange_.at(tag1) >= hitRange_.at(tag2) ? hitRange_.at(tag1) : hitRange_.at(tag2);
+			//範囲内かの比較
+			ret = sqrtDis <= range * range;
 
-	//範囲内かの比較
-	return sqrtDis <= range * range;
+			//当たったなら強制終了
+			if (ret)
+			{
+				//当たった
+				return true;
+			}
+		}
+	}
+
+	//当たらなかった
+	return false;
 }
 
 const bool CollisionManager::JudgeIsCollision(const int _col1Num, const int _col2Num)const
 {
-	//総合判定
-	bool ret = false;
-
 	//範囲内か
-	bool inRange = IsWithInHitRange(colliders_[_col1Num], colliders_[_col2Num]);
+	if (!IsWithInHitRange(colliders_[_col1Num], colliders_[_col2Num]))
+	{
+		//範囲内でなかった
+		return false;
+	}
 	
-	//タグが違うか
-	bool diffTag = colliders_[_col1Num]->GetTag() != colliders_[_col2Num]->GetTag();
+	//設定されたタグか
+	bool settingTag = false;
 
-	//限りなく小さい数
-	const float EPSILON = 1.0f;
+	//双方のタグ
+	for (auto tag1 : colliders_[_col1Num]->GetTags())
+	{
+		for (auto tag2 : colliders_[_col2Num]->GetTags())
+		{
+			//違うタグか
+			if (tag1 == tag2)
+			{
+				//同じタグを持っていた
+				return false;
+			}
 
-	//各当たり判定情報
-	VECTOR pos1 = colliders_[_col1Num]->GetParent().GetTransform().pos;
-	VECTOR rot1 = colliders_[_col1Num]->GetParent().GetTransform().quaRot.ToEuler();
-	VECTOR pos2 = colliders_[_col2Num]->GetParent().GetTransform().pos;
-	VECTOR rot2 = colliders_[_col2Num]->GetParent().GetTransform().quaRot.ToEuler();
+			//設定されたタグの組み合わせか(trueになったら判定終了)
+			if(!settingTag)settingTag = JudgeIsColTag(tag1, tag2);
+		}
+	}
 
-	//設定されたタグの組み合わせか
-	bool settingTag = JudgeIsColTag(colliders_[_col1Num]->GetTag(), colliders_[_col2Num]->GetTag());
+	//設定されたタグか
+	if (!settingTag)
+	{
+		//設定されたタグではなかった
+		return false;
+	}
 
-	//総合
-	ret = inRange && diffTag  && settingTag;
-
-	return ret;
+	//全判定をクリアした
+	return true;
 }
 
 const bool CollisionManager::JudgeIsColTag(const Collider::TAG _tag1, const Collider::TAG _tag2) const

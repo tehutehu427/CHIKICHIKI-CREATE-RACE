@@ -31,7 +31,7 @@ void ObjectBase::ChangeModelColor(const COLOR_F _colorScale)
 	}
 }
 
-void ObjectBase::MakeCollider(const Collider::TAG _tag, std::unique_ptr<Geometry> _geometry)
+void ObjectBase::MakeCollider(const std::vector<Collider::TAG> _tag, std::unique_ptr<Geometry> _geometry)
 {
 	//“–‚½‚è”»’èî•ñ
 	ColParam colParam;
