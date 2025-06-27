@@ -48,6 +48,8 @@ void PlayerManager::Load(void)
 	{
 		isGoal_.emplace_back(false);
 		isDeath_.emplace_back(false);
+
+		goalTime_.emplace_back(0.0f);
 	}
 
 	//playerNum_ = PLAYER_NUM_MAX;
@@ -88,6 +90,7 @@ void PlayerManager::Init(void)
 
 void PlayerManager::Update(void)
 {
+	time_ += SceneManager::GetInstance().GetDeltaTime();
 	for (auto& p : players_)
 	{
 		p->Update();
@@ -95,6 +98,18 @@ void PlayerManager::Update(void)
 	PlayersCollision();
 
 	IsGoalPlayers();
+	
+	for (int i = 0; i < playerNum_; i++)
+	{
+		if (goalTime_[i] >= 0.0f)
+		{
+			continue;
+		}
+		if (isGoal_[i])
+		{
+			goalTime_[i] = time_;
+		}
+	}
 
 	IsDeathPlayers();
 }

@@ -71,6 +71,9 @@ public:
 
 	Player& GetPlayer(int _num) { return *players_[_num]; }
 
+	//ゴールタイムのゲッタ
+	const std::vector<float> GetGoalTime(void)const { return goalTime_; }
+
 	//****************************************
 	//セッタ
 	//****************************************
@@ -90,6 +93,7 @@ public:
 	//プレイヤーが全員死んでるかゴールしたかの判定
 	bool IsPlayersEnd(void);
 
+
 private:
 	//プレイヤーの大きさ
 	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
@@ -99,6 +103,11 @@ private:
 
 	//静的インスタンス
 	static PlayerManager* instance_;
+
+	//始まってからの総タイム
+	float time_;
+	//ゴール時間
+	std::vector<float>goalTime_;
 
 	//*****************************************
 	//メンバ変数
