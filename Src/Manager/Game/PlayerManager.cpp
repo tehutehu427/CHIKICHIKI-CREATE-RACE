@@ -10,11 +10,6 @@ PlayerManager* PlayerManager::instance_ = nullptr;
 PlayerManager::PlayerManager(void)
 {
 	playerNum_ = 0;
-	for (int i = 0; i < playerNum_; i++)
-	{
-		isGoal_.emplace_back(false);
-		isDeath_.emplace_back(false);
-	}
 }
 
 PlayerManager::~PlayerManager(void)
@@ -48,6 +43,13 @@ void PlayerManager::Load(void)
 {
 	//データバンクから人数を取得
 	playerNum_ = DateBank::GetInstance().GetPlayerNum();
+
+	for (int i = 0; i < playerNum_; i++)
+	{
+		isGoal_.emplace_back(false);
+		isDeath_.emplace_back(false);
+	}
+
 	//playerNum_ = PLAYER_NUM_MAX;
 	for (int i = 0; i < playerNum_; i++)
 	{
@@ -62,14 +64,13 @@ void PlayerManager::Load(void)
 			cntlType = KeyConfig::TYPE::PAD;
 		}
 		std::unique_ptr<Player> player;
-		std::vector<Collider::TAG>tags;
 
 		//自分の持つタグを設定する
-		tags.push_back(static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
-		player = std::make_unique<Player>(i, cntlType, static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i));
+		Collider::TAG tag;
+		tag = static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i);
+		player = std::make_unique<Player>(i, cntlType, tag);
 
-		//使い終わったら解放
-		tags.clear();
+	
 
 		player->Load();
 		players_.push_back(std::move(player));
@@ -92,6 +93,10 @@ void PlayerManager::Update(void)
 		p->Update();
 	}
 	PlayersCollision();
+
+	IsGoalPlayers();
+
+	IsDeathPlayers();
 }
 
 void PlayerManager::Draw(void)
@@ -193,20 +198,25 @@ void PlayerManager::SetInitPos(VECTOR _worldPos)
 	}
 }
 
-std::vector<bool> PlayerManager::IsGoalPlayers(void)
+//std::vector<bool> PlayerManager::IsGoalPlayers(void)
+void PlayerManager::IsGoalPlayers(void)
 {
 	for (int i=0;i<playerNum_;i++)
 	{
-		if (players_[i]->GetIsGoal())
-		{
-			isGoal_[i] = true;
-		}
-		else
-		{
-			isGoal_[i] = false;
-		}
+		isGoal_[i] = players_[i]->GetIsGoal() ? true : false;
 	}
-	return isGoal_;
+	//	return isDeath_;
+}
+
+//std::vector<bool> PlayerManager::IsDeathPlayers(void)
+void PlayerManager::IsDeathPlayers(void)
+{
+	//プレイヤーがゴールするか、奈落に落ちたら終わる
+	for (int i = 0; i < playerNum_; i++)
+	{
+		isDeath_[i] = players_[i]->GetIsDeath() ? true : false;
+	}
+//	return isDeath_;
 }
 
 bool PlayerManager::IsPlayersEnd(void)
@@ -214,12 +224,12 @@ bool PlayerManager::IsPlayersEnd(void)
 	//プレイヤーがゴールするか、奈落に落ちたら終わる
 	for (int i = 0; i < playerNum_; i++)
 	{
-		if (players_[i]->IsDeath() || players_[i]->GetIsGoal())
+		if (!isGoal_[i] && !isDeath_[i])
 		{
-			return true;
+			return false;
 		}
 	}
-	return false;
+	return true;
 }
 
 //void PlayerManager::P2PPush(int _pNum1,int _pNum2)

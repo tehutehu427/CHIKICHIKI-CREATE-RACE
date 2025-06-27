@@ -19,7 +19,7 @@ public:
 		VECTOR downPos;
 	};
 	//コンストラクタ
-	PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>&_colParam,Transform& _trans);
+	PlayerOnHit(Collider::TAG _tag,PlayerAction& _action, std::vector<ObjectBase::ColParam>&_colParam,Transform& _trans);
 
 	//デストラクタ
 	~PlayerOnHit(void);
@@ -125,9 +125,6 @@ private:
 	bool isDeath_;
 
 
-
-
-	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
 
 	//メンバ関数
 	//----------------------------------

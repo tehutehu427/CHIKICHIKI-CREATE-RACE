@@ -5,7 +5,7 @@
 #include"./Player.h"
 #include "PlayerOnHit.h"
 
-PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>& _colParam, Transform& _trans):
+PlayerOnHit::PlayerOnHit(Collider::TAG _tag, PlayerAction& _action, std::vector<ObjectBase::ColParam>& _colParam, Transform& _trans):
 	action_(_action),
 	colParam_(_colParam),
 	trans_(_trans)
@@ -29,8 +29,9 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	for (int i = static_cast<int>(TAG::PLAYER1); i < playerNum; i++)
 	{
 		//ìØÇ∂É^ÉOÇæÇ¡ÇΩÇÁê›íËÇµÇ»Ç¢
-		if (static_cast<int>(tag_)== i)continue;
+		if (static_cast<int>(_tag)== i)continue;
 
+		//èàóùÇÃäiî[
 		colUpdates_[static_cast<TAG>(i)] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	}
 
