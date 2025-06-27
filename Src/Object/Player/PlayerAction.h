@@ -64,7 +64,6 @@ public:
 	//プレイヤーの角度Y
 	const Quaternion GetPlayerRotY(void) { return playerRotY_; }
 
-
 	//パンチ座標
 	const VECTOR& GetPunchPos(void) { return punchPos_; }
 
@@ -73,7 +72,6 @@ public:
 
 	//ジャンプ中
 	const bool GetIsJump(void) { return isJump_; }
-
 	//*****************************************
 	//セッタ
 	//*****************************************

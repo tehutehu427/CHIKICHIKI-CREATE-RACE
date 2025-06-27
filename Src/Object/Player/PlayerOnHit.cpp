@@ -34,8 +34,6 @@ PlayerOnHit::PlayerOnHit(Collider::TAG _tag, PlayerAction& _action, std::vector<
 		//処理の格納
 		colUpdates_[static_cast<TAG>(i)] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	}
-
-
 	isGoal_ = false;
 	isDeath_ = false;
 
@@ -106,16 +104,17 @@ void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 {
-	//パンチ中じゃなければ何もしない
-	if (!action_.GetIsHitPunch())return;
-	//パンチしたプレイヤーの向いてる方向をセットする
-	VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
+	if (action_.GetIsHitPunch())
+	{
+		//パンチしたプレイヤーの向いてる方向をセットする
+		VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
 
-	//パンチしたプレイヤーの位置と自分の位置を比較して、
-	action_.SetDir(Utility::GetMoveVec(punchedPlayerPos, trans_.pos));
+		//パンチしたプレイヤーの位置と自分の位置を比較して、
+		action_.SetDir(Utility::GetMoveVec(punchedPlayerPos, trans_.pos));
 
-	//ノックバック状態遷移
-	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
+		//ノックバック状態遷移
+		action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
+	}
 }
 
 void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
@@ -145,24 +144,24 @@ void PlayerOnHit::PosUpdate(void)
 	//デバッグ床の移動
 	CubeMove();
 
-	//デバッグ用床の当たり判定
-	if (CollCube())
-	{
-		movedPos_ = VAdd(movedPos_, cubeMovePos_);
-		action_.SetJumpPow(Utility::VECTOR_ZERO);
-		movedPos_.y = cube_.upPos.y + RADIUS;
-		action_.SetStepJump(0.0f);
-		if(action_.GetJumpDecel()<=-10.0f)action_.SetIsJump(false);
-		action_.SetJumpDecel(PlayerAction::POW_JUMP);
-	}
-	else
-	{
-		action_.SetIsJump(true);
-		//if (jumpPow_.y <= LIMIT_GRAVITY)
-		//{
-		//	jumpPow_.y = LIMIT_GRAVITY;
-		//}
-	}
+	////デバッグ用床の当たり判定
+	//if (CollCube())
+	//{
+	//	movedPos_ = VAdd(movedPos_, cubeMovePos_);
+	//	action_.SetJumpPow(Utility::VECTOR_ZERO);
+	//	movedPos_.y = cube_.upPos.y + RADIUS;
+	//	action_.SetStepJump(0.0f);
+	//	if(action_.GetJumpDecel()<=-10.0f)action_.SetIsJump(false);
+	//	action_.SetJumpDecel(PlayerAction::POW_JUMP);
+	//}
+	//else
+	//{
+	//	action_.SetIsJump(true);
+	//	//if (jumpPow_.y <= LIMIT_GRAVITY)
+	//	//{
+	//	//	jumpPow_.y = LIMIT_GRAVITY;
+	//	//}
+	//}
 
 #endif // DEBUG_ON
 

@@ -50,13 +50,15 @@ void PlayerAction::Init(void)
 	auto num = player_.GetPadNum();
 	auto cntl = player_.GetCntl();
 	input_ = std::make_shared<PlayerInput>(num, cntl);
-	
+	input_->Init();
 	//ジャンプ関係
 	isJump_ = false;
 	stepJump_ = 0.0f;
 	jumpPow_ = Utility::VECTOR_ZERO;
 	jumpDeceralation_ = POW_JUMP;
-	movePow_ = Utility::VECTOR_ZERO;
+  	movePow_ = Utility::VECTOR_ZERO;
+	//スピード
+	speed_ = 0.0f;
 
 	//パンチ関係の初期化
 	punchCnt_ = 0.0f;
@@ -129,6 +131,7 @@ void PlayerAction::ChangeAction(ATK_ACT _act)
 void PlayerAction::ChangeInput(void)
 {
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::IDLE));
+	isJump_ = false;
 	actionUpdate_ = std::bind(&PlayerAction::ActionInputUpdate, this);
 }
 

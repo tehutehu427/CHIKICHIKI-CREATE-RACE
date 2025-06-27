@@ -168,13 +168,12 @@ void Player::DrawDebug(void)
 	VECTOR jumpPow = action_->GetJumpPow();
 	VECTOR movedPos = onHitCol_->GetMovedPos();
 	DrawFormatString(0, 16*(playerNum_*9), 0x000000
-		, "Šp“x(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nmovedPos(%f,%f,%f)\nmovePow(%f,%f,%f)"
+		, "Šp“x(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nisJump(%d)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,action_->GetJumpDecel()
 		,action_->GetStepJump()
 		, jumpPow.x, jumpPow.y, jumpPow.z
-		,movedPos.x,movedPos.y,movedPos.z
-		, pow.x, pow.y, pow.z
+		,action_->GetIsJump()
 	);
 
 	//action_->DrawDebug();
