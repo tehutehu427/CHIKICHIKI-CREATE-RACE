@@ -4,6 +4,7 @@
 #include "../../Common/FontRegistry.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/InputManager.h"
+#include "../../Scene/Game/GameScene.h"
 #include "../../Utility/Utility.h"
 
 namespace
@@ -17,8 +18,8 @@ GameClear::GameClear():
 {
 	//状態別ファンクション処理の初期化と登録
 	stateMap_.clear();
-	RegisterStateFunction(STATE::WAITING, [&]() { UpdateWaiting(); }, [&]() { DrawWaiting(); });
-	RegisterStateFunction(STATE::MENU, [&]() { UpdateMenu(); }, [&]() { DrawMenu(); });
+	RegisterStateFunction(STATE::WAITING, [&](GameScene& _parent) { UpdateWaiting(_parent); }, [&]() { DrawWaiting(); });
+	RegisterStateFunction(STATE::MENU, [&](GameScene& _parent) { UpdateMenu(_parent); }, [&]() { DrawMenu(); });
 
 	//初期化
 	state_ = STATE::NONE;
@@ -29,15 +30,15 @@ GameClear::GameClear():
 	//メニュー項目別受付処理
 	menuFuncTabe_ =
 	{
-		{MENU::RETRY,[this]()
+		{MENU::RETRY,[this](GameScene& _parent)
 		{
-			scnMng_.ChangeScene(scnMng_.GetSceneID());
+			_parent.Reset();
 		}},
-		{MENU::BACK_SELECT,[this]()
+		{MENU::BACK_SELECT,[this](GameScene& _parent)
 		{
 			scnMng_.ChangeScene(SceneManager::SCENE_ID::SELECT);
 		}},
-		{MENU::BACK_TITLE,[this]()
+		{MENU::BACK_TITLE,[this](GameScene& _parent)
 		{
 			scnMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 		}}
@@ -71,10 +72,10 @@ void GameClear::Init()
 	ChangeState(STATE::WAITING);
 }
 
-void GameClear::Update()
+void GameClear::Update(GameScene& _parent)
 {
 	//状態別更新処理
-	stateMap_[state_].updateFunc();
+	stateMap_[state_].updateFunc(_parent);
 }
 
 void GameClear::Draw()
@@ -87,13 +88,13 @@ void GameClear::Draw()
 	stateMap_[state_].drawFunc();
 }
 
-void GameClear::RegisterStateFunction(const STATE _state, std::function<void()> _update, std::function<void()> _draw)
+void GameClear::RegisterStateFunction(const STATE _state, std::function<void(GameScene&)> _update, std::function<void()> _draw)
 {
 	stateMap_[_state] = StateFuncs{ _update, _draw };
 }
 
-void GameClear::UpdateWaiting()
-{
+void GameClear::UpdateWaiting(GameScene& _parent)
+{	
 	KeyConfig& ins = KeyConfig::GetInstance();
 
 	//ステップ更新
@@ -116,7 +117,7 @@ void GameClear::UpdateWaiting()
 	}
 }
 
-void GameClear::UpdateMenu()
+void GameClear::UpdateMenu(GameScene& _parent)
 {
 	KeyConfig& ins = KeyConfig::GetInstance();
 
@@ -136,7 +137,7 @@ void GameClear::UpdateMenu()
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//選択したメニュー項目の処理に移る
-		menuFuncTabe_[static_cast<MENU>(menuIndex_)]();
+		menuFuncTabe_[static_cast<MENU>(menuIndex_)](_parent);
 	}
 }
 

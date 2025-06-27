@@ -61,7 +61,7 @@ void MultiPalette::UpdateSelect()
 	//人数分コントローラに設定
 	for (int i = 0; i < editControllers_.size(); i++)
 	{
-		editControllers_[i]->SetItemType(palIcon_->GetSelectType());
+		editControllers_[i]->SetItemType(palIcon_->GetSelectType(i));
 	}
 
 	//状態変更

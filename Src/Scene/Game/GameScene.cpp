@@ -175,6 +175,12 @@ void GameScene::ChangePhase(const PHASE phase)
 	phaseChanges_[phase_]();
 }
 
+void GameScene::Reset()
+{
+	//アクションを最初から遊ぶ
+	ChangePhase(PHASE::ACTION_PHASE);
+}
+
 void GameScene::ChangePhaseEdit(void)
 {
 	phaseUpdate_ = std::bind(&GameScene::UpdateEdit, this);
@@ -268,7 +274,7 @@ void GameScene::UpdateClear(void)
 	//プレイヤーにアニメーションをさせたりする
 	//エフェクトなどを表示させる
 
-	gameClear_->Update();
+	gameClear_->Update(*this);
 }
 
 void GameScene::DrawEdit(void)

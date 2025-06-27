@@ -63,6 +63,11 @@ public:
 	/// <param name="phase">フェーズ</param>
 	void ChangePhase(const PHASE phase);
 
+	/// <summary>
+	/// リセット
+	/// </summary>
+	virtual void Reset();
+
 protected:
 
 	//フェーズ管理

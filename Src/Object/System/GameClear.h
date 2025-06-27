@@ -6,6 +6,8 @@
 
 class SceneManager;
 class KeyConfig;
+class MultiParty;
+class GameScene;
 
 class GameClear
 {
@@ -34,7 +36,7 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(GameScene& _parent);
 
 	/// <summary>
 	/// 描画
@@ -85,7 +87,7 @@ private:
 	// 状態ごとの構造体（更新と描画を分けて保持）
 	struct StateFuncs
 	{
-		std::function<void()> updateFunc;
+		std::function<void(GameScene&)> updateFunc;
 		std::function<void()> drawFunc;
 	};
 
@@ -96,7 +98,7 @@ private:
 	std::unordered_map<STATE, StateFuncs> stateMap_;
 
 	//メニュー項目別処理
-	std::unordered_map<MENU, std::function<void()>> menuFuncTabe_;
+	std::unordered_map<MENU, std::function<void(GameScene&)>> menuFuncTabe_;
 
 	//フォント
 	int messageFont_;	//メッセージ
@@ -118,14 +120,14 @@ private:
 	KeyConfig& keyConfig_;
 
 	//状態別更新処理を登録
-	void RegisterStateFunction(const STATE _state, std::function<void()> _update, std::function<void()> _draw);
+	void RegisterStateFunction(const STATE _state, std::function<void(GameScene&)> _update, std::function<void()> _draw);
 
 	//状態変更
 	inline const void ChangeState(const STATE _state) { state_ = _state; }
 
 	//状態別更新処理
-	void UpdateWaiting();
-	void UpdateMenu();
+	void UpdateWaiting(GameScene& _parent);
+	void UpdateMenu(GameScene& _parent);
 
 	//状態別描画処理
 	void DrawWaiting();
