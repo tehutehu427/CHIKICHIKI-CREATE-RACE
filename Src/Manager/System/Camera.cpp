@@ -227,22 +227,25 @@ void Camera::ProcessRot(void)
 {
 	auto& ins = KeyConfig::GetInstance();
 	float rotPow = Utility::Deg2RadF(SPEED);
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_RIGHT, padNo_,KeyConfig::TYPE::KEYBORD_MOUSE)) { angles_.y += rotPow; }
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_LEFT, padNo_, KeyConfig::TYPE::KEYBORD_MOUSE)) { angles_.y -= rotPow; }
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_UP, padNo_, KeyConfig::TYPE::KEYBORD_MOUSE)) { angles_.x += rotPow; }
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_DOWN, padNo_, KeyConfig::TYPE::KEYBORD_MOUSE)) { angles_.x -= rotPow; }
+	auto playerMaxNum = DateBank::GetInstance().GetPlayerNum();
+	auto keyType = playerMaxNum == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_RIGHT, padNo_, keyType)) { angles_.y += rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_LEFT, padNo_, keyType)) { angles_.y -= rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_UP, padNo_, keyType)) { angles_.x += rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_DOWN, padNo_, keyType)) { angles_.x -= rotPow; }
 
 
 	auto rStick = ins.GetKnockRStickSize(padNo_);
 	rotPow = SPEED_PAD;
 	angles_.x += Utility::Deg2RadF(rStick.y * rotPow);
 	angles_.y += Utility::Deg2RadF(rStick.x * rotPow);
-
-	auto mouseMove = ins.GetMouseMove();
-	rotPow = SPEED_MOUSE;
-	angles_.x += Utility::Deg2RadF(mouseMove.y * rotPow);
-	angles_.y += Utility::Deg2RadF(mouseMove.x * rotPow);
-
+	if (keyType == KeyConfig::TYPE::ALL)
+	{
+		auto mouseMove = ins.GetMouseMove();
+		rotPow = SPEED_MOUSE;
+		angles_.x += Utility::Deg2RadF(mouseMove.y * rotPow);
+		angles_.y += Utility::Deg2RadF(mouseMove.x * rotPow);
+	}
 	KeyConfig::GetInstance().SetMousePosScreen();
 
 	if (angles_.x >= LIMIT_X_UP_RAD)

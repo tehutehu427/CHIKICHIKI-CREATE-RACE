@@ -125,7 +125,11 @@ public:
 	//コントローラー番号
 	const KeyConfig::JOYPAD_NO GetPadNum(void)const { return padNum_; }
 
-	//
+	//ゴール判定の取得
+	const bool GetIsGoal(void)const;
+
+	//死亡判定の取得
+	const bool GetIsDeath(void)const;
 
 	//死んだ判定
 	bool IsDeath(void);

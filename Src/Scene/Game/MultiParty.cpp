@@ -104,7 +104,7 @@ void MultiParty::UpdateEdit(void)
 
 void MultiParty::DrawAction(void)
 {
-
+	GameScene::DrawAction();
 }
 
 void MultiParty::DrawEdit(void)

@@ -197,7 +197,7 @@ std::vector<bool> PlayerManager::IsGoalPlayers(void)
 {
 	for (int i=0;i<playerNum_;i++)
 	{
-		if (players_[i]->GetHitItemType() == ItemBase::ITEM_TYPE::GOAL)
+		if (players_[i]->GetIsGoal())
 		{
 			isGoal_[i] = true;
 		}
@@ -214,12 +214,12 @@ bool PlayerManager::IsPlayersEnd(void)
 	//プレイヤーがゴールするか、奈落に落ちたら終わる
 	for (int i = 0; i < playerNum_; i++)
 	{
-		if (!players_[i]->IsDeath() && players_[i]->GetHitItemType() != ItemBase::ITEM_TYPE::GOAL)
+		if (players_[i]->IsDeath() || players_[i]->GetIsGoal())
 		{
-			return false;
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
 
 //void PlayerManager::P2PPush(int _pNum1,int _pNum2)

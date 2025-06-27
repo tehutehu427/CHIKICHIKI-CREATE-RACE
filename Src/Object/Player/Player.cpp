@@ -59,11 +59,9 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
 	MakeCollider({ tag_ }, std::move(bodySphereGeo));
 
-
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
 	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,Utility::VECTOR_ZERO);
 	MakeCollider({ tag_ }, std::move(moveLineGeo));
-
 
 	//*****************************************************
 }
@@ -87,6 +85,7 @@ void Player::Load(void)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_SPD / PlayerAction::PUNCH_TIME_MAX);
 
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
+
 	////プレイヤーの手(パンチの当たり判定)
 	std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(action_->GetPunchPos(), PUNCH_RADIUS);
 	MakeCollider({ tag_,Collider::TAG::PUNCH }, std::move(handSphereGeo));
@@ -244,6 +243,16 @@ void Player::Action(void)
 		//何もできないようにする
 		action_->ChangeAction(PlayerAction::ATK_ACT::NONE);
 	}
+}
+
+const bool Player::GetIsGoal(void) const
+{
+	return onHitCol_->GetIsGoal();
+}
+
+const bool Player::GetIsDeath(void) const
+{
+	return onHitCol_->GetIsDeath();
 }
 
 bool Player::IsDeath(void)

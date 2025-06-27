@@ -13,7 +13,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	//それぞれの当たった処理を格納する
 	using TAG = Collider::TAG;
 	colUpdates_[TAG::START] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
-	colUpdates_[TAG::GOAL] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
+	colUpdates_[TAG::GOAL] = [this](const std::weak_ptr<Collider> _hitCol) {ColGoal(_hitCol); };
 	colUpdates_[TAG::NORMAL_ITEM] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
 	colUpdates_[TAG::KILLER_ITEM] = [this](const std::weak_ptr<Collider> _hitCol) {CollKillerItem(_hitCol); };
 	colUpdates_[TAG::MOVE_HORI_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
@@ -23,6 +23,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_[TAG::WIND] = [this](const std::weak_ptr<Collider> _hitCol) {CollWind(_hitCol); };
 	colUpdates_[TAG::PUNCH] = [this](const std::weak_ptr<Collider> _hitCol) {ColPunch(_hitCol); };
 	colUpdates_[TAG::SPRING] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
+
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = static_cast<int>(TAG::PLAYER1); i < playerNum; i++)
@@ -64,8 +65,7 @@ inline void PlayerOnHit::CollNone(void)
 
 void PlayerOnHit::CollFloor(const std::weak_ptr<Collider> _hitCol)
 {
-	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
-	HitModelCommon(hitModel);
+	HitModelCommon(_hitCol);
 }
 
 void PlayerOnHit::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
@@ -76,13 +76,12 @@ void PlayerOnHit::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 	movedPos_ = VAdd(movedPos_, floor.GetMovePow());
 
 	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
-	HitModelCommon(hitModel);
+	HitModelCommon(_hitCol);
 }
 
 void PlayerOnHit::CollSlimeFloor(const std::weak_ptr<Collider> _hitCol)
 {
-	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
-	HitModelCommon(hitModel);
+	HitModelCommon(_hitCol);
 }
 
 void PlayerOnHit::CollCannon(const std::weak_ptr<Collider> _hitCol)
@@ -92,8 +91,7 @@ void PlayerOnHit::CollCannon(const std::weak_ptr<Collider> _hitCol)
 void PlayerOnHit::CollKillerItem(const std::weak_ptr<Collider> _hitCol)
 {
 	isDeath_ = true;
-	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
-	HitModelCommon(hitModel);
+	HitModelCommon(_hitCol);
 }
 
 void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
@@ -102,8 +100,7 @@ void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
 	ItemBase& wind = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
 	action_.SetMovePow(wind.GetMovePow());
 
-	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
-	HitModelCommon(hitModel);
+	HitModelCommon(_hitCol);
 }
 
 void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
@@ -122,8 +119,8 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 {
-	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
-	HitModelCommon(hitModel);
+	isGoal_ = true;
+	HitModelCommon(_hitCol);
 }
 
 void PlayerOnHit::DrawDebug(void)
@@ -154,7 +151,7 @@ void PlayerOnHit::PosUpdate(void)
 		action_.SetJumpPow(Utility::VECTOR_ZERO);
 		movedPos_.y = cube_.upPos.y + RADIUS;
 		action_.SetStepJump(0.0f);
-		action_.SetIsJump(false);
+		if(action_.GetJumpDecel()<=-10.0f)action_.SetIsJump(false);
 		action_.SetJumpDecel(PlayerAction::POW_JUMP);
 	}
 	else
@@ -183,10 +180,11 @@ void PlayerOnHit::PosUpdate(void)
 	// 現在座標を起点に移動後座標を決める
 }
 
-void PlayerOnHit::HitModelCommon(Model& _hitModel)
+void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 {
+	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
 	//移動後座標と現在座標で早い移動速度でも対応させる
-	VECTOR hitPos = _hitModel.GetHitLineInfo().HitPosition;
+	VECTOR hitPos = hitModel.GetHitLineInfo().HitPosition;
 	auto& moveLineCol = colParam_[MOVE_LINE_COL_NO].collider_;
 	auto& upDownLine = colParam_[UP_AND_DOWN_LINE_COL_NO].collider_;
 	if (moveLineCol->IsHit() > 0)
@@ -222,7 +220,7 @@ void PlayerOnHit::HitModelCommon(Model& _hitModel)
 	trans.Update();
 	if (bodyShere->IsHit())
 	{
-		auto& hitInfo = _hitModel.GetHitInfo();
+		auto& hitInfo = hitModel.GetHitInfo();
 
 		for (int i = 0; i < hitInfo.HitNum; i++)
 		{
@@ -247,7 +245,6 @@ void PlayerOnHit::HitModelCommon(Model& _hitModel)
 	moveDiff_ = trans_.pos;
 	//移動
 	trans_.pos = movedPos_;
-	
 }
 
 

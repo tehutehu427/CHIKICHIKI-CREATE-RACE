@@ -155,7 +155,7 @@ private:
 	void ColGoal(const std::weak_ptr<Collider> _hitCol);
 
 	//ƒ‚ƒfƒ‹‚Ì“–‚½‚Á‚½‚Ì‹¤’Êˆ—
-	void HitModelCommon(Model& _hitModel);
+	void HitModelCommon(const std::weak_ptr<Collider> _hitCol);
 
 #ifdef DEBUG_ON
 	void CubeMove(void);
