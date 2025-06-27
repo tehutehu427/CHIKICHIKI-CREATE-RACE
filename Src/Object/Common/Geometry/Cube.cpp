@@ -9,22 +9,25 @@
 //箱
 //***************************************************
 
-Cube::Cube(const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos, _rot)
+Cube::Cube(const VECTOR& _pos, const Quaternion& _rot, const VECTOR _min, const VECTOR _max) : Geometry(_pos, _rot)
 {
-	halfSize_ = { 0.0f,0.0f,0.0f };
+	obb_.vMin = _min;
+	obb_.vMax = _max;
 
-	bb_.axis[0] = { 1.0f,0.0f,0.0f };
-	bb_.axis[1] = { 0.0f,1.0f,0.0f };
-	bb_.axis[2] = { 0.0f,0.0f,1.0f };
+	UpdateObbAxis();
 }
 
-Cube::Cube(const Cube& _copyBase, const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos, _rot)
+Cube::Cube(const VECTOR& _pos, const Quaternion& _rot, const VECTOR _halfSize) : Geometry(_pos, _rot)
 {
-	halfSize_ = _copyBase.GetHalfSize();
+	obb_.vMin = VScale(_halfSize, -1.0f);
+	obb_.vMax = _halfSize;
 
-	bb_.axis[0] = { 1.0f,0.0f,0.0f };
-	bb_.axis[1] = { 0.0f,1.0f,0.0f };
-	bb_.axis[2] = { 0.0f,0.0f,1.0f };
+	UpdateObbAxis();
+}
+
+Cube::Cube(const Cube& _copyBase, const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos, _rot),obb_(_copyBase.obb_)
+{
+	UpdateObbAxis();
 }
 
 Cube::~Cube(void)
@@ -34,10 +37,20 @@ Cube::~Cube(void)
 
 void Cube::Draw(void)
 {
-	VECTOR min = GetRotPos(VScale(halfSize_, -1.0f));
-	VECTOR max = GetRotPos(halfSize_);
+	VECTOR vertices[8];
+	CalculateVertices(vertices);
 
-	DrawCube3D(min, max, NORMAL_COLOR, NORMAL_COLOR, false);
+	// 12本のエッジのインデックス
+	static const int edges[12][2] = {
+		{0,1},{0,2},{0,4}, {1,3},{1,5},
+		{2,3},{2,6}, {3,7},
+		{4,5},{4,6}, {5,7},{6,7}
+	};
+
+	for (int i = 0; i < 12; ++i)
+	{
+		DrawLine3D(vertices[edges[i][0]], vertices[edges[i][1]], NORMAL_COLOR);
+	}
 }
 
 const bool Cube::IsHit(Geometry& _geometry)
@@ -54,49 +67,7 @@ const bool Cube::IsHit(Model& _model)
 
 const bool Cube::IsHit(Cube& _cube)
 {
-	const float EPSILON = 1e-6f;
-
-	VECTOR axisToTest[15];
-	int axisCount = 0;
-
-	// 3軸 + 3軸
-	for (int i = 0; i < 3; ++i) {
-		axisToTest[axisCount++] = bb_.axis[i];
-		axisToTest[axisCount++] = _cube.bb_.axis[i];
-	}
-
-	// 外積軸（9本）
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			VECTOR cross = VCross(bb_.axis[i], _cube.bb_.axis[j]);
-			if (std::sqrt(cross.x * cross.x + cross.y * cross.y + cross.z * cross.z) > EPSILON) {
-				axisToTest[axisCount++] = VNorm(cross);
-			}
-		}
-	}
-
-	// 各軸で判定
-	for (int i = 0; i < axisCount; ++i) {
-		VECTOR L = axisToTest[i];
-
-		float aProj =
-			fabs(VDot(L, bb_.axis[0]) * halfSize_.x) +
-			fabs(VDot(L, bb_.axis[1]) * halfSize_.y) +
-			fabs(VDot(L, bb_.axis[2]) * halfSize_.z);
-
-		float bProj =
-			fabs(VDot(L, _cube.bb_.axis[0]) * _cube.halfSize_.x) +
-			fabs(VDot(L, _cube.bb_.axis[1]) * _cube.halfSize_.y) +
-			fabs(VDot(L, _cube.bb_.axis[2]) * _cube.halfSize_.z);
-
-		float dist = fabs(VDot(L, VSub(_cube.GetColPos(), pos_)));
-
-		if (dist > (aProj + bProj)) {
-			return false; // 衝突していない
-		}
-	}
-
-	return true; // すべての軸で分離できなかった → 衝突している
+	return false;
 }
 
 const bool Cube::IsHit(Sphere& _sphere)
@@ -112,4 +83,46 @@ const bool Cube::IsHit(Capsule& _capsule)
 const bool Cube::IsHit(Line& _line)
 {
 	return false;
+}
+
+void Cube::SetHalfSize(const VECTOR& _halfSize)
+{
+	obb_.vMin = VScale(_halfSize, -1.0f);
+	obb_.vMax = _halfSize;
+}
+
+void Cube::UpdateObbAxis(void) 
+{
+	MATRIX rotMat;
+	rotMat = quaRot_.ToMatrix();
+
+	obb_.axis[0] = VTransform(VGet(1, 0, 0), rotMat); // Right
+	obb_.axis[1] = VTransform(VGet(0, 1, 0), rotMat); // Up
+	obb_.axis[2] = VTransform(VGet(0, 0, 1), rotMat); // Forward
+}
+
+void Cube::CalculateVertices(VECTOR outVertices[8]) const
+{
+	MATRIX rotMat;
+	rotMat = quaRot_.ToMatrix();
+
+	int idx = 0;
+	for (int x = 0; x <= 1; ++x)
+	{
+		for (int y = 0; y <= 1; ++y)
+		{
+			for (int z = 0; z <= 1; ++z)
+			{
+				VECTOR local;
+				local.x = (x == 0) ? obb_.vMin.x : obb_.vMax.x;
+				local.y = (y == 0) ? obb_.vMin.y : obb_.vMax.y;
+				local.z = (z == 0) ? obb_.vMin.z : obb_.vMax.z;
+
+				VECTOR world = VTransform(local, rotMat);
+				world = VAdd(world, pos_);
+
+				outVertices[idx++] = world;
+			}
+		}
+	}
 }
