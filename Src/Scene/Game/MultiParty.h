@@ -8,22 +8,34 @@ class MultiParty : public GameScene
 {
 public:
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	MultiParty(void);
 
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	~MultiParty(void) override;
 
-	//読み込み処理
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	/// <param name=""></param>
 	void Load(void) override;
 
-	//初期化処理
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name=""></param>
 	void Init(void) override;
 
-	//プレイヤーやカメラは人数分用意する
-	//描画処理を画面分割して行う
-	//パレットをマルチ仕様のを呼び出す
-
+	/// <summary>
+	/// リセット
+	/// </summary>
+	void Reset() override;
 
 private:
 

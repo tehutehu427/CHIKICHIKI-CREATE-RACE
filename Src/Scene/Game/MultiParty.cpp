@@ -70,6 +70,15 @@ void MultiParty::Init(void)
 	}
 }
 
+void MultiParty::Reset()
+{
+	//初期化
+	Init();
+
+	//スコア初期化
+	ScoreManager::GetInstance().Init();
+}
+
 void MultiParty::NormalDraw(void)
 {
 	//親クラスの描画処理を呼ぶ

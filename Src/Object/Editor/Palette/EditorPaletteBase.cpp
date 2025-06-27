@@ -204,6 +204,7 @@ void EditorPaletteBase::UpdatePaletteAnim()
 
 		case Palette::STATE::REDUCTION:
 			ChangeState(STATE::NONE);
+			break;
 
 		default:
 			break;
