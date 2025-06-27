@@ -40,9 +40,14 @@ public:
 	static constexpr int NUMBERS_SIZE = 128; //ナンバーの各画像サイズ
 
 	static constexpr int SELECT_MES_DIV_X = 1;	//セレクトシーン用メッセージ分割数X
-	static constexpr int SELECT_MES_DIV_Y = 4;	//セレクトシーン用メッセージ分割数Y
-	static constexpr int SELECT_MES_SIZE_X = 1180; //セレクトシーン用メッセージ各画像サイズX
+	static constexpr int SELECT_MES_DIV_Y = 5;	//セレクトシーン用メッセージ分割数Y
+	static constexpr int SELECT_MES_SIZE_X = 1024; //セレクトシーン用メッセージ各画像サイズX
 	static constexpr int SELECT_MES_SIZE_Y = 128; //セレクトシーン用メッセージ各画像サイズY
+
+	static constexpr int CLEAR_MENUS_DIV_X = 1;//クリア時用メッセージ分割数X
+	static constexpr int CLEAR_MENUS_DIV_Y = 3;//クリア時用メッセージ分割数Y
+	static constexpr int CLEAR_MENUS_SIZE_X = 1024;//クリア時用メッセージ各画像サイズX
+	static constexpr int CLEAR_MENUS_SIZE_Y = 128;//クリア時用メッセージ各画像サイズY
 
 	// リソース名
 	enum class SRC
@@ -63,6 +68,7 @@ public:
 
 		//クリア
 		CLEAR,
+		CLEAR_MENUS,
 		PLAYER_PLATES,
 		WIN,
 

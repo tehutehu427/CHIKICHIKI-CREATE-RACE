@@ -183,8 +183,10 @@ void MultiReady::DrawPadCheck()
 void MultiReady::DrawFinalCheck()
 {
 	multiInputChecks_->Draw();
-
-	DrawFormatString(300, 300, Utility::RED, "Are You OK ?");
+	//•`‰æˆÊ’u
+	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * MESSAGE_RATE / 2 + 130);
+	constexpr int POS_Y = 64;
+	DrawMessage(POS_X, POS_Y, static_cast<int>(SelectScene::SELECT_MES::GAME_START));
 }
 
 void MultiReady::DrawMessage(const int _posX, const int _posY, const int _imgIndex_)
