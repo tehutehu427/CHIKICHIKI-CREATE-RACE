@@ -3,6 +3,7 @@
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/DateBank.h"
+#include "../../Manager/System/SceneManager.h"
 #include "../../Manager/Game/MapEditer.h"
 #include "EditItemReady.h"
 #include "EditController.h"
@@ -31,6 +32,8 @@ EditController::EditController(int playerNum)
 	initMapPos_ = playerNum_ == 0 ? PLAYER1_INIT_EDIT_POS :
 		playerNum_ == 1 ? PLAYER2_INIT_EDIT_POS :
 		playerNum_ == 2 ? PLAYER3_INIT_EDIT_POS : PLAYER4_INIT_EDIT_POS;
+	errorType_ = ERROR_TYPE::NONE;
+	errorStringTime_ = 0.0f;	//エラー文字列の表示時間初期化
 }
 
 EditController::~EditController()
@@ -47,6 +50,10 @@ void EditController::Init(void)
 
 void EditController::Update(void)
 {
+	if (errorStringTime_ == 0.0f)
+	{
+		errorType_ = ERROR_TYPE::NONE;	//エラーの初期化
+	}
 	CursorUpdate();	//カーソル更新
 	DebugUpdate();
 
@@ -58,10 +65,22 @@ void EditController::Update(void)
 
 	//モード別更新処理
 	modeUpdate_();
-	
+
 	if (moveDir_ == MOVE_DIR::NONE)
 	{
 		ItemNotSelect();
+	}
+	if (errorType_ != ERROR_TYPE::NONE &&errorStringTime_ == 0)
+	{
+		errorStringTime_ = ERROR_STRING_TIME;	//エラー文字列の表示時間初期化
+	}
+	else if (errorStringTime_ > 0)
+	{
+		errorStringTime_ -= SceneManager::GetInstance().GetDeltaTime();	//エラー文字列の表示時間減少
+		if (errorStringTime_ <= 0)
+		{
+			errorStringTime_ = 0.0f;	//エラー文字列の表示時間初期化
+		}
 	}
 }
 
@@ -80,6 +99,21 @@ void EditController::DrawUI(void)
 	{
 		ready_->Draw();
 	}
+
+	switch (errorType_)
+	{
+	case EditController::ERROR_TYPE::NONE:
+		break;
+	case EditController::ERROR_TYPE::ITEM_RANGE_OUT:
+		Utility::DrawStringPlace("選択中のアイテムがマップ外に出ています", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		break;
+	case EditController::ERROR_TYPE::ITEM_OVER_LAP:
+		Utility::DrawStringPlace("選択中のアイテムが他のアイテムと重なっています", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		break;
+	default:
+		break;
+	}
+
 	int sizeX;
 	int sizeY;
 	GetGraphSize(ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],&sizeX,&sizeY);
@@ -87,6 +121,7 @@ void EditController::DrawUI(void)
 	DrawExtendGraph(static_cast<int>(cursorPos.x), static_cast<int>(cursorPos.y), static_cast<int>(cursorPos.x) + sizeX / 2, static_cast<int>(cursorPos.y) + sizeY / 2, ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_], true);	//カーソル描画
 	DrawPixel(static_cast<int>(cursorPos_.x), static_cast<int>(cursorPos_.y), Utility::BLACK);	//カーソル位置のピクセル描画
 	DrawBox(static_cast<int>(cursorPos_.x) - CURSOR_POINT, static_cast<int>(cursorPos_.y) - CURSOR_POINT, static_cast<int>(cursorPos_.x) + CURSOR_POINT, static_cast<int>(cursorPos_.y) + CURSOR_POINT, Utility::BLACK, true);	//カーソル位置のピクセル描画
+
 }
 
 void EditController::Reset(void)
@@ -126,8 +161,10 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	auto& itemMIns = ItemManager::GetInstance();
 	if (itemMIns.GetDummyItemStatus(playerNum_).effType != ItemBase::EFFECT_TYPE::DESTROYER)
 	{
-		if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+		int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+		if (errorType<0)
 		{
+			errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
 			//アイテムが重なっている
 			return;
 		}
@@ -209,12 +246,17 @@ void EditController::CursorUpdate(void)
 	{
 		//カーソル位置を取得
 		cursorPos_ = Vector2::AddVector2(cursorPos_, cursorMove);	//カーソル位置の更新
-		if (!MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+		cursorPos_.x = cursorPos_.x < 0.0f ? 0.0f : cursorPos_.x > screenSize_.x ? screenSize_.x : cursorPos_.x;	//カーソル位置の更新
+		cursorPos_.y = cursorPos_.y < 0.0f ? 0.0f : cursorPos_.y > screenSize_.y ? screenSize_.y : cursorPos_.y;	//カーソル位置の更新
+
+		int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+		if (errorType == 0)
 		{
 			ready_->Update();
 		}
 		else
 		{
+			errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
 			ready_->ChangeReady(EditItemReady::READY_PHASE::NOT_READY);	//アイテムを置く準備ができていない
 		}
 	}
@@ -280,9 +322,11 @@ void EditController::ItemNotSelect(void)
 	{
 		if (itemMIns.GetDummyItemStatus(playerNum_).effType != ItemBase::EFFECT_TYPE::DESTROYER)
 		{
-			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
+			int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+			if (errorType < 0)
 				//if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
 			{
+				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
 				return;
 			}
 			if (itemMIns.IsDummyItem(playerNum_))
@@ -326,9 +370,12 @@ void EditController::ItemNotSelect(void)
 		}
 		else
 		{
+			
 			//if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_)))
-			if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemRotY(playerNum_)))
+			int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, ItemManager::GetInstance().GetDummyItemSize(playerNum_), ItemManager::GetInstance().GetDummyItemSize(playerNum_), ItemManager::GetInstance().GetDummyItemRotY(playerNum_));
+			if (errorType < 0)
 			{
+				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
 				return;
 			}
 			//アイテムを追加

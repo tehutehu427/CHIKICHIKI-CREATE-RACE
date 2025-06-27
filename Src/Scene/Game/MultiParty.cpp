@@ -93,21 +93,26 @@ void MultiParty::UpdateAction(void)
 
 void MultiParty::UpdateEdit(void)
 {
-	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum() ; i++)
+	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
 	{
 		SetDrawScreen(SceneManager::GetInstance().GetScreen(i));
 		SceneManager::GetInstance().GetCamera(i).lock()->CameraSetting(); // ƒJƒƒ‰‚ÌXV
 		editControllers_[i]->Update();
 	}
 	SetDrawScreen(SceneManager::GetInstance().GetMainScreen());
+	bool ready = true;
 	for (auto& controller : editControllers_)
 	{
 		if (!controller->GetReady())
 		{
+			ready = false;
 			break;
 		}
-		ChangePhase(PHASE::ACTION_PHASE);
 
+	}
+	if (ready)
+	{
+		ChangePhase(PHASE::ACTION_PHASE);
 	}
 }
 

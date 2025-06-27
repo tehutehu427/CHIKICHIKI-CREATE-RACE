@@ -24,6 +24,8 @@ public:
 	static constexpr IntVector3 PLAYER3_INIT_EDIT_POS = { 15,0,0 };	//プレイヤー1のエディター初期座標
 	static constexpr IntVector3 PLAYER4_INIT_EDIT_POS = { 20,0,0 };	//プレイヤー1のエディター初期座標
 
+	static constexpr float ERROR_STRING_TIME = 1.0f;	//エラー文字列の表示時間
+
 	enum class MODE
 	{
 		ITEM_SELECT,	//アイテム選択
@@ -42,6 +44,12 @@ public:
 		YZ,		//YZ平面
 	};
 
+	enum class ERROR_TYPE
+	{
+		NONE,			//エラーなし
+		ITEM_RANGE_OUT,	//アイテムが範囲外に出ている
+		ITEM_OVER_LAP,	//アイテムが重なっている
+	};
 	//コンストラクタ
 	EditController(int playerNum);
 	//デストラクタ
@@ -75,7 +83,8 @@ protected:
 private:
 
 	std::unique_ptr<EditItemReady> ready_;	//マルチ時にアイテムを置き終わったか
-
+	ERROR_TYPE errorType_;	//エラーの種類
+	float errorStringTime_;	//エラー文字列の表示時間
 	int playerNum_;	//プレイヤー番号
 	int playerMaxNum_;	//プレイヤーの最大数
 	KeyConfig::JOYPAD_NO padNum_;	//パッド番号

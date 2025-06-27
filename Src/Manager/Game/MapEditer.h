@@ -49,8 +49,8 @@ public:
 	/// </summary>
 	/// <param name="mapPos"></param>
 	/// <param name="size"></param>
-	/// <returns></returns>
-	bool IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize,float _rotY);
+	/// <returns>0の場合　重なっていない　-1の場合　範囲外に出ている -2の場合　重なっている</returns>
+	int IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize,float _rotY);
 
 	void AddItem(STATUS _status, IntVector3 _size,IntVector3 _hitSize, float _rotY);
 	void DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos, float _rotY , IntVector3 _size,IntVector3 _hitSize);

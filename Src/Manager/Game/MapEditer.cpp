@@ -47,7 +47,7 @@ bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos)
 	return GetItemType(mapPos) != ItemBase::ITEM_TYPE::NONE;
 }
 
-bool MapEditer::IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size,IntVector3 _hitSize,float _rotY)
+int MapEditer::IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size,IntVector3 _hitSize,float _rotY)
 {
 
 	int rot = static_cast<int>(_rotY) % 360;
@@ -82,16 +82,16 @@ bool MapEditer::IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size,IntVector3
 					mapPos.y < 0 || mapPos.y >MAP_SIZE.y ||
 					mapPos.z <0 || mapPos.z > MAP_SIZE.z)
 				{
-					return true;
+					return -1;
 				}
 				if (IsObjectAtMapPos(mapPos))
 				{
-					return true;
+					return -2;
 				}
 			}
 		}
 	}
-	return false;
+	return 0;
 }
 
 void MapEditer::AddItem(STATUS _status, IntVector3 _size ,IntVector3 _hitSize, float _rotY)
