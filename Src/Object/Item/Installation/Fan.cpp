@@ -72,7 +72,7 @@ void Fan::OnHit(const std::weak_ptr<Collider> _hitCol)
 void Fan::CreateWind(void)
 {
 	//ïóê∂ê¨
-	wind_ = std::make_unique<Wind>(trans_.pos, trans_.quaRot, trans_.scl, MODEL_SIZE);
+	wind_ = std::make_unique<Wind>(VAdd(trans_.pos,trans_.localPos), trans_.quaRot, trans_.scl, MODEL_SIZE);
 
 	//èâä˙ê›íË
 	wind_->SetParam();

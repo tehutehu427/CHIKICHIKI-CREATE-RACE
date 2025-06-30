@@ -29,8 +29,10 @@ void Wind::SetParam(void)
 	//半径
 	radius_ = size_.x / 2.0f;
 
-	//座標
-	trans_.pos = VAdd(trans_.pos, VScale(trans_.quaRot.GetForward(), radius_ * 2));
+	VECTOR forward = trans_.quaRot.GetForward();
+
+	//座標(直径分動かす)
+	trans_.pos = VAdd(trans_.pos, VScale(forward, radius_ * 2.0f));
 
 	//コライダの作成
 	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.pos,radius_);

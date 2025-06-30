@@ -1,4 +1,4 @@
-#include "../Common/Quaternion.h"
+#include "../../../Common/Quaternion.h"
 #include"Model.h"
 #include"Cube.h"
 #include"Sphere.h"
@@ -37,35 +37,27 @@ void Line::Draw(void)
 
 const bool Line::IsHit(Geometry& _geometry)
 {
-	bool ret = _geometry.IsHit(*this);
-
-	return ret;
+	return _geometry.IsHit(*this);
 }
 
 const bool Line::IsHit(Model& _model)
 {
-	bool ret = _model.IsHit(*this);
-
-	return ret;
+	return _model.IsHit(*this);
 }
 
 const bool Line::IsHit(Cube& _cube)
 {
-	return false;
+	return _cube.IsHit(*this);
 }
 
 const bool Line::IsHit(Sphere& _sphere)
 {
-	bool ret = _sphere.IsHit(*this);
-
-	return ret;
+	return _sphere.IsHit(*this);
 }
 
 const bool Line::IsHit(Capsule& _capsule)
 {
-	bool ret = _capsule.IsHit(*this);
-
-	return ret;
+	return _capsule.IsHit(*this);
 }
 
 const bool Line::IsHit(Line& _line)
