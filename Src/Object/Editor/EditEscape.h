@@ -57,8 +57,6 @@ public:
 
 private:
 
-
-
 	//フォントサイズ
 	static constexpr int FONT_SIZE = 48;
 
@@ -87,7 +85,7 @@ private:
 	std::unordered_map < STATE, SceneBase::ProcessFunction > stateFunc_;
 
 	//状態変更
-	inline void ChangeState(const STATE _state) { state_ = _state; }
+	void ChangeState(const STATE _state) { state_ = _state; }
 
 	//処理の登録
 	void RegisterStateFunction(const STATE _state, SceneBase::ProcessFunction _func);
