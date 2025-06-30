@@ -31,7 +31,7 @@ public:
 	//パンチの範囲
 	static constexpr float PUNCH_RADIUS = 20.0f;
 
-
+	//******************************************
 
 
 	enum class FLOOR_COL
@@ -70,8 +70,6 @@ public:
 		LAND=14,
 	};
 
-
-	//******************************************
 	
 	/// <summary>
 	/// コンストラクタ
@@ -142,9 +140,6 @@ public:
 	//******************************************
 	//セッタ
 	//******************************************
-	//当たり判定
-	void SetCollision(const bool _isCol) { isCol_ = _isCol; }
-
 	/// <summary>
 	/// 座標
 	/// </summary>
@@ -167,9 +162,9 @@ private:
 	//重力の割合
 	static constexpr float GRAVITY_PER = 20.0f;
 
-
 	//プレイヤー１のX座標
 	static constexpr float PLAYER_ONE_POS_X = -20.0f;
+
 	//座標の間隔
 	static constexpr float DISTANCE_POS = 50.0f;
 
@@ -219,11 +214,9 @@ private:
 	//プレイヤー単体が持っているもの
 	int playerNum_;			//プレイヤー番号
 
-	//他プレイヤーとの当たりフラグ　true:当たっている
-	bool isCol_;
-
 	//当たっているアイテムタイプ
 	ItemBase::ITEM_TYPE hitItemType_;	
+
 	//プレイヤー状態
 	PLAYER_STATE state_;	//プレイヤーの状態(生存状態)
 
@@ -268,7 +261,7 @@ private:
 	void ChangeDeath(void);
 	void DeathUpdate(void);
 	//------------------------------
-	//**************************************************
+
 	
 	//アクション関係
 	//------------------------------
