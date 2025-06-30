@@ -83,7 +83,7 @@ public:
 	/// ó‘Ô‚ğ•Ô‚·
 	/// </summary>
 	/// <returns>ó‘Ô</returns>
-	inline const STATE GetState()const { return state_; }
+	const STATE GetState()const { return state_; }
 
 private:
 

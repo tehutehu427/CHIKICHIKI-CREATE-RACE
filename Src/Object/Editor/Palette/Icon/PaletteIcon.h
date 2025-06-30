@@ -122,14 +122,14 @@ public:
 	/// 生成判定を返す
 	/// </summary>
 	/// <returns></returns>生成判定
-	inline const bool IsCreate()const { return isCreate_; }
+	const bool IsCreate()const { return isCreate_; }
 
 	/// <summary>
 	/// 選択したアイテム種類を返す
 	/// </summary>
 	/// <param name="_playerIndex"></param>プレイヤーのインデックス(引数がなければ1P)
 	/// <returns></returns>選択した種類
-	inline const ItemBase::ITEM_TYPE GetSelectType(const int _playerIndex = 0)const { return selectTypes_[_playerIndex]; }
+	const ItemBase::ITEM_TYPE GetSelectType(const int _playerIndex = 0)const { return selectTypes_[_playerIndex]; }
 
 protected:
 

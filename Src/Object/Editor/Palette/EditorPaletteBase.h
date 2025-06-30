@@ -103,7 +103,7 @@ public:
 	/// ó‘Ô‚ğ•Ô‚·
 	/// </summary>
 	/// <returns></returns>ó‘Ô
-	inline const STATE GetState()const { return state_; }
+	const STATE GetState()const { return state_; }
 
 protected:
 
