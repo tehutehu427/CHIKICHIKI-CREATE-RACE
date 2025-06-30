@@ -17,7 +17,7 @@ void SlimeFloor::SetParam(void)
 {
 	//モデルの基本設定
 	trans_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::SLIME_FLOOR));
+		ResourceManager::SRC::FLOOR));
 
 	//モデルIDのコピー
 	models_.emplace_back(&trans_.modelId);
