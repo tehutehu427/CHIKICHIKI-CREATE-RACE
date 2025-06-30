@@ -106,6 +106,7 @@
     <ClCompile Include="Src\Object\System\YesNoResponder.cpp" />
     <ClCompile Include="Src\Object\Player\PlayerOnHit.cpp" />
     <ClCompile Include="Src\Object\System\RoundDisplay.cpp" />
+    <ClCompile Include="Src\Object\Player\Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -252,6 +253,7 @@
     <ClInclude Include="Src\Object\System\YesNoResponder.h" />
     <ClInclude Include="Src\Object\System\RoundDisplay.h" />
     <ClInclude Include="Src\Object\Player\PlayerOnHit.h" />
+    <ClInclude Include="Src\Object\Player\Shadow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

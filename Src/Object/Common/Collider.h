@@ -20,6 +20,8 @@ public :
 
 		PUNCH,			//パンチ
 
+		SHADOW,			//影
+
 		START,			//開始地点
 		GOAL,			//終了地点
 
