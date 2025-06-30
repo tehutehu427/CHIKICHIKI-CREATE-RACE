@@ -7,7 +7,7 @@ class Cube : public Geometry
 public:
 
 	//バウンディングボックス
-	struct BB
+	struct OBB
 	{
 		VECTOR vMin;
 		VECTOR vMax;
@@ -19,7 +19,17 @@ public:
 	/// </summary>
 	/// <param name="_pos">追従する親の座標</param>
 	/// <param name="_rot">追従する親の回転</param>
-	Cube(const VECTOR& _pos, const Quaternion& _rot);
+	/// <param name="_min">親から見た、箱の最小地点</param>
+	/// <param name="_max">親から見た、箱の最大地点</param>
+	Cube(const VECTOR& _pos, const Quaternion& _rot, const VECTOR _min, const VECTOR _max);
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_pos">追従する親の座標</param>
+	/// <param name="_rot">追従する親の回転</param>
+	/// <param name="_halfSize">箱の半分サイズ</param>
+	Cube(const VECTOR& _pos, const Quaternion& _rot, const VECTOR _halfSize);
 
 	/// <summary>
 	/// コピーコンストラクタ
@@ -43,15 +53,37 @@ public:
 	const bool IsHit(Capsule& _capsule)override;
 	const bool IsHit(Line& _line)override;
 
-	//サイズの半分の取得
-	inline const VECTOR GetHalfSize(void)const { return halfSize_; }
+	//回転バウンティボックスの取得
+	inline const OBB& GetObb(void)const { return obb_; }
+
+	//箱の最小地点の取得
+	inline const VECTOR GetVecMin(void)const { return obb_.vMin; }
+
+	//箱の最大地点の取得
+	inline const VECTOR GetVecMax(void)const { return obb_.vMax; }
+
+	//回転バウンティボックスの設定
+	inline void SetObb(const OBB& _obb) { obb_ = _obb; }
+
+	//箱の最小地点の設定
+	inline void SetVecMin(const VECTOR& _min) { obb_.vMin = _min; }
+
+	//箱の最大地点の設定
+	inline void SetVecMax(const VECTOR& _max){ obb_.vMax = _max; }
 
 	//サイズの半分の設定
-	inline void SetHalfSize(const VECTOR& _halfSize) { halfSize_ = _halfSize; }
+	inline void SetHalfSize(const VECTOR& _halfSize);
 
 private:
 
-	BB bb_;				//バウンディングボックス
+	OBB obb_;			//回転バウンディングボックス
 
-	VECTOR halfSize_;	//箱の半分サイズ
+	//箱の回転情報の取得
+	inline const VECTOR GetAxis(const int _num)const { return obb_.axis[_num]; }
+
+	// クォータニオンから回転軸を計算
+	void UpdateObbAxis(void);
+
+	// 各頂点の計算（ワールド座標）
+	void CalculateVertices(VECTOR outVertices[8]) const;
 };

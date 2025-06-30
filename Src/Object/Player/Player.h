@@ -129,10 +129,10 @@ public:
 	const bool GetIsGoal(void)const;
 
 	//Ž€–S”»’è‚ÌŽæ“¾
-	const bool GetIsDeath(void);
+	const bool GetIsDeath(void)const;
 
 	//Ž€‚ñ‚¾”»’è
-	const bool IsDeath(void);
+	bool IsDeath(void);
 
 	//“–‚½‚Á‚½ƒAƒCƒeƒ€
 	inline const ItemBase::ITEM_TYPE GetHitItemType(void)const { return hitItemType_; }

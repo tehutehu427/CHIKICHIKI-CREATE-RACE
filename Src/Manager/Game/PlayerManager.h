@@ -82,13 +82,13 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns>true:全員ゴールに行った　false:誰か一人でもゴールに行ってない</returns>
-	void IsGoalPlayers(void);
+	std::vector<bool> IsGoalPlayers(void);
+
 
 	//全員がゴールしてるか死んでるか
-	void IsDeathPlayers(void);
-
-	//プレイヤーが全員死んでるかゴールしたかの判定
 	bool IsPlayersEnd(void);
+
+
 
 private:
 	//プレイヤーの大きさ
@@ -111,7 +111,6 @@ private:
 
 	//プレイヤー生存判定
 	std::vector<bool>isDeath_;
-
 
 
 	//プレイヤー人数

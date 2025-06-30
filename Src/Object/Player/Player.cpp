@@ -114,7 +114,7 @@ void Player::Init(void)
 	action_->Init();
 
 	//当たり判定
-	onHitCol_ = std::make_unique<PlayerOnHit>(tag_,*action_, colParam_, trans_);
+	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_);
 	onHitCol_->Init();
 
 	trans_.Update();
@@ -250,12 +250,12 @@ const bool Player::GetIsGoal(void) const
 	return onHitCol_->GetIsGoal();
 }
 
-const bool Player::GetIsDeath(void) 
+const bool Player::GetIsDeath(void) const
 {
-	return IsDeath();
+	return onHitCol_->GetIsDeath();
 }
 
-const bool Player::IsDeath(void)
+bool Player::IsDeath(void)
 {
 	//奈落に落ちるorデスオブジェクトに当たったら
 	if (trans_.pos.y <= DEATH_POS_Y||onHitCol_->GetIsDeath())
