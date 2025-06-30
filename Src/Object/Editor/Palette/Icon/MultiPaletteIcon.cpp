@@ -39,11 +39,20 @@ void MultiPaletteIcon::Load()
 }
 
 void MultiPaletteIcon::Init()
-{
+{		
+	
+	//状態変更
+	ChangeState(STATE::NONE);
+
+	//初期化
+	icons_.clear();
+	selectTypes_.clear();
+	sleCnt_.clear();
+	candidates_.clear();
+	
 	//除外番号を除いたアイテム配列を生成
 	SetExcludingItemTypeArray();
 
-	//初期化
 	for (int i = 0; i < CREATE_NUM; i++)
 	{
 		EditorPaletteBase::ImgInfo info;
@@ -79,8 +88,7 @@ void MultiPaletteIcon::Init()
 	//マスクスクリーンの初期設定
 	InitMaskScreen();
 
-	//状態変更
-	ChangeState(STATE::NONE);
+
 }
 
 void MultiPaletteIcon::Draw()
@@ -102,6 +110,7 @@ void MultiPaletteIcon::SetExcludingItemTypeArray()
 		static_cast<int>(ItemBase::ITEM_TYPE::NONE),
 		static_cast<int>(ItemBase::ITEM_TYPE::START),
 		static_cast<int>(ItemBase::ITEM_TYPE::GOAL),
+		static_cast<int>(ItemBase::ITEM_TYPE::BOMB_BIG),
 		static_cast<int>(ItemBase::ITEM_TYPE::MAX)
 	};
 

@@ -133,7 +133,7 @@ void MultiReady::UpdateFinalCheck()
 void MultiReady::DrawNumCheck()
 {
 	//•`‰æˆÊ’u
-	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * MESSAGE_RATE / 2 + 180);
+	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * MESSAGE_RATE / 2 + 200);
 	constexpr int OFFSET_POS_Y = 64;
 	DrawMessage(POS_X, OFFSET_POS_Y, static_cast<int>(SelectScene::SELECT_MES::PLAYER_NUM));
 
@@ -175,7 +175,7 @@ void MultiReady::DrawPadCheck()
 {
 	multiInputChecks_->Draw();
 	//•`‰æˆÊ’u
-	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * MESSAGE_RATE / 2 + 130);
+	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * MESSAGE_RATE / 2 + 150);
 	constexpr int POS_Y = 64;
 	DrawMessage(POS_X, POS_Y, static_cast<int>(SelectScene::SELECT_MES::PUSH_BUTTON));
 }
@@ -183,17 +183,14 @@ void MultiReady::DrawPadCheck()
 void MultiReady::DrawFinalCheck()
 {
 	multiInputChecks_->Draw();
-
-	DrawFormatString(300, 300, Utility::RED, "Are You OK ?");
+	//•`‰æˆÊ’u
+	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * MESSAGE_RATE / 2 + 170);
+	constexpr int POS_Y = 64;
+	DrawMessage(POS_X, POS_Y, static_cast<int>(SelectScene::SELECT_MES::GAME_START));
 }
 
 void MultiReady::DrawMessage(const int _posX, const int _posY, const int _imgIndex_)
 {	
-	//•`‰æˆÊ’u
-	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * MESSAGE_RATE / 2 + Application::SCREEN_HALF_X - 130);
-	constexpr int POS_Y = 64;
-
-
 	DrawRotaGraph(
 		_posX,
 		_posY,

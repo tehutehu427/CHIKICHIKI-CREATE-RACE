@@ -256,7 +256,7 @@ void ModeSelect::SetMenuItem(const int _imgIndex, const int _arcIndex)
 void ModeSelect::DrawMessage()
 {
 	//•`‰æˆÊ’u
-	constexpr float RATE = 0.7f;
+	constexpr float RATE = 0.5f;
 	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * RATE / 2 + Application::SCREEN_HALF_X - 130);
 	constexpr int POS_Y = 64;
 	

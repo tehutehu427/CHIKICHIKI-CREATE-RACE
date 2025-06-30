@@ -3,6 +3,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include "../../Common/Vector2.h"
 
 class SceneManager;
 class KeyConfig;
@@ -48,9 +49,10 @@ private:
 	//状態
 	enum class STATE
 	{
-		NONE,
+		DISPLAY_MESSAGE,
 		WAITING,
 		MENU,
+		MAX
 	};
 
 	//メニュー項目
@@ -61,6 +63,9 @@ private:
 		BACK_TITLE,
 		MAX
 	};
+
+	//状態最大値
+	static constexpr int STATE_MAX = static_cast<int>(STATE::MAX);
 
 	//メッセージ用フォント
 	static constexpr int MES_FONT_SIZE = 72;
@@ -84,6 +89,16 @@ private:
 	static constexpr int MENU_POS_X = 0;
 	static constexpr int MENU_POS_Y = -200;
 
+	//アニメーション時間
+	static constexpr float ANIM_TIME = 2.5f;
+
+	//黒背景アルファ値
+	static constexpr int BLACK_BOX_ALPHA = 128;
+	static constexpr int ALPHA_SPEED = 3;
+
+	//通常のUI拡大率
+	static constexpr float DEFAULT_UI_RATE = 0.7f;
+
 	// 状態ごとの構造体（更新と描画を分けて保持）
 	struct StateFuncs
 	{
@@ -104,14 +119,26 @@ private:
 	int messageFont_;	//メッセージ
 	int menuFont_;		//メニュー
 
+	//画像
+	int imgClear_;
+	int imgWin_;
+	int* imgPlayerPlates_;
+	int* imgSelectMenu_;
+
 	//メニュー表示用ステップ
 	float waitStep_;
 
 	//メニュー選択用インデックス
 	int menuIndex_;
 
+	//画面フェード用アルファ値
+	int alpha_;
+
 	//メニュー項目
 	std::string menuStrings_[MENU_LIST_NUM];
+
+	//クリアUIの座標
+	Vector2 clearPos_;
 
 	//シーン管理
 	SceneManager& scnMng_;
@@ -123,16 +150,20 @@ private:
 	void RegisterStateFunction(const STATE _state, std::function<void(GameScene&)> _update, std::function<void()> _draw);
 
 	//状態変更
-	inline const void ChangeState(const STATE _state) { state_ = _state; }
+	const void ChangeState(const STATE _state) { state_ = _state; }
 
 	//状態別更新処理
 	void UpdateWaiting(GameScene& _parent);
+	void UpdateDisplay(GameScene& _parent);
 	void UpdateMenu(GameScene& _parent);
 
 	//状態別描画処理
 	void DrawWaiting();
+	void DrawDisplay();
 	void DrawMenu();
 
+	//モード別に状態を初期化
+	void InitStateByMode();
 
 	//デバッグ用描画
 	void DebugDraw();

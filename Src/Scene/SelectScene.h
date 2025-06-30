@@ -34,10 +34,11 @@ public:
 	//メッセージ種類
 	enum class SELECT_MES
 	{
-		MODE_SELECT,
+		MODE_SELECT,	
+		STAGE_SELECT,
 		PLAYER_NUM,
 		PUSH_BUTTON,
-		STAGE_SELECT,
+		GAME_START,
 		MAX
 	};
 
