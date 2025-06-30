@@ -4,6 +4,7 @@
 
 class SceneManager;
 class ResourceManager;
+class SoundManager;
 class KeyConfig;
 
 class SceneBase
@@ -54,6 +55,7 @@ protected:
 	ResourceManager& resMng_;
 	KeyConfig& keyConfig_;
 	SceneManager& scnMng_;
+	SoundManager& sndMng_;
 
 	//ˆ—‚ÌŠÇ—
 	ProcessFunction func_;

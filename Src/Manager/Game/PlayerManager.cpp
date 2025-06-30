@@ -10,11 +10,6 @@ PlayerManager* PlayerManager::instance_ = nullptr;
 PlayerManager::PlayerManager(void)
 {
 	playerNum_ = 0;
-	for (int i = 0; i < playerNum_; i++)
-	{
-		isGoal_.emplace_back(false);
-		isDeath_.emplace_back(false);
-	}
 }
 
 PlayerManager::~PlayerManager(void)
@@ -51,8 +46,6 @@ void PlayerManager::Load(void)
 
 	for (int i = 0; i < playerNum_; i++)
 	{
-		isGoal_.emplace_back(false);
-		isDeath_.emplace_back(false);
 
 		goalTime_.emplace_back(0.0f);
 	}
@@ -102,7 +95,6 @@ void PlayerManager::Update(void)
 	}
 	PlayersCollision();
 
-	IsGoalPlayers();
 	
 	for (int i = 0; i < playerNum_; i++)
 	{
@@ -110,13 +102,8 @@ void PlayerManager::Update(void)
 		{
 			continue;
 		}
-		if (isGoal_[i])
-		{
-			goalTime_[i] = time_;
-		}
 	}
 
-	IsDeathPlayers();
 }
 
 void PlayerManager::Draw(void)
@@ -199,15 +186,6 @@ void PlayerManager::PlayersCollision(void)
 //	return false;
 //}
 
-const std::vector<bool> PlayerManager::GetPlayersIsDeath(void)
-{
-	for (int i=0;i<playerNum_;i++)
-	{
-		isDeath_[i] = players_[i]->IsDeath();
-	}
-	return isDeath_;
-}
-
 void PlayerManager::SetInitPos(VECTOR _worldPos)
 {
 	for (int i = 0; i < playerNum_; i++)
@@ -218,37 +196,18 @@ void PlayerManager::SetInitPos(VECTOR _worldPos)
 	}
 }
 
-//std::vector<bool> PlayerManager::IsGoalPlayers(void)
-void PlayerManager::IsGoalPlayers(void)
-{
-	for (int i=0;i<playerNum_;i++)
-	{
-		isGoal_[i] = players_[i]->GetIsGoal() ? true : false;
-	}
-	//	return isDeath_;
-}
-
-//std::vector<bool> PlayerManager::IsDeathPlayers(void)
-void PlayerManager::IsDeathPlayers(void)
-{
-	//プレイヤーがゴールするか、奈落に落ちたら終わる
-	for (int i = 0; i < playerNum_; i++)
-	{
-		isDeath_[i] = players_[i]->GetIsDeath() ? true : false;
-	}
-//	return isDeath_;
-}
-
 bool PlayerManager::IsPlayersEnd(void)
 {
-	//プレイヤーがゴールするか、奈落に落ちたら終わる
-	for (int i = 0; i < playerNum_; i++)
+	//プレイヤーがまだ操作中か調べる
+	for (auto & player : players_)
 	{
-		if (!isGoal_[i] && !isDeath_[i])
+		//ゴールしていない、かつ倒れていない時
+		if (!player->IsDeath() && !player->GetIsGoal())
 		{
 			return false;
 		}
 	}
+	//終了
 	return true;
 }
 

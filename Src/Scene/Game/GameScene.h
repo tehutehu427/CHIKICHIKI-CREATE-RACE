@@ -30,6 +30,7 @@ public:
 		ACTION_PHASE,	//アクション
 		RESULT_PHASE,	//リザルト(マルチのみ)	
 		CLEAR_PHASE,	//クリア
+		GAME_OVER,		//ゲームオーバー
 	};
 
 
@@ -122,8 +123,8 @@ protected:
 	virtual void DrawAction();
 	void DrawClear();
 
-	//プレイヤーがクリアオブジェクトに当たった後の遷移
-	void ChangePlayerClearPhase(void);
+	//プレイヤーがゲームを終了か調べる
+	virtual void CheckPlayerFinish(void);
 
 	//デバッグ時の更新処理
 	virtual void DebagUpdate(void);	
