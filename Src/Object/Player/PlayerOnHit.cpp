@@ -23,6 +23,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_[TAG::WIND] = [this](const std::weak_ptr<Collider> _hitCol) {CollWind(_hitCol); };
 	colUpdates_[TAG::PUNCH] = [this](const std::weak_ptr<Collider> _hitCol) {ColPunch(_hitCol); };
 	colUpdates_[TAG::SPRING] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
+	colUpdates_[TAG::SHADOW] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();

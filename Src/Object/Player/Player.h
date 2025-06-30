@@ -12,6 +12,8 @@ class Camera;
 class PlayerAction;
 class PlayerOnHit;
 class DateBank;
+class Shadow;
+
 class Player :public ObjectBase
 {
 public:
@@ -236,6 +238,9 @@ private:
 
 	//当たった時の処理クラス
 	std::unique_ptr<PlayerOnHit>onHitCol_;
+
+	//影
+	std::unique_ptr<Shadow>shadow_;
 
 
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ

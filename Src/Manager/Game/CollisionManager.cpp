@@ -117,6 +117,7 @@ CollisionManager::CollisionManager(void)
 	hitRange_[Collider::TAG::DESTROYER] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::SLIME_FLOOR] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::SPRING] = HIT_RANGE_NORMAL;
+	hitRange_[Collider::TAG::SHADOW] = HIT_RANGE_NORMAL;
 
 
 	hitRange_[Collider::TAG::START] = HIT_RANGE_START;

@@ -24,6 +24,7 @@
 #include"./PlayerAction.h"
 #include"./PlayerOnHit.h"
 #include "./Process/PlayerInput.h"
+#include "./Shadow.h"
 
 #include<algorithm>
 
@@ -36,6 +37,7 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 {
 
 	trans_ = Transform();
+
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
 	//パッド番号を設定
@@ -90,7 +92,7 @@ void Player::Load(void)
 	//std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(action_->GetPunchPos(), PUNCH_RADIUS);
 	//MakeCollider({ tag_,Collider::TAG::PUNCH }, std::move(handSphereGeo));
 
-
+	shadow_ = std::make_unique<Shadow>(trans_);
 }
 
 void Player::Init(void)
@@ -123,6 +125,7 @@ void Player::Init(void)
 void Player::Update(void)
 {
 	animationController_->Update();
+	shadow_->Update();
 #ifdef DEBUG_ON
 	//CubeMove();
 #endif // DEBUG_ON
@@ -134,11 +137,13 @@ void Player::Update(void)
 	trans_.quaRot = action_->GetPlayerRotY();
 	
 	trans_.Update();
+	shadow_->Update();
 }
 
 void Player::Draw(void)
 {
 	MV1DrawModel(trans_.modelId);
+	shadow_->Draw();
 #ifdef DEBUG_ON
 	DrawDebug();
 #endif // DEBUG_ON
