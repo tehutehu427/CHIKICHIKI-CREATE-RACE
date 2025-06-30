@@ -148,10 +148,16 @@ public:
 	/// </summary>
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
-
+	//*****************************************
 	//モデル色を変更
 	void ChangeModelColor(const COLOR_F _colorScale)override;
 	
+	//パンチの当たり判定を作る
+	void MakePunchCol(void);
+
+	//パンチの当たり判定を消す
+	void KillPunchCol(void);
+
 private:
 	//***********************************************
 	//定数

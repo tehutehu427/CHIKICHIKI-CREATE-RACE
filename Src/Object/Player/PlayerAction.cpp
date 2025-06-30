@@ -50,13 +50,15 @@ void PlayerAction::Init(void)
 	auto num = player_.GetPadNum();
 	auto cntl = player_.GetCntl();
 	input_ = std::make_shared<PlayerInput>(num, cntl);
-	
+	input_->Init();
 	//ジャンプ関係
 	isJump_ = false;
 	stepJump_ = 0.0f;
 	jumpPow_ = Utility::VECTOR_ZERO;
 	jumpDeceralation_ = POW_JUMP;
-	movePow_ = Utility::VECTOR_ZERO;
+  	movePow_ = Utility::VECTOR_ZERO;
+	//スピード
+	speed_ = 0.0f;
 
 	//パンチ関係の初期化
 	punchCnt_ = 0.0f;
@@ -125,10 +127,28 @@ void PlayerAction::ChangeAction(ATK_ACT _act)
 	changeAction_[act_]();
 }
 
+bool PlayerAction::IsHitPunch(void)
+{
+	if (act_ != ATK_ACT::PUNCH)return false;
+	//アニメステップを取得して一定のところで攻撃判定を発生させる
+	float animStep = animationController_.GetAnimStep();
+
+	if (animStep > PUNCH_HIT_END_ANIM_STEP)
+	{
+		isPunchHitTime_ = false;
+	}
+	else if (animStep > PUNCH_HIT_START_ANIM_STEP)
+	{
+		isPunchHitTime_ = true;
+	}
+	return isPunchHitTime_;
+}
+
 
 void PlayerAction::ChangeInput(void)
 {
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::IDLE));
+	isJump_ = false;
 	actionUpdate_ = std::bind(&PlayerAction::ActionInputUpdate, this);
 }
 
@@ -285,22 +305,24 @@ void PlayerAction::Punch(void)
 	//プレイヤーの手の座標を設定する
 	punchPos_ = MV1GetFramePosition(player_.GetTransform().modelId, 10);
 
-	//アニメーション
-	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
-
 	//アニメステップを取得して一定のところで攻撃判定を発生させる
 	float animStep = animationController_.GetAnimStep();
 
-
 	if (animStep > PUNCH_HIT_END_ANIM_STEP)
 	{
+		//パンチの当たり判定を消す
 		isPunchHitTime_ = false;
+		player_.KillPunchCol();
 	}
 	else if (animStep > PUNCH_HIT_START_ANIM_STEP)
 	{
+		//パンチの当たり判定を作る
+		player_.MakePunchCol();
 		isPunchHitTime_ = true;
 	}
-
+	
+	//アニメーション
+	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
 	if (animationController_.IsEnd())
 	{
 		//パンチクールタイムセット

@@ -33,8 +33,6 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 
 		colUpdates_[static_cast<TAG>(i)] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	}
-
-
 	isGoal_ = false;
 	isDeath_ = false;
 
@@ -105,8 +103,6 @@ void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 {
-	//パンチ中じゃなければ何もしない
-	if (!action_.GetIsHitPunch())return;
 	//パンチしたプレイヤーの向いてる方向をセットする
 	VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
 
@@ -115,6 +111,7 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 
 	//ノックバック状態遷移
 	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
+
 }
 
 void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
@@ -128,7 +125,12 @@ void PlayerOnHit::DrawDebug(void)
 	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
 	colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
 	colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
-	colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();
+	if (action_.IsHitPunch())
+	{
+		colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();
+	}
+	//if(colParam_[HAND_SPHERE_COL_NO]!=nullptr)
+	
 
 	DrawCube3D({ cube_.centerPos.x - CUBE_W,cube_.centerPos.y - CUBE_H,cube_.centerPos.z - CUBE_D }
 	, { cube_.centerPos.x + CUBE_W,cube_.centerPos.y + CUBE_H,cube_.centerPos.z + CUBE_D }, 0xff0000, 0xff0000, true);
@@ -139,29 +141,28 @@ void PlayerOnHit::PosUpdate(void)
 	movedPos_ = VAdd(trans_.pos, action_.GetMovePow());
 	movedPos_ = VAdd(movedPos_, action_.GetJumpPow());
 
-
 #ifdef DEBUG_ON
 	//デバッグ床の移動
 	CubeMove();
 
-	//デバッグ用床の当たり判定
-	if (CollCube())
-	{
-		movedPos_ = VAdd(movedPos_, cubeMovePos_);
-		action_.SetJumpPow(Utility::VECTOR_ZERO);
-		movedPos_.y = cube_.upPos.y + RADIUS;
-		action_.SetStepJump(0.0f);
-		if(action_.GetJumpDecel()<=-10.0f)action_.SetIsJump(false);
-		action_.SetJumpDecel(PlayerAction::POW_JUMP);
-	}
-	else
-	{
-		action_.SetIsJump(true);
-		//if (jumpPow_.y <= LIMIT_GRAVITY)
-		//{
-		//	jumpPow_.y = LIMIT_GRAVITY;
-		//}
-	}
+	////デバッグ用床の当たり判定
+	//if (CollCube())
+	//{
+	//	movedPos_ = VAdd(movedPos_, cubeMovePos_);
+	//	action_.SetJumpPow(Utility::VECTOR_ZERO);
+	//	movedPos_.y = cube_.upPos.y + RADIUS;
+	//	action_.SetStepJump(0.0f);
+	//	if(action_.GetJumpDecel()<=-10.0f)action_.SetIsJump(false);
+	//	action_.SetJumpDecel(PlayerAction::POW_JUMP);
+	//}
+	//else
+	//{
+	//	action_.SetIsJump(true);
+	//	//if (jumpPow_.y <= LIMIT_GRAVITY)
+	//	//{
+	//	//	jumpPow_.y = LIMIT_GRAVITY;
+	//	//}
+	//}
 
 #endif // DEBUG_ON
 
