@@ -13,7 +13,7 @@ public:
 	static constexpr float ROT_SPEED = 0.05f;
 
 	//‘å‚«‚³
-	static constexpr float SCALE = 100.0f;
+	static constexpr float SCALE = 60.0f;
 	static constexpr VECTOR SCALES = { SCALE, SCALE, SCALE };
 
 	// ó‘Ô
@@ -72,7 +72,7 @@ public:
 	const Transform& GetTransform() const;
 
 private:	
-	
+
 	// ó‘Ô
 	STATE state_;
 

@@ -46,7 +46,7 @@ public:
 
 	static constexpr int CLEAR_MENUS_DIV_X = 1;//クリア時用メッセージ分割数X
 	static constexpr int CLEAR_MENUS_DIV_Y = 3;//クリア時用メッセージ分割数Y
-	static constexpr int CLEAR_MENUS_SIZE_X = 1024;//クリア時用メッセージ各画像サイズX
+	static constexpr int CLEAR_MENUS_SIZE_X = 796;//クリア時用メッセージ各画像サイズX
 	static constexpr int CLEAR_MENUS_SIZE_Y = 128;//クリア時用メッセージ各画像サイズY
 
 	// リソース名

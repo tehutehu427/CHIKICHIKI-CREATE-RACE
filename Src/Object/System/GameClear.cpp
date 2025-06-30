@@ -1,6 +1,7 @@
 #include "GameClear.h"
 #include <DxLib.h>
 #include "../../Application.h"
+#include "../../Common/IntVector3.h"
 #include "../../Common/FontRegistry.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/InputManager.h"
@@ -27,7 +28,7 @@ GameClear::GameClear():
 
 	//初期化
 	int i = -1;
-	state_ = STATE::NONE;
+	state_ = STATE::MAX;
 	messageFont_ = -1;
 	menuFont_ = -1;
 	waitStep_ = 0.0f;
@@ -79,7 +80,7 @@ void GameClear::Load()
 
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgPlayerPlates_ = res.Load(ResourceManager::SRC::PLAYER_PLATES).handleIds_;
-	imgSelectMenu_ = res.Load(ResourceManager::SRC::SELECT_MESSAGES).handleIds_;
+	imgSelectMenu_ = res.Load(ResourceManager::SRC::CLEAR_MENUS).handleIds_;
 	imgWin_ = res.Load(ResourceManager::SRC::WIN).handleId_;
 	imgClear_ = res.Load(ResourceManager::SRC::CLEAR).handleId_;
 }
@@ -207,13 +208,11 @@ void GameClear::UpdateMenu(GameScene& _parent)
 
 void GameClear::DrawWaiting()
 {
-	constexpr float RATE = 0.7f;
-
 	//「クリア」の描画
 	DrawRotaGraph(
 		clearPos_.x,
 		clearPos_.y,
-		RATE,
+		DEFAULT_UI_RATE,
 		0.0f,
 		imgClear_,
 		true,
@@ -223,12 +222,15 @@ void GameClear::DrawWaiting()
 
 void GameClear::DrawDisplay()
 {
-	const int index = ScoreManager::GetInstance().GetWinnerPlayerIndex(5);
+	const int index = ScoreManager::GetInstance().GetWinnerPlayerIndex(5);	//UI用インデックス
+	constexpr int POS_X = Application::SCREEN_HALF_X;	//X座標共通
+	constexpr int WINNER_POS_Y = 250;	//勝者UIのY座標
+	constexpr int WIN_POS_Y = 400;		//WINのY座標
 
 	//勝者の描画
 	DrawRotaGraph(
-		Application::SCREEN_HALF_X,
-		300,
+		POS_X,
+		WINNER_POS_Y,
 		1.0f,
 		0.0f,
 		imgPlayerPlates_[index],
@@ -238,9 +240,9 @@ void GameClear::DrawDisplay()
 
 	//winの描画
 	DrawRotaGraph(
-		Application::SCREEN_HALF_X,
-		400,
-		1.0f,
+		POS_X,
+		WIN_POS_Y,
+		DEFAULT_UI_RATE,
 		0.0f,
 		imgWin_,
 		true,
@@ -250,60 +252,36 @@ void GameClear::DrawDisplay()
 
 void GameClear::DrawMenu()
 {
-	int color = Utility::WHITE;		//デフォルトカラー
-	int index = 0;
-	constexpr int MARGIN_Y = 50;	//余白
-	constexpr int ARROW_OFFSET_X = -40;
-	constexpr int SHADOW_OFFSET = 2;
+	constexpr int MARGIN_Y = 200;	//余白
+	constexpr int INTERVAL = 90;	//間隔
+	constexpr IntVector3 SELECT_ADD_COLOR = { 128,0,0 };	//選択色
 
-	for (auto menuString : menuStrings_)
+	for (int i = 0; i < STATE_MAX; i++)
 	{
 		//デフォルト座標
 		Vector2 pos{
-		MENU_POS_X + Application::SCREEN_HALF_X - static_cast<int>(menuString.size() * MES_FONT_SIZE / 4),
-		MENU_POS_Y + Application::SCREEN_HALF_Y };
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y  - MARGIN_Y + i * MARGIN_Y };
 		
-		//文字の色を変える
-		int color = Utility::WHITE;		//デフォルトカラー
-		if (index == menuIndex_)
+		//画像の色を変える
+		if (i == menuIndex_)
 		{
-			color = Utility::RED;
-			
-			//影
-			DrawFormatStringToHandle(
-				pos.x + ARROW_OFFSET_X + SHADOW_OFFSET,
-				pos.y + MARGIN_Y * index + SHADOW_OFFSET,
-				Utility::BLACK,
-				menuFont_,
-				"⇒");
-
-			//矢印を描画させる
-			DrawFormatStringToHandle(
-				pos.x + ARROW_OFFSET_X,
-				pos.y + MARGIN_Y * index,
-				Utility::PINK,
-				menuFont_,
-				"⇒");
+			SetDrawAddColor(SELECT_ADD_COLOR.x, SELECT_ADD_COLOR.y, SELECT_ADD_COLOR.z);
 		}	
 		
-		//影
-		DrawFormatStringToHandle(
-			pos.x + SHADOW_OFFSET,
-			pos.y + MARGIN_Y * index + SHADOW_OFFSET,
-			Utility::BLACK,
-			menuFont_,
-			menuString.c_str());
-
-		//メニュー
-		DrawFormatStringToHandle(
+		//画像
+		DrawRotaGraph(
 			pos.x,
-			pos.y + MARGIN_Y * index,
-			color, 
-			menuFont_,
-			menuString.c_str());
+			pos.y,
+			DEFAULT_UI_RATE,
+			0.0f,
+			imgSelectMenu_[i],
+			true,
+			false
+		);
 
-		//インデックス更新
-		index++;
+		//色を戻す
+		SetDrawAddColor(0, 0, 0);
 	}
 }
 

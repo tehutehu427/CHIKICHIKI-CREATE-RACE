@@ -49,10 +49,10 @@ private:
 	//状態
 	enum class STATE
 	{
-		NONE,
 		DISPLAY_MESSAGE,
 		WAITING,
 		MENU,
+		MAX
 	};
 
 	//メニュー項目
@@ -63,6 +63,9 @@ private:
 		BACK_TITLE,
 		MAX
 	};
+
+	//状態最大値
+	static constexpr int STATE_MAX = static_cast<int>(STATE::MAX);
 
 	//メッセージ用フォント
 	static constexpr int MES_FONT_SIZE = 72;
@@ -92,6 +95,9 @@ private:
 	//黒背景アルファ値
 	static constexpr int BLACK_BOX_ALPHA = 128;
 	static constexpr int ALPHA_SPEED = 3;
+
+	//通常のUI拡大率
+	static constexpr float DEFAULT_UI_RATE = 0.7f;
 
 	// 状態ごとの構造体（更新と描画を分けて保持）
 	struct StateFuncs
