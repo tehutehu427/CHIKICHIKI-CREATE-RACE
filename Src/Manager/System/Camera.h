@@ -12,7 +12,7 @@ public:
 	// カメラスピード(度)
 	static constexpr float SPEED = 1.0f;
 	static constexpr float SPEED_PAD = 0.0015f;
-	static constexpr float SPEED_MOUSE = 0.1f;
+	static constexpr float SPEED_MOUSE = 0.05f;
 
 	// カメラクリップ：NEAR
 	static constexpr float CAMERA_NEAR = 10.0f;
@@ -24,7 +24,7 @@ public:
 	static constexpr VECTOR DEFAULT_CAMERA_POS = { 0.0f, 100.0f, -500.0f };
 
 	// 追従位置からカメラ位置までの相対座標
-	static constexpr VECTOR LOCAL_F2C_POS = { 0.0f, 50.0f, -400.0f };
+	static constexpr VECTOR LOCAL_F2C_POS = { 0.0f, -200.0f, -1000.0f };
 
 	//FPSの時の相対座標
 	static constexpr VECTOR FPS_LOCAL_F2C_POS = { 0.0f, 130.0f, 20.0f };
@@ -39,7 +39,7 @@ public:
 	static constexpr VECTOR FIXED_DIAGONAL_TARGET_POS = { 2000.0f, 00.0f, 3000.0f };
 
 	// 追従位置から注視点までの相対座標
-	static constexpr VECTOR LOCAL_F2T_POS = { 0.0f, 0.0f, 500.0f };
+	static constexpr VECTOR LOCAL_F2T_POS = { 0.0f, 0.0f, 100.0f };
 
 	// カメラのX回転上限度角
 	static constexpr float LIMIT_X_UP_RAD = 40.0f * (DX_PI_F / 180.0f);

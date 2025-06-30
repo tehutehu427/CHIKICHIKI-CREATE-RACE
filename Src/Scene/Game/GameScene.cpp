@@ -22,6 +22,7 @@
 
 GameScene::GameScene(void)
 {
+	SetMouseDispFlag(false);	//マウスカーソルを非表示にする
 	//更新関数のセット
 	func_.updataFunc_ = std::bind(&GameScene::LoadingUpdate, this);
 	//描画関数のセット
@@ -38,6 +39,7 @@ GameScene::GameScene(void)
 
 GameScene::~GameScene(void)
 {
+	SetMouseDispFlag(true);	//マウスカーソルを非表示にする
 	//インスタンスの削除
 	PlayerManager::GetInstance().Destroy();
 	ItemManager::GetInstance().Destroy();
@@ -183,7 +185,6 @@ void GameScene::Reset()
 
 void GameScene::ChangePhaseEdit(void)
 {
-	SetMouseDispFlag(false);	//マウスカーソルを非表示にする
 	phaseUpdate_ = std::bind(&GameScene::UpdateEdit, this);
 	phaseDraw_ = std::bind(&GameScene::DrawEdit, this);
 	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
@@ -202,7 +203,6 @@ void GameScene::ChangePhaseEdit(void)
 void GameScene::ChangePhaseAction(void)
 {
 
-	SetMouseDispFlag(true);	//マウスカーソルを非表示にする
 	phaseUpdate_ = std::bind(&GameScene::UpdateAction, this);
 	phaseDraw_ = std::bind(&GameScene::DrawAction, this);
 
