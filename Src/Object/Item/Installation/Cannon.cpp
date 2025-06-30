@@ -198,7 +198,7 @@ void Cannon::RotateBarrel(void)
 	double dis = Utility::Distance(targetVec, Utility::VECTOR_ZERO);
 
 	//ñCêgâÒì]
-	Utility::LookAtTarget(barrelTrans_, VGet(barrelAddRot_.x / dis,turretAddRot_.y, 0.0f), AIM_TIME_BARREL);
+	Utility::LookAtTarget(barrelTrans_, VGet(barrelAddRot_.x / static_cast<float>(dis),turretAddRot_.y, 0.0f), AIM_TIME_BARREL);
 }
 
 void Cannon::CreateShot(void)

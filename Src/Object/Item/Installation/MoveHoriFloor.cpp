@@ -16,7 +16,7 @@ MoveHoriFloor::MoveHoriFloor()
 	startRoute_ = Utility::VECTOR_ZERO;
 	goalRoute_ = Utility::VECTOR_ZERO;
 	speed_ = 0.0f;
-	distance_ = 0.0;
+	distance_ = 0.0f;
 	moveVec_ = Utility::VECTOR_ZERO;
 }
 
@@ -121,7 +121,7 @@ void MoveHoriFloor::InitRoute(void)
 	distance_ = static_cast<float>(Utility::Round(Utility::Distance(route_[routeNum_], route_[routeNum_ + 1])));
 
 	//ë¨ìxê›íË
-	speed_ = static_cast<float>(distance_) / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
+	speed_ = distance_ / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
 
 	//èâä˙ÉãÅ[Égê›íË
 	SetRoute();
