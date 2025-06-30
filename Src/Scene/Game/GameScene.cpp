@@ -306,11 +306,11 @@ void GameScene::DrawEdit(void)
 
 void GameScene::DrawAction(void)
 {
+	//アイテム
+	ItemManager::GetInstance().Draw();
 	//プレイヤー
 	PlayerManager::GetInstance().Draw();
 
-	//アイテム
-	ItemManager::GetInstance().Draw();
 }
 
 void GameScene::DrawClear()

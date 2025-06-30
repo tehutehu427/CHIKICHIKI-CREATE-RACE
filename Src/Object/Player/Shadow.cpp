@@ -51,16 +51,18 @@ void Shadow::Draw(void)
 	//影の描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha_ * 255.0f));
 	float angleDeg = 360.0f / VERTEX_NUM;
-	float angleRad = Utility::Deg2RadF(angleDeg);
+ 	float angleRad = Utility::Deg2RadF(angleDeg); 
 
 	for (int i = 0; i < VERTEX_NUM; i++)
 	{
-		VECTOR vec1 = Utility::VNormalize(VECTOR((std::cos(angleRad * i), 0.0f, std::sin(angleRad* i))));
-		VECTOR vec2 = Utility::VNormalize(VECTOR((std::cos(angleRad * (i+ 1)), 0.0f, std::sin(angleRad* (i+1)))));
+		VECTOR vec1 = Utility::VNormalize({ std::cos(angleRad * i), 0.0f, std::sin(angleRad * i) });
+		VECTOR vec2 = Utility::VNormalize({ std::cos(angleRad * (i + 1)), 0.0f, std::sin(angleRad * (i + 1)) });
 		VECTOR pos1 = pos_;
-		VECTOR pos2 = VAdd(pos_, VScale(vec1, RADIUS));
-		VECTOR pos3 = VAdd(pos_, VScale(vec2, RADIUS));
-		DrawTriangle3D(pos1, pos2, pos3, Utility::BLACK, true);
+		VECTOR pos2 = VAdd(pos_, VScale(vec1, radius_));
+		VECTOR pos3 = VAdd(pos_, VScale(vec2, radius_));
+ 		int ret = DrawTriangle3D(pos1, pos3, pos2, Utility::BLACK, true);
+ 		//ret = DrawTriangle3D(VGet(0.0f,0.0f,0.0f), VGet(500.0f,100.0f,100.0f), VGet(250.0f,0.0f,0.0f), Utility::BLACK, true);
+ 		ret = ret;
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, static_cast<int>(alpha_ * 255.0f));
 }
@@ -78,8 +80,8 @@ void Shadow::OnHit(const std::weak_ptr<Collider> _hitCol)
 		isDraw_ = true;
 		Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
 		pos_ = hitModel.GetHitLineInfo().HitPosition;
-		pos_.y += 1.5f; //少し上に表示する
-		alpha_ = abs(VSub(parentTrans_.pos, pos_).y)/ LINE_RANGE; //親の位置からの距離で透明度を変える
-
+		pos_.y += 0.5f; //少し上に表示する
+		alpha_ =1.0 - (abs(VSub(parentTrans_.pos, pos_).y)/ LINE_RANGE); //親の位置からの距離で透明度を変える
+		radius_ = RADIUS_MAX - ( alpha_ * (RADIUS_MAX - RADIUS)) + RADIUS; //透明度で半径を変える - RADIUS_MAX) + 
 	}
 }
