@@ -88,7 +88,7 @@ void CollisionManager::Destroy(void)
 
 const bool CollisionManager::IsPlayer(const Collider::TAG _tag)const
 {
-	return _tag == Collider::TAG::PLAYER1 || _tag == Collider::TAG::PLAYER2 || _tag == Collider::TAG::PLAYER3 || _tag == Collider::TAG::PLAYER4;
+	return _tag == Collider::TAG::PLAYER1 || _tag == Collider::TAG::PLAYER2 || _tag == Collider::TAG::PLAYER3 || _tag == Collider::TAG::PLAYER4 || _tag == Collider::TAG::SHADOW;
 }
 
 const bool CollisionManager::IsItem(const Collider::TAG _tag) const

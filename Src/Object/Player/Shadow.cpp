@@ -20,7 +20,7 @@ Shadow::Shadow(Transform& trans) : parentTrans_(trans)
 	NoneTags_.push_back(Collider::TAG::KILLER_ITEM);
 
 	//影の当たり判定
-	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(parentTrans_.pos, parentTrans_.quaRot, VECTOR(), VECTOR(0.0f,LINE_RANGE,0.0f));
+	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(parentTrans_.pos, parentTrans_.quaRot, VECTOR(), VECTOR(0.0f,-LINE_RANGE,0.0f));
 	MakeCollider({ Collider::TAG::SHADOW }, std::move(lineGeo));
 }
 
@@ -78,7 +78,7 @@ void Shadow::OnHit(const std::weak_ptr<Collider> _hitCol)
 		isDraw_ = true;
 		Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
 		pos_ = hitModel.GetHitLineInfo().HitPosition;
-		pos_.y += 0.5f; //少し上に表示する
+		pos_.y += 1.5f; //少し上に表示する
 		alpha_ = abs(VSub(parentTrans_.pos, pos_).y)/ LINE_RANGE; //親の位置からの距離で透明度を変える
 
 	}
