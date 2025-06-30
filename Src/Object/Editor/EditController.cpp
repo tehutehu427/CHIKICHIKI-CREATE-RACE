@@ -618,6 +618,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 	//	mousePos_ = cursorPos_;
 	//}
 	VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
+	float distance = DELAY_MOVE_ARROW;
 	worldPos = VAdd(worldPos, { MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
 	VECTOR x = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)));
 	VECTOR y = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)));
@@ -626,30 +627,30 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 	if (x.z > 0.0f || x.z < 1.0f)
 	{
 		Vector2 x2D = { static_cast<int>(x.x),static_cast<int>( x.y) };
-		if (Utility::Distance(mousePos_, x2D) < DELAY_MOVE_ARROW)
+		if (Utility::Distance(mousePos_, x2D) < distance)
 		{
 			moveDir = MOVE_DIR::X;
-			return moveDir;
+			distance = Utility::Distance(mousePos_, x2D);
 		}
 	}
 	//Y軸移動の球をクリックした場合
 	if (y.z > 0.0f || y.z < 1.0f)
 	{
 		Vector2 y2D = {static_cast<int>( y.x),static_cast<int>( y.y )};
-		if (Utility::Distance(mousePos_, y2D) < DELAY_MOVE_ARROW)
+		if (Utility::Distance(mousePos_, y2D) < distance)
 		{
 			moveDir = MOVE_DIR::Y;
-			return moveDir;
+			distance = Utility::Distance(mousePos_, y2D);
 		}
 	}
 	//Z軸移動の球をクリックした場合
 	if (z.z > 0.0f || z.z < 1.0f)
 	{
 		Vector2 z2D = {static_cast<int>( z.x),static_cast<int>( z.y )};
-		if (Utility::Distance(mousePos_, z2D) < DELAY_MOVE_ARROW)
+		if (Utility::Distance(mousePos_, z2D) < distance)
 		{
 			moveDir = MOVE_DIR::Z;
-			return moveDir;
+			distance = Utility::Distance(mousePos_, z2D);
 		}
 	}
 	return moveDir;

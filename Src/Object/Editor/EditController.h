@@ -14,7 +14,7 @@ public:
 	static constexpr float PAD_STICK_RATE = 0.0251f;	//パッドスティックの感度
 	static constexpr float MOVE_ARROW_LENGTH = 75.0f;	//移動矢印の長さ
 	static constexpr float MOVE_ARROW_SIZE = 10.0f;		//移動矢印の先端の大きさ
-	static constexpr int DELAY_MOVE_ARROW = 20;			//移動矢印の先端からの猶予座標
+	static constexpr int DELAY_MOVE_ARROW = 40;			//移動矢印の先端からの猶予座標
 	static constexpr int CURSOR_LOCAL_POS_X = 16;	//カーソルのローカル座標X
 	static constexpr int CURSOR_LOCAL_POS_Y = 16;	//カーソルのローカル座標X
 	static constexpr int CURSOR_POINT = 2;			//カーソルのポイントサイズ
