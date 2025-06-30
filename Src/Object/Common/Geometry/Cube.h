@@ -53,11 +53,17 @@ public:
 	const bool IsHit(Capsule& _capsule)override;
 	const bool IsHit(Line& _line)override;
 
+	//回転バウンティボックスの取得
+	inline const OBB& GetObb(void)const { return obb_; }
+
 	//箱の最小地点の取得
 	inline const VECTOR GetVecMin(void)const { return obb_.vMin; }
 
 	//箱の最大地点の取得
 	inline const VECTOR GetVecMax(void)const { return obb_.vMax; }
+
+	//回転バウンティボックスの設定
+	inline void SetObb(const OBB& _obb) { obb_ = _obb; }
 
 	//箱の最小地点の設定
 	inline void SetVecMin(const VECTOR& _min) { obb_.vMin = _min; }
