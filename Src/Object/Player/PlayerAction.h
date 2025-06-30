@@ -68,10 +68,11 @@ public:
 	const VECTOR& GetPunchPos(void) { return punchPos_; }
 
 	//パンチ中か
-	const bool GetIsHitPunch(void) { return isPunchHitTime_; }
+	bool IsHitPunch(void);
 
 	//ジャンプ中
 	const bool GetIsJump(void) { return isJump_; }
+
 	//*****************************************
 	//セッタ
 	//*****************************************
@@ -139,9 +140,9 @@ private:
 	// 回転完了までの時間
 	static constexpr float TIME_ROT = 0.1f;
 	//パンチの当たり判定時間中フラグを始めるアニメーションステップ
-	static constexpr float PUNCH_HIT_START_ANIM_STEP = 22.0f;
+	static constexpr float PUNCH_HIT_START_ANIM_STEP = 20.0f;
 	//パンチの当たり判定時間中フラグを終えるアニメーションステップ
-	static constexpr float PUNCH_HIT_END_ANIM_STEP = 35.0f;
+	static constexpr float PUNCH_HIT_END_ANIM_STEP = 40.0f;
 
 	//吹き飛び効果時間
 	static constexpr float PUNCHED_TIME = 0.2f;

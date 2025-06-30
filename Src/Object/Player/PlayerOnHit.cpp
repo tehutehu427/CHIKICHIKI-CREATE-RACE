@@ -104,17 +104,15 @@ void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 {
-	if (action_.GetIsHitPunch())
-	{
-		//パンチしたプレイヤーの向いてる方向をセットする
-		VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
+	//パンチしたプレイヤーの向いてる方向をセットする
+	VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
 
-		//パンチしたプレイヤーの位置と自分の位置を比較して、
-		action_.SetDir(Utility::GetMoveVec(punchedPlayerPos, trans_.pos));
+	//パンチしたプレイヤーの位置と自分の位置を比較して、
+	action_.SetDir(Utility::GetMoveVec(punchedPlayerPos, trans_.pos));
 
-		//ノックバック状態遷移
-		action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
-	}
+	//ノックバック状態遷移
+	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
+
 }
 
 void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
@@ -128,7 +126,12 @@ void PlayerOnHit::DrawDebug(void)
 	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
 	colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
 	colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
-	colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();
+	if (action_.IsHitPunch())
+	{
+		colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();
+	}
+	//if(colParam_[HAND_SPHERE_COL_NO]!=nullptr)
+	
 
 	DrawCube3D({ cube_.centerPos.x - CUBE_W,cube_.centerPos.y - CUBE_H,cube_.centerPos.z - CUBE_D }
 	, { cube_.centerPos.x + CUBE_W,cube_.centerPos.y + CUBE_H,cube_.centerPos.z + CUBE_D }, 0xff0000, 0xff0000, true);
@@ -138,7 +141,6 @@ void PlayerOnHit::PosUpdate(void)
 {
 	movedPos_ = VAdd(trans_.pos, action_.GetMovePow());
 	movedPos_ = VAdd(movedPos_, action_.GetJumpPow());
-
 
 #ifdef DEBUG_ON
 	//デバッグ床の移動

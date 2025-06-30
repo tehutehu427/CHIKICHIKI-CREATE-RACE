@@ -86,9 +86,9 @@ void Player::Load(void)
 
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
 
-	////プレイヤーの手(パンチの当たり判定)
-	std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(action_->GetPunchPos(), PUNCH_RADIUS);
-	MakeCollider({ tag_,Collider::TAG::PUNCH }, std::move(handSphereGeo));
+	//////プレイヤーの手(パンチの当たり判定)
+	//std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(action_->GetPunchPos(), PUNCH_RADIUS);
+	//MakeCollider({ tag_,Collider::TAG::PUNCH }, std::move(handSphereGeo));
 
 
 }
@@ -267,4 +267,52 @@ const bool Player::IsDeath(void)
 void Player::ChangeModelColor(const COLOR_F _colorScale)
 {
 	MV1SetEmiColorScale(trans_.modelId, _colorScale);
+}
+
+void Player::MakePunchCol(void)
+{
+	//事前に配列のサイズを取得する
+	auto ParamSize = colParam_.size();
+
+	for (int i = 0; i < ParamSize; i++)
+	{
+		auto tags = colParam_[i].collider_->GetTags();
+		auto tagSize = colParam_[i].collider_->GetTags().size();
+		for (int j = 0; j < tagSize; j++)
+		{
+			auto tagSize = colParam_[i].collider_->GetTags().size();
+			//i,jの値が最後まで行ったとき
+			if (i == ParamSize - 1 && j == tagSize - 1)
+			{
+				//コライダのパンチがなかったら生成する
+				if (tags[j] != Collider::TAG::PUNCH)
+				{
+					//プレイヤーの手(パンチの当たり判定)
+					std::unique_ptr<Sphere>handSphereGeo = std::make_unique<Sphere>(action_->GetPunchPos(), PUNCH_RADIUS);
+					MakeCollider({ tag_,Collider::TAG::PUNCH }, std::move(handSphereGeo));
+					return;
+				}
+			}
+		}
+	}
+}
+
+void Player::KillPunchCol(void)
+{
+	//事前に配列のサイズを取得する
+	auto ParamSize = colParam_.size();
+
+	for (int i = 0; i < ParamSize; i++)
+	{
+		auto tags = colParam_[i].collider_->GetTags();
+		auto tagSize = colParam_[i].collider_->GetTags().size();
+		for (int j = 0; j < tagSize; j++)
+		{
+			if (tags[j] == Collider::TAG::PUNCH)
+			{
+				colParam_[i].collider_->Kill();
+				return;
+			}
+		}
+	}
 }
