@@ -36,7 +36,6 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	}
 	isGoal_ = false;
 	isDeath_ = false;
-
 }
 
 PlayerOnHit::~PlayerOnHit(void)
@@ -64,7 +63,6 @@ inline void PlayerOnHit::CollNone(void)
 
 void PlayerOnHit::CollFloor(const std::weak_ptr<Collider> _hitCol)
 {
-	action_.SetJumpDecel(SLIME_FLOOR_JUMP_POW);
 	HitModelCommon(_hitCol);
 }
 
@@ -136,8 +134,8 @@ void PlayerOnHit::DrawDebug(void)
 		colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();
 	}
 	
-	DrawCube3D({ cube_.centerPos.x - CUBE_W,cube_.centerPos.y - CUBE_H,cube_.centerPos.z - CUBE_D }
-	, { cube_.centerPos.x + CUBE_W,cube_.centerPos.y + CUBE_H,cube_.centerPos.z + CUBE_D }, 0xff0000, 0xff0000, true);
+	//DrawCube3D({ cube_.centerPos.x - CUBE_W,cube_.centerPos.y - CUBE_H,cube_.centerPos.z - CUBE_D }
+	//, { cube_.centerPos.x + CUBE_W,cube_.centerPos.y + CUBE_H,cube_.centerPos.z + CUBE_D }, 0xff0000, 0xff0000, true);
 
 
 	//移動量ラインの更新
@@ -152,7 +150,7 @@ void PlayerOnHit::PosUpdate(void)
 
 #ifdef DEBUG_ON
 	//デバッグ床の移動
-	CubeMove();
+	//CubeMove();
 
 	////デバッグ用床の当たり判定
 	//if (CollCube())
