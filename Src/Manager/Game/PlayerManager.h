@@ -60,7 +60,7 @@ public:
 	Player& GetPlayer(int _num) { return *players_[_num]; }
 
 	//ゴールタイムのゲッタ
-	const std::vector<float> GetGoalTime(void)const { return goalTime_; }
+	const std::vector<float> GetGoalTime(void);
 
 	//****************************************
 	//セッタ
@@ -73,7 +73,7 @@ public:
 	/// </summary>
 	/// <param name="_playerIndex">プレイヤーインデックス</param>
 	/// <returns>ゴールしてたらtrue,してなければfalse</returns>
-	const bool IsPlayerGoal(const int _playerIndex) { return players_[_playerIndex]->GetIsGoal(); }
+	const bool IsPlayerGoal(const int _playerIndex) { return players_[_playerIndex]->IsGoal(); }
 	
 	/// <summary>
 	/// 指定したプレイヤーが倒れたか調べる
@@ -101,7 +101,7 @@ private:
 	static PlayerManager* instance_;
 
 	//始まってからの総タイム
-	float time_;
+	//float time_;
 
 	//ゴール時間
 	std::vector<float>goalTime_;
