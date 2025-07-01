@@ -90,7 +90,7 @@ void PlayerManager::Update(void)
 	{
 		p->Update();
 	}
-	PlayersCollision();
+	//PlayersCollision();
 
 	
 	for (int i = 0; i < playerNum_; i++)
