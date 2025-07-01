@@ -31,5 +31,7 @@ public:
 
 private:
 
+	Transform colModelTrans_;	//“–‚½‚è”»’è—pƒ‚ƒfƒ‹
+
 };
 

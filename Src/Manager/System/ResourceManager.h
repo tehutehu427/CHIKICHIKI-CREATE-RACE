@@ -102,6 +102,7 @@ public:
 		CANNON_SHOT,		//大砲の弾
 		START_CUBE,			//スタート
 		GOAL_CUBE,			//ゴール
+		COL_CUBE,			//当たり判定用箱
 		SPRING,				//ばね
 		SPIKE,				//とげ
 		SLIME_FLOOR,		//スライム床

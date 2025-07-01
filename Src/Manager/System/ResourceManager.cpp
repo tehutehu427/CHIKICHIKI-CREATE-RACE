@@ -124,6 +124,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "GoalItem.mv1");
 	resourcesMap_.emplace(SRC::GOAL_CUBE, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "ColCube.mv1");
+	resourcesMap_.emplace(SRC::COL_CUBE, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::MODEL, PATH_MDL + "Floor.mv1");
 	resourcesMap_.emplace(SRC::FLOOR, std::move(res));
 
