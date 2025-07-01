@@ -5,10 +5,11 @@
 #include"./Player.h"
 #include "PlayerOnHit.h"
 
-PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>& _colParam, Transform& _trans):
+PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>& _colParam, Transform& _trans,Collider::TAG _tag):
 	action_(_action),
 	colParam_(_colParam),
-	trans_(_trans)
+	trans_(_trans),
+	tag_(_tag)
 {
 	//それぞれの当たった処理を格納する
 	using TAG = Collider::TAG;
@@ -31,7 +32,6 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	{
 		//同じタグだったら設定しない
 		if (static_cast<int>(tag_)== i)continue;
-
 		colUpdates_[static_cast<TAG>(i)] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	}
 	isGoal_ = false;
@@ -118,7 +118,6 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 
 	//ノックバック状態遷移
 	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
-
 }
 
 void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
@@ -137,7 +136,6 @@ void PlayerOnHit::DrawDebug(void)
 		colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();
 	}
 	
-
 	DrawCube3D({ cube_.centerPos.x - CUBE_W,cube_.centerPos.y - CUBE_H,cube_.centerPos.z - CUBE_D }
 	, { cube_.centerPos.x + CUBE_W,cube_.centerPos.y + CUBE_H,cube_.centerPos.z + CUBE_D }, 0xff0000, 0xff0000, true);
 
@@ -186,6 +184,22 @@ void PlayerOnHit::PosUpdate(void)
 		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
 		moveLine.SetLocalPosPoint2(moveVec);
 	}
+	
+	////移動量ラインの更新
+	//VECTOR transDownPos = trans_.pos;
+	//transDownPos.y -= Player::RADIUS;
+	//VECTOR movedDownPos = movedPos_;
+	//movedDownPos.y -= Player::RADIUS;
+	//VECTOR moveVec = VSub(movedDownPos, transDownPos);
+	////moveVec.y -= 1.0f;
+	////if (moveVec.x!=0.0f||moveVec>=0.6f)
+	////{
+	//	Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
+	//	moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
+	//	moveLine.SetLocalPosPoint2(moveVec);
+	////}
+
+
 	//移動前の座標を格納する
 	moveDiff_ = trans_.pos;
 	//移動
@@ -245,7 +259,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 					, hit.Position[0], hit.Position[1], hit.Position[2]);
 				if (pHit)
 				{
-					movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
+					movedPos_ = VAdd(movedPos_, hit.Normal);
 					//カプセルを移動させる
 					trans.pos = movedPos_;
 					trans.Update();

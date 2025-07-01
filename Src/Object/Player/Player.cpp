@@ -35,7 +35,6 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	, cntl_(_cntl)
 	, tag_(_tag)
 {
-
 	trans_ = Transform();
 
 
@@ -47,6 +46,7 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	//プレイヤー状態
 	changeStates_.emplace(PLAYER_STATE::ALIVE, [this]() {ChangeAlive();});
 	changeStates_.emplace(PLAYER_STATE::DEATH, [this]() {ChangeDeath(); });
+	changeStates_.emplace(PLAYER_STATE::GOAL, [this]() {ChangeGoal(); });
 
 	//コライダ作成
 	//*****************************************************
@@ -107,10 +107,14 @@ void Player::Init(void)
 	//生存状態
 	ChangeState(PLAYER_STATE::ALIVE);
 
+	time_ = 0.0f;
+
 	action_->Init();
 
+	goalTime_ = 0.0f;
+
 	//当たり判定
-	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_);
+	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_,tag_);
 	onHitCol_->Init();
 
 	trans_.Update();
@@ -179,6 +183,9 @@ void Player::DrawDebug(void)
 	}
 	
 }
+
+#endif // DEBUG_ON
+
 void Player::ChangeState(PLAYER_STATE _state)
 {
 	state_ = _state;
@@ -196,14 +203,22 @@ void Player::AliveUpdate(void)
 		ChangeState(PLAYER_STATE::DEATH);
 		return;
 	}
-	//アクション関係
+	else if (onHitCol_->GetIsGoal())
+	{
+		ChangeState(PLAYER_STATE::GOAL);
+	}
+	//アクション関係更新
 	Action();
+
+	//時間計測
+	TimeUpdate();
 
 	//移動後座標の更新
 	onHitCol_->PosUpdate();
 }
 void Player::ChangeDeath(void)
 {
+	goalTime_ = -1;
 	stateUpdate_ = std::bind(&Player::DeathUpdate, this);
 }
 void Player::DeathUpdate(void)
@@ -219,7 +234,26 @@ void Player::DeathUpdate(void)
 	}
 
 }
-#endif // DEBUG_ON
+void Player::ChangeGoal(void)
+{
+	goalTime_ = time_;
+	stateUpdate_ = std::bind(&Player::GoalUpdate, this);
+}
+void Player::GoalUpdate(void)
+{
+	//ゴール時の処理
+	//落ちているアニメーション再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::GOAL), true);
+
+	////アニメーションループ
+	//if (animationController_->GetAnimStep() >= FALL_ANIM_START)
+	//{
+	//	animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_SPD);
+	//}
+}
+
+
+
 void Player::Action(void)
 {
 	//アクション関係の更新
@@ -233,16 +267,16 @@ void Player::Action(void)
 	}
 }
 
-const bool Player::GetIsGoal(void) const
+void Player::TimeUpdate(void)
 {
-	return onHitCol_->GetIsGoal();
+	float deltaTime = scnMng_.GetInstance().GetDeltaTime();
+	time_ += deltaTime;
 }
 
-const bool Player::GetIsDeath(void) const
+const bool Player::IsGoal(void) const
 {
-	return onHitCol_->GetIsDeath();
+	return state_ == PLAYER_STATE::GOAL;
 }
-
 bool Player::IsDeath(void)
 {
 	//奈落に落ちるorデスオブジェクトに当たったら
