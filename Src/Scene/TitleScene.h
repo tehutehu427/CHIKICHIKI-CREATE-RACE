@@ -1,10 +1,10 @@
 #pragma once
 #include "SceneBase.h"
 
+class SkyDome;
 
 class TitleScene : public SceneBase
 {
-
 public:
 
 	// コンストラクタ
@@ -24,8 +24,8 @@ private:
 	//タイトル画像
 	int imgTitleLogo_;
 
-	int seTest_;
-	int seTest2_;
+	//BGM
+	int bgm_;
 
 	//更新関数
 	void NormalUpdate(void) override;

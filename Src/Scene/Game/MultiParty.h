@@ -74,6 +74,9 @@ private:
 	void DrawSelect();
 	void DrawResult();
 
+	//プレイヤーらの処理が終えたか調べる
+	void CheckPlayerFinish() override;
+
 	//デバッグ処理
 	void DebagUpdate() override;
 

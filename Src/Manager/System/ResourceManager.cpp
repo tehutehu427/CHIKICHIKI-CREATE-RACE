@@ -84,6 +84,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Title + "PushSpace.png");
 	resourcesMap_.emplace(SRC::PUSHSPACE, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_GameOver + "GameOver.png");
+	resourcesMap_.emplace(SRC::GAMEOVER, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Clear + "Clear.png");
 	resourcesMap_.emplace(SRC::CLEAR, std::move(res));
 
@@ -161,12 +164,19 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::CHICKEN, std::move(res));
 #pragma endregion 
 
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "test.mp3");
-	resourcesMap_.emplace(SRC::TEST_SE, std::move(res));
+#pragma region ƒTƒEƒ“ƒh
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "TitleBgm.wav");
+	resourcesMap_.emplace(SRC::TITLE_BGM, std::move(res));
 
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "test2.mp3");
-	resourcesMap_.emplace(SRC::TEST2_SE, std::move(res));
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "MultiGameBgm1.mp3");
+	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_1, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "MultiGameBgm2.mp3");
+	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_2, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "MultiGameBgm3.mp3");
+	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, std::move(res));
+#pragma endregion 
 }
 
 void ResourceManager::Release(void)

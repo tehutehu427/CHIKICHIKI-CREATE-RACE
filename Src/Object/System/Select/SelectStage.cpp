@@ -40,6 +40,9 @@ void SelectStage::Update(SelectScene& _parent)
 		//ステージ番号を格納
 		DateBank::GetInstance().SetStageNo(stageIndex_);
 
+		//人数を設定
+		DateBank::GetInstance().SetPlayerNum(1);
+
 		//ソロチャレンジにシーン遷移
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SOLO);
 	}
@@ -92,7 +95,7 @@ void SelectStage::Draw()
 void SelectStage::DrawMessage()
 {
 	constexpr float RATE = 0.7f;
-	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * RATE / 2 + Application::SCREEN_HALF_X - 320);
+	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * RATE / 2 + Application::SCREEN_HALF_X - 280);
 	constexpr int POS_Y = 64;
 
 	DrawRotaGraph(

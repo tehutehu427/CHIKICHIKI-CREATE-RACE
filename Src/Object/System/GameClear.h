@@ -4,11 +4,11 @@
 #include <string>
 #include <vector>
 #include "../../Common/Vector2.h"
+#include "../../Scene/Game/GameScene.h"
 
 class SceneManager;
 class KeyConfig;
 class MultiParty;
-class GameScene;
 
 class GameClear
 {
@@ -43,6 +43,12 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// ゲーム結果のフェーズを設定
+	/// </summary>
+	/// <param name="_type">trueの場合クリア,falseの場合ゲームオーバー</param>
+	void SetGameResultPhase(const bool _type);
 
 private:
 
@@ -120,10 +126,12 @@ private:
 	int menuFont_;		//メニュー
 
 	//画像
-	int imgClear_;
-	int imgWin_;
-	int* imgPlayerPlates_;
-	int* imgSelectMenu_;
+	int imgClear_;			//クリアUI
+	int imgOver_;			//ゲームオーバーUI
+	int imgWaitDrawUi_;		//待機
+	int imgWin_;			//勝利UI
+	int* imgPlayerPlates_;	//プレイヤープレート
+	int* imgSelectMenu_;	//セレクトメニュー項目
 
 	//メニュー表示用ステップ
 	float waitStep_;
