@@ -46,7 +46,6 @@ void PlayerManager::Load(void)
 
 	for (int i = 0; i < playerNum_; i++)
 	{
-
 		goalTime_.emplace_back(0.0f);
 	}
 
@@ -80,12 +79,11 @@ void PlayerManager::Init(void)
 	{
 		player->Init();
 	}
-
 }
 
 void PlayerManager::Update(void)
 {
-	time_ += SceneManager::GetInstance().GetDeltaTime();
+	//time_ += SceneManager::GetInstance().GetDeltaTime();
 	for (auto& p : players_)
 	{
 		p->Update();
@@ -93,13 +91,13 @@ void PlayerManager::Update(void)
 	//PlayersCollision();
 
 	
-	for (int i = 0; i < playerNum_; i++)
-	{
-		if (goalTime_[i] >= 0.0f)
-		{
-			continue;
-		}
-	}
+	//for (int i = 0; i < playerNum_; i++)
+	//{
+	//	if (goalTime_[i] >= 0.0f)
+	//	{
+	//		continue;
+	//	}
+	//}
 
 }
 
@@ -112,6 +110,15 @@ void PlayerManager::Draw(void)
 	}
 }
 
+
+const std::vector<float> PlayerManager::GetGoalTime(void) 
+{
+	for (int i = 0; i < playerNum_; i++)
+	{
+		goalTime_[i] = players_[i]->GetGoalTime();
+	}
+	return goalTime_;
+}
 
 void PlayerManager::SetInitPos(VECTOR _worldPos)
 {
@@ -129,7 +136,7 @@ bool PlayerManager::IsPlayersEnd(void)
 	for (auto & player : players_)
 	{
 		//ƒS[ƒ‹‚µ‚Ä‚¢‚È‚¢A‚©‚Â“|‚ê‚Ä‚¢‚È‚¢Žž
-		if (!player->IsDeath() && !player->GetIsGoal())
+		if (!player->IsDeath() && !player->IsGoal())
 		{
 			return false;
 		}

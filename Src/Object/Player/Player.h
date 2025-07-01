@@ -55,6 +55,7 @@ public:
 	{
 		ALIVE
 		,DEATH
+		,GOAL
 	};
 
 	// アニメーション種別
@@ -68,6 +69,7 @@ public:
 		PUNCH = 12,
 		JUMP = 13,
 		LAND=14,
+		GOAL=5,
 	};
 
 	
@@ -126,16 +128,13 @@ public:
 	const KeyConfig::JOYPAD_NO GetPadNum(void)const { return padNum_; }
 
 	//ゴール判定の取得
-	const bool GetIsGoal(void)const;
-
-	//死亡判定の取得
-	const bool GetIsDeath(void)const;
+	const bool IsGoal(void)const;
 
 	//死んだ判定
 	bool IsDeath(void);
 
-	//当たったアイテム
-	inline const ItemBase::ITEM_TYPE GetHitItemType(void)const { return hitItemType_; }
+	//ゴールタイムの取得
+	const float GetGoalTime(void)const { return goalTime_; }
 
 	//******************************************
 	//セッタ
@@ -208,14 +207,30 @@ private:
 
 	//オブジェクト関連
 	//--------------------------------------------
+		//行動系
+	std::unique_ptr<PlayerAction>action_;
+
+	//当たった時の処理クラス
+	std::unique_ptr<PlayerOnHit>onHitCol_;
+
+	//影
+	std::unique_ptr<Shadow>shadow_;
 	// アニメーション
 	std::unique_ptr<AnimationController> animationController_;
 
+	//メンバ変数
+	//--------------------------------------------
 	//プレイヤー単体が持っているもの
 	int playerNum_;			//プレイヤー番号
 
 	//当たっているアイテムタイプ
 	ItemBase::ITEM_TYPE hitItemType_;	
+
+	//計測用
+	float time_;
+
+	//ゴール時間格納
+	float goalTime_;
 
 	//プレイヤー状態
 	PLAYER_STATE state_;	//プレイヤーの状態(生存状態)
@@ -226,14 +241,7 @@ private:
 	//状態更新
 	std::function<void(void)>stateUpdate_;
 
-	//行動系
-	std::unique_ptr<PlayerAction>action_;
-
-	//当たった時の処理クラス
-	std::unique_ptr<PlayerOnHit>onHitCol_;
-
-	//影
-	std::unique_ptr<Shadow>shadow_;
+	VECTOR moveVec_;
 
 
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
@@ -261,11 +269,15 @@ private:
 	void ChangeDeath(void);
 	void DeathUpdate(void);
 	//------------------------------
-
+	//ゴールした時
+	void ChangeGoal(void);
+	void GoalUpdate(void);
 	
 	//アクション関係
-	//------------------------------
 	void Action(void);
+
+	//タイム更新
+	void TimeUpdate(void);
 
 
 };
