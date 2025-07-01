@@ -18,13 +18,13 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	//----------------------------------------------------
 	changeAction_.emplace(ATK_ACT::NONE, [this]() {ChangeNone(); });
 	changeAction_.emplace(ATK_ACT::MOVE, [this]() {ChangeMove(); });
+	changeAction_.emplace(ATK_ACT::DASHMOVE, [this]() {ChangeMove(); });
 	changeAction_.emplace(ATK_ACT::INPUT, [this]() {ChangeInput(); });
 	changeAction_.emplace(ATK_ACT::JUMP, [this]() {ChangeJump(); });
 	changeAction_.emplace(ATK_ACT::PUNCH, [this]() {ChangePunch(); });
 	changeAction_.emplace(ATK_ACT::KNOCKBACK, [this]() {ChangeKnockBack(); });
 
 	
-
 	//ジャンプ関係
 	isJump_ = false;
 	stepJump_ = 0.0f;
@@ -57,6 +57,7 @@ void PlayerAction::Init(void)
 	jumpPow_ = Utility::VECTOR_ZERO;
 	jumpDeceralation_ = POW_JUMP;
   	movePow_ = Utility::VECTOR_ZERO;
+
 	//スピード
 	speed_ = 0.0f;
 
@@ -104,11 +105,17 @@ void PlayerAction::ActionInputUpdate(void)
 {
 	//入力に応じてアクションを変える
 	using ACT_CNTL = PlayerInput::ACT_CNTL;
-	if (input_->CheckAct(ACT_CNTL::MOVE)|| input_->CheckAct(ACT_CNTL::DASHMOVE))
+	if (input_->CheckAct(ACT_CNTL::MOVE))
 	{
 		ChangeAction(ATK_ACT::MOVE);
 		return;
 	}
+	if(input_->CheckAct(ACT_CNTL::DASHMOVE))
+	{
+		ChangeAction(ATK_ACT::DASHMOVE);
+		return;
+	}
+
 	if (input_->CheckAct(ACT_CNTL::PUNCH))
 	{
 		ChangeAction(ATK_ACT::PUNCH);
@@ -163,6 +170,7 @@ void PlayerAction::MoveUpdate(void)
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
 	{
 		speed_ = DASH_SPEED;
+		ChangeAction(ATK_ACT::DASHMOVE);
 	}
 	//移動中に入力が入った時の状態遷移
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::JUMP))

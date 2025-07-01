@@ -9,7 +9,14 @@ class PlayerAction;
 class PlayerOnHit
 {
 public:
+	//スライム床上での移動速度(通常)
+	static constexpr float SLIME_FLOOR_MOVE_SPD = 3.0f;
 
+	//スライム床上での(ダッシュ)
+	static constexpr float SLIME_FLOOR_DASH_SPD = 6.0f;
+
+	//スライム床上でのジャンプ力
+	static constexpr float SLIME_FLOOR_JUMP_POW = 10.0f;
 	struct CUBE
 	{
 		VECTOR centerPos;
@@ -141,10 +148,10 @@ private:
 	void CollMoveFloor(const std::weak_ptr<Collider> _hitCol);
 	//スライム床
 	void CollSlimeFloor(const std::weak_ptr<Collider> _hitCol);
-	//大砲
-	void CollCannon(const std::weak_ptr<Collider> _hitCol);
+
 	//当たったら死ぬアイテム
 	void CollKillerItem(const std::weak_ptr<Collider> _hitCol);
+
 	//風
 	void CollWind(const std::weak_ptr<Collider> _hitCol);
 
