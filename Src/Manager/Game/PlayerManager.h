@@ -17,9 +17,6 @@ public:
 	//プレイヤー1人
 	static constexpr int PLAYER_SINGLE = 1;
 
-
-
-
 	
 	enum class PLAYER
 	{
@@ -48,13 +45,6 @@ public:
 	void Init(void);
 	void Update(void);
 	void Draw(void);
-
-	//プレイヤー同士の当たり判定
-	void PlayersCollision(void);
-
-	//カプセル同士の当たり判定(完全ではない)
-	//bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
-
 
 	//*****************************************
 	//ゲッタ
@@ -112,6 +102,7 @@ private:
 
 	//始まってからの総タイム
 	float time_;
+
 	//ゴール時間
 	std::vector<float>goalTime_;
 
@@ -125,19 +116,11 @@ private:
 	int playerNum_;
 
 	//*****************************************
-	//*****************************************
 	//メンバ関数
 	//*****************************************
 
 	//プレイヤー番号ごとでモデル情報を決定する
 	Transform FixTrans(int _playerNum);
-
-	/// <summary>
-	/// パンチの当たり判定
-	/// </summary>
-	/// <param name="p1">判定したい1人目のプレイヤ</param>
-	/// <param name="p2">判定したい2人目のプレイヤ</param>
-	void PunchPlayersColl(int p1,int p2);
 
 	/// <summary>
 	/// コンストラクタ
