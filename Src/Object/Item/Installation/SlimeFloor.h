@@ -9,10 +9,10 @@ public:
 
 	//マップ
 	static constexpr IntVector3 MAP_SIZE = { 4,1,4 };				//マップサイズ
-	static constexpr VECTOR MAP_LOCALPOS = { 220.0f,15.0f,220.0f };	//マップとの相対座標
+	static constexpr VECTOR MAP_LOCALPOS = { 200.0f,15.0f,200.0f };	//マップとの相対座標
 
 	//サイズ
-	static constexpr VECTOR MODEL_SIZE = { 440.0f,30.0f,440.0f };	//モデルのサイズ
+	static constexpr VECTOR MODEL_SIZE = { 400.0f,30.0f,400.0f };	//モデルのサイズ
 
 	//コンストラクタ
 	SlimeFloor();

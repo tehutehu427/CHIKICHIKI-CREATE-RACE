@@ -1,6 +1,3 @@
-#include "../Utility/Utility.h"
-#include "../Common/Quaternion.h"
-#include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
 #include"../../Common/Geometry/Model.h"
 #include "SlimeFloor.h"
@@ -17,7 +14,7 @@ void SlimeFloor::SetParam(void)
 {
 	//モデルの基本設定
 	trans_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::FLOOR));
+		ResourceManager::SRC::SLIME_FLOOR));
 
 	//モデルIDのコピー
 	models_.emplace_back(&trans_.modelId);
