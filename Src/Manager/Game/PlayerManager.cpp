@@ -10,11 +10,6 @@ PlayerManager* PlayerManager::instance_ = nullptr;
 PlayerManager::PlayerManager(void)
 {
 	playerNum_ = 0;
-	for (int i = 0; i < playerNum_; i++)
-	{
-		isGoal_.emplace_back(false);
-		isDeath_.emplace_back(false);
-	}
 }
 
 PlayerManager::~PlayerManager(void)
@@ -51,17 +46,13 @@ void PlayerManager::Load(void)
 
 	for (int i = 0; i < playerNum_; i++)
 	{
-		isGoal_.emplace_back(false);
-		isDeath_.emplace_back(false);
 
 		goalTime_.emplace_back(0.0f);
 	}
 
-	//playerNum_ = PLAYER_NUM_MAX;
 	for (int i = 0; i < playerNum_; i++)
 	{
 		KeyConfig::TYPE cntlType;
-		//DateBank::TYPE cntlType = DateBank::TYPE::CONTROLLER;
   		if (playerNum_==1)
 		{
 			cntlType = KeyConfig::TYPE::ALL;
@@ -77,7 +68,6 @@ void PlayerManager::Load(void)
 		tag = static_cast<Collider::TAG>(static_cast<int>(Collider::TAG::PLAYER1) + i);
 		player = std::make_unique<Player>(i, cntlType, tag);
 
-	
 
 		player->Load();
 		players_.push_back(std::move(player));
@@ -100,9 +90,8 @@ void PlayerManager::Update(void)
 	{
 		p->Update();
 	}
-	PlayersCollision();
+	//PlayersCollision();
 
-	IsGoalPlayers();
 	
 	for (int i = 0; i < playerNum_; i++)
 	{
@@ -110,13 +99,8 @@ void PlayerManager::Update(void)
 		{
 			continue;
 		}
-		if (isGoal_[i])
-		{
-			goalTime_[i] = time_;
-		}
 	}
 
-	IsDeathPlayers();
 }
 
 void PlayerManager::Draw(void)
@@ -128,85 +112,6 @@ void PlayerManager::Draw(void)
 	}
 }
 
-void PlayerManager::PlayersCollision(void)
-{
-	for (int i = 0; i < playerNum_; i++)
-	{
-		players_[i]->SetCollision(false);
-		for (int j = 0; j < playerNum_; j++)
-		{
-			//同じプレイヤー番号の時jを進める
-			if (i == j)continue;
-
-			//各プレイヤーに当たっていることを伝える
-			if (Utility::IsHitSpheres(players_[i]->GetPos(),Player::RADIUS,
-				players_[j]->GetPos(),Player::RADIUS))
-			{
-				players_[i]->SetCollision(true);
-				players_[j]->SetCollision(true);
-				//P2PPush(i, j);
-			}
-
-
-
-			////どちらがパンチ中かで吹っ飛ばす対象を決める
-			//if (players_[i]->GetIsPunch())
-			//{
-			//	PunchPlayersColl(i, j);
-			//}
-
-
-
-
-		}
-	}
-}
-
-//bool PlayerManager::IsHitCapsules(const std::weak_ptr<Capsule> cap1, const std::weak_ptr<Capsule> cap2)
-//{
-//	//カプセル１上の球体＆カプセル２
-//	if (Utility::IsHitSphereCapsule(cap1.lock()->GetPosTop(), cap1.lock()->GetRadius()
-//		, cap2.lock()->GetPosTop(), cap2.lock()->GetPosDown(), cap2.lock()->GetRadius()))
-//	{
-//		return true;
-//	}
-//
-//	//カプセル１下の球体＆カプセル２
-//	if (Utility::IsHitSphereCapsule(cap1.lock()->GetPosDown(), cap1.lock()->GetRadius()
-//		, cap2.lock()->GetPosTop(), cap2.lock()->GetPosDown(), cap2.lock()->GetRadius()))
-//	{
-//		return true;
-//	}
-//
-//	//カプセル２上の球体＆カプセル１
-//	if (Utility::IsHitSphereCapsule(cap2.lock()->GetPosTop(), cap2.lock()->GetRadius()
-//		, cap1.lock()->GetPosTop(), cap1.lock()->GetPosDown(), cap1.lock()->GetRadius()))
-//	{
-//		return true;
-//	}
-//
-//	//カプセル２下の球体＆カプセル１
-//	if (Utility::IsHitSphereCapsule(cap2.lock()->GetPosDown(), cap2.lock()->GetRadius()
-//		, cap1.lock()->GetPosTop(), cap1.lock()->GetPosDown(), cap1.lock()->GetRadius()))
-//	{
-//		return true;
-//	}
-//
-//	//カプセルがクロスしているときの判定
-//	VECTOR cap1PosTop_To_cap1PosDown_Vec = VSub(cap1.lock()->GetPosDown(), cap1.lock()->GetPosTop());
-//	VECTOR cap2PosTop_To_cap2PosDownVec = VSub(cap2.lock()->GetPosDown(), cap2.lock()->GetPosTop());
-//
-//	return false;
-//}
-
-const std::vector<bool> PlayerManager::GetPlayersIsDeath(void)
-{
-	for (int i=0;i<playerNum_;i++)
-	{
-		isDeath_[i] = players_[i]->IsDeath();
-	}
-	return isDeath_;
-}
 
 void PlayerManager::SetInitPos(VECTOR _worldPos)
 {
@@ -218,63 +123,21 @@ void PlayerManager::SetInitPos(VECTOR _worldPos)
 	}
 }
 
-//std::vector<bool> PlayerManager::IsGoalPlayers(void)
-void PlayerManager::IsGoalPlayers(void)
-{
-	for (int i=0;i<playerNum_;i++)
-	{
-		isGoal_[i] = players_[i]->GetIsGoal() ? true : false;
-	}
-	//	return isDeath_;
-}
-
-//std::vector<bool> PlayerManager::IsDeathPlayers(void)
-void PlayerManager::IsDeathPlayers(void)
-{
-	//プレイヤーがゴールするか、奈落に落ちたら終わる
-	for (int i = 0; i < playerNum_; i++)
-	{
-		isDeath_[i] = players_[i]->GetIsDeath() ? true : false;
-	}
-//	return isDeath_;
-}
-
 bool PlayerManager::IsPlayersEnd(void)
 {
-	//プレイヤーがゴールするか、奈落に落ちたら終わる
-	for (int i = 0; i < playerNum_; i++)
+	//プレイヤーがまだ操作中か調べる
+	for (auto & player : players_)
 	{
-		if (!isGoal_[i] && !isDeath_[i])
+		//ゴールしていない、かつ倒れていない時
+		if (!player->IsDeath() && !player->GetIsGoal())
 		{
 			return false;
 		}
 	}
+	//終了
 	return true;
 }
 
-//void PlayerManager::P2PPush(int _pNum1,int _pNum2)
-//{
-//	//同じプレイヤー番号なら抜ける
-//	if (_pNum1 == _pNum2)return;
-//	//プレイヤー1の情報
-//	VECTOR pos1 = players_[_pNum1]->GetTransform().pos;
-//	std::weak_ptr<Capsule>p1Cap = players_[_pNum1]->GetCapsule();
-//
-//	//プレイヤー2の情報
-//	VECTOR pos2 = players_[_pNum2]->GetTransform().pos;
-//	std::weak_ptr<Capsule>p2Cap = players_[_pNum2]->GetCapsule();
-//
-//	VECTOR vec = VSub(players_[_pNum2]->GetTransform().pos
-//		, players_[_pNum1]->GetTransform().pos);
-//	float len = sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-//	float overlap = p1Cap.lock()->GetRadius() + p2Cap.lock()->GetRadius() - len;
-//	float weight = 0.5f;
-//	//大きさを1にする
-//	vec = VNorm(vec);
-//	players_[_pNum1]->SetMovePow(VScale(vec, overlap * weight));
-//	players_[_pNum2]->SetMovePow(VScale(vec, overlap * (1.0-weight)));
-//		
-//}
 
 Transform PlayerManager::FixTrans(int _playerNum)
 {
@@ -296,22 +159,3 @@ Transform PlayerManager::FixTrans(int _playerNum)
 	return trans;
 }
 
-void PlayerManager::PunchPlayersColl(int p1, int p2)
-{
-	////当たった時の処理
-	//if (Utility::IsHitSpheres(players_[p1]->GetPunchPos(), Player::PUNCH_RADIUS
-	//	, players_[p2]->GetPos(),Player::RADIUS))
-	//{
-
-
-	//	//パンチしたプレイヤーの向いてる方向をセットする
-	//	//players_[p2]->SetDir(Utility::GetMoveVec(players_[p1]->GetPos(), players_[p2]->GetPos()));
-
-
-
-
-
-	//	//ノックバック状態遷移
-	//	//players_[p2]->ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
-	//}
-}

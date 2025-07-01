@@ -3,6 +3,7 @@
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/Game/ScoreManager.h"
+#include "../../Manager/Game/PlayerManager.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Editor/Palette/MultiPalette.h"
 #include "../../Object/System/Result/MultiResult.h"
@@ -220,6 +221,14 @@ void MultiParty::DrawSelect()
 void MultiParty::DrawResult()
 {
 	result_->Draw();
+}
+
+void MultiParty::CheckPlayerFinish()
+{
+	if (PlayerManager::GetInstance().IsPlayersEnd())
+	{
+		ChangePhase(PHASE::RESULT_PHASE);
+	}
 }
 
 void MultiParty::DebagUpdate()

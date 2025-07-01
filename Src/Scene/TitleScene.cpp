@@ -29,8 +29,7 @@ void TitleScene::Load(void)
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgTitleLogo_ = res.Load(ResourceManager::SRC::TITLE_LOGO).handleId_;
-	seTest_ = res.Load(ResourceManager::SRC::TEST_SE).handleId_;
-	seTest2_ = res.Load(ResourceManager::SRC::TEST2_SE).handleId_;
+	bgm_ = res.Load(ResourceManager::SRC::TITLE_BGM).handleId_;
 
 	//ÉtÉHÉìÉgÇÃìoò^
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
@@ -38,7 +37,8 @@ void TitleScene::Load(void)
 
 void TitleScene::Init(void)
 {
-
+	//BGMÇçƒê∂
+	sndMng_.Play(bgm_, SoundManager::PLAYTYPE::LOOP);
 }
 
 void TitleScene::NormalUpdate(void)
@@ -48,26 +48,8 @@ void TitleScene::NormalUpdate(void)
 	SoundManager& snd = SoundManager::GetInstance();
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
 	{
+		sndMng_.Stop(bgm_);
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
-	}
-
-	//âπÇñ¬ÇÁÇ∑
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
-	{
-		snd.Play(seTest_, SoundManager::PLAYTYPE::BACK);
-	}
-	else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1))
-	{
-		snd.Play(seTest2_, SoundManager::PLAYTYPE::NORMAL);
-	}
-	else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_DOWN, KeyConfig::JOYPAD_NO::PAD1))
-	{
-		snd.Play(seTest2_, SoundManager::PLAYTYPE::LOOP);
-	}
-	else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_UP, KeyConfig::JOYPAD_NO::PAD1))
-	{
-		snd.Stop(seTest_);
-		snd.Stop(seTest2_);
 	}
 }
 

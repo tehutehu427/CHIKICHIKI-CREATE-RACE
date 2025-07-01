@@ -4,9 +4,10 @@
 class Shadow :public ObjectBase
 {
 public:
-	static constexpr int LINE_RANGE = 300;	//“–‚½‚è”»’è‚Ì’·‚³
-	static constexpr int RADIUS = 30;		//‰e‚Ì”¼Œa
-	static constexpr int VERTEX_NUM = 20;	//‰e‚Ì’¸“_”
+	static constexpr int LINE_RANGE = 500;			//“–‚½‚è”»’è‚Ì’·‚³
+	static constexpr int RADIUS = 15;				//‰e‚Ì”¼Œa
+	static constexpr int RADIUS_MAX = 50;			//‰e‚ÌÅ‘å”¼Œa
+	static constexpr int VERTEX_NUM = 36;			//‰e‚Ì’¸“_”
 
 	Shadow(Transform& trans);
 
@@ -31,6 +32,6 @@ private:
 	VECTOR pos_;							//‰e‚Ì’†SˆÊ’u
 	float alpha_;							//“§–¾“x 0.0 - 1.0
 	std::vector<Collider::TAG> NoneTags_ ;	//“–‚½‚è”»’è‚ğ‚µ‚È‚¢Tagˆê——
-
+	float radius_;
 };
 

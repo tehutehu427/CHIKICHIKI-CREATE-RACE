@@ -33,7 +33,9 @@ GameClear::GameClear():
 	menuFont_ = -1;
 	waitStep_ = 0.0f;
 	imgClear_ = -1;
+	imgOver_ = -1;
 	imgWin_ = -1;
+	imgWaitDrawUi_ = -1;
 	imgPlayerPlates_ = &i;
 	imgSelectMenu_ = &i;
 
@@ -83,6 +85,7 @@ void GameClear::Load()
 	imgSelectMenu_ = res.Load(ResourceManager::SRC::CLEAR_MENUS).handleIds_;
 	imgWin_ = res.Load(ResourceManager::SRC::WIN).handleId_;
 	imgClear_ = res.Load(ResourceManager::SRC::CLEAR).handleId_;
+	imgOver_ = res.Load(ResourceManager::SRC::GAMEOVER).handleId_;
 }
 
 void GameClear::Init()
@@ -113,10 +116,23 @@ void GameClear::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_);
 	DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, Utility::BLACK, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
 	
 	//èÛë‘ï ï`âÊèàóù
 	stateMap_[state_].drawFunc();
+}
+
+void GameClear::SetGameResultPhase(const bool _typs)
+{
+	if (_typs)
+	{
+		imgWaitDrawUi_ = imgClear_;
+		return;
+	}
+	else
+	{
+		imgWaitDrawUi_ = imgOver_;
+		return;
+	}
 }
 
 void GameClear::RegisterStateFunction(const STATE _state, std::function<void(GameScene&)> _update, std::function<void()> _draw)
@@ -214,7 +230,7 @@ void GameClear::DrawWaiting()
 		clearPos_.y,
 		DEFAULT_UI_RATE,
 		0.0f,
-		imgClear_,
+		imgWaitDrawUi_,
 		true,
 		false
 	);

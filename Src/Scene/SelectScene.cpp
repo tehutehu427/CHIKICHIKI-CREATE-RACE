@@ -41,6 +41,7 @@ SelectScene::SelectScene()
 		}},
 		{SELECT_MENU::FREE,[this]()
 		{
+			DateBank::GetInstance().SetPlayerNum(1);
 			scnMng_.ChangeScene(SceneManager::SCENE_ID::FREE);
 		}},
 		{SELECT_MENU::SETTING,[this]()

@@ -24,6 +24,7 @@ public:
 		NONE,	//何もなし
 		INPUT,	//入力
 		MOVE,	//移動
+		DASHMOVE,
 		PUNCH,	//パンチ
 		KNOCKBACK,//パンチされた状態
 		JUMP
@@ -73,6 +74,9 @@ public:
 	//ジャンプ中
 	const bool GetIsJump(void) { return isJump_; }
 
+	//状態
+	const ATK_ACT GetAct(void)const { return act_; }
+
 	//*****************************************
 	//セッタ
 	//*****************************************
@@ -81,6 +85,9 @@ public:
 
 	//移動量
 	void SetMovePow(const VECTOR _movePow) { movePow_ = _movePow; }
+
+	//スピード
+	void SetSpeed(const float _spd) { speed_ = _spd; }
 
 	//空中かどうか
 	void SetIsJump(const bool _isJump) { isJump_ = _isJump; }
@@ -222,7 +229,6 @@ private:
 	void ChangeMove(void);
 	//毎フレーム移動方向とスピードを更新する
 	void UpdateMoveDirAndPow(void);
-
 
 	//ジャンプ
 	void JumpUpdate(void);

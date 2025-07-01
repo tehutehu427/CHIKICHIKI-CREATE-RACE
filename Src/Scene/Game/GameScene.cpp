@@ -4,6 +4,7 @@
 #include "../../Utility/Utility.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Manager/System/Camera.h"
 #include "../../Manager/System/InputManager.h"
 #include "../../Manager/System/DateBank.h"
@@ -220,6 +221,9 @@ void GameScene::ChangePhaseAction(void)
 		SceneManager::GetInstance().GetCamera(i).lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(i));
 	}
 	ItemManager::GetInstance().ResetItemValue();
+
+	//クリアの初期化
+	gameClear_->Init();
 	//VECTOR pos;
 	//IntVector3 mPos = MapEditer::MAP_SIZE;
 	//pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) * 8.5f,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
@@ -272,7 +276,7 @@ void GameScene::UpdateAction(void)
 	//更新はアクション中のみ
 	CollisionManager::GetInstance().Update();
 
-	ChangePlayerClearPhase();
+	CheckPlayerFinish();
 }
 
 void GameScene::UpdateClear(void)
@@ -306,11 +310,11 @@ void GameScene::DrawEdit(void)
 
 void GameScene::DrawAction(void)
 {
+	//アイテム
+	ItemManager::GetInstance().Draw();
 	//プレイヤー
 	PlayerManager::GetInstance().Draw();
 
-	//アイテム
-	ItemManager::GetInstance().Draw();
 }
 
 void GameScene::DrawClear()
@@ -322,10 +326,26 @@ void GameScene::DrawClear()
 	gameClear_->Draw();
 }
 
-void GameScene::ChangePlayerClearPhase(void)
+void GameScene::CheckPlayerFinish(void)
 {
-	if (PlayerManager::GetInstance().IsPlayersEnd())
+	if (PlayerManager::GetInstance().IsPlayerGoal(0))
 	{
+		//フェーズ設定
+		gameClear_->SetGameResultPhase(true);
+
+		//フェーズ遷移
 		ChangePhase(PHASE::CLEAR_PHASE);
+
+		return;
+	}
+	else if (PlayerManager::GetInstance().IsPlayerDeath(0))
+	{
+		//フェーズ設定
+		gameClear_->SetGameResultPhase(false);
+
+		//フェーズ遷移
+		ChangePhase(PHASE::CLEAR_PHASE);
+
+		return;
 	}
 }
