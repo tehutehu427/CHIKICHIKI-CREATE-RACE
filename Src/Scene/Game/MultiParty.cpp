@@ -171,6 +171,9 @@ void MultiParty::ChangePhaseResult()
 
 	//画面分割はしない
 	scnMng_.SetIsSplitMode(false);
+
+	//クリア時間に応じてスコアを格納
+	//ScoreManager::GetInstance().
 }
 
 void MultiParty::UpdateRound()

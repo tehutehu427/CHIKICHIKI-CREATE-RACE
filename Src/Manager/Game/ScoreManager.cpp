@@ -1,6 +1,8 @@
 #include "ScoreManager.h"
 #include <cassert>
+#include <algorithm>
 #include "../System/DateBank.h"
+#include "PlayerManager.h"
 
 ScoreManager* ScoreManager::instance_ = nullptr;
 
@@ -43,6 +45,35 @@ void ScoreManager::AddScore(const int _playerIndex, const SCORE_TYPE _type)
 {
 	assert(_playerIndex >= 0 && _playerIndex < static_cast<int>(scores_.size()));
 	scores_[_playerIndex] += SCORE_TYPE_VALUES[static_cast<int>(_type)];
+}
+
+void ScoreManager::SetPlayersScore()
+{
+	//そのプレイヤーの生存状態を調べる
+
+
+	//クリアタイム取得
+	std::vector<float> playerTimes = PlayerManager::GetInstance().GetGoalTime();
+
+	//配列のサイズが一緒か調べる
+	int ret = playerTimes.size() == scores_.size() ? 0 : -1;
+	assert(ret != -1);
+
+	//昇順にソートしたクリアタイムを取得
+	std::vector<float> sortTimes = playerTimes;
+	std::sort(sortTimes.begin(), sortTimes.end());
+
+	//スコアを格納
+	for (int i = 0; i < scores_.size(); i++)
+	{
+		//クリアタイム配列の中から一致する要素のインデックスを探す
+		auto it = std::find(sortTimes.begin(), sortTimes.end(), playerTimes[i]);
+
+		//ランク取得
+		int rank = static_cast<int>(std::distance(playerTimes.begin(), it));
+
+
+	}
 }
 
 const int ScoreManager::GetWinnerPlayerIndex(const int _clearLine) const
