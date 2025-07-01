@@ -826,3 +826,33 @@ int Utility::GetDigitCount(const int _value)
 
     return digit;
 }
+
+std::string Utility::ShowSaveJsonDialog()
+{
+    // 構造体をゼロ初期化
+    OPENFILENAMEW ofn = {};
+    wchar_t fileName[MAX_PATH] = L""; // ワイド文字バッファ
+
+    ofn.lStructSize = sizeof(OPENFILENAMEW);
+    ofn.lpstrFilter = L"JSONファイル (*.json)\0*.json\0すべてのファイル (*.*)\0*.*\0";
+    ofn.lpstrFile = fileName;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.Flags = OFN_OVERWRITEPROMPT;
+    ofn.lpstrDefExt = L"json";
+
+    if (GetSaveFileNameW(&ofn))
+    {
+        return WideToUtf8(fileName); // UTF-8へ変換
+    }
+
+    return ""; // キャンセルされたとき
+}
+
+std::string Utility::WideToUtf8(const std::wstring& wstr)
+{
+    int size = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
+    std::string result(size, 0);
+    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &result[0], size, nullptr, nullptr);
+    result.pop_back(); // null文字を削除
+    return result;
+}

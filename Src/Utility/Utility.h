@@ -288,4 +288,15 @@ public:
 	/// <param name="_value">桁数を調べる値</param>
 	/// <returns>桁数</returns>
 	static int GetDigitCount(const int _value);
+
+	/// <summary>
+	/// JSON保存ダイアログを表示し、パスをUTF-8文字列で返す
+	/// </summary>
+	/// <returns>文字列を返す</returns>
+	static std::string ShowSaveJsonDialog();
+
+	/// <summary>
+	/// ワイド文字列をUTF-8に変換する
+	/// </summary>
+	static std::string WideToUtf8(const std::wstring& wstr);
 };

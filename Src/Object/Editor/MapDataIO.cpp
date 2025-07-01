@@ -343,6 +343,16 @@ void MapDataIO::UpdateWait()
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (IsTriggerExport())
     {
+        SetMouseDispFlag(true);
+        selectFile_ = Utility::ShowSaveJsonDialog();
+        if (selectFile_.empty())
+        {
+            // キャンセルされた
+            SetMouseDispFlag(false);
+            return;
+        }
+        SetMouseDispFlag(false);
+
         //リセット
         responder_->Reset();
 
@@ -387,9 +397,8 @@ void MapDataIO::UpdateCheckExport()
     }
     else if (res == YesNoResponder::RESPON::YES)
     {
-
         //現在の配置データを出力する
-        ExportJsonFile("3DStageDataFile.json");
+        ExportJsonFile(selectFile_);
 
         //状態遷移
         ChangeState(STATE::WAIT);
