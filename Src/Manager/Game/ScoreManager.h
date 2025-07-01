@@ -61,6 +61,11 @@ public:
 	void AddScore(const int _playerIndex, SCORE_TYPE _type);
 
 	/// <summary>
+	/// プレイヤーらのスコアを設定
+	/// </summary>
+	void SetPlayersScore();
+
+	/// <summary>
 	/// 勝者のプレイヤー番号を取得
 	/// </summary>
 	/// <param name="_clearLine">クリア値</param>
