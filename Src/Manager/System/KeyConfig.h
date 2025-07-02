@@ -47,6 +47,8 @@ public:
 		LEFTBUTTON_DOWN,		// 下
 		LEFTBUTTON_LEFT,		// 左
 		LEFTBUTTON_RIGHT,		// 右
+		LEFT_STICK,				// 左スティック押し込み
+		RIGHT_STICK,			// 右スティック押し込み
 		MAX
 	};
 
@@ -135,6 +137,8 @@ public:
 		PLAY_CAMERA_MOVE_DOWN,	//プレイのカメラ移動下
 		PLAY_CAMERA_MOVE_RIGHT,	//プレイのカメラ移動右
 		PLAY_CAMERA_MOVE_LEFT,	//プレイのカメラ移動左
+		PLAY_CAMERA_ZOOM_IN,	//プレイのカメラズームイン
+		PLAY_CAMERA_ZOOM_OUT,	//プレイのカメラズームアウト
 
 		
 

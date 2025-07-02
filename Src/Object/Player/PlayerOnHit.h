@@ -160,6 +160,10 @@ private:
 	//ƒpƒ“ƒ`‚Ì“–‚½‚èˆ—
 	void ColPunch(const std::weak_ptr<Collider> _hitCol);
 
+	//‚Î‚Ë‚Æ‚Ì“–‚½‚è”»’è
+	void ColSpring(const std::weak_ptr<Collider> _hitCol);
+
+
 	//ƒS[ƒ‹‚µ‚½‚Ìˆ—
 	void ColGoal(const std::weak_ptr<Collider> _hitCol);
 

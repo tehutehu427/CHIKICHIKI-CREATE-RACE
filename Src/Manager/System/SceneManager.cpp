@@ -225,6 +225,7 @@ void SceneManager::Destroy(void)
 	
 	//自身のインスタンス解放
 	delete instance_;
+	instance_ = nullptr;
 }
 
 void SceneManager::ChangeScene(SCENE_ID nextId)

@@ -14,6 +14,11 @@ public:
 	static constexpr float SPEED_PAD = 0.0015f;
 	static constexpr float SPEED_MOUSE = 0.05f;
 
+	//カメラズームスピード
+	static constexpr float ZOOM_SPEED = 5.0f;
+
+	//カメラのズーム範囲
+	static constexpr float ZOOM_RADIUS = 500.0f;
 	// カメラクリップ：NEAR
 	static constexpr float CAMERA_NEAR = 10.0f;
 
@@ -98,6 +103,8 @@ public:
 	void SetAngles(VECTOR angles) { angles_ = angles; }
 	void SetTargetPos(VECTOR pos) { targetPos_ = pos; }
 private:
+	// カメラのローカル座標
+	VECTOR localPos_;
 
 	// カメラが追従対象とするTransform
 	const Transform* followTransform_;
@@ -137,6 +144,7 @@ private:
 
 	// カメラ操作
 	void ProcessRot(void);
+	void ProcessZoom(void);
 	//マウスでのカメラ操作
 	void ProcessRotMause(float* x_m, float* y_m, const float fov_per = 1.0f);
 	// モード別更新ステップ
