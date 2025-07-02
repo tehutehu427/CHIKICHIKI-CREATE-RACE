@@ -47,6 +47,8 @@ public:
 		LEFTBUTTON_DOWN,		// 下
 		LEFTBUTTON_LEFT,		// 左
 		LEFTBUTTON_RIGHT,		// 右
+		LEFT_STICK,				// 左スティック押し込み
+		RIGHT_STICK,			// 右スティック押し込み
 		MAX
 	};
 
