@@ -181,7 +181,6 @@ void Player::DrawDebug(void)
 		//リトライするかEditシーンに戻るか選べるようにする。
 		DrawFormatString(Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y+ OFFSET *playerNum_, 0xff0000, "(%d)GameOver", playerNum_);
 	}
-	
 }
 
 #endif // DEBUG_ON
@@ -252,8 +251,6 @@ void Player::GoalUpdate(void)
 	//	animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_SPD);
 	//}
 }
-
-
 
 void Player::Action(void)
 {

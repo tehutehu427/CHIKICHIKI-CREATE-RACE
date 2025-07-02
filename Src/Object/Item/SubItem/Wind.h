@@ -5,7 +5,7 @@ class Wind : public ItemBase
 public:
 
 	//風の強さ
-	static constexpr float POW = 10.0f;
+	static constexpr float POW = 1.0f;
 
 	/// <summary>
 	/// コンストラクタ
