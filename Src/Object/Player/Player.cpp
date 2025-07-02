@@ -219,6 +219,7 @@ void Player::AliveUpdate(void)
 void Player::ChangeDeath(void)
 {
 	goalTime_ = -1;
+	KillPunchCol();
 	stateUpdate_ = std::bind(&Player::DeathUpdate, this);
 }
 void Player::DeathUpdate(void)
@@ -232,11 +233,11 @@ void Player::DeathUpdate(void)
 	{
 		animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_SPD);
 	}
-
 }
 void Player::ChangeGoal(void)
 {
 	goalTime_ = time_;
+	KillPunchCol();
 	stateUpdate_ = std::bind(&Player::GoalUpdate, this);
 }
 void Player::GoalUpdate(void)
@@ -334,6 +335,9 @@ void Player::KillPunchCol(void)
 			if (tags[j] == Collider::TAG::PUNCH)
 			{
 				colParam_[i].collider_->Kill();
+
+				//colParam‚Ì––”ö‚ğÁ‹‚·‚é
+				colParam_.pop_back();
 				return;
 			}
 		}

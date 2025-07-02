@@ -37,6 +37,7 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	punchPos_ = Utility::VECTOR_ZERO;
 	punchedCnt_ = PUNCHED_TIME;
 
+	isPunchHitTime_ = false;
 	input_ = nullptr;
 }
 
@@ -60,6 +61,8 @@ void PlayerAction::Init(void)
 
 	//スピード
 	speed_ = 0.0f;
+
+	isPunchHitTime_ = false;
 
 	//パンチ関係の初期化
 	punchCnt_ = 0.0f;
@@ -348,6 +351,7 @@ void PlayerAction::KnockBack(void)
 	if (punchedCnt_ < 0.0f)
 	{
 		punchedCnt_ = PUNCHED_TIME;
+		speed_ = 0.0f;
 		ChangeAction(ATK_ACT::INPUT);
 	}
 }

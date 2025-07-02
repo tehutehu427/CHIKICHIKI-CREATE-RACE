@@ -29,7 +29,7 @@ public:
 	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
 
 	//ƒpƒ“ƒ`‚Ì”ÍˆÍ
-	static constexpr float PUNCH_RADIUS = 20.0f;
+	static constexpr float PUNCH_RADIUS = 30.0f;
 
 	//******************************************
 
