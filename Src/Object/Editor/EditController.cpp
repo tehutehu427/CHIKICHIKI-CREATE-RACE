@@ -282,6 +282,19 @@ void EditController::ItemSelectUpdate(void)
 
 void EditController::MoveRotateObjectUpdate(void)
 {
+	if (playerMaxNum_ == 1)
+	{
+		if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ITEM_DELETE, padNum_))
+		{
+			auto& itemMins = ItemManager::GetInstance();
+			if (itemMins.GetDummyItemStatus(playerNum_).effType != ItemBase::EFFECT_TYPE::FIXED)
+			{
+				itemMins.DeleteDummyItem(playerNum_);	//ダミーアイテムを削除
+				ChengeMode(MODE::ITEM_SELECT);	//モードをアイテム選択に変更
+				return;
+			}
+		}
+	}
 	RotateObject();
 	moveDir_ = GetMoveDir();
 	if (moveDir_ == MOVE_DIR::NONE)
