@@ -149,7 +149,7 @@ void Player::Draw(void)
 
 void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	onHitCol_->Update(_hitCol);
+	onHitCol_->ColUpdate(_hitCol);
 }
 
 #ifdef DEBUG_ON
@@ -214,7 +214,7 @@ void Player::AliveUpdate(void)
 	TimeUpdate();
 
 	//ˆÚ“®ŒãÀ•W‚ÌXV
-	onHitCol_->PosUpdate();
+	onHitCol_->Update();
 }
 void Player::ChangeDeath(void)
 {

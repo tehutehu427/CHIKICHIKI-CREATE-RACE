@@ -69,7 +69,7 @@ public:
 	const VECTOR& GetPunchPos(void) { return punchPos_; }
 
 	//パンチ中か
-	bool IsHitPunch(void);
+	bool GetIsHitPunch(void) { return isPunchHitTime_; }
 
 	//ジャンプ中
 	const bool GetIsJump(void) { return isJump_; }
@@ -100,6 +100,8 @@ public:
 
 	//方向
 	void SetDir(const VECTOR _dir) { dir_ = _dir; }
+
+
 
 	//デバッグ
 	float GetJumpDecel(void) { return jumpDeceralation_; }
@@ -177,9 +179,6 @@ private:
 
 	//状態
 	ATK_ACT act_;
-
-	//地面との当たり判定
-	bool isLandHit_;
 	//移動
 	//------------------------
 	float speed_;			// 移動スピード
@@ -225,8 +224,11 @@ private:
 	void MoveUpdate(void);
 	//入力方向に応じて方向を決める
 	void MoveDirFronInput(void);
-	//移動に変更する
+	//移動状態変更
 	void ChangeMove(void);
+	//ダッシュ状態(更新はMoveと同じ)
+	void ChangeDashMove(void);
+
 	//毎フレーム移動方向とスピードを更新する
 	void UpdateMoveDirAndPow(void);
 

@@ -93,6 +93,9 @@ private:
 	// コピー代入演算子は使用不可
 	ScoreManager& operator=(const ScoreManager&) = delete;
 
+	//ランクに応じたスコアを取得
+	int GetScoreByRank(const int _rank);
+
 	//スコア
 	std::vector<int> scores_;
 

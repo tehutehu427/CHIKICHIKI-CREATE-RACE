@@ -28,8 +28,8 @@ namespace
     };
 }
 
-MapDataIO::MapDataIO(const Vector2& _padCursolPos):
-    padCursolPos_(_padCursolPos)
+MapDataIO::MapDataIO(const Vector2& _padCursorPos):
+    padCursorPos_(_padCursorPos)
 {
     imgBack_ = -1;
     imgLoad_ = -1;
@@ -142,6 +142,8 @@ void MapDataIO::ExportJsonFile(const std::string _fileName)
         {
             //座標格納用の配列を用意
             nlohmann::json positions = nlohmann::json::array();
+            nlohmann::json rotations = nlohmann::json::array();
+            nlohmann::json quaternions = nlohmann::json::array();
 
             //アイテム分回す
             for (const auto& item : *items)
@@ -153,17 +155,46 @@ void MapDataIO::ExportJsonFile(const std::string _fileName)
                 VECTOR pos = item->GetTransform().pos;
                 positions.push_back(
                     {   //格納
-                    {"x", pos.x},
-                    {"y", pos.y},
-                    {"z", pos.z}
-                    });
+                        {"x", pos.x},
+                        {"y", pos.y},
+                        {"z", pos.z}
+                    }
+                );
+
+                //角度情報
+                VECTOR rot = item->GetTransform().rot;
+                rotations.push_back(
+                    {
+                        {"x", rot.x},
+                        {"y", rot.y},
+                        {"z", rot.z}
+                    }
+                );
+
+                //クォータニオン情報
+                Quaternion quaRot = item->GetTransform().quaRot;
+                quaternions.push_back(
+                    {
+                        {"x", quaRot.x},
+                        {"y", quaRot.y},
+                        {"z", quaRot.z},
+                        {"w", quaRot.w},
+                    }
+                );
+
+
             }
 
             //名前取得
             std::string typeName = DateBank::GetInstance().GetItemName(type);
             if (!typeName.empty()) // 空文字チェック
             {
-                j[typeName] = positions;
+                j[typeName] = 
+                {
+                    {"positions", positions},
+                    {"rotations", rotations},
+                    {"quaternions", quaternions}
+                };
             }
             else
             {
@@ -210,18 +241,20 @@ void MapDataIO::ImportJsonFile()
     auto items = LoadItemsFromJson(selectFile_);
 
     // 読み込んだアイテムを確認
-    for (const auto& [type, positions] : items)
+    for (const auto& [type, importData] : items)
     {
-        for (const auto& pos : positions) 
+        for (int i = 0; i < items[type].positions.size(); i++)
         {
             //マップ座標に変換
-            IntVector3 mapPos = MapEditer::GetInstance().WorldToMapPos(pos);
+            IntVector3 mapPos = MapEditer::GetInstance().WorldToMapPos(items[type].positions[i]);
 
             //格納
-            itemMng.AddItem(mapPos, Quaternion(), type,0.0f);
+            itemMng.AddItem(mapPos, items[type].quaternions[i], type, Utility::Rad2DegF(items[type].rotations[i].y));
 			MapEditer::GetInstance().AddItem(
-				{ mapPos, Quaternion(), type },itemMng.GetItemSize(type),
-                itemMng.GetItemHitSize(type),0.0f);
+				{ mapPos, items[type].quaternions[i], type},
+                itemMng.GetItemSize(type),
+                itemMng.GetItemHitSize(type), 
+                Utility::Rad2DegF(items[type].rotations[i].y));
         }
     }
 }
@@ -237,7 +270,7 @@ bool MapDataIO::IsTriggerExport() const
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EXPORT_FILE, KeyConfig::JOYPAD_NO::PAD1) || 
         ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EXPORT_FILE_CLICK, KeyConfig::JOYPAD_NO::PAD1) && 
-       ( Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown) || Utility::IsPointInRect(padCursolPos_, rightPos, leftDown)))
+       ( Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown) || Utility::IsPointInRect(padCursorPos_, rightPos, leftDown)))
     {
         return true;
     }
@@ -253,15 +286,10 @@ inline bool MapDataIO::IsTriggerImport() const
     const Vector2 rightPos = { ICON_SIZE_X, 0 };
     const Vector2 leftDown = { ICON_SIZE_X * 2, ICON_SIZE_Y };
 
-    if (Utility::IsPointInRect(padCursolPos_, rightPos, leftDown))
-    {
-        int x = 0;
-    }
-
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::IMPORT_FILE, KeyConfig::JOYPAD_NO::PAD1) ||
         ins.IsTrgDown(KeyConfig::CONTROL_TYPE::IMPORT_FILE_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
-        (Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown) || Utility::IsPointInRect(padCursolPos_, rightPos, leftDown)))
+        (Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown) || Utility::IsPointInRect(padCursorPos_, rightPos, leftDown)))
     {
         return true;
     }
@@ -269,9 +297,9 @@ inline bool MapDataIO::IsTriggerImport() const
     return false;
 }
 
-std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItemsFromJson(const std::string& _filepath)
+std::unordered_map<ItemBase::ITEM_TYPE, MapDataIO::ImportData> MapDataIO::LoadItemsFromJson(const std::string& _filepath)
 {
-    std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> items = {};
+    std::unordered_map<ItemBase::ITEM_TYPE, MapDataIO::ImportData> items = {};
 
     std::ifstream inFile(_filepath);
     if (!inFile.is_open()) 
@@ -293,16 +321,51 @@ std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItem
 
         if (j.contains(typeName))
         {
-            std::vector<VECTOR> positions;
-            for (auto& pos : j[typeName])
+            // positions
+            if (j[typeName].contains("positions"))
             {
-                VECTOR position;
-                position.x = pos["x"].get<float>();
-                position.y = pos["y"].get<float>();
-                position.z = pos["z"].get<float>();  
-                positions.push_back(position);
+                std::vector<VECTOR> positions;
+                for (const auto& pos : j[typeName]["positions"])
+                {
+                    VECTOR position;
+                    position.x = pos["x"].get<float>();
+                    position.y = pos["y"].get<float>();
+                    position.z = pos["z"].get<float>();
+                    positions.push_back(position);
+                }
+                items[type].positions = positions;
             }
-            items[type] = positions;
+
+            // rotations
+            if (j[typeName].contains("rotations"))
+            {
+                std::vector<VECTOR> rotations;
+                for (const auto& rot : j[typeName]["rotations"])
+                {
+                    VECTOR rotation;
+                    rotation.x = rot["x"].get<float>();
+                    rotation.y = rot["y"].get<float>();
+                    rotation.z = rot["z"].get<float>();
+                    rotations.push_back(rotation);
+                }
+                items[type].rotations = rotations;
+            }
+
+            // quaternions
+            if (j[typeName].contains("quaternions"))
+            {
+                std::vector<Quaternion> quaternions;
+                for (const auto& qua : j[typeName]["quaternions"])
+                {
+                    Quaternion quaternion;
+                    quaternion.x = qua["x"].get<float>();
+                    quaternion.y = qua["y"].get<float>();
+                    quaternion.z = qua["z"].get<float>();
+                    quaternion.w = qua["w"].get<float>();
+                    quaternions.push_back(quaternion);
+                }
+                items[type].quaternions = quaternions;
+            }
         }
     }
 

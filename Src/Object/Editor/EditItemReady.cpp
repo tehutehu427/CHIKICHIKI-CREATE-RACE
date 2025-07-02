@@ -1,5 +1,6 @@
 #include "../Utility/Utility.h"
 #include "../Manager/System/KeyConfig.h"
+#include "../Manager/System/ResourceManager.h"
 #include "EditController.h"
 #include "EditItemReady.h"
 
@@ -8,6 +9,7 @@ EditItemReady::EditItemReady(EditController& parent) : parent_(parent)
 	ready_ = READY_PHASE::NOT_READY;
 	hitSize_ = { HIT_WIDTH,HIT_HEIGHT };
 	pos_ = { MARGIN,MARGIN };
+	readyImg_ = -1;
 	phaseChanges_.emplace(READY_PHASE::NOT_READY, std::bind(&EditItemReady::ChengePhaseNotRedy, this));
 	phaseChanges_.emplace(READY_PHASE::CHECK, std::bind(&EditItemReady::ChengePhaseCheck, this));
 	phaseChanges_.emplace(READY_PHASE::READY, std::bind(&EditItemReady::ChengePhaseReady, this));
@@ -21,6 +23,7 @@ EditItemReady::~EditItemReady()
 void EditItemReady::Init()
 {
 	phaseChanges_[READY_PHASE::NOT_READY]();
+	readyImg_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::READY_IMG).handleId_;
 }
 
 void EditItemReady::Update()
@@ -96,7 +99,8 @@ void EditItemReady::UpdateReady(void)
 
 void EditItemReady::DrawNotReady(void)
 {
-	DrawBox(MARGIN, MARGIN, MARGIN + hitSize_.x, MARGIN + hitSize_.y, 0x000000, true);
+	//DrawBox(MARGIN, MARGIN, MARGIN + hitSize_.x, MARGIN + hitSize_.y, 0x000000, true);
+	DrawModiGraph(MARGIN, MARGIN + hitSize_.y, MARGIN, MARGIN, MARGIN + hitSize_.x, MARGIN, MARGIN + hitSize_.x, MARGIN + hitSize_.y, readyImg_, true);
 }
 
 void EditItemReady::DrawCheck(void)

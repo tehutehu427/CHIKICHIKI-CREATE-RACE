@@ -18,7 +18,7 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	//----------------------------------------------------
 	changeAction_.emplace(ATK_ACT::NONE, [this]() {ChangeNone(); });
 	changeAction_.emplace(ATK_ACT::MOVE, [this]() {ChangeMove(); });
-	changeAction_.emplace(ATK_ACT::DASHMOVE, [this]() {ChangeMove(); });
+	changeAction_.emplace(ATK_ACT::DASHMOVE, [this]() {ChangeDashMove(); });
 	changeAction_.emplace(ATK_ACT::INPUT, [this]() {ChangeInput(); });
 	changeAction_.emplace(ATK_ACT::JUMP, [this]() {ChangeJump(); });
 	changeAction_.emplace(ATK_ACT::PUNCH, [this]() {ChangePunch(); });
@@ -130,26 +130,12 @@ void PlayerAction::ActionInputUpdate(void)
 
 void PlayerAction::ChangeAction(ATK_ACT _act)
 {
+	if (act_ == _act)return;
 	act_ = _act;
 	changeAction_[act_]();
 }
 
-bool PlayerAction::IsHitPunch(void)
-{
-	if (act_ != ATK_ACT::PUNCH)return false;
-	//アニメステップを取得して一定のところで攻撃判定を発生させる
-	float animStep = animationController_.GetAnimStep();
 
-	if (animStep > PUNCH_HIT_END_ANIM_STEP)
-	{
-		isPunchHitTime_ = false;
-	}
-	else if (animStep > PUNCH_HIT_START_ANIM_STEP)
-	{
-		isPunchHitTime_ = true;
-	}
-	return isPunchHitTime_;
-}
 
 
 void PlayerAction::ChangeInput(void)
@@ -166,11 +152,13 @@ void PlayerAction::ChangeNone(void)
 
 void PlayerAction::MoveUpdate(void)
 {
-	speed_ = MOVE_SPEED;
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
 	{
-		speed_ = DASH_SPEED;
 		ChangeAction(ATK_ACT::DASHMOVE);
+	}
+	else if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
+	{
+		ChangeAction(ATK_ACT::MOVE);
 	}
 	//移動中に入力が入った時の状態遷移
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::JUMP))
@@ -204,7 +192,6 @@ void PlayerAction::MoveDirFronInput(void)
 	VECTOR getDir = input_->GetDir();
 	float deg = input_->GetMoveDeg();
 
-
 	int playerNum = player_.GetPlayerNum();
 	Quaternion cameraRot = scnMng_.GetCamera(playerNum).lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
@@ -220,6 +207,14 @@ void PlayerAction::MoveDirFronInput(void)
 
 void PlayerAction::ChangeMove(void)
 {
+	speed_ = MOVE_SPEED;
+	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
+	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
+}
+
+void PlayerAction::ChangeDashMove(void)
+{
+	speed_ = DASH_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
 }
