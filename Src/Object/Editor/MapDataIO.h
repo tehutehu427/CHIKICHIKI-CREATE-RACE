@@ -60,7 +60,7 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	MapDataIO(const Vector2& _padCursolPos);
+	MapDataIO(const Vector2& _padCursorPos);
 
 	/// <summary>
 	/// デストラクタ
@@ -93,7 +93,7 @@ private:
 	static constexpr float MES_DISPLAY_TIME = 2.0f;
 
 	//カーソル座標
-	const Vector2& padCursolPos_;
+	const Vector2& padCursorPos_;
 
 	//画像関係 
 	int imgSave_;	//セーブ

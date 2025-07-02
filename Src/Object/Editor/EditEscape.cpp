@@ -16,8 +16,8 @@ namespace
 	};
 }
 
-EditEscape::EditEscape(const Vector2& _padCursolPos):
-	padCursolPos_(_padCursolPos),
+EditEscape::EditEscape(const Vector2& _padCursorPos):
+	padCursorPos_(_padCursorPos),
 	key_(KeyConfig::GetInstance())
 {
 	//‰Šú‰»
@@ -79,8 +79,9 @@ void EditEscape::UpdateWait()
 	Vector2 rightBottom = Vector2::AddVector2(pos_, iconHalfSize);
 
 	if(key_.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ESCAPE, KeyConfig::JOYPAD_NO::PAD1) ||
-		key_.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ESCAPE_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
-		(Utility::IsPointInRect(key_.GetMousePos(), leftTop, rightBottom) || Utility::IsPointInRect(padCursolPos_, leftTop, rightBottom)))
+		(key_.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ESCAPE_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
+		(Utility::IsPointInRect(key_.GetMousePos(), leftTop, rightBottom) || 
+			Utility::IsPointInRect(padCursorPos_, leftTop, rightBottom))))
 	{
 		//ƒŠƒZƒbƒg
 		responder_->Reset();
