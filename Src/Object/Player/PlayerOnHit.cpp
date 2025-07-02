@@ -20,9 +20,9 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_[TAG::MOVE_HORI_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
 	colUpdates_[TAG::MOVE_VER_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
 	colUpdates_[TAG::SLIME_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); };
-	colUpdates_[TAG::CANNON_AIM] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	colUpdates_[TAG::WIND] = [this](const std::weak_ptr<Collider> _hitCol) {CollWind(_hitCol); };
 	colUpdates_[TAG::PUNCH] = [this](const std::weak_ptr<Collider> _hitCol) {ColPunch(_hitCol); };
+	colUpdates_[TAG::CANNON_AIM] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	colUpdates_[TAG::SPRING] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	colUpdates_[TAG::SHADOW] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 
@@ -48,7 +48,7 @@ void PlayerOnHit::Init(void)
 	isDeath_ = false;
 }
 
-void PlayerOnHit::Update(const std::weak_ptr<Collider> _hitCol)
+void PlayerOnHit::ColUpdate(const std::weak_ptr<Collider> _hitCol)
 {
 	for (const auto tag : _hitCol.lock()->GetTags())
 	{
@@ -143,7 +143,7 @@ void PlayerOnHit::DrawDebug(void)
 	DrawFormatString(0, 300, 0x000000, "vec(%f,%f,%f)", moveVec.x,moveVec.y, moveVec.z);
 }
 
-void PlayerOnHit::PosUpdate(void)
+void PlayerOnHit::Update(void)
 {
 	movedPos_ = VAdd(trans_.pos, action_.GetMovePow());
 	movedPos_ = VAdd(movedPos_, action_.GetJumpPow());
@@ -182,21 +182,15 @@ void PlayerOnHit::PosUpdate(void)
 		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
 		moveLine.SetLocalPosPoint2(moveVec);
 	}
-	
-	////移動量ラインの更新
-	//VECTOR transDownPos = trans_.pos;
-	//transDownPos.y -= Player::RADIUS;
-	//VECTOR movedDownPos = movedPos_;
-	//movedDownPos.y -= Player::RADIUS;
-	//VECTOR moveVec = VSub(movedDownPos, transDownPos);
-	////moveVec.y -= 1.0f;
-	////if (moveVec.x!=0.0f||moveVec>=0.6f)
-	////{
-	//	Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
-	//	moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
-	//	moveLine.SetLocalPosPoint2(moveVec);
-	////}
 
+	////オブジェクトに当たってないとき
+	//for (auto& col : colParam_)
+	//{
+	//	if (!col.collider_->IsHit())
+	//	{
+	//		action_.SetIsJump(true);
+	//	}
+	//}
 
 	//移動前の座標を格納する
 	moveDiff_ = trans_.pos;
