@@ -124,5 +124,6 @@ void EditItemReady::DrawReady(void)
 	DrawBox(0, 0, screenSize.x, screenSize.y, 0x000000, true);
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255); //•s“§–¾‚É‚·‚é
+	DrawRotaGraph(screenSize.x / 2, screenSize.y / 2, 1.0f, 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::OK).handleId_, true); //’†‰›‚É€”õŠ®—¹‚Ì‰æ‘œ‚ğ•\¦
 
 }
