@@ -114,6 +114,14 @@ private:
 		std::function<void()> drawFunc;
 	};
 
+	//入力データ
+	struct ImportData
+	{
+		std::vector<VECTOR> positions;
+		std::vector<VECTOR> rotations;
+		std::vector<Quaternion> quaternions;
+	};
+
 	//入出力確認用ステップ
 	int checkStep_;
 
@@ -139,7 +147,7 @@ private:
 	void RegisterState(const STATE _state, std::function<void()> _update, std::function<void()> _draw);
 
 	//状態変更処理
-	inline void ChangeState(const STATE _state) { state_ = _state; }
+	void ChangeState(const STATE _state) { state_ = _state; }
 
 	//状態別更新
 	void UpdateWait();
@@ -171,7 +179,7 @@ private:
 	/// </summary>
 	/// <param name="filepath">ファイルネーム</param>
 	/// <returns>読み込んだ種類別配置情報を返す</returns>
-	std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> LoadItemsFromJson(const std::string& _filepath);
+	std::unordered_map<ItemBase::ITEM_TYPE, ImportData> LoadItemsFromJson(const std::string& _filepath);
 
 	//ファイルネームを取得
 	std::string GetFileName();
