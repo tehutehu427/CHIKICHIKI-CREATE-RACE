@@ -183,6 +183,12 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "MultiGameBgm3.mp3");
 	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, std::move(res));
 #pragma endregion 
+
+#pragma region エフェクト
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Wind.efkproj");
+	resourcesMap_.emplace(SRC::WIND_EFF, std::move(res));
+#pragma endregion
+
 }
 
 void ResourceManager::Release(void)

@@ -18,7 +18,10 @@ Wind::~Wind()
 
 void Wind::SetParam(void)
 {
-	//弾モデル
+	//風エフェクト
+	effect_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::WIND_EFF).handleId_;
+
+	//モデル
 	trans_.SetModel(-1);
 
 	//モデルIDのコピー

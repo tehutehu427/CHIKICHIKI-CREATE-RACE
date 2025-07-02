@@ -33,6 +33,8 @@ public:
 
 private:
 
+	int effect_;	//エフェクト
+
 	VECTOR size_;	//サイズ
 	float radius_;	//半径
 
