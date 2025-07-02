@@ -111,6 +111,11 @@ void MoveVerFloor::InitRoute(void)
 	//移動量
 	VECTOR movePos = trans_.quaRot.PosAxis(intPos);
 	
+	//(微妙な小数点を消すために四捨五入処理)
+	movePos.x = Utility::Round(movePos.x);
+	movePos.y = Utility::Round(movePos.y);
+	movePos.z = Utility::Round(movePos.z);
+
 	//目標地点
 	VECTOR goalPos = VAdd(route_[routeNum_], movePos);
 

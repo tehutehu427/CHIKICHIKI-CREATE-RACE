@@ -5,6 +5,7 @@
 Wind::Wind(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl, const VECTOR _size)
 {
 	trans_.pos = _pos;
+	parentPos_ = _pos;
 	trans_.quaRot = _quaRot;
 	trans_.scl = _scl;
 	size_ = _size;
@@ -23,13 +24,14 @@ void Wind::SetParam(void)
 	//モデルIDのコピー
 	models_.emplace_back(&trans_.modelId);
 
-	//移動量
-	movePow_ = VScale(trans_.quaRot.GetForward(), POW);
-
 	//半径
 	radius_ = size_.x / 2.0f;
 
+	//前方
 	VECTOR forward = trans_.quaRot.GetForward();
+
+	//移動量
+	movePow_ = VScale(forward, POW);
 
 	//座標(直径分動かす)
 	trans_.pos = VAdd(trans_.pos, VScale(forward, radius_ * 2.0f));

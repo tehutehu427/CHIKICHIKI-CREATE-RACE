@@ -35,5 +35,7 @@ private:
 
 	VECTOR size_;	//サイズ
 	float radius_;	//半径
+
+	VECTOR parentPos_;	//親座標
 };
 
