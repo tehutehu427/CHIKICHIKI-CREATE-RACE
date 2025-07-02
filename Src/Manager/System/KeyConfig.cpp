@@ -445,7 +445,7 @@ Vector2 KeyConfig::GetMouseMove(void) const
 
 void KeyConfig::SetMousePosScreen(void)
 {
-	inputManager_->SetMousePosScreen();
+	//inputManager_->SetMousePosScreen();
 }
 
 void KeyConfig::SetMousePos(const Vector2& pos)
