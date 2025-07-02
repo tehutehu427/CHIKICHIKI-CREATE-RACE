@@ -129,7 +129,7 @@ void PlayerOnHit::DrawDebug(void)
 	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
 	colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
 	colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
-	if (action_.IsHitPunch())
+	if (action_.GetIsHitPunch())
 	{
 		colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();
 	}
@@ -220,6 +220,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		movedPos_.y = hitPos.y + Player::RADIUS + POSITION_OFFSET;
 		action_.SetJumpPow(Utility::VECTOR_ZERO);
 		action_.SetIsJump(false);
+		trans_.pos = movedPos_;
 		return;
 	}
 	//プレイヤーの接地
