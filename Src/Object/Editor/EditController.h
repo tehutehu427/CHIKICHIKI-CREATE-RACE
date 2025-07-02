@@ -11,7 +11,8 @@ class EditItemReady;
 class EditController
 {
 public:
-	static constexpr float PAD_STICK_RATE = 0.0251f;	//パッドスティックの感度
+	static constexpr float PAD_STICK_RATE = 0.0125f;	//パッドスティックの感度
+	static constexpr float PAD_STICK_RATE_UP = 2.0f;	//パッドスティックの感度倍率
 	static constexpr float MOVE_ARROW_LENGTH = 75.0f;	//移動矢印の長さ
 	static constexpr float MOVE_ARROW_RADIUS = 15.0f;		//移動矢印の先端の半径
 	static constexpr float MOVE_ARROW_SIZE = 60.0f;		//移動矢印の先端の長さ

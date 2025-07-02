@@ -193,8 +193,8 @@ void GameScene::ChangePhaseEdit(void)
 		SceneManager::GetInstance().GetCamera(i).lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
 		VECTOR pos;
 		IntVector3 mPos = MapEditer::MAP_SIZE;
-		pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
-		//pos = { 0.0f,250.0f,-500.0f };
+		//pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
+		pos = { 0.0f,400.0f,-700.0f };
 		SceneManager::GetInstance().GetCamera(i).lock()->SetPos(pos);
 		editControllers_[i]->Reset();
 	}

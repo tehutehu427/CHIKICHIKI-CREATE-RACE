@@ -229,8 +229,8 @@ void EditController::CursorUpdate(void)
 	auto lStick = KeyConfig::GetInstance().GetKnockLStickSize(padNum_);
 	auto& itemMIns = ItemManager::GetInstance();
 	Vector2 cursorMove;
-	cursorMove.x += lStick.x * PAD_STICK_RATE;
-	cursorMove.y += lStick.y * PAD_STICK_RATE;
+	cursorMove.x += lStick.x * PAD_STICK_RATE * (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::CURSOR_SPEED_UP, padNum_) ? PAD_STICK_RATE_UP : 1.0f);
+	cursorMove.y += lStick.y * PAD_STICK_RATE * (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::CURSOR_SPEED_UP, padNum_) ? PAD_STICK_RATE_UP : 1.0f);
 	Vector2 mouseMove = KeyConfig::GetInstance().GetMouseMove();
 
 	if (playerMaxNum_ == 1)
