@@ -69,7 +69,7 @@ public:
 	const VECTOR& GetPunchPos(void) { return punchPos_; }
 
 	//パンチ中か
-	bool IsHitPunch(void);
+	bool GetIsHitPunch(void) { return isPunchHitTime_; }
 
 	//ジャンプ中
 	const bool GetIsJump(void) { return isJump_; }
