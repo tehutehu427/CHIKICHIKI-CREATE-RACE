@@ -17,6 +17,7 @@ Camera::Camera(int _playerNum)
 	targetPos_ = Utility::VECTOR_ZERO;
 	followTransform_ = nullptr;
 	padNo_ = static_cast<KeyConfig::JOYPAD_NO>(_playerNum + 1);
+	localPos_ = Utility::VECTOR_ZERO;
 }
 
 Camera::~Camera(void)
@@ -137,6 +138,7 @@ void Camera::ChangeMode(MODE mode)
 	case Camera::MODE::FIXED_POINT:
 		break;
 	case Camera::MODE::FOLLOW:
+		localPos_ = LOCAL_F2C_POS;
 		break;
 	}
 
@@ -184,7 +186,7 @@ void Camera::SyncFollow(void)
 	targetPos_ = VAdd(pos, localPos);
 
 	// カメラ位置
-	localPos = rot_.PosAxis(LOCAL_F2C_POS);
+	localPos = rot_.PosAxis(localPos_);
 	pos_ = VAdd(pos, localPos);
 
 	// カメラの上方向
@@ -258,6 +260,27 @@ void Camera::ProcessRot(void)
 	}
 }
 
+void Camera::ProcessZoom(void)
+{
+	auto& ins = KeyConfig::GetInstance();
+	auto playerMaxNum = DateBank::GetInstance().GetPlayerNum();
+	auto keyType = playerMaxNum == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
+	auto vec = VNorm(VSub(LOCAL_F2T_POS,LOCAL_F2C_POS));
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_ZOOM_IN, padNo_, keyType))
+	{
+		localPos_ = VAdd(localPos_, VScale(vec, ZOOM_SPEED));
+	}
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_ZOOM_OUT, padNo_, keyType))
+	{
+		localPos_ = VAdd(localPos_, VScale(VScale(vec,-1), ZOOM_SPEED));
+	}
+	if (Utility::Distance(LOCAL_F2C_POS, localPos_) > ZOOM_RADIUS)
+	{
+		vec = VNorm(VSub(localPos_,LOCAL_F2C_POS));
+		localPos_ = VAdd(LOCAL_F2C_POS, VScale(vec, ZOOM_RADIUS));
+	}
+}
+
 void Camera::ProcessRotMause(float* x_m, float* y_m, const float fov_per)
 {
 	int x_t, y_t;
@@ -291,9 +314,9 @@ void Camera::SetBeforeDrawFollow(void)
 	// カメラ操作
 	ProcessRot();
 
+	ProcessZoom();
 	// 追従対象との相対位置を同期
 	SyncFollow();
-
 }
 
 void Camera::SetBeforeDrawSelfShot(void)

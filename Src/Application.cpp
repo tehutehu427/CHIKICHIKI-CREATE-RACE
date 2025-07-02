@@ -124,7 +124,7 @@ void Application::Destroy(void)
 	}
 
 	delete instance_;
-
+	instance_ = nullptr;
 }
 
 bool Application::IsInitFail(void) const
