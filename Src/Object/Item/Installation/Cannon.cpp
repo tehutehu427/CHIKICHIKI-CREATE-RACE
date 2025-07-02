@@ -1,3 +1,4 @@
+#include "../Manager/Game/CollisionManager.h"
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/InputManager.h"
 #include "../Manager/System/SceneManager.h"

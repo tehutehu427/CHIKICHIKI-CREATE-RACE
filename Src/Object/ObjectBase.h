@@ -30,7 +30,7 @@ public:
 	virtual void Load(void) = 0;
 	//初期化
 	virtual void Init(void) = 0;
-	//更新d
+	//更新
 	virtual void Update(void) = 0;
 	//描画
 	virtual void Draw(void) = 0;
@@ -71,5 +71,8 @@ protected:
 	/// <param name="_tag">自身の当たり判定タグ</param>
 	/// <param name="_Geometry">自身の形状情報</param>
 	void MakeCollider(const std::vector<Collider::TAG> _tag, std::unique_ptr<Geometry> _geometry);
+
+	//特定の配列番号の当たり判定削除
+	void DeleteCollider(const int _arrayNum);
 };
 
