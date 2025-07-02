@@ -1,6 +1,3 @@
-#include "../Utility/Utility.h"
-#include "../Common/Quaternion.h"
-#include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
 #include"../../Common/Geometry/Model.h"
 #include "SlimeFloor.h"

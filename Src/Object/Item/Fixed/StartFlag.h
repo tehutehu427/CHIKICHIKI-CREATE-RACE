@@ -30,5 +30,7 @@ public:
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
 private:
+
+	Transform colModelTrans_;	//“–‚½‚è”»’è—pƒ‚ƒfƒ‹
 };
 

@@ -119,6 +119,7 @@ public:
 
 		EDIT_ITEM_SELECT,		//エディット時のアイテム選択
 		EDIT_ITEM_ROTATE,		//エディット時のアイテム回転
+		EDIT_ITEM_DELETE,		//エディット時のアイテム削除
 
 		PLAYER_JUMP,			//プレイヤーのジャンプ
 		PLAYER_PUNCH,			//プレイヤーのパンチ
