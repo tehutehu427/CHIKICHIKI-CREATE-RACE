@@ -77,6 +77,6 @@ private:
 	GameScene::PHASE nextPhase_;
 
 	//アイコンをクリックしたか
-	bool IsCheckChangePhase();
+	bool IsCheckChangePhase(GameScene& _parent);
 };
 

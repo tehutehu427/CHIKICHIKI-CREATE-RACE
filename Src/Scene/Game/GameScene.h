@@ -69,6 +69,12 @@ public:
 	/// </summary>
 	virtual void Reset();
 
+	/// <summary>
+	/// フェーズを取得する
+	/// </summary>
+	/// <returns>現在のフェーズ</returns>
+	const PHASE GetPhase() const { return phase_; }
+
 protected:
 
 	//フェーズ管理

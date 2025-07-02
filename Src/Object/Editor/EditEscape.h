@@ -27,8 +27,8 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="_padCursolPos">パッドのカーソル位置</param>
-	EditEscape(const Vector2& _padCursolPos);
+	/// <param name="_padCursorPos">パッドのカーソル位置</param>
+	EditEscape(const Vector2& _padCursorPos);
 
 	/// <summary>
 	/// デストラクタ
@@ -61,7 +61,7 @@ private:
 	static constexpr int FONT_SIZE = 48;
 
 	//パッドのカーソル位置
-	const Vector2& padCursolPos_;
+	const Vector2& padCursorPos_;
 
 	//キー管理
 	KeyConfig& key_;
