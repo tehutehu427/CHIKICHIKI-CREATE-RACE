@@ -49,11 +49,11 @@ void ScoreManager::AddScore(const int _playerIndex, const SCORE_TYPE _type)
 
 void ScoreManager::SetPlayersScore()
 {
-	//そのプレイヤーの生存状態を調べる
+	PlayerManager& pMng = PlayerManager::GetInstance();
 
 
 	//クリアタイム取得
-	std::vector<float> playerTimes = PlayerManager::GetInstance().GetGoalTime();
+	std::vector<float> playerTimes = pMng.GetGoalTime();
 
 	//配列のサイズが一緒か調べる
 	int ret = playerTimes.size() == scores_.size() ? 0 : -1;
@@ -65,14 +65,18 @@ void ScoreManager::SetPlayersScore()
 
 	//スコアを格納
 	for (int i = 0; i < scores_.size(); i++)
-	{
+	{	
+		//プレイヤーが倒れてるとき処理を無視する
+		if (pMng.IsPlayerDeath(i)) { continue; }
+		
 		//クリアタイム配列の中から一致する要素のインデックスを探す
 		auto it = std::find(sortTimes.begin(), sortTimes.end(), playerTimes[i]);
 
 		//ランク取得
 		int rank = static_cast<int>(std::distance(playerTimes.begin(), it));
-
-
+		
+		//ランクに応じたスコアを取得
+		scores_[i] += GetScoreByRank(rank);
 	}
 }
 
@@ -129,4 +133,12 @@ const int ScoreManager::GetWinnerPlayerIndex(const int _clearLine) const
 ScoreManager::ScoreManager()
 {
 	scores_.clear();
+}
+
+int ScoreManager::GetScoreByRank(const int _rank)
+{
+	//1位は2点
+	if (_rank == 0) { return SCORE_TYPE_VALUES[static_cast<int>(SCORE_TYPE::FIRST)]; }
+	//それ以外でゴールした人は1点
+	else { return SCORE_TYPE_VALUES[static_cast<int>(SCORE_TYPE::CLEAR)]; }
 }
