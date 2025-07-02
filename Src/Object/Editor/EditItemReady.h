@@ -57,4 +57,5 @@ private:
 	EditController& parent_;
 	Vector2 hitSize_;
 	Vector2 pos_;
+	int  readyImg_;
 };

@@ -65,6 +65,7 @@ public:
 		EXPLAN_BACK,
 		CHANGE_PHASE_ICONS,
 		CANCEL_ICON,
+		READY_IMG,
 
 		//ÉNÉäÉA
 		CLEAR,
