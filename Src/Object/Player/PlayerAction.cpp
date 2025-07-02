@@ -156,6 +156,10 @@ void PlayerAction::MoveUpdate(void)
 	{
 		ChangeAction(ATK_ACT::DASHMOVE);
 	}
+	else if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
+	{
+		ChangeAction(ATK_ACT::MOVE);
+	}
 	//ˆÚ“®’†‚É“ü—Í‚ª“ü‚Á‚½Žž‚Ìó‘Ô‘JˆÚ
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::JUMP))
 	{

@@ -37,17 +37,19 @@ public:
 	/// <param name=""></param>
 	void Init(void);
 
+	//毎フレーム更新
+	void Update(void);
+
 	/// <summary>
-	/// 更新
+	/// 当たった処理の更新
 	/// </summary>
-	void Update(const std::weak_ptr<Collider> _hitCol);
+	void ColUpdate(const std::weak_ptr<Collider> _hitCol);
 
 	/// <summary>
 	/// デバッグ表示
 	/// </summary>
 	void DrawDebug(void);
 
-	void PosUpdate(void);
 	//ゲッタ
 	//移動後座標の取得
 	const VECTOR GetMovedPos(void) const { return movedPos_; }
