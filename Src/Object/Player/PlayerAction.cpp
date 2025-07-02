@@ -130,6 +130,7 @@ void PlayerAction::ActionInputUpdate(void)
 
 void PlayerAction::ChangeAction(ATK_ACT _act)
 {
+	if (act_ == _act)return;
 	act_ = _act;
 	changeAction_[act_]();
 }
@@ -166,10 +167,8 @@ void PlayerAction::ChangeNone(void)
 
 void PlayerAction::MoveUpdate(void)
 {
-	speed_ = MOVE_SPEED;
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
 	{
-		speed_ = DASH_SPEED;
 		ChangeAction(ATK_ACT::DASHMOVE);
 	}
 	//ˆÚ“®’†‚É“ü—Í‚ª“ü‚Á‚½Žž‚Ìó‘Ô‘JˆÚ
@@ -204,7 +203,6 @@ void PlayerAction::MoveDirFronInput(void)
 	VECTOR getDir = input_->GetDir();
 	float deg = input_->GetMoveDeg();
 
-
 	int playerNum = player_.GetPlayerNum();
 	Quaternion cameraRot = scnMng_.GetCamera(playerNum).lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
@@ -220,6 +218,14 @@ void PlayerAction::MoveDirFronInput(void)
 
 void PlayerAction::ChangeMove(void)
 {
+	speed_ = MOVE_SPEED;
+	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
+	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
+}
+
+void PlayerAction::ChangeDashMove(void)
+{
+	speed_ = DASH_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
 }
