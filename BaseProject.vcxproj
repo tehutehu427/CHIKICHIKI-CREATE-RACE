@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -46,9 +46,7 @@
     <ClCompile Include="Src\Object\Common\Geometry\Capsule.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\PaletteCursor.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.cpp" />
-    <ClCompile Include="Src\Shader\Effect\SelectUIDarkly.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\FerrisWheel.cpp" />
-    <ClCompile Include="Src\Shader\Effect\EffectBase.cpp" />
     <ClCompile Include="Src\Object\System\Select\ModeSelect.cpp" />
     <ClCompile Include="Src\Object\System\GameClear.cpp" />
     <ClCompile Include="Src\Common\FontRegistry.cpp" />
@@ -60,6 +58,12 @@
     <ClCompile Include="Src\Object\Item\SubItem\CannonShot.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\Fan.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\Spiky.cpp" />
+    <ClCompile Include="Src\Renderer\ModelMaterial.cpp" />
+    <ClCompile Include="Src\Renderer\ModelRenderer.cpp" />
+    <ClCompile Include="Src\Renderer\PixelMaterial.cpp" />
+    <ClCompile Include="Src\Renderer\PixelRenderer.cpp" />
+    <ClCompile Include="Src\Renderer\VertexMaterial.cpp" />
+    <ClCompile Include="Src\Renderer\VertexRenderer.cpp" />
     <ClCompile Include="Src\Scene\SelectScene.cpp" />
     <ClCompile Include="Src\Scene\Game\MultiParty.cpp" />
     <ClCompile Include="Src\Scene\Game\SoloChallenge.cpp" />
@@ -103,16 +107,8 @@
     <ClCompile Include="Src\Scene\Game\GameScene.cpp" />
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
-    <ClCompile Include="Src\Shader\PixelMaterial.cpp" />
-    <ClCompile Include="Src\Shader\PixelRenderer.cpp" />
-    <ClCompile Include="Src\Shader\PostEffect\PostEffectBase.cpp" />
-    <ClCompile Include="Src\Shader\PostEffect\PostEffectBlur.cpp" />
-    <ClCompile Include="Src\Shader\PostEffect\PostEffectDamage.cpp" />
-    <ClCompile Include="Src\Shader\PostEffect\PostEffectMonotone.cpp" />
-    <ClCompile Include="Src\Shader\PostEffect\PostEffectScanLine.cpp" />
     <ClCompile Include="Src\Utility\Utility.cpp" />
     <ClCompile Include="Src\Object\Item\Fixed\StartFlag.cpp" />
-    <ClCompile Include="Src\Shader\Effect\SelectUIGlow.cpp" />
     <ClCompile Include="Src\Object\System\YesNoResponder.cpp" />
     <ClCompile Include="Src\Object\Item\SubItem\Wind.cpp" />
   </ItemGroup>
@@ -160,8 +156,6 @@
     <ClInclude Include="Src\Object\Item\SubItem\CannonShot.h" />
     <ClInclude Include="Src\Object\Item\Installation\Fan.h" />
     <ClInclude Include="Src\Object\Item\Installation\Spiky.h" />
-    <ClInclude Include="Src\Shader\Effect\SelectUIDarkly.h" />
-    <ClInclude Include="Src\Shader\Effect\EffectBase.h" />
     <ClInclude Include="Src\Object\System\Select\ModeSelect.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\PaletteIcon.h" />
     <ClInclude Include="Src\Object\System\GameClear.h" />
@@ -169,6 +163,12 @@
     <ClInclude Include="Src\Object\Editor\Palette\MultiPalette.h" />
     <ClInclude Include="Src\Object\Editor\Palette\FreePalette.h" />
     <ClInclude Include="Src\Object\Editor\Palette\SoloChallengePalette.h" />
+    <ClInclude Include="Src\Renderer\ModelMaterial.h" />
+    <ClInclude Include="Src\Renderer\ModelRenderer.h" />
+    <ClInclude Include="Src\Renderer\PixelMaterial.h" />
+    <ClInclude Include="Src\Renderer\PixelRenderer.h" />
+    <ClInclude Include="Src\Renderer\VertexMaterial.h" />
+    <ClInclude Include="Src\Renderer\VertexRenderer.h" />
     <ClInclude Include="Src\Scene\SelectScene.h" />
     <ClInclude Include="Src\Scene\Game\MultiParty.h" />
     <ClInclude Include="Src\Scene\Game\SoloChallenge.h" />
@@ -250,15 +250,7 @@
     <ClInclude Include="Src\Scene\Game\GameScene.h" />
     <ClInclude Include="Src\Scene\SceneBase.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
-    <ClInclude Include="Src\Shader\PixelMaterial.h" />
-    <ClInclude Include="Src\Shader\PixelRenderer.h" />
-    <ClInclude Include="Src\Shader\PostEffect\PostEffectBase.h" />
-    <ClInclude Include="Src\Shader\PostEffect\PostEffectBlur.h" />
-    <ClInclude Include="Src\Shader\PostEffect\PostEffectDamage.h" />
-    <ClInclude Include="Src\Shader\PostEffect\PostEffectMonotone.h" />
-    <ClInclude Include="Src\Shader\PostEffect\PostEffectScanLine.h" />
     <ClInclude Include="Src\Utility\Utility.h" />
-    <ClInclude Include="Src\Shader\Effect\SelectUIGlow.h" />
     <ClInclude Include="Src\Utility\UtilityTemplates.h" />
     <ClInclude Include="Src\Object\Item\SubItem\Wind.h" />
     <ClInclude Include="Src\Object\System\YesNoResponder.h" />
@@ -273,7 +265,7 @@
     <None Include="Src\Shader\Common\Vertex\VertexShader3DHeader.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Src\Shader\hlsl\DarklyRotateSprites.hlsl">
+    <FxCompile Include="Src\Shader\Image\DarklyRotateSprites.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -281,7 +273,7 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="Src\Shader\hlsl\RotateGlow.hlsl">
+    <FxCompile Include="Src\Shader\Image\RotateGlow.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -289,19 +281,25 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="Src\Shader\hlsl\Blur.hlsl">
+    <FxCompile Include="Src\Shader\Image\Blur.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="Src\Shader\hlsl\Damage.hlsl">
+    <FxCompile Include="Src\Shader\Image\Damage.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="Src\Shader\hlsl\Glow.hlsl">
+    <FxCompile Include="Src\Shader\Image\Glow.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="Src\Shader\hlsl\GlowRotateSprite.hlsl">
+    <FxCompile Include="Src\Shader\Image\GlowRotateSprite.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -309,13 +307,17 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="Src\Shader\hlsl\Monotone.hlsl">
+    <FxCompile Include="Src\Shader\Image\Monotone.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="Src\Shader\hlsl\ScanLine.hlsl">
+    <FxCompile Include="Src\Shader\Image\ScanLine.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">

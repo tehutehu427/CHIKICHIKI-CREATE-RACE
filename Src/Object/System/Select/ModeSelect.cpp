@@ -9,8 +9,8 @@
 #include "../../../Manager/System/InputManager.h"
 #include "../../../Manager/System/KeyConfig.h"
 #include "../../../Manager/System/DateBank.h"
-#include "../../../Shader/Effect/SelectUIGlow.h"
-#include "../../../Shader/Effect/SelectUIDarkly.h"
+#include "../../../Renderer/PixelMaterial.h"
+#include "../../../Renderer/PixelRenderer.h"
 #include "../../../Scene/SelectScene.h"
 #include "../ManualTab.h"
 
@@ -39,8 +39,8 @@ ModeSelect::ModeSelect()
 	arcIndex_ = 0;
 	menuIndex_ = 0;
 	updState_ = UPD_STATE::NONE;
-	uiGlow_ = nullptr;
-	uiDarkly_ = nullptr;
+	material_ = nullptr;
+	renderer_ = nullptr;
 	imgBackArc_ = 0;
 	imgShadowArc_ = 0;
 	manual_ = nullptr;
@@ -60,11 +60,9 @@ void ModeSelect::Load()
 	imgBackArc_ = res.Load(ResourceManager::SRC::BACK_ARC).handleId_;
 	imgShadowArc_ = res.Load(ResourceManager::SRC::SHADOW_ARC).handleId_;
 
-	uiGlow_ = std::make_unique<SelectUIGlow>();
-	uiGlow_->Load();
-
-	uiDarkly_ = std::make_unique<SelectUIDarkly>();
-	uiDarkly_->Load();
+	//描画の設定
+	material_ = std::make_unique<PixelMaterial>("RotateGlow.cso", 2);
+	renderer_ = std::make_unique<PixelRenderer>(*material_);
 
 	manual_ = std::make_unique<ManualTab>();
 	manual_->Load();
@@ -97,6 +95,22 @@ void ModeSelect::Init()
 
 	//マニュアル初期化
 	manual_->Init();
+
+	//バッファーの設定
+	material_->AddConstBuf(FLOAT4{ 1.0f,0.8f,0.0f,0.7f });
+	material_->AddConstBuf(FLOAT4{ 
+		ResourceManager::IMG_ARC_SIZE,
+		ResourceManager::IMG_ARC_SIZE,
+		arc_[arcIndex_].angle,
+		BLUR_DISTANCE });
+
+	//テクスチャ設定
+	material_->AddTextureBuf(imgBackArc_);
+
+	//座標サイズ設定
+	renderer_->SetPos(arc_[arcIndex_].pos);
+	renderer_->SetSize({ ResourceManager::IMG_ARC_SIZE, ResourceManager::IMG_ARC_SIZE });
+
 }
 
 void ModeSelect::Update(SelectScene& _parent)
@@ -107,10 +121,6 @@ void ModeSelect::Update(SelectScene& _parent)
 
 	// 毎フレームのUpdate処理
 	if (selectUpdateFunc_ && !manual_->IsDisplay()) selectUpdateFunc_(_parent);
-
-	//エフェクトを更新
-	uiGlow_->Update(arc_[arcIndex_].angle, imgArcSize);
-	uiDarkly_->Update(arcIndex_, arc_[arcIndex_].angle, imgArcSize, imgArcDivs);
 
 	//マニュアル更新
 	manual_->Update();
@@ -176,6 +186,7 @@ void ModeSelect::SelectUpdate(SelectScene& _parent)
 	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		_parent.ProcessMenuFunction(static_cast<SelectScene::SELECT_MENU>(menuIndex_));
+		return;
 	}
 
 	//上へ
@@ -195,6 +206,8 @@ void ModeSelect::SelectUpdate(SelectScene& _parent)
 
 		//状態変更
 		ChangeUpdateState(UPD_STATE::ROTATE);
+
+		return;
 	}
 
 	//下へ
@@ -214,6 +227,8 @@ void ModeSelect::SelectUpdate(SelectScene& _parent)
 
 		//状態変更
 		ChangeUpdateState(UPD_STATE::ROTATE);
+
+		return;
 	}
 }
 
@@ -304,9 +319,6 @@ void ModeSelect::DrawDarkly(const int _index)
 		arc_[_index].pos.x - imgArcSize.x / 2,
 		arc_[_index].pos.y - imgArcSize.y / 2 };
 
-	//描画
-	//uiGlow_->Draw(imgArcs_[_index], pos, imgArcSize);
-
 	// ブレンドモードを元に戻す
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
@@ -318,8 +330,13 @@ void ModeSelect::DrawGlow(const int _index)
 		arc_[_index].pos.x - imgArcSize.x / 2,
 		arc_[_index].pos.y - imgArcSize.y / 2 };
 
+	//描画設定
+	material_->SetConstBuf(1,FLOAT4{ (float)imgArcSize.x, (float)imgArcSize.y,arc_[_index].angle, BLUR_DISTANCE });
+
 	//描画
-	uiGlow_->Draw(imgBackArc_, pos, imgArcSize);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+	renderer_->Draw(pos.x, pos.y);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	
 	// 画像描画
 	DrawRotaGraph(
