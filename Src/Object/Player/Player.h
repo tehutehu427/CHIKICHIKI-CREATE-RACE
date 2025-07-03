@@ -218,6 +218,8 @@ private:
 	// アニメーション
 	std::unique_ptr<AnimationController> animationController_;
 
+
+
 	//メンバ変数
 	//--------------------------------------------
 	//プレイヤー単体が持っているもの

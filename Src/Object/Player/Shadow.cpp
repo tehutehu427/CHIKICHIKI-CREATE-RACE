@@ -18,6 +18,7 @@ Shadow::Shadow(Transform& trans) : parentTrans_(trans)
 	NoneTags_.push_back(Collider::TAG::SHADOW);
 	NoneTags_.push_back(Collider::TAG::CANNON_AIM);
 	NoneTags_.push_back(Collider::TAG::KILLER_ITEM);
+	NoneTags_.push_back(Collider::TAG::WIND);
 
 	//‰e‚Ì“–‚½‚è”»’è
 	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(parentTrans_.pos, parentTrans_.quaRot, VECTOR(), VECTOR(0.0f,-LINE_RANGE,0.0f));
