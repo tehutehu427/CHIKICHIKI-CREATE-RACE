@@ -7,6 +7,7 @@
 #include "../FpsControl/FpsControl.h"
 #include"../../Common/Geometry/Model.h"
 #include"../../Common/Geometry/Sphere.h"
+#include"../../Common/ToonStyle.h"
 #include "../SubItem/CannonShot.h"
 #include "Cannon.h"
 
@@ -126,7 +127,8 @@ void Cannon::Update(void)
 void Cannon::Draw(void)
 {
 	//–C‘ä‚Ì•`‰æ
-	MV1DrawModel(trans_.modelId);
+	//MV1DrawModel(trans_.modelId);
+	toonStyle_->Draw();
 	//–Cg‚Ì•`‰æ
 	MV1DrawModel(barrelTrans_.modelId);
 

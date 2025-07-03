@@ -4,6 +4,7 @@
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
 #include"../../Common/Geometry/Model.h"
+#include"../../Common/ToonStyle.h"
 #include "MoveHoriFloor.h"
 
 MoveHoriFloor::MoveHoriFloor()
@@ -72,7 +73,7 @@ void MoveHoriFloor::Update(void)
 void MoveHoriFloor::Draw(void)
 {
 	DrawLine3D(VAdd(route_[0], MAP_LOCALPOS), VAdd(route_[1], MAP_LOCALPOS), Utility::BLACK);
-	MV1DrawModel(trans_.modelId);
+	toonStyle_->Draw();
 }
 
 void MoveHoriFloor::OnHit(const std::weak_ptr<Collider> _hitCol)
