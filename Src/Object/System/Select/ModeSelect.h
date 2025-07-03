@@ -7,9 +7,9 @@
 class SceneManager;
 class DateBank;
 class SelectScene;
-class SelectUIGlow;
-class SelectUIDarkly;
 class ManualTab;
+class PixelMaterial;
+class PixelRenderer;
 
 class ModeSelect
 {
@@ -24,16 +24,6 @@ public:
 		SELECT,	//選択
 		ROTATE,	//回転
 	};
-
-	//円弧の描画数
-	static constexpr int DRAW_ARC_NUM = 4;	//描画数
-
-	//円弧の回転
-	static constexpr int ROTATE_CENTER_X = 0;
-	static constexpr int ROTATE_CENTER_Y = Application::SCREEN_HALF_Y;
-	static constexpr float ROTATE_STEP = DX_PI_F / 2.0f;	// 90度
-	static constexpr float ROTATE_SPEED = 0.1f;				// 回転アニメ速度
-	static constexpr float ORBIT_RADIUS = 300.0f;			// 中心からの半径
 
 	/// <summary>
 	/// コンストラクタ
@@ -66,6 +56,17 @@ public:
 	void Draw();
 
 private:
+
+	//円弧の描画数
+	static constexpr int DRAW_ARC_NUM = 4;	//描画数
+
+	//円弧の回転
+	static constexpr int ROTATE_CENTER_X = 0;
+	static constexpr int ROTATE_CENTER_Y = Application::SCREEN_HALF_Y;
+	static constexpr float ROTATE_STEP = DX_PI_F / 2.0f;	// 90度
+	static constexpr float ROTATE_SPEED = 0.1f;				// 回転アニメ速度
+	static constexpr float ORBIT_RADIUS = 300.0f;			// 中心からの半径
+	static constexpr float BLUR_DISTANCE = 16.0f;			// ブラー距離
 
 	//シーン管理
 	SceneManager& scnMng_;
@@ -111,11 +112,11 @@ private:
 	//更新関数
 	std::function<void(SelectScene&)> selectUpdateFunc_;
 
-	//エフェクトグロー
-	std::unique_ptr<SelectUIGlow> uiGlow_;
+	//マテリアル
+	std::unique_ptr<PixelMaterial> material_;
 
-	//エフェクトダークリー
-	std::unique_ptr<SelectUIDarkly> uiDarkly_;
+	//レンダラー
+	std::unique_ptr<PixelRenderer> renderer_;
 
 	//マニュアル
 	std::unique_ptr<ManualTab> manual_;

@@ -51,14 +51,6 @@ void MultiResult::Init()
 
 	//入力確認
 	inputCheck_->Init();
-
-	//デバッグ
-	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
-	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
-	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
-	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
-	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
-	ScoreManager::GetInstance().AddScore(1, ScoreManager::SCORE_TYPE::CLEAR);
 }
 
 void MultiResult::Update(MultiParty& _parent)
