@@ -186,7 +186,7 @@ void PlayerAction::MoveUpdate(void)
 		return;
 	}
 
-	float animationSpeed = Player::DEFAULT_ANIM_SPD + std::pow(speed_ - MOVE_SPEED, 2.0f) * 5.6f;
+	float animationSpeed = Player::DEFAULT_ANIM_SPD + std::pow(speed_ - 0.5f, 2.0f) * 5.6f;
 	animationController_.SetAnimSpeed(animationSpeed);
 
 	//“ü—Í•ûŒü‚ÌˆÚ“®
