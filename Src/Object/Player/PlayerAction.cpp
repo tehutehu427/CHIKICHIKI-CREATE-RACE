@@ -124,7 +124,7 @@ void PlayerAction::ActionInputUpdate(void)
 		ChangeAction(ATK_ACT::PUNCH);
 		return;
 	}
-	if (input_->CheckAct(ACT_CNTL::JUMP))
+	if (input_->CheckAct(ACT_CNTL::JUMP) && player_.GetIsLandHit())
 	{
 		ChangeAction(ATK_ACT::JUMP);
 		return;
@@ -164,7 +164,7 @@ void PlayerAction::MoveUpdate(void)
 		ChangeAction(ATK_ACT::MOVE);
 	}
 	//ˆÚ“®’†‚É“ü—Í‚ª“ü‚Á‚½Žž‚Ìó‘Ô‘JˆÚ
-	if (input_->CheckAct(PlayerInput::ACT_CNTL::JUMP))
+	if (input_->CheckAct(PlayerInput::ACT_CNTL::JUMP)&&player_.GetIsLandHit())
 	{
 		ChangeAction(ATK_ACT::JUMP);
 		return;

@@ -118,6 +118,7 @@ public:
 		MULTI_GAME_BGM_1,
 		MULTI_GAME_BGM_2,
 		MULTI_GAME_BGM_3,
+		PLAYER_PUNCH_HIT,
 
 		//エフェクト
 		WIND_EFF,			//風のエフェクト

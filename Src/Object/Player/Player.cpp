@@ -90,6 +90,10 @@ void Player::Load(void)
 
 	//‰e
 	shadow_ = std::make_unique<Shadow>(trans_);
+
+	//“–‚½‚è”»’è
+	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_, tag_);
+	onHitCol_->Load();
 }
 
 void Player::Init(void)
@@ -114,8 +118,6 @@ void Player::Init(void)
 
 	goalTime_ = 0.0f;
 
-	//“–‚½‚è”»’è
-	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_,tag_);
 	onHitCol_->Init();
 
 	trans_.Update();
@@ -166,12 +168,13 @@ void Player::DrawDebug(void)
 	VECTOR jumpPow = action_->GetJumpPow();
 	VECTOR movedPos = onHitCol_->GetMovedPos();
 	DrawFormatString(0, 16*(playerNum_*9), 0x000000
-		, "Šp“x(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nisJump(%d)"
+		, "Šp“x(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nisJump(%d)\nisLand(%d)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,action_->GetJumpDecel()
 		,action_->GetStepJump()
 		, jumpPow.x, jumpPow.y, jumpPow.z
 		,action_->GetIsJump()
+		,onHitCol_->GetIsLandHit()
 	);
 
 	//action_->DrawDebug();
@@ -270,6 +273,11 @@ void Player::TimeUpdate(void)
 {
 	float deltaTime = scnMng_.GetInstance().GetDeltaTime();
 	time_ += deltaTime;
+}
+
+const bool Player::GetIsLandHit(void)
+{
+	return onHitCol_->GetIsLandHit();
 }
 
 const bool Player::IsGoal(void) const

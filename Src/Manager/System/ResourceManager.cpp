@@ -172,6 +172,8 @@ void ResourceManager::Init(void)
 #pragma endregion 
 
 #pragma region サウンド
+	//BGM
+	//--------------------------------------------------------------------
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "TitleBgm.wav");
 	resourcesMap_.emplace(SRC::TITLE_BGM, std::move(res));
 
@@ -183,6 +185,15 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm3.mp3");
 	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm3.mp3");
+	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, std::move(res));
+
+	//SE
+	//--------------------------------------------------------------------
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "PunchHit.mp3");
+	resourcesMap_.emplace(SRC::PLAYER_PUNCH_HIT, std::move(res));
+	
 #pragma endregion 
 
 #pragma region エフェクト
