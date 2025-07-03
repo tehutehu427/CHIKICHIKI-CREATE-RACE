@@ -2,10 +2,11 @@
 #include "Geometry/Geometry.h"
 #include "Collider.h"
 
-Collider::Collider(ObjectBase& _parent, const std::vector<TAG> _tags, Geometry& _geometry) :
+Collider::Collider(ObjectBase& _parent, const std::vector<TAG> _tags, Geometry& _geometry, const std::vector<TAG> _notHitTags) :
 	parent_(_parent),
 	tags_(_tags),
-	geometry_(_geometry)
+	geometry_(_geometry),
+	notHitTags_(_notHitTags)
 {
 	isHit_ = false;
 	isDead_ = false;

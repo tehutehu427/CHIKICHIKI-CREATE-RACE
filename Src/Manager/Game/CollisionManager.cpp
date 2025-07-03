@@ -195,6 +195,34 @@ const bool CollisionManager::JudgeIsCollision(const int _col1Num, const int _col
 		}
 	}
 
+	//1人目のタグ
+	for (auto tag1 : colliders_[_col1Num]->GetTags())
+	{
+		//2人目の当たり判定しないタグ
+		for (auto notColTag2 : colliders_[_col2Num]->GetNotHitTags())
+		{
+			if (tag1 == notColTag2)
+			{
+				//1人目のタグが2人目の当たり判定しないタグと同一だった
+				return false;
+			}
+		}
+	}
+
+	//2人目のタグ
+	for (auto tag2 : colliders_[_col2Num]->GetTags())
+	{
+		//1人目の当たり判定しないタグ
+		for (auto notColTag1 : colliders_[_col1Num]->GetNotHitTags())
+		{
+			if (tag2 == notColTag1)
+			{
+				//2人目のタグが1人目の当たり判定しないタグと同一だった
+				return false;
+			}
+		}
+	}
+
 	//全判定をクリアしたので当たり判定をする
 	return true;
 }

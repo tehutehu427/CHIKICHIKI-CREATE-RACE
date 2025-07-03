@@ -40,9 +40,10 @@ public :
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="type">衝突用タグ</param>
-	/// <param name="geometry">当たり判定の形状</param>
-	Collider(ObjectBase& _parent, const std::vector<TAG> _tags, Geometry& _geometry);
+	/// <param name="_tags">自身の衝突用タグ</param>
+	/// <param name="_geometry">当たり判定の形状</param>
+	/// <param name="_notHitTags">衝突させないタグ</param>
+	Collider(ObjectBase& _parent, const std::vector<TAG> _tags, Geometry& _geometry, const std::vector<TAG> _notHitTags);
 
 	// デストラクタ
 	~Collider(void);
@@ -52,6 +53,9 @@ public :
 
 	//当たり判定の形状を取得
 	inline Geometry& GetGeometry(void)const { return geometry_; }
+
+	//衝突させないタグの取得
+	inline const std::vector<TAG> GetNotHitTags(void)const { return notHitTags_; }
 
 	//親を取得
 	inline const ObjectBase& GetParent(void)const { return parent_; }
@@ -81,6 +85,9 @@ private:
 
 	// 衝突用タグ
 	std::vector<TAG> tags_;
+
+	// 衝突しないタグ
+	std::vector<TAG> notHitTags_;
 
 	//当たり判定の形状
 	Geometry& geometry_;

@@ -31,7 +31,7 @@ void ObjectBase::ChangeModelColor(const COLOR_F _colorScale)
 	}
 }
 
-void ObjectBase::MakeCollider(const std::vector<Collider::TAG> _tag, std::unique_ptr<Geometry> _geometry)
+void ObjectBase::MakeCollider(const std::vector<Collider::TAG> _tag, std::unique_ptr<Geometry> _geometry, const std::vector<Collider::TAG> _notHitTags)
 {
 	//当たり判定情報
 	ColParam colParam;
@@ -40,7 +40,7 @@ void ObjectBase::MakeCollider(const std::vector<Collider::TAG> _tag, std::unique
 	colParam.geometry_ = std::move(_geometry);
 
 	//情報を使ってコライダの作成
-	colParam.collider_ = std::make_shared<Collider>(*this, _tag, *colParam.geometry_);
+	colParam.collider_ = std::make_shared<Collider>(*this, _tag, *colParam.geometry_,_notHitTags);
 
 	//コライダを管理マネージャーに追加
 	CollisionManager::GetInstance().AddCollider(colParam.collider_);
