@@ -70,10 +70,12 @@ void GameScene::Load(void)
 	
 	//アイテムマネージャーの生成
 	ItemManager::CreateInstance();
-	//エディットコントローラーの生成
 	for (int i = 0; i < playerNum; i++)
 	{
+		//エディットコントローラーの生成
 		editControllers_.push_back(std::make_unique<EditController>(i));
+		//グリッド表示をするかを初期化
+		isGrid_.push_back(true);
 	}
 
 	//スカイドームの生成
@@ -87,6 +89,8 @@ void GameScene::Load(void)
 	//マップデータの入出力
 	mapIO_ = std::make_unique<MapDataIO>(editControllers_[0]->GetCursorPos());
 	mapIO_->Load();
+
+	
 }
 
 void GameScene::Init(void)
@@ -252,6 +256,15 @@ void GameScene::UpdateEdit(void)
 {
 	//パレット
 	palette_->Update();
+	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
+	{
+		KeyConfig& ins = KeyConfig::GetInstance();
+		auto keyType = DateBank::GetInstance().GetPlayerNum() == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
+		if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_GRID_ON_OFF, static_cast<KeyConfig::JOYPAD_NO>(i + 1), keyType))
+		{
+			isGrid_[i] = isGrid_[i] ? false : true;
+		}
+	}
 
 	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT)
 	{
@@ -289,13 +302,16 @@ void GameScene::UpdateClear(void)
 
 void GameScene::DrawEdit(void)
 {
-	//グリッド
-	grid_->Draw();
+	auto screenIndex = SceneManager::GetInstance().GetScreenIndex();
+	if (isGrid_[screenIndex])
+	{
+		//グリッド
+		grid_->Draw();
+	}
 
 	//エディットコントローラー
 	//for (auto& controller : editControllers_) 
 	//{ 
-	auto screenIndex = SceneManager::GetInstance().GetScreenIndex();
 	editControllers_[screenIndex]->Draw();
 	//}
 

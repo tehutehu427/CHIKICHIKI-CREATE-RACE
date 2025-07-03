@@ -5,7 +5,7 @@ class Wind : public ItemBase
 public:
 
 	//風の強さ
-	static constexpr float POW = 10.0f;
+	static constexpr float POW = 1.0f;
 
 	/// <summary>
 	/// コンストラクタ
@@ -32,6 +32,8 @@ public:
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
 private:
+
+	int effect_;	//エフェクト
 
 	VECTOR size_;	//サイズ
 	float radius_;	//半径

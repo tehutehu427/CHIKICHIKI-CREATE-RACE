@@ -123,6 +123,8 @@ public:
 		EDIT_ITEM_ROTATE,		//エディット時のアイテム回転
 		EDIT_ITEM_DELETE,		//エディット時のアイテム削除
 
+		EDIT_GRID_ON_OFF,		//エディット時のグリッドのオンオフ
+
 		CURSOR_SPEED_UP,		//カーソルの移動速度アップ
 
 		PLAYER_JUMP,			//プレイヤーのジャンプ

@@ -48,3 +48,15 @@ void ObjectBase::MakeCollider(const std::vector<Collider::TAG> _tag, std::unique
 	//配列にセット
 	colParam_.push_back(std::move(colParam));
 }
+
+void ObjectBase::DeleteCollider(const int _arrayNum)
+{
+	//配列番号-1
+	int arrayNum = _arrayNum - 1;
+
+	//コライダの削除
+	colParam_[_arrayNum].collider_->Kill();
+
+	//配列の削除
+	colParam_.erase(colParam_.begin() + arrayNum);
+}

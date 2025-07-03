@@ -72,7 +72,6 @@ void PlayerOnHit::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 	VECTOR movePow = floor.GetMovePow();
 	movedPos_ = VAdd(movedPos_, floor.GetMovePow());
 
-	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
 	HitModelCommon(_hitCol);
 }
 
@@ -101,9 +100,9 @@ void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
 {
 	//風オブジェクトから移動量を取得
 	ItemBase& wind = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
-	action_.SetMovePow(wind.GetMovePow());
-
-	HitModelCommon(_hitCol);
+	VECTOR movePow = wind.GetMovePow();
+	movedPos_ = VAdd(movedPos_, movePow);
+	trans_.pos = movedPos_;
 }
 
 void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)

@@ -17,11 +17,12 @@ void Grid::Init(void)
 
 void Grid::Update(void)
 {
+
 }
 
 void Grid::Draw(void)
 {
-
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);	//îºìßñæÇ…ê›íË
 	// Åyó˚èKÅzç≈èâÇÃÇPñ{
 	//VECTOR sPos = { 0.0f, 0.0f, 0.0f };
 	//VECTOR ePos = { HLEN, 0.0f, 0.0f };
@@ -67,7 +68,7 @@ void Grid::Draw(void)
 			//Utility::DrawPointLine3D(sPos, ePos, Utility::GRAY);
 		}
 	}
-
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);	//ï`âÊÉÇÅ[ÉhÇå≥Ç…ñﬂÇ∑
 }
 
 void Grid::Release(void)

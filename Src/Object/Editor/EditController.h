@@ -17,7 +17,7 @@ public:
 	static constexpr float MOVE_ARROW_RADIUS = 15.0f;		//移動矢印の先端の半径
 	static constexpr float MOVE_ARROW_SIZE = 60.0f;		//移動矢印の先端の長さ
 	static constexpr int MOVE_ARROW_VARTEXNUM = 32;	//移動矢印の先端の頂点数
-	static constexpr int DELAY_MOVE_ARROW = 70;			//移動矢印の先端からの猶予座標
+	static constexpr int DELAY_MOVE_ARROW = 50;			//移動矢印の先端からの猶予座標
 	static constexpr int CURSOR_LOCAL_POS_X = 16;	//カーソルのローカル座標X
 	static constexpr int CURSOR_LOCAL_POS_Y = 16;	//カーソルのローカル座標X
 	static constexpr int CURSOR_POINT = 2;			//カーソルのポイントサイズ
@@ -52,6 +52,7 @@ public:
 		NONE,			//エラーなし
 		ITEM_RANGE_OUT,	//アイテムが範囲外に出ている
 		ITEM_OVER_LAP,	//アイテムが重なっている
+		ITEM_NOT_SET,	//アイテムが設置できない場所
 	};
 	//コンストラクタ
 	EditController(int playerNum);
@@ -135,7 +136,9 @@ private:
 	void  MoveItem(void);			
 
 	//移動方向を取得
-	MOVE_DIR GetMoveDir(void) ;			
+	MOVE_DIR GetMoveDir(void) ;		//クリックした方向の円錐をもとに算出
+
+	MOVE_DIR GetMoveDirNew(void);	//カメラの方向をもとに算出
 
 	void DebugUpdate(void);	//デバッグ用更新
 	void DebugDraw(void);	//デバッグ用描画
@@ -143,5 +146,9 @@ private:
 	void RotateObject(void) const;	//オブジェクト回転
 
 	void DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY);	//範囲内のアイテムを削除
+
+	void DrawXArrow(VECTOR worldPos);	//X方向の矢印を描画
+	void DrawYArrow(VECTOR worldPos);	//Y方向の矢印を描画
+	void DrawZArrow(VECTOR worldPos);	//Z方向の矢印を描画
 };
 

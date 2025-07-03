@@ -118,6 +118,9 @@ public:
 		MULTI_GAME_BGM_1,
 		MULTI_GAME_BGM_2,
 		MULTI_GAME_BGM_3,
+
+		//エフェクト
+		WIND_EFF,			//風のエフェクト
 	};
 
 	// 明示的にインステンスを生成する

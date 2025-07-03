@@ -24,7 +24,8 @@ void ResourceManager::Init(void)
 	std::string PATH_IMG = Application::PATH_IMAGE;
 	std::string PATH_MDL = Application::PATH_MODEL;
 	std::string PATH_EFF = Application::PATH_EFFECT;
-	std::string PATH_SOUND = Application::PATH_SOUND;
+	std::string PATH_SOUND_BGM = Application::PATH_SOUND_BGM;
+	std::string PATH_SOUND_SE = Application::PATH_SOUND_SE;
 
 	std::unique_ptr<Resource> res;
 
@@ -171,18 +172,24 @@ void ResourceManager::Init(void)
 #pragma endregion 
 
 #pragma region サウンド
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "TitleBgm.wav");
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "TitleBgm.wav");
 	resourcesMap_.emplace(SRC::TITLE_BGM, std::move(res));
 
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "MultiGameBgm1.mp3");
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm1.mp3");
 	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_1, std::move(res));
 
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "MultiGameBgm2.mp3");
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm2.mp3");
 	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_2, std::move(res));
 
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND + "MultiGameBgm3.mp3");
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm3.mp3");
 	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, std::move(res));
 #pragma endregion 
+
+#pragma region エフェクト
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Wind.efkproj");
+	resourcesMap_.emplace(SRC::WIND_EFF, std::move(res));
+#pragma endregion
+
 }
 
 void ResourceManager::Release(void)
