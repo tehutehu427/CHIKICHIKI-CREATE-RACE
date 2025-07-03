@@ -22,8 +22,8 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_[TAG::SLIME_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); };
 	colUpdates_[TAG::WIND] = [this](const std::weak_ptr<Collider> _hitCol) {CollWind(_hitCol); };
 	colUpdates_[TAG::PUNCH] = [this](const std::weak_ptr<Collider> _hitCol) {ColPunch(_hitCol); };
+	colUpdates_[TAG::SPRING] = [this](const std::weak_ptr<Collider> _hitCol) {ColSpring(_hitCol); };
 	colUpdates_[TAG::CANNON_AIM] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
-	colUpdates_[TAG::SPRING] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	colUpdates_[TAG::SHADOW] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 
 
@@ -109,13 +109,19 @@ void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
 void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 {
 	//パンチしたプレイヤーの向いてる方向をセットする
-	VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
+ 	VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
 
 	//パンチしたプレイヤーの位置と自分の位置を比較して、
 	action_.SetDir(Utility::GetMoveVec(punchedPlayerPos, trans_.pos));
 
 	//ノックバック状態遷移
 	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
+}
+
+void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
+{
+	action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
+	HitModelCommon(_hitCol);
 }
 
 void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
@@ -232,8 +238,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		}
 		action_.SetJumpPow(Utility::VECTOR_ZERO);
 	}
-
-
 
 	//移動後座標を一回格納し、移動前をとる
 	Transform trans = Transform(trans_);

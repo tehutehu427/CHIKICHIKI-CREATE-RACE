@@ -123,7 +123,8 @@ void KeyConfig::Init(void)
 	Add(CONTROL_TYPE::PLAY_CAMERA_MOVE_LEFT, KEY_INPUT_LEFT);
 	//Add(CONTROL_TYPE::PLAY_CAMERA_MOVE_LEFT, MOUSE::MOVE_LEFT);
 	Add(CONTROL_TYPE::PLAY_CAMERA_ZOOM_IN, JOYPAD_BTN::R_TRIGGER);
-	Add(CONTROL_TYPE::PLAY_CAMERA_ZOOM_OUT, JOYPAD_BTN::L_TRIGGER);
+	Add(CONTROL_TYPE::PLAY_CAMERA_ZOOM_IN, MOUSE::WHEEL_FRONT);
+	Add(CONTROL_TYPE::PLAY_CAMERA_ZOOM_OUT, MOUSE::WHEEL_BACK);
 
 	//‘I‘ðˆ—
 	Add(CONTROL_TYPE::SELECT_UP, KEY_INPUT_UP);	//ã
@@ -444,7 +445,7 @@ Vector2 KeyConfig::GetMouseMove(void) const
 
 void KeyConfig::SetMousePosScreen(void)
 {
-	inputManager_->SetMousePosScreen();
+	//inputManager_->SetMousePosScreen();
 }
 
 void KeyConfig::SetMousePos(const Vector2& pos)
