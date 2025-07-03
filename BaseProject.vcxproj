@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\Game\EffectManager.cpp" />
+    <ClCompile Include="Src\Object\Common\EffectController.cpp" />
     <ClCompile Include="Src\Object\Player\Shadow.cpp" />
     <ClCompile Include="Src\Object\Player\PlayerOnHit.cpp" />
     <ClCompile Include="Src\Object\Editor\EditItemReady.cpp" />
@@ -114,6 +116,8 @@
     <ClCompile Include="Src\Object\Common\ToonStyle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\Game\EffectManager.h" />
+    <ClInclude Include="Src\Object\Common\EffectController.h" />
     <ClInclude Include="Src\Object\Player\Shadow.h" />
     <ClInclude Include="Src\Object\System\RoundDisplay.h" />
     <ClInclude Include="Src\Object\Player\PlayerOnHit.h" />

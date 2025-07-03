@@ -110,6 +110,8 @@
     <ClCompile Include="Src\Renderer\VertexMaterial.cpp" />
     <ClCompile Include="Src\Renderer\VertexRenderer.cpp" />
     <ClCompile Include="Src\Object\Common\ToonStyle.cpp" />
+    <ClCompile Include="Src\Object\Common\EffectController.cpp" />
+    <ClCompile Include="Src\Manager\Game\EffectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -254,6 +256,8 @@
     <ClInclude Include="Src\Renderer\PixelRenderer.h" />
     <ClInclude Include="Src\Renderer\VertexMaterial.h" />
     <ClInclude Include="Src\Object\Common\ToonStyle.h" />
+    <ClInclude Include="Src\Object\Common\EffectController.h" />
+    <ClInclude Include="Src\Manager\Game\EffectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
