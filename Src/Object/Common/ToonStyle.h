@@ -15,6 +15,7 @@ public:
 	{
 		MESH,
 		SKIN_MESH,
+		CHICKEN,
 	};
 
 	/// <summary>

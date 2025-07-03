@@ -19,6 +19,9 @@ cbuffer cbParam : register(b4)
     // 影の色
     float4 g_shadow_color;
     
+    //環境光
+    float4 g_ambient_color;
+    
     // 光の方向（ワールド空間）
     float3 g_light_dir;
     float dummy1; 
@@ -57,7 +60,7 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
             shade = 0.3f;
         }
     }
-    float3 color = lerp(g_shadow_color.rgb, g_light_color.rgb, shade) * texColor.rgb * g_color.rgb;
+    float3 color = lerp(g_shadow_color.rgb, g_light_color.rgb, shade) * texColor.rgb * g_color.rgb + g_ambient_color.rgb;
 
     return float4(color, texColor.a * g_color.a);
 }

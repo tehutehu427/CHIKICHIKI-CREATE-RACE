@@ -95,7 +95,8 @@ void Player::Load(void)
 
 	//ƒgƒD[ƒ“‚É‚·‚é
 	toon_ = std::make_unique<ToonStyle>();
-	toon_->Load(trans_.modelId, ToonStyle::MESH_TYPE::SKIN_MESH);
+	toon_->Load(trans_.modelId, ToonStyle::MESH_TYPE::CHICKEN);
+	toon_->SetModelColor(1.0f, 0.8f, 0.0f, 1.0f);
 }
 
 void Player::Init(void)
@@ -149,7 +150,7 @@ void Player::Update(void)
 
 void Player::Draw(void)
 {
-	MV1DrawModel(trans_.modelId);
+	//MV1DrawModel(trans_.modelId);
 	toon_->Draw();
 	shadow_->Draw();
 #ifdef DEBUG_ON
