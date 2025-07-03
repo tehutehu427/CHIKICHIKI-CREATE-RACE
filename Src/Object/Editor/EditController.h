@@ -27,6 +27,8 @@ public:
 	static constexpr IntVector3 PLAYER3_INIT_EDIT_POS = { 15,0,0 };	//プレイヤー1のエディター初期座標
 	static constexpr IntVector3 PLAYER4_INIT_EDIT_POS = { 20,0,0 };	//プレイヤー1のエディター初期座標
 
+
+
 	static constexpr float ERROR_STRING_TIME = 1.0f;	//エラー文字列の表示時間
 
 	enum class MODE
@@ -54,6 +56,15 @@ public:
 		ITEM_OVER_LAP,	//アイテムが重なっている
 		ITEM_NOT_SET,	//アイテムが設置できない場所
 	};
+
+	enum class CAMERA_MODE	//エディット時のカメラ
+	{
+		FREE,				//自由移動
+		FOLLOW_DUMMY,		//ダミーを追従
+		FIXED_UP,			//上固定
+		MAX,
+	};
+
 	//コンストラクタ
 	EditController(int playerNum);
 	//デストラクタ
@@ -100,6 +111,8 @@ private:
 	IntVector3 mapPos_;	//3Dのマップ座標
 	IntVector3 initMapPos_;	//初期マップ座標
 
+	CAMERA_MODE cameraMode_;	//カメラのモード
+
 	MODE mode_;	//モード
 	ItemBase::ITEM_TYPE itemType_;	//アイテムの種類
 	bool isClickObject_;	//オブジェクトをクリックしたか
@@ -129,8 +142,8 @@ private:
 	//アイテム選択解除
 	void ItemNotSelect(void);		
 	
-	//近くのオブジェクトの直前座標を取得
-	IntVector3 NearObjectFrontPos(void);	
+	//近くのオブジェクトの直前座標を取得 スクリーン座標を渡す
+	IntVector3 NearObjectFrontPos(Vector2 pos);	
 	
 	//移動するアイテムの座標を取得
 	void  MoveItem(void);			
@@ -140,6 +153,7 @@ private:
 
 	MOVE_DIR GetMoveDirNew(void);	//カメラの方向をもとに算出
 
+	int IsChengeMoveDir(void);	//移動方向を変えていいか -1 :NONE　0: 元のまま 1:変える
 	void DebugUpdate(void);	//デバッグ用更新
 	void DebugDraw(void);	//デバッグ用描画
 
@@ -147,8 +161,17 @@ private:
 
 	void DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY);	//範囲内のアイテムを削除
 
+	bool IsChengeVecDir(const VECTOR vec1, const VECTOR vec2) const;	//ベクトルの方向が変わったか　変わったら　true
+
 	void DrawXArrow(VECTOR worldPos);	//X方向の矢印を描画
 	void DrawYArrow(VECTOR worldPos);	//Y方向の矢印を描画
 	void DrawZArrow(VECTOR worldPos);	//Z方向の矢印を描画
+
+	void SetCameraPosToDummyObject(void);	//ダミーオブジェクトにカメラを近づける
+
+	void ChengeCameraMode(void);	//カメラのモードを変える
+	VECTOR cPos_;		//カメラの座標
+	VECTOR cAngles_;	//カメラの回転
+	VECTOR cTargetPos_;	//カメラの中止店
 };
 
