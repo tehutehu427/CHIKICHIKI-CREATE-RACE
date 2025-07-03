@@ -78,12 +78,12 @@ void Player::Load(void)
 
 	//リソースの読み込みなど
 	animationController_ = std::make_unique<AnimationController>(trans_.modelId);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_SPD / PlayerAction::PUNCH_TIME_MAX);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_ANIM_SPD / PlayerAction::PUNCH_TIME_MAX);
 
 	//アクション
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
@@ -234,7 +234,7 @@ void Player::DeathUpdate(void)
 	//アニメーションループ
 	if (animationController_->GetAnimStep() >= FALL_ANIM_START)
 	{
-		animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_SPD);
+		animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_ANIM_SPD);
 	}
 }
 void Player::ChangeGoal(void)
@@ -252,7 +252,7 @@ void Player::GoalUpdate(void)
 	////アニメーションループ
 	//if (animationController_->GetAnimStep() >= FALL_ANIM_START)
 	//{
-	//	animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_SPD);
+	//	animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_ANIM_SPD);
 	//}
 }
 

@@ -4,6 +4,8 @@
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/System/Camera.h"
 #include "../../Manager/System/SceneManager.h"
+#include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Object/Common/AnimationController.h"
 
 #include "PlayerAction.h"
@@ -124,7 +126,7 @@ void PlayerAction::ActionInputUpdate(void)
 		ChangeAction(ATK_ACT::PUNCH);
 		return;
 	}
-	if (input_->CheckAct(ACT_CNTL::JUMP) && player_.GetIsLandHit())
+	if (CheckJumpInput())
 	{
 		ChangeAction(ATK_ACT::JUMP);
 		return;
@@ -155,6 +157,7 @@ void PlayerAction::ChangeNone(void)
 
 void PlayerAction::MoveUpdate(void)
 {
+	//移動入力中に受け付ける処理
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
 	{
 		ChangeAction(ATK_ACT::DASHMOVE);
@@ -164,7 +167,7 @@ void PlayerAction::MoveUpdate(void)
 		ChangeAction(ATK_ACT::MOVE);
 	}
 	//移動中に入力が入った時の状態遷移
-	if (input_->CheckAct(PlayerInput::ACT_CNTL::JUMP)&&player_.GetIsLandHit())
+	if (CheckJumpInput())
 	{
 		ChangeAction(ATK_ACT::JUMP);
 		return;
@@ -182,6 +185,10 @@ void PlayerAction::MoveUpdate(void)
 		ChangeAction(ATK_ACT::INPUT);
 		return;
 	}
+
+	float animationSpeed = Player::DEFAULT_ANIM_SPD + std::pow(speed_ - MOVE_SPEED, 2.0f) * 5.6f;
+	animationController_.SetAnimSpeed(animationSpeed);
+
 	//入力方向の移動
 	MoveDirFronInput();
 }
@@ -219,6 +226,7 @@ void PlayerAction::ChangeDashMove(void)
 {
 	speed_ = DASH_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
+	animationController_.SetAnimSpeed(DASH_ANIM_SPEED);
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
 }
 
@@ -301,15 +309,20 @@ void PlayerAction::ChangeJump(void)
 	stepJump_ = 0.0f;
 	//アニメーションの再生
 	animationController_.Play(
-		(int)Player::ANIM_TYPE::JUMP, false, 10.0f, 60.0f);
+		(int)Player::ANIM_TYPE::JUMP, false, JUMP_ANIM_START_FRAME, JUMP_ANIM_END_FRAME);
 	//状態遷移
-	actionUpdate_ = std::bind(&PlayerAction::JumpUpdate, this);
+	actionUpdate_ = [this]() {JumpUpdate(); };
+}
+
+bool PlayerAction::CheckJumpInput(void)
+{
+	return input_->CheckAct(PlayerInput::ACT_CNTL::JUMP) && player_.GetIsLandHit();
 }
 
 void PlayerAction::Punch(void)
 {
 	//プレイヤーの手の座標を設定する
-	punchPos_ = MV1GetFramePosition(player_.GetTransform().modelId, 10);
+	punchPos_ = MV1GetFramePosition(player_.GetTransform().modelId, HAND_FRAME_NUM);
 
 	//アニメステップを取得して一定のところで攻撃判定を発生させる
 	float animStep = animationController_.GetAnimStep();
@@ -327,8 +340,7 @@ void PlayerAction::Punch(void)
 		isPunchHitTime_ = true;
 	}
 	
-	//アニメーション
-	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
+	//アニメーションが終わったら
 	if (animationController_.IsEnd())
 	{
 		//パンチクールタイムセット
@@ -341,7 +353,9 @@ void PlayerAction::ChangePunch(void)
 {
 	punchCnt_ = 0.0f;
 	punchCoolCnt_ = PUNCH_COOL_TIME;
-	actionUpdate_ = std::bind(&PlayerAction::Punch, this);
+	//アニメーション
+	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
+	actionUpdate_ = [this]() {Punch(); };
 }
 
 void PlayerAction::KnockBack(void)
@@ -361,7 +375,7 @@ void PlayerAction::ChangeKnockBack(void)
 	//ダメージアニメーション
 	//animationController_->Play((int)ANIM_TYPE::DAMAGE,true,)
 	speed_ = FLY_AWAY_SPEED;
-	actionUpdate_ = std::bind(&PlayerAction::KnockBack, this);
+	actionUpdate_ = [this]() {KnockBack(); };
 }
 
 
@@ -378,7 +392,7 @@ VECTOR PlayerAction::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECT
 
 void PlayerAction::Rotate(void)
 {
-	stepRotTime_ -= PlayerInput::DELTA_TIME;
+	stepRotTime_ -= SceneManager::GetInstance().GetDeltaTime();
 	// 回転の球面補間
 	playerRotY_ = Quaternion::Slerp(
 		playerRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);

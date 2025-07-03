@@ -17,6 +17,9 @@ public:
 
 	//スライム床上でのジャンプ力
 	static constexpr float SLIME_FLOOR_JUMP_POW = 10.0f;
+
+	//スライム床上でのジャンプ力
+	static constexpr float SPRING_JUMP_POW = 30.0f;
 	struct CUBE
 	{
 		VECTOR centerPos;

@@ -182,10 +182,15 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 
 	//ノックバック状態遷移
 	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
+
+	//パンチヒット音再生
+	SoundManager::GetInstance().Play(punchHitSE_, SoundManager::PLAYTYPE::NORMAL);
 }
 
 void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 {
+	//ジャンプ力の設定
+	action_.SetJumpDecel(SPRING_JUMP_POW);
 	action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
 	HitModelCommon(_hitCol);
 }
