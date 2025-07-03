@@ -1,4 +1,5 @@
 #pragma once
+#include<map>
 #include "../ItemBase.h"
 
 class CannonShot;
@@ -62,7 +63,8 @@ private:
 	VECTOR barrelAddRot_;	//–Cg‚Ì‰ñ“]—Ê
 
 	//‘ÎÛ
-	VECTOR targetPos_;		//‘_‚¤‘ÎÛ‚ÌˆÊ’uî•ñ
+	std::map<Collider::TAG,VECTOR> compPos_;	//‘_‚¤‘ÎÛ‚Ì”äŠr—pˆÊ’uî•ñ
+	VECTOR targetPos_;							//‘_‚¤‘ÎÛ‚ÌˆÊ’uî•ñ
 
 	//–C‘ä‚Ì‰ñ“]
 	void RotateTurret(void);

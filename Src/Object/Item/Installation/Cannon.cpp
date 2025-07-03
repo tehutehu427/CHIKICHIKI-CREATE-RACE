@@ -2,6 +2,7 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/InputManager.h"
 #include "../Manager/System/SceneManager.h"
+#include "../Manager/System/DateBank.h"
 #include "../Utility/Utility.h"
 #include "../FpsControl/FpsControl.h"
 #include"../../Common/Geometry/Model.h"
@@ -146,20 +147,42 @@ void Cannon::Draw(void)
 
 void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	//ìñÇΩÇ¡ÇΩÇÃÇ™ÉGÉCÉÄîÕàÕÇ»ÇÁÉvÉåÉCÉÑÅ[Çë_Ç§
 	for (auto hitTag : _hitCol.lock()->GetTags())
 	{
+		//âeÇ÷ÇÃìñÇΩÇËîªíËÇÇµÇ»Ç¢
 		if (hitTag == Collider::TAG::SHADOW)return;
 	}
 
-	if (colParam_[AIM_COL_NUM].collider_->IsHit())
+	for (auto hitTag : _hitCol.lock()->GetTags())
 	{
-		targetPos_ = _hitCol.lock()->GetParent().GetTransform().pos;
+		//ë_Ç§îÕàÕÇ…ìñÇΩÇ¡ÇΩÇ©
+		if (colParam_[AIM_COL_NUM].collider_->IsHit())
+		{
+			//ëççá
+			VECTOR genePos = Utility::VECTOR_ZERO;
 
-		//íeÇÃê∂ê¨
-		CreateShot();
+			//ëŒâûÉ^ÉOÇ…äiî[
+			compPos_[hitTag] = _hitCol.lock()->GetParent().GetTransform().pos;
+
+			for (auto compPos : compPos_)
+			{
+				//å≥ÇÃãóó£
+				float preDis = Utility::Distance(genePos, barrelTrans_.pos);
+				
+				//î‰ärãóó£
+				float dis = Utility::Distance(compPos.second, barrelTrans_.pos);
+
+				//ãﬂÇ¢ÇŸÇ§Çë_Ç§
+				genePos = dis > preDis ? genePos : compPos.second;
+			}
+
+			//ãﬂÇ©Ç¡ÇΩÇŸÇ§Çë_Ç§
+			targetPos_ = genePos;
+		}
 	}
 
+	//íeÇÃê∂ê¨
+	CreateShot();
 }
 
 void Cannon::ChangeModelColor(const COLOR_F _colorScale)
