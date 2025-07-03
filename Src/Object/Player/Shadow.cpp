@@ -22,7 +22,7 @@ Shadow::Shadow(Transform& trans) : parentTrans_(trans)
 
 	//‰e‚Ì“–‚½‚è”»’è
 	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(parentTrans_.pos, parentTrans_.quaRot, VECTOR(), VECTOR(0.0f,-LINE_RANGE,0.0f));
-	MakeCollider({ Collider::TAG::SHADOW }, std::move(lineGeo));
+	MakeCollider({ Collider::TAG::SHADOW }, std::move(lineGeo),NoneTags_);
 }
 
 Shadow::~Shadow(void)
