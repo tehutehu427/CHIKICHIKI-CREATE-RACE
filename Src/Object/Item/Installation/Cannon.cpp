@@ -147,13 +147,19 @@ void Cannon::Draw(void)
 void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
 	//当たったのがエイム範囲ならプレイヤーを狙う
+	for (auto hitTag : _hitCol.lock()->GetTags())
+	{
+		if (hitTag == Collider::TAG::SHADOW)return;
+	}
+
 	if (colParam_[AIM_COL_NUM].collider_->IsHit())
 	{
 		targetPos_ = _hitCol.lock()->GetParent().GetTransform().pos;
+
+		//弾の生成
+		CreateShot();
 	}
 
-	//弾の生成
-	CreateShot();
 }
 
 void Cannon::ChangeModelColor(const COLOR_F _colorScale)
