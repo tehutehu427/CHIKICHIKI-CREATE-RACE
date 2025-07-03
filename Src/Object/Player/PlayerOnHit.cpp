@@ -1,4 +1,6 @@
 #include "../../Object/Common/Geometry/Sphere.h"
+#include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Object/Common/Geometry/Line.h"
 #include"../../Object/Common/Geometry/Model.h"
 #include"../../Utility/Utility.h"
@@ -25,7 +27,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_[TAG::SPRING] = [this](const std::weak_ptr<Collider> _hitCol) {ColSpring(_hitCol); };
 	colUpdates_[TAG::CANNON_AIM] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	colUpdates_[TAG::SHADOW] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
-
+	
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = static_cast<int>(TAG::PLAYER1); i < playerNum; i++)
@@ -40,12 +42,77 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 
 PlayerOnHit::~PlayerOnHit(void)
 {
+
+}
+
+void PlayerOnHit::Load(void)
+{
+	auto& res = ResourceManager::GetInstance();
+	punchHitSE_ = res.Load(ResourceManager::SRC::PLAYER_PUNCH_HIT).handleId_;
 }
 
 void PlayerOnHit::Init(void)
 {
 	isGoal_ = false;
 	isDeath_ = false;
+}
+
+
+
+void PlayerOnHit::Update(void)
+{
+	movedPos_ = VAdd(trans_.pos, action_.GetMovePow());
+	movedPos_ = VAdd(movedPos_, action_.GetJumpPow());
+
+#ifdef DEBUG_ON
+	//デバッグ床の移動
+	//CubeMove();
+
+	////デバッグ用床の当たり判定
+	//if (CollCube())
+	//{
+	//	movedPos_ = VAdd(movedPos_, cubeMovePos_);
+	//	action_.SetJumpPow(Utility::VECTOR_ZERO);
+	//	movedPos_.y = cube_.upPos.y + RADIUS;
+	//	action_.SetStepJump(0.0f);
+	//	if(action_.GetJumpDecel()<=-10.0f)action_.SetIsJump(false);
+	//	action_.SetJumpDecel(PlayerAction::POW_JUMP);
+	//}
+	//else
+	//{
+	//	action_.SetIsJump(true);
+	//	//if (jumpPow_.y <= LIMIT_GRAVITY)
+	//	//{
+	//	//	jumpPow_.y = LIMIT_GRAVITY;
+	//	//}
+	//}
+
+#endif // DEBUG_ON
+
+	//移動量ラインの更新
+	VECTOR moveVec = VSub(movedPos_, trans_.pos);
+	moveVec.y -= Player::RADIUS - 1.0f;
+	if (moveVec.x != 0.0f || moveVec.y != Player::RADIUS - 1.5f || moveVec.z != 0.0f)
+	{
+		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
+		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
+		moveLine.SetLocalPosPoint2(moveVec);
+	}
+
+	for (int i = 0; i < colParam_.size(); i++)
+	{
+		if (colParam_[i].collider_->IsHit())
+		{
+			continue;
+		}
+		isLandHit_ = false;
+	}
+
+	//移動前の座標を格納する
+	moveDiff_ = trans_.pos;
+	//移動
+	trans_.pos = movedPos_;
+	//現在座標を起点に移動後座標を決める
 }
 
 void PlayerOnHit::ColUpdate(const std::weak_ptr<Collider> _hitCol)
@@ -138,7 +205,7 @@ void PlayerOnHit::DrawDebug(void)
 	{
 		colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();
 	}
-	
+
 	//DrawCube3D({ cube_.centerPos.x - CUBE_W,cube_.centerPos.y - CUBE_H,cube_.centerPos.z - CUBE_D }
 	//, { cube_.centerPos.x + CUBE_W,cube_.centerPos.y + CUBE_H,cube_.centerPos.z + CUBE_D }, 0xff0000, 0xff0000, true);
 
@@ -148,61 +215,7 @@ void PlayerOnHit::DrawDebug(void)
 	DrawFormatString(0, 300, 0x000000, "vec(%f,%f,%f)", moveVec.x,moveVec.y, moveVec.z);
 }
 
-void PlayerOnHit::Update(void)
-{
-	movedPos_ = VAdd(trans_.pos, action_.GetMovePow());
-	movedPos_ = VAdd(movedPos_, action_.GetJumpPow());
 
-#ifdef DEBUG_ON
-	//デバッグ床の移動
-	//CubeMove();
-
-	////デバッグ用床の当たり判定
-	//if (CollCube())
-	//{
-	//	movedPos_ = VAdd(movedPos_, cubeMovePos_);
-	//	action_.SetJumpPow(Utility::VECTOR_ZERO);
-	//	movedPos_.y = cube_.upPos.y + RADIUS;
-	//	action_.SetStepJump(0.0f);
-	//	if(action_.GetJumpDecel()<=-10.0f)action_.SetIsJump(false);
-	//	action_.SetJumpDecel(PlayerAction::POW_JUMP);
-	//}
-	//else
-	//{
-	//	action_.SetIsJump(true);
-	//	//if (jumpPow_.y <= LIMIT_GRAVITY)
-	//	//{
-	//	//	jumpPow_.y = LIMIT_GRAVITY;
-	//	//}
-	//}
-
-#endif // DEBUG_ON
-
-	//移動量ラインの更新
-	VECTOR moveVec = VSub(movedPos_, trans_.pos);
-	moveVec.y -= Player::RADIUS - 1.0f;
-	if (moveVec.x!=0.0f||moveVec.y!= Player::RADIUS - 1.5f|| moveVec.z != 0.0f)
-	{
-		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
-		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
-		moveLine.SetLocalPosPoint2(moveVec);
-	}
-
-	////オブジェクトに当たってないとき
-	//for (auto& col : colParam_)
-	//{
-	//	if (!col.collider_->IsHit())
-	//	{
-	//		action_.SetIsJump(true);
-	//	}
-	//}
-
-	//移動前の座標を格納する
-	moveDiff_ = trans_.pos;
-	//移動
-	trans_.pos = movedPos_;
-	//現在座標を起点に移動後座標を決める
-}
 
 void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 {
@@ -219,7 +232,10 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		movedPos_.y = hitPos.y + Player::RADIUS + POSITION_OFFSET;
 		action_.SetJumpPow(Utility::VECTOR_ZERO);
 		action_.SetIsJump(false);
+
+		//現在座標の更新
 		trans_.pos = movedPos_;
+		isLandHit_ = true;
 		return;
 	}
 	//プレイヤーの接地
@@ -265,6 +281,9 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 			}
 		}
 	}
+	//地面と当たっている
+	isLandHit_ = true;
+
 	////移動前の座標を格納する
 	moveDiff_ = trans_.pos;
 	//移動

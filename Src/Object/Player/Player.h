@@ -117,15 +117,18 @@ public:
 	//ゲッタ
 	//******************************************
 	//プレイヤー番号
-	const int GetPlayerNum(void)const { return playerNum_; }
+	inline const int GetPlayerNum(void)const { return playerNum_; }
 
-	const KeyConfig::TYPE GetCntl(void) { return cntl_; }
+	inline const KeyConfig::TYPE GetCntl(void) { return cntl_; }
 
 	//プレイヤー座標
-	const VECTOR GetPos(void)const { return trans_.pos; }
+	inline const VECTOR GetPos(void)const { return trans_.pos; }
 
 	//コントローラー番号
-	const KeyConfig::JOYPAD_NO GetPadNum(void)const { return padNum_; }
+	inline const KeyConfig::JOYPAD_NO GetPadNum(void)const { return padNum_; }
+
+	//地面に当たっているか
+	const bool GetIsLandHit(void);
 
 	//ゴール判定の取得
 	const bool IsGoal(void)const;
@@ -134,7 +137,7 @@ public:
 	bool IsDeath(void);
 
 	//ゴールタイムの取得
-	const float GetGoalTime(void)const { return goalTime_; }
+	inline const float GetGoalTime(void)const { return goalTime_; }
 
 	//******************************************
 	//セッタ

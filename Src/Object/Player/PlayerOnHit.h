@@ -37,7 +37,16 @@ public:
 	/// <param name=""></param>
 	void Init(void);
 
-	//毎フレーム更新
+	/// <summary>
+	/// 当たった時のSEなどの読み込み
+	/// </summary>
+	/// <param name=""></param>
+	void Load(void);
+
+	/// <summary>
+	/// 毎フレーム更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void);
 
 	/// <summary>
@@ -59,6 +68,9 @@ public:
 
 	//ゴール判定の取得
 	const bool GetIsGoal(void)const { return isGoal_; }
+
+	//地面との当たり判定の取得
+	const bool GetIsLandHit(void)const { return isLandHit_; }
 
 	//セッタ
 	void SetMovedPos(const VECTOR& _movedPos) { movedPos_ = _movedPos; }
@@ -127,16 +139,20 @@ private:
 	//当たり判定関係
 	std::vector<ObjectBase::ColParam>& colParam_;
 
+	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
+
 	//ゴール判定
 	bool isGoal_;
 
 	//死亡判定
 	bool isDeath_;
 
+	//地面と当たっているか
+	bool isLandHit_;
 
+	//パンチヒット時のSE
+	int punchHitSE_;
 
-
-	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
 
 	//メンバ関数
 	//----------------------------------
