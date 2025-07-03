@@ -1,6 +1,8 @@
 #pragma once
 #include "../ObjectBase.h"
 
+class ToonStyle;
+
 class ItemBase : public ObjectBase
 {
 public:
@@ -108,11 +110,20 @@ protected:
 	IntVector3 InitMapPos_;		//初期マップ座標
 	float rotY_;				//Y回転
 	VECTOR movePow_;			//移動量
-	std::vector<int*> models_;	//全モデル
+	std::vector<int*> models_;	//全モデル	
+	
+	//トゥーンスタイル
+	std::unique_ptr<ToonStyle> toonStyle_;
+
 
 	//サイズの倍率調整
 	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;
 
 private:
+
+
+	//シェーダーの設定
+	void InitShader();
+
 };
 

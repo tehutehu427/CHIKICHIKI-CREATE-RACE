@@ -9,6 +9,12 @@
     <FxCompile Include="Src\Shader\Image\GlowRotateSprite.hlsl" />
     <FxCompile Include="Src\Shader\Image\Monotone.hlsl" />
     <FxCompile Include="Src\Shader\Image\ScanLine.hlsl" />
+    <FxCompile Include="Src\Shader\Model\OutlineSkinMeshVS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\OutlineMeshVS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\ToonSkinMeshVS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\ToonMeshVS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\OutlinePS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\ToonPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Object\System\Select\SelectStage.cpp" />
@@ -103,6 +109,7 @@
     <ClCompile Include="Src\Renderer\PixelRenderer.cpp" />
     <ClCompile Include="Src\Renderer\VertexMaterial.cpp" />
     <ClCompile Include="Src\Renderer\VertexRenderer.cpp" />
+    <ClCompile Include="Src\Object\Common\ToonStyle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -246,6 +253,7 @@
     <ClInclude Include="Src\Renderer\PixelMaterial.h" />
     <ClInclude Include="Src\Renderer\PixelRenderer.h" />
     <ClInclude Include="Src\Renderer\VertexMaterial.h" />
+    <ClInclude Include="Src\Object\Common\ToonStyle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

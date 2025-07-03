@@ -25,6 +25,7 @@
 #include"./PlayerOnHit.h"
 #include "./Process/PlayerInput.h"
 #include "./Shadow.h"
+#include "../Common/ToonStyle.h"
 
 #include<algorithm>
 
@@ -36,6 +37,7 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	, tag_(_tag)
 {
 	trans_ = Transform();
+	toon_ = nullptr;
 
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
@@ -89,6 +91,10 @@ void Player::Load(void)
 
 	//影
 	shadow_ = std::make_unique<Shadow>(trans_);
+
+	//トゥーンにする
+	toon_ = std::make_unique<ToonStyle>();
+	toon_->Load(trans_.modelId, ToonStyle::MESH_TYPE::SKIN_MESH);
 }
 
 void Player::Init(void)
@@ -112,6 +118,8 @@ void Player::Init(void)
 	action_->Init();
 
 	goalTime_ = 0.0f;
+
+	toon_->Init();
 
 	//当たり判定
 	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_,tag_);
@@ -141,9 +149,10 @@ void Player::Update(void)
 void Player::Draw(void)
 {
 	MV1DrawModel(trans_.modelId);
+	toon_->Draw();
 	shadow_->Draw();
 #ifdef DEBUG_ON
-	DrawDebug();
+	//DrawDebug();
 #endif // DEBUG_ON
 }
 

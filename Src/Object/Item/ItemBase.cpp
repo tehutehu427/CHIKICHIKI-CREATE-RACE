@@ -1,5 +1,6 @@
 #include"../Manager/Game/MapEditer.h"
 #include"../Utility/Utility.h"
+#include "../Common/ToonStyle.h"
 #include "ItemBase.h"
 
 ItemBase::ItemBase()
@@ -14,6 +15,8 @@ ItemBase::ItemBase()
 	rotY_ = 0.0f;
 
 	movePow_ = Utility::VECTOR_ZERO;
+
+	toonStyle_ = nullptr;
 }
 
 ItemBase::~ItemBase()
@@ -53,6 +56,9 @@ void ItemBase::Init()
 	//個々の設定
 	SetParam();
 
+	//初期化
+	InitShader();
+
 	//モデルの更新
 	trans_.Update();
 }
@@ -60,7 +66,8 @@ void ItemBase::Init()
 void ItemBase::Draw(void)
 {
 	//モデル描画
-	MV1DrawModel(trans_.modelId);
+	//MV1DrawModel(trans_.modelId);
+	toonStyle_->Draw();
 }
 
 void ItemBase::SetPos(IntVector3 mapPos)
@@ -104,4 +111,11 @@ const VECTOR ItemBase::AdjustSizePer(const VECTOR _modelSize)const
 	ret.z /= modelSize.z;
 
 	return ret;
+}
+
+void ItemBase::InitShader()
+{
+	toonStyle_ = std::make_unique<ToonStyle>();
+	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::MESH);
+	toonStyle_->Init();
 }
