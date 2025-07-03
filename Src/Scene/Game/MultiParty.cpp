@@ -173,7 +173,7 @@ void MultiParty::ChangePhaseResult()
 	scnMng_.SetIsSplitMode(false);
 
 	//クリア時間に応じてスコアを格納
-	//ScoreManager::GetInstance().
+	ScoreManager::GetInstance().SetPlayersScore();
 }
 
 void MultiParty::UpdateRound()

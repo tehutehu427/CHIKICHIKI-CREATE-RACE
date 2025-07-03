@@ -70,15 +70,22 @@ void ItemManager::Draw(void)
 		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize(),item.second->GetHitSize(),GetDummyItemRotY(item.first)) < 0)
 		{
 			item.second->ChangeModelColor(ItemManager::DUMMY_OVERLAP_COLOR);
+			item.second->SetModelColor(DUMMY_OVERLAP_COLOR.r, DUMMY_OVERLAP_COLOR.g, DUMMY_OVERLAP_COLOR.b, DUMMY_OVERLAP_COLOR.a);
 		}
 		//d‚È‚Á‚Ä‚¢‚È‚¢
 		else
 		{
 			item.second->ChangeModelColor(ItemManager::DUMMY_DEFAULT_COLOR);
+			item.second->SetModelColor(DUMMY_DEFAULT_COLOR.r, DUMMY_DEFAULT_COLOR.g, DUMMY_DEFAULT_COLOR.b, DUMMY_DEFAULT_COLOR.a);
 		}
+
+
 		//ƒ‚ƒfƒ‹•`‰æ
 		item.second->Draw();
+
+		//F‚ð‚à‚Æ‚É–ß‚·
 		item.second->ChangeModelColor(ItemManager::DEFAULT_COLOR);
+		item.second->SetModelColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 }
 

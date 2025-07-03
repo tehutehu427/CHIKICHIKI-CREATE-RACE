@@ -1,6 +1,8 @@
 #pragma once
 #include "../ObjectBase.h"
 
+class ToonStyle;
+
 class ItemBase : public ObjectBase
 {
 public:
@@ -101,6 +103,15 @@ public:
 	//アイテムの値リセット
 	virtual void ResetValue(void);
 
+	/// <summary>
+	/// モデルのカラーを設定
+	/// </summary>
+	/// <param name="_r">赤</param>
+	/// <param name="_g">緑</param>
+	/// <param name="_b">青</param>
+	/// <param name="_a">アルファ値</param>
+	void SetModelColor(const float _r, const float _g, const float _b, const float _a);
+
 protected:
 
 	//共通変数
@@ -108,11 +119,20 @@ protected:
 	IntVector3 InitMapPos_;		//初期マップ座標
 	float rotY_;				//Y回転
 	VECTOR movePow_;			//移動量
-	std::vector<int*> models_;	//全モデル
+	std::vector<int*> models_;	//全モデル	
+	
+	//トゥーンスタイル
+	std::unique_ptr<ToonStyle> toonStyle_;
+
 
 	//サイズの倍率調整
 	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;
 
 private:
+
+
+	//シェーダーの設定
+	void InitShader();
+
 };
 
