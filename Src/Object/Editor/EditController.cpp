@@ -1,6 +1,8 @@
+#include <cmath>
 #include "../Application.h"
 #include "../../Utility/Utility.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/Camera.h"
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/SceneManager.h"
@@ -110,6 +112,9 @@ void EditController::DrawUI(void)
 	case EditController::ERROR_TYPE::ITEM_OVER_LAP:
 		Utility::DrawStringPlace("選択中のアイテムが他のアイテムと重なっています", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
 		break;
+	case EditController::ERROR_TYPE::ITEM_NOT_SET:
+		Utility::DrawStringPlace("アイテムが設置できませんでした", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		break;
 	default:
 		break;
 	}
@@ -191,6 +196,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	Quaternion rot = {};
 	if (mapPos == ERROR_POS)
 	{
+		errorType_ = ERROR_TYPE::ITEM_NOT_SET;	//アイテムが設置できない場所
 		itemMIns.DeleteDummyItem(playerNum_);
 		return;
 	}
@@ -297,6 +303,7 @@ void EditController::MoveRotateObjectUpdate(void)
 	}
 	RotateObject();
 	moveDir_ = GetMoveDir();
+	moveDir_ = GetMoveDirNew();
 	if (moveDir_ == MOVE_DIR::NONE)
 	{
 		return;
@@ -314,15 +321,37 @@ void EditController::MoveRotateObjectDraw(void)
 	{
 		VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
 		worldPos = VAdd(worldPos,{MapEditer::GRID_SIZE /2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
-		DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_R,MOVE_ARROW_LENGTH)), 0x0000ff);	//X軸の線
-		//DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE,32, 0x0000ff, 0x0000ff,true);	//X軸の先端
-		DrawCone3D(VAdd(worldPos,VScale(Utility::DIR_R,MOVE_ARROW_SIZE + MOVE_ARROW_LENGTH)),VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)),MOVE_ARROW_RADIUS,MOVE_ARROW_VARTEXNUM,Utility::BLUE,Utility::BLUE,true);	//X軸の先端
-		DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), 0x00ff00);	//Y軸の線
-		//DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE, 32, 0x00ff00, 0x00ff00, true);	//Y軸の先端
-		DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_SIZE + MOVE_ARROW_LENGTH)), VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::GREEN, Utility::GREEN, true);	//Y軸の先端
-		DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), 0xff0000);	//Z軸の線
-		//DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE, 32, 0xff0000, 0xff0000, true);	//Z軸の先端
-		DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_SIZE + MOVE_ARROW_LENGTH)), VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::RED, Utility::RED, true);	//X軸の先端
+		switch (moveDir_)
+		{
+		case EditController::MOVE_DIR::NONE:
+			DrawXArrow(worldPos);
+			DrawYArrow(worldPos);
+			DrawZArrow(worldPos);
+			break;
+		case EditController::MOVE_DIR::X:
+			DrawXArrow(worldPos);
+			break;
+		case EditController::MOVE_DIR::Y:
+			DrawYArrow(worldPos);
+			break;
+		case EditController::MOVE_DIR::Z:
+			DrawZArrow(worldPos);
+			break;
+		case EditController::MOVE_DIR::XY:
+			DrawXArrow(worldPos);
+			DrawYArrow(worldPos);
+			break;
+		case EditController::MOVE_DIR::XZ:
+			DrawXArrow(worldPos);
+			DrawZArrow(worldPos);
+			break;
+		case EditController::MOVE_DIR::YZ:
+			DrawYArrow(worldPos);
+			DrawZArrow(worldPos);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -513,10 +542,16 @@ void EditController::MoveItem(void)
 		nullWallMapPosFar.x = mapPos_.x + 1;
 		break;
 	case EditController::MOVE_DIR::XY:
+		nullWallMapPosNear.z = mapPos_.z;	//Z軸固定の壁を置く
+		nullWallMapPosFar.z = mapPos_.z + 1;	//Z軸固定の壁を置く
 		break;
 	case EditController::MOVE_DIR::XZ:
+		nullWallMapPosNear.y = mapPos_.y;	//Y軸固定の壁を置く
+		nullWallMapPosFar.y = mapPos_.y + 1;	//Y軸固定の壁を置く
 		break;
 	case EditController::MOVE_DIR::YZ:
+		nullWallMapPosNear.x = mapPos_.x;	//X軸固定の壁を置く
+		nullWallMapPosFar.x = mapPos_.x + 1;	//X軸固定の壁を置く
 		break;
 	default:
 		break;
@@ -583,10 +618,56 @@ void EditController::MoveItem(void)
 		mapPos_.z = mapPos_.z < 0 ? 0 : mapPos_.z >= MapEditer::MAP_SIZE.z - size.z? MapEditer::MAP_SIZE.z - size.z: mapPos_.z;
 		break;
 	case EditController::MOVE_DIR::XY:
+		while (farWorldPos.z < wallWorldPosNear.z || farWorldPos.z > wallWorldPosFar.z)
+		{
+			farWorldPos = VSub(farWorldPos, normalmousePos3D);
+			VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
+			if (Utility::GetSign(normalmousePos.x) != Utility::GetSign(normalmousePos3D.x) ||
+				Utility::GetSign(normalmousePos.y) != Utility::GetSign(normalmousePos3D.y) ||
+				Utility::GetSign(normalmousePos.z) != Utility::GetSign(normalmousePos3D.z))
+			{
+				return;
+			}
+		}
+		mapPos_.x = MapEditer::GetInstance().WorldToMapPos(farWorldPos).x;
+		mapPos_.x = mapPos_.x < 0 ? 0 : mapPos_.x >= MapEditer::MAP_SIZE.x - size.x ? MapEditer::MAP_SIZE.x - size.x : mapPos_.x;
+		mapPos_.y = MapEditer::GetInstance().WorldToMapPos(farWorldPos).y;
+		mapPos_.y = mapPos_.y < 0 ? 0 : mapPos_.y >= MapEditer::MAP_SIZE.y - size.y ? MapEditer::MAP_SIZE.y - size.y : mapPos_.y;
+
 		break;
 	case EditController::MOVE_DIR::XZ:
+		while (farWorldPos.y < wallWorldPosNear.y || farWorldPos.y > wallWorldPosFar.y)
+		{
+			farWorldPos = VSub(farWorldPos, normalmousePos3D);
+			VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
+			if (Utility::GetSign(normalmousePos.x) != Utility::GetSign(normalmousePos3D.x) ||
+				Utility::GetSign(normalmousePos.y) != Utility::GetSign(normalmousePos3D.y) ||
+				Utility::GetSign(normalmousePos.z) != Utility::GetSign(normalmousePos3D.z))
+			{
+				return;
+			}
+		}
+		mapPos_.x = MapEditer::GetInstance().WorldToMapPos(farWorldPos).x;
+		mapPos_.x = mapPos_.x < 0 ? 0 : mapPos_.x >= MapEditer::MAP_SIZE.x - size.x ? MapEditer::MAP_SIZE.x - size.x : mapPos_.x;
+		mapPos_.z = MapEditer::GetInstance().WorldToMapPos(farWorldPos).z;
+		mapPos_.z = mapPos_.z < 0 ? 0 : mapPos_.z >= MapEditer::MAP_SIZE.z - size.z ? MapEditer::MAP_SIZE.z - size.z : mapPos_.z;
 		break;
 	case EditController::MOVE_DIR::YZ:
+		while (farWorldPos.x < wallWorldPosNear.x || farWorldPos.x > wallWorldPosFar.x)
+		{
+			farWorldPos = VSub(farWorldPos, normalmousePos3D);
+			VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
+			if (Utility::GetSign(normalmousePos.x) != Utility::GetSign(normalmousePos3D.x) ||
+				Utility::GetSign(normalmousePos.y) != Utility::GetSign(normalmousePos3D.y) ||
+				Utility::GetSign(normalmousePos.z) != Utility::GetSign(normalmousePos3D.z))
+			{
+				return;
+			}
+		}
+		mapPos_.y = MapEditer::GetInstance().WorldToMapPos(farWorldPos).y;
+		mapPos_.y = mapPos_.y < 0 ? 0 : mapPos_.y >= MapEditer::MAP_SIZE.y - size.y ? MapEditer::MAP_SIZE.y - size.y : mapPos_.y;
+		mapPos_.z = MapEditer::GetInstance().WorldToMapPos(farWorldPos).z;
+		mapPos_.z = mapPos_.z < 0 ? 0 : mapPos_.z >= MapEditer::MAP_SIZE.z - size.z ? MapEditer::MAP_SIZE.z - size.z : mapPos_.z;
 		break;
 	default:
 		break;
@@ -672,6 +753,77 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 	return moveDir;
 }
 
+EditController::MOVE_DIR EditController::GetMoveDirNew(void)
+{
+	MOVE_DIR moveDir = MOVE_DIR::NONE;
+	KeyConfig& ins = KeyConfig::GetInstance();
+	auto type = playerMaxNum_ == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
+	//前フレームで移動方向が決まっているか
+	if (moveDir_ == MOVE_DIR::NONE)
+	{
+		if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_, type) == false)
+		{
+			//選択のキーを押されていないからnoneを返す
+			return moveDir;
+		}
+		if (itemType_ == ItemBase::ITEM_TYPE::NONE)
+		{
+			//アイテムが選択されていないからnoneを返す
+			return moveDir;
+		}
+		VECTOR mousePosNear3D = { static_cast<float>(mousePos_.x),static_cast<float>(mousePos_.y), 0.0f };
+		VECTOR nearWorldPos = ConvScreenPosToWorldPos(mousePosNear3D);	//近いほうのワールド座標
+		VECTOR mousePosFar3D = { static_cast<float>(mousePos_.x),static_cast<float>(mousePos_.y), 1.0f };
+		VECTOR farWorldPos = ConvScreenPosToWorldPos(mousePosFar3D);	//遠いほうのワールド座標
+		VECTOR normalmousePos3D = VNorm(VSub(farWorldPos, nearWorldPos));
+		auto modelId = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).modelId;
+		auto hit = MV1CollCheck_Line(modelId, -1, nearWorldPos, farWorldPos);
+		if (hit.HitFlag == 0)
+		{
+			//アイテムが選択されていないからnoneを返す
+			return moveDir;
+		}
+	}
+	else if (ins.IsTrgUp(KeyConfig::CONTROL_TYPE::EDIT_ITEM_SELECT, padNum_, type) == true)
+	{
+		//選択のキーを離したからNONEを返す
+		return moveDir;
+	}
+	else
+	{
+		//前フレームで移動方向が決まっているからそのまま返す
+		return moveDir_;
+	}
+	VECTOR cForward =VNorm( SceneManager::GetInstance().GetCamera(playerNum_).lock()->GetForward());
+	//0.0～1.0の数字となり、視線方向と一致か、もしくは逆方向だったら 1.0 、直交だったら 0.0 という数字の意味合いになります。
+	float x = abs(VDot(cForward, Utility::DIR_R));	//カメラとX軸
+	float y = abs(VDot(cForward, Utility::DIR_U));	//カメラとY軸
+	float z = abs(VDot(cForward, Utility::DIR_F));	//カメラとZ軸
+	if (x > y)
+	{
+		if (x > z)
+		{
+			moveDir = MOVE_DIR::YZ;	//X軸とZ軸の移動
+		}
+		else
+		{
+			moveDir = MOVE_DIR::XY;	//X軸とZ軸の移動
+		}
+	}
+	else 
+	{
+		if (y > z)
+		{
+			moveDir = MOVE_DIR::XZ;	//Y軸とZ軸の移動
+		}
+		else
+		{
+			moveDir = MOVE_DIR::XY;	//Y軸とZ軸の移動
+		}
+	}
+	return moveDir;
+}
+
 void EditController::DebugUpdate(void)
 {
 	//if (KeyConfig::GetInstance().IsTrgDown(KEY_INPUT_X))
@@ -689,7 +841,7 @@ void EditController::DebugDraw(void)
 	DrawFormatString(0, 0, 0x000000, "%d", static_cast<int>(mode_));
 	DrawFormatString(0, 20, 0x000000, "%d", static_cast<int>(itemType_));
 	DrawFormatString(0, 40, 0x000000, "%d,%d,%d",mapPos_.x,mapPos_.y,mapPos_.z);
-	DrawFormatString(0, 60, 0x000000, "%d", static_cast<int>(GetMoveDir()));
+	DrawFormatString(0, 60, 0x000000, "%d", static_cast<int>(GetMoveDirNew()));
 	IntVector3 size = ItemManager::GetInstance().GetDummyItemSize(playerNum_);
 	DrawFormatString(0, 80, 0x000000, "%d,%d,%d",size.x,size.y,size.z);
 	DrawFormatString(0, 100, 0x000000, "%d", static_cast<int>(ItemManager::GetInstance().GetDummyItemRotY(playerNum_)));
@@ -764,5 +916,26 @@ void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector
 		}
 	}
 	itemM.DeleteDummyItem(playerNum_);
+}
+
+void EditController::DrawXArrow(VECTOR worldPos)
+{
+	DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)), 0x0000ff);	//X軸の線
+	//DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE,32, 0x0000ff, 0x0000ff,true);	//X軸の先端
+	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_SIZE + MOVE_ARROW_LENGTH)), VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)), MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::BLUE, Utility::BLUE, true);	//X軸の先端
+}
+
+void EditController::DrawYArrow(VECTOR worldPos)
+{
+	DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), 0x00ff00);	//Y軸の線
+	//DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE, 32, 0x00ff00, 0x00ff00, true);	//Y軸の先端
+	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_SIZE + MOVE_ARROW_LENGTH)), VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::GREEN, Utility::GREEN, true);	//Y軸の先端
+}
+
+void EditController::DrawZArrow(VECTOR worldPos)
+{
+	DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), 0xff0000);	//Z軸の線
+	//DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE, 32, 0xff0000, 0xff0000, true);	//Z軸の先端
+	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_SIZE + MOVE_ARROW_LENGTH)), VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::RED, Utility::RED, true);	//Z軸の先端
 }
 

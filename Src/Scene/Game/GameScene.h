@@ -105,6 +105,9 @@ protected:
 	std::function<void(void)> phaseUpdate_;
 	std::function<void(void)> phaseDraw_;	
 	
+	//グリッドを表示するかプレイヤー別
+	std::vector<bool> isGrid_;
+
 	//更新関数
 	virtual void NormalUpdate(void) override;
 

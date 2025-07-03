@@ -12,6 +12,7 @@ void InputManager::Init(void)
 	Add(KEY_INPUT_M);
 	Add(KEY_INPUT_Z);
 	Add(KEY_INPUT_X);
+	Add(KEY_INPUT_G);
 
 	Add(KEY_INPUT_UP);
 	Add(KEY_INPUT_RIGHT);
