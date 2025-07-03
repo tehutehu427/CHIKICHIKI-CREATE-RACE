@@ -103,6 +103,15 @@ public:
 	//アイテムの値リセット
 	virtual void ResetValue(void);
 
+	/// <summary>
+	/// モデルのカラーを設定
+	/// </summary>
+	/// <param name="_r">赤</param>
+	/// <param name="_g">緑</param>
+	/// <param name="_b">青</param>
+	/// <param name="_a">アルファ値</param>
+	void SetModelColor(const float _r, const float _g, const float _b, const float _a);
+
 protected:
 
 	//共通変数

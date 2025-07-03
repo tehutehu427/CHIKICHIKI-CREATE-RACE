@@ -10,6 +10,9 @@
 // 定数バッファ（例）
 cbuffer cbParam : register(b4)
 {
+    //カラー
+    float4 g_color;
+    
     // 光の色
     float4 g_light_color;
     
@@ -54,7 +57,7 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
             shade = 0.3f;
         }
     }
-    float3 color = lerp(g_shadow_color.rgb, g_light_color.rgb, shade) * texColor.rgb;
+    float3 color = lerp(g_shadow_color.rgb, g_light_color.rgb, shade) * texColor.rgb * g_color.rgb;
 
-    return float4(color, texColor.a);
+    return float4(color, texColor.a * g_color.a);
 }

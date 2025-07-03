@@ -50,7 +50,17 @@ public:
 	/// <param name="_r">赤値</param>
 	/// <param name="_g">緑値</param>
 	/// <param name="_b">青値</param>
-	void OutlineColor(const float _r, const float _g, const float _b);
+	/// <param name="_a">アルファ値</param>
+	void SetOutlineColor(const float _r, const float _g, const float _b, const float _a);
+
+	/// <summary>
+	/// モデルカラーを設定
+	/// </summary>
+	/// <param name="_r">赤値</param>
+	/// <param name="_g">緑値</param>
+	/// <param name="_b">青値</param>
+	/// <param name="_a">アルファ値</param>
+	void SetModelColor(const float _r, const float _g, const float _b, const float _a);
 
 private:
 

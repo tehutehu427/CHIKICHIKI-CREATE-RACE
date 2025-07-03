@@ -93,6 +93,15 @@ void ItemBase::ResetValue(void)
 	trans_.Update();
 }
 
+void ItemBase::SetModelColor(const float _r, const float _g, const float _b, const float _a)
+{
+	//指定した色に変更
+	toonStyle_->SetModelColor(_r, _g, _b, _a);
+
+	//アウトラインのアルファ値も下げる
+	toonStyle_->SetOutlineColor(1.0f, 1.0f, 1.0f, _a);
+}
+
 const VECTOR ItemBase::AdjustSizePer(const VECTOR _modelSize)const
 {
 	//マップエディタ

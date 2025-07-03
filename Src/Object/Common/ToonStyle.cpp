@@ -35,7 +35,7 @@ void ToonStyle::Load(int _modelId, const MESH_TYPE _type)
 	outlineRenderer_ = std::make_unique<ModelRenderer>(model_, *outlineMaterial_);
 
 	//トゥーンライト
-	toonMaterial_ = std::make_unique<ModelMaterial>(toonLightingVSName.c_str(), 0, "ToonPS.cso", 3);
+	toonMaterial_ = std::make_unique<ModelMaterial>(toonLightingVSName.c_str(), 0, "ToonPS.cso", 4);
 	toonRenderer_ = std::make_unique<ModelRenderer>(model_, *toonMaterial_);
 }
 
@@ -46,6 +46,7 @@ void ToonStyle::Init()
 	outlineMaterial_->AddConstBufPS(FLOAT4{	0.0f,0.0f,0.0f,1.0f });	//輪郭線カラー(通常は黒)
 
 	//トゥーンライト定数バッファの設定
+	toonMaterial_->AddConstBufPS(FLOAT4{ 1.0f,1.0f, 1.0f, 1.0f });		//色
 	toonMaterial_->AddConstBufPS(FLOAT4{ 1.0f,1.0f, 1.0f, 1.0f });		//光の色
 	toonMaterial_->AddConstBufPS(FLOAT4{ 0.4f, 0.3f, 0.3f, 1.0f });		//影の色
 	toonMaterial_->AddConstBufPS(FLOAT4{ GetLightDirection().x,GetLightDirection().y, GetLightDirection().z, 0.0f });//ライト方向
@@ -66,7 +67,12 @@ void ToonStyle::Draw()
 	toonRenderer_->Draw();
 }
 
-void ToonStyle::OutlineColor(const float _r, const float _g, const float _b)
+void ToonStyle::SetModelColor(const float _r, const float _g, const float _b, const float _a)
 {
-	outlineMaterial_->SetConstBufPS(0, FLOAT4{ _r,_g,_b,1.0f });
+	toonMaterial_->SetConstBufPS(0, FLOAT4{ _r,_g,_b,_a });
+}
+
+void ToonStyle::SetOutlineColor(const float _r, const float _g, const float _b, const float _a)
+{
+	outlineMaterial_->SetConstBufPS(0, FLOAT4{ _r,_g,_b,_a });
 }
