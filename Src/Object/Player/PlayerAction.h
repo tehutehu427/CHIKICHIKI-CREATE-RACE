@@ -124,6 +124,9 @@ private:
 	//落ちているときの重力制限(jumpPowに加算しているのでjumpPowに適用)
 	static constexpr float LIMIT_GRAVITY = -20.0f;
 
+	//ダッシュアニメーションスピード
+	static constexpr float DASH_ANIM_SPEED = 200.0f;
+
 	//----------------------------------
 	//ジャンプ
 	//----------------------------------
@@ -140,10 +143,15 @@ private:
 	//ジャンプアニメーションループ中のスピード
 	static constexpr float JUMP_ANIM_ATTACK_BLEND_TIME = 5.0f;
 
+	//ジャンプ開始アニメステップ
+	static constexpr float JUMP_ANIM_START_FRAME = 10.0f;
+	static constexpr float JUMP_ANIM_END_FRAME = 60.0f;
+
 	//----------------------------------
 	//パンチ
 	//----------------------------------
-
+	//モデルの手のフレームＩＤ
+	static constexpr int HAND_FRAME_NUM = 10;
 	//パンチクールタイム
 	static constexpr float PUNCH_COOL_TIME = 0.5f;
 	// 回転完了までの時間
@@ -238,6 +246,9 @@ private:
 	void JumpUpdate(void);
 	void Jump(void);
 	void ChangeJump(void);
+
+	//ジャンプができる条件
+	bool CheckJumpInput(void);
 
 	//パンチ
 	void Punch(void);
