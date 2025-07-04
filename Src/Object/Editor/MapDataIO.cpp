@@ -386,7 +386,7 @@ std::string MapDataIO::GetFileName()
         break;
    
     case SceneManager::SCENE_ID::SOLO:
-        return path + "ChallengeStage.json";
+        return path + "ChallengeStage1.json";
         break;
 
     default:

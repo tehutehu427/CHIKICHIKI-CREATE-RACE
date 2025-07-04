@@ -79,6 +79,9 @@ void PlayerManager::Init(void)
 	{
 		player->Init();
 	}
+
+	//色を設定する
+	InitPlayerColor();
 }
 
 void PlayerManager::Update(void)
@@ -105,7 +108,6 @@ void PlayerManager::Draw(void)
 {
 	for (auto& p : players_)
 	{
-		p->ChangeModelColor({ 0.0f,0.0f,0.5f,1.0f });
 		p->Draw();
 	}
 }
@@ -133,7 +135,7 @@ void PlayerManager::SetInitPos(VECTOR _worldPos)
 bool PlayerManager::IsPlayersEnd(void)
 {
 	//プレイヤーがまだ操作中か調べる
-	for (auto & player : players_)
+	for (auto& player : players_)
 	{
 		//ゴールしていない、かつ倒れていない時
 		if (!player->IsDeath() && !player->IsGoal())
@@ -164,5 +166,21 @@ Transform PlayerManager::FixTrans(int _playerNum)
 
 	trans.localPos = { 0.0f,-Player::RADIUS,0.0f };
 	return trans;
+}
+
+void PlayerManager::InitPlayerColor()
+{
+	//マルチ以外は設定を行わない
+	if (SceneManager::GetInstance().GetSceneID() != SceneManager::SCENE_ID::MULTI)
+	{
+		//色はデフォルトの白になる
+		return;
+	}
+
+	//各プレイヤーごとに色を設定
+	for (int i = 0; i < players_.size(); i++)
+	{
+		players_[i]->ChangeModelColor(PLAYER_COLOR[i]);
+	}
 }
 

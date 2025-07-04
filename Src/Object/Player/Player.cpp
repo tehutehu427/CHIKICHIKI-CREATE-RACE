@@ -11,6 +11,9 @@
 
 #include "../../Manager/System/Camera.h"
 
+#include "../../Renderer/ModelMaterial.h"
+#include "../../Renderer/ModelRenderer.h"
+
 #include "../../Object/Common/Geometry/Sphere.h"
 #include "../../Object/Common/Geometry/Line.h"
 #include"../../Object/Common/Geometry/Model.h"
@@ -26,8 +29,6 @@
 #include"./PlayerOnHit.h"
 #include "./Process/PlayerInput.h"
 #include "./Shadow.h"
-#include "../Common/ToonStyle.h"
-
 #include<algorithm>
 
 
@@ -38,7 +39,8 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	, tag_(_tag)
 {
 	trans_ = Transform();
-	toon_ = nullptr;
+	material_ = nullptr;
+	renderer_ = nullptr;
 
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
@@ -98,9 +100,8 @@ void Player::Load(void)
 	onHitCol_->Load();
 
 	//トゥーンにする
-	toon_ = std::make_unique<ToonStyle>();
-	toon_->Load(trans_.modelId, ToonStyle::MESH_TYPE::CHICKEN);
-	toon_->SetModelColor(1.0f, 0.8f, 0.0f, 1.0f);
+	material_ = std::make_unique<ModelMaterial>("ChickenOutlineVS.cso", 1, "OutlinePS.cso", 1);
+	renderer_ = std::make_unique<ModelRenderer>(trans_.modelId, *material_);
 }
 
 void Player::Init(void)
@@ -125,12 +126,15 @@ void Player::Init(void)
 
 	goalTime_ = 0.0f;
 
-	toon_->Init();
+	//バッファー設定
+	material_->AddConstBufVS(FLOAT4{ 3.0f,0.0f,0.0f ,0.0f });	//輪郭線太さ
+	material_->AddConstBufPS(FLOAT4{ 0.0f,0.0f,0.0f ,1.0f });	//輪郭線カラー
 
 	//当たり判定
 	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_,tag_);
 	onHitCol_->Init();
 
+	//更新
 	trans_.Update();
 }
 
@@ -154,9 +158,21 @@ void Player::Update(void)
 
 void Player::Draw(void)
 {
-	//MV1DrawModel(trans_.modelId);
-	toon_->Draw();
+	//モデル描画のZBufferを無効にする
+	MV1SetWriteZBuffer(trans_.modelId, false);
+
+	//アウトライン描画
+	renderer_->Draw();
+
+	//モデル描画のZBufferを戻す
+	MV1SetWriteZBuffer(trans_.modelId, true);
+
+	//通常描画
+	MV1DrawModel(trans_.modelId);
+	
+	//影の描画
 	shadow_->Draw();
+
 #ifdef DEBUG_ON
 	//DrawDebug();
 #endif // DEBUG_ON

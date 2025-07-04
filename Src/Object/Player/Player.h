@@ -12,8 +12,10 @@ class Camera;
 class PlayerAction;
 class PlayerOnHit;
 class DateBank;
-class ToonStyle;
 class Shadow;
+
+class ModelMaterial;
+class ModelRenderer;
 
 class Player :public ObjectBase
 {
@@ -217,15 +219,15 @@ private:
 	//当たった時の処理クラス
 	std::unique_ptr<PlayerOnHit>onHitCol_;
 
-	//トゥーン
-	std::unique_ptr<ToonStyle> toon_;
+	//アウトライン
+	std::unique_ptr<ModelMaterial> material_;
+	std::unique_ptr<ModelRenderer> renderer_;
 
 	//影
 	std::unique_ptr<Shadow>shadow_;
+
 	// アニメーション
 	std::unique_ptr<AnimationController> animationController_;
-
-
 
 	//メンバ変数
 	//--------------------------------------------
