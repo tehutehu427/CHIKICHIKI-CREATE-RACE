@@ -308,6 +308,11 @@ const bool Player::GetIsLandHit(void)
 	return onHitCol_->GetIsLandHit();
 }
 
+const bool Player::GetIsSlimeFloor(void)
+{
+	return onHitCol_->GetIsSlimeHit();
+}
+
 const bool Player::IsGoal(void) const
 {
 	return state_ == PLAYER_STATE::GOAL;

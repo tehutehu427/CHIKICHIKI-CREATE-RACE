@@ -136,6 +136,9 @@ public:
 	//地面に当たっているか
 	const bool GetIsLandHit(void);
 
+	//スライム床と当たっているか
+	const bool GetIsSlimeFloor(void);
+
 	//ゴール判定の取得
 	const bool IsGoal(void)const;
 
