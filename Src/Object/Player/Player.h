@@ -34,6 +34,9 @@ public:
 	//パンチの範囲
 	static constexpr float PUNCH_RADIUS = 30.0f;
 
+	//デフォルトのアニメーションスピード
+	static constexpr float DEFAULT_ANIM_SPD = 60.0f;
+
 	//******************************************
 
 
@@ -197,7 +200,6 @@ private:
 	//***********************************
 	//アニメーション関連
 	//***********************************
-	static constexpr float DEFAULT_SPD = 60.0f;
 
 	//当たり判定を行う範囲
 	static constexpr int COL_RANGE = 1;

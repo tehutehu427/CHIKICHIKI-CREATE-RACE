@@ -82,7 +82,7 @@ public:
 	/// </summary>
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのTransform</returns>
-	Transform GetDummyItemTransform(int playerNum);
+	const Transform GetDummyItemTransform(int playerNum);
 	/// <summary>
 	/// ダミーアイテムを置き換える
 	/// </summary>
