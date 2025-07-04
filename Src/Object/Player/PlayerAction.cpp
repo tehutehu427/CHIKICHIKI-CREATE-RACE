@@ -20,7 +20,6 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	//----------------------------------------------------
 	changeAction_.emplace(ATK_ACT::NONE, [this]() {ChangeNone(); });
 	changeAction_.emplace(ATK_ACT::MOVE, [this]() {ChangeMove(); });
-	changeAction_.emplace(ATK_ACT::DASHMOVE, [this]() {ChangeDashMove(); });
 	changeAction_.emplace(ATK_ACT::INPUT, [this]() {ChangeInput(); });
 	changeAction_.emplace(ATK_ACT::JUMP, [this]() {ChangeJump(); });
 	changeAction_.emplace(ATK_ACT::PUNCH, [this]() {ChangePunch(); });
@@ -110,14 +109,9 @@ void PlayerAction::ActionInputUpdate(void)
 {
 	//入力に応じてアクションを変える
 	using ACT_CNTL = PlayerInput::ACT_CNTL;
-	if (input_->CheckAct(ACT_CNTL::MOVE))
+	if (input_->CheckAct(ACT_CNTL::MOVE)|| input_->CheckAct(ACT_CNTL::DASHMOVE))
 	{
 		ChangeAction(ATK_ACT::MOVE);
-		return;
-	}
-	if(input_->CheckAct(ACT_CNTL::DASHMOVE))
-	{
-		ChangeAction(ATK_ACT::DASHMOVE);
 		return;
 	}
 
@@ -157,15 +151,7 @@ void PlayerAction::ChangeNone(void)
 
 void PlayerAction::MoveUpdate(void)
 {
-	//移動入力中に受け付ける処理
-	if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
-	{
-		ChangeAction(ATK_ACT::DASHMOVE);
-	}
-	else if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
-	{
-		ChangeAction(ATK_ACT::MOVE);
-	}
+	Speed();
 	//移動中に入力が入った時の状態遷移
 	if (CheckJumpInput())
 	{
@@ -222,13 +208,7 @@ void PlayerAction::ChangeMove(void)
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
 }
 
-void PlayerAction::ChangeDashMove(void)
-{
-	speed_ = DASH_SPEED;
-	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
-	animationController_.SetAnimSpeed(DASH_ANIM_SPEED);
-	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
-}
+
 
 void PlayerAction::UpdateMoveDirAndPow(void)
 {
@@ -238,9 +218,8 @@ void PlayerAction::UpdateMoveDirAndPow(void)
 	movePow_ = VScale(moveDir_, speed_);
 }
 
-void PlayerAction::JumpUpdate(void)
+void PlayerAction::Speed(void)
 {
-	//移動入力があったらスピードセット
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
 	{
 		speed_ = MOVE_SPEED;
@@ -253,7 +232,16 @@ void PlayerAction::JumpUpdate(void)
 	{
 		speed_ = 0.0f;
 	}
-		
+	if (speed_ > 0.0f && player_.GetIsSlimeFloor())
+	{
+		speed_ /= 2.0f;
+	}
+}
+
+void PlayerAction::JumpUpdate(void)
+{
+	//移動入力があったらスピードセット
+	Speed();
 	//ジャンプ処理
 	Jump();
 }

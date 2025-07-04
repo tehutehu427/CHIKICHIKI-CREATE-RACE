@@ -117,6 +117,10 @@ private:
 	//----------------------------------
 	//移動スピード
 	static constexpr float MOVE_SPEED = 6.0f;
+
+	//スライム床上での移動速度(通常)
+	static constexpr float SLIME_FLOOR_MOVE_SPD = 3.0f;
+
 	//ダッシュスピード
 	static constexpr float DASH_SPEED = 11.0f;
 	//ぶっ飛ぶスピード
@@ -236,11 +240,10 @@ private:
 	void MoveDirFronInput(void);
 	//移動状態変更
 	void ChangeMove(void);
-	//ダッシュ状態(更新はMoveと同じ)
-	void ChangeDashMove(void);
-
 	//毎フレーム移動方向とスピードを更新する
 	void UpdateMoveDirAndPow(void);
+	//移動速度
+	void Speed(void);
 
 	//ジャンプ
 	void JumpUpdate(void);
