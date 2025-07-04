@@ -332,30 +332,30 @@ void EditController::MoveRotateObjectDraw(void)
 		switch (moveDir_)
 		{
 		case EditController::MOVE_DIR::NONE:
-			DrawXArrow(worldPos);
-			DrawYArrow(worldPos);
-			DrawZArrow(worldPos);
+			DrawXArrow(worldPos,false);
+			DrawYArrow(worldPos,false);
+			DrawZArrow(worldPos,false);
 			break;
 		case EditController::MOVE_DIR::X:
-			DrawXArrow(worldPos);
+			DrawXArrow(worldPos,true);
 			break;
 		case EditController::MOVE_DIR::Y:
-			DrawYArrow(worldPos);
+			DrawYArrow(worldPos,true);
 			break;
 		case EditController::MOVE_DIR::Z:
-			DrawZArrow(worldPos);
+			DrawZArrow(worldPos,true);
 			break;
 		case EditController::MOVE_DIR::XY:
-			DrawXArrow(worldPos);
-			DrawYArrow(worldPos);
+			DrawXArrow(worldPos,true);
+			DrawYArrow(worldPos,true);
 			break;
 		case EditController::MOVE_DIR::XZ:
-			DrawXArrow(worldPos);
-			DrawZArrow(worldPos);
+			DrawXArrow(worldPos,true);
+			DrawZArrow(worldPos,true);
 			break;
 		case EditController::MOVE_DIR::YZ:
-			DrawYArrow(worldPos);
-			DrawZArrow(worldPos);
+			DrawYArrow(worldPos,true);
+			DrawZArrow(worldPos,true);
 			break;
 		default:
 			break;
@@ -927,25 +927,25 @@ bool EditController::IsChengeVecDir(const VECTOR vec1, const VECTOR vec2) const
 	return false;
 }
 
-void EditController::DrawXArrow(VECTOR worldPos)
+void EditController::DrawXArrow(VECTOR worldPos, bool isBig)
 {
-	DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)), 0x0000ff);	//X軸の線
+	DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_R,isBig?MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), Utility::RED);	//X軸の線
 	//DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE,32, 0x0000ff, 0x0000ff,true);	//X軸の先端
-	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_SIZE + MOVE_ARROW_LENGTH)), VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)), MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::BLUE, Utility::BLUE, true);	//X軸の先端
+	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_R, (isBig ? MOVED_ARROW_SIZE : MOVE_ARROW_SIZE) + (isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH))), VAdd(worldPos, VScale(Utility::DIR_R, isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), isBig ? MOVED_ARROW_RADIUS : MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::RED, Utility::RED, true);	//X軸の先端
 }
 
-void EditController::DrawYArrow(VECTOR worldPos)
+void EditController::DrawYArrow(VECTOR worldPos, bool isBig)
 {
-	DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), 0x00ff00);	//Y軸の線
+	DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_U, isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), Utility::GREEN);	//Y軸の線
 	//DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE, 32, 0x00ff00, 0x00ff00, true);	//Y軸の先端
-	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_SIZE + MOVE_ARROW_LENGTH)), VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::GREEN, Utility::GREEN, true);	//Y軸の先端
+	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_U, (isBig ? MOVED_ARROW_SIZE : MOVE_ARROW_SIZE) + (isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH))), VAdd(worldPos, VScale(Utility::DIR_U, isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), isBig ? MOVED_ARROW_RADIUS : MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::GREEN, Utility::GREEN, true);	//Y軸の先端
 }
 
-void EditController::DrawZArrow(VECTOR worldPos)
+void EditController::DrawZArrow(VECTOR worldPos, bool isBig)
 {
-	DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), 0xff0000);	//Z軸の線
+	DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_F, isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), Utility::BLUE);	//Z軸の線
 	//DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE, 32, 0xff0000, 0xff0000, true);	//Z軸の先端
-	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_SIZE + MOVE_ARROW_LENGTH)), VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::RED, Utility::RED, true);	//Z軸の先端
+	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_F, (isBig ? MOVED_ARROW_SIZE : MOVE_ARROW_SIZE) + (isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH))), VAdd(worldPos, VScale(Utility::DIR_F, isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), isBig ? MOVED_ARROW_RADIUS : MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::BLUE, Utility::BLUE, true);	//Z軸の先端
 }
 
 void EditController::SetCameraPosToDummyObject(void)

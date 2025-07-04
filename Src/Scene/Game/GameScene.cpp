@@ -303,6 +303,10 @@ void GameScene::UpdateClear(void)
 void GameScene::DrawEdit(void)
 {
 	auto screenIndex = SceneManager::GetInstance().GetScreenIndex();
+	if (DateBank::GetInstance().GetPlayerNum() == 3 && screenIndex == 3)
+	{
+		screenIndex = 2;
+	}
 	if (isGrid_[screenIndex])
 	{
 		//グリッド
@@ -314,9 +318,9 @@ void GameScene::DrawEdit(void)
 	//{ 
 	editControllers_[screenIndex]->Draw();
 	//}
-
 	//アイテム
 	ItemManager::GetInstance().Draw();
+
 
 	//パレット
 	palette_->Draw();

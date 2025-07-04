@@ -16,8 +16,14 @@ public:
 	static constexpr float MOVE_ARROW_LENGTH = 75.0f;	//移動矢印の長さ
 	static constexpr float MOVE_ARROW_RADIUS = 15.0f;		//移動矢印の先端の半径
 	static constexpr float MOVE_ARROW_SIZE = 60.0f;		//移動矢印の先端の長さ
+
+	static constexpr float MOVED_ARROW_LENGTH = 100.0f;	//移動時の矢印の長さ
+	static constexpr float MOVED_ARROW_RADIUS = 30.0f;		//移動時の矢印の先端の半径
+	static constexpr float MOVED_ARROW_SIZE = 90.0f;		//移動時の矢印の先端の長さ
+
 	static constexpr int MOVE_ARROW_VARTEXNUM = 32;	//移動矢印の先端の頂点数
-	static constexpr int DELAY_MOVE_ARROW = 50;			//移動矢印の先端からの猶予座標
+	static constexpr int DELAY_MOVE_ARROW = 30;			//移動矢印の先端からの猶予座標
+
 	static constexpr int CURSOR_LOCAL_POS_X = 16;	//カーソルのローカル座標X
 	static constexpr int CURSOR_LOCAL_POS_Y = 16;	//カーソルのローカル座標X
 	static constexpr int CURSOR_POINT = 2;			//カーソルのポイントサイズ
@@ -163,9 +169,9 @@ private:
 
 	bool IsChengeVecDir(const VECTOR vec1, const VECTOR vec2) const;	//ベクトルの方向が変わったか　変わったら　true
 
-	void DrawXArrow(VECTOR worldPos);	//X方向の矢印を描画
-	void DrawYArrow(VECTOR worldPos);	//Y方向の矢印を描画
-	void DrawZArrow(VECTOR worldPos);	//Z方向の矢印を描画
+	void DrawXArrow(VECTOR worldPos, bool isBig);	//X方向の矢印を描画
+	void DrawYArrow(VECTOR worldPos, bool isBig);	//Y方向の矢印を描画
+	void DrawZArrow(VECTOR worldPos, bool isBig);	//Z方向の矢印を描画
 
 	void SetCameraPosToDummyObject(void);	//ダミーオブジェクトにカメラを近づける
 
