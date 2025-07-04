@@ -60,7 +60,7 @@ public:
 	enum class CAMERA_MODE	//エディット時のカメラ
 	{
 		FREE,				//自由移動
-		FOLLOW_DUMMY,		//ダミーを追従
+		GO_DUMMY,		//ダミー
 		FIXED_UP,			//上固定
 		MAX,
 	};

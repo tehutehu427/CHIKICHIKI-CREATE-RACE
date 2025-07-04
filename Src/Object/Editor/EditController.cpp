@@ -71,7 +71,10 @@ void EditController::Update(void)
 
 	//モード別更新処理
 	modeUpdate_();
-
+	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_CHENGE, padNum_))
+	{
+		ChengeCameraMode();
+	}
 	if (moveDir_ == MOVE_DIR::NONE)
 	{
 		ItemNotSelect();
@@ -960,11 +963,12 @@ void EditController::ChengeCameraMode(void)
 	CAMERA_MODE nextMode = static_cast<CAMERA_MODE>((static_cast<int>(cameraMode_) + 1) % static_cast<int>(CAMERA_MODE::MAX));
 	auto& sceneM = SceneManager::GetInstance();
 	auto camera = sceneM.GetCamera(playerNum_).lock();
-	if (ItemManager::GetInstance().IsDummyItem(playerNum_) && nextMode == CAMERA_MODE::FOLLOW_DUMMY)
+	if (!ItemManager::GetInstance().IsDummyItem(playerNum_) && nextMode == CAMERA_MODE::GO_DUMMY)
 	{
 		nextMode = static_cast<CAMERA_MODE>((static_cast<int>(nextMode) + 1) % static_cast<int>(CAMERA_MODE::MAX));
 	}
-	const auto dummyTran = ItemManager::GetInstance().GetDummyItemTransform(playerNum_);
+	cameraMode_ = nextMode;
+	auto dummyTran = ItemManager::GetInstance().GetDummyItemTransform(playerNum_);
 	switch (nextMode)
 	{
 	case EditController::CAMERA_MODE::FREE:
@@ -973,19 +977,30 @@ void EditController::ChengeCameraMode(void)
 		camera->SetAngles(cAngles_);
 		camera->SetTargetPos(cTargetPos_);
 		break;
-	case EditController::CAMERA_MODE::FOLLOW_DUMMY:
-		camera->ChangeMode(Camera::MODE::FOLLOW);
-		camera->SetFollow(&dummyTran);
+	case EditController::CAMERA_MODE::GO_DUMMY:
+	{
+		VECTOR tPos = dummyTran.pos;
+		tPos = VAdd(tPos, VECTOR(MapEditer::GRID_SIZE, MapEditer::GRID_SIZE, MapEditer::GRID_SIZE));
+		//VECTOR cPos = VSub(tPos, VScale(VNorm(VAdd(Utility::DIR_F,Utility::DIR_U)), 500));
+		//VECTOR cPos = VSub(tPos, VScale(Utility::DIR_F, 500));
+		VECTOR cDir = camera->GetForward();
+		VECTOR cPos = VSub(tPos, VScale(cDir, 500));
+		camera->SetPos(cPos);
+		 //VECTOR cDir = VSub(tPos, cPos);
+		//camera->SetAngles(cDir);
 		break;
+	}
 	case EditController::CAMERA_MODE::FIXED_UP:
+	{
 		cPos_ = camera->GetPos();
 		cAngles_ = camera->GetAngles();
 		cTargetPos_ = camera->GetTargetPos();
-		camera->ChangeMode(Camera::MODE::FIXED_DIAGONAL);
-		VECTOR pos = { MapEditer::MAP_SIZE.x / 2 * MapEditer::GRID_SIZE,5000,MapEditer::MAP_SIZE.z / 2 * MapEditer::GRID_SIZE };
+		camera->ChangeMode(Camera::MODE::FIXED_UP);
+		VECTOR pos = { MapEditer::MAP_SIZE.x / 2 * MapEditer::GRID_SIZE,3500,MapEditer::MAP_SIZE.z / 2 * MapEditer::GRID_SIZE };
 		camera->SetPos(pos);
 		camera->SetTargetPos(VAdd(pos, { 0.0f,-5000.0f,0.0f }));
 		break;
+	}
 	case EditController::CAMERA_MODE::MAX:
 		break;
 	default:
