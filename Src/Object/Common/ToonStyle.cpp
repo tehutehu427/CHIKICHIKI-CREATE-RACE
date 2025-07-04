@@ -49,7 +49,7 @@ void ToonStyle::Init()
 	toonMaterial_->AddConstBufPS(FLOAT4{ 1.0f,1.0f, 1.0f, 1.0f });		//色
 	toonMaterial_->AddConstBufPS(FLOAT4{ 1.0f,1.0f, 1.0f, 1.0f });		//光の色
 	toonMaterial_->AddConstBufPS(FLOAT4{ 0.4f, 0.3f, 0.3f, 1.0f });		//影の色
-	toonMaterial_->AddConstBufPS(FLOAT4{ 0.0f, 0.0f, 0.0f, 1.0f });		//環境光
+	toonMaterial_->AddConstBufPS(FLOAT4{ 0.1f, 0.1f, 0.1f, 1.0f });		//環境光
 	toonMaterial_->AddConstBufPS(FLOAT4{ GetLightDirection().x,GetLightDirection().y, GetLightDirection().z, 0.0f });//ライト方向
 }
 

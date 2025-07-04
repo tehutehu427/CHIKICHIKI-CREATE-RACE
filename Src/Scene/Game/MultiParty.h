@@ -37,6 +37,9 @@ public:
 	/// </summary>
 	void Reset() override;
 
+	//ラウンドリセット
+	void RoundReset();
+
 private:
 
 	//ラウンド遷移タイム

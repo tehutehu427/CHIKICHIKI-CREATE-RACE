@@ -9,7 +9,6 @@
 #include "../../Common/FontRegistry.h"
 #include "../../Manager/System/InputManager.h"
 #include "../../Manager/System/DateBank.h"
-#include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/Game/ItemManager.h"
@@ -26,6 +25,9 @@ namespace
             Application::SCREEN_HALF_X - OFFSET_POS.x,
             Application::SCREEN_HALF_Y + OFFSET_POS.y,
     };
+
+    //パス指定
+    const std::string path_json = Application::PATH_JSON;
 }
 
 MapDataIO::MapDataIO(const Vector2& _padCursorPos):
@@ -48,6 +50,11 @@ MapDataIO::MapDataIO(const Vector2& _padCursorPos):
     RegisterState(STATE::CHECK_EXPORT, [&]() { UpdateCheckExport(); }, [&]() { DrawCheckExport(); });
     RegisterState(STATE::CHECK_IMPORT, [&]() { UpdateCheckImport(); }, [&]() { DrawCheckImport(); });
 
+    //モード別に処理を登録
+    RegisterGetFileName(SceneManager::SCENE_ID::FREE, [&]() { return GetFreeFileName(); });
+    RegisterGetFileName(SceneManager::SCENE_ID::SOLO, [&]() {return GetSoloFileName(); });
+    RegisterGetFileName(SceneManager::SCENE_ID::MULTI, [&]() {return GetMultiFileName(); });
+
     //メッセージを設定
     messages_[static_cast<int>(MESSAGE_TYPE::IMPORT)] = "今配置してるアイテムは消えますがよろしいですか？";
     messages_[static_cast<int>(MESSAGE_TYPE::EXPORT)] = "データを保存しますか？";
@@ -69,7 +76,7 @@ MapDataIO::~MapDataIO()
 void MapDataIO::Load()
 {
     //ファイルパスの指定
-    selectFile_ = GetFileName();
+    selectFile_ = getFileNameMap_[SceneManager::GetInstance().GetSceneID()]();
     ImportJsonFile();
 
     //画像
@@ -372,26 +379,43 @@ std::unordered_map<ItemBase::ITEM_TYPE, MapDataIO::ImportData> MapDataIO::LoadIt
     return items;
 }
 
-std::string MapDataIO::GetFileName()
+std::string MapDataIO::GetFreeFileName()
 {
-    //パス指定
-    std::string path = Application::PATH_JSON;
+    return path_json + "DefaultStage.json";
+}
 
-    //シーンごとに呼び出すファイルを変える
-    switch (SceneManager::GetInstance().GetSceneID())
+std::string MapDataIO::GetSoloFileName()
+{
+    return path_json + "ChallengeStage1.json";
+}
+
+std::string MapDataIO::GetMultiFileName()
+{
+    int randNum = GetRand(MULTI_STAGE_TYPES);
+    switch (randNum)
     {
-    case SceneManager::SCENE_ID::MULTI:
-    case SceneManager::SCENE_ID::FREE:
-        return path + "DefaultStage.json";
+    case 0:
+        return "MultiStage1.json";
         break;
-   
-    case SceneManager::SCENE_ID::SOLO:
-        return path + "ChallengeStage1.json";
+    case 1:
+        return "MultiStage2.json";
+        break;
+    case 2:
+        return "MultiStage3.json";
+        break;
+    case 3:
+        return "MultiStage4.json";
         break;
 
     default:
+        return "MultiStage1.json";
         break;
     }
+}
+
+void MapDataIO::RegisterGetFileName(const SceneManager::SCENE_ID _sceneId, std::function<std::string()> _func)
+{
+    getFileNameMap_[_sceneId] = _func;
 }
 
 void MapDataIO::RegisterState(const STATE _state, std::function<void()> _update, std::function<void()> _draw)

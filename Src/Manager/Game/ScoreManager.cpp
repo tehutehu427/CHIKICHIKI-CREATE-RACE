@@ -59,24 +59,26 @@ void ScoreManager::SetPlayersScore()
 	int ret = playerTimes.size() == scores_.size() ? 0 : -1;
 	assert(ret != -1);
 
-	//昇順にソートしたクリアタイムを取得
-	std::vector<float> sortTimes = playerTimes;
-	std::sort(sortTimes.begin(), sortTimes.end());
+	// プレイヤーのインデックスとタイムをペアで保持
+	std::vector<std::pair<int, float>> indexAndTime;
+	for (int i = 0; i < playerTimes.size(); i++)
+	{
+		if (!pMng.IsPlayerDeath(i)) {
+			indexAndTime.emplace_back(i, playerTimes[i]);
+		}
+	}
 
-	//スコアを格納
-	for (int i = 0; i < scores_.size(); i++)
-	{	
-		//プレイヤーが倒れてるとき処理を無視する
-		if (pMng.IsPlayerDeath(i)) { continue; }
-		
-		//クリアタイム配列の中から一致する要素のインデックスを探す
-		auto it = std::find(sortTimes.begin(), sortTimes.end(), playerTimes[i]);
+	// タイムを基準に昇順ソート（小さいほど速い）
+	std::sort(indexAndTime.begin(), indexAndTime.end(),
+		[](const auto& a, const auto& b) {
+			return a.second < b.second;
+		});
 
-		//ランク取得
-		int rank = static_cast<int>(std::distance(playerTimes.begin(), it));
-		
-		//ランクに応じたスコアを取得
-		scores_[i] += GetScoreByRank(rank);
+	// ランクに応じてスコアを追加
+	for (int rank = 0; rank < indexAndTime.size(); rank++)
+	{
+		int playerIndex = indexAndTime[rank].first;
+		scores_[playerIndex] += GetScoreByRank(rank);
 	}
 }
 

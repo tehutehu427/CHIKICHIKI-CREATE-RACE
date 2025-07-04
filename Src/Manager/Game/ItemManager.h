@@ -10,7 +10,7 @@ class ItemManager
 {
 public:
 
-	static constexpr float DUMMY_ITEM_OPACITY_RATE = 0.5f;	//ダミーアイテムの半透明度
+	static constexpr float DUMMY_ITEM_OPACITY_RATE = 0.3f;	//ダミーアイテムの半透明度
 	static constexpr float DEFAULT_OPACITY_RATE = 1.0f;		//デフォルトの半透明度
 	static constexpr COLOR_F DUMMY_OVERLAP_COLOR = { 1.0f,0.1f,0.1f,DUMMY_ITEM_OPACITY_RATE };	//ダミーの重なっているときの色
 	static constexpr COLOR_F DUMMY_DEFAULT_COLOR = { 0.1f,0.1f,1.0f,DUMMY_ITEM_OPACITY_RATE };	//ダミーのデフォルトの色
