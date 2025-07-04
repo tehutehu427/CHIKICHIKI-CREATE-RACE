@@ -465,6 +465,7 @@ void SceneManager::DrawMultiScreen()
 			index == PlayerManager::PLAYER_NUM_MAX - 1)
 		{
 			index = 1;
+			screenIndex_ = 1;
 		}
 
 		//•ªŠ„ƒXƒNƒŠ[ƒ“‚Ìİ’è
