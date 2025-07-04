@@ -109,13 +109,10 @@ void PlayerOnHit::CollFloor(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 {
+	ItemBase& floor = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
+	VECTOR movePow = floor.GetMovePow();
+	movedPos_ = VAdd(movedPos_, floor.GetMovePow());
 	HitModelCommon(_hitCol);
-	//if (trans_.pos.y >= _hitCol.lock()->GetParent().GetTransform().pos.y)
-	//{
-		ItemBase& floor = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
-		VECTOR movePow = floor.GetMovePow();
-		movedPos_ = VAdd(movedPos_, floor.GetMovePow());
-	//}
 }
 
 void PlayerOnHit::CollSlimeFloor(const std::weak_ptr<Collider> _hitCol)
