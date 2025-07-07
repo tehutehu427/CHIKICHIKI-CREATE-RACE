@@ -1,6 +1,7 @@
 #pragma once
 
 #include<vector>
+#include<map>
 #include"../Common/Quaternion.h"
 
 class EffectController
