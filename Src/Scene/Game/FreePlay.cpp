@@ -70,17 +70,40 @@ void FreePlay::UpdateAction(void)
 void FreePlay::UpdateEdit(void)
 {	
 	//マニュアル
-	manual_->Update();
-	if (manual_->IsDisplay()) { return; }	//表示中は処理を止める
+	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT || mapIO_->IsEdit() && editEscape_->IsEdit()) { manual_->Update(); }
+	if (manual_->IsDisplay()) { return; }	//表示中は処理を止める	
+	
+	//編集終了
+	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT && mapIO_->IsEdit()) { editEscape_->Update(); }
 
 	//マップデータの更新
-	mapIO_->Update();
+	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT && editEscape_->IsEdit()) { mapIO_->Update(); }
 
-	//編集終了
-	editEscape_->Update();
-	
-	//親クラスの更新
-	GameScene::UpdateEdit();
+	//パレット
+	if (mapIO_->IsEdit() && editEscape_->IsEdit()) { palette_->Update(); }
+
+
+	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
+	{
+		KeyConfig& ins = KeyConfig::GetInstance();
+		auto keyType = DateBank::GetInstance().GetPlayerNum() == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
+		if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_GRID_ON_OFF, static_cast<KeyConfig::JOYPAD_NO>(i + 1), keyType))
+		{
+			isGrid_[i] = isGrid_[i] ? false : true;
+		}
+	}
+
+	//コントローラー
+	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT &&
+		mapIO_->IsEdit() &&
+		editEscape_->IsEdit())
+	{
+		for (auto& controller : editControllers_) { controller->Update(); }
+	}
+	else
+	{
+		for (auto& controller : editControllers_) { controller->CursorUpdate(); }
+	}
 }
 
 void FreePlay::ChangePhaseAction(void)
