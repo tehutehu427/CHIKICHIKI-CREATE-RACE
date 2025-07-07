@@ -50,6 +50,9 @@ void Shadow::Draw(void)
 	{
 		return;
 	}
+	alpha_ = alpha_ / 2;
+	alpha_ += ALPHA_MIN;
+
 	//‰e‚Ì•`‰æ
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha_ * 255.0f));
 	float angleDeg = 360.0f / VERTEX_NUM;
