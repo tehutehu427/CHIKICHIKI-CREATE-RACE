@@ -41,6 +41,7 @@ void Shadow::Update(void)
 {
 	alpha_ = 0.0f;
 	isDraw_ = false;
+	pos_ = {};
 }
 
 void Shadow::Draw(void)
@@ -80,7 +81,8 @@ void Shadow::OnHit(const std::weak_ptr<Collider> _hitCol)
 		//当たり判定をする
 		isDraw_ = true;
 		Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
-		pos_ = hitModel.GetHitLineInfo().HitPosition;
+		VECTOR hitPos = hitModel.GetHitLineInfo().HitPosition;
+		pos_ = (pos_.y > hitPos.y) ? pos_ :hitPos;
 		pos_.y += 0.5f; //少し上に表示する
 		alpha_ =1.0 - (abs(VSub(parentTrans_.pos, pos_).y)/ LINE_RANGE); //親の位置からの距離で透明度を変える
 		radius_ = RADIUS_MAX - ( alpha_ * (RADIUS_MAX - RADIUS)) + RADIUS; //透明度で半径を変える - RADIUS_MAX) + 
