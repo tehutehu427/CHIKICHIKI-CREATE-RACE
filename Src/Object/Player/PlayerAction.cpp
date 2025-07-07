@@ -20,6 +20,7 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	//----------------------------------------------------
 	changeAction_.emplace(ATK_ACT::NONE, [this]() {ChangeNone(); });
 	changeAction_.emplace(ATK_ACT::MOVE, [this]() {ChangeMove(); });
+	changeAction_.emplace(ATK_ACT::DASHMOVE, [this]() {ChangeDashMove(); });
 	changeAction_.emplace(ATK_ACT::INPUT, [this]() {ChangeInput(); });
 	changeAction_.emplace(ATK_ACT::JUMP, [this]() {ChangeJump(); });
 	changeAction_.emplace(ATK_ACT::PUNCH, [this]() {ChangePunch(); });
@@ -74,6 +75,19 @@ void PlayerAction::Init(void)
 	ChangeAction(ATK_ACT::INPUT);
 }
 
+void PlayerAction::Load(void)
+{
+	auto& res = ResourceManager::GetInstance();
+	//パンチモーション
+	punchMotionSE_ = res.Load(ResourceManager::SRC::PLAYER_PUNCH_MOTION).handleId_;
+
+	//ダッシュ
+	dashStartSE_= res.Load(ResourceManager::SRC::PLAYER_DASH_START).handleId_;
+
+
+	jump_= res.Load(ResourceManager::SRC::PLAYER_JUMP).handleId_;
+}
+
 void PlayerAction::Update(void)
 {
 	//入力更新
@@ -109,12 +123,16 @@ void PlayerAction::ActionInputUpdate(void)
 {
 	//入力に応じてアクションを変える
 	using ACT_CNTL = PlayerInput::ACT_CNTL;
-	if (input_->CheckAct(ACT_CNTL::MOVE)|| input_->CheckAct(ACT_CNTL::DASHMOVE))
+	if (input_->CheckAct(ACT_CNTL::MOVE))
 	{
 		ChangeAction(ATK_ACT::MOVE);
 		return;
 	}
-
+	if (input_->CheckAct(ACT_CNTL::DASHMOVE))
+	{
+		ChangeAction(ATK_ACT::DASHMOVE);
+		return;
+	}
 	if (input_->CheckAct(ACT_CNTL::PUNCH))
 	{
 		ChangeAction(ATK_ACT::PUNCH);
@@ -157,6 +175,10 @@ void PlayerAction::MoveUpdate(void)
 	{
 		ChangeAction(ATK_ACT::JUMP);
 		return;
+	}
+	if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
+	{
+		ChangeAction(ATK_ACT::DASHMOVE);
 	}
 	else if (input_->CheckAct(PlayerInput::ACT_CNTL::PUNCH))
 	{
@@ -205,6 +227,15 @@ void PlayerAction::ChangeMove(void)
 {
 	speed_ = MOVE_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
+	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
+}
+
+void PlayerAction::ChangeDashMove(void)
+{
+	speed_ = DASH_SPEED;
+	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
+	SoundManager::GetInstance().Play(dashStartSE_, SoundManager::PLAYTYPE::BACK); 
+	SoundManager::GetInstance().ChangeVolume(dashStartSE_,70); 
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
 }
 
@@ -298,6 +329,8 @@ void PlayerAction::ChangeJump(void)
 	//アニメーションの再生
 	animationController_.Play(
 		(int)Player::ANIM_TYPE::JUMP, false, JUMP_ANIM_START_FRAME, JUMP_ANIM_END_FRAME);
+	SoundManager::GetInstance().Play(jump_, SoundManager::PLAYTYPE::BACK);
+	if(player_.GetIsSlimeFloor())SetJumpDecel(SLIME_FLOOR_JUMP_POW);
 	//状態遷移
 	actionUpdate_ = [this]() {JumpUpdate(); };
 }
@@ -343,6 +376,9 @@ void PlayerAction::ChangePunch(void)
 	punchCoolCnt_ = PUNCH_COOL_TIME;
 	//アニメーション
 	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
+	////パンチ再生
+	SoundManager::GetInstance().Play(punchMotionSE_, SoundManager::PLAYTYPE::BACK);
+
 	actionUpdate_ = [this]() {Punch(); };
 }
 

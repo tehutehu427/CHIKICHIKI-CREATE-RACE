@@ -193,6 +193,16 @@ void ResourceManager::Init(void)
 	//--------------------------------------------------------------------
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "PunchHit.mp3");
 	resourcesMap_.emplace(SRC::PLAYER_PUNCH_HIT, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "PunchMotion.mp3");
+	resourcesMap_.emplace(SRC::PLAYER_PUNCH_MOTION, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "dash.mp3");
+	resourcesMap_.emplace(SRC::PLAYER_DASH_START, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "jump.mp3");
+	resourcesMap_.emplace(SRC::PLAYER_JUMP, std::move(res));
+
 	
 #pragma endregion 
 

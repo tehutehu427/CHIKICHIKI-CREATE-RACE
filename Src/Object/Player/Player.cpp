@@ -91,6 +91,7 @@ void Player::Load(void)
 
 	//ƒAƒNƒVƒ‡ƒ“
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
+	action_->Load();
 
 	//‰e
 	shadow_ = std::make_unique<Shadow>(trans_);
@@ -174,7 +175,7 @@ void Player::Draw(void)
 	shadow_->Draw();
 
 #ifdef DEBUG_ON
-	//DrawDebug();
+	DrawDebug();
 #endif // DEBUG_ON
 }
 
