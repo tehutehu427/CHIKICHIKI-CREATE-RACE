@@ -41,6 +41,8 @@ void SlimeFloor::SetParam(void)
 	//ÉRÉâÉCÉ_ÇÃçÏê¨
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
 	MakeCollider({ Collider::TAG::SLIME_FLOOR }, std::move(geo));
+
+	int texHandle = MV1GetMaterialNum(trans_.modelId);
 }
 
 void SlimeFloor::Update(void)

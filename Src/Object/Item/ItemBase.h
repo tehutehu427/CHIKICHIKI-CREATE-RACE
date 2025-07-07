@@ -126,13 +126,15 @@ protected:
 
 
 	//サイズの倍率調整
-	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;
+	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;	
+	
+	//シェーダーの設定
+	virtual void InitShader();
 
 private:
 
 
-	//シェーダーの設定
-	void InitShader();
+
 
 };
 

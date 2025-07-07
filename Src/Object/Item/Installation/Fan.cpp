@@ -2,6 +2,7 @@
 #include"../Manager/System/Resource.h"
 #include"../Manager/System/ResourceManager.h"
 #include"../../Common/Geometry/Model.h"
+#include"../../Common/ToonStyle.h"
 #include "../SubItem/Wind.h"
 #include "Fan.h"
 
@@ -76,4 +77,11 @@ void Fan::CreateWind(void)
 
 	//‰ŠúÝ’è
 	wind_->SetParam();
+}
+
+void Fan::InitShader()
+{
+	ItemBase::InitShader();
+
+	toonStyle_->SetTexturesIndex(-1.0f);
 }

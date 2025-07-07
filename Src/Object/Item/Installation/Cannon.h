@@ -3,6 +3,7 @@
 #include "../ItemBase.h"
 
 class CannonShot;
+class ToonStyle;
 
 class Cannon : public ItemBase
 {
@@ -53,6 +54,9 @@ public:
 
 private:
 
+	//シェーダー
+	std::unique_ptr<ToonStyle> toonBarrel_;
+
 	//弾関係
 	std::unique_ptr<CannonShot> shot_;		//弾
 	float shotCreateCnt_;					//弾の生成間隔カウンタ
@@ -77,5 +81,8 @@ private:
 
 	//弾の削除
 	void DeleteShot(void);
+
+	//シェーダーの設定
+	void InitShader(void) override;
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <string>
+#include <functional>
 #include "../../Renderer/ModelMaterial.h"
 #include "../../Renderer/ModelRenderer.h"
 
@@ -13,6 +14,7 @@ public:
 	/// </summary>
 	enum class MESH_TYPE
 	{
+		NORMAL,
 		MESH,
 		SKIN_MESH,
 	};
@@ -62,10 +64,19 @@ public:
 	/// <param name="_a">アルファ値</param>
 	void SetModelColor(const float _r, const float _g, const float _b, const float _a);
 
+	/// <summary>
+	/// テクスチャインデックスの設定
+	/// </summary>
+	/// <param name="_num">テクスチャ番号設定</param>
+	void SetTexturesIndex(const float _num);
+
 private:
 
 	//モデル
 	int model_;
+
+	//種類
+	MESH_TYPE type_;
 
 	//マテリアル
 	std::unique_ptr<ModelMaterial> toonMaterial_;	//トゥーン用
@@ -74,6 +85,15 @@ private:
 	//レンダー
 	std::unique_ptr<ModelRenderer> toonRenderer_;	//トゥーン用
 	std::unique_ptr<ModelRenderer> outlineRenderer_;//アウトライン用
+
+	//描画管理
+	std::function<void()> drawFunc_;
+
+	//通常描画
+	void NormalDrawModel();
+
+	//トゥーン描画
+	void ToonDrawModel();
 
 };
 

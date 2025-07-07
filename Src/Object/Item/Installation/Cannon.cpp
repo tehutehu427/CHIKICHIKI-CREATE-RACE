@@ -98,6 +98,7 @@ void Cannon::SetParam(void)
 	//ëÂñCÇÃÉGÉCÉÄîÕàÕ
 	std::unique_ptr<Sphere>aimGeo = std::make_unique<Sphere>(trans_.pos, AIM_RADIUS);
 	MakeCollider({ Collider::TAG::CANNON_AIM }, std::move(aimGeo));
+	
 }
 
 void Cannon::Update(void)
@@ -130,7 +131,8 @@ void Cannon::Draw(void)
 	//MV1DrawModel(trans_.modelId);
 	toonStyle_->Draw();
 	//ñCêgÇÃï`âÊ
-	MV1DrawModel(barrelTrans_.modelId);
+	toonBarrel_->Draw();
+	//MV1DrawModel(barrelTrans_.modelId);
 
 	//DrawFormatString(0, 32, 0xffffff, "%.2f,%.2f,%.2f", barrelTrans_.pos.x, barrelTrans_.pos.y, barrelTrans_.pos.z);
 	//DrawFormatString(0, 48, 0xffffff, "%.2f,%.2f,%.2f", turretAddRot_.x, turretAddRot_.y, turretAddRot_.z);
@@ -261,4 +263,17 @@ void Cannon::DeleteShot(void)
 	
 	//íeè¡ãé
 	shot_.reset();
+}
+
+void Cannon::InitShader(void)
+{
+	toonStyle_ = std::make_unique<ToonStyle>();
+	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::MESH);
+	toonStyle_->Init();
+	toonStyle_->SetTexturesIndex(-1.0f);
+
+	toonBarrel_ = std::make_unique <ToonStyle>();
+	toonBarrel_->Load(barrelTrans_.modelId, ToonStyle::MESH_TYPE::NORMAL);
+	toonBarrel_->Init();
+	toonBarrel_->SetTexturesIndex(-1.0f);
 }
