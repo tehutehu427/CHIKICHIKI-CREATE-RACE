@@ -67,20 +67,20 @@ public:
 	/// </summary>
 	/// <param name="_stageNo">ステージ番号</param>
 	/// <returns></returns>
-	inline const void SetStageNo(const int _stageNo) { stageNo_ = _stageNo; }
+	const void SetStageNo(const int _stageNo) { stageNo_ = _stageNo; }
 
 	/// <summary>
 	/// ステージの番号を返す
 	/// </summary>
 	/// <returns>ステージ番号</returns>
-	inline const int GetStageNo()const { return stageNo_; }
+	const int GetStageNo()const { return stageNo_; }
 
 	/// <summary>
 	/// アイテムの名前を返す
 	/// </summary>
 	/// <param name="_type">アイテムの種類</param>
 	/// <returns>アイテムネーム</returns>
-	inline const std::string GetItemName(const ItemBase::ITEM_TYPE _type)const { return itemNames_[static_cast<int>(_type)]; }
+	const std::string GetItemName(const ItemBase::ITEM_TYPE _type)const { return itemNames_[static_cast<int>(_type)]; }
 
 private:
 	static DateBank* instance_;

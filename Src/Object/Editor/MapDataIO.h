@@ -88,6 +88,12 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// エディットに制限を掛ける
+	/// </summary>
+	/// <returns>制限中はtrue,　それ以外はfalse</returns>
+	const bool IsEdit() const;
+
 private:	
 
 	//保尊メッセージ表示時間

@@ -9,6 +9,7 @@ SelectStage::SelectStage()
 {
 	stageIndex_ = 0;
 	selectIcon_ = -1;
+	
 }
 
 SelectStage::~SelectStage()

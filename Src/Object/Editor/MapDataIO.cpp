@@ -76,7 +76,7 @@ MapDataIO::~MapDataIO()
 void MapDataIO::Load()
 {
     //ファイルパスの指定
-    selectFile_ = getFileNameMap_[SceneManager::GetInstance().GetSceneID()]();
+    selectFile_ = Application::PATH_JSON + getFileNameMap_[SceneManager::GetInstance().GetSceneID()]();
     ImportJsonFile();
 
     //画像
@@ -126,6 +126,11 @@ void MapDataIO::Draw()
             stateMap_[state_].drawFunc();
         }
     }
+}
+
+const bool MapDataIO::IsEdit() const
+{
+    return state_ == STATE::NONE || state_ == STATE::WAIT;
 }
 
 void MapDataIO::ExportJsonFile(const std::string _fileName)
@@ -381,12 +386,27 @@ std::unordered_map<ItemBase::ITEM_TYPE, MapDataIO::ImportData> MapDataIO::LoadIt
 
 std::string MapDataIO::GetFreeFileName()
 {
-    return path_json + "DefaultStage.json";
+    return "DefaultStage.json";
 }
 
 std::string MapDataIO::GetSoloFileName()
 {
-    return path_json + "ChallengeStage1.json";
+    return "ChallengeStage1.json";
+
+    int selectNum = DateBank::GetInstance().GetStageNo();
+    switch (selectNum)
+    {
+    case 0:
+        return "ChallengeStage1.json";
+        break;
+    case 1:
+        return "ChallengeStage2.json";
+        break;
+
+    default:
+        return "ChallengeStage1.json";
+        break;
+    }
 }
 
 std::string MapDataIO::GetMultiFileName()
