@@ -86,8 +86,6 @@ void ItemBase::ResetValue(void)
 {
 	//ˆÊ’u‚ğ‰ŠúˆÊ’u‚É–ß‚·
 	trans_.pos = MapEditer::GetInstance().MapToWorldPos(InitMapPos_);
-	//‰ñ“]‚ğ0‚É
-	//trans_.quaRot = Quaternion();
 
 	//ƒ‚ƒfƒ‹‚Ö‚Ì”½‰f
 	trans_.Update();

@@ -26,7 +26,7 @@ public:
 	/// </summary>
 	/// <param name="_effHandle">エフェクトハンドル</param>
 	/// <param name="_type">ハンドルを保存したいタイプ</param>
-	void Add(const int _effHandle, const EFF_TYPE _type);
+	void Add(const int _effHandle, const EFF_TYPE _effType);
 
 	/// <summary>
 	/// エフェクトの再生
@@ -81,6 +81,14 @@ public:
 	/// <param name="_effType">止めたいエフェクトの種類</param>
 	/// <param name="_arrayNum">止めたいエフェクトの配列番号</param>
 	void Stop(const EFF_TYPE _effType, const int _arrayNum);
+
+	/// <summary>
+	/// 再生が終わっているか
+	/// </summary>
+	/// <param name="_effType">確認したいエフェクトの種類</param>
+	/// <param name="_arrayNum">確認したいエフェクトの配列番号</param>
+	/// <returns>true:再生が終わった</returns>
+	const bool IsEnd(const EFF_TYPE _effType, const int _arrayNum);
 
 private:
 

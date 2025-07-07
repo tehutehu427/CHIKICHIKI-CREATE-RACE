@@ -54,6 +54,9 @@ void Fan::Update(void)
 {
 	//•—‚ðˆê‚Â¶¬
 	if (wind_ == nullptr)CreateWind();
+
+	//•—‚ÌXV
+	wind_->Update();
 }
 
 void Fan::Draw(void)

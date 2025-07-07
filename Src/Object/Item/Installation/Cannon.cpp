@@ -211,6 +211,15 @@ void Cannon::ChangeModelColor(const COLOR_F _colorScale)
 
 }
 
+void Cannon::ResetValue(void)
+{
+	//’e‚ÌÁ‹
+	shot_.reset();
+
+	//‹¤’Ê
+	ItemBase::ResetValue();
+}
+
 void Cannon::RotateTurret(void)
 {
 	//‘ÎÛ‚Ü‚Å‚Ì‰ñ“]²
