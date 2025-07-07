@@ -55,6 +55,12 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 編集可能か返す
+	/// </summary>
+	/// <returns>trueなら編集可、falseのときは不可</returns>
+	const bool IsEdit() const; 
+
 private:
 
 	//フォントサイズ

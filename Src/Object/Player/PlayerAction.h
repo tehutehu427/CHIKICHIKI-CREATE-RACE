@@ -117,12 +117,19 @@ private:
 	//----------------------------------
 	//移動スピード
 	static constexpr float MOVE_SPEED = 6.0f;
+
+	//スライム床上での移動速度(通常)
+	static constexpr float SLIME_FLOOR_MOVE_SPD = 3.0f;
+
 	//ダッシュスピード
 	static constexpr float DASH_SPEED = 11.0f;
 	//ぶっ飛ぶスピード
 	static constexpr float FLY_AWAY_SPEED = 12.0f;
 	//落ちているときの重力制限(jumpPowに加算しているのでjumpPowに適用)
 	static constexpr float LIMIT_GRAVITY = -20.0f;
+
+	//ダッシュアニメーションスピード
+	static constexpr float DASH_ANIM_SPEED = 200.0f;
 
 	//----------------------------------
 	//ジャンプ
@@ -140,10 +147,15 @@ private:
 	//ジャンプアニメーションループ中のスピード
 	static constexpr float JUMP_ANIM_ATTACK_BLEND_TIME = 5.0f;
 
+	//ジャンプ開始アニメステップ
+	static constexpr float JUMP_ANIM_START_FRAME = 10.0f;
+	static constexpr float JUMP_ANIM_END_FRAME = 60.0f;
+
 	//----------------------------------
 	//パンチ
 	//----------------------------------
-
+	//モデルの手のフレームＩＤ
+	static constexpr int HAND_FRAME_NUM = 10;
 	//パンチクールタイム
 	static constexpr float PUNCH_COOL_TIME = 0.5f;
 	// 回転完了までの時間
@@ -228,16 +240,18 @@ private:
 	void MoveDirFronInput(void);
 	//移動状態変更
 	void ChangeMove(void);
-	//ダッシュ状態(更新はMoveと同じ)
-	void ChangeDashMove(void);
-
 	//毎フレーム移動方向とスピードを更新する
 	void UpdateMoveDirAndPow(void);
+	//移動速度
+	void Speed(void);
 
 	//ジャンプ
 	void JumpUpdate(void);
 	void Jump(void);
 	void ChangeJump(void);
+
+	//ジャンプができる条件
+	bool CheckJumpInput(void);
 
 	//パンチ
 	void Punch(void);

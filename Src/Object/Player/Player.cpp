@@ -11,6 +11,9 @@
 
 #include "../../Manager/System/Camera.h"
 
+#include "../../Renderer/ModelMaterial.h"
+#include "../../Renderer/ModelRenderer.h"
+
 #include "../../Object/Common/Geometry/Sphere.h"
 #include "../../Object/Common/Geometry/Line.h"
 #include"../../Object/Common/Geometry/Model.h"
@@ -26,8 +29,6 @@
 #include"./PlayerOnHit.h"
 #include "./Process/PlayerInput.h"
 #include "./Shadow.h"
-#include "../Common/ToonStyle.h"
-
 #include<algorithm>
 
 
@@ -38,7 +39,8 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	, tag_(_tag)
 {
 	trans_ = Transform();
-	toon_ = nullptr;
+	material_ = nullptr;
+	renderer_ = nullptr;
 
 
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
@@ -80,12 +82,12 @@ void Player::Load(void)
 
 	//リソースの読み込みなど
 	animationController_ = std::make_unique<AnimationController>(trans_.modelId);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_SPD / PlayerAction::PUNCH_TIME_MAX);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::WALK), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_ANIM_SPD / PlayerAction::PUNCH_TIME_MAX);
 
 	//アクション
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
@@ -98,8 +100,8 @@ void Player::Load(void)
 	onHitCol_->Load();
 
 	//トゥーンにする
-	toon_ = std::make_unique<ToonStyle>();
-	toon_->Load(trans_.modelId, ToonStyle::MESH_TYPE::SKIN_MESH);
+	material_ = std::make_unique<ModelMaterial>("ChickenOutlineVS.cso", 1, "OutlinePS.cso", 1);
+	renderer_ = std::make_unique<ModelRenderer>(trans_.modelId, *material_);
 }
 
 void Player::Init(void)
@@ -124,12 +126,15 @@ void Player::Init(void)
 
 	goalTime_ = 0.0f;
 
-	toon_->Init();
+	//バッファー設定
+	material_->AddConstBufVS(FLOAT4{ 3.0f,0.0f,0.0f ,0.0f });	//輪郭線太さ
+	material_->AddConstBufPS(FLOAT4{ 0.0f,0.0f,0.0f ,1.0f });	//輪郭線カラー
 
 	//当たり判定
 	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_,tag_);
 	onHitCol_->Init();
 
+	//更新
 	trans_.Update();
 }
 
@@ -153,9 +158,21 @@ void Player::Update(void)
 
 void Player::Draw(void)
 {
+	//モデル描画のZBufferを無効にする
+	MV1SetWriteZBuffer(trans_.modelId, false);
+
+	//アウトライン描画
+	renderer_->Draw();
+
+	//モデル描画のZBufferを戻す
+	MV1SetWriteZBuffer(trans_.modelId, true);
+
+	//通常描画
 	MV1DrawModel(trans_.modelId);
-	toon_->Draw();
+	
+	//影の描画
 	shadow_->Draw();
+
 #ifdef DEBUG_ON
 	//DrawDebug();
 #endif // DEBUG_ON
@@ -245,7 +262,7 @@ void Player::DeathUpdate(void)
 	//アニメーションループ
 	if (animationController_->GetAnimStep() >= FALL_ANIM_START)
 	{
-		animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_SPD);
+		animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_ANIM_SPD);
 	}
 }
 void Player::ChangeGoal(void)
@@ -263,7 +280,7 @@ void Player::GoalUpdate(void)
 	////アニメーションループ
 	//if (animationController_->GetAnimStep() >= FALL_ANIM_START)
 	//{
-	//	animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_SPD);
+	//	animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_ANIM_SPD);
 	//}
 }
 
@@ -289,6 +306,11 @@ void Player::TimeUpdate(void)
 const bool Player::GetIsLandHit(void)
 {
 	return onHitCol_->GetIsLandHit();
+}
+
+const bool Player::GetIsSlimeFloor(void)
+{
+	return onHitCol_->GetIsSlimeHit();
 }
 
 const bool Player::IsGoal(void) const

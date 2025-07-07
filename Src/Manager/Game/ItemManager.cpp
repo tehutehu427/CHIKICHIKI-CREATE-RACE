@@ -232,7 +232,7 @@ IntVector3 ItemManager::GetDummyItemSize(int playerNum)
 	return size;
 }
 
-Transform ItemManager::GetDummyItemTransform(int playerNum)
+const Transform ItemManager::GetDummyItemTransform(int playerNum)
 {
 	//ƒ‚ƒfƒ‹î•ñ
 	Transform transform;

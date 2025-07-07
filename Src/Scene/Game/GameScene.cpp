@@ -255,7 +255,7 @@ void GameScene::ChangePhaseClear(void)
 void GameScene::UpdateEdit(void)
 {
 	//パレット
-	palette_->Update();
+	if (mapIO_->IsEdit()) { palette_->Update(); }
 	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
 	{
 		KeyConfig& ins = KeyConfig::GetInstance();
@@ -266,7 +266,8 @@ void GameScene::UpdateEdit(void)
 		}
 	}
 
-	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT)
+	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT && 
+		mapIO_->IsEdit())
 	{
 		for (auto& controller : editControllers_) { controller->Update(); }
 	}
@@ -303,20 +304,20 @@ void GameScene::UpdateClear(void)
 void GameScene::DrawEdit(void)
 {
 	auto screenIndex = SceneManager::GetInstance().GetScreenIndex();
+
 	if (isGrid_[screenIndex])
 	{
 		//グリッド
 		grid_->Draw();
 	}
-
 	//エディットコントローラー
 	//for (auto& controller : editControllers_) 
 	//{ 
 	editControllers_[screenIndex]->Draw();
 	//}
-
 	//アイテム
 	ItemManager::GetInstance().Draw();
+
 
 	//パレット
 	palette_->Draw();

@@ -54,6 +54,11 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// リセット
+	/// </summary>
+	void Reset();
+
 private:
 
 	//待機用ステップ

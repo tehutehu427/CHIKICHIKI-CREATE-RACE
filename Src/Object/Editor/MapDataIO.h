@@ -5,6 +5,7 @@
 #include <functional>
 #include "../../Common/Vector2.h"
 #include "../Item/ItemBase.h"
+#include "../Manager/System/SceneManager.h"
 
 class ItemName;
 class YesNoResponder;
@@ -87,10 +88,19 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// エディットに制限を掛ける
+	/// </summary>
+	/// <returns>制限中はtrue,　それ以外はfalse</returns>
+	const bool IsEdit() const;
+
 private:	
 
 	//保尊メッセージ表示時間
 	static constexpr float MES_DISPLAY_TIME = 2.0f;
+
+	//マルチステージ種類
+	static constexpr float MULTI_STAGE_TYPES = 4;
 
 	//カーソル座標
 	const Vector2& padCursorPos_;
@@ -143,7 +153,11 @@ private:
 	//状態変更処理の管理
 	std::unordered_map<STATE, StateFuncs> stateMap_;
 
+	//モード別にファイルネームを取得
+	std::unordered_map<SceneManager::SCENE_ID, std::function<std::string()>> getFileNameMap_;
+
 	//状態の処理を登録
+	void RegisterGetFileName(const SceneManager::SCENE_ID _sceneId, std::function<std::string()> _func);
 	void RegisterState(const STATE _state, std::function<void()> _update, std::function<void()> _draw);
 
 	//状態変更処理
@@ -182,6 +196,9 @@ private:
 	std::unordered_map<ItemBase::ITEM_TYPE, ImportData> LoadItemsFromJson(const std::string& _filepath);
 
 	//ファイルネームを取得
-	std::string GetFileName();
+	std::string GetFreeFileName();
+	std::string GetSoloFileName();
+	std::string GetMultiFileName();
+
 
 };

@@ -80,6 +80,21 @@ void MultiParty::Reset()
 	ScoreManager::GetInstance().Init();
 }
 
+void MultiParty::RoundReset()
+{
+	//セレクトのリセット
+	palette_->Init();
+
+	//エディットのリセット
+	for (auto& e : editControllers_) { e->Reset(); }
+
+	//リザルトのリセット
+	result_->Reset();
+
+	//フェーズを遷移
+	ChangePhase(PHASE::ROUND_PHASE);
+}
+
 void MultiParty::NormalDraw(void)
 {
 	//親クラスの描画処理を呼ぶ
@@ -237,11 +252,11 @@ void MultiParty::CheckPlayerFinish()
 void MultiParty::DebagUpdate()
 {
 	//次のフェーズへ状態遷移する
-	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_MOUSE,KeyConfig::JOYPAD_NO::PAD1))
-	{
-		int phase = static_cast<int>(phase_);
-		int nextPhase = phase + 1;
-		if (nextPhase == static_cast<int>(PHASE::CLEAR_PHASE)) { nextPhase = 0; }
-		ChangePhase(static_cast<PHASE>(nextPhase));
-	}
+	//if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_MOUSE,KeyConfig::JOYPAD_NO::PAD1))
+	//{
+	//	int phase = static_cast<int>(phase_);
+	//	int nextPhase = phase + 1;
+	//	if (nextPhase == static_cast<int>(PHASE::CLEAR_PHASE)) { nextPhase = 0; }
+	//	ChangePhase(static_cast<PHASE>(nextPhase));
+	//}
 }

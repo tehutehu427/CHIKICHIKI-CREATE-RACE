@@ -12,8 +12,10 @@ class Camera;
 class PlayerAction;
 class PlayerOnHit;
 class DateBank;
-class ToonStyle;
 class Shadow;
+
+class ModelMaterial;
+class ModelRenderer;
 
 class Player :public ObjectBase
 {
@@ -31,6 +33,9 @@ public:
 
 	//パンチの範囲
 	static constexpr float PUNCH_RADIUS = 30.0f;
+
+	//デフォルトのアニメーションスピード
+	static constexpr float DEFAULT_ANIM_SPD = 60.0f;
 
 	//******************************************
 
@@ -131,6 +136,9 @@ public:
 	//地面に当たっているか
 	const bool GetIsLandHit(void);
 
+	//スライム床と当たっているか
+	const bool GetIsSlimeFloor(void);
+
 	//ゴール判定の取得
 	const bool IsGoal(void)const;
 
@@ -195,7 +203,6 @@ private:
 	//***********************************
 	//アニメーション関連
 	//***********************************
-	static constexpr float DEFAULT_SPD = 60.0f;
 
 	//当たり判定を行う範囲
 	static constexpr int COL_RANGE = 1;
@@ -217,15 +224,15 @@ private:
 	//当たった時の処理クラス
 	std::unique_ptr<PlayerOnHit>onHitCol_;
 
-	//トゥーン
-	std::unique_ptr<ToonStyle> toon_;
+	//アウトライン
+	std::unique_ptr<ModelMaterial> material_;
+	std::unique_ptr<ModelRenderer> renderer_;
 
 	//影
 	std::unique_ptr<Shadow>shadow_;
+
 	// アニメーション
 	std::unique_ptr<AnimationController> animationController_;
-
-
 
 	//メンバ変数
 	//--------------------------------------------

@@ -35,20 +35,21 @@ void ToonStyle::Load(int _modelId, const MESH_TYPE _type)
 	outlineRenderer_ = std::make_unique<ModelRenderer>(model_, *outlineMaterial_);
 
 	//トゥーンライト
-	toonMaterial_ = std::make_unique<ModelMaterial>(toonLightingVSName.c_str(), 0, "ToonPS.cso", 4);
+	toonMaterial_ = std::make_unique<ModelMaterial>(toonLightingVSName.c_str(), 0, "ToonPS.cso", 5);
 	toonRenderer_ = std::make_unique<ModelRenderer>(model_, *toonMaterial_);
 }
 
 void ToonStyle::Init()
 {
 	//アウトライン定数バッファの設定
-	outlineMaterial_->AddConstBufVS(FLOAT4{ 2.0f,0.0f,0.0f,0.0f });	//輪郭線の太さ
+	outlineMaterial_->AddConstBufVS(FLOAT4{ 5.0f,0.0f,0.0f,0.0f });	//輪郭線の太さ
 	outlineMaterial_->AddConstBufPS(FLOAT4{	0.0f,0.0f,0.0f,1.0f });	//輪郭線カラー(通常は黒)
 
 	//トゥーンライト定数バッファの設定
 	toonMaterial_->AddConstBufPS(FLOAT4{ 1.0f,1.0f, 1.0f, 1.0f });		//色
 	toonMaterial_->AddConstBufPS(FLOAT4{ 1.0f,1.0f, 1.0f, 1.0f });		//光の色
 	toonMaterial_->AddConstBufPS(FLOAT4{ 0.4f, 0.3f, 0.3f, 1.0f });		//影の色
+	toonMaterial_->AddConstBufPS(FLOAT4{ 0.1f, 0.1f, 0.1f, 1.0f });		//環境光
 	toonMaterial_->AddConstBufPS(FLOAT4{ GetLightDirection().x,GetLightDirection().y, GetLightDirection().z, 0.0f });//ライト方向
 }
 

@@ -57,37 +57,10 @@ void PlayerOnHit::Init(void)
 	isDeath_ = false;
 }
 
-
-
 void PlayerOnHit::Update(void)
 {
 	movedPos_ = VAdd(trans_.pos, action_.GetMovePow());
 	movedPos_ = VAdd(movedPos_, action_.GetJumpPow());
-
-#ifdef DEBUG_ON
-	//デバッグ床の移動
-	//CubeMove();
-
-	////デバッグ用床の当たり判定
-	//if (CollCube())
-	//{
-	//	movedPos_ = VAdd(movedPos_, cubeMovePos_);
-	//	action_.SetJumpPow(Utility::VECTOR_ZERO);
-	//	movedPos_.y = cube_.upPos.y + RADIUS;
-	//	action_.SetStepJump(0.0f);
-	//	if(action_.GetJumpDecel()<=-10.0f)action_.SetIsJump(false);
-	//	action_.SetJumpDecel(PlayerAction::POW_JUMP);
-	//}
-	//else
-	//{
-	//	action_.SetIsJump(true);
-	//	//if (jumpPow_.y <= LIMIT_GRAVITY)
-	//	//{
-	//	//	jumpPow_.y = LIMIT_GRAVITY;
-	//	//}
-	//}
-
-#endif // DEBUG_ON
 
 	//移動量ラインの更新
 	VECTOR moveVec = VSub(movedPos_, trans_.pos);
@@ -106,6 +79,7 @@ void PlayerOnHit::Update(void)
 			continue;
 		}
 		isLandHit_ = false;
+		isHitSlimeFloor_ = false;
 	}
 
 	//移動前の座標を格納する
@@ -138,21 +112,12 @@ void PlayerOnHit::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 	ItemBase& floor = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
 	VECTOR movePow = floor.GetMovePow();
 	movedPos_ = VAdd(movedPos_, floor.GetMovePow());
-
 	HitModelCommon(_hitCol);
 }
 
 void PlayerOnHit::CollSlimeFloor(const std::weak_ptr<Collider> _hitCol)
 {
-	PlayerAction::ATK_ACT act = action_.GetAct();
-	if (act == PlayerAction::ATK_ACT::MOVE)
-	{
-		action_.SetSpeed(SLIME_FLOOR_MOVE_SPD);
-	}
-	else if (act == PlayerAction::ATK_ACT::DASHMOVE)
-	{
-		action_.SetSpeed(SLIME_FLOOR_DASH_SPD);
-	}
+	isHitSlimeFloor_ = true;
 	action_.SetJumpDecel(SLIME_FLOOR_JUMP_POW);
 	HitModelCommon(_hitCol);
 }
@@ -182,12 +147,21 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 
 	//ノックバック状態遷移
 	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
+
+	//パンチヒット音再生
+	SoundManager::GetInstance().Play(punchHitSE_, SoundManager::PLAYTYPE::BACK);
 }
 
 void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 {
-	action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
+	//ジャンプ力の設定
 	HitModelCommon(_hitCol);
+	if (!isSide_)
+	{
+		action_.SetJumpDecel(SPRING_JUMP_POW);
+		action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
+	}
+
 }
 
 void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
@@ -258,6 +232,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	Transform trans = Transform(trans_);
 	trans.pos = movedPos_;
 	trans.Update();
+	isSide_ = false;
 	if (bodyShere->IsHit())
 	{
 		auto& hitInfo = hitModel.GetHitInfo();
@@ -271,7 +246,8 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 					, hit.Position[0], hit.Position[1], hit.Position[2]);
 				if (pHit)
 				{
-					movedPos_ = VAdd(movedPos_, hit.Normal);
+					isSide_ = true;
+ 					movedPos_ = VAdd(movedPos_, hit.Normal);
 					//カプセルを移動させる
 					trans.pos = movedPos_;
 					trans.Update();

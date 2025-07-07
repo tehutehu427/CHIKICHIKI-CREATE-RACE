@@ -66,6 +66,11 @@ void EditEscape::Draw()
 	stateFunc_[state_].drawFunc_();
 }
 
+const bool EditEscape::IsEdit() const
+{
+	return state_ == STATE::WAIT;
+}
+
 void EditEscape::RegisterStateFunction(const STATE _state, SceneBase::ProcessFunction _func)
 {
 	//ˆ—‚Ì“o˜^

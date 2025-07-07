@@ -15,6 +15,9 @@
     <FxCompile Include="Src\Shader\Model\ToonMeshVS.hlsl" />
     <FxCompile Include="Src\Shader\Model\OutlinePS.hlsl" />
     <FxCompile Include="Src\Shader\Model\ToonPS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\ChickenOutlineVS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\ChickenToonVS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\ChickenPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Object\System\Select\SelectStage.cpp" />

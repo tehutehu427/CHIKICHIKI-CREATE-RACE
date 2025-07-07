@@ -17,6 +17,9 @@ public:
 
 	//スライム床上でのジャンプ力
 	static constexpr float SLIME_FLOOR_JUMP_POW = 10.0f;
+
+	//スライム床上でのジャンプ力
+	static constexpr float SPRING_JUMP_POW = 30.0f;
 	struct CUBE
 	{
 		VECTOR centerPos;
@@ -61,16 +64,19 @@ public:
 
 	//ゲッタ
 	//移動後座標の取得
-	const VECTOR GetMovedPos(void) const { return movedPos_; }
+	inline const VECTOR GetMovedPos(void) const { return movedPos_; }
 
 	//死亡判定の取得
-	const bool GetIsDeath(void)const { return isDeath_; }
+	inline const bool GetIsDeath(void)const { return isDeath_; }
 
 	//ゴール判定の取得
-	const bool GetIsGoal(void)const { return isGoal_; }
+	inline const bool GetIsGoal(void)const { return isGoal_; }
 
 	//地面との当たり判定の取得
-	const bool GetIsLandHit(void)const { return isLandHit_; }
+	inline const bool GetIsLandHit(void)const { return isLandHit_; }
+
+	//スライム床と当たっているか
+	inline const bool GetIsSlimeHit(void)const { return isHitSlimeFloor_; }
 
 	//セッタ
 	void SetMovedPos(const VECTOR& _movedPos) { movedPos_ = _movedPos; }
@@ -150,9 +156,14 @@ private:
 	//地面と当たっているか
 	bool isLandHit_;
 
+	//スライム床と当たっているか
+	bool isHitSlimeFloor_;
+
 	//パンチヒット時のSE
 	int punchHitSE_;
 
+	//プレイヤーのサイドが当たっている
+	bool isSide_;
 
 	//メンバ関数
 	//----------------------------------

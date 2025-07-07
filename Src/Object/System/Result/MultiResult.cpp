@@ -60,9 +60,29 @@ void MultiResult::Update(MultiParty& _parent)
 
 void MultiResult::Draw()
 {
+	//パレット
 	palette_->Draw();
 
+	//入力確認
+	inputCheck_->Draw();
+
+	//スコアゲージ
 	scoreGages_->Draw();
+}
+
+void MultiResult::Reset()
+{
+	//パレット初期状態
+	palette_->ChangeState(Palette::STATE::ADMISSION);
+
+	//入力確認リセット
+	inputCheck_->Reset();
+
+	//ゲージの初期化
+	scoreGages_->Init();
+
+	//初期状態の変更
+	ChangeState(STATE::READY);
 }
 
 void MultiResult::RegisterStateFunction(const STATE _state, std::function<void(MultiParty&)> _update)
@@ -140,7 +160,7 @@ void MultiResult::UpdateStateResult(MultiParty& _parent)
 	if (inputCheck_->IsAllInput())
 	{
 		//状態遷移
-		_parent.ChangePhase(MultiParty::PHASE::SELECT_PHASE);
+		_parent.RoundReset();
 		return;
 	}
 
