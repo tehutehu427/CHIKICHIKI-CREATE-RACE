@@ -98,6 +98,9 @@ void Cannon::SetParam(void)
 	//‘å–C‚ÌƒGƒCƒ€”ÍˆÍ
 	std::unique_ptr<Sphere>aimGeo = std::make_unique<Sphere>(trans_.pos, AIM_RADIUS);
 	MakeCollider({ Collider::TAG::CANNON_AIM }, std::move(aimGeo));
+
+	//ƒ}ƒbƒvƒTƒCƒY
+	mapSize_ = MAP_SIZE;
 	
 }
 
@@ -126,7 +129,17 @@ void Cannon::Update(void)
 }
 
 void Cannon::Draw(void)
-{
+{	
+	//’e‚Ì•`‰æ	
+	if (shot_ != nullptr)shot_->Draw();
+	
+	//ƒJƒƒ‰”ÍˆÍ‚ÉŠÜ‚Ü‚ê‚é‚©’²‚×‚é
+	if (IsInCameraView())
+	{
+		//ŠÜ‚Ü‚ê‚éê‡
+		return;	//•`‰æ‚ðs‚í‚È‚¢
+	}
+
 	//–C‘ä‚Ì•`‰æ
 	//MV1DrawModel(trans_.modelId);
 	toonStyle_->Draw();
@@ -145,8 +158,7 @@ void Cannon::Draw(void)
 
 	//DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
 	
-	//’e‚Ì•`‰æ	
-	if (shot_ != nullptr)shot_->Draw();
+
 }
 
 void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)

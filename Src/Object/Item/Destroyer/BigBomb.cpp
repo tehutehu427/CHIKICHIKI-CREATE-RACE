@@ -38,6 +38,9 @@ void BigBomb::SetParam(void)
 	trans_.localPos.x = MAP_LOCALPOS.x * trans_.scl.x;
 	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
+
+	//マップサイズ
+	mapSize_ = MAP_SIZE;
 }
 
 void BigBomb::Update(void)
