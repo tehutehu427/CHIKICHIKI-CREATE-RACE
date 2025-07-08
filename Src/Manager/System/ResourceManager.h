@@ -122,7 +122,8 @@ public:
 		PLAYER_PUNCH_MOTION,
 		PLAYER_DASH_START,
 		PLAYER_JUMP,
-		SPRING_JUMP,
+		SPRING_SE,
+		SLIME_SE,
 
 		//エフェクト
 		WIND_EFF,			//風のエフェクト

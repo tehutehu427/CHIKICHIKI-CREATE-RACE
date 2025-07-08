@@ -29,6 +29,15 @@ public:
 		KNOCKBACK,//パンチされた状態
 		JUMP
 	};
+
+	enum class ACT_SE
+	{
+		DASH,
+		JUMP,
+		PUNCH,
+		SLIME,
+	};
+
 	PlayerAction(Player& _player, SceneManager& _scnMng,AnimationController& _animationController);
 	~PlayerAction(void);
 
@@ -204,10 +213,11 @@ private:
 
 	//素材関連
 	//------------------------
-	int punchMotionSE_;	//パンチ
-	int dashStartSE_;	//ダッシュ
-	int jump_;
-	
+	std::map<ACT_SE, int>actSE_;
+
+	//スライムSEの間隔カウント
+	float slimeSEcnt_;
+
 	//移動
 	//------------------------
 	float speed_;			// 移動スピード

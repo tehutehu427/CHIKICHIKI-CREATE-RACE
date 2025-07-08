@@ -203,6 +203,12 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "jump.mp3");
 	resourcesMap_.emplace(SRC::PLAYER_JUMP, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "Spring.mp3");
+	resourcesMap_.emplace(SRC::SPRING_SE, std::move(res));
+
+		res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "SlimeFloor.mp3");
+	resourcesMap_.emplace(SRC::SLIME_SE, std::move(res));
+
 	
 #pragma endregion 
 

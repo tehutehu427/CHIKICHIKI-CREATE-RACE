@@ -28,6 +28,9 @@ public:
 		VECTOR upPos;
 		VECTOR downPos;
 	};
+
+
+
 	//コンストラクタ
 	PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>&_colParam,Transform& _trans,Collider::TAG _tag);
 

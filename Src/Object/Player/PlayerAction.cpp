@@ -26,6 +26,7 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	changeAction_.emplace(ATK_ACT::PUNCH, [this]() {ChangePunch(); });
 	changeAction_.emplace(ATK_ACT::KNOCKBACK, [this]() {ChangeKnockBack(); });
 
+
 	
 	//ジャンプ関係
 	isJump_ = false;
@@ -78,14 +79,11 @@ void PlayerAction::Init(void)
 void PlayerAction::Load(void)
 {
 	auto& res = ResourceManager::GetInstance();
-	//パンチモーション
-	punchMotionSE_ = res.Load(ResourceManager::SRC::PLAYER_PUNCH_MOTION).handleId_;
-
-	//ダッシュ
-	dashStartSE_= res.Load(ResourceManager::SRC::PLAYER_DASH_START).handleId_;
-
-
-	jump_= res.Load(ResourceManager::SRC::PLAYER_JUMP).handleId_;
+	actSE_.emplace(ACT_SE::DASH,res.Load(ResourceManager::SRC::PLAYER_DASH_START).handleId_);
+	actSE_.emplace(ACT_SE::JUMP,res.Load(ResourceManager::SRC::PLAYER_JUMP).handleId_);
+	actSE_.emplace(ACT_SE::PUNCH,res.Load(ResourceManager::SRC::PLAYER_PUNCH_MOTION).handleId_);
+	actSE_.emplace(ACT_SE::DASH,res.Load(ResourceManager::SRC::PLAYER_DASH_START).handleId_);
+	actSE_.emplace(ACT_SE::SLIME,res.Load(ResourceManager::SRC::SLIME_SE).handleId_);
 }
 
 void PlayerAction::Update(void)
@@ -194,7 +192,18 @@ void PlayerAction::MoveUpdate(void)
 		return;
 	}
 
-	float animationSpeed = Player::DEFAULT_ANIM_SPD + std::pow(speed_ - 0.5f, 2.0f) * 5.6f;
+	//if (player_.GetIsSlimeFloor())
+	//{
+	//	slimeSEcnt_ += scnMng_.GetDeltaTime();
+	//	if (slimeSEcnt_ >= 0.5f)
+	//	{
+	//		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
+	//		slimeSEcnt_ = 0.0f;
+	//	}
+	//}
+
+
+	float animationSpeed = Player::DEFAULT_ANIM_SPD * (speed_ / MOVE_SPEED)*3.0f;
 	animationController_.SetAnimSpeed(animationSpeed);
 
 	//入力方向の移動
@@ -234,8 +243,8 @@ void PlayerAction::ChangeDashMove(void)
 {
 	speed_ = DASH_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
-	SoundManager::GetInstance().Play(dashStartSE_, SoundManager::PLAYTYPE::BACK); 
-	SoundManager::GetInstance().ChangeVolume(dashStartSE_,70); 
+	SoundManager::GetInstance().Play(actSE_[ACT_SE::DASH], SoundManager::PLAYTYPE::BACK);
+	//SoundManager::GetInstance().ChangeVolume(actSE_[ACT_SE::DASH],100);
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
 }
 
@@ -329,7 +338,7 @@ void PlayerAction::ChangeJump(void)
 	//アニメーションの再生
 	animationController_.Play(
 		(int)Player::ANIM_TYPE::JUMP, false, JUMP_ANIM_START_FRAME, JUMP_ANIM_END_FRAME);
-	SoundManager::GetInstance().Play(jump_, SoundManager::PLAYTYPE::BACK);
+	SoundManager::GetInstance().Play(actSE_[ACT_SE::JUMP], SoundManager::PLAYTYPE::BACK);
 	if(player_.GetIsSlimeFloor())SetJumpDecel(SLIME_FLOOR_JUMP_POW);
 	//状態遷移
 	actionUpdate_ = [this]() {JumpUpdate(); };
@@ -337,7 +346,7 @@ void PlayerAction::ChangeJump(void)
 
 bool PlayerAction::CheckJumpInput(void)
 {
-	return input_->CheckAct(PlayerInput::ACT_CNTL::JUMP) && player_.GetIsLandHit();
+	return input_->CheckAct(PlayerInput::ACT_CNTL::JUMP);
 }
 
 void PlayerAction::Punch(void)
@@ -377,7 +386,7 @@ void PlayerAction::ChangePunch(void)
 	//アニメーション
 	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
 	////パンチ再生
-	SoundManager::GetInstance().Play(punchMotionSE_, SoundManager::PLAYTYPE::BACK);
+	SoundManager::GetInstance().Play(actSE_[ACT_SE::PUNCH], SoundManager::PLAYTYPE::BACK);
 
 	actionUpdate_ = [this]() {Punch(); };
 }

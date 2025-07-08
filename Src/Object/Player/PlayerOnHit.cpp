@@ -15,18 +15,20 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 {
 	//それぞれの当たった処理を格納する
 	using TAG = Collider::TAG;
-	colUpdates_[TAG::START] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
-	colUpdates_[TAG::GOAL] = [this](const std::weak_ptr<Collider> _hitCol) {ColGoal(_hitCol); };
-	colUpdates_[TAG::NORMAL_ITEM] = [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); };
-	colUpdates_[TAG::KILLER_ITEM] = [this](const std::weak_ptr<Collider> _hitCol) {CollKillerItem(_hitCol); };
-	colUpdates_[TAG::MOVE_HORI_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
-	colUpdates_[TAG::MOVE_VER_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); };
-	colUpdates_[TAG::SLIME_FLOOR] = [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); };
-	colUpdates_[TAG::WIND] = [this](const std::weak_ptr<Collider> _hitCol) {CollWind(_hitCol); };
-	colUpdates_[TAG::PUNCH] = [this](const std::weak_ptr<Collider> _hitCol) {ColPunch(_hitCol); };
-	colUpdates_[TAG::SPRING] = [this](const std::weak_ptr<Collider> _hitCol) {ColSpring(_hitCol); };
-	colUpdates_[TAG::CANNON_AIM] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
-	colUpdates_[TAG::SHADOW] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
+	colUpdates_.emplace(TAG::START, [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); });
+	colUpdates_.emplace(TAG::GOAL, [this](const std::weak_ptr<Collider> _hitCol) {ColGoal(_hitCol); });
+	colUpdates_.emplace(TAG::NORMAL_ITEM, [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); });
+	colUpdates_.emplace(TAG::KILLER_ITEM, [this](const std::weak_ptr<Collider> _hitCol) {CollKillerItem(_hitCol); });
+	colUpdates_.emplace(TAG::MOVE_HORI_FLOOR, [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); });
+	colUpdates_.emplace(TAG::MOVE_VER_FLOOR, [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); });
+	colUpdates_.emplace(TAG::SLIME_FLOOR, [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); });
+	colUpdates_.emplace(TAG::WIND, [this](const std::weak_ptr<Collider> _hitCol) {CollWind(_hitCol); });
+	colUpdates_.emplace(TAG::PUNCH, [this](const std::weak_ptr<Collider> _hitCol) {ColPunch(_hitCol); });
+	colUpdates_.emplace(TAG::SPRING, [this](const std::weak_ptr<Collider> _hitCol) {ColSpring(_hitCol); });
+	colUpdates_.emplace(TAG::CANNON_AIM, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
+	colUpdates_.emplace(TAG::SHADOW, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
+
+
 	
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
@@ -119,7 +121,6 @@ void PlayerOnHit::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 void PlayerOnHit::CollSlimeFloor(const std::weak_ptr<Collider> _hitCol)
 {
 	isHitSlimeFloor_ = true;
-	
 	HitModelCommon(_hitCol);
 }
 
@@ -162,8 +163,13 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 {
 	//ジャンプ力の設定
 	HitModelCommon(_hitCol);
+	//リソースID
+	auto& res = ResourceManager::GetInstance();
+	int hitSE = res.Load(ResourceManager::SRC::SPRING_SE).handleId_;
 	if (!isSide_)
 	{
+		//バネジャンプ音再生()
+		SoundManager::GetInstance().Play(hitSE, SoundManager::PLAYTYPE::BACK);
 		action_.SetJumpDecel(SPRING_JUMP_POW);
 		action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
 	}
@@ -172,8 +178,11 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 {
-	isGoal_ = true;
 	HitModelCommon(_hitCol);
+	if (!isSide_)
+	{
+		isGoal_ = true;
+	}
 }
 
 void PlayerOnHit::DrawDebug(void)
