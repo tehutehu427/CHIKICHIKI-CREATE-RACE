@@ -13,6 +13,7 @@
 #include "../../../Renderer/PixelRenderer.h"
 #include "../../../Scene/SelectScene.h"
 #include "../ManualTab.h"
+#include "SelectSceneActors.h"
 
 
 namespace
@@ -43,7 +44,9 @@ ModeSelect::ModeSelect()
 	renderer_ = nullptr;
 	imgBackArc_ = 0;
 	imgShadowArc_ = 0;
+	imgArrow_ = 0; 
 	manual_ = nullptr;
+	actors_ = nullptr;
 }
 
 ModeSelect::~ModeSelect()
@@ -59,6 +62,7 @@ void ModeSelect::Load()
 	imgArcs_ = res.Load(ResourceManager::SRC::ARCS).handleIds_;
 	imgBackArc_ = res.Load(ResourceManager::SRC::BACK_ARC).handleId_;
 	imgShadowArc_ = res.Load(ResourceManager::SRC::SHADOW_ARC).handleId_;
+	imgArrow_ = res.Load(ResourceManager::SRC::SCROLL_ARROW_ICON).handleId_;
 
 	//描画の設定
 	material_ = std::make_unique<PixelMaterial>("RotateGlow.cso", 2);
@@ -66,6 +70,9 @@ void ModeSelect::Load()
 
 	manual_ = std::make_unique<ManualTab>();
 	manual_->Load();
+
+	actors_ = std::make_unique<SelectSceneActors>();
+	actors_->Load();
 }
 
 void ModeSelect::Init()
@@ -111,6 +118,9 @@ void ModeSelect::Init()
 	renderer_->SetPos(arc_[arcIndex_].pos);
 	renderer_->SetSize({ ResourceManager::IMG_ARC_SIZE, ResourceManager::IMG_ARC_SIZE });
 
+	//アクター初期化
+	actors_->Init();
+
 }
 
 void ModeSelect::Update(SelectScene& _parent)
@@ -124,6 +134,9 @@ void ModeSelect::Update(SelectScene& _parent)
 
 	//マニュアル更新
 	manual_->Update();
+
+	//アクター更新
+	actors_->Update();
 }
 
 void ModeSelect::Draw()
@@ -131,6 +144,15 @@ void ModeSelect::Draw()
 #ifdef _DEBUG
 	DebugDraw();
 #endif
+
+	//アクターの描画
+	actors_->Draw();
+
+	//矢印の描画
+	DrawArrow();
+
+	//メッセージの描画
+	DrawMessage();
 
 	//UIの描画
 	for (int i = 0; i < DRAW_ARC_NUM; i++)
@@ -145,10 +167,6 @@ void ModeSelect::Draw()
 			DrawDarkly(i);
 		}
 	}
-
-	//メッセージの描画
-	DrawMessage();
-
 	//マニュアル描画
 	manual_->Draw();
 }
@@ -347,6 +365,24 @@ void ModeSelect::DrawGlow(const int _index)
 		arc_[_index].img,
 		true,
 		false);
+}
+
+void ModeSelect::DrawArrow()
+{
+	for (int i = 0; i < ARROWS; i++)
+	{
+		float angle = 0.0f;
+		if (i == 1) { angle = Utility::Deg2RadF(180.0f); }
+
+		DrawRotaGraph(
+			ARROW_POS_X,
+			ARROW_POS_Y[i],
+			1.0f,
+			angle,
+			imgArrow_,
+			true,
+			false);
+	}
 }
 
 void ModeSelect::DebugUpdate()

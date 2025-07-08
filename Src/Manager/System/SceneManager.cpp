@@ -282,7 +282,7 @@ void SceneManager::CreateCameras(const int _playerNum)
 
 void SceneManager::CreateSplitScreen(const int _playerNum)
 {
-	//引数が１以下もしくは
+	//引数が１以下
 	// 最大人数を超える場合,
 	// または引数と現在のスクリーン数が同じとき
 	if (_playerNum <= 1 || 
@@ -361,6 +361,9 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 
 	// シーンを変更する
  	sceneId_ = sceneId;
+	
+	//初期化
+	screenIndex_ = 0;		
 
 	// 現在のシーンを解放
 	if (scene_ != nullptr)

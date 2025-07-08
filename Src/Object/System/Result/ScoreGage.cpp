@@ -129,11 +129,11 @@ void ScoreGage::SetParamToPlayerNo()
 	switch (playerIndex_)
 	{
 	case 0:
-		color_ = Utility::PINK;
+		color_ = Utility::BLUE;
 		break;
 
 	case 1:
-		color_ = Utility::BLUE;
+		color_ = Utility::PINK;
 		break;
 
 	case 2:

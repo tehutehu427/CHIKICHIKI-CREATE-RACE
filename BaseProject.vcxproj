@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\System\Select\SelectSceneActors.cpp" />
     <ClCompile Include="Src\Object\Common\EffectController.cpp" />
     <ClCompile Include="Src\Object\Player\Shadow.cpp" />
     <ClCompile Include="Src\Object\Player\PlayerOnHit.cpp" />
@@ -115,6 +116,7 @@
     <ClCompile Include="Src\Object\Common\ToonStyle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\System\Select\SelectSceneActors.h" />
     <ClInclude Include="Src\Object\Common\EffectController.h" />
     <ClInclude Include="Src\Object\Player\Shadow.h" />
     <ClInclude Include="Src\Object\System\RoundDisplay.h" />

@@ -26,10 +26,14 @@ void ToonStyle::Load(int _modelId, const MESH_TYPE _type)
 	std::string toonLightingVSName = "ToonMeshVS.cso";
 
 	//シェーダーを設定
-	if (_type == MESH_TYPE::SKIN_MESH)
+	if (type_ == MESH_TYPE::SKIN_MESH)
 	{
 		outlineVSName = "OutlineSkinMeshVS.cso";
 		toonLightingVSName = "ToonSkinMeshVS.cso";
+	}
+	else if(type_ == MESH_TYPE::CHICKEN)
+	{
+		outlineVSName = "ChickenOutlineVS.cso";
 	}
 
 	//アウトライン
@@ -37,9 +41,10 @@ void ToonStyle::Load(int _modelId, const MESH_TYPE _type)
 	outlineRenderer_ = std::make_unique<ModelRenderer>(model_, *outlineMaterial_);
 
 	//トゥーンライト
-	if (type_ == MESH_TYPE::NORMAL) 
+	if (type_ == MESH_TYPE::CHICKEN)
 	{ 
 		drawFunc_ = std::bind(&ToonStyle::NormalDrawModel, this);
+		return;
 	}
 	toonMaterial_ = std::make_unique<ModelMaterial>(toonLightingVSName.c_str(), 0, "ToonPS.cso", 5);
 	toonRenderer_ = std::make_unique<ModelRenderer>(model_, *toonMaterial_);
@@ -52,6 +57,11 @@ void ToonStyle::Init()
 	outlineMaterial_->AddConstBufPS(FLOAT4{	0.0f,0.0f,0.0f,1.0f });	//輪郭線カラー(通常は黒)
 
 	//トゥーンライト定数バッファの設定
+	if (type_ == MESH_TYPE::CHICKEN)
+	{
+		return;
+	}
+
 	toonMaterial_->AddConstBufPS(FLOAT4{ 1.0f,1.0f, 1.0f, 1.0f });		//色
 	toonMaterial_->AddConstBufPS(FLOAT4{ 1.0f,1.0f, 1.0f, 1.0f });		//光の色
 	toonMaterial_->AddConstBufPS(FLOAT4{ 0.4f, 0.3f, 0.3f, 1.0f });		//影の色
@@ -91,8 +101,8 @@ void ToonStyle::SetOutlineColor(const float _r, const float _g, const float _b, 
 
 void ToonStyle::NormalDrawModel()
 {
-	//メッシュ別に描画
-	toonRenderer_->DrawMeshes();
+	//通常描画
+	MV1DrawModel(model_);
 }
 
 void ToonStyle::ToonDrawModel()
