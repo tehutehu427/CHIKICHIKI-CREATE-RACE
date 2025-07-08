@@ -62,8 +62,6 @@ const int EffectController::Play(const EFF_TYPE _effType, const VECTOR _pos, con
 	//エフェクトの保存
 	effects_[_effType].playId.emplace_back(playId);
 
-	int a = GetEffekseer3DManager()->GetDrawTime();
-
 	//配列保存
 	int ret = effectNum_[_effType];
 
