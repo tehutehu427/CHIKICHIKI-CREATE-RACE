@@ -227,6 +227,30 @@ void Cannon::ChangeModelColor(const COLOR_F _colorScale)
 
 void Cannon::ResetValue(void)
 {
+	//–Cg
+	barrelTrans_ = trans_;
+
+	//–C‘ä‚©‚ç‚Ì‘Š‘ÎÀ•W
+	VECTOR barrelLocalPos = BARREL_LOCAL_POS;
+	barrelLocalPos.x *= barrelTrans_.scl.x;
+	barrelLocalPos.y *= barrelTrans_.scl.y;
+	barrelLocalPos.z *= barrelTrans_.scl.z;
+
+	//–C‘ä‚©‚ç‚Ì‘Š‘Î‰ñ“]
+	VECTOR barrelLocalRot = BARREL_LOCAL_ROT;
+	barrelLocalRot.x *= barrelTrans_.scl.x;
+	barrelLocalRot.y *= barrelTrans_.scl.y;
+	barrelLocalRot.z *= barrelTrans_.scl.z;
+
+	//–Cg‚ğ–C‘ä‚É‡‚í‚¹‚Ä‚¨‚­
+	barrelTrans_.pos = VAdd(trans_.pos, barrelLocalPos);
+	//Šp“x‚à‚Ü‚Á‚·‚®‚É
+	barrelTrans_.quaRotLocal = Quaternion::Euler(
+		Utility::Deg2RadF(barrelLocalRot.x),
+		Utility::Deg2RadF(barrelLocalRot.y),
+		Utility::Deg2RadF(barrelLocalRot.z));
+
+
 	//’e‚ÌÁ‹
 	shot_.reset();
 

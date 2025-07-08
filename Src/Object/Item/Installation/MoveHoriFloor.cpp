@@ -95,6 +95,12 @@ const IntVector3 MoveHoriFloor::GetHitSize(void) const
 	return size_ + IntVector3(MOVE_X, 0, 0);
 }
 
+void MoveHoriFloor::ResetValue(void)
+{
+	InitRoute();
+	ItemBase::ResetValue();
+}
+
 void MoveHoriFloor::Move(void)
 {
 	//w’èƒ‹[ƒg‚ğ’´‚¦‚½‚©

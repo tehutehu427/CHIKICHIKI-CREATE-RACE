@@ -80,6 +80,8 @@ void ItemBase::Draw(void)
 void ItemBase::SetPos(IntVector3 mapPos)
 {
 	trans_.pos = MapEditer::GetInstance().MapToWorldPos(mapPos);
+	InitMapPos_ = mapPos;
+	ResetValue();
 	trans_.Update();
 }
 

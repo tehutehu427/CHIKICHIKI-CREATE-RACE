@@ -95,6 +95,12 @@ const IntVector3 MoveVerFloor::GetHitSize(void) const
 	return size_ + IntVector3(0, MOVE_Y, 0);
 }
 
+void MoveVerFloor::ResetValue(void)
+{
+	InitRoute();
+	ItemBase::ResetValue();
+}
+
 void MoveVerFloor::Move(void)
 {
 	//w’èƒ‹[ƒg‚ğ’´‚¦‚½‚©
