@@ -8,6 +8,7 @@
 class ResourceManager;
 class SceneManager;
 class Geometry;
+class EffectController;
 
 class ObjectBase
 {
@@ -64,6 +65,9 @@ protected:
 
 	//当たり判定関係
 	std::vector<ColParam> colParam_;
+
+	//エフェクト
+	std::unique_ptr<EffectController> effect_;
 
 	/// <summary>
 	/// 当たり判定作成(形状情報作成後)

@@ -3,6 +3,7 @@
 #include "../ItemBase.h"
 
 class CannonShot;
+class ToonStyle;
 
 class Cannon : public ItemBase
 {
@@ -51,7 +52,13 @@ public:
 	//モデルの色変え
 	void ChangeModelColor(const COLOR_F _colorScale)override;
 
+	//アイテムの値リセット
+	void ResetValue(void)override;
+
 private:
+
+	//シェーダー
+	std::unique_ptr<ToonStyle> toonBarrel_;
 
 	//弾関係
 	std::unique_ptr<CannonShot> shot_;		//弾
@@ -77,5 +84,8 @@ private:
 
 	//弾の削除
 	void DeleteShot(void);
+
+	//シェーダーの設定
+	void InitShader(void) override;
 };
 

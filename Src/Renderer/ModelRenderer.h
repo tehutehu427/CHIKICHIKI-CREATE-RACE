@@ -22,6 +22,9 @@ public:
 	// 描画
 	void Draw(void);
 
+	//メッシュごとに描画
+	void DrawMeshes(void);
+
 private:
 
 	// モデルのハンドルID

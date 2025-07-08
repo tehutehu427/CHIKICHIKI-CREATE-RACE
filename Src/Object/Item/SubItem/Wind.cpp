@@ -1,4 +1,5 @@
 #include "../../../Manager/System/ResourceManager.h"
+#include "../../Common/EffectController.h"
 #include"../../Common/Geometry/Sphere.h"
 #include "Wind.h"
 
@@ -19,7 +20,7 @@ Wind::~Wind()
 void Wind::SetParam(void)
 {
 	//風エフェクト
-	effect_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::WIND_EFF).handleId_;
+	effect_->Add(ResourceManager::GetInstance().Load(ResourceManager::SRC::WIND_EFF).handleId_, EffectController::EFF_TYPE::WIND);
 
 	//モデル
 	trans_.SetModel(-1);
@@ -46,6 +47,8 @@ void Wind::SetParam(void)
 
 void Wind::Update(void)
 {
+	if (!effect_->IsEnd(EffectController::EFF_TYPE::WIND, 0))return;
+	effect_->Play(EffectController::EFF_TYPE::WIND, trans_.pos, trans_.quaRot, VGet(10.0f,10.0f,10.0f));
 }
 
 void Wind::Draw(void)

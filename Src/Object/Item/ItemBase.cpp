@@ -65,6 +65,13 @@ void ItemBase::Init()
 
 void ItemBase::Draw(void)
 {
+	//カメラ範囲に含まれるか調べる
+	if (IsInCameraView())
+	{
+		//含まれる場合
+		return;	//描画を行わない
+	}
+
 	//モデル描画
 	//MV1DrawModel(trans_.modelId);
 	toonStyle_->Draw();
@@ -86,8 +93,6 @@ void ItemBase::ResetValue(void)
 {
 	//位置を初期位置に戻す
 	trans_.pos = MapEditer::GetInstance().MapToWorldPos(InitMapPos_);
-	//回転を0に
-	//trans_.quaRot = Quaternion();
 
 	//モデルへの反映
 	trans_.Update();
@@ -127,4 +132,17 @@ void ItemBase::InitShader()
 	toonStyle_ = std::make_unique<ToonStyle>();
 	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::MESH);
 	toonStyle_->Init();
+}
+
+bool ItemBase::IsInCameraView()
+{
+	VECTOR boxPos1 = trans_.pos;
+	VECTOR boxPos2 = MapEditer::GetInstance().MapToWorldPos(InitMapPos_ + mapSize_);
+
+	if (CheckCameraViewClip_Box(boxPos1, boxPos2))
+	{
+		return true;
+	}
+
+	return false;
 }

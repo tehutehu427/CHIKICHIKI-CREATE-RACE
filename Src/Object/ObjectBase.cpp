@@ -1,13 +1,18 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/Game/CollisionManager.h"
+#include "Common/EffectController.h"
 #include "ObjectBase.h"
 
 ObjectBase::ObjectBase(void)
 	: resMng_(ResourceManager::GetInstance()),
 	scnMng_(SceneManager::GetInstance())
 {
+	//変数
 	size_ = { 0,0,0 };
+
+	//エフェクト
+	effect_ = std::make_unique<EffectController>();
 }
 
 ObjectBase::~ObjectBase(void)

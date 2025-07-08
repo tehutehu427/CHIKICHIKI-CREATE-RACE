@@ -119,6 +119,7 @@ protected:
 	IntVector3 InitMapPos_;		//初期マップ座標
 	float rotY_;				//Y回転
 	VECTOR movePow_;			//移動量
+	IntVector3 mapSize_;			//マップサイズ
 	std::vector<int*> models_;	//全モデル	
 	
 	//トゥーンスタイル
@@ -126,13 +127,21 @@ protected:
 
 
 	//サイズの倍率調整
-	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;
+	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;	
+	
+	//シェーダーの設定
+	virtual void InitShader();
+
+	/// <summary>
+	/// カメラ範囲内か調べる
+	/// </summary>
+	/// <returns>trueなら範囲内、falseなら範囲外</returns>
+	bool IsInCameraView();
 
 private:
 
 
-	//シェーダーの設定
-	void InitShader();
+
 
 };
 

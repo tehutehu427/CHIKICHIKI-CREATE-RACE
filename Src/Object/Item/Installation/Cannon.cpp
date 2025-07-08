@@ -98,6 +98,10 @@ void Cannon::SetParam(void)
 	//‘å–C‚ÌƒGƒCƒ€”ÍˆÍ
 	std::unique_ptr<Sphere>aimGeo = std::make_unique<Sphere>(trans_.pos, AIM_RADIUS);
 	MakeCollider({ Collider::TAG::CANNON_AIM }, std::move(aimGeo));
+
+	//ƒ}ƒbƒvƒTƒCƒY
+	mapSize_ = MAP_SIZE;
+	
 }
 
 void Cannon::Update(void)
@@ -125,12 +129,23 @@ void Cannon::Update(void)
 }
 
 void Cannon::Draw(void)
-{
+{	
+	//’e‚Ì•`‰æ	
+	if (shot_ != nullptr)shot_->Draw();
+	
+	//ƒJƒƒ‰”ÍˆÍ‚ÉŠÜ‚Ü‚ê‚é‚©’²‚×‚é
+	if (IsInCameraView())
+	{
+		//ŠÜ‚Ü‚ê‚éê‡
+		return;	//•`‰æ‚ğs‚í‚È‚¢
+	}
+
 	//–C‘ä‚Ì•`‰æ
 	//MV1DrawModel(trans_.modelId);
 	toonStyle_->Draw();
 	//–Cg‚Ì•`‰æ
-	MV1DrawModel(barrelTrans_.modelId);
+	toonBarrel_->Draw();
+	//MV1DrawModel(barrelTrans_.modelId);
 
 	//DrawFormatString(0, 32, 0xffffff, "%.2f,%.2f,%.2f", barrelTrans_.pos.x, barrelTrans_.pos.y, barrelTrans_.pos.z);
 	//DrawFormatString(0, 48, 0xffffff, "%.2f,%.2f,%.2f", turretAddRot_.x, turretAddRot_.y, turretAddRot_.z);
@@ -143,8 +158,7 @@ void Cannon::Draw(void)
 
 	//DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
 	
-	//’e‚Ì•`‰æ	
-	if (shot_ != nullptr)shot_->Draw();
+
 }
 
 void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
@@ -211,6 +225,15 @@ void Cannon::ChangeModelColor(const COLOR_F _colorScale)
 
 }
 
+void Cannon::ResetValue(void)
+{
+	//’e‚ÌÁ‹
+	shot_.reset();
+
+	//‹¤’Ê
+	ItemBase::ResetValue();
+}
+
 void Cannon::RotateTurret(void)
 {
 	//‘ÎÛ‚Ü‚Å‚Ì‰ñ“]²
@@ -261,4 +284,17 @@ void Cannon::DeleteShot(void)
 	
 	//’eÁ‹
 	shot_.reset();
+}
+
+void Cannon::InitShader(void)
+{
+	toonStyle_ = std::make_unique<ToonStyle>();
+	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::MESH);
+	toonStyle_->Init();
+	toonStyle_->SetTexturesIndex(-1.0f);
+
+	toonBarrel_ = std::make_unique <ToonStyle>();
+	toonBarrel_->Load(barrelTrans_.modelId, ToonStyle::MESH_TYPE::NORMAL);
+	toonBarrel_->Init();
+	toonBarrel_->SetTexturesIndex(-1.0f);
 }

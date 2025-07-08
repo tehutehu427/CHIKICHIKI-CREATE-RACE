@@ -42,6 +42,9 @@ void Fence::SetParam(void)
 	//コライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
 	MakeCollider({ Collider::TAG::NORMAL_ITEM }, std::move(geo));
+
+	//マップサイズ
+	mapSize_ = MAP_SIZE;
 }
 
 void Fence::Update(void)
