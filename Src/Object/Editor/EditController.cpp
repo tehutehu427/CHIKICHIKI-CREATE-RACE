@@ -139,6 +139,9 @@ void EditController::DrawUI(void)
 void EditController::Reset(void)
 {
 	cursorPos_ = Vector2(screenSize_.x / 2, screenSize_.y / 2);	//カーソル位置は画面の中央に設定
+	errorType_ = ERROR_TYPE::NONE;
+	errorStringTime_ = 0.0f;	//エラー文字列の表示時間初期化
+	cameraMode_ = CAMERA_MODE::FREE;
 	ready_->Init();
 }
 
@@ -171,14 +174,17 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 		return;
 	}
 	auto& itemMIns = ItemManager::GetInstance();
-	if (itemMIns.GetDummyItemStatus(playerNum_).effType != ItemBase::EFFECT_TYPE::DESTROYER)
+	if (playerMaxNum_ == 1)
 	{
-		int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
-		if (errorType<0)
+		if (itemMIns.GetDummyItemStatus(playerNum_).effType != ItemBase::EFFECT_TYPE::DESTROYER)
 		{
-			errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
-			//アイテムが重なっている
-			return;
+			int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+			if (errorType < 0)
+			{
+				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
+				//アイテムが重なっている
+				return;
+			}
 		}
 	}
 	itemType_ = itemType;
