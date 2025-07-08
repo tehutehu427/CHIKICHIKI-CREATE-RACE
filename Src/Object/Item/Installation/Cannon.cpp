@@ -199,6 +199,9 @@ void Cannon::ResetValue(void)
 	//弾の消去
 	shot_.reset();
 
+	//生成カウント
+	shotCreateCnt_ = 0.0f;
+
 	//砲台の値合わせ
 	BarrelValueToTurret();
 
