@@ -14,6 +14,7 @@ public:
 
 	//マップ
 	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };				//マップサイズ
+	static constexpr IntVector3 HIT_SIZE = { 0,0,1 };				//当たり判定用サイズ
 	static constexpr VECTOR MAP_LOCALPOS = { 60.0f,0.0f,40.0f };	//マップとの相対座標
 
 	//サイズ
@@ -42,6 +43,9 @@ public:
 	void Update(void)override;
 	//描画
 	void Draw(void)override;
+
+	//当たり判定サイズ
+	const IntVector3 GetHitSize(void)const override { return MAP_SIZE + HIT_SIZE; }
 
 	/// <summary>
 	/// 当たり判定後の処理
