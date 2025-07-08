@@ -104,6 +104,9 @@ void MultiResult::UpdateStateReady(MultiParty& _parent)
 
 		//待機時間設定
 		waitStep_ = WAIT_TIME;
+
+		//スコアゲージを待機状態へ
+		scoreGages_->ChangeAllState(ScoreGage::STATE::WAIT);
 	}
 }
 

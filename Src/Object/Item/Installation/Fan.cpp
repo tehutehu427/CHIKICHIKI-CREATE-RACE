@@ -76,6 +76,15 @@ void Fan::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
 }
 
+void Fan::ResetValue(void)
+{
+	//•—‚ÌÁ‹
+	wind_.reset();
+
+	//‹¤’Ê
+	ItemBase::ResetValue();
+}
+
 void Fan::CreateWind(void)
 {
 	//•—¶¬

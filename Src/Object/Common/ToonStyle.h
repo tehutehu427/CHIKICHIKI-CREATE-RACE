@@ -14,7 +14,7 @@ public:
 	/// </summary>
 	enum class MESH_TYPE
 	{
-		NORMAL,
+		CHICKEN,
 		MESH,
 		SKIN_MESH,
 	};

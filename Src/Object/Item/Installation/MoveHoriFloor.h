@@ -36,6 +36,8 @@ public:
 	//サイズの取得
 	inline const IntVector3 GetHitSize(void)const override;
 
+	void ResetValue(void)override;
+
 private:
 
 	//ルート関係

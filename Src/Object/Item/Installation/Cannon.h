@@ -55,6 +55,9 @@ public:
 	//アイテムの値リセット
 	void ResetValue(void)override;
 
+	//砲台の値合わせ
+	void BarrelValueToTurret(void);
+
 private:
 
 	//シェーダー

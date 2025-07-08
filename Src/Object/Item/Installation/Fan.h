@@ -32,6 +32,9 @@ public:
 	/// <param name="_hitColTag">相手側の当たり判定</param>
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
+	//アイテムの値リセット
+	void ResetValue(void)override;
+
 private:
 
 	std::unique_ptr<Wind> wind_;	//風オブジェクト

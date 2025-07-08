@@ -58,29 +58,9 @@ void Cannon::SetParam(void)
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
 	MakeCollider({ Collider::TAG::NORMAL_ITEM }, std::move(geo));
 	
-	//–Cg
-	barrelTrans_ = trans_;
+	//–C‘ä‚Ì’l‡‚í‚¹
+	BarrelValueToTurret();
 
-	//–C‘ä‚©‚ç‚Ì‘Š‘ÎÀ•W
-	VECTOR barrelLocalPos = BARREL_LOCAL_POS;
-	barrelLocalPos.x *= barrelTrans_.scl.x;
-	barrelLocalPos.y *= barrelTrans_.scl.y;
-	barrelLocalPos.z *= barrelTrans_.scl.z;
-
-	//–C‘ä‚©‚ç‚Ì‘Š‘Î‰ñ“]
-	VECTOR barrelLocalRot = BARREL_LOCAL_ROT;
-	barrelLocalRot.x *= barrelTrans_.scl.x;
-	barrelLocalRot.y *= barrelTrans_.scl.y;
-	barrelLocalRot.z *= barrelTrans_.scl.z;
-
-	//–Cg‚ð–C‘ä‚É‡‚í‚¹‚Ä‚¨‚­
-	barrelTrans_.pos = VAdd(trans_.pos, barrelLocalPos);
-	//Šp“x‚à‚Ü‚Á‚·‚®‚É
-	barrelTrans_.quaRotLocal = Quaternion::Euler(
-		Utility::Deg2RadF(barrelLocalRot.x),
-		Utility::Deg2RadF(barrelLocalRot.y),
-		Utility::Deg2RadF(barrelLocalRot.z));
-	
 	//–Cg‚Ìƒ‚ƒfƒ‹Ý’è
 	barrelTrans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_BARREL));
@@ -144,21 +124,10 @@ void Cannon::Draw(void)
 	//MV1DrawModel(trans_.modelId);
 	toonStyle_->Draw();
 	//–Cg‚Ì•`‰æ
-	toonBarrel_->Draw();
-	//MV1DrawModel(barrelTrans_.modelId);
-
-	//DrawFormatString(0, 32, 0xffffff, "%.2f,%.2f,%.2f", barrelTrans_.pos.x, barrelTrans_.pos.y, barrelTrans_.pos.z);
-	//DrawFormatString(0, 48, 0xffffff, "%.2f,%.2f,%.2f", turretAddRot_.x, turretAddRot_.y, turretAddRot_.z);
-	//DrawFormatString(0, 64, 0xffffff, "%.2f,%.2f,%.2f", barrelAddRot_.x, barrelAddRot_.y, barrelAddRot_.z);
-
-	DrawSphere3D(targetPos_, 10.0, 20, 0xffffff, 0xffffff, true);
-
-	//DrawLine3D(VAdd(barrelTrans_.pos,barrelTrans_.localPos), targetPos_, 0x666666);
-	//DrawLine3D(VAdd(barrelTrans_.pos, barrelTrans_.localPos), VScale(barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal).GetForward(),1000.0f), 0x666666);
-
-	//DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
+	MV1DrawModel(barrelTrans_.modelId);
 	
-
+	//’e‚Ì•`‰æ	
+	if (shot_ != nullptr)shot_->Draw();
 }
 
 void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
@@ -230,8 +199,43 @@ void Cannon::ResetValue(void)
 	//’e‚ÌÁ‹Ž
 	shot_.reset();
 
+	//–C‘ä‚Ì’l‡‚í‚¹
+	BarrelValueToTurret();
+
 	//‹¤’Ê
 	ItemBase::ResetValue();
+}
+
+void Cannon::BarrelValueToTurret(void)
+{
+	//–Cg
+	barrelTrans_.pos = trans_.pos;
+	barrelTrans_.localPos = trans_.localPos;
+	barrelTrans_.scl = trans_.scl;
+	barrelTrans_.quaRot = trans_.quaRot;
+
+	//–C‘ä‚©‚ç‚Ì‘Š‘ÎÀ•W
+	VECTOR barrelLocalPos = BARREL_LOCAL_POS;
+	barrelLocalPos.x *= barrelTrans_.scl.x;
+	barrelLocalPos.y *= barrelTrans_.scl.y;
+	barrelLocalPos.z *= barrelTrans_.scl.z;
+
+	//–C‘ä‚©‚ç‚Ì‘Š‘Î‰ñ“]
+	VECTOR barrelLocalRot = BARREL_LOCAL_ROT;
+	barrelLocalRot.x *= barrelTrans_.scl.x;
+	barrelLocalRot.y *= barrelTrans_.scl.y;
+	barrelLocalRot.z *= barrelTrans_.scl.z;
+
+	//–Cg‚ð–C‘ä‚É‡‚í‚¹‚Ä‚¨‚­
+	barrelTrans_.pos = VAdd(trans_.pos, barrelLocalPos);
+	//Šp“x‚à‚Ü‚Á‚·‚®‚É
+	barrelTrans_.quaRotLocal = Quaternion::Euler(
+		Utility::Deg2RadF(barrelLocalRot.x),
+		Utility::Deg2RadF(barrelLocalRot.y),
+		Utility::Deg2RadF(barrelLocalRot.z));
+
+	//–Cg‚Ì‰ŠúXV
+	barrelTrans_.Update();
 }
 
 void Cannon::RotateTurret(void)
@@ -294,7 +298,7 @@ void Cannon::InitShader(void)
 	toonStyle_->SetTexturesIndex(-1.0f);
 
 	toonBarrel_ = std::make_unique <ToonStyle>();
-	toonBarrel_->Load(barrelTrans_.modelId, ToonStyle::MESH_TYPE::NORMAL);
+	toonBarrel_->Load(barrelTrans_.modelId, ToonStyle::MESH_TYPE::MESH);
 	toonBarrel_->Init();
 	toonBarrel_->SetTexturesIndex(-1.0f);
 }

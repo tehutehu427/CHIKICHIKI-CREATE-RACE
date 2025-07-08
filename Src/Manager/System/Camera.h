@@ -106,32 +106,6 @@ public:
 	void SetTargetPos(VECTOR pos) { targetPos_ = pos; }
 private:
 
-	// 視錐台平面の定義
-	struct FrustumPlane
-	{
-		VECTOR normal;  // 法線
-		float d;        // 平面方程式のd成分
-	};
-
-	// 視錐台（6枚の平面：左, 右, 上, 下, 近, 遠）
-	static constexpr int FRUSTUM_PLANE_NUM = 6;
-	enum FrustumPlaneIndex
-	{
-		LEFT,
-		RIGHT,
-		TOP,
-		BOTTOM,
-		F_NEAR,
-		F_FAR
-	};
-
-	struct Frustum
-	{
-		FrustumPlane planes[FRUSTUM_PLANE_NUM];
-	};
-
-	Frustum frustum_;
-
 	// カメラのローカル座標
 	VECTOR localPos_;
 
@@ -184,8 +158,5 @@ private:
 	void SetBeforeDrawFreeControll(void);
 	void SetBeforeDrawFixedUp(void);
 	void SetBeforeDrawFixedDiagonal(void);
-
-	//平面を行列から抽出
-	void ExtractFrustumPlanes();
 };
 

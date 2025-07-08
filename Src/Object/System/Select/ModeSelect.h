@@ -8,6 +8,7 @@ class SceneManager;
 class DateBank;
 class SelectScene;
 class ManualTab;
+class SelectSceneActors;
 class PixelMaterial;
 class PixelRenderer;
 
@@ -68,6 +69,13 @@ private:
 	static constexpr float ORBIT_RADIUS = 300.0f;			// 中心からの半径
 	static constexpr float BLUR_DISTANCE = 16.0f;			// ブラー距離
 
+	//矢印の数
+	static constexpr int ARROWS = 2;
+
+	//矢印の位置
+	static constexpr int ARROW_POS_X = 320;
+	static constexpr int ARROW_POS_Y[ARROWS] = { 50, 600 };
+
 	//シーン管理
 	SceneManager& scnMng_;
 
@@ -87,6 +95,7 @@ private:
 	int* imgArcs_;
 	int imgBackArc_;
 	int imgShadowArc_;
+	int imgArrow_;
 
 	//移動角度
 	float currentAngle_;
@@ -111,6 +120,9 @@ private:
 
 	//更新関数
 	std::function<void(SelectScene&)> selectUpdateFunc_;
+
+	//アクター
+	std::unique_ptr<SelectSceneActors> actors_;
 
 	//マテリアル
 	std::unique_ptr<PixelMaterial> material_;
@@ -142,6 +154,9 @@ private:
 
 	//画像周りを発光させる
 	void DrawGlow(const int _index);
+
+	//矢印の描画
+	void DrawArrow();
 
 	//デバッグ
 	void DebugUpdate();	//更新
