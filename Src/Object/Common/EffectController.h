@@ -13,6 +13,7 @@ public:
 	{
 		NONE,
 		WIND,		//風
+		DASH,
 	};
 
 	//コンストラクタ
