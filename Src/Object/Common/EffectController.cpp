@@ -1,5 +1,6 @@
 #include<DxLib.h>
 #include<EffekseerForDXLib.h>
+#include<Effekseer.h>
 #include "../../Manager/System/SceneManager.h"
 #include "EffectController.h"
 
@@ -9,9 +10,8 @@ EffectController::EffectController(void)
 
 EffectController::~EffectController(void)
 {
-	//エフェクトのクリア
-	effects_.clear();
-	effectNum_.clear();
+	//全停止
+	AllDelete();
 }
 
 void EffectController::Add(const int _effHandle, const EFF_TYPE _effType)
@@ -36,8 +36,8 @@ void EffectController::Add(const int _effHandle, const EFF_TYPE _effType)
 
 const int EffectController::Play(const EFF_TYPE _effType, const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl, const float _speedMultiplier)
 {
-	//エフェクトの要素が存在するか また 再生中のエフェクトが存在するか
-	if (!effects_.count(_effType) || effectNum_[_effType] < 0)
+	//エフェクトの要素が存在するか
+	if (!effects_.count(_effType))
 	{
 		//その要素がなかったので失敗
 		return -1;
@@ -57,8 +57,7 @@ const int EffectController::Play(const EFF_TYPE _effType, const VECTOR _pos, con
 	SetPosPlayingEffekseer3DEffect(playId, _pos.x, _pos.y, _pos.z);	
 
 	//エフェクトの速度を設定
-	effects_[_effType].normalSpeed = GetSpeedPlayingEffekseer3DEffect(playId);
-	SetSpeedPlayingEffekseer3DEffect(playId, SceneManager::GetInstance().GetDeltaTime() * _speedMultiplier);
+	SetSpeedPlayingEffekseer3DEffect(playId, _speedMultiplier);
 
 	//エフェクトの保存
 	effects_[_effType].playId.emplace_back(playId);
@@ -123,7 +122,7 @@ void EffectController::SetSpeed(const EFF_TYPE _effType, const int _arrayNum, co
 	}
 	
 	//速度の再設定
-	SetSpeedPlayingEffekseer3DEffect(effects_[_effType].playId[_arrayNum], effects_[_effType].normalSpeed * _speedMultiplier);
+	SetSpeedPlayingEffekseer3DEffect(effects_[_effType].playId[_arrayNum], _speedMultiplier);
 }
 
 void EffectController::Stop(const EFF_TYPE _effType, const int _arrayNum)
@@ -137,6 +136,22 @@ void EffectController::Stop(const EFF_TYPE _effType, const int _arrayNum)
 	
 	//エフェクトストップ
 	StopEffekseer3DEffect(effects_[_effType].playId[_arrayNum]);
+}
+
+void EffectController::AllDelete(void)
+{
+	//全停止
+	for (auto effectNum : effectNum_)
+	{
+		for (int i = 0; i < effectNum.second; i++)
+		{
+			Stop(effectNum.first, i);
+		}
+	}
+	
+	//エフェクトのクリア
+	effects_.clear();
+	effectNum_.clear();
 }
 
 const bool EffectController::IsEnd(const EFF_TYPE _effType, const int _arrayNum)

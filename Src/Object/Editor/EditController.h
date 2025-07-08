@@ -157,7 +157,7 @@ private:
 	//移動方向を取得
 	MOVE_DIR GetMoveDir(void) ;		//クリックした方向の円錐をもとに算出
 
-	MOVE_DIR GetMoveDirNew(void);	//カメラの方向をもとに算出
+	MOVE_DIR GetMoveDirTwo(void);	//カメラの方向をもとに算出
 
 	int IsChengeMoveDir(void);	//移動方向を変えていいか -1 :NONE　0: 元のまま 1:変える
 	void DebugUpdate(void);	//デバッグ用更新
