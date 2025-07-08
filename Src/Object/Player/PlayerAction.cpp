@@ -6,6 +6,7 @@
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SoundManager.h"
+#include "../../Object/Common/EffectController.h"
 #include "../../Object/Common/AnimationController.h"
 
 #include "PlayerAction.h"
@@ -26,7 +27,8 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	changeAction_.emplace(ATK_ACT::PUNCH, [this]() {ChangePunch(); });
 	changeAction_.emplace(ATK_ACT::KNOCKBACK, [this]() {ChangeKnockBack(); });
 
-
+	//エフェクト
+	effect_ = std::make_unique<EffectController>();
 	
 	//ジャンプ関係
 	isJump_ = false;
@@ -53,8 +55,10 @@ void PlayerAction::Init(void)
 {
 	auto num = player_.GetPadNum();
 	auto cntl = player_.GetCntl();
-	input_ = std::make_shared<PlayerInput>(num, cntl);
+	//入力
+	input_ = std::make_unique<PlayerInput>(num, cntl);
 	input_->Init();
+
 	//ジャンプ関係
 	isJump_ = false;
 	stepJump_ = 0.0f;
@@ -84,6 +88,10 @@ void PlayerAction::Load(void)
 	actSE_.emplace(ACT_SE::PUNCH,res.Load(ResourceManager::SRC::PLAYER_PUNCH_MOTION).handleId_);
 	actSE_.emplace(ACT_SE::DASH,res.Load(ResourceManager::SRC::PLAYER_DASH_START).handleId_);
 	actSE_.emplace(ACT_SE::SLIME,res.Load(ResourceManager::SRC::SLIME_SE).handleId_);
+
+	effect_->Add(res.Load(ResourceManager::SRC::DASH_EFF).handleId_, EffectController::EFF_TYPE::DASH);
+
+ 	
 }
 
 void PlayerAction::Update(void)
@@ -192,16 +200,6 @@ void PlayerAction::MoveUpdate(void)
 		return;
 	}
 
-	//if (player_.GetIsSlimeFloor())
-	//{
-	//	slimeSEcnt_ += scnMng_.GetDeltaTime();
-	//	if (slimeSEcnt_ >= 0.5f)
-	//	{
-	//		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
-	//		slimeSEcnt_ = 0.0f;
-	//	}
-	//}
-
 
 	float animationSpeed = Player::DEFAULT_ANIM_SPD * (speed_ / MOVE_SPEED)*3.0f;
 	animationController_.SetAnimSpeed(animationSpeed);
@@ -236,6 +234,11 @@ void PlayerAction::ChangeMove(void)
 {
 	speed_ = MOVE_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
+	
+	if (player_.GetIsSlimeFloor())
+	{
+		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
+	}
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
 }
 
@@ -244,7 +247,14 @@ void PlayerAction::ChangeDashMove(void)
 	speed_ = DASH_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::DASH], SoundManager::PLAYTYPE::BACK);
-	//SoundManager::GetInstance().ChangeVolume(actSE_[ACT_SE::DASH],100);
+	auto& trans = player_.GetTransform();
+	const float SCL = 10.0f;
+	//effect_->Play(EffectController::EFF_TYPE::DASH, trans.pos, trans.quaRot, { SCL,SCL,SCL },50.0f);
+
+	if (player_.GetIsSlimeFloor())
+	{
+		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
+	}
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
 }
 
@@ -385,7 +395,7 @@ void PlayerAction::ChangePunch(void)
 	punchCoolCnt_ = PUNCH_COOL_TIME;
 	//アニメーション
 	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
-	////パンチ再生
+	//パンチ再生
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::PUNCH], SoundManager::PLAYTYPE::BACK);
 
 	actionUpdate_ = [this]() {Punch(); };

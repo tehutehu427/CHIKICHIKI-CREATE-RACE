@@ -206,7 +206,10 @@ private:
 	std::function<void(void)>actionUpdate_;
 
 	//操作入力
-	std::shared_ptr<PlayerInput> input_;
+	std::unique_ptr<PlayerInput> input_;
+
+	//エフェクト
+	std::unique_ptr<EffectController> effect_;
 
 	//状態
 	ATK_ACT act_;

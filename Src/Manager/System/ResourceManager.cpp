@@ -206,7 +206,7 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "Spring.mp3");
 	resourcesMap_.emplace(SRC::SPRING_SE, std::move(res));
 
-		res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "SlimeFloor.mp3");
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "SlimeFloor.mp3");
 	resourcesMap_.emplace(SRC::SLIME_SE, std::move(res));
 
 	
@@ -215,6 +215,9 @@ void ResourceManager::Init(void)
 #pragma region エフェクト
 	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Wind.efkproj");
 	resourcesMap_.emplace(SRC::WIND_EFF, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Dash.efkefc");
+	resourcesMap_.emplace(SRC::DASH_EFF, std::move(res));
 #pragma endregion
 
 }

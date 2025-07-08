@@ -173,7 +173,6 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 		action_.SetJumpDecel(SPRING_JUMP_POW);
 		action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
 	}
-
 }
 
 void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
