@@ -80,8 +80,8 @@ void ItemBase::Draw(void)
 
 void ItemBase::SetPos(IntVector3 _mapPos)
 {
-	trans_.pos = MapEditer::GetInstance().MapToWorldPos(mapPos);
-	InitMapPos_ = mapPos;
+	trans_.pos = MapEditer::GetInstance().MapToWorldPos(_mapPos);
+	InitMapPos_ = _mapPos;
 	ResetValue();
 	trans_.Update();
 }
@@ -89,6 +89,7 @@ void ItemBase::SetPos(IntVector3 _mapPos)
 void ItemBase::SetRotate(Quaternion _rot)
 {
 	trans_.quaRot = _rot;
+	ResetValue();
 	trans_.Update();
 }
 

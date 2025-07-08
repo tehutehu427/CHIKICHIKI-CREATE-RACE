@@ -58,29 +58,9 @@ void Cannon::SetParam(void)
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
 	MakeCollider({ Collider::TAG::NORMAL_ITEM }, std::move(geo));
 	
-	//–Cg
-	barrelTrans_ = trans_;
+	//–C‘ä‚Ì’l‡‚í‚¹
+	BarrelValueToTurret();
 
-	//–C‘ä‚©‚ç‚Ì‘Š‘ÎÀ•W
-	VECTOR barrelLocalPos = BARREL_LOCAL_POS;
-	barrelLocalPos.x *= barrelTrans_.scl.x;
-	barrelLocalPos.y *= barrelTrans_.scl.y;
-	barrelLocalPos.z *= barrelTrans_.scl.z;
-
-	//–C‘ä‚©‚ç‚Ì‘Š‘Î‰ñ“]
-	VECTOR barrelLocalRot = BARREL_LOCAL_ROT;
-	barrelLocalRot.x *= barrelTrans_.scl.x;
-	barrelLocalRot.y *= barrelTrans_.scl.y;
-	barrelLocalRot.z *= barrelTrans_.scl.z;
-
-	//–Cg‚ğ–C‘ä‚É‡‚í‚¹‚Ä‚¨‚­
-	barrelTrans_.pos = VAdd(trans_.pos, barrelLocalPos);
-	//Šp“x‚à‚Ü‚Á‚·‚®‚É
-	barrelTrans_.quaRotLocal = Quaternion::Euler(
-		Utility::Deg2RadF(barrelLocalRot.x),
-		Utility::Deg2RadF(barrelLocalRot.y),
-		Utility::Deg2RadF(barrelLocalRot.z));
-	
 	//–Cg‚Ìƒ‚ƒfƒ‹İ’è
 	barrelTrans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_BARREL));
@@ -216,8 +196,23 @@ void Cannon::ChangeModelColor(const COLOR_F _colorScale)
 
 void Cannon::ResetValue(void)
 {
+	//’e‚ÌÁ‹
+	shot_.reset();
+
+	//–C‘ä‚Ì’l‡‚í‚¹
+	BarrelValueToTurret();
+
+	//‹¤’Ê
+	ItemBase::ResetValue();
+}
+
+void Cannon::BarrelValueToTurret(void)
+{
 	//–Cg
-	barrelTrans_ = trans_;
+	barrelTrans_.pos = trans_.pos;
+	barrelTrans_.localPos = trans_.localPos;
+	barrelTrans_.scl = trans_.scl;
+	barrelTrans_.quaRot = trans_.quaRot;
 
 	//–C‘ä‚©‚ç‚Ì‘Š‘ÎÀ•W
 	VECTOR barrelLocalPos = BARREL_LOCAL_POS;
@@ -239,12 +234,8 @@ void Cannon::ResetValue(void)
 		Utility::Deg2RadF(barrelLocalRot.y),
 		Utility::Deg2RadF(barrelLocalRot.z));
 
-
-	//’e‚ÌÁ‹
-	shot_.reset();
-
-	//‹¤’Ê
-	ItemBase::ResetValue();
+	//–Cg‚Ì‰ŠúXV
+	barrelTrans_.Update();
 }
 
 void Cannon::RotateTurret(void)

@@ -44,9 +44,9 @@ void MoveHoriFloor::SetParam(void)
 	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
 
 	//サイズ
-	trans_.scl.x *= adjustSizePer.x;
-	trans_.scl.y *= adjustSizePer.y;
-	trans_.scl.z *= adjustSizePer.z;
+	trans_.scl.x = adjustSizePer.x;
+	trans_.scl.y = adjustSizePer.y;
+	trans_.scl.z = adjustSizePer.z;
 
 	//相対座標
 	trans_.localPos.x = MAP_LOCALPOS.x * trans_.scl.x;
@@ -119,8 +119,11 @@ void MoveHoriFloor::Move(void)
 
 void MoveHoriFloor::InitRoute(void)
 {
+	//ルートナンバーの初期化
+	routeNum_ = 0;
+
 	//初期位置保存
-	route_[routeNum_] = trans_.pos;
+	route_[routeNum_] = MapEditer::GetInstance().MapToWorldPos(InitMapPos_);
 
 	//マップ座標をワールド座標に
 	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ MOVE_X, 0, 0 });

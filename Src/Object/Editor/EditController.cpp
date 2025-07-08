@@ -875,7 +875,7 @@ void EditController::RotateObject(void) const
 		rot = Quaternion::Mult(rot, Quaternion::AngleAxis(rotScale,Utility::AXIS_Y));
 		auto& itemIns = ItemManager::GetInstance();
 		ItemManager::GetInstance().DummyItemSetRotate(rot, playerNum_);
-		ItemManager::GetInstance().ResetDummyItem(playerNum_, itemType_,mapPos_);
+		//ItemManager::GetInstance().ResetDummyItem(playerNum_, itemType_,mapPos_);
 	}
 }
 
