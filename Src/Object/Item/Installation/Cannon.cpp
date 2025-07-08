@@ -131,17 +131,6 @@ void Cannon::Draw(void)
 	toonStyle_->Draw();
 	//–Cg‚Ì•`‰æ
 	MV1DrawModel(barrelTrans_.modelId);
-
-	//DrawFormatString(0, 32, 0xffffff, "%.2f,%.2f,%.2f", barrelTrans_.pos.x, barrelTrans_.pos.y, barrelTrans_.pos.z);
-	//DrawFormatString(0, 48, 0xffffff, "%.2f,%.2f,%.2f", turretAddRot_.x, turretAddRot_.y, turretAddRot_.z);
-	//DrawFormatString(0, 64, 0xffffff, "%.2f,%.2f,%.2f", barrelAddRot_.x, barrelAddRot_.y, barrelAddRot_.z);
-
-	DrawSphere3D(targetPos_, 10.0, 20, 0xffffff, 0xffffff, true);
-
-	//DrawLine3D(VAdd(barrelTrans_.pos,barrelTrans_.localPos), targetPos_, 0x666666);
-	//DrawLine3D(VAdd(barrelTrans_.pos, barrelTrans_.localPos), VScale(barrelTrans_.quaRot.Mult(barrelTrans_.quaRotLocal).GetForward(),1000.0f), 0x666666);
-
-	//DrawSphere3D(trans_.pos, AIM_RADIUS, 5, 0xffffff, 0xffffff, false);
 	
 	//’e‚Ì•`‰æ	
 	if (shot_ != nullptr)shot_->Draw();

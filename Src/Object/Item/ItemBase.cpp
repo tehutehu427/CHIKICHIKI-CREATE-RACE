@@ -1,6 +1,7 @@
 #include"../Manager/Game/MapEditer.h"
 #include"../Utility/Utility.h"
 #include "../Common/ToonStyle.h"
+#include "../Common/EffectController.h"
 #include "ItemBase.h"
 
 ItemBase::ItemBase()
@@ -70,15 +71,15 @@ void ItemBase::Draw(void)
 	toonStyle_->Draw();
 }
 
-void ItemBase::SetPos(IntVector3 mapPos)
+void ItemBase::SetPos(IntVector3 _mapPos)
 {
-	trans_.pos = MapEditer::GetInstance().MapToWorldPos(mapPos);
+	trans_.pos = MapEditer::GetInstance().MapToWorldPos(_mapPos);
 	trans_.Update();
 }
 
-void ItemBase::SetRotate(Quaternion rot)
+void ItemBase::SetRotate(Quaternion _rot)
 {
-	trans_.quaRot = rot;
+	trans_.quaRot = _rot;
 	trans_.Update();
 }
 

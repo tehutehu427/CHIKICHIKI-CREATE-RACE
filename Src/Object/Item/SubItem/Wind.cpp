@@ -15,6 +15,7 @@ Wind::Wind(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl, const
 
 Wind::~Wind()
 {
+	effect_->AllDelete();
 }
 
 void Wind::SetParam(void)
@@ -48,7 +49,7 @@ void Wind::SetParam(void)
 void Wind::Update(void)
 {
 	if (!effect_->IsEnd(EffectController::EFF_TYPE::WIND, 0))return;
-	effect_->Play(EffectController::EFF_TYPE::WIND, trans_.pos, trans_.quaRot, VGet(10.0f,10.0f,10.0f));
+	int i = effect_->Play(EffectController::EFF_TYPE::WIND, parentPos_, trans_.quaRot, VGet(100.0f,100.0f,100.0f));
 }
 
 void Wind::Draw(void)
