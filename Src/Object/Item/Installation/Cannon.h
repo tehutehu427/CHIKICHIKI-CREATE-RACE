@@ -52,6 +52,9 @@ public:
 	//モデルの色変え
 	void ChangeModelColor(const COLOR_F _colorScale)override;
 
+	//アイテムの値リセット
+	void ResetValue(void)override;
+
 private:
 
 	//シェーダー
