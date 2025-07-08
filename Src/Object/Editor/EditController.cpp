@@ -320,7 +320,7 @@ void EditController::MoveRotateObjectUpdate(void)
 	}
 	RotateObject();
 	moveDir_ = GetMoveDir();
-	moveDir_ = GetMoveDirNew();
+	moveDir_ = GetMoveDirTwo();
 	if (moveDir_ == MOVE_DIR::NONE)
 	{
 		return;
@@ -598,6 +598,7 @@ void EditController::MoveItem(void)
 	farWorldPos = VSub(farWorldPos, normalmousePos3D);
 	auto& itemIns = ItemManager::GetInstance();
 	auto size = itemIns.GetDummyItemSize(playerNum_);
+	auto mapPos = mapPos_;
 	switch (moveDir_)
 	{
 	case EditController::MOVE_DIR::NONE:
@@ -691,9 +692,11 @@ void EditController::MoveItem(void)
 	default:
 		break;
 	}
-	itemIns.DummyItemSetMapPos(mapPos_, playerNum_);
-	itemIns.ResetDummyItem(playerNum_,itemType_,mapPos_);
-
+	if (mapPos != mapPos_)
+	{
+		itemIns.DummyItemSetMapPos(mapPos_, playerNum_);
+		//itemIns.ResetDummyItem(playerNum_, itemType_, mapPos_);
+	}
 }
 
 EditController::MOVE_DIR EditController::GetMoveDir(void)
@@ -760,7 +763,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 	return moveDir;
 }
 
-EditController::MOVE_DIR EditController::GetMoveDirNew(void)
+EditController::MOVE_DIR EditController::GetMoveDirTwo(void)
 {
 	MOVE_DIR moveDir = MOVE_DIR::NONE;
 	int isChenge = IsChengeMoveDir();
@@ -852,7 +855,7 @@ void EditController::DebugDraw(void)
 	DrawFormatString(0, 0, 0x000000, "%d", static_cast<int>(mode_));
 	DrawFormatString(0, 20, 0x000000, "%d", static_cast<int>(itemType_));
 	DrawFormatString(0, 40, 0x000000, "%d,%d,%d",mapPos_.x,mapPos_.y,mapPos_.z);
-	DrawFormatString(0, 60, 0x000000, "%d", static_cast<int>(GetMoveDirNew()));
+	//DrawFormatString(0, 60, 0x000000, "%d", static_cast<int>(GetMoveDirTwo()));
 	IntVector3 size = ItemManager::GetInstance().GetDummyItemSize(playerNum_);
 	DrawFormatString(0, 80, 0x000000, "%d,%d,%d",size.x,size.y,size.z);
 	DrawFormatString(0, 100, 0x000000, "%d", static_cast<int>(ItemManager::GetInstance().GetDummyItemRotY(playerNum_)));
