@@ -13,7 +13,7 @@ EditItemReady::EditItemReady(EditController& parent) : parent_(parent)
 	phaseChanges_.emplace(READY_PHASE::NOT_READY, std::bind(&EditItemReady::ChengePhaseNotRedy, this));
 	phaseChanges_.emplace(READY_PHASE::CHECK, std::bind(&EditItemReady::ChengePhaseCheck, this));
 	phaseChanges_.emplace(READY_PHASE::READY, std::bind(&EditItemReady::ChengePhaseReady, this));
-
+	readyImg_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::READY_IMG).handleId_;
 }
 
 EditItemReady::~EditItemReady()
@@ -22,8 +22,7 @@ EditItemReady::~EditItemReady()
 
 void EditItemReady::Init()
 {
-	phaseChanges_[READY_PHASE::NOT_READY]();
-	readyImg_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::READY_IMG).handleId_;
+	ChangeReady(READY_PHASE::NOT_READY);
 }
 
 void EditItemReady::Update()

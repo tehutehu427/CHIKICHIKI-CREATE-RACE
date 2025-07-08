@@ -59,6 +59,9 @@ void MoveVerFloor::SetParam(void)
 
 	//ルート設定
 	InitRoute();
+
+	//マップサイズ
+	mapSize_ = MAP_SIZE;
 }
 
 void MoveVerFloor::Update(void)
@@ -72,6 +75,13 @@ void MoveVerFloor::Update(void)
 
 void MoveVerFloor::Draw(void)
 {
+	//カメラ範囲に含まれるか調べる
+	if (IsInCameraView())
+	{
+		//含まれる場合
+		return;	//描画を行わない
+	}
+
 	DrawLine3D(VAdd(route_[0], MAP_LOCALPOS), VAdd(route_[1], MAP_LOCALPOS), Utility::BLACK);
 	toonStyle_->Draw();
 }
@@ -83,6 +93,12 @@ void MoveVerFloor::OnHit(const std::weak_ptr<Collider> _hitCol)
 const IntVector3 MoveVerFloor::GetHitSize(void) const
 {
 	return size_ + IntVector3(0, MOVE_Y, 0);
+}
+
+void MoveVerFloor::ResetValue(void)
+{
+	InitRoute();
+	ItemBase::ResetValue();
 }
 
 void MoveVerFloor::Move(void)

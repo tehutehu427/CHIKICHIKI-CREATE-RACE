@@ -51,6 +51,9 @@ void StartFlag::SetParam(void)
 	//コライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, colModelTrans_.modelId);
 	MakeCollider({ Collider::TAG::START }, std::move(geo));
+
+	//マップサイズ
+	mapSize_ = MAP_SIZE;
 }
 
 void StartFlag::Update(void)

@@ -66,6 +66,13 @@ void ItemBase::Init()
 
 void ItemBase::Draw(void)
 {
+	//ƒJƒƒ‰”ÍˆÍ‚ÉŠÜ‚Ü‚ê‚é‚©’²‚×‚é
+	if (IsInCameraView())
+	{
+		//ŠÜ‚Ü‚ê‚éê‡
+		return;	//•`‰æ‚ðs‚í‚È‚¢
+	}
+
 	//ƒ‚ƒfƒ‹•`‰æ
 	//MV1DrawModel(trans_.modelId);
 	toonStyle_->Draw();
@@ -73,7 +80,9 @@ void ItemBase::Draw(void)
 
 void ItemBase::SetPos(IntVector3 _mapPos)
 {
-	trans_.pos = MapEditer::GetInstance().MapToWorldPos(_mapPos);
+	trans_.pos = MapEditer::GetInstance().MapToWorldPos(mapPos);
+	InitMapPos_ = mapPos;
+	ResetValue();
 	trans_.Update();
 }
 
@@ -126,4 +135,17 @@ void ItemBase::InitShader()
 	toonStyle_ = std::make_unique<ToonStyle>();
 	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::MESH);
 	toonStyle_->Init();
+}
+
+bool ItemBase::IsInCameraView()
+{
+	VECTOR boxPos1 = trans_.pos;
+	VECTOR boxPos2 = MapEditer::GetInstance().MapToWorldPos(InitMapPos_ + mapSize_);
+
+	if (CheckCameraViewClip_Box(boxPos1, boxPos2))
+	{
+		return true;
+	}
+
+	return false;
 }
