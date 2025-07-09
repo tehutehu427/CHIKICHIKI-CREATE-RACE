@@ -33,7 +33,7 @@ public:
 	static constexpr IntVector3 PLAYER3_INIT_EDIT_POS = { 15,0,0 };	//プレイヤー1のエディター初期座標
 	static constexpr IntVector3 PLAYER4_INIT_EDIT_POS = { 20,0,0 };	//プレイヤー1のエディター初期座標
 
-
+	static constexpr float GO_DUMMY_DISTANCE = 700.0f;
 
 	static constexpr float ERROR_STRING_TIME = 1.0f;	//エラー文字列の表示時間
 
@@ -157,7 +157,7 @@ private:
 	//移動方向を取得
 	MOVE_DIR GetMoveDir(void) ;		//クリックした方向の円錐をもとに算出
 
-	MOVE_DIR GetMoveDirNew(void);	//カメラの方向をもとに算出
+	MOVE_DIR GetMoveDirTwo(void);	//カメラの方向をもとに算出
 
 	int IsChengeMoveDir(void);	//移動方向を変えていいか -1 :NONE　0: 元のまま 1:変える
 	void DebugUpdate(void);	//デバッグ用更新
@@ -176,6 +176,7 @@ private:
 	void SetCameraPosToDummyObject(void);	//ダミーオブジェクトにカメラを近づける
 
 	void ChengeCameraMode(void);	//カメラのモードを変える
+	void ChengeCameraMode(CAMERA_MODE mode);	//カメラのモードを変える
 	VECTOR cPos_;		//カメラの座標
 	VECTOR cAngles_;	//カメラの回転
 	VECTOR cTargetPos_;	//カメラの中止店

@@ -123,9 +123,15 @@ public:
 		MULTI_GAME_BGM_2,
 		MULTI_GAME_BGM_3,
 		PLAYER_PUNCH_HIT,
+		PLAYER_PUNCH_MOTION,
+		PLAYER_DASH_START,
+		PLAYER_JUMP,
+		SPRING_SE,
+		SLIME_SE,
 
 		//エフェクト
 		WIND_EFF,			//風のエフェクト
+		DASH_EFF			//ダッシュエフェクト
 
 		//2Dエフェクト
 		SMOKE_EFE_SPR,		//煙エフェクト

@@ -24,11 +24,20 @@ public:
 		NONE,	//何もなし
 		INPUT,	//入力
 		MOVE,	//移動
-		DASHMOVE,
+		DASHMOVE,//ダッシュ
 		PUNCH,	//パンチ
 		KNOCKBACK,//パンチされた状態
 		JUMP
 	};
+
+	enum class ACT_SE
+	{
+		DASH,
+		JUMP,
+		PUNCH,
+		SLIME,
+	};
+
 	PlayerAction(Player& _player, SceneManager& _scnMng,AnimationController& _animationController);
 	~PlayerAction(void);
 
@@ -37,6 +46,11 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	void Init(void);
+
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	void Load(void);
 
 	/// <summary>
 	/// 更新処理
@@ -140,6 +154,9 @@ private:
 	//ジャンプ時間
 	static constexpr float TIME_JUMP = 3.0f;
 
+	//スライム床上でのジャンプ力
+	static constexpr float SLIME_FLOOR_JUMP_POW = 10.0f;
+
 	//ジャンプアニメーションループ開始
 	static constexpr float JUMP_ANIM_LOOP_START_FRAME = 23.0f;
 	//ジャンプアニメーションループ完了
@@ -189,10 +206,21 @@ private:
 	std::function<void(void)>actionUpdate_;
 
 	//操作入力
-	std::shared_ptr<PlayerInput> input_;
+	std::unique_ptr<PlayerInput> input_;
+
+	//エフェクト
+	std::unique_ptr<EffectController> effect_;
 
 	//状態
 	ATK_ACT act_;
+
+	//素材関連
+	//------------------------
+	std::map<ACT_SE, int>actSE_;
+
+	//スライムSEの間隔カウント
+	float slimeSEcnt_;
+
 	//移動
 	//------------------------
 	float speed_;			// 移動スピード
@@ -201,7 +229,7 @@ private:
 	VECTOR dir_;			//方向
 
 	//回転
-	Quaternion playerRotY_;
+	Quaternion playerRotY_;		//プレイヤーY角度
 	Quaternion goalQuaRot_;
 	float stepRotTime_;
 
@@ -240,6 +268,10 @@ private:
 	void MoveDirFronInput(void);
 	//移動状態変更
 	void ChangeMove(void);
+
+	//ダッシュ
+	void ChangeDashMove(void);
+
 	//毎フレーム移動方向とスピードを更新する
 	void UpdateMoveDirAndPow(void);
 	//移動速度

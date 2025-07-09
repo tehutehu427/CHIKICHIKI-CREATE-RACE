@@ -197,12 +197,31 @@ void ResourceManager::Init(void)
 	//--------------------------------------------------------------------
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "PunchHit.mp3");
 	resourcesMap_.emplace(SRC::PLAYER_PUNCH_HIT, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "PunchMotion.mp3");
+	resourcesMap_.emplace(SRC::PLAYER_PUNCH_MOTION, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "dash.mp3");
+	resourcesMap_.emplace(SRC::PLAYER_DASH_START, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "jump.mp3");
+	resourcesMap_.emplace(SRC::PLAYER_JUMP, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "Spring.mp3");
+	resourcesMap_.emplace(SRC::SPRING_SE, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "SlimeFloor.mp3");
+	resourcesMap_.emplace(SRC::SLIME_SE, std::move(res));
+
 	
 #pragma endregion 
 
 #pragma region エフェクト
-	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Wind.efkproj");
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Aura01_HDR.efkefc");
 	resourcesMap_.emplace(SRC::WIND_EFF, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Dash.efkefc");
+	resourcesMap_.emplace(SRC::DASH_EFF, std::move(res));
 #pragma endregion
 
 }

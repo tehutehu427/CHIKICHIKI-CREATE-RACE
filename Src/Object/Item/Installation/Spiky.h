@@ -6,7 +6,7 @@ class Spiky : public ItemBase
 public:
 
 	//マップ
-	static constexpr IntVector3 MAP_SIZE = { 1,1,1 };				//マップサイズ
+	static constexpr IntVector3 MAP_SIZE = { 2,1,2 };				//マップサイズ
 	static constexpr VECTOR MAP_LOCALPOS = { 27.5f,5.5f,27.5f };	//マップとの相対座標
 
 	//サイズ

@@ -28,6 +28,9 @@ public:
 		VECTOR upPos;
 		VECTOR downPos;
 	};
+
+
+
 	//コンストラクタ
 	PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>&_colParam,Transform& _trans,Collider::TAG _tag);
 
@@ -96,6 +99,10 @@ private:
 
 	//当たり判定の押し出し回数
 	static constexpr int COL_TRY_CNT_MAX = 10;
+
+	//ヒットした法線方向へのオフセット
+	static constexpr float HIT_NORMAL_OFFSET = 3.0f;
+
 	//プレイヤーの体の球
 	static constexpr int BODY_SPHERE_COL_NO = 1;
 
@@ -125,6 +132,9 @@ private:
 	VECTOR cubeMovePos_;
 	VECTOR cubePos_;
 	CUBE cube_;
+
+	int hitNum_;
+
 #endif // DEBUG_ON
 
 	//プレイヤー

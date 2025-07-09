@@ -37,9 +37,9 @@ EditController::EditController(int playerNum)
 	errorType_ = ERROR_TYPE::NONE;
 	errorStringTime_ = 0.0f;	//エラー文字列の表示時間初期化
 	cameraMode_ = CAMERA_MODE::FREE;
-	cPos_ = {};
-	cAngles_ = {};
-	cTargetPos_ = {};
+	cPos_ = SceneManager::GetInstance().GetCamera(playerNum).lock()->GetPos();
+	cAngles_ = SceneManager::GetInstance().GetCamera(playerNum).lock()->GetAngles();
+	cTargetPos_ = SceneManager::GetInstance().GetCamera(playerNum).lock()->GetTargetPos();
 }
 
 EditController::~EditController()
@@ -141,7 +141,6 @@ void EditController::Reset(void)
 	cursorPos_ = Vector2(screenSize_.x / 2, screenSize_.y / 2);	//カーソル位置は画面の中央に設定
 	errorType_ = ERROR_TYPE::NONE;
 	errorStringTime_ = 0.0f;	//エラー文字列の表示時間初期化
-	cameraMode_ = CAMERA_MODE::FREE;
 	ready_->Init();
 }
 
@@ -216,6 +215,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	itemMIns.CreateDummyItem(mapPos, rot, itemType_, playerNum_);
 	mapPos_ = mapPos;
 	ChengeMode(MODE::MOVE_ROTATE);
+	ChengeCameraMode(CAMERA_MODE::GO_DUMMY);
 }
 
 bool EditController::GetReady(void) const
@@ -320,7 +320,7 @@ void EditController::MoveRotateObjectUpdate(void)
 	}
 	RotateObject();
 	moveDir_ = GetMoveDir();
-	moveDir_ = GetMoveDirNew();
+	moveDir_ = GetMoveDirTwo();
 	if (moveDir_ == MOVE_DIR::NONE)
 	{
 		return;
@@ -598,6 +598,7 @@ void EditController::MoveItem(void)
 	farWorldPos = VSub(farWorldPos, normalmousePos3D);
 	auto& itemIns = ItemManager::GetInstance();
 	auto size = itemIns.GetDummyItemSize(playerNum_);
+	auto mapPos = mapPos_;
 	switch (moveDir_)
 	{
 	case EditController::MOVE_DIR::NONE:
@@ -691,9 +692,11 @@ void EditController::MoveItem(void)
 	default:
 		break;
 	}
-	itemIns.DummyItemSetMapPos(mapPos_, playerNum_);
-	itemIns.ResetDummyItem(playerNum_,itemType_,mapPos_);
-
+	if (mapPos != mapPos_)
+	{
+		itemIns.DummyItemSetMapPos(mapPos_, playerNum_);
+		//itemIns.ResetDummyItem(playerNum_, itemType_, mapPos_);
+	}
 }
 
 EditController::MOVE_DIR EditController::GetMoveDir(void)
@@ -760,7 +763,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 	return moveDir;
 }
 
-EditController::MOVE_DIR EditController::GetMoveDirNew(void)
+EditController::MOVE_DIR EditController::GetMoveDirTwo(void)
 {
 	MOVE_DIR moveDir = MOVE_DIR::NONE;
 	int isChenge = IsChengeMoveDir();
@@ -852,7 +855,7 @@ void EditController::DebugDraw(void)
 	DrawFormatString(0, 0, 0x000000, "%d", static_cast<int>(mode_));
 	DrawFormatString(0, 20, 0x000000, "%d", static_cast<int>(itemType_));
 	DrawFormatString(0, 40, 0x000000, "%d,%d,%d",mapPos_.x,mapPos_.y,mapPos_.z);
-	DrawFormatString(0, 60, 0x000000, "%d", static_cast<int>(GetMoveDirNew()));
+	//DrawFormatString(0, 60, 0x000000, "%d", static_cast<int>(GetMoveDirTwo()));
 	IntVector3 size = ItemManager::GetInstance().GetDummyItemSize(playerNum_);
 	DrawFormatString(0, 80, 0x000000, "%d,%d,%d",size.x,size.y,size.z);
 	DrawFormatString(0, 100, 0x000000, "%d", static_cast<int>(ItemManager::GetInstance().GetDummyItemRotY(playerNum_)));
@@ -872,7 +875,7 @@ void EditController::RotateObject(void) const
 		rot = Quaternion::Mult(rot, Quaternion::AngleAxis(rotScale,Utility::AXIS_Y));
 		auto& itemIns = ItemManager::GetInstance();
 		ItemManager::GetInstance().DummyItemSetRotate(rot, playerNum_);
-		ItemManager::GetInstance().ResetDummyItem(playerNum_, itemType_,mapPos_);
+		//ItemManager::GetInstance().ResetDummyItem(playerNum_, itemType_,mapPos_);
 	}
 }
 
@@ -981,7 +984,7 @@ void EditController::ChengeCameraMode(void)
 		nextMode = static_cast<CAMERA_MODE>((static_cast<int>(nextMode) + 1) % static_cast<int>(CAMERA_MODE::MAX));
 	}
 	cameraMode_ = nextMode;
-	auto dummyTran = ItemManager::GetInstance().GetDummyItemTransform(playerNum_);
+	const Transform& dummyTran = ItemManager::GetInstance().GetDummyItemTransform(playerNum_);
 	switch (nextMode)
 	{
 	case EditController::CAMERA_MODE::FREE:
@@ -994,13 +997,52 @@ void EditController::ChengeCameraMode(void)
 	{
 		VECTOR tPos = dummyTran.pos;
 		tPos = VAdd(tPos, VECTOR(MapEditer::GRID_SIZE, MapEditer::GRID_SIZE, MapEditer::GRID_SIZE));
-		//VECTOR cPos = VSub(tPos, VScale(VNorm(VAdd(Utility::DIR_F,Utility::DIR_U)), 500));
-		//VECTOR cPos = VSub(tPos, VScale(Utility::DIR_F, 500));
 		VECTOR cDir = camera->GetForward();
-		VECTOR cPos = VSub(tPos, VScale(cDir, 500));
+		VECTOR cPos = VSub(tPos, VScale(cDir, GO_DUMMY_DISTANCE));
 		camera->SetPos(cPos);
-		 //VECTOR cDir = VSub(tPos, cPos);
-		//camera->SetAngles(cDir);
+
+		break;
+	}
+	case EditController::CAMERA_MODE::FIXED_UP:
+	{
+		cPos_ = camera->GetPos();
+		cAngles_ = camera->GetAngles();
+		cTargetPos_ = camera->GetTargetPos();
+		camera->ChangeMode(Camera::MODE::FIXED_UP);
+		VECTOR pos = { MapEditer::MAP_SIZE.x / 2 * MapEditer::GRID_SIZE,3500,MapEditer::MAP_SIZE.z / 2 * MapEditer::GRID_SIZE };
+		camera->SetPos(pos);
+		camera->SetTargetPos(VAdd(pos, { 0.0f,-5000.0f,0.0f }));
+		break;
+	}
+	case EditController::CAMERA_MODE::MAX:
+		break;
+	default:
+		break;
+	}
+}
+
+void EditController::ChengeCameraMode(CAMERA_MODE mode)
+{
+	auto& sceneM = SceneManager::GetInstance();
+	auto camera = sceneM.GetCamera(playerNum_).lock();
+	cameraMode_ = mode;
+	const Transform& dummyTran = ItemManager::GetInstance().GetDummyItemTransform(playerNum_);
+	switch (cameraMode_)
+	{
+	case EditController::CAMERA_MODE::FREE:
+		camera->ChangeMode(Camera::MODE::FREE_CONTROLL);
+		camera->SetPos(cPos_);
+		camera->SetAngles(cAngles_);
+		camera->SetTargetPos(cTargetPos_);
+		break;
+	case EditController::CAMERA_MODE::GO_DUMMY:
+	{
+		VECTOR tPos = dummyTran.pos;
+		tPos = VAdd(tPos, VECTOR(MapEditer::GRID_SIZE, MapEditer::GRID_SIZE, MapEditer::GRID_SIZE));
+		VECTOR cDir = camera->GetForward();
+		VECTOR cPos = VSub(tPos, VScale(cDir, GO_DUMMY_DISTANCE));
+		camera->SetPos(cPos);
+
 		break;
 	}
 	case EditController::CAMERA_MODE::FIXED_UP:

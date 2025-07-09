@@ -95,6 +95,12 @@ const IntVector3 MoveVerFloor::GetHitSize(void) const
 	return size_ + IntVector3(0, MOVE_Y, 0);
 }
 
+void MoveVerFloor::ResetValue(void)
+{
+	InitRoute();
+	ItemBase::ResetValue();
+}
+
 void MoveVerFloor::Move(void)
 {
 	//指定ルートを超えたか
@@ -113,8 +119,11 @@ void MoveVerFloor::Move(void)
 
 void MoveVerFloor::InitRoute(void)
 {
+	//ルートナンバーの初期化
+	routeNum_ = 0;
+
 	//初期位置保存
-	route_[routeNum_] = trans_.pos;
+	route_[routeNum_] = MapEditer::GetInstance().MapToWorldPos(InitMapPos_);
 
 	//マップ座標をワールド座標に
 	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ 0, MOVE_Y, 0 });

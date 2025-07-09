@@ -13,6 +13,7 @@ public:
 	{
 		NONE,
 		WIND,		//風
+		DASH,
 	};
 
 	//コンストラクタ
@@ -82,6 +83,9 @@ public:
 	/// <param name="_arrayNum">止めたいエフェクトの配列番号</param>
 	void Stop(const EFF_TYPE _effType, const int _arrayNum);
 
+	//全停止
+	void AllDelete(void);
+
 	/// <summary>
 	/// 再生が終わっているか
 	/// </summary>
@@ -97,7 +101,6 @@ private:
 	{
 		int resId;					//リソースデータ
 		std::vector<int> playId;	//再生データ
-		float normalSpeed;			//通常速度
 	};
 
 	static constexpr float NORMAL_MULTI = 1.0f;	//通常倍率
