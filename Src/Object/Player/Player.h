@@ -155,7 +155,7 @@ public:
 	/// 座標
 	/// </summary>
 	/// <param name="_worldPos">ワールド座標</param>
-	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
+	void SetPos(const VECTOR _worldPos);
 	//*****************************************
 	//モデル色を変更
 	void ChangeModelColor(const COLOR_F _colorScale)override;
