@@ -38,7 +38,5 @@ private:
 
 	//•—‚Ì¶¬
 	void CreateWind(void);
-
-	void InitShader() override;
 };
 
