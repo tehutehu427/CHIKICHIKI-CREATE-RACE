@@ -1,5 +1,6 @@
 #include "RoundDisplay.h"
 #include <DxLib.h>
+#include <cmath>
 #include "../../Application.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Utility/Utility.h"
@@ -39,7 +40,8 @@ void RoundDisplay::Draw()
 {
 	//ècç¿ïWÇå≈íË
 	constexpr int ROUND_POS_X = Application::SCREEN_HALF_X - 100;
-	constexpr int NUMBER_POS_X = Application::SCREEN_HALF_X + 250;
+	constexpr int NUMBER_POS_X = Application::SCREEN_HALF_X + 230;
+	constexpr int NUMBER_OFFSET_X = 70;
 	constexpr int POS_Y = Application::SCREEN_HALF_Y;
 
 	//ÉâÉEÉìÉhÇÃï`âÊ
@@ -57,11 +59,11 @@ void RoundDisplay::Draw()
 	for (int i = 0; i < numberDigit_; i++)
 	{
 		DrawRotaGraph(
-			NUMBER_POS_X,
+			NUMBER_POS_X + NUMBER_OFFSET_X * i,
 			POS_Y,
 			1.0f,
 			0.0f,
-			imgNumbers_[numberIndex_],
+			imgNumbers_[Utility::GetDigit(numberIndex_, i + 1)],
 			true,
 			false
 		);

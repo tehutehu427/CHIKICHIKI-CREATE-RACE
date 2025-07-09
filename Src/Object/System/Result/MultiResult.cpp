@@ -68,6 +68,9 @@ void MultiResult::Draw()
 
 	//スコアゲージ
 	scoreGages_->Draw();
+
+	//ゲージ装飾
+	if (palette_->GetState() == Palette::STATE::CENTER) { scoreGages_->DecorationDraw(); }
 }
 
 void MultiResult::Reset()
