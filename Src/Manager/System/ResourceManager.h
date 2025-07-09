@@ -131,7 +131,7 @@ public:
 
 		//エフェクト
 		WIND_EFF,			//風のエフェクト
-		DASH_EFF			//ダッシュエフェクト
+		DASH_EFF,			//ダッシュエフェクト
 
 		//2Dエフェクト
 		SMOKE_EFE_SPR,		//煙エフェクト

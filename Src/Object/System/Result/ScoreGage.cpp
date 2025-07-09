@@ -10,7 +10,8 @@ ScoreGage::ScoreGage(const int _playerIndex) :
 	pos_ = {};
 	size_ = {};
 	imgScoreGage_ = 0;
-	rate_ = 0.0f;
+	animStep_ = 0.0f;
+	color_ = 0;
 	state_ = STATE::NONE;
 	stateChanges_.emplace(STATE::NONE, std::bind(&ScoreGage::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::WAIT, std::bind(&ScoreGage::ChangeStateWait, this));
@@ -33,11 +34,11 @@ void ScoreGage::Init()
 	//プレイヤー番号ごとに設定
 	SetParamToPlayerNo();	
 
-	//ゲージサイズ
-	size_ = { 100,GAGE_SIZE_Y };
+	//アニメーションステップ初期化
+	animStep_ = 0.0f;
 
-	//デバッグ
-	//ScoreManager::GetInstance().AddScore(playerIndex_, ScoreManager::SCORE_TYPE::CLEAR);
+	//ゲージサイズ
+	size_ = { GAGE_SIZE_X,GAGE_SIZE_Y };
 }
 
 void ScoreGage::Update()

@@ -1,5 +1,6 @@
 #include "ScoreGageManager.h"
 #include "../../../Manager/System/DateBank.h"
+#include "../../../Utility/Utility.h"
 
 ScoreGageManager::ScoreGageManager()
 {
@@ -43,6 +44,26 @@ void ScoreGageManager::Draw()
 	{
 		scoreGage->Draw();
 	}
+
+	//縮小開始ライン
+	DrawLine(
+		ScoreGage::GAGE_POS_P1_X,
+		ScoreGage::GAGE_POS_P1_Y, 
+		ScoreGage::GAGE_POS_P1_X,
+		ScoreGage::GAGE_POS_P1_Y + 200, 
+		Utility::BLACK,
+		5.0f
+		);
+
+	//クリアライン
+	DrawLine(
+		ScoreGage::GAGE_POS_P1_X + ScoreGage::GAGE_LENGTH_MAX,
+		ScoreGage::GAGE_POS_P1_Y,
+		ScoreGage::GAGE_POS_P1_X + ScoreGage::GAGE_LENGTH_MAX,
+		ScoreGage::GAGE_POS_P1_Y + 200,
+		Utility::BLACK,
+		5.0f
+	);
 }
 
 void ScoreGageManager::ChangeAllState(const ScoreGage::STATE _state)
