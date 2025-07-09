@@ -114,6 +114,12 @@ void MultiParty::UpdateEdit(void)
 		SetDrawScreen(SceneManager::GetInstance().GetScreen(i));
 		SceneManager::GetInstance().GetCamera(i).lock()->CameraSetting(); // ƒJƒƒ‰‚ÌXV
 		editControllers_[i]->Update();
+		KeyConfig& ins = KeyConfig::GetInstance();
+		auto keyType = DateBank::GetInstance().GetPlayerNum() == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
+		if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_GRID_ON_OFF, static_cast<KeyConfig::JOYPAD_NO>(i + 1), keyType))
+		{
+			isGrid_[i] = isGrid_[i] ? false : true;
+		}
 	}
 	SetDrawScreen(SceneManager::GetInstance().GetMainScreen());
 	bool ready = true;
