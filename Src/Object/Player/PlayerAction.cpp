@@ -16,7 +16,6 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	,scnMng_(_scnMng)
 	,animationController_(_animationController)
 {
-	
 	//‘€ìŠÖ˜A
 	//----------------------------------------------------
 	changeAction_.emplace(ATK_ACT::NONE, [this]() {ChangeNone(); });
@@ -90,8 +89,6 @@ void PlayerAction::Load(void)
 	actSE_.emplace(ACT_SE::SLIME,res.Load(ResourceManager::SRC::SLIME_SE).handleId_);
 
 	effect_->Add(res.Load(ResourceManager::SRC::DASH_EFF).handleId_, EffectController::EFF_TYPE::DASH);
-
- 	
 }
 
 void PlayerAction::Update(void)
@@ -157,9 +154,6 @@ void PlayerAction::ChangeAction(ATK_ACT _act)
 	act_ = _act;
 	changeAction_[act_]();
 }
-
-
-
 
 void PlayerAction::ChangeInput(void)
 {
