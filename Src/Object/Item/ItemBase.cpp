@@ -11,7 +11,7 @@ ItemBase::ItemBase()
 	status_.itemType = ITEM_TYPE::NONE;
 	status_.effType = EFFECT_TYPE::FIXED;
 
-	InitMapPos_ = INT_VECTOR_ZERO;
+	initMapPos_ = INT_VECTOR_ZERO;
 
 	rotY_ = 0.0f;
 
@@ -46,7 +46,7 @@ void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot, ITEM_TYPE _itemType)
 	status_.itemType = _itemType;
 
 	//初期位置保存
-	InitMapPos_ = _mapPos;
+	initMapPos_ = _mapPos;
 
 	//基本初期化
 	Init();
@@ -81,7 +81,7 @@ void ItemBase::Draw(void)
 void ItemBase::SetPos(IntVector3 _mapPos)
 {
 	trans_.pos = MapEditer::GetInstance().MapToWorldPos(_mapPos);
-	InitMapPos_ = _mapPos;
+	initMapPos_ = _mapPos;
 	ResetValue();
 	trans_.Update();
 }
@@ -96,7 +96,7 @@ void ItemBase::SetRotate(Quaternion _rot)
 void ItemBase::ResetValue(void)
 {
 	//位置を初期位置に戻す
-	trans_.pos = MapEditer::GetInstance().MapToWorldPos(InitMapPos_);
+	trans_.pos = MapEditer::GetInstance().MapToWorldPos(initMapPos_);
 
 	//モデルへの反映
 	trans_.Update();
@@ -141,7 +141,7 @@ void ItemBase::InitShader()
 bool ItemBase::IsInCameraView()
 {
 	VECTOR boxPos1 = trans_.pos;
-	VECTOR boxPos2 = MapEditer::GetInstance().MapToWorldPos(InitMapPos_ + mapSize_);
+	VECTOR boxPos2 = MapEditer::GetInstance().MapToWorldPos(initMapPos_ + mapSize_);
 
 	if (CheckCameraViewClip_Box(boxPos1, boxPos2))
 	{
