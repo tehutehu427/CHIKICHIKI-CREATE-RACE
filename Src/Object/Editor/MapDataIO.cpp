@@ -133,6 +133,13 @@ const bool MapDataIO::IsEdit() const
     return state_ == STATE::NONE || state_ == STATE::WAIT;
 }
 
+void MapDataIO::Reset()
+{
+    //ファイルパスの指定
+    selectFile_ = Application::PATH_JSON + getFileNameMap_[SceneManager::GetInstance().GetSceneID()]();
+    ImportJsonFile();
+}
+
 void MapDataIO::ExportJsonFile(const std::string _fileName)
 {
     //メッセージカウントを設定

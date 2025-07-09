@@ -11,6 +11,7 @@ RoundDisplay::RoundDisplay()
 	imgNumbers_ = &i;
 	imgRound_ = -1;
 	numberIndex_ = -1;
+	numberDigit_ = -1;
 }
 
 RoundDisplay::~RoundDisplay()
@@ -29,6 +30,7 @@ void RoundDisplay::Init()
 {
 	//‰Šú’l
 	numberIndex_ = 0;
+	numberDigit_ = 0;
 }
 
 void RoundDisplay::Update()
@@ -58,12 +60,14 @@ void RoundDisplay::Draw()
 	//”š‚Ì•`‰æ
 	for (int i = 0; i < numberDigit_; i++)
 	{
+		int index = Utility::GetDigit(numberIndex_, i);
+
 		DrawRotaGraph(
 			NUMBER_POS_X + NUMBER_OFFSET_X * i,
 			POS_Y,
 			1.0f,
 			0.0f,
-			imgNumbers_[Utility::GetDigit(numberIndex_, i + 1)],
+			imgNumbers_[index],
 			true,
 			false
 		);
