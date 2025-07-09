@@ -48,6 +48,9 @@ public:
 	/// </summary>
 	void ResetInput();
 
+	//ボタンが押されたか返す
+	const bool IsInput(const int _playerIndex) const { return players_[_playerIndex].isProcess; }
+
 	/// <summary>
 	/// 全体入力が終えたか返す
 	/// </summary>

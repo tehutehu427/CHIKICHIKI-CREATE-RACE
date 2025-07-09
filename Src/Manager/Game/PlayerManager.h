@@ -17,6 +17,15 @@ public:
 	//プレイヤー1人
 	static constexpr int PLAYER_SINGLE = 1;
 
+	//プレイヤーカラー
+	static constexpr COLOR_F PLAYER_COLOR[PLAYER_NUM_MAX] =
+	{		
+		{0.6f,0.8f,1.0f,1.0f},
+		{1.0f,0.6f,0.9f,1.0f},
+		{0.7f,1.0f,0.8f,1.0f},
+		{1.0f,1.0f,0.7f,1.0f},
+	};
+
 	
 	enum class PLAYER
 	{
@@ -94,14 +103,7 @@ private:
 	//プレイヤーの大きさ
 	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
 
-	//プレイヤーカラー
-	static constexpr COLOR_F PLAYER_COLOR[PLAYER_NUM_MAX] =
-	{
-		{1.0f,0.6f,0.9f,1.0f},
-		{0.6f,0.8f,1.0f,1.0f},
-		{0.7f,1.0f,0.8f,1.0f},
-		{1.0f,1.0f,0.7f,1.0f},
-	};
+
 
 	//初期座標
 	static constexpr float START_POS = 50.0f;

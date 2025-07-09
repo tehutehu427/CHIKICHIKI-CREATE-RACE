@@ -7,6 +7,7 @@
 class KeyConfig;
 class MultiInputCheck;
 class SelectScene;
+class MultiCheckPlayer;
 
 class MultiReady
 {
@@ -19,7 +20,8 @@ public:
 	{
 		NUM_CHECK,	//人数確認
 		PAD_CHECK,	//コントローラー確認
-		FINAL_CHECK	//最終確認
+		FINAL_CHECK,//最終確認
+		PLAYER_ANIM,//プレイヤーアニメーション
 	};
 
 	/// <summary>
@@ -91,16 +93,20 @@ private:
 	//状態別処理の管理
 	std::unordered_map<STATE, SceneBase::ProcessFunction> stateTables_;
 
+	//プレイヤー
+	std::vector<std::unique_ptr<MultiCheckPlayer>> players_;
+
 	//状態別処理登録
 	void RegisterProcessFunc(const STATE _state, SceneBase::ProcessFunction _funcs);
 
 	//状態変更
-	inline const void ChangeState(const STATE _state) { state_ = _state; }
+	const void ChangeState(const STATE _state) { state_ = _state; }
 
 	//状態別更新処理
 	void UpdateNumCheck();
 	void UpdatePadCheck();
 	void UpdateFinalCheck();
+	void UpdatePlayerAnimation();
 
 	//状態別描画処理
 	void DrawNumCheck();

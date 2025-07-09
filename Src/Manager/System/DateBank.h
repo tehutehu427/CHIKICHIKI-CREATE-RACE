@@ -47,6 +47,12 @@ public:
 	/// <param name="num">プレイヤー人数</param>
 	/// <returns>正しく設定できればtrue,問題が起きればfalse</returns>
 	bool SetPlayerNum(int _num);
+	
+	/// <summary>
+	/// マルチでのクリアスコアの設定
+	/// </summary>
+	/// <param name="_clearScore"></param>
+	void SetMultiClearScore(const int _clearScore) { multiClearScore_ = _clearScore; }
 
 	/// <summary>
 	/// プレイヤー人数を返す
@@ -83,6 +89,10 @@ public:
 	const std::string GetItemName(const ItemBase::ITEM_TYPE _type)const { return itemNames_[static_cast<int>(_type)]; }
 
 private:
+
+	//通常のスコア量
+	static constexpr  int DEFAULT_SCORE = 5;
+
 	static DateBank* instance_;
 	DateBank(void);
 	DateBank(const DateBank& instance_) = default;
@@ -90,6 +100,7 @@ private:
 	int playerNum_;		//プレイヤーの人数
 	int maxPlayerNum_;	//コントローラー数よりプレイヤー人数が多くならないようにする
 	int stageNo_;		//ステージ番号
+	int multiClearScore_;	//マルチでのクリアとなるスコア量
 
 	//種類ごとの名前
 	std::string itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::MAX)];

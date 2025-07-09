@@ -49,6 +49,10 @@ public:
 	static constexpr int CLEAR_MENUS_SIZE_X = 796;//クリア時用メッセージ各画像サイズX
 	static constexpr int CLEAR_MENUS_SIZE_Y = 128;//クリア時用メッセージ各画像サイズY
 
+	static constexpr int SMOKE_EFE_DIV_X = 16;	//煙エフェクト分割数X
+	static constexpr int SMOKE_EFE_DIV_Y = 1;	//煙エフェクト分割数Y
+	static constexpr int SMOKE_EFE_SIZE = 64;	//煙エフェクトサイズ
+
 	// リソース名
 	enum class SRC
 	{
@@ -127,7 +131,11 @@ public:
 
 		//エフェクト
 		WIND_EFF,			//風のエフェクト
-		DASH_EFF			//ダッシュエフェクト
+		DASH_EFF,			//ダッシュエフェクト
+
+		//2Dエフェクト
+		SMOKE_EFE_SPR,		//煙エフェクト
+
 	};
 
 	// 明示的にインステンスを生成する

@@ -298,10 +298,8 @@ void Cannon::InitShader(void)
 	toonStyle_ = std::make_unique<ToonStyle>();
 	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::MESH);
 	toonStyle_->Init();
-	toonStyle_->SetTexturesIndex(-1.0f);
 
 	toonBarrel_ = std::make_unique <ToonStyle>();
 	toonBarrel_->Load(barrelTrans_.modelId, ToonStyle::MESH_TYPE::MESH);
 	toonBarrel_->Init();
-	toonBarrel_->SetTexturesIndex(-1.0f);
 }

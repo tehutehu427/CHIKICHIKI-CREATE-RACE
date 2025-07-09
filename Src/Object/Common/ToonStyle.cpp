@@ -86,12 +86,16 @@ void ToonStyle::Draw()
 
 void ToonStyle::SetModelColor(const float _r, const float _g, const float _b, const float _a)
 {
-	toonMaterial_->SetConstBufPS(0, FLOAT4{ _r,_g,_b,_a });
-}
-
-void ToonStyle::SetTexturesIndex(const float _num)
-{
-	toonMaterial_->SetConstBufPS(4, FLOAT4{ GetLightDirection().x,GetLightDirection().y, GetLightDirection().z, _num });//ƒ‰ƒCƒg•ûŒü
+	if (type_ == MESH_TYPE::CHICKEN)
+	{
+		MV1SetEmiColorScale(model_, COLOR_F{ _r,_g,_b,_a });
+		return;
+	}
+	else
+	{
+		toonMaterial_->SetConstBufPS(0, FLOAT4{ _r,_g,_b,_a });
+		return;
+	}
 }
 
 void ToonStyle::SetOutlineColor(const float _r, const float _g, const float _b, const float _a)

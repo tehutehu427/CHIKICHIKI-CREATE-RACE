@@ -67,10 +67,12 @@ public:
 	// アニメーション種別
 	enum class ANIM_TYPE
 	{
-		NONE=0,
-		IDLE=1,
-		WALK=2,
-		FALL=4,
+		NONE = 0,
+		IDLE = 1,
+		WALK = 2,
+		FALL = 4,
+		HAND_UP = 5,
+		HAND_WAVE = 6,
 		DAMAGE = 9,
 		PUNCH = 12,
 		JUMP = 13,

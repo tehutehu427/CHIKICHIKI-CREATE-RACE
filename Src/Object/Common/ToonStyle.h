@@ -64,12 +64,6 @@ public:
 	/// <param name="_a">アルファ値</param>
 	void SetModelColor(const float _r, const float _g, const float _b, const float _a);
 
-	/// <summary>
-	/// テクスチャインデックスの設定
-	/// </summary>
-	/// <param name="_num">テクスチャ番号設定</param>
-	void SetTexturesIndex(const float _num);
-
 private:
 
 	//モデル
