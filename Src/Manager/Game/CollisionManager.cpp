@@ -254,14 +254,6 @@ bool CollisionManager::IsCollision(const std::weak_ptr<Collider> _col1, const st
 
 	//“–‚½‚è”»’è
 	bool ret = geo1.IsHit(geo2);
-
-	//“–‚½‚Á‚Ä‚¢‚È‚¢‚È‚ç
-	if (!ret)
-	{
-		//“–‚½‚Á‚Ä‚¢‚È‚¢‚±‚Æ‚ð•Ô‚·
-		_col1.lock()->NotHit();
-		_col2.lock()->NotHit();
-	}
 	
 	//“–‚½‚è”»’è
 	return ret;
