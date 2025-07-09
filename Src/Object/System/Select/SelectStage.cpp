@@ -3,13 +3,16 @@
 #include "../../../Manager/System/DateBank.h"
 #include "../../../Manager/System/SceneManager.h"
 #include "../../../Manager/System/ResourceManager.h"
+#include "../../../Utility/Utility.h"
 #include "../../../Scene/SelectScene.h"
 
 SelectStage::SelectStage()
 {
 	stageIndex_ = 0;
 	selectIcon_ = -1;
-	
+	imgArrow_ = -1;
+	int i = -1;
+	imgMessages_ = &i;
 }
 
 SelectStage::~SelectStage()
@@ -20,7 +23,8 @@ void SelectStage::Load()
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgMessages_ = res.Load(ResourceManager::SRC::SELECT_MESSAGES).handleIds_;
-
+	imgArrow_ = res.Load(ResourceManager::SRC::SCROLL_ARROW_ICON).handleId_;
+	imgLevels_ = res.Load(ResourceManager::SRC::LEVEL_SELECTS).handleIds_;
 }
 
 void SelectStage::Init()
@@ -35,6 +39,7 @@ void SelectStage::Update(SelectScene& _parent)
 	{
 		//モードセレクトへ戻る
 		_parent.ChangeState(SelectScene::STATE::SELECT_MENU);
+		return;
 	}
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
 	{
@@ -46,51 +51,62 @@ void SelectStage::Update(SelectScene& _parent)
 
 		//ソロチャレンジにシーン遷移
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SOLO);
+		return;
 	}
-	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1)
-		&& stageIndex_ % LINE != 0)
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1))
 	{
-		stageIndex_--;
+		//左キーで選択をひとつ戻す（範囲内でループ）
+		stageIndex_ = (stageIndex_ - 1 + STAGE_TYPE_MAX) % STAGE_TYPE_MAX;
+		return;
 	}
-	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1)
-		&& stageIndex_ % LINE != LINE - 1)
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
 	{
-		stageIndex_++;
-	}
-	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_UP, KeyConfig::JOYPAD_NO::PAD1)
-		&& stageIndex_ >= LINE)
-	{
-		stageIndex_ -= LINE;
-	}
-	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_DOWN, KeyConfig::JOYPAD_NO::PAD1) && stageIndex_ + LINE < LINE * COL)
-	{
-		stageIndex_ += LINE;
+		//右キーで選択をひとつ進める（範囲内でループ）
+		stageIndex_ = (stageIndex_ + 1) % STAGE_TYPE_MAX;
+		return;
 	}
 }
 
 void SelectStage::Draw()
 {
+	//矢印の位置を調整
+	constexpr int OFFSET_POS_X = 350;
+
 	//メッセージの描画
 	DrawMessage();
 
-	int size = 50;
-	int index = 0;
-	for (int y = 0; y < COL; y++)
+	for (int i = 0; i < ARROW_NUM; i++)
 	{
-		for (int x = 0; x < LINE; x++)
-		{
-			int color = 0xff00ff;
-			if (stageIndex_ == index) { color = 0xffff00; }
-			DrawBox(
-				100 + x * size,
-				300 + y * size,
-				100 + (x + 1) * size,
-				300 + (y + 1) * size,
-				color,
-				true);
-			index++;
+		//反転用
+		int rev = 1;
+		float angle = 90.0f;
+		if (i == 0)
+		{ 
+			rev *= -1;
+			angle += 180.0f;
 		}
+
+		DrawRotaGraph(
+			Application::SCREEN_HALF_X + OFFSET_POS_X * rev,
+			Application::SCREEN_HALF_Y,
+			1.0f,
+			Utility::Deg2RadF(angle),
+			imgArrow_,
+			true
+		);
 	}
+
+	//レベル
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y,
+		1.5f,
+		0.0f,
+		imgLevels_[stageIndex_],
+		true
+	);
+
+
 }
 
 void SelectStage::DrawMessage()
