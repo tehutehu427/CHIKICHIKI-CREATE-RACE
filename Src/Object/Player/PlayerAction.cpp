@@ -23,7 +23,7 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	changeAction_.emplace(ATK_ACT::MOVE, [this]() {ChangeMove(); });
 	changeAction_.emplace(ATK_ACT::DASHMOVE, [this]() {ChangeDashMove(); });
 	changeAction_.emplace(ATK_ACT::INPUT, [this]() {ChangeInput(); });
-	changeAction_.emplace(ATK_ACT::JUMP, [this]() {ChangeJump(); });
+ 	changeAction_.emplace(ATK_ACT::JUMP, [this]() {ChangeJump(); });
 	changeAction_.emplace(ATK_ACT::PUNCH, [this]() {ChangePunch(); });
 	changeAction_.emplace(ATK_ACT::KNOCKBACK, [this]() {ChangeKnockBack(); });
 
@@ -338,18 +338,24 @@ void PlayerAction::Jump(void)
 		ChangeAction(ATK_ACT::INPUT);
 		return;
 	}
+
 }
 
 void PlayerAction::ChangeJump(void)
 {
 	//ジャンプ関係
-	isJump_ = true;
+  	isJump_ = true;
 	stepJump_ = 0.0f;
 	//アニメーションの再生
 	animationController_.Play(
 		(int)Player::ANIM_TYPE::JUMP, false, JUMP_ANIM_START_FRAME, JUMP_ANIM_END_FRAME);
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::JUMP], SoundManager::PLAYTYPE::BACK);
 	if(player_.GetIsSlimeFloor())SetJumpDecel(SLIME_FLOOR_JUMP_POW);
+
+	//パンチの当たり判定を消す
+	isPunchHitTime_ = false;
+	player_.KillPunchCol();
+
 	//状態遷移
 	actionUpdate_ = [this]() {JumpUpdate(); };
 }
@@ -419,6 +425,11 @@ void PlayerAction::ChangeKnockBack(void)
 	//animationController_->Play((int)ANIM_TYPE::DAMAGE,true,)
 	speed_ = FLY_AWAY_SPEED;
 	actionUpdate_ = [this]() {KnockBack(); };
+
+	//パンチの当たり判定を消す
+	isPunchHitTime_ = false;
+	player_.KillPunchCol();
+	
 }
 
 

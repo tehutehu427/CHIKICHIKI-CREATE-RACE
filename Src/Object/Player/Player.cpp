@@ -328,6 +328,12 @@ bool Player::IsDeath(void)
 	return false;
 }
 
+void Player::SetPos(const VECTOR _worldPos)
+{
+	trans_.pos = _worldPos;
+	trans_.Update();
+}
+
 void Player::ChangeModelColor(const COLOR_F _colorScale)
 {
 	MV1SetEmiColorScale(trans_.modelId, _colorScale);

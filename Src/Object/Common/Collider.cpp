@@ -23,4 +23,7 @@ void Collider::OnHit(const std::weak_ptr<Collider> _collider)
 
 	//親に相手のコライダを渡す
 	parent_.OnHit(_collider);
+
+	//当たり判定が終わった
+	isHit_ = false;
 }
