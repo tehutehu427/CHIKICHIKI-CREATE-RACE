@@ -33,7 +33,7 @@ public:
 	static constexpr IntVector3 PLAYER3_INIT_EDIT_POS = { 15,0,0 };	//プレイヤー1のエディター初期座標
 	static constexpr IntVector3 PLAYER4_INIT_EDIT_POS = { 20,0,0 };	//プレイヤー1のエディター初期座標
 
-
+	static constexpr float GO_DUMMY_DISTANCE = 700.0f;
 
 	static constexpr float ERROR_STRING_TIME = 1.0f;	//エラー文字列の表示時間
 
@@ -176,6 +176,7 @@ private:
 	void SetCameraPosToDummyObject(void);	//ダミーオブジェクトにカメラを近づける
 
 	void ChengeCameraMode(void);	//カメラのモードを変える
+	void ChengeCameraMode(CAMERA_MODE mode);	//カメラのモードを変える
 	VECTOR cPos_;		//カメラの座標
 	VECTOR cAngles_;	//カメラの回転
 	VECTOR cTargetPos_;	//カメラの中止店

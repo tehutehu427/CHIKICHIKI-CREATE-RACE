@@ -118,6 +118,8 @@ public:
 		EDIT_CAMERA_MOVE_BACK,	//エディット時のカメラ移動後ろ
 		EDIT_CAMERA_MOVE_LEFT,	//エディット時のカメラ移動左
 		EDIT_CAMERA_MOVE_RIGHT,	//エディット時のカメラ移動右
+		EDIT_CAMERA_MOVE_UP,	//エディット時のカメラ移動上
+		EDIT_CAMERA_MOVE_DOWN,	//エディット時のカメラ移動下
 		EDIT_CAMERA_CHENGE,		//エディット時のカメラを変更する
 
 		EDIT_ITEM_SELECT,		//エディット時のアイテム選択

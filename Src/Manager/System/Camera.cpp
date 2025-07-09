@@ -397,6 +397,14 @@ void Camera::SetBeforeDrawFreeControll(void)
 	{
 		pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetRight(), moveSpeed));
 	}
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_UP, padNo_,keyType))
+	{
+		pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetUp(), moveSpeed));
+	}
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_DOWN, padNo_,keyType))
+	{
+		pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetDown(), moveSpeed));
+	}
 
 	VECTOR localPos;
 	rot_ =(Quaternion::Quaternion(angles_));

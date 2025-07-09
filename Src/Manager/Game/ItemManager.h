@@ -82,7 +82,7 @@ public:
 	/// </summary>
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのTransform</returns>
-	const Transform GetDummyItemTransform(int playerNum);
+	const Transform& GetDummyItemTransform(int playerNum);
 	/// <summary>
 	/// ダミーアイテムを置き換える
 	/// </summary>
@@ -148,7 +148,7 @@ public:
 	/// <param name="_mapPos">マップ座標</param>
 	/// <param name="_type">アイテムの種類</param>
 	/// <returns></returns>
-	Transform GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
+	const Transform& GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
 	/// <summary>
 	/// アイテムの当たり判定大きさを取得
 	/// </summary>

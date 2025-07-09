@@ -232,7 +232,7 @@ IntVector3 ItemManager::GetDummyItemSize(int playerNum)
 	return size;
 }
 
-const Transform ItemManager::GetDummyItemTransform(int playerNum)
+const Transform& ItemManager::GetDummyItemTransform(int playerNum)
 {
 	//ƒ‚ƒfƒ‹î•ñ
 	Transform transform;
@@ -436,7 +436,7 @@ bool ItemManager::IsDummyItem(int playerNum)
 	return false;
 }
 
-Transform ItemManager::GetItemTransform(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type) const
+const Transform& ItemManager::GetItemTransform(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type) const
 {
 	for (auto& items : items_)
 	{
