@@ -331,11 +331,25 @@ void GameScene::DrawEdit(void)
 
 void GameScene::DrawAction(void)
 {
+	auto screenIndex = SceneManager::GetInstance().GetScreenIndex();
 	//アイテム
 	ItemManager::GetInstance().Draw();
 	//プレイヤー
 	PlayerManager::GetInstance().Draw();
 
+	if (PlayerManager::GetInstance().IsPlayerDeath(screenIndex))
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+		DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, Utility::BLACK, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+	else if (PlayerManager::GetInstance().IsPlayerGoal(screenIndex))
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+		DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, Utility::YELLOW, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+	
 }
 
 void GameScene::DrawClear()
