@@ -60,6 +60,9 @@ private:
 	//フォント大きさ
 	static constexpr int FONT_SIZE = 48;
 
+	//画像
+	int* imgs_;
+
 	//選択インデックス
 	int index_;
 

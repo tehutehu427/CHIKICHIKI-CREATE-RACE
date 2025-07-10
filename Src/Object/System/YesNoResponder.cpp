@@ -9,7 +9,8 @@ namespace
 {
     constexpr int MARGIN = 200;             //ä‘   
     const Vector2 OFFSET_POS = { 150, 40 }; //ç¿ïWí≤êÆóp
-    const Vector2 YES_POS = {
+    const Vector2 YES_POS = 
+    {
             Application::SCREEN_HALF_X - OFFSET_POS.x,
             Application::SCREEN_HALF_Y + OFFSET_POS.y,
     };
@@ -18,6 +19,7 @@ namespace
 YesNoResponder::YesNoResponder()
 {
 	index_ = 0;
+    imgs_ = nullptr;
     font_ = 0;
     imgBack_ = 0;
     respon_ = RESPON::NONE;
@@ -37,6 +39,7 @@ void YesNoResponder::Load()
 {
     ResourceManager& res = ResourceManager::GetInstance();
     imgBack_ = res.Load(ResourceManager::SRC::EXPLAN_BACK).handleId_;
+	imgs_ = res.Load(ResourceManager::SRC::YES_NO).handleIds_;
     font_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), FONT_SIZE, 0);
 }
 

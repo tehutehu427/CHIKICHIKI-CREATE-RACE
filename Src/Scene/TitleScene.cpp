@@ -109,16 +109,19 @@ void TitleScene::ChangeNormal(void)
 void TitleScene::DrawMessage(void)
 {
 	constexpr float RATE = 0.6f;
+	constexpr float ALPHA_STEP = 3.0f;
+	constexpr float SHAKE_SPEED = 5.0f;
+	constexpr float SHAKE_AMPLITUDE = 5.0f;
 
 	//座標を揺らす
 	mesPosY_ = MES_POS_Y;
-	mesPosY_ = Utility::GetShake(mesPosY_, step_, 5.0f, 5.0f);
+	mesPosY_ = Utility::GetShake(mesPosY_, step_, SHAKE_SPEED, SHAKE_AMPLITUDE);
 
 	//アルファ値を変え
-	mesAlpha_ = Utility::PingPongUpdate(mesAlpha_, step_, Utility::ALPHA_MAX, Utility::ALPHA_MAX / 2, alphaDir_);
+	mesAlpha_ = Utility::PingPongUpdate(mesAlpha_, ALPHA_STEP, Utility::ALPHA_MAX, Utility::ALPHA_MAX / 2, alphaDir_);
 
 	//メッセージ
-	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, mesAlpha_);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, mesAlpha_);
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
 		mesPosY_,
@@ -128,6 +131,6 @@ void TitleScene::DrawMessage(void)
 		true,
 		false
 	);
-	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
