@@ -15,6 +15,7 @@
 #include "../../Manager/Game/PlayerManager.h"
 #include "../../Object/Player/Player.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
+#include "../../Object/Editor/EditController.h"
 #include "../../Object/Editor/MapDataIO.h"
 #include "../../Object/Grid.h"
 #include "../../Object/SkyDome/SkyDome.h"

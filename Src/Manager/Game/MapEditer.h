@@ -1,6 +1,6 @@
 #pragma once
 #include<DxLib.h>
-#include"ItemManager.h"
+#include"../Object/Item/ItemBase.h"
 #include"../../Common/Quaternion.h"
 #include"../../Common/IntVector3.h"
 class MapEditer

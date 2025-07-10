@@ -7,6 +7,7 @@
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "../../Manager/Game/ItemManager.h"
 #include "EditItemReady.h"
 #include "EditController.h"
 

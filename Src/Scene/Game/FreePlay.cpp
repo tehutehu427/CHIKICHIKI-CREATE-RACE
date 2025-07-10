@@ -1,5 +1,6 @@
 #include "FreePlay.h"
 #include "../../Object/Editor/MapDataIO.h"
+#include "../../Object/Editor/EditController.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/System/CheckChangePhase.h"
 #include "../../Object/System/ManualTab.h"
