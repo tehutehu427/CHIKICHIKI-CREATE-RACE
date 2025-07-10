@@ -145,6 +145,9 @@ public:
 		WIND_EFF,			//風エフェクト
 		BLAST_EFF,			//爆発エフェクト
 		DASH_EFF,			//ダッシュエフェクト
+		JUMP_EFF,			//ジャンプエフェクト
+		LANDING_EFF,		//着地エフェクト
+		PUNCH_HIT_EFF,		//パンチヒットエフェクト
 
 		//2Dエフェクト
 		SMOKE_EFE_SPR,		//煙エフェクト
