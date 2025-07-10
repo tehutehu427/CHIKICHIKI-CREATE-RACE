@@ -1,3 +1,4 @@
+#include "../Utility/Utility.h"
 #include "../Object/Item/Fixed/StartFlag.h"
 #include "../Object/Item/Fixed/GoalFlag.h"
 #include "../Object/Item/Installation/Floor.h"
@@ -99,20 +100,24 @@ void ItemManager::Destroy(void)
 	}
 }
 
-void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type,float rotY)
+void ItemManager::AddItem(IntVector3 _mapPos, Quaternion _rot, ItemBase::ITEM_TYPE _type,float _rotY)
 {
 	//アイテム
 	std::shared_ptr<ItemBase> item;
 
 	//アイテムを生成
-	item = CreateItem(type, mapPos, rot);
+	item = CreateItem(_type, _mapPos, _rot);
 	if (item == nullptr)
 	{
 		return;
 	}
-	item->SetRotY(rotY);
+	_rotY += 360.0f;
+	int rot = Utility::Round(_rotY);
+	rot = static_cast<int>(_rotY) % 360;
+
+	item->SetRotY(rot);
 	//配列に追加
-	items_[type].emplace_back(std::move(item));
+	items_[_type].emplace_back(std::move(item));
 }
 
 void ItemManager::DeleteItem(VECTOR mapPos, int range)
