@@ -142,7 +142,8 @@ public:
 		ERROR_SE,
 
 		//エフェクト
-		WIND_EFF,			//風のエフェクト
+		WIND_EFF,			//風エフェクト
+		BLAST_EFF,			//爆発エフェクト
 		DASH_EFF,			//ダッシュエフェクト
 
 		//2Dエフェクト

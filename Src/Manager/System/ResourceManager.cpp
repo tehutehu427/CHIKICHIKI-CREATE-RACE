@@ -235,8 +235,11 @@ void ResourceManager::Init(void)
 #pragma endregion 
 
 #pragma region エフェクト
-	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Aura01_HDR.efkefc");
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Wind.efkefc");
 	resourcesMap_.emplace(SRC::WIND_EFF, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Blast.efkefc");
+	resourcesMap_.emplace(SRC::BLAST_EFF, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Dash.efkefc");
 	resourcesMap_.emplace(SRC::DASH_EFF, std::move(res));

@@ -13,6 +13,7 @@ public:
 	{
 		NONE,
 		WIND,		//•—
+		BLAST,		//”š”­
 		DASH,
 	};
 
