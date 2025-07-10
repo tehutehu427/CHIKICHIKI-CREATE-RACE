@@ -232,7 +232,7 @@ void Player::ChangeAlive(void)
 void Player::AliveUpdate(void)
 {
 	//奈落に落ちたら死に状態へ遷移
-	if (IsDeath())
+	if (trans_.pos.y <= DEATH_POS_Y || onHitCol_->GetIsDeath())
 	{
 		ChangeState(PLAYER_STATE::DEATH);
 		return;
@@ -262,7 +262,6 @@ void Player::DeathUpdate(void)
 	//死んだ時の処理
 	//落ちているアニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
-	action_->StopResource();
 	//アニメーションループ
 	if (animationController_->GetAnimStep() >= FALL_ANIM_START)
 	{
@@ -320,9 +319,9 @@ const bool Player::IsGoal(void) const
 bool Player::IsDeath(void)
 {
 	//奈落に落ちるorデスオブジェクトに当たったら
-	if (trans_.pos.y <= DEATH_POS_Y||onHitCol_->GetIsDeath())
+	//if (trans_.pos.y <= DEATH_POS_Y||onHitCol_->GetIsDeath())
+	if (state_==PLAYER_STATE::DEATH)
 	{
-		action_->StopResource();
 		return true;
 	}
 	return false;

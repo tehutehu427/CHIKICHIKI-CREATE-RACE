@@ -14,6 +14,9 @@ public:
 		NONE,
 		WIND,		//風
 		DASH,
+		JUMP,
+		LANDING,
+		PUNCH_HIT,
 	};
 
 	//コンストラクタ
