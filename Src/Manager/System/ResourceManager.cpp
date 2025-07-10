@@ -223,6 +223,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Wind.efkefc");
 	resourcesMap_.emplace(SRC::WIND_EFF, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Blast.efkefc");
+	resourcesMap_.emplace(SRC::BLAST_EFF, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Dash.efkefc");
 	resourcesMap_.emplace(SRC::DASH_EFF, std::move(res));
 #pragma endregion

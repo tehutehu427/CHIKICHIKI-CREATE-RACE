@@ -3,14 +3,19 @@
 
 #include<memory>
 
+class EffectController;
+
 class CannonShot : public ItemBase
 {
 public:
 
 	//ステータス
-	static constexpr float ALIVE_TIME = 5.0f;	//生存時間	
+	static constexpr float ALIVE_TIME = 3.0f;	//生存時間	
+	static constexpr float BLAST_TIME = 0.5f;	//爆発残存時間	
 	static constexpr float SPEED = 15.0f;		//弾の速度
 	static constexpr float SCALE = 0.3f;		//弾の大きさ
+	static constexpr float BLAST_SCALE = 30.0f;						//爆発の大きさ
+	static constexpr float BLAST_COL_SCALE = BLAST_SCALE * 10.0f;	//爆発の当たり判定の大きさ
 
 	/// <summary>
 	/// コンストラクタ
@@ -44,8 +49,28 @@ private:
 	float cnt_;			//生存カウンタ
 	bool isAlive_;		//生存判定
 
+	//関数ポインタ
+	using UpdateFunc_t = void(CannonShot::*)(void);	//更新用
+	using DrawFunc_t = void(CannonShot::*)(void);	//描画用
+
+	UpdateFunc_t update_;	//更新
+	DrawFunc_t draw_;		//描画
+
+	//状態ごとの更新
+	void UpdateAlive(void);
+	void UpdateBlast(void);
+	void UpdateDead(void);
+
+	//状態ごとの描画
+	void DrawAlive(void);
+	void DrawBlast(void);
+	void DrawDead(void);
+
 	//移動処理
 	inline void Move(void);
+
+	//爆発
+	void Blast(void);
 
 	//削除
 	inline void Kill(void);

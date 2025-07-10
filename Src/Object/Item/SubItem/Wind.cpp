@@ -37,7 +37,7 @@ void Wind::SetParam(void)
 	VECTOR forward = trans_.quaRot.GetForward();
 
 	//‘O•û‚ðŒü‚­
-	trans_.quaRot = trans_.quaRot.AngleAxis(Utility::Deg2RadF(90.0f), Utility::AXIS_Z);
+	trans_.quaRot = trans_.quaRot.AngleAxis(Utility::Deg2RadF(90.0f), Utility::AXIS_X);
 
 	//ˆÚ“®—Ê
 	movePow_ = VScale(forward, POW);
@@ -55,7 +55,7 @@ void Wind::Update(void)
 	//ˆê‚Â‚à‚È‚¢
 	if (effect_->GetPlayNum(EffectController::EFF_TYPE::WIND) < 1)
 	{
-		effect_->Play(EffectController::EFF_TYPE::WIND, trans_.pos, trans_.quaRot, VGet(30.0f, 30.0f, 30.0f), true);
+		effect_->Play(EffectController::EFF_TYPE::WIND, trans_.pos, trans_.quaRot, VGet(10.0f, 10.0f, 10.0f), true);
 	}
 
 	effect_->Update();
