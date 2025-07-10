@@ -18,10 +18,17 @@ public:
 	/// </summary>
 	enum class STATE
 	{
+		RULE_SET,	//ルール設定
 		NUM_CHECK,	//人数確認
 		PAD_CHECK,	//コントローラー確認
 		FINAL_CHECK,//最終確認
 		PLAYER_ANIM,//プレイヤーアニメーション
+	};
+
+	enum class GAME_RULR
+	{
+		CLEAR_SCORE,
+		SKIP,
 	};
 
 	/// <summary>
@@ -69,6 +76,10 @@ private:
 	//アイコンの数
 	static constexpr int ICON_NUM = 2;
 
+	//クリアスコアの最大値
+	static constexpr int CLEAR_SCORE_MAX = 15;
+
+
 	//入力管理クラス
 	KeyConfig& keyConfig_;
 
@@ -84,11 +95,26 @@ private:
 	//プレイヤー人数
 	int playerNum_;
 
+	//クリアスコア
+	int clearScore_;
+
+	//サウンドボリューム
+	int soundVolume_;
+
+	//スキップの有無
+	bool isSkip_;
+
 	//状態
 	STATE state_;
 
 	//入力確認クラス
 	std::unique_ptr<MultiInputCheck> multiInputChecks_;
+
+	//ルール項目別右の処理
+	std::unordered_map<GAME_RULR, std::function<void()>> ruleRightMap_;
+
+	//ルール項目別左の処理
+	std::unordered_map<GAME_RULR, std::function<void()>> ruleLeftMap_;
 
 	//状態別処理の管理
 	std::unordered_map<STATE, SceneBase::ProcessFunction> stateTables_;
@@ -103,12 +129,14 @@ private:
 	const void ChangeState(const STATE _state) { state_ = _state; }
 
 	//状態別更新処理
+	void UpdateRuleSet();
 	void UpdateNumCheck();
 	void UpdatePadCheck();
 	void UpdateFinalCheck();
 	void UpdatePlayerAnimation();
 
 	//状態別描画処理
+	void DrawRuleSet();
 	void DrawNumCheck();
 	void DrawPadCheck();
 	void DrawFinalCheck();

@@ -58,6 +58,26 @@ public:
 	static constexpr int LEVEL_SLE_SIZE_X = 400;	//レベルサイズ
 	static constexpr int LEVEL_SLE_SIZE_Y = 300;	//レベルサイズ
 
+	static constexpr int YES_NO_DIV_X = 1;		//YesNo分割数X
+	static constexpr int YES_NO_DIV_Y = 2;		//YesNo分割数Y
+	static constexpr int YES_NO_SIZE_X = 192;	//YesNoサイズX
+	static constexpr int YES_NO_SIZE_Y = 128;	//YesNoサイズY
+
+	static constexpr int EDIT_MESSAGES_DIV_X = 1;	//エディットメッセージ分割数X
+	static constexpr int EDIT_MESSAGES_DIV_Y = 3;	//エディットメッセージ分割数Y
+	static constexpr int EDIT_MESSAGES_SIZE_X = 980; //エディットメッセージ各画像サイズX
+	static constexpr int EDIT_MESSAGES_SIZE_Y = 128; //エディットメッセージ各画像サイズY
+
+	static constexpr int SYSTEM_MESSAGES_DIV_X = 1;	//システムメッセージ分割数X
+	static constexpr int SYSTEM_MESSAGES_DIV_Y = 2;	//システムメッセージ分割数Y
+	static constexpr int SYSTEM_MESSAGES_SIZE_X = 286; //システムメッセージ各画像サイズX
+	static constexpr int SYSTEM_MESSAGES_SIZE_Y = 128; //システムメッセージ各画像サイズY
+
+	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_X = 1;	//システム設定メッセージ分割数X
+	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_Y = 3;	//システム設定メッセージ分割数Y
+	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_X = 576; //システム設定メッセージ各画像サイズX
+	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_Y = 64; //システム設定メッセージ各画像サイズY
+
 	// リソース名
 	enum class SRC
 	{
@@ -75,6 +95,9 @@ public:
 		CHANGE_PHASE_ICONS,
 		CANCEL_ICON,
 		READY_IMG,
+		EDIT_MESSAGES,
+		SYSTEM_MESSAGES,
+		YES_NO,
 
 		//クリア
 		CLEAR,
@@ -97,11 +120,19 @@ public:
 		CURSORS,
 		SELECT_MESSAGES,
 		LEVEL_SELECTS,
+		SYSTEM_SETTING,
+		SETTING_ITEMS,
+		PUSH_B_BUTTON_MES,
+
 
 		//ゲームシーン用画像
 		NUMBERS,
 		OK,
 		ROUND,
+		SELECT_ITEM_MES,
+		PROGRESS,
+		SELECT_ITEM,
+
 
 		//アイテムモデル
 		FLOOR,				//足場

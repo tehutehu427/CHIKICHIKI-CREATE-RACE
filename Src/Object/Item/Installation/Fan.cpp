@@ -94,3 +94,10 @@ void Fan::CreateWind(void)
 	wind_->SetParam();
 }
 
+void Fan::InitShader()
+{
+	toonStyle_ = std::make_unique<ToonStyle>();
+	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::NO_TEXTURE);
+	toonStyle_->Init();
+}
+

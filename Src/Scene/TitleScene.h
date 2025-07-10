@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneBase.h"
+#include "../Common/Vector2.h"
 
 class SkyDome;
 
@@ -21,11 +22,35 @@ public:
 
 private:
 
+	//ロゴのY座標
+	static constexpr int LOGO_POS_Y = 250;
+
+	//メッセージのY座標
+	static constexpr float MES_POS_Y = 550.0f;
+
 	//タイトル画像
 	int imgTitleLogo_;
 
+	//メッセージ画像
+	int imgMessage_;
+
 	//BGM
 	int bgm_;
+
+	//ステップの更新
+	float step_;
+
+	//アルファ値
+	int mesAlpha_;
+
+	//アルファ方向
+	int alphaDir_;
+
+	//メッセージ座標
+	float mesPosY_;
+
+	//スカイドーム
+	std::unique_ptr<SkyDome> skyDome_;
 
 	//更新関数
 	void NormalUpdate(void) override;
@@ -35,4 +60,7 @@ private:
 
 	//処理の変更
 	void ChangeNormal(void) override;
+
+	//メッセージの描画
+	void DrawMessage(void);
 };

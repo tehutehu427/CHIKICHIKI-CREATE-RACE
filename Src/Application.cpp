@@ -62,16 +62,16 @@ void Application::Init(void)
 	SetUseDirectInputFlag(true);
 
 	// リソース管理初期化
-	ResourceManager::CreateInstance();
-
-	// シーン管理初期化
-	SceneManager::CreateInstance();
-
+	ResourceManager::CreateInstance();	
+	
 	//入力管理の初期化
 	KeyConfig::CreateInstance();
 
 	//サウンド関係の初期化
 	SoundManager::CreateInstance();
+
+	// シーン管理初期化
+	SceneManager::CreateInstance();
 
 	// FPS初期化
 	fps_ = std::make_unique<FpsControl>();
@@ -111,10 +111,11 @@ void Application::Run(void)
 void Application::Destroy(void)
 {
 	fontReg_->Destroy();
-	ResourceManager::GetInstance().Destroy();
 	SceneManager::GetInstance().Destroy();
+	SoundManager::GetInstance().Destroy();	
 	KeyConfig::GetInstance().Destroy();
-	SoundManager::GetInstance().Destroy();
+	ResourceManager::GetInstance().Destroy();
+
 	// Effekseerを終了する。
 	Effkseer_End();
 

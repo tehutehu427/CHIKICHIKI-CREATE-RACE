@@ -24,13 +24,13 @@ cbuffer cbParam : register(b4)
     
     // 光の方向（ワールド空間）
     float3 g_light_dir;
+    float dummy;
 }
 
 float4 main(PS_INPUT PSInput) : SV_TARGET0
 {
-    float4 texColor = diffuseMapTexture.Sample(diffuseMapSampler, PSInput.uv);
+    float4 texColor = PSInput.diffuse;
     
-
     if (texColor.a < 0.01f)
     {
         discard;

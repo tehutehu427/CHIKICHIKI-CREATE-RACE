@@ -4,6 +4,7 @@
 #include "../../../Scene/Game/MultiParty.h"
 #include "../MultiInputCheck.h"
 #include "../../Editor/Palette/Palette.h"
+#include "../../../Manager/System/DateBank.h"
 #include "ScoreGage.h"
 #include "ScoreGageManager.h"
 
@@ -140,7 +141,7 @@ void MultiResult::UpdateStateScore(MultiParty& _parent)
 	//全員のスコアゲージのアニメーションを終えたら
 	if (scoreGages_->IsFinishAnimation())
 	{
-		int clearLine = 5;
+		int clearLine = DateBank::GetInstance().GetMultiClearScore();
 
 		//状態遷移するか確認
 		//勝者がいる場合クリアフェーズへ移る

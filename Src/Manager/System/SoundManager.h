@@ -13,6 +13,12 @@ public:
 		BACK	//バックグラウンド再生
 	};
 
+	//デフォルトの音量
+	static constexpr int DEFAULT_VOLUME = 70;
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~SoundManager();
 
 	/// <summary>
@@ -38,7 +44,7 @@ public:
 	/// </summary>
 	/// <param name="_sound">音源</param>
 	/// <param name="_playType">再生種類</param>
-	void Play(const int _sound, const PLAYTYPE _playType);
+	void Play(const int _sound, const PLAYTYPE _playType, const int _volumePercent = -1);
 
 	/// <summary>
 	/// 音源の停止
@@ -47,16 +53,18 @@ public:
 	void Stop(const int _sound);
 
 	/// <summary>
-	/// 音源の音量を変更
+	/// 音量の設定
 	/// </summary>
-	/// <param name="_sound">音源</param>
-	/// <param name="_volumeParcent">音量パーセント、最大100まで</param>
-	void ChangeVolume(const int _sound, const int _volumeParcent);
+	/// <param name="_volumePercent">音量パーセント</param>
+	void SetVolume(const int _volumePercent) { volume_ = _volumePercent; }
 
 private:
 
 	//静的インスタンス
 	static SoundManager* instance_;
+
+	//ボリューム
+	int volume_;
 
 	// コンストラクタ
 	SoundManager();
@@ -66,6 +74,9 @@ private:
 
 	// コピー代入演算子は使用不可
 	SoundManager& operator=(const SoundManager&) = delete;
+
+	//音量を調整
+	void ChangeVolume(const int _sound, const int _volumeParcent);
 
 	//再生種類を取得
 	int GetPlayType(const PLAYTYPE _playType);

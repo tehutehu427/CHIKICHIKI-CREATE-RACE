@@ -13,6 +13,7 @@
 #include "../Object/System/Select/ModeSelect.h"
 #include "../Object/System/Select/MultiReady.h"
 #include "../Object/System/Select/SelectStage.h"
+#include "../Object/System/Select/SystemSetting.h"
 #include "../Object/SkyDome/SkyDome.h"
 
 SelectScene::SelectScene()
@@ -82,6 +83,9 @@ void SelectScene::Load()
 
 	skyDome_ = std::make_unique<SkyDome>();
 	skyDome_->Load();
+
+	systemSetting_ = std::make_unique<SystemSetting>();
+	systemSetting_->Load();
 }
 
 void SelectScene::Init(void)
@@ -90,6 +94,7 @@ void SelectScene::Init(void)
 	multiReady_->Init();
 	selectStage_->Init();
 	skyDome_->Init();
+	systemSetting_->Init();
 
 	//‰Šú‰»Žž“_‚Ål”‚ðˆêl‚ÉÝ’è‚µ‚Ä‚¨‚­
 	DateBank::GetInstance().SetPlayerNum(1);
@@ -137,7 +142,7 @@ void SelectScene::UpdateCheckPlayer()
 
 void SelectScene::UpdateSetting()
 {
-
+	systemSetting_->Update(*this);
 }
 
 void SelectScene::DrawSelectMenu()
@@ -157,7 +162,7 @@ void SelectScene::DrawCheckPlayer()
 
 void SelectScene::DrawSetting()
 {
-
+	systemSetting_->Draw();
 }
 
 void SelectScene::NormalDraw()

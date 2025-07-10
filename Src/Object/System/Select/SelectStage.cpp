@@ -71,6 +71,8 @@ void SelectStage::Draw()
 {
 	//矢印の位置を調整
 	constexpr int OFFSET_POS_X = 350;
+	constexpr float LEVEL_RATE = 1.5f;
+	constexpr int LEVEL_POS_Y = 350;
 
 	//メッセージの描画
 	DrawMessage();
@@ -99,8 +101,8 @@ void SelectStage::Draw()
 	//レベル
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y,
-		1.5f,
+		LEVEL_POS_Y,
+		LEVEL_RATE,
 		0.0f,
 		imgLevels_[stageIndex_],
 		true

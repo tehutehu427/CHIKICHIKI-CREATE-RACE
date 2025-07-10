@@ -110,7 +110,7 @@ public:
 	/// <param name="_g">緑</param>
 	/// <param name="_b">青</param>
 	/// <param name="_a">アルファ値</param>
-	void SetModelColor(const float _r, const float _g, const float _b, const float _a);
+	virtual void SetModelColor(const float _r, const float _g, const float _b, const float _a);
 
 protected:
 

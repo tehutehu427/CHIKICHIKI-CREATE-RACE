@@ -24,6 +24,7 @@ void ToonStyle::Load(int _modelId, const MESH_TYPE _type)
 
 	std::string outlineVSName = "OutlineMeshVS.cso";
 	std::string toonLightingVSName = "ToonMeshVS.cso";
+	std::string toonLightingPSName = "ToonPS.cso";
 
 	//シェーダーを設定
 	if (type_ == MESH_TYPE::SKIN_MESH)
@@ -34,6 +35,10 @@ void ToonStyle::Load(int _modelId, const MESH_TYPE _type)
 	else if(type_ == MESH_TYPE::CHICKEN)
 	{
 		outlineVSName = "ChickenOutlineVS.cso";
+	}
+	else if (type_ == MESH_TYPE::NO_TEXTURE)
+	{
+		toonLightingPSName = "ToonNoTexturePS.cso";
 	}
 
 	//アウトライン
@@ -46,7 +51,7 @@ void ToonStyle::Load(int _modelId, const MESH_TYPE _type)
 		drawFunc_ = std::bind(&ToonStyle::NormalDrawModel, this);
 		return;
 	}
-	toonMaterial_ = std::make_unique<ModelMaterial>(toonLightingVSName.c_str(), 0, "ToonPS.cso", 5);
+	toonMaterial_ = std::make_unique<ModelMaterial>(toonLightingVSName.c_str(), 0, toonLightingPSName, 5);
 	toonRenderer_ = std::make_unique<ModelRenderer>(model_, *toonMaterial_);
 }
 
