@@ -62,6 +62,8 @@ public:
 	IntVector3 WorldToMapPos(VECTOR _worldPos);
 	VECTOR MapToWorldPos(IntVector3 _mapPos);
 
+	void ApplyRotation(IntVector3& _mapPos, IntVector3& _size, IntVector3& _hitSize, int _rotY);
+
 	void DeleteAllItem(void);
 protected:
 
