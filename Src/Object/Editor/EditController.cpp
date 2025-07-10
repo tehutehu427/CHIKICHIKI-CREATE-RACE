@@ -115,10 +115,12 @@ void EditController::DrawUI(void)
 	case EditController::ERROR_TYPE::NONE:
 		break;
 	case EditController::ERROR_TYPE::ITEM_RANGE_OUT:
-		Utility::DrawStringPlace("選択中のアイテムがマップ外に出ています", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		//Utility::DrawStringPlace("選択中のアイテムがマップ外に出ています", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		DrawRotaGraph(screenSize_.x / 2, screenSize_.y / 2, 1.0f, 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_MAP_OUT_IMG).handleId_, true);
 		break;
 	case EditController::ERROR_TYPE::ITEM_OVER_LAP:
-		Utility::DrawStringPlace("選択中のアイテムが他のアイテムと重なっています", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		//Utility::DrawStringPlace("選択中のアイテムが他のアイテムと重なっています", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		DrawRotaGraph(screenSize_.x / 2, screenSize_.y / 2, (1.0f / 2), 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_OVERLAP_IMG).handleId_, true);
 		break;
 	case EditController::ERROR_TYPE::ITEM_NOT_SET:
 		Utility::DrawStringPlace("アイテムが設置できませんでした", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
