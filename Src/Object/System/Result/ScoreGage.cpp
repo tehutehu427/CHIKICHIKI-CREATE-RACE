@@ -3,6 +3,7 @@
 #include "../Utility/Utility.h"
 #include "../Manager/Game/ScoreManager.h"
 #include "../Manager/System/SceneManager.h"
+#include "../Manager/System/DateBank.h"
 
 ScoreGage::ScoreGage(const int _playerIndex) : 
 	playerIndex_(_playerIndex)
@@ -10,7 +11,8 @@ ScoreGage::ScoreGage(const int _playerIndex) :
 	pos_ = {};
 	size_ = {};
 	imgScoreGage_ = 0;
-	rate_ = 0.0f;
+	animStep_ = 0.0f;
+	color_ = 0;
 	state_ = STATE::NONE;
 	stateChanges_.emplace(STATE::NONE, std::bind(&ScoreGage::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::WAIT, std::bind(&ScoreGage::ChangeStateWait, this));
@@ -33,11 +35,14 @@ void ScoreGage::Init()
 	//プレイヤー番号ごとに設定
 	SetParamToPlayerNo();	
 
-	//ゲージサイズ
-	size_ = { 100,GAGE_SIZE_Y };
+	//アニメーションステップ初期化
+	animStep_ = 0.0f;
 
-	//デバッグ
-	//ScoreManager::GetInstance().AddScore(playerIndex_, ScoreManager::SCORE_TYPE::CLEAR);
+	//ゲージサイズ
+	size_ = { GAGE_SIZE_X,GAGE_SIZE_Y };
+
+	//1スコア当たりのゲージ長さ
+	lengthPerPoint_ = GAGE_LENGTH_MAX / DateBank::GetInstance().GetMultiClearScore();
 }
 
 void ScoreGage::Update()
@@ -84,7 +89,7 @@ void ScoreGage::ChangeStateAnimation()
 	stateUpdate_ = std::bind(&ScoreGage::UpdateStateAnimation, this);
 
 	//長さの更新値を決定
-	updateLength_ = size_.x + ScoreManager::GetInstance().GetScore(playerIndex_) * GAGE_LENGTH_PER_POINT;
+	updateLength_ = size_.x + ScoreManager::GetInstance().GetScore(playerIndex_) * lengthPerPoint_;
 }
 
 void ScoreGage::UpdateStateNone()

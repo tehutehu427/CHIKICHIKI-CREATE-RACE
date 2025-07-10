@@ -111,7 +111,7 @@ void SceneManager::Update(void)
 	{
 		Fade();
 	}
-	
+
 	//シーンごとの更新
 	scene_->Update();
 

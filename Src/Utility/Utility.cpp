@@ -809,6 +809,20 @@ float Utility::GetShake(const float _value, float _time, const float _speed, con
     return _value + std::sin(_time * _speed) * _amplitude;
 }
 
+int Utility::GetDigit(const int _value, const int _digit)
+{
+    //•‰‚Ì’l‚É‚à‘Î‰‚·‚é‚½‚ßâ‘Î’l‚ğæ‚é
+    int ret = (_value < 0) ? -_value : _value;
+
+    //10‚Ìdigitæ‚ÅŠ„‚Á‚Ä1‚ÌˆÊ‚ğ’Šo
+    for (int i = 0; i < _digit; ++i)
+    {
+        ret /= 10;
+    }
+
+    return ret % 10;
+}
+
 int Utility::GetDigitCount(const int _value)
 {
     // 0 ‚ÌŒ…”‚Í 1

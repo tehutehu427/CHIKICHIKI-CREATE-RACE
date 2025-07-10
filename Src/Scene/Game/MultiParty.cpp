@@ -5,6 +5,7 @@
 #include "../../Manager/Game/ScoreManager.h"
 #include "../../Manager/Game/PlayerManager.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
+#include "../../Object/Editor/MapDataIO.h"
 #include "../../Object/Editor/Palette/MultiPalette.h"
 #include "../../Object/System/Result/MultiResult.h"
 #include "../../Object/System/RoundDisplay.h"
@@ -73,8 +74,14 @@ void MultiParty::Init(void)
 
 void MultiParty::Reset()
 {
+	//マップの初期化
+	mapIO_->Reset();
+
 	//初期化
 	Init();
+
+	//ラウンド別リセット
+	RoundReset();
 
 	//スコア初期化
 	ScoreManager::GetInstance().Init();
@@ -114,6 +121,12 @@ void MultiParty::UpdateEdit(void)
 		SetDrawScreen(SceneManager::GetInstance().GetScreen(i));
 		SceneManager::GetInstance().GetCamera(i).lock()->CameraSetting(); // カメラの更新
 		editControllers_[i]->Update();
+		KeyConfig& ins = KeyConfig::GetInstance();
+		auto keyType = DateBank::GetInstance().GetPlayerNum() == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
+		if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_GRID_ON_OFF, static_cast<KeyConfig::JOYPAD_NO>(i + 1), keyType))
+		{
+			isGrid_[i] = isGrid_[i] ? false : true;
+		}
 	}
 	SetDrawScreen(SceneManager::GetInstance().GetMainScreen());
 	bool ready = true;

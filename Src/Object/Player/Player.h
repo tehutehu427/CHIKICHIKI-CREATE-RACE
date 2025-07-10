@@ -67,10 +67,12 @@ public:
 	// アニメーション種別
 	enum class ANIM_TYPE
 	{
-		NONE=0,
-		IDLE=1,
-		WALK=2,
-		FALL=4,
+		NONE = 0,
+		IDLE = 1,
+		WALK = 2,
+		FALL = 4,
+		HAND_UP = 5,
+		HAND_WAVE = 6,
 		DAMAGE = 9,
 		PUNCH = 12,
 		JUMP = 13,
@@ -155,7 +157,7 @@ public:
 	/// 座標
 	/// </summary>
 	/// <param name="_worldPos">ワールド座標</param>
-	void SetPos(const VECTOR _worldPos) { trans_.pos = _worldPos; };
+	void SetPos(const VECTOR _worldPos);
 	//*****************************************
 	//モデル色を変更
 	void ChangeModelColor(const COLOR_F _colorScale)override;

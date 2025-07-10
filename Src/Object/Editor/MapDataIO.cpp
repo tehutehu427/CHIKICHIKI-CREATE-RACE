@@ -14,6 +14,7 @@
 #include "../../Manager/Game/ItemManager.h"
 #include "../../Manager/Game/MapEditer.h"
 #include "../System/YesNoResponder.h"
+#include "../System/Select/SelectStage.h"
 
 using json = nlohmann::json;
 
@@ -131,6 +132,13 @@ void MapDataIO::Draw()
 const bool MapDataIO::IsEdit() const
 {
     return state_ == STATE::NONE || state_ == STATE::WAIT;
+}
+
+void MapDataIO::Reset()
+{
+    //ファイルパスの指定
+    selectFile_ = Application::PATH_JSON + getFileNameMap_[SceneManager::GetInstance().GetSceneID()]();
+    ImportJsonFile();
 }
 
 void MapDataIO::ExportJsonFile(const std::string _fileName)
@@ -391,20 +399,19 @@ std::string MapDataIO::GetFreeFileName()
 
 std::string MapDataIO::GetSoloFileName()
 {
-    return "ChallengeStage1.json";
-
     int selectNum = DateBank::GetInstance().GetStageNo();
     switch (selectNum)
     {
-    case 0:
-        return "ChallengeStage1.json";
-        break;
-    case 1:
-        return "ChallengeStage2.json";
+    case static_cast<int>(SelectStage::STAGE_TYPE::BEGINNER):
+        return "BeginnerStage.json";
         break;
 
-    default:
-        return "ChallengeStage1.json";
+    case static_cast<int>(SelectStage::STAGE_TYPE::INTERMEDIATE):
+        return "IntermediateStage.json";
+        break;
+
+    case static_cast<int>(SelectStage::STAGE_TYPE::ADVANCED):
+        return "AdvancedStage.json";
         break;
     }
 }

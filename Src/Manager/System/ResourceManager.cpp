@@ -36,6 +36,7 @@ void ResourceManager::Init(void)
 	std::string path_Clear = Application::PATH_IMAGE + "Clear/";
 	std::string path_GameOver = Application::PATH_IMAGE + "GameOver/";
 	std::string path_Game = Application::PATH_IMAGE + "Game/";
+	std::string path_Effect = Application::PATH_IMAGE + "Effect/";
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "ScrollArrowIcon.png");
 	resourcesMap_.emplace(SRC::SCROLL_ARROW_ICON, std::move(res));
@@ -82,6 +83,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "ShadowArc.png");
 	resourcesMap_.emplace(SRC::SHADOW_ARC, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "LevelSelects.png", LEVEL_SLE_DIV_X, LEVEL_SLE_DIV_Y, LEVEL_SLE_SIZE_X, LEVEL_SLE_SIZE_Y);
+	resourcesMap_.emplace(SRC::LEVEL_SELECTS, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Title + "TitleLogo.png");
 	resourcesMap_.emplace(SRC::TITLE_LOGO, std::move(res));
 
@@ -111,6 +115,9 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "Round.png");
 	resourcesMap_.emplace(SRC::ROUND, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Effect + "SmokeSprites.png", SMOKE_EFE_DIV_X, SMOKE_EFE_DIV_Y, SMOKE_EFE_SIZE, SMOKE_EFE_SIZE);
+	resourcesMap_.emplace(SRC::SMOKE_EFE_SPR, std::move(res));
 #pragma endregion 
 
 #pragma region ƒ}ƒXƒN‰æ‘œ

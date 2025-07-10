@@ -283,6 +283,14 @@ public:
 	static float GetShake(const float _value, float _time, const float _speed = DEFAULT_SHAKE_SPEED, const float _amplitude = DEFAULT_SHAKE_AMPLITUDE);
 
 	/// <summary>
+	/// 指定した桁数の数字を返す
+	/// </summary>
+	/// <param name="_value">桁値を求める値</param>
+	/// <param name="_digit">桁数</param>
+	/// <returns>桁値</returns>
+	static int GetDigit(const int _value, const int _digit);
+
+	/// <summary>
 	/// 桁数を返す
 	/// </summary>
 	/// <param name="_value">桁数を調べる値</param>

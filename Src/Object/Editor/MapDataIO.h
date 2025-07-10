@@ -94,6 +94,11 @@ public:
 	/// <returns>制限中はtrue,　それ以外はfalse</returns>
 	const bool IsEdit() const;
 
+	/// <summary>
+	/// リセット
+	/// </summary>
+	void Reset();
+
 private:	
 
 	//保尊メッセージ表示時間

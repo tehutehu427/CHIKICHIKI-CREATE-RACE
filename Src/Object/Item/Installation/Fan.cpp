@@ -94,9 +94,3 @@ void Fan::CreateWind(void)
 	wind_->SetParam();
 }
 
-void Fan::InitShader()
-{
-	ItemBase::InitShader();
-
-	toonStyle_->SetTexturesIndex(-1.0f);
-}

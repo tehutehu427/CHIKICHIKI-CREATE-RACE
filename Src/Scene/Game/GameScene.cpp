@@ -99,6 +99,7 @@ void GameScene::Init(void)
 	for (auto& controller : editControllers_) { controller->Init(); }
 	sky_->Init();
 	gameClear_->Init();
+	actionStartTime_ = 0.0f;
 }
 
 void GameScene::NormalUpdate(void)
@@ -230,6 +231,8 @@ void GameScene::ChangePhaseAction(void)
 	}
 	ItemManager::GetInstance().ResetItemValue();
 
+	actionStartTime_ = ACTION_START_TIME;
+
 	//クリアの初期化
 	gameClear_->Init();
 	//VECTOR pos;
@@ -283,6 +286,11 @@ void GameScene::UpdateEdit(void)
 
 void GameScene::UpdateAction(void)
 {
+	actionStartTime_ -= SceneManager::GetInstance().GetDeltaTime();
+	if (actionStartTime_ > 0)
+	{
+		return;
+	}
 	ItemManager::GetInstance().Update();
 
 	//プレイヤーの更新
@@ -331,11 +339,29 @@ void GameScene::DrawEdit(void)
 
 void GameScene::DrawAction(void)
 {
+	auto screenIndex = SceneManager::GetInstance().GetScreenIndex();
 	//アイテム
 	ItemManager::GetInstance().Draw();
 	//プレイヤー
 	PlayerManager::GetInstance().Draw();
 
+	if (PlayerManager::GetInstance().IsPlayerDeath(screenIndex))
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+		DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, Utility::BLACK, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+
+	if (actionStartTime_ < 0)
+	{
+		return;
+	}
+	int playerNum = DateBank::GetInstance().GetPlayerNum();
+	int screenX = playerNum == 1 ? Application::SCREEN_SIZE_X : Application::SCREEN_HALF_X;
+	int screenY = playerNum > 2 ? Application::SCREEN_HALF_Y : Application::SCREEN_SIZE_Y;
+	int numHandle = ResourceManager::GetInstance().Load(ResourceManager::SRC::NUMBERS).handleIds_[static_cast<int>(actionStartTime_) + 1];
+	DrawRotaGraph(screenX / 2, screenY / 2, 1.0f, 0.0f, numHandle, true);
+	
 }
 
 void GameScene::DrawClear()
