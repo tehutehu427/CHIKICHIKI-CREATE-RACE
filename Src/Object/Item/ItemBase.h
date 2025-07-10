@@ -89,7 +89,7 @@ public:
 	virtual const IntVector3 GetHitSize(void)const { return size_; }
 	
 	//初期マップ座標の取得
-	inline const IntVector3 GetInitMapPos(void)const { return InitMapPos_; }	
+	inline const IntVector3 GetInitMapPos(void)const { return initMapPos_; }	
 
 	//Y回転の取得
 	inline const float GetRotY(void)const { return rotY_; }
@@ -116,7 +116,7 @@ protected:
 
 	//共通変数
 	Status status_;				//ステータス
-	IntVector3 InitMapPos_;		//初期マップ座標
+	IntVector3 initMapPos_;		//初期マップ座標
 	float rotY_;				//Y回転
 	VECTOR movePow_;			//移動量
 	IntVector3 mapSize_;			//マップサイズ
