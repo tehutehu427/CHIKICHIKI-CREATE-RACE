@@ -222,6 +222,15 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "SlimeFloor.mp3");
 	resourcesMap_.emplace(SRC::SLIME_SE, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "ClickItem.ogg");
+	resourcesMap_.emplace(SRC::CLICK_OBJECT_SE, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "CreateItem.ogg");
+	resourcesMap_.emplace(SRC::CREATE_OBJECT_SE, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "Error.mp3");
+	resourcesMap_.emplace(SRC::ERROR_SE, std::move(res));
+
 	
 #pragma endregion 
 

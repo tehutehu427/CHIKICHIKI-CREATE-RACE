@@ -7,6 +7,7 @@
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/SceneManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Manager/Game/MapEditer.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "EditItemReady.h"
@@ -187,6 +188,8 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 			int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
 			if (errorType < 0)
 			{
+
+				SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
 				//アイテムが重なっている
 				return;
@@ -216,6 +219,8 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	if (mapPos == ERROR_POS)
 	{
 		errorType_ = ERROR_TYPE::ITEM_NOT_SET;	//アイテムが設置できない場所
+
+		SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 		itemMIns.DeleteDummyItem(playerNum_);
 		return;
 	}
@@ -394,6 +399,7 @@ void EditController::ItemNotSelect(void)
 				//if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
 			{
 				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
+				SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 				return;
 			}
 			if (itemMIns.IsDummyItem(playerNum_))
@@ -434,6 +440,7 @@ void EditController::ItemNotSelect(void)
 			MapEditer::GetInstance().DeleteItem(itemType_, leaderPos, ItemManager::GetInstance().GetDummyItemRotY(playerNum_), ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_));
 			mapPos_ = leaderPos;
 			ChengeMode(MODE::MOVE_ROTATE);
+			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CLICK_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 		}
 		else
 		{
@@ -443,6 +450,7 @@ void EditController::ItemNotSelect(void)
 			if (errorType < 0)
 			{
 				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
+				SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 				return;
 			}
 			//アイテムを追加
@@ -455,6 +463,7 @@ void EditController::ItemNotSelect(void)
 			//ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 			//選択解除
 			ChengeMode(MODE::ITEM_SELECT);
+			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CREATE_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 		}
 	}
 }

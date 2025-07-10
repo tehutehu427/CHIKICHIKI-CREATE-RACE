@@ -137,6 +137,9 @@ public:
 		PLAYER_JUMP,
 		SPRING_SE,
 		SLIME_SE,
+		CLICK_OBJECT_SE,
+		CREATE_OBJECT_SE,
+		ERROR_SE,
 
 		//エフェクト
 		WIND_EFF,			//風のエフェクト
