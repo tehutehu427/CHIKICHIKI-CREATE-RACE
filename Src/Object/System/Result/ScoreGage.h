@@ -14,7 +14,7 @@ public:
 	};
 
 	//ゲージYサイズ	
-	static constexpr int GAGE_SIZE_X = 100;	//ゲージのデフォルトサイズ
+	static constexpr int GAGE_SIZE_X = 75;	//ゲージのデフォルトサイズ
 	static constexpr int GAGE_SIZE_Y = 50;	//ゲージの太さ
 
 	//ゲージ座標
@@ -23,9 +23,6 @@ public:
 
 	//2P以降の座標をずらす
 	static constexpr int GAGE_POS_Y_OFFSET = 100;
-
-	//1点当たりの伸ばす長さ
-	static constexpr int GAGE_LENGTH_PER_POINT = 100;
 
 	//ゲージ最大
 	static constexpr int GAGE_LENGTH_MAX = 500;
@@ -92,6 +89,9 @@ private:
 
 	// スコアゲージの画像ID
 	int imgScoreGage_;
+	
+	//1スコア当たりの長さ
+	float lengthPerPoint_;
 
 	//アニメーション用ステップ
 	float animStep_;

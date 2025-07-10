@@ -83,6 +83,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "ShadowArc.png");
 	resourcesMap_.emplace(SRC::SHADOW_ARC, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "LevelSelects.png", LEVEL_SLE_DIV_X, LEVEL_SLE_DIV_Y, LEVEL_SLE_SIZE_X, LEVEL_SLE_SIZE_Y);
+	resourcesMap_.emplace(SRC::LEVEL_SELECTS, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Title + "TitleLogo.png");
 	resourcesMap_.emplace(SRC::TITLE_LOGO, std::move(res));
 

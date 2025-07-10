@@ -37,7 +37,9 @@ public:
 	/// </summary>
 	void Reset() override;
 
-	//ラウンドリセット
+	/// <summary>
+	/// ラウンドリセット
+	/// </summary>
 	void RoundReset();
 
 private:

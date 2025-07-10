@@ -53,6 +53,11 @@ public:
 	static constexpr int SMOKE_EFE_DIV_Y = 1;	//煙エフェクト分割数Y
 	static constexpr int SMOKE_EFE_SIZE = 64;	//煙エフェクトサイズ
 
+	static constexpr int LEVEL_SLE_DIV_X = 2;		//レベル分割数X
+	static constexpr int LEVEL_SLE_DIV_Y = 2;		//レベル分割数Y
+	static constexpr int LEVEL_SLE_SIZE_X = 400;	//レベルサイズ
+	static constexpr int LEVEL_SLE_SIZE_Y = 300;	//レベルサイズ
+
 	// リソース名
 	enum class SRC
 	{
@@ -91,6 +96,7 @@ public:
 		SHADOW_ARC,
 		CURSORS,
 		SELECT_MESSAGES,
+		LEVEL_SELECTS,
 
 		//ゲームシーン用画像
 		NUMBERS,

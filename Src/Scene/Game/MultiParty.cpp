@@ -5,6 +5,7 @@
 #include "../../Manager/Game/ScoreManager.h"
 #include "../../Manager/Game/PlayerManager.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
+#include "../../Object/Editor/MapDataIO.h"
 #include "../../Object/Editor/Palette/MultiPalette.h"
 #include "../../Object/System/Result/MultiResult.h"
 #include "../../Object/System/RoundDisplay.h"
@@ -73,8 +74,14 @@ void MultiParty::Init(void)
 
 void MultiParty::Reset()
 {
+	//マップの初期化
+	mapIO_->Reset();
+
 	//初期化
 	Init();
+
+	//ラウンド別リセット
+	RoundReset();
 
 	//スコア初期化
 	ScoreManager::GetInstance().Init();
