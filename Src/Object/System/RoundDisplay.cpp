@@ -60,7 +60,7 @@ void RoundDisplay::Draw()
 	//”š‚Ì•`‰æ
 	for (int i = 0; i < numberDigit_; i++)
 	{
-		int index = Utility::GetDigit(numberIndex_, i);
+		int index = Utility::GetDigit(numberIndex_, numberDigit_ - 1 - i);
 
 		DrawRotaGraph(
 			NUMBER_POS_X + NUMBER_OFFSET_X * i,

@@ -13,7 +13,14 @@ public:
 		CLEAR_SCORE,	//クリアスコア設定
 		SKIP,			//スキップ設定
 		SOUND_VOLUME,	//サウンドボリューム設定
+		APPLY,			//設定適用
 		MAX				//最大値
+	};
+
+	enum class UPDATE_TYPE
+	{
+		SELECT,
+		APPLY,
 	};
 	
 	//状態の最大値
@@ -23,7 +30,7 @@ public:
 	static constexpr int CLEAR_SCORE_MAX = 15;	
 
 	//サウンドボリュームの最大値
-	static constexpr int SOUND_VOLUME_MAX = 100;
+	static constexpr int SOUND_VOLUME_MAX = 101;
 
 	//サウンドの増加量
 	static constexpr int SOUND_VOLUME_STEP = 10;
@@ -61,11 +68,15 @@ public:
 private:
 
 	//画像
+	int imgTitle_;			//タイトル画像
 	int imgTriangle_;		//三角画像
+	int imgSettingFinish_;	//設定完了画像
 	int* imgCursor_;		//カーソル画像
 	int* imgSelectMess_;	//メッセージ
 	int* imgSettings_;		//設定項目
 	int* imgNumbers_;		//ナンバー画像
+	int* imgOnOff_;			//オンオフ画像
+	int* imgApplyMes_;		//適用時のメッセージ画像
 
 	//ステートインデックス
 	int stateIndex_;
@@ -78,6 +89,9 @@ private:
 	
 	//スキップ設定
 	bool isSkip_;
+
+	//更新状態
+	UPDATE_TYPE updateType_;
 	
 	//状態別右の処理の登録
 	std::unordered_map<STATE, std::function<void()>> rightStateMap_; 
@@ -88,8 +102,21 @@ private:
 	//描画処理の登録
 	std::unordered_map<STATE, std::function<void()>> drawStateMap_; 
 
+	//種類別の更新関数
+	std::unordered_map<UPDATE_TYPE, std::function<void(SelectScene&)>> updateMap_;
+
+	//更新処理
+	void UpdateSelect(SelectScene& _parent);	//選択
+	void UpdateApply(SelectScene& _parent);		//適用
+
 	//データを反映
-	void ApplyData();
+	void ApplyData();	
+	
+	//タイトルの描画
+	void DrawTitle();
+
+	//設定完了のメッセージの描画
+	void DrawSettingFinish();
 
 	//矢印の描画
 	void DrawCursor();
@@ -104,5 +131,8 @@ private:
 	void DrawClearScore();
 	void DrawSkip();
 	void DrawSoundVolume();
+
+	//適用時のメッセージ描画
+	void DrawApplyMessage();
 };
 

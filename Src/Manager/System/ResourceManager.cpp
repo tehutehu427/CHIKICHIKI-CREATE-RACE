@@ -101,8 +101,14 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "LevelSelects.png", LEVEL_SLE_DIV_X, LEVEL_SLE_DIV_Y, LEVEL_SLE_SIZE_X, LEVEL_SLE_SIZE_Y);
 	resourcesMap_.emplace(SRC::LEVEL_SELECTS, std::move(res));
 
-	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "SystemSettingMessages.png", SYSTEM_SETTING_MESSAGES_DIV_X, SYSTEM_MESSAGES_DIV_Y, SYSTEM_MESSAGES_SIZE_X, SYSTEM_MESSAGES_SIZE_Y);
-	resourcesMap_.emplace(SRC::SYSTEM_MESSAGES, std::move(res));
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "SystemSettingItems.png", SYSTEM_SETTING_MESSAGES_DIV_X, SYSTEM_SETTING_MESSAGES_DIV_Y, SYSTEM_SETTING_MESSAGES_SIZE_X, SYSTEM_SETTING_MESSAGES_SIZE_Y);
+	resourcesMap_.emplace(SRC::SETTING_ITEMS, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "OnOff.png", ONOFF_DIV_X, ONOFF_DIV_Y, ONOFF_SIZE_X, ONOFF_SIZE_Y);
+	resourcesMap_.emplace(SRC::ONOFF, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "SettingFinish.png");
+	resourcesMap_.emplace(SRC::SETTING_FINISH, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "SystemSetting.png");
 	resourcesMap_.emplace(SRC::SYSTEM_SETTING, std::move(res));

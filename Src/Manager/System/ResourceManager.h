@@ -71,12 +71,17 @@ public:
 	static constexpr int SYSTEM_MESSAGES_DIV_X = 1;	//システムメッセージ分割数X
 	static constexpr int SYSTEM_MESSAGES_DIV_Y = 2;	//システムメッセージ分割数Y
 	static constexpr int SYSTEM_MESSAGES_SIZE_X = 286; //システムメッセージ各画像サイズX
-	static constexpr int SYSTEM_MESSAGES_SIZE_Y = 128; //システムメッセージ各画像サイズY
+	static constexpr int SYSTEM_MESSAGES_SIZE_Y = 64; //システムメッセージ各画像サイズY
 
 	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_X = 1;	//システム設定メッセージ分割数X
 	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_Y = 3;	//システム設定メッセージ分割数Y
 	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_X = 576; //システム設定メッセージ各画像サイズX
 	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_Y = 64; //システム設定メッセージ各画像サイズY
+
+	static constexpr int ONOFF_DIV_X = 1; //有無の分割数X
+	static constexpr int ONOFF_DIV_Y = 2; //有無の分割数Y
+	static constexpr int ONOFF_SIZE_X = 128; //有無の各画像サイズX
+	static constexpr int ONOFF_SIZE_Y = 64; //有無の各画像サイズY
 
 	// リソース名
 	enum class SRC
@@ -126,6 +131,8 @@ public:
 		SYSTEM_SETTING,
 		SETTING_ITEMS,
 		PUSH_B_BUTTON_MES,
+		ONOFF,
+		SETTING_FINISH,
 
 
 		//ゲームシーン用画像

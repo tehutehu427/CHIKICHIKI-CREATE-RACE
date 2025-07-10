@@ -13,7 +13,6 @@ MultiReady::MultiReady() :
 	 keyConfig_(KeyConfig::GetInstance())
 {
 	//状態別処理の登録
-	RegisterProcessFunc(STATE::RULE_SET, SceneBase::ProcessFunction{ [&]() { UpdateRuleSet(); },  [&]() { DrawRuleSet(); } });
 	RegisterProcessFunc(STATE::NUM_CHECK, SceneBase::ProcessFunction{ [&]() { UpdateNumCheck(); },  [&]() { DrawNumCheck(); } });
 	RegisterProcessFunc(STATE::PAD_CHECK, SceneBase::ProcessFunction{ [&]() { UpdatePadCheck(); },  [&]() { DrawPadCheck(); } });
 	RegisterProcessFunc(STATE::FINAL_CHECK, SceneBase::ProcessFunction{ [&]() { UpdateFinalCheck(); },  [&]() { DrawFinalCheck(); } });
@@ -89,48 +88,6 @@ void MultiReady::Draw()
 void MultiReady::RegisterProcessFunc(const STATE _state, SceneBase::ProcessFunction _funcs)
 {
 	stateTables_[_state] = _funcs;
-}
-
-void MultiReady::UpdateRuleSet()
-{
-	//選択処理
-	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1))
-	{
-	}
-	else if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
-	{
-	}
-	else if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_UP, KeyConfig::JOYPAD_NO::PAD1))
-	{
-	}
-	else if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_DOWN, KeyConfig::JOYPAD_NO::PAD1))
-	{
-	}
-	//決定
-	else if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
-	{
-		int playerNum = playerNum_ + PLAYER_NUM_MIN;
-
-		//データ格納（実際の人数は MIN を加算）
-		DateBank::GetInstance().SetPlayerNum(playerNum);
-
-		//パッド確認のリセット
-		multiInputChecks_->Reset();
-
-		//状態遷移
-		ChangeState(STATE::PAD_CHECK);
-
-		//プレイヤーの中身削除
-		players_.clear();
-
-		//プレイヤー生成
-		for (int i = 0; i < playerNum_ + PLAYER_NUM_MIN; i++)
-		{
-			auto player = std::make_unique<MultiCheckPlayer>();
-			player->Create(i, playerNum);
-			players_.push_back(std::move(player));
-		}
-	}
 }
 
 void MultiReady::UpdateNumCheck()

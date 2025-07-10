@@ -18,7 +18,6 @@ public:
 	/// </summary>
 	enum class STATE
 	{
-		RULE_SET,	//ルール設定
 		NUM_CHECK,	//人数確認
 		PAD_CHECK,	//コントローラー確認
 		FINAL_CHECK,//最終確認
