@@ -1,5 +1,6 @@
 #include "RoundDisplay.h"
 #include <DxLib.h>
+#include <cmath>
 #include "../../Application.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Utility/Utility.h"
@@ -10,6 +11,7 @@ RoundDisplay::RoundDisplay()
 	imgNumbers_ = &i;
 	imgRound_ = -1;
 	numberIndex_ = -1;
+	numberDigit_ = -1;
 }
 
 RoundDisplay::~RoundDisplay()
@@ -28,6 +30,7 @@ void RoundDisplay::Init()
 {
 	//‰Šú’l
 	numberIndex_ = 0;
+	numberDigit_ = 0;
 }
 
 void RoundDisplay::Update()
@@ -39,7 +42,8 @@ void RoundDisplay::Draw()
 {
 	//cÀ•W‚ğŒÅ’è
 	constexpr int ROUND_POS_X = Application::SCREEN_HALF_X - 100;
-	constexpr int NUMBER_POS_X = Application::SCREEN_HALF_X + 250;
+	constexpr int NUMBER_POS_X = Application::SCREEN_HALF_X + 230;
+	constexpr int NUMBER_OFFSET_X = 70;
 	constexpr int POS_Y = Application::SCREEN_HALF_Y;
 
 	//ƒ‰ƒEƒ“ƒh‚Ì•`‰æ
@@ -56,12 +60,14 @@ void RoundDisplay::Draw()
 	//”š‚Ì•`‰æ
 	for (int i = 0; i < numberDigit_; i++)
 	{
+		int index = Utility::GetDigit(numberIndex_, i);
+
 		DrawRotaGraph(
-			NUMBER_POS_X,
+			NUMBER_POS_X + NUMBER_OFFSET_X * i,
 			POS_Y,
 			1.0f,
 			0.0f,
-			imgNumbers_[numberIndex_],
+			imgNumbers_[index],
 			true,
 			false
 		);

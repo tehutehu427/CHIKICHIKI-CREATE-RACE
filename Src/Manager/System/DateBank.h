@@ -81,6 +81,8 @@ public:
 	/// <returns>ステージ番号</returns>
 	const int GetStageNo()const { return stageNo_; }
 
+	const int GetMultiClearScore() const { return multiClearScore_; }
+
 	/// <summary>
 	/// アイテムの名前を返す
 	/// </summary>

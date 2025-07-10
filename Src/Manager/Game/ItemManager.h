@@ -29,7 +29,7 @@ public:
 	/// <param name="mapPos">生成させるマップ座標</param>
 	/// <param name="rot">生成させる時の回転情報</param>
 	/// <param name="type">アイテムの種類</param>
-	void AddItem(IntVector3 mapPos,Quaternion rot,ItemBase::ITEM_TYPE type,float rotY);
+	void AddItem(IntVector3 _mapPos,Quaternion _rot,ItemBase::ITEM_TYPE _type,float _rotY);
 
 	/// <summary>
 	/// アイテム消去

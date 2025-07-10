@@ -883,7 +883,9 @@ void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector
 {
 	MapEditer& editer = MapEditer::GetInstance();
 	ItemManager& itemM = ItemManager::GetInstance();
-	int rot = static_cast<int>(_rotY) % 360;
+	_rotY += 360.0f;
+ 	int rot = Utility::Round(_rotY);
+ 	rot = static_cast<int>(_rotY) % 360;
 	switch (rot)
 	{
 	case 0:

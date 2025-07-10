@@ -1,3 +1,4 @@
+#include "../Utility/Utility.h"
 #include "MapEditer.h"
 
 MapEditer* MapEditer::instance_ = nullptr;
@@ -96,8 +97,9 @@ int MapEditer::IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size,IntVector3 
 
 void MapEditer::AddItem(STATUS _status, IntVector3 _size ,IntVector3 _hitSize, float _rotY)
 {
-	IntVector3 mapPos = _status.mapPos;
-	int rot = static_cast<int>(_rotY) % 360;
+	IntVector3 mapPos = _status.mapPos;	_rotY += 360.0f;
+	int rot = Utility::Round(_rotY);
+	rot = static_cast<int>(_rotY) % 360;
 	switch (rot)
 	{
 	case 0:
@@ -134,7 +136,9 @@ void MapEditer::AddItem(STATUS _status, IntVector3 _size ,IntVector3 _hitSize, f
 
 void MapEditer::DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos ,float _rotY ,IntVector3 _size ,IntVector3 _hitSize)
 {
-	int rot = static_cast<int>(_rotY) % 360;
+	_rotY += 360.0f;
+	int rot = Utility::Round(_rotY);
+	rot = static_cast<int>(_rotY) % 360;
 	switch (rot)
 	{
 	case 0:

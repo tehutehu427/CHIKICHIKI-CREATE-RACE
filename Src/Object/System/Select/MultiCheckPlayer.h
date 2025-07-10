@@ -56,7 +56,7 @@ public:
 	void ChangeState(const STATE _state) { state_ = _state; }
 
 	/// <summary>
-	/// リセット
+	/// ラウンド毎にリセット
 	/// </summary>
 	void Reset();
 

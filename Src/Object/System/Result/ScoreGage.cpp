@@ -3,6 +3,7 @@
 #include "../Utility/Utility.h"
 #include "../Manager/Game/ScoreManager.h"
 #include "../Manager/System/SceneManager.h"
+#include "../Manager/System/DateBank.h"
 
 ScoreGage::ScoreGage(const int _playerIndex) : 
 	playerIndex_(_playerIndex)
@@ -39,6 +40,9 @@ void ScoreGage::Init()
 
 	//ゲージサイズ
 	size_ = { GAGE_SIZE_X,GAGE_SIZE_Y };
+
+	//1スコア当たりのゲージ長さ
+	lengthPerPoint_ = GAGE_LENGTH_MAX / DateBank::GetInstance().GetMultiClearScore();
 }
 
 void ScoreGage::Update()
@@ -85,7 +89,7 @@ void ScoreGage::ChangeStateAnimation()
 	stateUpdate_ = std::bind(&ScoreGage::UpdateStateAnimation, this);
 
 	//長さの更新値を決定
-	updateLength_ = size_.x + ScoreManager::GetInstance().GetScore(playerIndex_) * GAGE_LENGTH_PER_POINT;
+	updateLength_ = size_.x + ScoreManager::GetInstance().GetScore(playerIndex_) * lengthPerPoint_;
 }
 
 void ScoreGage::UpdateStateNone()

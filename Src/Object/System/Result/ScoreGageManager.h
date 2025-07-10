@@ -51,6 +51,9 @@ public:
 	/// <returns>全てのゲージがアニメーションを終えたらtrue, そうでなければfalse</returns>
 	const bool IsFinishAnimation() const;
 
+	//装飾類の描画
+	void DecorationDraw();
+
 private:
 	
 	// スコアゲージのリスト

@@ -48,8 +48,13 @@ void Wind::SetParam(void)
 
 void Wind::Update(void)
 {
-	if (!effect_->IsEnd(EffectController::EFF_TYPE::WIND, 0))return;
-	int i = effect_->Play(EffectController::EFF_TYPE::WIND, parentPos_, trans_.quaRot, VGet(100.0f,100.0f,100.0f));
+	//ˆê‚Â‚à‚È‚¢
+	if (effect_->GetPlayNum(EffectController::EFF_TYPE::WIND) < 1)
+	{
+		effect_->Play(EffectController::EFF_TYPE::WIND, parentPos_, trans_.quaRot, VGet(100.0f, 100.0f, 100.0f), true);
+	}
+
+	effect_->Update();
 }
 
 void Wind::Draw(void)

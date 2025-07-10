@@ -44,26 +44,6 @@ void ScoreGageManager::Draw()
 	{
 		scoreGage->Draw();
 	}
-
-	//縮小開始ライン
-	DrawLine(
-		ScoreGage::GAGE_POS_P1_X,
-		ScoreGage::GAGE_POS_P1_Y, 
-		ScoreGage::GAGE_POS_P1_X,
-		ScoreGage::GAGE_POS_P1_Y + 200, 
-		Utility::BLACK,
-		5.0f
-		);
-
-	//クリアライン
-	DrawLine(
-		ScoreGage::GAGE_POS_P1_X + ScoreGage::GAGE_LENGTH_MAX,
-		ScoreGage::GAGE_POS_P1_Y,
-		ScoreGage::GAGE_POS_P1_X + ScoreGage::GAGE_LENGTH_MAX,
-		ScoreGage::GAGE_POS_P1_Y + 200,
-		Utility::BLACK,
-		5.0f
-	);
 }
 
 void ScoreGageManager::ChangeAllState(const ScoreGage::STATE _state)
@@ -87,4 +67,30 @@ const bool ScoreGageManager::IsFinishAnimation() const
 	}
 	//全てのゲージがアニメーションを終えてたのでtrueを返す
 	return true;
+}
+
+void ScoreGageManager::DecorationDraw()
+{	
+	constexpr int LENGTH = 350;
+	constexpr float THICKNESS = 5.0f;
+
+	//縮小開始ライン
+	DrawLine(
+		ScoreGage::GAGE_SIZE_X + ScoreGage::GAGE_POS_P1_X,
+		ScoreGage::GAGE_POS_P1_Y, 
+		ScoreGage::GAGE_SIZE_X + ScoreGage::GAGE_POS_P1_X,
+		ScoreGage::GAGE_POS_P1_Y + LENGTH,
+		Utility::BLACK,
+		THICKNESS
+		);
+
+	//クリアライン
+	DrawLine(
+		ScoreGage::GAGE_SIZE_X + ScoreGage::GAGE_POS_P1_X + ScoreGage::GAGE_LENGTH_MAX,
+		ScoreGage::GAGE_POS_P1_Y,
+		ScoreGage::GAGE_SIZE_X + ScoreGage::GAGE_POS_P1_X + ScoreGage::GAGE_LENGTH_MAX,
+		ScoreGage::GAGE_POS_P1_Y + LENGTH,
+		Utility::BLACK,
+		THICKNESS
+	);
 }
