@@ -1,6 +1,7 @@
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../Common/EffectController.h"
 #include"../../Common/Geometry/Sphere.h"
+#include"../../../Utility/Utility.h"
 #include "Wind.h"
 
 Wind::Wind(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl, const VECTOR _size)
@@ -35,6 +36,9 @@ void Wind::SetParam(void)
 	//‘O•û
 	VECTOR forward = trans_.quaRot.GetForward();
 
+	//‘O•û‚ðŒü‚­
+	trans_.quaRot = trans_.quaRot.AngleAxis(Utility::Deg2RadF(90.0f), Utility::AXIS_Z);
+
 	//ˆÚ“®—Ê
 	movePow_ = VScale(forward, POW);
 
@@ -51,7 +55,7 @@ void Wind::Update(void)
 	//ˆê‚Â‚à‚È‚¢
 	if (effect_->GetPlayNum(EffectController::EFF_TYPE::WIND) < 1)
 	{
-		effect_->Play(EffectController::EFF_TYPE::WIND, parentPos_, trans_.quaRot, VGet(100.0f, 100.0f, 100.0f), true);
+		effect_->Play(EffectController::EFF_TYPE::WIND, trans_.pos, trans_.quaRot, VGet(30.0f, 30.0f, 30.0f), true);
 	}
 
 	effect_->Update();
