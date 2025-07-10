@@ -14,7 +14,11 @@ public:
 		KEY_BORD,	//キーボード操作		ソロ用
 		CONTROLLER,	//コントローラー操作	マルチ用
 		ERORE		//プレイヤー人数がerore
-	};
+	};	
+	
+	//通常のスコア量
+	static constexpr  int DEFAULT_SCORE = 5;
+
 
 	/// <summary>
 	/// 明示的にインステンスを生成する
@@ -92,8 +96,6 @@ public:
 
 private:
 
-	//通常のスコア量
-	static constexpr  int DEFAULT_SCORE = 5;
 
 	static DateBank* instance_;
 	DateBank(void);

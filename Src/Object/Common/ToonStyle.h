@@ -16,6 +16,7 @@ public:
 	{
 		CHICKEN,
 		MESH,
+		NO_TEXTURE,
 		SKIN_MESH,
 	};
 

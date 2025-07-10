@@ -65,6 +65,9 @@ public:
 	//値を反転させる溜めのスケール
 	static constexpr float REVERSE_SCALE = -1.0f;
 
+	//アルファ最大値
+	static constexpr int ALPHA_MAX = 255;
+
 	// 四捨五入
 	static int Round(float v);
 
@@ -307,4 +310,15 @@ public:
 	/// ワイド文字列をUTF-8に変換する
 	/// </summary>
 	static std::string WideToUtf8(const std::wstring& wstr);
+
+	/// <summary>
+	/// 値を上下に動かす処理
+	/// </summary>
+	/// <param name="_value">現在の値</param>
+	/// <param name="_step">増減量</param>
+	/// <param name="_max">最大値</param>
+	/// <param name="_min">最小値</param>
+	/// <param name="_dir">増加方向（参照）1なら増加中、-1なら減少中</param>
+	/// <returns>処理後の値</returns>
+	static float PingPongUpdate(const float _value, const float _step, const float _max, const float _min, int& _dir);
 };

@@ -870,3 +870,25 @@ std::string Utility::WideToUtf8(const std::wstring& wstr)
     result.pop_back(); // null文字を削除
     return result;
 }
+
+float Utility::PingPongUpdate(const float _value, const float _step, const float _max, const float _min, int& _dir)
+{
+    // 値を更新（directionは1または-1）
+    float value = _value;
+    value += _step * _dir;
+
+    // 最大を超えたら減少に切り替え
+    if (value >= _max)
+    {
+        value = _max;
+        _dir = -1;
+    }
+    // 最小を下回ったら増加に切り替え
+    else if (value <= _min)
+    {
+        value = _min;
+        _dir = 1;
+    }
+
+    return value;
+}

@@ -77,6 +77,15 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "Cursors.png",IMG_CURSORS_DIV_X, IMG_CURSORS_DIV_Y, IMG_CURSORS_SIZE, IMG_CURSORS_SIZE);
 	resourcesMap_.emplace(SRC::CURSORS, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "EditMessages.png", EDIT_MESSAGES_DIV_X, EDIT_MESSAGES_DIV_Y, EDIT_MESSAGES_SIZE_X, EDIT_MESSAGES_SIZE_Y);
+	resourcesMap_.emplace(SRC::EDIT_MESSAGES, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "SystemMessages.png", SYSTEM_MESSAGES_DIV_X, SYSTEM_MESSAGES_DIV_Y, SYSTEM_MESSAGES_SIZE_X, SYSTEM_MESSAGES_SIZE_Y);
+	resourcesMap_.emplace(SRC::SYSTEM_MESSAGES, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "YesNo.png", YES_NO_DIV_X, YES_NO_DIV_Y, YES_NO_SIZE_X, YES_NO_SIZE_Y);
+	resourcesMap_.emplace(SRC::YES_NO, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "SelectArcs.png", IMG_ARCS_DIV_X, IMG_ARCS_DIV_Y, IMG_ARC_SIZE, IMG_ARC_SIZE);
 	resourcesMap_.emplace(SRC::ARCS, std::move(res));
 
@@ -91,6 +100,15 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "LevelSelects.png", LEVEL_SLE_DIV_X, LEVEL_SLE_DIV_Y, LEVEL_SLE_SIZE_X, LEVEL_SLE_SIZE_Y);
 	resourcesMap_.emplace(SRC::LEVEL_SELECTS, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "SystemSettingMessages.png", SYSTEM_SETTING_MESSAGES_DIV_X, SYSTEM_MESSAGES_DIV_Y, SYSTEM_MESSAGES_SIZE_X, SYSTEM_MESSAGES_SIZE_Y);
+	resourcesMap_.emplace(SRC::SYSTEM_MESSAGES, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "SystemSetting.png");
+	resourcesMap_.emplace(SRC::SYSTEM_SETTING, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Select + "PushBbutton.png");
+	resourcesMap_.emplace(SRC::PUSH_B_BUTTON_MES, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Title + "TitleLogo.png");
 	resourcesMap_.emplace(SRC::TITLE_LOGO, std::move(res));
@@ -121,6 +139,12 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "Round.png");
 	resourcesMap_.emplace(SRC::ROUND, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "Progress.png");
+	resourcesMap_.emplace(SRC::PROGRESS, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "SelectItem.png");
+	resourcesMap_.emplace(SRC::SELECT_ITEM, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Effect + "SmokeSprites.png", SMOKE_EFE_DIV_X, SMOKE_EFE_DIV_Y, SMOKE_EFE_SIZE, SMOKE_EFE_SIZE);
 	resourcesMap_.emplace(SRC::SMOKE_EFE_SPR, std::move(res));

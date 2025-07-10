@@ -116,6 +116,7 @@
     <ClCompile Include="Src\Object\System\YesNoResponder.cpp" />
     <ClCompile Include="Src\Object\Item\SubItem\Wind.cpp" />
     <ClCompile Include="Src\Object\Common\ToonStyle.cpp" />
+    <ClCompile Include="Src\Object\System\Select\SystemSetting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Animation2DController.h" />
@@ -264,6 +265,7 @@
     <ClInclude Include="Src\Object\Item\SubItem\Wind.h" />
     <ClInclude Include="Src\Object\System\YesNoResponder.h" />
     <ClInclude Include="Src\Object\Common\ToonStyle.h" />
+    <ClInclude Include="Src\Object\System\Select\SystemSetting.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
@@ -376,6 +378,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\Model\ToonNoTexturePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Src\Shader\Model\ToonPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

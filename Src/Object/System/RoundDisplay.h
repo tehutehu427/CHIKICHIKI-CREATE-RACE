@@ -53,8 +53,5 @@ private:
 	//ナンバーの描画桁数
 	int numberDigit_;
 
-	//数字用インデックスを返す
-	int GetDivNumberIndex(const int _num);
-
 };
 

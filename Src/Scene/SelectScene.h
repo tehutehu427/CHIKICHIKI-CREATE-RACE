@@ -6,6 +6,7 @@ class MultiReady;
 class ModeSelect;
 class SelectStage;
 class SkyDome;
+class SystemSetting;
 
 class SelectScene : public SceneBase
 {
@@ -75,7 +76,7 @@ public:
 	/// 状態遷移
 	/// </summary>
 	/// <param name="state_">変更先の状態</param>
-	inline const void ChangeState(const STATE _state) { state_ = _state; }
+	const void ChangeState(const STATE _state) { state_ = _state; }
 
 private:
 
@@ -96,6 +97,9 @@ private:
 
 	//ステージセレクト
 	std::unique_ptr<SelectStage> selectStage_;
+
+	//システム設定
+	std::unique_ptr<SystemSetting> systemSetting_;
 
 	//スカイドーム
 	std::unique_ptr<SkyDome> skyDome_;

@@ -123,7 +123,7 @@ void Cannon::Draw(void)
 	//–C‘ä‚Ì•`‰æ
 	toonStyle_->Draw();
 	//–Cg‚Ì•`‰æ
-	MV1DrawModel(barrelTrans_.modelId);
+	toonBarrel_->Draw();
 	
 	//’e‚Ì•`‰æ	
 	if (shot_ != nullptr)shot_->Draw();
@@ -163,28 +163,17 @@ void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
 	CreateShot();
 }
 
-void Cannon::ChangeModelColor(const COLOR_F _colorScale)
+void Cannon::SetModelColor(const float _r, const float _g, const float _b, const float _a)
 {
-	//–C‘ä
-	if (MV1SetDifColorScale(trans_.modelId, _colorScale))
-	{
-#ifdef _DEBUG
+	//–C‘ä‚ÌF•Ï‚¦
+	ItemBase::SetModelColor(_r, _g, _b, _a);
 
-		OutputDebugString("ChangeModelColor‚ÌŽ¸”s");
+	//ƒoƒŒƒ‹‚ÌF•Ï‚¦
+	//Žw’è‚µ‚½F‚É•ÏX
+	toonBarrel_->SetModelColor(_r, _g, _b, _a);
 
-#endif // _DEBUG
-	}
-
-	//–Cg
-	if (MV1SetDifColorScale(barrelTrans_.modelId, _colorScale))
-	{
-#ifdef _DEBUG
-
-		OutputDebugString("ChangeModelColor‚ÌŽ¸”s");
-
-#endif // _DEBUG
-	}
-
+	//ƒAƒEƒgƒ‰ƒCƒ“‚ÌƒAƒ‹ƒtƒ@’l‚à‰º‚°‚é
+	toonBarrel_->SetOutlineColor(1.0f, 1.0f, 1.0f, _a);
 }
 
 void Cannon::ResetValue(void)
@@ -289,10 +278,10 @@ void Cannon::DeleteShot(void)
 void Cannon::InitShader(void)
 {
 	toonStyle_ = std::make_unique<ToonStyle>();
-	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::MESH);
+	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::NO_TEXTURE);
 	toonStyle_->Init();
 
 	toonBarrel_ = std::make_unique <ToonStyle>();
-	toonBarrel_->Load(barrelTrans_.modelId, ToonStyle::MESH_TYPE::MESH);
+	toonBarrel_->Load(barrelTrans_.modelId, ToonStyle::MESH_TYPE::NO_TEXTURE);
 	toonBarrel_->Init();
 }

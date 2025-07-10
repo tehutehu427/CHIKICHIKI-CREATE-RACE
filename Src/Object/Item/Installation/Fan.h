@@ -41,5 +41,8 @@ private:
 
 	//風の生成
 	void CreateWind(void);
+
+	//シェーダ初期化
+	void InitShader() override;
 };
 
