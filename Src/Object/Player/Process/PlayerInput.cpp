@@ -207,8 +207,6 @@ void PlayerInput::InputPad(void)
 	//leftStickY_ = ins.GetJPadInputState(padNum_).AKeyLY;
 	//auto stickRad = static_cast<float>(atan2(static_cast<double>(leftStickY_), static_cast<double>(leftStickX_)));
 
-
-
 	int LstickUpSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_UP);
 	int LstickLeftSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_LEFT);
 	int LstickDownSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_DOWN);
