@@ -62,6 +62,12 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "Ready.png");
 	resourcesMap_.emplace(SRC::READY_IMG, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "MapOutItem.png");
+	resourcesMap_.emplace(SRC::ERROR_MAP_OUT_IMG, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "OverLapItem.png");
+	resourcesMap_.emplace(SRC::ERROR_OVERLAP_IMG, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "ChangePhaseIcons.png", CHANGE_PHASE_ICONS_DIV_X, CHANGE_PHASE_ICONS_DIV_Y, CHANGE_PHASE_ICONS_SIZE_X, CHANGE_PHASE_ICONS_SIZE_Y);
 	resourcesMap_.emplace(SRC::CHANGE_PHASE_ICONS, std::move(res));
 
@@ -240,15 +246,38 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "SlimeFloor.mp3");
 	resourcesMap_.emplace(SRC::SLIME_SE, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "ClickItem.ogg");
+	resourcesMap_.emplace(SRC::CLICK_OBJECT_SE, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "CreateItem.ogg");
+	resourcesMap_.emplace(SRC::CREATE_OBJECT_SE, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "Error.mp3");
+	resourcesMap_.emplace(SRC::ERROR_SE, std::move(res));
+
 	
 #pragma endregion 
 
 #pragma region エフェクト
-	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Aura01_HDR.efkefc");
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Wind.efkefc");
 	resourcesMap_.emplace(SRC::WIND_EFF, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Blast.efkefc");
+	resourcesMap_.emplace(SRC::BLAST_EFF, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Dash.efkefc");
 	resourcesMap_.emplace(SRC::DASH_EFF, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Jump.efkefc");
+	resourcesMap_.emplace(SRC::JUMP_EFF, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Smoke.efkefc");
+	resourcesMap_.emplace(SRC::LANDING_EFF, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "PunchHit.efkefc");
+	resourcesMap_.emplace(SRC::PUNCH_HIT_EFF, std::move(res));
+
+
 #pragma endregion
 
 }

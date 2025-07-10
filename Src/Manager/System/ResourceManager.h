@@ -98,6 +98,9 @@ public:
 		EDIT_MESSAGES,
 		SYSTEM_MESSAGES,
 		YES_NO,
+		ERROR_MAP_OUT_IMG,
+		ERROR_OVERLAP_IMG,
+
 
 		//クリア
 		CLEAR,
@@ -165,10 +168,17 @@ public:
 		PLAYER_JUMP,
 		SPRING_SE,
 		SLIME_SE,
+		CLICK_OBJECT_SE,
+		CREATE_OBJECT_SE,
+		ERROR_SE,
 
 		//エフェクト
-		WIND_EFF,			//風のエフェクト
+		WIND_EFF,			//風エフェクト
+		BLAST_EFF,			//爆発エフェクト
 		DASH_EFF,			//ダッシュエフェクト
+		JUMP_EFF,			//ジャンプエフェクト
+		LANDING_EFF,		//着地エフェクト
+		PUNCH_HIT_EFF,		//パンチヒットエフェクト
 
 		//2Dエフェクト
 		SMOKE_EFE_SPR,		//煙エフェクト

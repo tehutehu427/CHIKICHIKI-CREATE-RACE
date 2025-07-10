@@ -17,6 +17,7 @@
 #include "../../Object/Common/Geometry/Sphere.h"
 #include "../../Object/Common/Geometry/Line.h"
 #include"../../Object/Common/Geometry/Model.h"
+#include"../../Object/Common/EffectController.h"
 
 #include "../../Object/Common/AnimationController.h"
 #include"../Item/Installation/MoveHoriFloor.h"
@@ -103,6 +104,7 @@ void Player::Load(void)
 	//トゥーンにする
 	material_ = std::make_unique<ModelMaterial>("ChickenOutlineVS.cso", 1, "OutlinePS.cso", 1);
 	renderer_ = std::make_unique<ModelRenderer>(trans_.modelId, *material_);
+
 }
 
 void Player::Init(void)
@@ -230,7 +232,7 @@ void Player::ChangeAlive(void)
 void Player::AliveUpdate(void)
 {
 	//奈落に落ちたら死に状態へ遷移
-	if (IsDeath())
+	if (trans_.pos.y <= DEATH_POS_Y || onHitCol_->GetIsDeath())
 	{
 		ChangeState(PLAYER_STATE::DEATH);
 		return;
@@ -252,6 +254,7 @@ void Player::ChangeDeath(void)
 {
 	goalTime_ = -1;
 	KillPunchCol();
+	action_->StopResource();
 	stateUpdate_ = std::bind(&Player::DeathUpdate, this);
 }
 void Player::DeathUpdate(void)
@@ -259,7 +262,6 @@ void Player::DeathUpdate(void)
 	//死んだ時の処理
 	//落ちているアニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
-
 	//アニメーションループ
 	if (animationController_->GetAnimStep() >= FALL_ANIM_START)
 	{
@@ -271,18 +273,14 @@ void Player::ChangeGoal(void)
 	goalTime_ = time_;
 	KillPunchCol();
 	stateUpdate_ = std::bind(&Player::GoalUpdate, this);
+
+	action_->StopResource();
 }
 void Player::GoalUpdate(void)
 {
 	//ゴール時の処理
 	//落ちているアニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::GOAL), true);
-
-	////アニメーションループ
-	//if (animationController_->GetAnimStep() >= FALL_ANIM_START)
-	//{
-	//	animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_ANIM_SPD);
-	//}
 }
 
 void Player::Action(void)
@@ -321,7 +319,8 @@ const bool Player::IsGoal(void) const
 bool Player::IsDeath(void)
 {
 	//奈落に落ちるorデスオブジェクトに当たったら
-	if (trans_.pos.y <= DEATH_POS_Y||onHitCol_->GetIsDeath())
+	//if (trans_.pos.y <= DEATH_POS_Y||onHitCol_->GetIsDeath())
+	if (state_==PLAYER_STATE::DEATH)
 	{
 		return true;
 	}
@@ -389,3 +388,5 @@ void Player::KillPunchCol(void)
 		}
 	}
 }
+
+

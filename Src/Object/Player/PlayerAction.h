@@ -115,7 +115,8 @@ public:
 	//方向
 	void SetDir(const VECTOR _dir) { dir_ = _dir; }
 
-
+	//再生しているリソースをすべて止める
+	void StopResource(void);
 
 	//デバッグ
 	float GetJumpDecel(void) { return jumpDeceralation_; }
@@ -221,6 +222,8 @@ private:
 	//スライムSEの間隔カウント
 	float slimeSEcnt_;
 
+	int effectArrayNum_;
+
 	//移動
 	//------------------------
 	float speed_;			// 移動スピード
@@ -306,5 +309,7 @@ private:
 	void Rotate(void);
 	//最終的に動かしたい角度の設定
 	void SetGoalRotate(double _deg);
+
+
 };
 

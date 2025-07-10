@@ -2,9 +2,9 @@
 #include <memory>
 #include <functional>
 #include"../Object/Player/Player.h"
-#include"../Object/Editor/EditController.h"
 #include "../SceneBase.h"
 
+class EditController;
 class EditorPaletteBase;
 class Grid;
 class SkyDome;

@@ -110,8 +110,8 @@ const int EffectController::Play(const EFF_TYPE _effType, const VECTOR _pos, con
 
 void EffectController::SetPos(const EFF_TYPE _effType, const int _arrayNum, const VECTOR _pos)
 {
-	//エフェクトの要素が存在するか また 再生中のエフェクトが存在するか
-	if (!effects_.count(_effType) || effects_[_effType].playNum <= 0)
+	//エフェクトの要素が存在するか または 再生中のエフェクトが存在するか または　その配列のエフェクトが存在するか
+	if (!effects_.count(_effType) || effects_[_effType].playNum <= 0 || effects_[_effType].playNum < _arrayNum)
 	{
 		//その要素がなかった
 		return;
@@ -125,7 +125,7 @@ void EffectController::SetPos(const EFF_TYPE _effType, const int _arrayNum, cons
 void EffectController::SetQuaRot(const EFF_TYPE _effType, const int _arrayNum, const Quaternion _quaRot)
 {
 	//エフェクトの要素が存在するか また 再生中のエフェクトが存在するか
-	if (!effects_.count(_effType) || effects_[_effType].playNum <= 0)
+	if (!effects_.count(_effType) || effects_[_effType].playNum <= 0 || effects_[_effType].playNum < _arrayNum)
 	{
 		//その要素がなかった
 		return;
@@ -139,7 +139,7 @@ void EffectController::SetQuaRot(const EFF_TYPE _effType, const int _arrayNum, c
 void EffectController::SetScale(const EFF_TYPE _effType, const int _arrayNum, const VECTOR _scl)
 {
 	//エフェクトの要素が存在するか また 再生中のエフェクトが存在するか
-	if (!effects_.count(_effType) || effects_[_effType].playNum <= 0)
+	if (!effects_.count(_effType) || effects_[_effType].playNum <= 0 || effects_[_effType].playNum < _arrayNum)
 	{
 		//その要素がなかった
 		return;
@@ -154,7 +154,7 @@ void EffectController::SetSpeed(const EFF_TYPE _effType, const int _arrayNum, co
 {
 	
 	//エフェクトの要素が存在するか また 再生中のエフェクトが存在するか
-	if (!effects_.count(_effType) || effects_[_effType].playNum <= 0)
+	if (!effects_.count(_effType) || effects_[_effType].playNum <= 0 || effects_[_effType].playNum < _arrayNum)
 	{
 		//その要素がなかった
 		return;
@@ -168,7 +168,7 @@ void EffectController::SetSpeed(const EFF_TYPE _effType, const int _arrayNum, co
 void EffectController::Stop(const EFF_TYPE _effType, const int _arrayNum)
 {
 	//エフェクトの要素が存在するか また 再生中のエフェクトが存在するか
-	if (!effects_.count(_effType) || effects_[_effType].playNum <= 0)
+	if (!effects_.count(_effType) || effects_[_effType].playNum <= 0 || effects_[_effType].playNum < _arrayNum)
 	{
 		//その要素がなかった
 		return;
@@ -204,7 +204,7 @@ void EffectController::AllDelete(void)
 const bool EffectController::IsEnd(const EFF_TYPE _effType, const int _arrayNum)
 {
 	//エフェクトの要素が存在するか また 再生中のエフェクトが存在するか
-	if (!effects_.count(_effType) || effects_[_effType].playNum <= 0)
+	if (!effects_.count(_effType) || effects_[_effType].playNum <= 0 || effects_[_effType].playNum < _arrayNum)
 	{
 		//そもそもその要素がなかった
 		return true;

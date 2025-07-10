@@ -1,4 +1,5 @@
 #include <cmath>
+#include <algorithm>
 #include "../Application.h"
 #include "../../Utility/Utility.h"
 #include "../../Manager/System/ResourceManager.h"
@@ -6,7 +7,9 @@
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/SceneManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "../../Manager/Game/ItemManager.h"
 #include "EditItemReady.h"
 #include "EditController.h"
 
@@ -108,24 +111,29 @@ void EditController::DrawUI(void)
 	{
 		ready_->Draw();
 	}
-
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(errorStringTime_ * 255));
+	float rate = 1.0 / (playerMaxNum_ == 1 ? 2 : 4);
 	switch (errorType_)
 	{
 	case EditController::ERROR_TYPE::NONE:
 		break;
 	case EditController::ERROR_TYPE::ITEM_RANGE_OUT:
-		Utility::DrawStringPlace("選択中のアイテムがマップ外に出ています", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		//Utility::DrawStringPlace("選択中のアイテムがマップ外に出ています", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		DrawRotaGraph(screenSize_.x / 2, screenSize_.y / 2, rate, 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_MAP_OUT_IMG).handleId_, true);
 		break;
 	case EditController::ERROR_TYPE::ITEM_OVER_LAP:
-		Utility::DrawStringPlace("選択中のアイテムが他のアイテムと重なっています", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		//Utility::DrawStringPlace("選択中のアイテムが他のアイテムと重なっています", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		DrawRotaGraph(screenSize_.x / 2, screenSize_.y / 2, rate, 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_OVERLAP_IMG).handleId_, true);
 		break;
 	case EditController::ERROR_TYPE::ITEM_NOT_SET:
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		Utility::DrawStringPlace("アイテムが設置できませんでした", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
 		break;
 	default:
 		break;
 	}
 
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	int sizeX;
 	int sizeY;
 	GetGraphSize(ResourceManager::GetInstance().Load(ResourceManager::SRC::CURSORS).handleIds_[playerNum_],&sizeX,&sizeY);
@@ -180,6 +188,8 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 			int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
 			if (errorType < 0)
 			{
+
+				SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
 				//アイテムが重なっている
 				return;
@@ -209,6 +219,8 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	if (mapPos == ERROR_POS)
 	{
 		errorType_ = ERROR_TYPE::ITEM_NOT_SET;	//アイテムが設置できない場所
+
+		SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 		itemMIns.DeleteDummyItem(playerNum_);
 		return;
 	}
@@ -244,43 +256,37 @@ void EditController::SetReady(void)
 
 void EditController::CursorUpdate(void)
 {
-	//カーソル位置更新
 	auto lStick = KeyConfig::GetInstance().GetKnockLStickSize(padNum_);
 	auto& itemMIns = ItemManager::GetInstance();
-	Vector2 cursorMove;
-	cursorMove.x += lStick.x * PAD_STICK_RATE * (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::CURSOR_SPEED_UP, padNum_) ? PAD_STICK_RATE_UP : 1.0f);
-	cursorMove.y += lStick.y * PAD_STICK_RATE * (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::CURSOR_SPEED_UP, padNum_) ? PAD_STICK_RATE_UP : 1.0f);
+	Vector2 cursorMove
+	{
+		static_cast<int>(lStick.x * PAD_STICK_RATE * (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::CURSOR_SPEED_UP, padNum_) ? PAD_STICK_RATE_UP : 1.0f)),
+		static_cast<int>(lStick.y * PAD_STICK_RATE * (KeyConfig::GetInstance().IsNew(KeyConfig::CONTROL_TYPE::CURSOR_SPEED_UP, padNum_) ? PAD_STICK_RATE_UP : 1.0f))
+	};
 	Vector2 mouseMove = KeyConfig::GetInstance().GetMouseMove();
 
+	cursorPos_ = Vector2::AddVector2(cursorPos_, cursorMove);
 	if (playerMaxNum_ == 1)
 	{
-		//カーソル位置を取得
-		cursorPos_ = Vector2::AddVector2(cursorPos_, cursorMove);	//カーソル位置の更新
-		cursorPos_ = Vector2::AddVector2(cursorPos_, mouseMove);	//カーソル位置の更新
-		cursorPos_.x = cursorPos_.x < 0.0f ? 0.0f : cursorPos_.x > screenSize_.x ? screenSize_.x:cursorPos_.x;	//カーソル位置の更新
-		cursorPos_.y = cursorPos_.y < 0.0f ? 0.0f : cursorPos_.y > screenSize_.y ? screenSize_.y:cursorPos_.y;	//カーソル位置の更新
-		KeyConfig::GetInstance().SetMousePos(cursorPos_);	//カーソル位置をマウス位置に設定
+		cursorPos_ = Vector2::AddVector2(cursorPos_, mouseMove);
+		cursorPos_.x = std::clamp(cursorPos_.x , 0,screenSize_.x);
+		cursorPos_.y = std::clamp(cursorPos_.y, 0, screenSize_.y);
+		KeyConfig::GetInstance().SetMousePos(cursorPos_);
 	}
-	else
+	else 
 	{
-		//カーソル位置を取得
-		cursorPos_ = Vector2::AddVector2(cursorPos_, cursorMove);	//カーソル位置の更新
-		cursorPos_.x = cursorPos_.x < 0.0f ? 0.0f : cursorPos_.x > screenSize_.x ? screenSize_.x : cursorPos_.x;	//カーソル位置の更新
-		cursorPos_.y = cursorPos_.y < 0.0f ? 0.0f : cursorPos_.y > screenSize_.y ? screenSize_.y : cursorPos_.y;	//カーソル位置の更新
+		cursorPos_.x = std::clamp(cursorPos_.x, 0, screenSize_.x);
+		cursorPos_.y = std::clamp(cursorPos_.y, 0, screenSize_.y);
 
-		int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
-		if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
-		{
-			ready_->Update();
-		}
-		else if (errorType == 0)
+		int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_),itemMIns.GetDummyItemHitSize(playerNum_),itemMIns.GetDummyItemRotY(playerNum_));
+		if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER || errorType == 0) 
 		{
 			ready_->Update();
 		}
 		else
 		{
-			errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
-			ready_->ChangeReady(EditItemReady::READY_PHASE::NOT_READY);	//アイテムを置く準備ができていない
+			errorType_ = static_cast<ERROR_TYPE>(abs(errorType));
+			ready_->ChangeReady(EditItemReady::READY_PHASE::NOT_READY);
 		}
 	}
 	mousePos_ = cursorPos_;
@@ -393,6 +399,7 @@ void EditController::ItemNotSelect(void)
 				//if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
 			{
 				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
+				SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 				return;
 			}
 			if (itemMIns.IsDummyItem(playerNum_))
@@ -433,6 +440,7 @@ void EditController::ItemNotSelect(void)
 			MapEditer::GetInstance().DeleteItem(itemType_, leaderPos, ItemManager::GetInstance().GetDummyItemRotY(playerNum_), ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_));
 			mapPos_ = leaderPos;
 			ChengeMode(MODE::MOVE_ROTATE);
+			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CLICK_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 		}
 		else
 		{
@@ -442,6 +450,7 @@ void EditController::ItemNotSelect(void)
 			if (errorType < 0)
 			{
 				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
+				SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 				return;
 			}
 			//アイテムを追加
@@ -454,6 +463,7 @@ void EditController::ItemNotSelect(void)
 			//ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 			//選択解除
 			ChengeMode(MODE::ITEM_SELECT);
+			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CREATE_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 		}
 	}
 }

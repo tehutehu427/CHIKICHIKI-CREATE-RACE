@@ -261,29 +261,29 @@ const Transform& ItemManager::GetDummyItemTransform(int playerNum)
 	return transform;
 }
 
-void ItemManager::ResetDummyItem(int playerNum, ItemBase::ITEM_TYPE type,IntVector3 mapPos)
-{
-	//指定プレイヤーのダミーアイテムがあるか
-	if (dummyItems_.find(playerNum) != dummyItems_.end())
-	{
-		if (dummyItems_[playerNum] == nullptr)
-		{
-			return;
-		}
-		//モデルの回転情報は保存
-		Transform transform = dummyItems_[playerNum]->GetTransform();
-		
-		//新たに指定されたアイテムを生成
-		std::shared_ptr<ItemBase> dummy;
-		dummy = CreateItem(type, mapPos, transform.quaRot);
-		dummy->SetRotY(GetDummyItemRotY(playerNum));
-		//元あったアイテムの削除
-		dummyItems_.erase(playerNum);
-
-		//置き換え
-		dummyItems_[playerNum] = dummy;
-	}
-}
+//void ItemManager::ResetDummyItem(int playerNum, ItemBase::ITEM_TYPE type,IntVector3 mapPos)
+//{
+//	//指定プレイヤーのダミーアイテムがあるか
+//	if (dummyItems_.find(playerNum) != dummyItems_.end())
+//	{
+//		if (dummyItems_[playerNum] == nullptr)
+//		{
+//			return;
+//		}
+//		//モデルの回転情報は保存
+//		Transform transform = dummyItems_[playerNum]->GetTransform();
+//		
+//		//新たに指定されたアイテムを生成
+//		std::shared_ptr<ItemBase> dummy;
+//		dummy = CreateItem(type, mapPos, transform.quaRot);
+//		dummy->SetRotY(GetDummyItemRotY(playerNum));
+//		//元あったアイテムの削除
+//		dummyItems_.erase(playerNum);
+//
+//		//置き換え
+//		dummyItems_[playerNum] = dummy;
+//	}
+//}
 
 void ItemManager::DummyItemSetMapPos(IntVector3 mapPos, int playerNum)
 {

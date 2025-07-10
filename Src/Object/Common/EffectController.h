@@ -13,7 +13,11 @@ public:
 	{
 		NONE,
 		WIND,		//風
+		BLAST,		//爆発
 		DASH,
+		JUMP,
+		LANDING,
+		PUNCH_HIT,
 	};
 
 	//コンストラクタ

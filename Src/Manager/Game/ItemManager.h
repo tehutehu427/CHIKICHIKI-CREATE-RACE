@@ -89,7 +89,7 @@ public:
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <param name="type">アイテムの種類</param>
 	/// <param name="mapPos">マップ座標</param>
-	void ResetDummyItem(int playerNum,ItemBase::ITEM_TYPE type,IntVector3 mapPos);
+	//void ResetDummyItem(int playerNum,ItemBase::ITEM_TYPE type,IntVector3 mapPos);
 
 	/// <summary>
 	/// ダミーアイテムの座標設定
