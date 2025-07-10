@@ -41,13 +41,17 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	punchPos_ = Utility::VECTOR_ZERO;
 	punchedCnt_ = PUNCHED_TIME;
 
+	effectArrayNum_ = 0.0f;
+
 	isPunchHitTime_ = false;
 	input_ = nullptr;
 }
 
 PlayerAction::~PlayerAction(void)
 {
-	
+	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
+	SoundManager::GetInstance().Stop(actSE_[ACT_SE::JUMP]);
+	SoundManager::GetInstance().Stop(actSE_[ACT_SE::SLIME]);
 }
 
 void PlayerAction::Init(void)
@@ -76,6 +80,8 @@ void PlayerAction::Init(void)
 	punchPos_ = Utility::VECTOR_ZERO;
 	punchedCnt_ = PUNCHED_TIME;
 
+	effectArrayNum_ = 0.0f;
+
 	ChangeAction(ATK_ACT::INPUT);
 }
 
@@ -95,6 +101,9 @@ void PlayerAction::Update(void)
 {
 	//入力更新
 	input_->Update();
+
+	//エフェクト更新
+	effect_->Update();
 
 	//プレイヤーの下を設定
 	static VECTOR dirDown = player_.GetTransform().GetDown();
@@ -159,6 +168,11 @@ void PlayerAction::ChangeInput(void)
 {
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::IDLE));
 	isJump_ = false;
+	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
+	effect_->Stop(EffectController::EFF_TYPE::DASH, effNum);
+
+	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
+
 	actionUpdate_ = std::bind(&PlayerAction::ActionInputUpdate, this);
 }
 
@@ -175,6 +189,10 @@ void PlayerAction::MoveUpdate(void)
 	{
 		ChangeAction(ATK_ACT::JUMP);
 		return;
+	}
+	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
+	{
+		ChangeAction(ATK_ACT::MOVE);
 	}
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
 	{
@@ -194,6 +212,9 @@ void PlayerAction::MoveUpdate(void)
 		return;
 	}
 
+	//エフェクトの座標と角度の追従
+	effect_->SetPos(EffectController::EFF_TYPE::DASH, 0, player_.GetTransform().pos);
+	effect_->SetQuaRot(EffectController::EFF_TYPE::DASH, 0, player_.GetTransform().quaRot);
 
 	float animationSpeed = Player::DEFAULT_ANIM_SPD * (speed_ / MOVE_SPEED)*3.0f;
 	animationController_.SetAnimSpeed(animationSpeed);
@@ -228,11 +249,16 @@ void PlayerAction::ChangeMove(void)
 {
 	speed_ = MOVE_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
-	
+	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 	if (player_.GetIsSlimeFloor())
 	{
 		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
 	}
+
+	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
+	effect_->Stop(EffectController::EFF_TYPE::DASH, effNum);
+	effectArrayNum_--;
+
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
 }
 
@@ -240,11 +266,11 @@ void PlayerAction::ChangeDashMove(void)
 {
 	speed_ = DASH_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
-	SoundManager::GetInstance().Play(actSE_[ACT_SE::DASH], SoundManager::PLAYTYPE::BACK);
+	SoundManager::GetInstance().Play(actSE_[ACT_SE::DASH], SoundManager::PLAYTYPE::LOOP);
 	auto& trans = player_.GetTransform();
 	const float SCL = 10.0f;
-	//effect_->Play(EffectController::EFF_TYPE::DASH, trans.pos, trans.quaRot, { SCL,SCL,SCL },50.0f);
-
+	effect_->Play(EffectController::EFF_TYPE::DASH, trans.pos, trans.quaRot, { SCL,SCL,SCL },50.0f);
+	effectArrayNum_++;
 	if (player_.GetIsSlimeFloor())
 	{
 		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
@@ -260,6 +286,11 @@ void PlayerAction::UpdateMoveDirAndPow(void)
 	moveDir_ = dir_;
 	//移動量の更新
 	movePow_ = VScale(moveDir_, speed_);
+
+	//if (speed_ == DASH_ANIM_SPEED)
+	//{
+	//	SoundManager::GetInstance().Play(SoundManager::PLAYTYPE::LOOP,)
+	//}
 }
 
 void PlayerAction::Speed(void)
@@ -463,4 +494,18 @@ void PlayerAction::SetGoalRotate(double _deg)
 		stepRotTime_ = TIME_ROT;
 	}
 	goalQuaRot_ = axis;
+}
+
+void PlayerAction::StopResource(void)
+{
+	for (auto& se : actSE_)
+	{
+		SoundManager::GetInstance().Stop(se.second);
+	}
+	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
+	for (int i = 0; i <= effNum; i++)
+	{
+		effect_->Stop(EffectController::EFF_TYPE::DASH, i);
+	}
+	
 }

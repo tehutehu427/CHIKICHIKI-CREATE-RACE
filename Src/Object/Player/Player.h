@@ -17,6 +17,8 @@ class Shadow;
 class ModelMaterial;
 class ModelRenderer;
 
+class EffectController;
+
 class Player :public ObjectBase
 {
 public:
@@ -168,6 +170,8 @@ public:
 	//パンチの当たり判定を消す
 	void KillPunchCol(void);
 
+
+
 private:
 	//***********************************************
 	//定数
@@ -235,6 +239,9 @@ private:
 
 	// アニメーション
 	std::unique_ptr<AnimationController> animationController_;
+
+	//エフェクト
+	std::unique_ptr<EffectController> effect_;
 
 	//メンバ変数
 	//--------------------------------------------
