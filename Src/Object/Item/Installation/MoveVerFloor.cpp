@@ -123,7 +123,7 @@ void MoveVerFloor::InitRoute(void)
 	routeNum_ = 0;
 
 	//初期位置保存
-	route_[routeNum_] = MapEditer::GetInstance().MapToWorldPos(InitMapPos_);
+	route_[routeNum_] = MapEditer::GetInstance().MapToWorldPos(initMapPos_);
 
 	//マップ座標をワールド座標に
 	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ 0, MOVE_Y, 0 });

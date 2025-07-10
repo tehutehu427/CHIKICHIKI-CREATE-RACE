@@ -60,7 +60,7 @@ void Cannon::SetParam(void)
 	
 	//砲台の値合わせ
 	BarrelValueToTurret();
-
+	
 	//砲身のモデル設定
 	barrelTrans_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::CANNON_BARREL));
@@ -77,7 +77,7 @@ void Cannon::SetParam(void)
 
 	//大砲のエイム範囲
 	std::unique_ptr<Sphere>aimGeo = std::make_unique<Sphere>(trans_.pos, AIM_RADIUS);
-	MakeCollider({ Collider::TAG::CANNON_AIM }, std::move(aimGeo));
+	MakeCollider({ Collider::TAG::CANNON_AIM }, std::move(aimGeo), { Collider::TAG::SHADOW });
 
 	//マップサイズ
 	mapSize_ = MAP_SIZE;
@@ -121,7 +121,6 @@ void Cannon::Draw(void)
 	}
 
 	//砲台の描画
-	//MV1DrawModel(trans_.modelId);
 	toonStyle_->Draw();
 	//砲身の描画
 	toonBarrel_->Draw();
@@ -132,12 +131,6 @@ void Cannon::Draw(void)
 
 void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	for (auto hitTag : _hitCol.lock()->GetTags())
-	{
-		//影への当たり判定をしない
-		if (hitTag == Collider::TAG::SHADOW)return;
-	}
-
 	for (auto hitTag : _hitCol.lock()->GetTags())
 	{
 		//狙う範囲に当たったか
@@ -191,11 +184,11 @@ void Cannon::ResetValue(void)
 	//生成カウント
 	shotCreateCnt_ = 0.0f;
 
-	//砲台の値合わせ
-	BarrelValueToTurret();
-
 	//共通
 	ItemBase::ResetValue();
+
+	//砲台の値合わせ
+	BarrelValueToTurret();
 }
 
 void Cannon::BarrelValueToTurret(void)
