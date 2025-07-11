@@ -18,7 +18,8 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_.emplace(TAG::START, [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); });
 	colUpdates_.emplace(TAG::GOAL, [this](const std::weak_ptr<Collider> _hitCol) {ColGoal(_hitCol); });
 	colUpdates_.emplace(TAG::NORMAL_ITEM, [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); });
-	colUpdates_.emplace(TAG::KILLER_ITEM, [this](const std::weak_ptr<Collider> _hitCol) {CollKillerItem(_hitCol); });
+	colUpdates_.emplace(TAG::KILLER_SPECIFIC, [this](const std::weak_ptr<Collider> _hitCol) {CollKillerItemSpecific(_hitCol); });
+	colUpdates_.emplace(TAG::KILLER_ALL, [this](const std::weak_ptr<Collider> _hitCol) {CollKillerItemAll(); });
 	colUpdates_.emplace(TAG::MOVE_HORI_FLOOR, [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); });
 	colUpdates_.emplace(TAG::MOVE_VER_FLOOR, [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); });
 	colUpdates_.emplace(TAG::SLIME_FLOOR, [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); });
@@ -120,14 +121,24 @@ void PlayerOnHit::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::CollSlimeFloor(const std::weak_ptr<Collider> _hitCol)
 {
-	isHitSlimeFloor_ = true;
 	HitModelCommon(_hitCol);
+	isHitSlimeFloor_ = true;
 }
 
-void PlayerOnHit::CollKillerItem(const std::weak_ptr<Collider> _hitCol)
+void PlayerOnHit::CollKillerItemSpecific(const std::weak_ptr<Collider> _hitCol)
 {
-	isDeath_ = true;
 	HitModelCommon(_hitCol);
+	//地面に立っていたら
+	if (isLandHit_)
+	{
+		isDeath_ = true;
+	}
+}
+
+void PlayerOnHit::CollKillerItemAll(void)
+{
+	//当たったら死ぬ
+	isDeath_ = true;
 }
 
 void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
@@ -216,6 +227,9 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	auto& upDownLine = colParam_[UP_AND_DOWN_LINE_COL_NO].collider_;
 	//球の当たり判定(プレイヤーの周囲)
 	auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
+
+	isLandHit_ = false;
+
 	if (moveLineCol->IsHit() > 0)
 	{
 		//Y座標のみ半径分上に移動させる
@@ -225,7 +239,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 
 		//現在座標の更新
 		trans_.pos = movedPos_;
-		isLandHit_ = true;
 		return;
 	}
 	//プレイヤーの接地
