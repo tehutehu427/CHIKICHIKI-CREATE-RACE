@@ -249,7 +249,7 @@ const Transform& ItemManager::GetDummyItemTransform(int playerNum)
 		{
 			return Transform();
 		}
-		transform = dummyItems_[playerNum]->GetTransform();
+		return dummyItems_[playerNum]->GetTransform();
 	}
 	else
 	{

@@ -69,8 +69,6 @@ public:
     //コントロール判定
     bool CheckAct(ACT_CNTL _actCntl) { return actCntl_ == _actCntl ? true : false; }
 #ifdef _DEBUG
-    //デバイス変更
-    void ChangeInput(KeyConfig::TYPE _type);
 #endif // _DEBUG_ON
 
  
