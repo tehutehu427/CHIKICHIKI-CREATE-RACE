@@ -32,7 +32,10 @@ public :
 		SLIME_FLOOR,	//スライム床
 		SPRING,			//ばね
 		WIND,
-		KILLER_ITEM,	//接触すると死ぬアイテム
+		KILLER_ALL,			//接触すると死ぬモデル
+		KILLER_SPECIFIC,	//一定の場所に当たると死ぬモデル
+		
+		
 
 		DESTROYER,		//アイテムオブジェクトを破壊する
 	};

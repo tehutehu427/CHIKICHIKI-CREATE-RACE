@@ -2,6 +2,8 @@
 #include "../ItemBase.h"
 
 #include<memory>
+#include<functional>
+#include<map>
 
 class EffectController;
 
@@ -46,15 +48,21 @@ public:
 
 private:
 
+	//状態
+	enum class STATE
+	{
+		ALIVE,	//生存
+		BLAST,	//爆発
+		DEAD,	//死亡
+	};
+
+	STATE state_;		//状態
 	float cnt_;			//生存カウンタ
 	bool isAlive_;		//生存判定
 
 	//関数ポインタ
-	using UpdateFunc_t = void(CannonShot::*)(void);	//更新用
-	using DrawFunc_t = void(CannonShot::*)(void);	//描画用
-
-	UpdateFunc_t update_;	//更新
-	DrawFunc_t draw_;		//描画
+	std::map<STATE,std::function<void(void)>> update_;	//更新
+	std::map<STATE, std::function<void(void)>>draw_;	//描画
 
 	//状態ごとの更新
 	void UpdateAlive(void);
