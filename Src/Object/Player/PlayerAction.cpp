@@ -527,6 +527,9 @@ void PlayerAction::StopResource(void)
 	for (int i = 0; i <= effNum; i++)
 	{
 		effect_->Stop(EffectController::EFF_TYPE::DASH, i);
+		effect_->Stop(EffectController::EFF_TYPE::PUNCH_HIT, i);
+		effect_->Stop(EffectController::EFF_TYPE::LANDING, i);
+		effect_->Stop(EffectController::EFF_TYPE::JUMP, i);
 	}
 	
 }

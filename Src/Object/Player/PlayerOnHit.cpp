@@ -66,8 +66,9 @@ void PlayerOnHit::Update(void)
 
 	//移動量ラインの更新
 	VECTOR moveVec = VSub(movedPos_, trans_.pos);
-	moveVec.y -= MOVE_LINE_Y_OFFSET;
+	//moveVec.y -= MOVE_LINE_Y_OFFSET;
 	if (moveVec.x != 0.0f || moveVec.y != MOVE_LINE_Y_CHECK_VALUE || moveVec.z != 0.0f)
+	//if (moveVec.x != 0.0f || moveVec.y != 0.0f || moveVec.z != 0.0f)
 	{
 		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
 		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
@@ -234,7 +235,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	if (moveLineCol->IsHit() > 0)
 	{
 		//Y座標のみ半径分上に移動させる
-		movedPos_.y = hitPos.y + Player::RADIUS + POSITION_OFFSET;
+		movedPos_.y = hitPos.y /*+ Player::RADIUS*/ + POSITION_OFFSET;
 		action_.SetJumpPow(Utility::VECTOR_ZERO);
 		action_.SetIsJump(false);
 
@@ -249,7 +250,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		VECTOR hitLinePos = upDown.GetHitInfo().HitPosition;
 		if (movedPos_.y > hitLinePos.y)
 		{
-			movedPos_.y = hitLinePos.y + Player::RADIUS + POSITION_OFFSET;
+			movedPos_.y = hitLinePos.y/* + Player::RADIUS*/ + POSITION_OFFSET;
 			//地面と当たっている
 			isLandHit_ = true;
 
@@ -261,7 +262,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 			if (action_.GetJumpDecel() > 0.0f)
 			{
 				//オブジェクトの下に当たったら跳ね返るようにする
-				action_.SetJumpDecel(-DOWN_BOUNCE_DECELERATION);
+				action_.SetJumpDecel(DOWN_BOUNCE_DECELERATION);
 			}
 		}
 		

@@ -62,7 +62,7 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	MakeCollider({ tag_ }, std::move(lineGeo));
 
 	//プレイヤーの体
-	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
+	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(VGet(0.0f,-RADIUS,0.0f), RADIUS);
 	MakeCollider({ tag_ }, std::move(bodySphereGeo));
 
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
@@ -114,10 +114,12 @@ void Player::Init(void)
 	trans_.scl = MODEL_SCL;
 	trans_.quaRotLocal = 
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(MODEL_LOCAL_DEG), 0.0f });
+		//Quaternion::Euler({ 0.0f, 0.0f, 0.0f });
 
 	float posX = PLAYER_ONE_POS_X + DISTANCE_POS * playerNum_;
 	trans_.pos={ posX,0.0f,0.0f };
-	trans_.localPos = { 0.0f,-Player::RADIUS,0.0f };
+	//trans_.localPos = { 0.0f,-Player::RADIUS,0.0f };
+	trans_.localPos = { 0.0f,0.0f,0.0f };
 
 
 	//生存状態
@@ -177,7 +179,7 @@ void Player::Draw(void)
 	shadow_->Draw();
 
 #ifdef DEBUG_ON
-	//DrawDebug();
+	DrawDebug();
 #endif // DEBUG_ON
 }
 
