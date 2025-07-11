@@ -17,6 +17,7 @@ ScoreGage::ScoreGage(const int _playerIndex) :
 	stateChanges_.emplace(STATE::NONE, std::bind(&ScoreGage::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::WAIT, std::bind(&ScoreGage::ChangeStateWait, this));
 	stateChanges_.emplace(STATE::ANIMATION, std::bind(&ScoreGage::ChangeStateAnimation, this));
+	stateChanges_.emplace(STATE::AFTER_WAIT, std::bind(&ScoreGage::ChangeStateAfterWait, this));
 }
 
 ScoreGage::~ScoreGage()
@@ -81,7 +82,7 @@ void ScoreGage::ChangeStateNone()
 
 void ScoreGage::ChangeStateWait()
 {
-	stateUpdate_ = std::bind(&ScoreGage::UpdateStateWait, this);
+	stateUpdate_ = std::bind(&ScoreGage::UpdateStateNone, this);
 }
 
 void ScoreGage::ChangeStateAnimation()
@@ -92,11 +93,12 @@ void ScoreGage::ChangeStateAnimation()
 	updateLength_ = size_.x + ScoreManager::GetInstance().GetScore(playerIndex_) * lengthPerPoint_;
 }
 
-void ScoreGage::UpdateStateNone()
+void ScoreGage::ChangeStateAfterWait()
 {
+	stateUpdate_ = std::bind(&ScoreGage::UpdateStateNone, this);
 }
 
-void ScoreGage::UpdateStateWait()
+void ScoreGage::UpdateStateNone()
 {
 }
 
@@ -118,7 +120,7 @@ void ScoreGage::UpdateStateAnimation()
 	//目標位置に到達したら状態を変更
 	if (size_.x >= updateLength_)
 	{
-		ChangeState(STATE::WAIT);
+		ChangeState(STATE::AFTER_WAIT);
 	}
 }
 

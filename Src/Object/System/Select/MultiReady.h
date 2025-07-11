@@ -88,6 +88,9 @@ private:
 	//ナンバー画像
 	int* imgNumbers_;
 
+	//ボタン押してね画像
+	int imgPushButton_;
+
 	//選択画像
 	int imgSelectIcon_;
 
@@ -99,6 +102,12 @@ private:
 
 	//サウンドボリューム
 	int soundVolume_;
+
+	//メッセージのアルファ値
+	int mesAlpha_;
+
+	//アルファ値の変化方向
+	int alphaDir_;
 
 	//スキップの有無
 	bool isSkip_;
@@ -128,14 +137,12 @@ private:
 	const void ChangeState(const STATE _state) { state_ = _state; }
 
 	//状態別更新処理
-	void UpdateRuleSet();
 	void UpdateNumCheck();
 	void UpdatePadCheck();
 	void UpdateFinalCheck();
 	void UpdatePlayerAnimation();
 
 	//状態別描画処理
-	void DrawRuleSet();
 	void DrawNumCheck();
 	void DrawPadCheck();
 	void DrawFinalCheck();

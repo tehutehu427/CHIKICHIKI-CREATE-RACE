@@ -1,10 +1,11 @@
 #include "MultiResult.h"
 #include "../../../Manager/Game/ScoreManager.h"
 #include "../../../Manager/System/SceneManager.h"
-#include "../../../Scene/Game/MultiParty.h"
-#include "../MultiInputCheck.h"
-#include "../../Editor/Palette/Palette.h"
 #include "../../../Manager/System/DateBank.h"
+#include "../../../Scene/Game/MultiParty.h"
+#include "../../../Utility/Utility.h"
+#include "../../Editor/Palette/Palette.h"
+#include "../MultiInputCheck.h"
 #include "ScoreGage.h"
 #include "ScoreGageManager.h"
 
@@ -64,14 +65,15 @@ void MultiResult::Draw()
 	//パレット
 	palette_->Draw();
 
-	//入力確認
-	inputCheck_->Draw();
 
 	//スコアゲージ
 	scoreGages_->Draw();
 
 	//ゲージ装飾
 	if (palette_->GetState() == Palette::STATE::CENTER) { scoreGages_->DecorationDraw(); }
+
+	//入力確認
+	inputCheck_->Draw();
 }
 
 void MultiResult::Reset()
