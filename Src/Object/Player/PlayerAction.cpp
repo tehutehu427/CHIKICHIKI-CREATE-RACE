@@ -310,6 +310,7 @@ void PlayerAction::Speed(void)
 	}
 	if (speed_ > 0.0f && player_.GetIsSlimeFloor())
 	{
+		//スライム床の上だけスピードを半分にする
 		speed_ /= 2.0f;
 	}
 }
