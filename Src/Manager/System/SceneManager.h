@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <chrono>
+#include <vector>
 #include "../../Common/Fader.h"
 
 // 推奨しませんが、どうしても使いたい方は
@@ -112,39 +113,39 @@ public:
 	/// 分割描画の設定
 	/// </summary>
 	/// <param name="_isSplitMode">分割する場合true、しない場合false</param>
-	inline void SetIsSplitMode(const bool _isSplitMode) { isSplitMode_ = _isSplitMode; }
+	void SetIsSplitMode(const bool _isSplitMode) { isSplitMode_ = _isSplitMode; }
 
 	/// <summary>
 	/// シーンIDを返す
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns>シーンID</returns>
-	inline SCENE_ID GetSceneID(void) const { return sceneId_; }
+	SCENE_ID GetSceneID(void) const { return sceneId_; }
 
 	/// <summary>
 	/// メインスクリーンを返す
 	/// </summary>
 	/// <returns>メインスクリーン</returns>
-	inline int GetMainScreen() const { return mainScreen_; }
+	int GetMainScreen() const { return mainScreen_; }
 	/// <summary>
 	/// スクリーンを返す
 	/// </summary>
 	/// <returns>メインスクリーン</returns>
-	inline int GetScreen(int _screenNum) const { return splitScreens_[_screenNum]; }
+	int GetScreen(int _screenNum) const { return splitScreens_[_screenNum]; }
 
 	/// <summary>
 	/// デルタタイムの取得
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns>デルタタイム</returns>
-	inline float GetDeltaTime(void) const { return deltaTime_; }
+	float GetDeltaTime(void) const { return deltaTime_; }
 
 	/// <summary>
 	/// 経過時間を返す
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns>経過時間</returns>
-	inline float GetTotalTime(void) const { return totalTime_; }
+	float GetTotalTime(void) const { return totalTime_; }
 
 	/// <summary>
 	/// カメラを取得

@@ -1,5 +1,6 @@
 #pragma once
 #include<functional>
+#include<unordered_map>
 #include<DxLib.h>
 #include "../../../Application.h"
 #include "../../../Common/Vector2.h"
