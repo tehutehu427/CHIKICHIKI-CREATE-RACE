@@ -62,7 +62,9 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	MakeCollider({ tag_ }, std::move(lineGeo));
 
 	//プレイヤーの体
-	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(VGet(0.0f,-RADIUS,0.0f), RADIUS);
+	VECTOR& transPos = trans_.pos;
+	transPos.y -=2*RADIUS; //地面に接地しているのでY座標は-R
+	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(transPos, RADIUS);
 	MakeCollider({ tag_ }, std::move(bodySphereGeo));
 
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
@@ -118,7 +120,7 @@ void Player::Init(void)
 
 	float posX = PLAYER_ONE_POS_X + DISTANCE_POS * playerNum_;
 	trans_.pos={ posX,0.0f,0.0f };
-	//trans_.localPos = { 0.0f,-Player::RADIUS,0.0f };
+	//Sstrans_.localPos = { 0.0f,-Player::RADIUS,0.0f };
 	trans_.localPos = { 0.0f,0.0f,0.0f };
 
 
@@ -154,10 +156,6 @@ void Player::Update(void)
 	//プレイヤー状態更新
 	stateUpdate_();
 
-	//回転の同期
-	trans_.quaRot = action_->GetPlayerRotY();
-	
-	trans_.Update();
 	shadow_->Update();
 }
 
@@ -251,6 +249,11 @@ void Player::AliveUpdate(void)
 
 	//移動後座標の更新
 	onHitCol_->Update();
+
+	//回転の同期
+	trans_.quaRot = action_->GetPlayerRotY();
+	trans_.Update();
+
 }
 void Player::ChangeDeath(void)
 {

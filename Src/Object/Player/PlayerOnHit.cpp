@@ -67,8 +67,8 @@ void PlayerOnHit::Update(void)
 	//移動量ラインの更新
 	VECTOR moveVec = VSub(movedPos_, trans_.pos);
 	//moveVec.y -= MOVE_LINE_Y_OFFSET;
-	if (moveVec.x != 0.0f || moveVec.y != MOVE_LINE_Y_CHECK_VALUE || moveVec.z != 0.0f)
-	//if (moveVec.x != 0.0f || moveVec.y != 0.0f || moveVec.z != 0.0f)
+	//if (moveVec.x != 0.0f || moveVec.y != MOVE_LINE_Y_CHECK_VALUE || moveVec.z != 0.0f)
+	if (moveVec.x != 0.0f || moveVec.y != 0.0f || moveVec.z != 0.0f)
 	{
 		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
 		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
@@ -114,10 +114,10 @@ void PlayerOnHit::CollFloor(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 {
+	HitModelCommon(_hitCol);
 	ItemBase& floor = dynamic_cast<ItemBase&>(const_cast<ObjectBase&>(_hitCol.lock()->GetParent()));
 	VECTOR movePow = floor.GetMovePow();
-	movedPos_ = VAdd(movedPos_, floor.GetMovePow());
-	HitModelCommon(_hitCol);
+	trans_.pos = VAdd(trans_.pos, floor.GetMovePow());
 }
 
 void PlayerOnHit::CollSlimeFloor(const std::weak_ptr<Collider> _hitCol)
@@ -235,7 +235,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	if (moveLineCol->IsHit() > 0)
 	{
 		//Y座標のみ半径分上に移動させる
-		movedPos_.y = hitPos.y /*+ Player::RADIUS*/ + POSITION_OFFSET;
+		movedPos_.y = hitPos.y + Player::RADIUS + POSITION_OFFSET;
 		action_.SetJumpPow(Utility::VECTOR_ZERO);
 		action_.SetIsJump(false);
 
@@ -250,7 +250,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		VECTOR hitLinePos = upDown.GetHitInfo().HitPosition;
 		if (movedPos_.y > hitLinePos.y)
 		{
-			movedPos_.y = hitLinePos.y/* + Player::RADIUS*/ + POSITION_OFFSET;
+			movedPos_.y = hitLinePos.y + Player::RADIUS + POSITION_OFFSET;
 			//地面と当たっている
 			isLandHit_ = true;
 
@@ -292,6 +292,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 					isSide_ = true;
 					
  					movedPos_ = VAdd(movedPos_, VScale(hit.Normal, HIT_NORMAL_OFFSET));
+ 					//movedPos_ = VAdd(movedPos_, VScale(hit.Normal, HIT_NORMAL_OFFSET));
 					
 					//カプセルを移動させる
 					trans.pos = movedPos_;
