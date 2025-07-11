@@ -66,8 +66,8 @@ void PlayerOnHit::Update(void)
 
 	//移動量ラインの更新
 	VECTOR moveVec = VSub(movedPos_, trans_.pos);
-	moveVec.y -= Player::RADIUS - 1.0f;
-	if (moveVec.x != 0.0f || moveVec.y != Player::RADIUS - 1.5f || moveVec.z != 0.0f)
+	moveVec.y -= MOVE_LINE_Y_OFFSET;
+	if (moveVec.x != 0.0f || moveVec.y != MOVE_LINE_Y_CHECK_VALUE || moveVec.z != 0.0f)
 	{
 		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
 		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
@@ -194,7 +194,7 @@ void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 		isGoal_ = true;
 	}
 }
-
+#ifdef DEBUG_ON
 void PlayerOnHit::DrawDebug(void)
 {
 	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
@@ -215,6 +215,7 @@ void PlayerOnHit::DrawDebug(void)
 	VECTOR moveVec = VSub(movedPos_, trans_.pos);
 	DrawFormatString(0, 300, 0x000000, "Hit(%d)", hitNum_);
 }
+#endif // DEBUG_ON
 
 
 
@@ -257,6 +258,11 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		else
 		{
 			movedPos_.y = hitLinePos.y - Player::RADIUS - POSITION_OFFSET;
+			if (action_.GetJumpDecel() > 0.0f)
+			{
+				//オブジェクトの下に当たったら跳ね返るようにする
+				action_.SetJumpDecel(-DOWN_BOUNCE_DECELERATION);
+			}
 		}
 		
 	}
@@ -269,14 +275,13 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	if (bodyShere->IsHit())
 	{
 		auto& hitInfo = hitModel.GetHitInfo();
-		std::vector<VECTOR> collPos;
+		//std::vector<VECTOR> collPos;
 		for (int i = 0; i < hitInfo.HitNum; i++)
 		{
 			auto hit = hitInfo.Dim[i];
 			//VECTOR hitPos = VAdd(VScale(hit.Position[0], hit.PositionWeight[0]), VAdd(VScale(hit.Position[1], hit.PositionWeight[1]), VScale(hit.Position[2], hit.PositionWeight[2])));
 			VECTOR hitPos = hit.HitPosition;
-			collPos.push_back(hitPos);
-			hitNum_ = hitInfo.HitNum;
+			//collPos.push_back(hitPos);
 			for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
 			{
 				int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS

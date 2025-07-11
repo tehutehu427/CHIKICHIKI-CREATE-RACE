@@ -63,12 +63,12 @@ void PlayerInput::InputKeyBoard(void)
 	using ATK_ACT = Player::ATK_ACT;
 	actCntl_ = ACT_CNTL::NONE;
 
-#ifdef _DEBUG
+#ifdef DEBUG_ON
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHANGE_INPUT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::PAD))
 	{
 		ChangeInput(KeyConfig::TYPE::PAD);
 	}
-#endif // _DEBUG
+#endif // DEBUG_ON
 	
 	//ˆÚ“®Šp“x‚ðŒˆ‚ß‚é
 	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_FRONT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
@@ -191,12 +191,12 @@ void PlayerInput::InputPad(void)
 	using ATK_ACT = Player::ATK_ACT;
 	actCntl_ = ACT_CNTL::NONE;
 
-#ifdef _DEBUG
+#ifdef DEBUG_ON
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHANGE_INPUT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::PAD))
 	{
 		ChangeInput(KeyConfig::TYPE::ALL);
 	}
-#endif // _DEBUG
+#endif // DEBUG_ON
 
 
 

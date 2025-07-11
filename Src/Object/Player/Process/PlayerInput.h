@@ -5,7 +5,7 @@
 #include"../Manager/System/SceneManager.h"
 #include"../Manager/System/InputManager.h"
 
-#define DEBUG_ON
+//#define DEBUG_ON
 class PlayerBase;
 class PlayerInput
 {
