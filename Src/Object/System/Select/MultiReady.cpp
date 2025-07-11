@@ -23,7 +23,8 @@ MultiReady::MultiReady() :
 	playerNum_ = 0;
 	multiInputChecks_ = nullptr;
 	players_.clear();
-
+	alphaDir_ = -11; //アルファ値の変化方向
+	mesAlpha_ = -1; //メッセージのアルファ値
 
 }
 
@@ -37,6 +38,7 @@ void MultiReady::Load()
 	imgMessages_ = res.Load(ResourceManager::SRC::SELECT_MESSAGES).handleIds_;
 	imgNumbers_ = res.Load(ResourceManager::SRC::NUMBERS).handleIds_;
 	imgSelectIcon_ = res.Load(ResourceManager::SRC::SCROLL_ARROW_ICON).handleId_;
+	imgPushButton_ = res.Load(ResourceManager::SRC::PUSH_B_BUTTON_MES).handleId_;
 
 	multiInputChecks_ = std::make_unique<MultiInputCheck>();
 	multiInputChecks_->Load();
@@ -47,6 +49,8 @@ void MultiReady::Init()
 {
 	//初期化
 	multiInputChecks_->Init();
+	alphaDir_ = 1; //アルファ値の変化方向
+	mesAlpha_ = Utility::ALPHA_MAX; //メッセージのアルファ値
 }
 
 void MultiReady::Update(SelectScene& _parent)
@@ -192,10 +196,6 @@ void MultiReady::UpdatePlayerAnimation()
 	}
 }
 
-void MultiReady::DrawRuleSet()
-{
-}
-
 void MultiReady::DrawNumCheck()
 {
 	//描画位置
@@ -258,12 +258,32 @@ void MultiReady::DrawFinalCheck()
 	//描画位置
 	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * MESSAGE_RATE / 2 + 170);
 	constexpr int POS_Y = 64;
+	constexpr float ALPHA_STEP = 1.5f; //アルファ値の変化量
+	constexpr float ALPHA_MIN = 50.0f; //アルファ値の最小量
+	constexpr int OFFSET_POS_Y = 150;
 	DrawMessage(POS_X, POS_Y, static_cast<int>(SelectScene::SELECT_MES::GAME_START));
 
 	for (int i = 0; i < players_.size(); i++)
 	{
 		players_[i]->Draw();
 	}
+
+	//アルファ値を変え
+	mesAlpha_ = Utility::PingPongUpdate(mesAlpha_, ALPHA_STEP, Utility::ALPHA_MAX, ALPHA_MIN, alphaDir_);
+
+	//ボタンを押してね画像の描画
+	if (state_ != STATE::FINAL_CHECK) { return; }
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, mesAlpha_);
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y + OFFSET_POS_Y,
+		1.0f,
+		0.0f,
+		imgPushButton_,
+		true,
+		false
+	);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void MultiReady::DrawMessage(const int _posX, const int _posY, const int _imgIndex_)

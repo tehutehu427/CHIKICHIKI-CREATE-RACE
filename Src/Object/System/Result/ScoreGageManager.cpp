@@ -6,6 +6,10 @@
 
 ScoreGageManager::ScoreGageManager()
 {
+	alphaDir_ = -1; 
+	imgTitle_ = -1;
+	mesAlpha_ = -1; 
+	imgPushButton_ = -1;
 }
 
 ScoreGageManager::~ScoreGageManager()
@@ -16,6 +20,7 @@ void ScoreGageManager::Load()
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgTitle_ = res.Load(ResourceManager::SRC::PROGRESS).handleId_;
+	imgPushButton_ = res.Load(ResourceManager::SRC::PUSH_B_BUTTON_MES).handleId_;
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = 0; i < playerNum; ++i)
@@ -32,6 +37,9 @@ void ScoreGageManager::Init()
 	{
 		scoreGage->Init();
 	}
+
+	mesAlpha_ = 0; //メッセージのアルファ値
+	alphaDir_ = 1; //アルファ値の変化方向
 
 }
 
@@ -79,6 +87,8 @@ void ScoreGageManager::DecorationDraw()
 	constexpr int LENGTH = 350;
 	constexpr float THICKNESS = 5.0f;
 	constexpr int TITLE_POS_Y = 50;
+	constexpr float ALPHA_STEP = 1.5f; //アルファ値の変化量
+	constexpr float ALPHA_MIN = 50.0f; //アルファ値の変化量
 
 	//縮小開始ライン
 	DrawLine(
@@ -109,4 +119,25 @@ void ScoreGageManager::DecorationDraw()
 		imgTitle_,
 		true
 	);
+
+	for (const auto& scoreGage : scoreGages_)
+	{
+		if (scoreGage->GetState() != ScoreGage::STATE::AFTER_WAIT) { return; }
+	}
+	
+	//アルファ値を変え
+	mesAlpha_ = Utility::PingPongUpdate(mesAlpha_, ALPHA_STEP, Utility::ALPHA_MAX, ALPHA_MIN, alphaDir_);
+
+	//ボタンを押してね画像の描画
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, mesAlpha_);
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y,
+		1.0f,
+		0.0f,
+		imgPushButton_,
+		true,
+		false
+	);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }

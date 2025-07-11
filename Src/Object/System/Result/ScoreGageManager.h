@@ -55,8 +55,17 @@ public:
 	void DecorationDraw();
 
 private:
-	
-	int imgTitle_; // タイトル画像
+	// タイトル画像
+	int imgTitle_;
+
+	// ボタンを押してね画像
+	int imgPushButton_; 
+
+	//メッセージのアルファ値
+	int mesAlpha_;
+
+	//アルファ値の変化方向
+	int alphaDir_;
 
 	// スコアゲージのリスト
 	std::vector<std::unique_ptr<ScoreGage>> scoreGages_; 

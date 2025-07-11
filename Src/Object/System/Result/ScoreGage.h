@@ -11,6 +11,7 @@ public:
 		NONE,		//非表示
 		WAIT,		//待機
 		ANIMATION,	//アニメーションを実行
+		AFTER_WAIT,	//アニメーション後の待機
 	};
 
 	//ゲージYサイズ	
@@ -109,10 +110,10 @@ private:
 	void ChangeStateNone();
 	void ChangeStateWait();
 	void ChangeStateAnimation();
+	void ChangeStateAfterWait();
 
 	//状態別更新処理
 	void UpdateStateNone();
-	void UpdateStateWait();
 	void UpdateStateAnimation();
 
 	//プレイヤーの番号ごとにパラメーターを割り当て
