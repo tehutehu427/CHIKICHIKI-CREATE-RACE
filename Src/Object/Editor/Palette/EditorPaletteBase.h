@@ -119,6 +119,9 @@ protected:
 	//画像
 	int imgPalette_;	//パレット	
 
+	//状態
+	STATE state_;
+
 private:
 	
 	//状態変更処理の管理
@@ -127,8 +130,7 @@ private:
 	//更新処理管理
 	std::function<void()> stateUpdate_;
 
-	//状態
-	STATE state_;
+
 
 	//状態変更
 	void ChangeStateNone();			//なし

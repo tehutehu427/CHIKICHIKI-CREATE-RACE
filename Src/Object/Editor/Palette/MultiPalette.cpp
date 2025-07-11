@@ -21,6 +21,7 @@ void MultiPalette::Load(void)
 	//リソースの読み込み
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgPalette_ = res.Load(ResourceManager::SRC::PALETTE).handleId_;
+	imgTitle_ = res.Load(ResourceManager::SRC::SELECT_ITEM).handleId_;
 
 	//パレットアイコン
 	palIcon_ = std::make_unique<MultiPaletteIcon>();
@@ -44,6 +45,28 @@ void MultiPalette::Init(void)
 
 	//パレットの初期状態
 	pal_->ChangeState(Palette::STATE::EXPANSION);
+}
+
+void MultiPalette::Draw(void)
+{
+	//元の描画
+	EditorPaletteBase::Draw();
+
+	//見出しの描画
+	if (state_ == STATE::SELECT)
+	{
+		constexpr int POS_Y = 50; //見出しのY座標
+		constexpr float RATE = 0.6f; //見出しの拡大率
+
+		DrawRotaGraph(
+			Application::SCREEN_HALF_X,
+			POS_Y,
+			RATE,
+			0.0f,
+			imgTitle_,
+			true
+		);
+	}
 }
 
 void MultiPalette::UpdateSelect()

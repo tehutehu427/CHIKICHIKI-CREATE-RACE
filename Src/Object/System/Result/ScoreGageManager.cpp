@@ -1,5 +1,7 @@
 #include "ScoreGageManager.h"
+#include "../../../Application.h"
 #include "../../../Manager/System/DateBank.h"
+#include "../../../Manager/System/ResourceManager.h"
 #include "../../../Utility/Utility.h"
 
 ScoreGageManager::ScoreGageManager()
@@ -12,6 +14,9 @@ ScoreGageManager::~ScoreGageManager()
 
 void ScoreGageManager::Load()
 {
+	ResourceManager& res = ResourceManager::GetInstance();
+	imgTitle_ = res.Load(ResourceManager::SRC::PROGRESS).handleId_;
+
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = 0; i < playerNum; ++i)
 	{
@@ -73,6 +78,7 @@ void ScoreGageManager::DecorationDraw()
 {	
 	constexpr int LENGTH = 350;
 	constexpr float THICKNESS = 5.0f;
+	constexpr int TITLE_POS_Y = 50;
 
 	//k¬ŠJŽnƒ‰ƒCƒ“
 	DrawLine(
@@ -92,5 +98,15 @@ void ScoreGageManager::DecorationDraw()
 		ScoreGage::GAGE_POS_P1_Y + LENGTH,
 		Utility::BLACK,
 		THICKNESS
+	);
+
+	//Œ©o‚µ‚Ì•`‰æ
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		TITLE_POS_Y,
+		1.0f,
+		0.0f,
+		imgTitle_,
+		true
 	);
 }

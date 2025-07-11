@@ -31,31 +31,7 @@ public:
 		WAIT,
 		CHECK_IMPORT,
 		CHECK_EXPORT,
-	};
-
-	/// <summary>
-	/// 確認
-	/// </summary>
-	enum class CHECK_LIST
-	{
-		YES,
-		NO,
-		MAX
-	};
-
-	/// <summary>
-	/// メッセージタイプ
-	/// </summary>
-	enum class MESSAGE_TYPE
-	{		
-		YES,
-		NO,
-		IMPORT,
-		EXPORT,
-		SAVE,
-		REPORT_EXPORT,
-		REPORT_IMPORT,
-		MAX,
+		FINISH,
 	};
 	
 	/// <summary>
@@ -110,10 +86,16 @@ private:
 	//カーソル座標
 	const Vector2& padCursorPos_;
 
+	//メッセージ画像インデックス
+	static constexpr int IMG_EXPORT_INDEX = 0;	//出力
+	static constexpr int IMG_IMPORT_INDEX = 1;	//入力
+
 	//画像関係 
 	int imgSave_;	//セーブ
 	int imgLoad_;	//読み込み
 	int imgBack_;	//背景
+	int* imgEditMessages_;		//エディットメッセージ
+	int* imgSystemMessages_;	//システムメッセージ
 	
 	//フォント
 	int font_;
@@ -121,6 +103,9 @@ private:
 
 	//メッセージタイプ
 	int messageType_;
+
+	//システムメッセージ画像用インデックス
+	int systemMessageIndex_;
 	
 	// 状態ごとの構造体（更新と描画を分けて保持）
 	struct StateFuncs
@@ -149,9 +134,6 @@ private:
 	//選択したファイル
 	std::string selectFile_;
 
-	//メッセージ種類
-	std::string messages_[static_cast<int>(MESSAGE_TYPE::MAX)];
-
 	//回答を返す
 	std::unique_ptr<YesNoResponder>responder_;
 
@@ -172,11 +154,13 @@ private:
 	void UpdateWait();
 	void UpdateCheckExport();
 	void UpdateCheckImport();
+	void UpdateFinish();
 
 	//状態別描画
 	void DrawWait();
 	void DrawCheckExport();
 	void DrawCheckImport();
+	void DrawFinish();
 
 	//ファイルを読み込んでboolで返す
 	bool ReadFileBool(std::string &_file);
@@ -193,11 +177,7 @@ private:
 	//入力を行うトリガーの条件を満たしたか
 	bool IsTriggerImport() const;
 
-	/// <summary>
-	/// JSONからアイテム種類ごとに座標を読み込む
-	/// </summary>
-	/// <param name="filepath">ファイルネーム</param>
-	/// <returns>読み込んだ種類別配置情報を返す</returns>
+	//JSONからアイテム種類ごとに座標を読み込む
 	std::unordered_map<ItemBase::ITEM_TYPE, ImportData> LoadItemsFromJson(const std::string& _filepath);
 
 	//ファイルネームを取得

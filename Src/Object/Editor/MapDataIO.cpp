@@ -16,19 +16,14 @@
 #include "../System/YesNoResponder.h"
 #include "../System/Select/SelectStage.h"
 
+// JSONライブラリのエイリアス
 using json = nlohmann::json;
 
 namespace
 {
-    constexpr int MARGIN = 200;             //間   
-    const Vector2 OFFSET_POS = { 150, 40 }; //座標調整用
-    const Vector2 YES_POS = {               
-            Application::SCREEN_HALF_X - OFFSET_POS.x,
-            Application::SCREEN_HALF_Y + OFFSET_POS.y,
-    };
-
-    //パス指定
-    const std::string path_json = Application::PATH_JSON;
+	constexpr int MARGIN = 200;    	 //間
+	constexpr int OFFSET_Y = 120; //座標調整用
+    const std::string path_json = Application::PATH_JSON;   //パス
 }
 
 MapDataIO::MapDataIO(const Vector2& _padCursorPos):
@@ -45,28 +40,20 @@ MapDataIO::MapDataIO(const Vector2& _padCursorPos):
     state_ = STATE::NONE;
     selectFile_ = "";
     responder_ = nullptr;
+	imgSystemMessages_ = nullptr;   
+	imgEditMessages_ = nullptr;   
 
     //状態ごとの処理を登録
     RegisterState(STATE::WAIT, [&]() { UpdateWait(); }, [&]() { DrawWait(); });
     RegisterState(STATE::CHECK_EXPORT, [&]() { UpdateCheckExport(); }, [&]() { DrawCheckExport(); });
     RegisterState(STATE::CHECK_IMPORT, [&]() { UpdateCheckImport(); }, [&]() { DrawCheckImport(); });
+    RegisterState(STATE::FINISH, [&]() { UpdateFinish(); }, [&]() { DrawFinish(); });
 
     //モード別に処理を登録
     RegisterGetFileName(SceneManager::SCENE_ID::FREE, [&]() { return GetFreeFileName(); });
     RegisterGetFileName(SceneManager::SCENE_ID::SOLO, [&]() {return GetSoloFileName(); });
     RegisterGetFileName(SceneManager::SCENE_ID::MULTI, [&]() {return GetMultiFileName(); });
-
-    //メッセージを設定
-    messages_[static_cast<int>(MESSAGE_TYPE::IMPORT)] = "今配置してるアイテムは消えますがよろしいですか？";
-    messages_[static_cast<int>(MESSAGE_TYPE::EXPORT)] = "データを保存しますか？";
-    messages_[static_cast<int>(MESSAGE_TYPE::YES)] = "はい";
-    messages_[static_cast<int>(MESSAGE_TYPE::NO)] = "いいえ";
-    messages_[static_cast<int>(MESSAGE_TYPE::REPORT_EXPORT)] = "ファイルに保存されました";
-    messages_[static_cast<int>(MESSAGE_TYPE::REPORT_IMPORT)] = "ファイルをインポートしました";
-
 }
-
-
 
 MapDataIO::~MapDataIO()
 {
@@ -85,6 +72,8 @@ void MapDataIO::Load()
     imgLoad_ = res.Load(ResourceManager::SRC::LOAD_ICON).handleId_;
     imgSave_ = res.Load(ResourceManager::SRC::SAVE_ICON).handleId_;
     imgBack_ = res.Load(ResourceManager::SRC::EXPLAN_BACK).handleId_;
+	imgEditMessages_ = res.Load(ResourceManager::SRC::EDIT_MESSAGES).handleIds_;
+	imgSystemMessages_ = res.Load(ResourceManager::SRC::SYSTEM_MESSAGES).handleIds_;
 
     //フォント生成
     font_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), FONT_SIZE, 0);
@@ -145,9 +134,6 @@ void MapDataIO::ExportJsonFile(const std::string _fileName)
 {
     //メッセージカウントを設定
     messageDisplayCnt_ = MES_DISPLAY_TIME;
-
-    //表示メッセージを設定
-    messageType_ = static_cast<int>(MESSAGE_TYPE::REPORT_EXPORT);
 
     nlohmann::json j;
     constexpr int INDENT = 4;
@@ -250,9 +236,6 @@ void MapDataIO::ImportJsonFile()
 
     //メッセージカウントを設定
     messageDisplayCnt_ = MES_DISPLAY_TIME;
-
-    //表示メッセージを設定
-    messageType_ = static_cast<int>(MESSAGE_TYPE::REPORT_IMPORT);
 
     //今あるオブジェクトを削除
     itemMng.AllDeleteItem();
@@ -514,8 +497,11 @@ void MapDataIO::UpdateCheckExport()
         //現在の配置データを出力する
         ExportJsonFile(selectFile_);
 
+        //画像用インデックス設定
+        systemMessageIndex_ = IMG_EXPORT_INDEX;
+
         //状態遷移
-        ChangeState(STATE::WAIT);
+        ChangeState(STATE::FINISH);
         return;
     }
     else
@@ -541,8 +527,11 @@ void MapDataIO::UpdateCheckImport()
         //外部データを読み込む    
         ImportJsonFile();
 
+        //画像用インデックス設定
+        systemMessageIndex_ = IMG_IMPORT_INDEX;
+
         //状態遷移
-        ChangeState(STATE::WAIT);
+        ChangeState(STATE::FINISH);
         return;
     }
     else
@@ -550,6 +539,17 @@ void MapDataIO::UpdateCheckImport()
         //状態遷移
         ChangeState(STATE::WAIT);
         return;
+    }
+}
+
+void MapDataIO::UpdateFinish()
+{
+	KeyConfig& ins = KeyConfig::GetInstance();
+
+    //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
+    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
+    {
+        ChangeState(STATE::WAIT);
     }
 }
 
@@ -574,15 +574,6 @@ void MapDataIO::DrawWait()
         true,
         false
     );
-    if (messageDisplayCnt_ <= 0.0f) { return; }
-    constexpr int MESSAGE_POS_X = 10;
-    constexpr int MESSAGE_POS_Y = Application::SCREEN_SIZE_Y - 145;
-    DrawFormatStringToHandle(
-        MESSAGE_POS_X,
-        MESSAGE_POS_Y,
-        Utility::CYAN,
-        font_,
-        messages_[messageType_].c_str());
 }
 
 void MapDataIO::DrawCheckExport()
@@ -590,20 +581,14 @@ void MapDataIO::DrawCheckExport()
     //確認画面の描画
     responder_->Draw();
 
-    //メッセージ描画位置調整
-    std::string mes = messages_[static_cast<int>(MESSAGE_TYPE::EXPORT)];
-    const Vector2 OFFSET_POS = { 
-        static_cast<int>(mes.length() * FONT_SIZE / 4),
-        -50
-    };
-
     //メッセージの描画
-    DrawFormatStringToHandle(
-        Application::SCREEN_HALF_X - OFFSET_POS.x,
-        Application::SCREEN_HALF_Y + OFFSET_POS.y,
-        Utility::BLUE,
-        font_,
-        mes.c_str());
+    DrawRotaGraph(
+        Application::SCREEN_HALF_X,
+        Application::SCREEN_HALF_Y - OFFSET_Y,
+        0.7f,
+        0.0f,
+        imgEditMessages_[IMG_EXPORT_INDEX],
+        true);
 }
 
 void MapDataIO::DrawCheckImport()
@@ -611,20 +596,26 @@ void MapDataIO::DrawCheckImport()
     //確認画面の描画
     responder_->Draw();
 
-    //メッセージ描画位置調整
-    std::string mes = messages_[static_cast<int>(MESSAGE_TYPE::IMPORT)];
-    const Vector2 OFFSET_POS = {
-        static_cast<int>(mes.length() * EXPORT_FONT_SIZE / 4),
-        -50
-    };
-
     //メッセージの描画
-    DrawFormatStringToHandle(
-        Application::SCREEN_HALF_X - OFFSET_POS.x,
-        Application::SCREEN_HALF_Y + OFFSET_POS.y,
-        Utility::BLUE,
-        exportFont_,
-        mes.c_str());
+    DrawRotaGraph(
+        Application::SCREEN_HALF_X,
+        Application::SCREEN_HALF_Y - OFFSET_Y,
+        0.7f,
+        0.0f,
+        imgEditMessages_[IMG_IMPORT_INDEX],
+        true);
+}
+
+void MapDataIO::DrawFinish()
+{
+    //メッセージの描画
+    DrawRotaGraph(
+        Application::SCREEN_HALF_X,
+        Application::SCREEN_HALF_Y,
+        2.0f,
+        0.0f,
+        imgSystemMessages_[systemMessageIndex_],
+        true);
 }
 
 bool MapDataIO::ReadFileBool(std::string &_file)

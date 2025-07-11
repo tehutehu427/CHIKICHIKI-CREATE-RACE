@@ -75,8 +75,5 @@ private:
 	//回答
 	RESPON respon_;
 
-	//メッセージ
-	std::vector<std::string> messages_;
-
 };
 

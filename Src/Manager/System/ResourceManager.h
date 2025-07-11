@@ -61,7 +61,7 @@ public:
 	static constexpr int YES_NO_DIV_X = 1;		//YesNo分割数X
 	static constexpr int YES_NO_DIV_Y = 2;		//YesNo分割数Y
 	static constexpr int YES_NO_SIZE_X = 192;	//YesNoサイズX
-	static constexpr int YES_NO_SIZE_Y = 128;	//YesNoサイズY
+	static constexpr int YES_NO_SIZE_Y = 64;	//YesNoサイズY
 
 	static constexpr int EDIT_MESSAGES_DIV_X = 1;	//エディットメッセージ分割数X
 	static constexpr int EDIT_MESSAGES_DIV_Y = 3;	//エディットメッセージ分割数Y

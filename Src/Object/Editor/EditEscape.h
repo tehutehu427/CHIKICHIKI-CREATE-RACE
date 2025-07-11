@@ -66,6 +66,9 @@ private:
 	//フォントサイズ
 	static constexpr int FONT_SIZE = 48;
 
+	//システムメッセージ画像インデックス
+	static constexpr int SYS_MES_INDEX = 2;
+
 	//パッドのカーソル位置
 	const Vector2& padCursorPos_;
 
@@ -74,6 +77,7 @@ private:
 
 	//アイコン画像
 	int imgIcon_;
+	int* imgSystemMessages_;
 	
 	//フォント
 	int font_;

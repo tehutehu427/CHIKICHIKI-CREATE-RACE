@@ -1,13 +1,16 @@
 #include "YesNoResponder.h"
 #include "../../Application.h"
 #include "../../Common/FontRegistry.h"
+#include "../../Common/IntVector3.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Utility/Utility.h"
 
 namespace
 {
-    constexpr int MARGIN = 200;             //間   
+    constexpr int MARGIN = 200;                                    //間   
+	constexpr int IMG_SIZE_X = ResourceManager::YES_NO_SIZE_X;     //画像のサイズX
+	constexpr int IMG_SIZE_Y = ResourceManager::YES_NO_SIZE_Y;     //画像のサイズY
     const Vector2 OFFSET_POS = { 150, 40 }; //座標調整用
     const Vector2 YES_POS = 
     {
@@ -23,11 +26,6 @@ YesNoResponder::YesNoResponder()
     font_ = 0;
     imgBack_ = 0;
     respon_ = RESPON::NONE;
-    messages_ =
-    {
-        "はい",
-        "いいえ"
-    };
 }
 
 YesNoResponder::~YesNoResponder()
@@ -93,10 +91,12 @@ void YesNoResponder::Update()
     //クリックでも選べる
     for (int i = 0; i < static_cast<int>(RESPON::MAX); i++)
     {
+
+        
         //座標設定
-        Vector2 leftTop = { YES_POS.x + MARGIN * i,YES_POS.y };
-        Vector2 rightBottom = { static_cast<int>(leftTop.x + messages_[i].length() * FONT_SIZE),
-            YES_POS.y + FONT_SIZE };
+		int rev = i == 0 ? -1 : 1; //YESは左側、NOは右側
+        Vector2 leftTop = { Application::SCREEN_HALF_X + OFFSET_POS.x * rev - IMG_SIZE_X / 2, Application::SCREEN_HALF_Y + OFFSET_POS.y - IMG_SIZE_Y / 2 };
+        Vector2 rightBottom = { Application::SCREEN_HALF_X + OFFSET_POS.x * rev + IMG_SIZE_X / 2, Application::SCREEN_HALF_Y + OFFSET_POS.y + IMG_SIZE_Y / 2 };
 
         //マウスが範囲内か調べる
         if (Utility::IsPointInRect(key.GetMousePos(), leftTop, rightBottom))
@@ -130,6 +130,7 @@ void YesNoResponder::Draw()
     constexpr int ALPHA = 128;    
     const Vector2 OFFSET_POS = { 150, 40 };
     constexpr int MARGIN = 200;
+	constexpr IntVector3 SELECT_COLOR = { 128, 0, 0 }; //選択時の色
     
     SetDrawBlendMode(DX_BLENDMODE_ALPHA, ALPHA);
     DrawExtendGraph(0, 0,
@@ -139,27 +140,27 @@ void YesNoResponder::Draw()
         true);
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-    //選択コマンドの描画
-    std::string commandMes[static_cast<int>(RESPON::MAX)] = 
-    {
-        messages_[static_cast<int>(RESPON::YES)],
-        messages_[static_cast<int>(RESPON::NO)]
-    };
-
     for (int i = 0; i < static_cast<int>(RESPON::MAX); i++)
     {
         //選択しているのを色を変える
         int fontColor = Utility::BLUE;  //初期カラー 
-        if (i == index_) { fontColor = Utility::RED; }
+        int rev = i == 0 ? -1 : 1;
+        if (i == index_) 
+        {
+            SetDrawAddColor(SELECT_COLOR.x, SELECT_COLOR.y, SELECT_COLOR.z);
+        }
 
         //コマンドメッセージを描画
-        DrawFormatStringToHandle(
-            Application::SCREEN_HALF_X - OFFSET_POS.x + i * MARGIN,
+        DrawRotaGraph(
+            Application::SCREEN_HALF_X + OFFSET_POS.x * rev,
             Application::SCREEN_HALF_Y + OFFSET_POS.y,
-            fontColor,
-            font_,
-            commandMes[i].c_str()
+            1.0f,
+            0.0f,
+			imgs_[i],
+            true
         );
+
+        SetDrawAddColor(0, 0, 0);
     }
 }
 

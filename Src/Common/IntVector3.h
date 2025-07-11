@@ -36,6 +36,6 @@ static constexpr IntVector3 INT_VECTOR_ZERO = { 0,0,0 };
 static constexpr IntVector3 INT_VECTOR_ONE = { 1,1,1 };
 
 //IntVector3‚ÌVECTOR•ÏŠ·
-VECTOR IntVectorToVECTOR(IntVector3 _iv); 
+//VECTOR IntVectorToVECTOR(IntVector3 _iv); 
 //VECTOR‚ÌIntVector3•ÏŠ·
-IntVector3 VECTORToIntVector(VECTOR _v);
+//IntVector3 VECTORToIntVector(VECTOR _v);

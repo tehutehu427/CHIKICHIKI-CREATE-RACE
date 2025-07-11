@@ -56,6 +56,8 @@ public:
 
 private:
 	
+	int imgTitle_; // タイトル画像
+
 	// スコアゲージのリスト
 	std::vector<std::unique_ptr<ScoreGage>> scoreGages_; 
 

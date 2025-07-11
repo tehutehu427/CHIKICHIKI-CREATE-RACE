@@ -23,6 +23,7 @@ EditEscape::EditEscape(const Vector2& _padCursorPos):
 	//初期化
 	pos_ = {};
 	imgIcon_ = -1;
+	imgSystemMessages_ = nullptr;
 	font_ = 0;
 
 	//処理の登録
@@ -39,6 +40,7 @@ void EditEscape::Load()
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgIcon_ = res.Load(ResourceManager::SRC::CANCEL_ICON).handleId_;
+	imgSystemMessages_ = res.Load(ResourceManager::SRC::EDIT_MESSAGES).handleIds_;
 
 	font_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), FONT_SIZE, 0);
 
@@ -141,18 +143,15 @@ void EditEscape::DrawCheck()
 	responder_->Draw();
 
 	//メッセージの描画
-	std::string mes = "本当に今のモードをやめますか？";
+	constexpr int OFFSET_Y = 120;
 
-	const Vector2 pos = {
-		static_cast<int>(Application::SCREEN_HALF_X - mes.length() * FONT_SIZE / 4),
-		Application::SCREEN_HALF_Y - 50,
-	};
-
-	DrawFormatStringToHandle(
-		pos.x,
-		pos.y,
-		Utility::BLUE,
-		font_,
-		mes.c_str()
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y - OFFSET_Y,
+		0.7f,
+		0.0f,
+		imgSystemMessages_[SYS_MES_INDEX],
+		true,
+		false
 	);
 }
