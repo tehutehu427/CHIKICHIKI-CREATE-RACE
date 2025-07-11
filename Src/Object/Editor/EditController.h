@@ -99,6 +99,9 @@ public:
 	void SetReady(void);	//マルチ時に準備完了の処理
 
 	void CursorUpdate(void);	//カーソル更新
+
+	int IsError(void);	//エラーかどうか
+
 protected:
 
 private:

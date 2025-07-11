@@ -4,6 +4,7 @@
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/Game/ScoreManager.h"
 #include "../../Manager/Game/PlayerManager.h"
+#include "../../Manager/Game/MapEditer.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Object/Editor/MapDataIO.h"
@@ -75,6 +76,8 @@ void MultiParty::Init(void)
 
 void MultiParty::Reset()
 {
+	MapEditer::GetInstance().DeleteAllItem();
+
 	//ƒ}ƒbƒv‚Ì‰Šú‰»
 	mapIO_->Reset();
 

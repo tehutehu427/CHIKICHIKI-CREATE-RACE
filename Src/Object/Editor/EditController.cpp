@@ -60,11 +60,14 @@ void EditController::Init(void)
 
 void EditController::Update(void)
 {
+
 	if (errorStringTime_ == 0.0f)
 	{
 		errorType_ = ERROR_TYPE::NONE;	//エラーの初期化
 	}
 	CursorUpdate();	//カーソル更新
+	ready_->Update();
+
 	DebugUpdate();
 
 	if (GetReady())
@@ -270,31 +273,25 @@ void EditController::CursorUpdate(void)
 	if (playerMaxNum_ == 1)
 	{
 		cursorPos_ = Vector2::AddVector2(cursorPos_, mouseMove);
-		cursorPos_.x = std::clamp(cursorPos_.x , 0,screenSize_.x);
+		cursorPos_.x = std::clamp(cursorPos_.x, 0, screenSize_.x);
 		cursorPos_.y = std::clamp(cursorPos_.y, 0, screenSize_.y);
 		KeyConfig::GetInstance().SetMousePos(cursorPos_);
 	}
-	else 
+	else
 	{
 		cursorPos_.x = std::clamp(cursorPos_.x, 0, screenSize_.x);
 		cursorPos_.y = std::clamp(cursorPos_.y, 0, screenSize_.y);
 
-		int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_),itemMIns.GetDummyItemHitSize(playerNum_),itemMIns.GetDummyItemRotY(playerNum_));
-		if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER || errorType == 0) 
-		{
-			ready_->Update();
-		}
-		else
-		{
-			ready_->ChangeReady(EditItemReady::READY_PHASE::NOT_READY);
-			if (errorType_ == ERROR_TYPE::NONE)
-			{
-				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));
-				SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
-			}
-		}
+
 	}
 	mousePos_ = cursorPos_;
+}
+
+int EditController::IsError(void)
+{
+	ItemManager& itemMIns = ItemManager::GetInstance();
+	int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+	return errorType;
 }
 
 void EditController::ChengeModeItemSelect(void)
