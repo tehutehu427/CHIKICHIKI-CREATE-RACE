@@ -113,7 +113,8 @@ CollisionManager::CollisionManager(void)
 	hitRange_[Collider::TAG::NORMAL_ITEM] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::MOVE_HORI_FLOOR] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::MOVE_VER_FLOOR] = HIT_RANGE_NORMAL;
-	hitRange_[Collider::TAG::KILLER_ITEM] = HIT_RANGE_NORMAL;
+	hitRange_[Collider::TAG::KILLER_ALL] = HIT_RANGE_NORMAL;
+	hitRange_[Collider::TAG::KILLER_SPECIFIC] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::DESTROYER] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::SLIME_FLOOR] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::SPRING] = HIT_RANGE_NORMAL;

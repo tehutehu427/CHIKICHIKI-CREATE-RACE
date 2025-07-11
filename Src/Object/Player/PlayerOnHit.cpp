@@ -18,7 +18,8 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_.emplace(TAG::START, [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); });
 	colUpdates_.emplace(TAG::GOAL, [this](const std::weak_ptr<Collider> _hitCol) {ColGoal(_hitCol); });
 	colUpdates_.emplace(TAG::NORMAL_ITEM, [this](const std::weak_ptr<Collider> _hitCol) {CollFloor(_hitCol); });
-	colUpdates_.emplace(TAG::KILLER_ITEM, [this](const std::weak_ptr<Collider> _hitCol) {CollKillerItem(_hitCol); });
+	colUpdates_.emplace(TAG::KILLER_SPECIFIC, [this](const std::weak_ptr<Collider> _hitCol) {CollKillerItemSpecific(_hitCol); });
+	colUpdates_.emplace(TAG::KILLER_ALL, [this](const std::weak_ptr<Collider> _hitCol) {CollKillerItemAll(); });
 	colUpdates_.emplace(TAG::MOVE_HORI_FLOOR, [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); });
 	colUpdates_.emplace(TAG::MOVE_VER_FLOOR, [this](const std::weak_ptr<Collider> _hitCol) {CollMoveFloor(_hitCol); });
 	colUpdates_.emplace(TAG::SLIME_FLOOR, [this](const std::weak_ptr<Collider> _hitCol) {CollSlimeFloor(_hitCol); });
@@ -65,8 +66,8 @@ void PlayerOnHit::Update(void)
 
 	//移動量ラインの更新
 	VECTOR moveVec = VSub(movedPos_, trans_.pos);
-	moveVec.y -= Player::RADIUS - 1.0f;
-	if (moveVec.x != 0.0f || moveVec.y != Player::RADIUS - 1.5f || moveVec.z != 0.0f)
+	moveVec.y -= MOVE_LINE_Y_OFFSET;
+	if (moveVec.x != 0.0f || moveVec.y != MOVE_LINE_Y_CHECK_VALUE || moveVec.z != 0.0f)
 	{
 		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
 		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
@@ -120,14 +121,24 @@ void PlayerOnHit::CollMoveFloor(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::CollSlimeFloor(const std::weak_ptr<Collider> _hitCol)
 {
-	isHitSlimeFloor_ = true;
 	HitModelCommon(_hitCol);
+	isHitSlimeFloor_ = true;
 }
 
-void PlayerOnHit::CollKillerItem(const std::weak_ptr<Collider> _hitCol)
+void PlayerOnHit::CollKillerItemSpecific(const std::weak_ptr<Collider> _hitCol)
 {
-	isDeath_ = true;
 	HitModelCommon(_hitCol);
+	//地面に立っていたら
+	if (isLandHit_)
+	{
+		isDeath_ = true;
+	}
+}
+
+void PlayerOnHit::CollKillerItemAll(void)
+{
+	//当たったら死ぬ
+	isDeath_ = true;
 }
 
 void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
@@ -183,7 +194,7 @@ void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 		isGoal_ = true;
 	}
 }
-
+#ifdef DEBUG_ON
 void PlayerOnHit::DrawDebug(void)
 {
 	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
@@ -204,6 +215,7 @@ void PlayerOnHit::DrawDebug(void)
 	VECTOR moveVec = VSub(movedPos_, trans_.pos);
 	DrawFormatString(0, 300, 0x000000, "Hit(%d)", hitNum_);
 }
+#endif // DEBUG_ON
 
 
 
@@ -216,6 +228,9 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	auto& upDownLine = colParam_[UP_AND_DOWN_LINE_COL_NO].collider_;
 	//球の当たり判定(プレイヤーの周囲)
 	auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
+
+	isLandHit_ = false;
+
 	if (moveLineCol->IsHit() > 0)
 	{
 		//Y座標のみ半径分上に移動させる
@@ -225,7 +240,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 
 		//現在座標の更新
 		trans_.pos = movedPos_;
-		isLandHit_ = true;
 		return;
 	}
 	//プレイヤーの接地
@@ -244,6 +258,11 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		else
 		{
 			movedPos_.y = hitLinePos.y - Player::RADIUS - POSITION_OFFSET;
+			if (action_.GetJumpDecel() > 0.0f)
+			{
+				//オブジェクトの下に当たったら跳ね返るようにする
+				action_.SetJumpDecel(-DOWN_BOUNCE_DECELERATION);
+			}
 		}
 		
 	}
@@ -256,14 +275,13 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	if (bodyShere->IsHit())
 	{
 		auto& hitInfo = hitModel.GetHitInfo();
-		std::vector<VECTOR> collPos;
+		//std::vector<VECTOR> collPos;
 		for (int i = 0; i < hitInfo.HitNum; i++)
 		{
 			auto hit = hitInfo.Dim[i];
 			//VECTOR hitPos = VAdd(VScale(hit.Position[0], hit.PositionWeight[0]), VAdd(VScale(hit.Position[1], hit.PositionWeight[1]), VScale(hit.Position[2], hit.PositionWeight[2])));
 			VECTOR hitPos = hit.HitPosition;
-			collPos.push_back(hitPos);
-			hitNum_ = hitInfo.HitNum;
+			//collPos.push_back(hitPos);
 			for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
 			{
 				int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS

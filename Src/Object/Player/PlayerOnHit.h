@@ -125,6 +125,12 @@ private:
 	//当たり判定のめりこみ防止用
 	static constexpr float POSITION_OFFSET = 0.1f;
 
+	//オブジェクトの下に当たった時の跳ね返り減速セット
+	static constexpr float DOWN_BOUNCE_DECELERATION = -10.0f;
+
+	static constexpr float MOVE_LINE_Y_OFFSET = Player::RADIUS - 1.0f;
+	static constexpr float MOVE_LINE_Y_CHECK_VALUE = Player::RADIUS - 1.5f;
+
 	//--------------------------------------
 	//メンバ変数
 	//----------------------------------
@@ -188,8 +194,11 @@ private:
 	//スライム床
 	void CollSlimeFloor(const std::weak_ptr<Collider> _hitCol);
 
-	//当たったら死ぬアイテム
-	void CollKillerItem(const std::weak_ptr<Collider> _hitCol);
+	//アイテムの特定の場所に当たったら死ぬ
+	void CollKillerItemSpecific(const std::weak_ptr<Collider> _hitCol);
+
+	//すべての場所に当たったら死ぬ
+	void CollKillerItemAll(void);
 
 	//風
 	void CollWind(const std::weak_ptr<Collider> _hitCol);
