@@ -13,6 +13,7 @@ CannonShot::CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR
 	trans_.pos = _pos;
 	trans_.quaRot = _quaRot;
 	trans_.scl = _scl;
+	state_ = STATE::ALIVE;
 	isAlive_ = false;
 	cnt_ = 0.0f;
 }
@@ -39,8 +40,15 @@ void CannonShot::SetParam(void)
 	movePow_ = VScale(trans_.quaRot.GetForward(), SPEED);
 
 	//状態ごとの更新、描画
-	update_ = &CannonShot::UpdateAlive;
-	draw_ = &CannonShot::DrawAlive;
+	state_ = STATE::ALIVE;
+
+	update_.emplace(STATE::ALIVE, std::bind(&CannonShot::UpdateAlive, this));
+	update_.emplace(STATE::BLAST, std::bind(&CannonShot::UpdateBlast, this));
+	update_.emplace(STATE::DEAD, std::bind(&CannonShot::UpdateDead, this));
+
+	draw_.emplace(STATE::ALIVE, std::bind(&CannonShot::DrawAlive, this));
+	draw_.emplace(STATE::BLAST, std::bind(&CannonShot::DrawBlast, this));
+	draw_.emplace(STATE::DEAD, std::bind(&CannonShot::DrawDead, this));
 
 	//生存判定
 	isAlive_ = true;
@@ -59,7 +67,7 @@ void CannonShot::Update(void)
 	cnt_ += SceneManager::GetInstance().GetDeltaTime();
 
 	//更新
-	(this->*update_)();
+	update_[state_]();
 
 	//モデル情報更新
 	trans_.Update();
@@ -68,13 +76,17 @@ void CannonShot::Update(void)
 void CannonShot::Draw(void)
 {
 	//更新
-	(this->*draw_)();
+	draw_[state_]();
 }
 
 void CannonShot::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	//爆発
-	Blast();
+	//生存判定
+	if (state_ == STATE::ALIVE)
+	{
+		//爆発
+		Blast();
+	}
 }
 
 void CannonShot::UpdateAlive(void)
@@ -128,9 +140,8 @@ void CannonShot::Move(void)
 
 void CannonShot::Blast(void)
 {
-	//状態ごとの更新、描画
-	update_ = &CannonShot::UpdateBlast;
-	draw_ = &CannonShot::DrawBlast;
+	//状態遷移
+	state_ = STATE::BLAST;
 
 	//爆発エフェクト
 	effect_->Play(EffectController::EFF_TYPE::BLAST, trans_.pos, Quaternion(), VGet(BLAST_SCALE, BLAST_SCALE, BLAST_SCALE));
@@ -145,9 +156,8 @@ void CannonShot::Blast(void)
 
 void CannonShot::Kill(void)
 {
-	//状態ごとの更新、描画
-	update_ = &CannonShot::UpdateDead;
-	draw_ = &CannonShot::DrawDead;
+	//状態遷移
+	state_ = STATE::DEAD;
 
 	//弾を削除
 	isAlive_ = false;
