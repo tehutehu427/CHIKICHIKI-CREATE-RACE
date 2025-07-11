@@ -47,7 +47,7 @@ void CannonShot::SetParam(void)
 
 	//コライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider({ Collider::TAG::KILLER_ITEM }, std::move(geo));
+	MakeCollider({ Collider::TAG::KILLER_ALL }, std::move(geo));
 }
 
 void CannonShot::Update(void)
@@ -113,7 +113,7 @@ void CannonShot::DrawAlive(void)
 
 void CannonShot::DrawBlast(void)
 {
-	colParam_[1].geometry_->Draw();
+	//colParam_[1].geometry_->Draw();
 }
 
 void CannonShot::DrawDead(void)
@@ -137,7 +137,7 @@ void CannonShot::Blast(void)
 
 	//コライダの作成
 	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.pos, BLAST_COL_SCALE);
-	MakeCollider({ Collider::TAG::KILLER_ITEM }, std::move(geo));
+	MakeCollider({ Collider::TAG::KILLER_ALL }, std::move(geo));
 
 	//カウンタの初期化
 	cnt_ = 0.0f;

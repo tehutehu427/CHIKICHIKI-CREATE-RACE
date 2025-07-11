@@ -188,8 +188,11 @@ private:
 	//スライム床
 	void CollSlimeFloor(const std::weak_ptr<Collider> _hitCol);
 
-	//当たったら死ぬアイテム
-	void CollKillerItem(const std::weak_ptr<Collider> _hitCol);
+	//アイテムの特定の場所に当たったら死ぬ
+	void CollKillerItemSpecific(const std::weak_ptr<Collider> _hitCol);
+
+	//すべての場所に当たったら死ぬ
+	void CollKillerItemAll(void);
 
 	//風
 	void CollWind(const std::weak_ptr<Collider> _hitCol);
