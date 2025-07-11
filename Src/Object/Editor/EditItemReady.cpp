@@ -1,6 +1,7 @@
 #include "../Utility/Utility.h"
 #include "../Manager/System/KeyConfig.h"
 #include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/SoundManager.h"
 #include "EditController.h"
 #include "EditItemReady.h"
 
@@ -72,12 +73,23 @@ void EditItemReady::UpdateNotReady(void)
 		{
 			return; //カーソルが当たり判定の外にある場合は何もしない
 		}
+		if (parent_.IsError() < 0)
+		{
+			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+			return;
+		}
 		ChangeReady(READY_PHASE::CHECK);
 	}
 }
 
 void EditItemReady::UpdateCheck(void)
 {
+	if (parent_.IsError() < 0)
+	{
+		SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+		ChangeReady(READY_PHASE::NOT_READY);
+		return;
+	}
 	KeyConfig& ins = KeyConfig::GetInstance();
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL, parent_.GetPadNum(), KeyConfig::TYPE::PAD))
 	{
