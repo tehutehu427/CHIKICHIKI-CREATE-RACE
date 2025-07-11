@@ -285,8 +285,12 @@ void EditController::CursorUpdate(void)
 		}
 		else
 		{
-			errorType_ = static_cast<ERROR_TYPE>(abs(errorType));
 			ready_->ChangeReady(EditItemReady::READY_PHASE::NOT_READY);
+			if (errorType_ == ERROR_TYPE::NONE)
+			{
+				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));
+				SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+			}
 		}
 	}
 	mousePos_ = cursorPos_;
@@ -748,6 +752,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 		{
 			moveDir = MOVE_DIR::X;
 			distance = Utility::Distance(mousePos_, x2D);
+			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CLICK_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 		}
 	}
 	//Y軸移動の球をクリックした場合
@@ -758,6 +763,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 		{
 			moveDir = MOVE_DIR::Y;
 			distance = Utility::Distance(mousePos_, y2D);
+			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CLICK_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 		}
 	}
 	//Z軸移動の球をクリックした場合
@@ -768,6 +774,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 		{
 			moveDir = MOVE_DIR::Z;
 			distance = Utility::Distance(mousePos_, z2D);
+			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CLICK_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 		}
 	}
 	return moveDir;
@@ -815,6 +822,7 @@ EditController::MOVE_DIR EditController::GetMoveDirTwo(void)
 	{
 		moveDir = MOVE_DIR::XY;	//X軸とY軸の移動
 	}
+	SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CLICK_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
 	return moveDir;
 }
 
