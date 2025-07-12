@@ -1,7 +1,27 @@
 #pragma once
+#include <unordered_map>
+#include <string>
+
 class SoundManager
 {
 public:
+
+	/// <summary>
+	/// リソース種類
+	/// </summary>
+	enum class SRC
+	{
+		TITLE_BGM,			//タイトル
+	};
+
+	/// <summary>
+	/// 音源種類
+	/// </summary>
+	enum class TYPE
+	{
+		BGM,				//BGM
+		SE,					//効果音
+	};
 
 	/// <summary>
 	/// 再生種類
@@ -40,6 +60,21 @@ public:
 	void Destroy();
 
 	/// <summary>
+	/// リソースの解放
+	/// </summary>
+	void Release();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Init();
+
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	const int LoadResource(const SRC _src);
+
+	/// <summary>
 	/// 音源の再生
 	/// </summary>
 	/// <param name="_sound">音源</param>
@@ -66,6 +101,19 @@ private:
 	//ボリューム
 	int volume_;
 
+	struct SoundResource
+	{
+		int handleId;		//音源ハンドルID
+		TYPE type;			//音源の種類
+		std::string path;	//音源のパス
+	};
+
+	//管理対象
+	std::unordered_map<SRC, SoundResource> resourcesMap_;
+
+	//読み込み済み
+	std::unordered_map<SRC, int&> loadedMap_;
+
 	// コンストラクタ
 	SoundManager();
 
@@ -74,6 +122,9 @@ private:
 
 	// コピー代入演算子は使用不可
 	SoundManager& operator=(const SoundManager&) = delete;
+
+	//内部読み込み処理
+	int _Load(const SRC _src);
 
 	//音量を調整
 	void ChangeVolume(const int _sound, const int _volumeParcent);

@@ -1,5 +1,6 @@
 #include "SoundManager.h"
 #include <DxLib.h>
+#include "../../Application.h"
 
 SoundManager* SoundManager::instance_ = nullptr;
 
@@ -37,6 +38,35 @@ void SoundManager::Destroy()
     }
 }
 
+void SoundManager::Release()
+{
+}
+
+void SoundManager::Init()
+{
+    SoundResource res = { -1, TYPE::BGM,"" };
+	std::string path_Bgm = Application::PATH_SOUND_BGM;
+	std::string path_Se = Application::PATH_SOUND_SE;
+
+#pragma region BGM
+    //タイトルBGM
+	res.path = path_Bgm + "TitleBgm.mp3";
+	resourcesMap_.emplace(SRC::TITLE_BGM, res);
+#pragma endregion
+
+#pragma region SE
+	res.type = TYPE::SE;
+
+
+#pragma endregion
+
+}
+
+const int SoundManager::LoadResource(const SRC _src)
+{
+    return  _Load(_src);
+}
+
 void SoundManager::Play(const int _sound, const PLAYTYPE _playType, const int _volumePercent)
 {
     //音量調整
@@ -52,10 +82,36 @@ void SoundManager::Stop(const int _sound)
     StopSoundMem(_sound);
 }
 
+int SoundManager::_Load(const SRC _src)
+{
+    // ロード済みチェック
+    const auto& lPair = loadedMap_.find(_src);
+    if (lPair != loadedMap_.end())
+    {
+        return lPair->second;
+    }
+
+    // リソース登録チェック
+    const auto& rPair = resourcesMap_.find(_src);
+    if (rPair == resourcesMap_.end())
+    {
+        // 登録されていない
+        return -1;
+    }
+
+    // ロード処理
+    rPair->second.handleId = LoadSoundMem(rPair->second.path.c_str());
+
+    // 念のためコピーコンストラクタ
+    loadedMap_.emplace(_src, rPair->second.handleId);
+
+    return rPair->second.handleId;
+}
+
 void SoundManager::ChangeVolume(const int _sound, const int _volumePercent)
 {
-	static constexpr int VOLUME_MAX = 255;  //最大音量
-	static constexpr int DIV = 100;         //音量の割合を計算するための定数
+	constexpr int VOLUME_MAX = 255;  //最大音量
+    constexpr int DIV = 100;         //音量の割合を計算するための定数
 
 	//音量パーセントが-1の場合は、デフォルトの音量を使用
     int volumePercent = _volumePercent <= -1 ? volume_ : _volumePercent;
