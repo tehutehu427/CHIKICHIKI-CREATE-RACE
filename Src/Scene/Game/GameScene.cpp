@@ -91,7 +91,8 @@ void GameScene::Load(void)
 	mapIO_ = std::make_unique<MapDataIO>(editControllers_[0]->GetCursorPos());
 	mapIO_->Load();
 
-	
+	//‰¹Œ¹‚Ì“Ç‚Ýž‚Ý
+	LoadSound();
 }
 
 void GameScene::Init(void)
@@ -372,6 +373,10 @@ void GameScene::DrawClear()
 
 	//ƒQ[ƒ€ƒNƒŠƒA‚Ì•`‰æ
 	gameClear_->Draw();
+}
+
+void GameScene::LoadSound(void)
+{
 }
 
 void GameScene::CheckPlayerFinish(void)

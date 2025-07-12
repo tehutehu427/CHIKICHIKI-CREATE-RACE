@@ -282,7 +282,7 @@ void SystemSetting::ApplyData()
 	//data.SetSkip(isSkip_);
 
 	//サウンドボリュームの設定
-	sound.SetVolume(soundVolume_);
+	sound.SetSystemVolume(soundVolume_, static_cast<int>(SoundManager::TYPE::BGM));
 }
 
 void SystemSetting::DrawCursor()

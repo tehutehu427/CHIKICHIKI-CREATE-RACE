@@ -11,7 +11,22 @@ public:
 	/// </summary>
 	enum class SRC
 	{
-		TITLE_BGM,			//タイトル
+		TITLE_BGM,
+		SELECT_BGM,
+		EDIT_BGM,
+		PLAY_BGM,
+		MULTI_GAME_BGM_1,
+		MULTI_GAME_BGM_2,
+		MULTI_GAME_BGM_3,
+		PLAYER_PUNCH_HIT,
+		PLAYER_PUNCH_MOTION,
+		PLAYER_DASH_START,
+		PLAYER_JUMP,
+		SPRING_SE,
+		SLIME_SE,
+		CLICK_OBJECT_SE,
+		CREATE_OBJECT_SE,
+		ERROR_SE,
 	};
 
 	/// <summary>
@@ -21,6 +36,7 @@ public:
 	{
 		BGM,				//BGM
 		SE,					//効果音
+		MAX
 	};
 
 	/// <summary>
@@ -36,6 +52,9 @@ public:
 	//デフォルトの音量
 	static constexpr int DEFAULT_VOLUME = 70;
 
+	//音源種類最大数
+	static constexpr int TYPE_MAX = static_cast<int>(TYPE::MAX);
+
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
@@ -45,14 +64,14 @@ public:
 	/// 明示的にインスタンス生成する
 	/// </summary>
 	/// <param name=""></param>
-	static void CreateInstance(void);
+	static void CreateInstance();
 
 	/// <summary>
 	/// 静的インスタンスの取得
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns></returns>インスタンス
-	static SoundManager& GetInstance(void);
+	static SoundManager& GetInstance();
 
 	/// <summary>
 	/// 解放
@@ -70,49 +89,57 @@ public:
 	void Init();
 
 	/// <summary>
-	/// 読み込み
+	/// リソースの読み込み
 	/// </summary>
-	const int LoadResource(const SRC _src);
+	/// <param name="_src">リソース種類</param>
+	/// <returns>trueの場合読み込み成功,falseの場合失敗</returns>
+	const bool LoadResource(const SRC _src);
 
 	/// <summary>
 	/// 音源の再生
 	/// </summary>
-	/// <param name="_sound">音源</param>
+	/// <param name="_src">リソース種類</param>
 	/// <param name="_playType">再生種類</param>
-	void Play(const int _sound, const PLAYTYPE _playType, const int _volumePercent = -1);
+	void Play(const SRC _src, const PLAYTYPE _playType);
 
 	/// <summary>
 	/// 音源の停止
 	/// </summary>
-	/// <param name="_sound">音源</param>
-	void Stop(const int _sound);
+	/// <param name="_src">リソース種類</param>
+	void Stop(const SRC _src);
+
+	/// <summary>
+	/// 読み込んだ音量を設定する
+	/// </summary>
+	/// <returns></returns>
+	const void SetLoadedSoundsVolume() { for (int i = 0; i < TYPE_MAX; i++) { SetSystemVolume(volume_[i], i); } };
 
 	/// <summary>
 	/// 音量の設定
 	/// </summary>
 	/// <param name="_volumePercent">音量パーセント</param>
-	void SetVolume(const int _volumePercent) { volume_ = _volumePercent; }
+	void SetSystemVolume(const int _volumePercent, const int _type);
 
 private:
 
-	//静的インスタンス
-	static SoundManager* instance_;
-
-	//ボリューム
-	int volume_;
-
 	struct SoundResource
 	{
-		int handleId;		//音源ハンドルID
-		TYPE type;			//音源の種類
-		std::string path;	//音源のパス
-	};
+		int handleId = -1;		//音源ハンドルID
+		TYPE type = TYPE::MAX;	//音源の種類
+		std::string path = "";	//音源のパス
+	};		
+	
+	//静的インスタンス
+	static SoundManager* instance_;
+	
+	//ボリューム
+	int volume_[TYPE_MAX];
 
 	//管理対象
 	std::unordered_map<SRC, SoundResource> resourcesMap_;
 
 	//読み込み済み
-	std::unordered_map<SRC, int&> loadedMap_;
+	std::unordered_map<SRC, SoundResource> loadedMap_;
 
 	// コンストラクタ
 	SoundManager();
@@ -124,13 +151,8 @@ private:
 	SoundManager& operator=(const SoundManager&) = delete;
 
 	//内部読み込み処理
-	int _Load(const SRC _src);
-
-	//音量を調整
-	void ChangeVolume(const int _sound, const int _volumeParcent);
+	bool _Load(const SRC _src);
 
 	//再生種類を取得
 	int GetPlayType(const PLAYTYPE _playType);
-
 };
-

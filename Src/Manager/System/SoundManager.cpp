@@ -1,5 +1,6 @@
 #include "SoundManager.h"
 #include <DxLib.h>
+#include <cassert>
 #include "../../Application.h"
 
 SoundManager* SoundManager::instance_ = nullptr;
@@ -7,7 +8,10 @@ SoundManager* SoundManager::instance_ = nullptr;
 SoundManager::SoundManager()
 {  
 	// 音量の初期化
-    volume_ = DEFAULT_VOLUME;
+	for (int i = 0; i < TYPE_MAX; ++i)
+	{
+		volume_[i] = DEFAULT_VOLUME;
+	}
 }
 
 SoundManager::~SoundManager()
@@ -21,7 +25,7 @@ void SoundManager::CreateInstance(void)
         instance_ = new SoundManager();
     }
     // 初期化処理を呼び出す
-    //instance_->Init();
+    instance_->Init();
 }
 
 SoundManager& SoundManager::GetInstance(void)
@@ -31,6 +35,8 @@ SoundManager& SoundManager::GetInstance(void)
 
 void SoundManager::Destroy()
 {
+    Release();
+	resourcesMap_.clear();
     if (instance_ != nullptr)
     {
         delete instance_;
@@ -40,6 +46,12 @@ void SoundManager::Destroy()
 
 void SoundManager::Release()
 {
+    for (auto& p : loadedMap_)
+    {
+        DeleteSoundMem(p.second.handleId);
+    }
+
+    loadedMap_.clear();
 }
 
 void SoundManager::Init()
@@ -49,75 +61,131 @@ void SoundManager::Init()
 	std::string path_Se = Application::PATH_SOUND_SE;
 
 #pragma region BGM
-    //タイトルBGM
-	res.path = path_Bgm + "TitleBgm.mp3";
-	resourcesMap_.emplace(SRC::TITLE_BGM, res);
+
+    res.path = path_Bgm  + "TitleBgm.wav";
+    resourcesMap_.emplace(SRC::TITLE_BGM, res);
+
+    res.path = path_Bgm + "SelectBgm.wav";
+    resourcesMap_.emplace(SRC::SELECT_BGM, res);
+
+    res.path = path_Bgm + "EditBgm.mp3";
+    resourcesMap_.emplace(SRC::EDIT_BGM, res);
+
+    res.path = path_Bgm + "PlayBgm.mp3";
+    resourcesMap_.emplace(SRC::PLAY_BGM, res);
+
+    res.path = path_Bgm  + "MultiGameBgm1.mp3";
+    resourcesMap_.emplace(SRC::MULTI_GAME_BGM_1, res);
+
+    res.path = path_Bgm  + "MultiGameBgm2.mp3";
+    resourcesMap_.emplace(SRC::MULTI_GAME_BGM_2, res);
+
+    res.path = path_Bgm  + "MultiGameBgm3.mp3";
+    resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, res);
+
+    res.path = path_Bgm  + "MultiGameBgm3.mp3";
+    resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, res);
 #pragma endregion
 
 #pragma region SE
 	res.type = TYPE::SE;
 
+    res.path = path_Se + "PunchHit.mp3";
+    resourcesMap_.emplace(SRC::PLAYER_PUNCH_HIT, res);
+
+    res.path = path_Se + "PunchMotion.mp3";
+    resourcesMap_.emplace(SRC::PLAYER_PUNCH_MOTION, res);
+
+    res.path = path_Se + "dash.mp3";
+    resourcesMap_.emplace(SRC::PLAYER_DASH_START, res);
+
+    res.path = path_Se + "jump.mp3";
+    resourcesMap_.emplace(SRC::PLAYER_JUMP, res);
+
+    res.path = path_Se + "Spring.mp3";
+    resourcesMap_.emplace(SRC::SPRING_SE, res);
+
+    res.path = path_Se + "SlimeFloor.mp3";
+    resourcesMap_.emplace(SRC::SLIME_SE, res);
+
+    res.path = path_Se + "ClickItem.ogg";
+    resourcesMap_.emplace(SRC::CLICK_OBJECT_SE, res);
+
+    res.path = path_Se + "CreateItem.ogg";
+    resourcesMap_.emplace(SRC::CREATE_OBJECT_SE, res);
+
+    res.path = path_Se + "Error.mp3";
+    resourcesMap_.emplace(SRC::ERROR_SE, res);
 
 #pragma endregion
 
 }
 
-const int SoundManager::LoadResource(const SRC _src)
+const bool SoundManager::LoadResource(const SRC _src)
 {
-    return  _Load(_src);
+    return _Load(_src);
 }
 
-void SoundManager::Play(const int _sound, const PLAYTYPE _playType, const int _volumePercent)
+void SoundManager::Play(const SRC _src, const PLAYTYPE _playType)
 {
+	//音源が読み込まれていない場合はエラー
+	assert(loadedMap_[_src].handleId != -1, "音源が読み込まれてないです");
+
+    //音源が再生済みか調べる
+	if (CheckSoundMem(loadedMap_[_src].handleId) == 1 &&
+        _playType != PLAYTYPE::BACK)
+	{
+		Stop(_src);  // 再生済みなら停止
+	}
+
+    //音源の再生
+    PlaySoundMem(loadedMap_[_src].handleId, GetPlayType(_playType));
+}
+
+void SoundManager::Stop(const SRC _src)
+{
+    //音源の停止
+    StopSoundMem(loadedMap_[_src].handleId);
+}
+
+void SoundManager::SetSystemVolume(const int _volumePercent, const int _type)
+{    
+    constexpr int VOLUME_MAX = 255;  //最大音量
+    constexpr int DIV = 100;         //音量の割合を計算するための定数
+
+    //音量設定
+    volume_[_type] = _volumePercent;
+   
     //音量調整
-    ChangeVolume(_sound, _volumePercent);
-
-	//音源の再生
-    PlaySoundMem(_sound, GetPlayType(_playType));
+	for (const auto& pair : loadedMap_)
+	{
+        ChangeVolumeSoundMem(VOLUME_MAX * volume_[_type] / DIV, pair.second.handleId);
+	}
 }
 
-void SoundManager::Stop(const int _sound)
-{
-	//音源の停止
-    StopSoundMem(_sound);
-}
-
-int SoundManager::_Load(const SRC _src)
+bool SoundManager::_Load(const SRC _src)
 {
     // ロード済みチェック
     const auto& lPair = loadedMap_.find(_src);
     if (lPair != loadedMap_.end())
     {
-        return lPair->second;
+		return false;   // 既にロード済み
     }
 
     // リソース登録チェック
     const auto& rPair = resourcesMap_.find(_src);
     if (rPair == resourcesMap_.end())
     {
-        // 登録されていない
-        return -1;
+        return false;   // 登録されていない
     }
 
     // ロード処理
     rPair->second.handleId = LoadSoundMem(rPair->second.path.c_str());
 
     // 念のためコピーコンストラクタ
-    loadedMap_.emplace(_src, rPair->second.handleId);
+    loadedMap_.emplace(_src, rPair->second);
 
-    return rPair->second.handleId;
-}
-
-void SoundManager::ChangeVolume(const int _sound, const int _volumePercent)
-{
-	constexpr int VOLUME_MAX = 255;  //最大音量
-    constexpr int DIV = 100;         //音量の割合を計算するための定数
-
-	//音量パーセントが-1の場合は、デフォルトの音量を使用
-    int volumePercent = _volumePercent <= -1 ? volume_ : _volumePercent;
-
-    //音量調整
-    ChangeVolumeSoundMem(VOLUME_MAX * volumePercent / DIV, _sound);
+    return true;
 }
 
 int SoundManager::GetPlayType(const PLAYTYPE _playType)

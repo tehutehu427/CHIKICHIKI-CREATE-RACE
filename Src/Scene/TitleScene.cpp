@@ -38,7 +38,7 @@ void TitleScene::Load(void)
 	//リソースの読み込み
 	imgTitleLogo_ = res.Load(ResourceManager::SRC::TITLE_LOGO).handleId_;
 	imgMessage_ = res.Load(ResourceManager::SRC::PUSHSPACE).handleId_;
-	bgm_ = res.Load(ResourceManager::SRC::TITLE_BGM).handleId_;
+	sndMng_.LoadResource(SoundManager::SRC::TITLE_BGM);
 
 	//フォントの登録
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
@@ -52,9 +52,8 @@ void TitleScene::Init(void)
 {
 	mesAlpha_ = Utility::ALPHA_MAX;
 	
-
 	//BGMを再生
-	sndMng_.Play(bgm_, SoundManager::PLAYTYPE::LOOP);
+	sndMng_.Play(SoundManager::SRC::TITLE_BGM, SoundManager::PLAYTYPE::LOOP);
 
 	//スカイドーム初期化
 	skyDome_->Init();
@@ -70,7 +69,7 @@ void TitleScene::NormalUpdate(void)
 	SoundManager& snd = SoundManager::GetInstance();
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
 	{
-		sndMng_.Stop(bgm_);
+		sndMng_.Stop(SoundManager::SRC::TITLE_BGM);
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
 		return;
 	}

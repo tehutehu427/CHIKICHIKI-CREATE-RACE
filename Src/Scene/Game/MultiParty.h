@@ -82,6 +82,9 @@ private:
 	//プレイヤーらの処理が終えたか調べる
 	void CheckPlayerFinish() override;
 
+	//サウンド読み込み
+	void LoadSound() override;
+
 	//デバッグ処理
 	void DebagUpdate() override;
 

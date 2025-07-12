@@ -7,6 +7,7 @@
 #include "../Utility/Utility.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/SoundManager.h"
 #include "../Manager/System/InputManager.h"
 #include "../Manager/System/DateBank.h"
 #include "../Manager/System/Camera.h"
@@ -86,6 +87,10 @@ void SelectScene::Load()
 
 	systemSetting_ = std::make_unique<SystemSetting>();
 	systemSetting_->Load();
+
+	//リソースの読み込み
+	sndMng_.LoadResource(SoundManager::SRC::SELECT_BGM);
+	sndMng_.SetLoadedSoundsVolume();
 }
 
 void SelectScene::Init(void)
@@ -99,6 +104,9 @@ void SelectScene::Init(void)
 	//初期化時点で人数を一人に設定しておく
 	DateBank::GetInstance().SetPlayerNum(1);
 	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FIXED_POINT);
+
+	//BGMを再生
+	sndMng_.Play(SoundManager::SRC::SELECT_BGM, SoundManager::PLAYTYPE::LOOP);
 }
 
 void SelectScene::ProcessMenuFunction(const SELECT_MENU _menu)

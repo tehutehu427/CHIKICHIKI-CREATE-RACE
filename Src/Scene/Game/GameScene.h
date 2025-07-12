@@ -134,6 +134,9 @@ protected:
 	virtual void DrawAction();
 	void DrawClear();
 
+	//サウンド読み込み
+	virtual void LoadSound(void);
+
 	//プレイヤーがゲームを終了か調べる
 	virtual void CheckPlayerFinish(void);
 

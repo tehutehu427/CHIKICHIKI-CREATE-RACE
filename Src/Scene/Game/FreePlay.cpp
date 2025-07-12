@@ -1,4 +1,5 @@
 #include "FreePlay.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Object/Editor/MapDataIO.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
@@ -60,6 +61,8 @@ void FreePlay::Init(void)
 	editEscape_->Init();
 
 	ChangePhase(PHASE::EDIT_PHASE);
+
+	sndMng_.Play(SoundManager::SRC::EDIT_BGM, SoundManager::PLAYTYPE::LOOP);
 }
 
 void FreePlay::UpdateAction(void)
@@ -114,6 +117,10 @@ void FreePlay::ChangePhaseAction(void)
 
 	//次のフェーズ遷移の設定
 	checkChangePhase_->SetNextPhase(PHASE::EDIT_PHASE);
+
+	//BGMの切り替え
+	sndMng_.Stop(SoundManager::SRC::EDIT_BGM);
+	sndMng_.Play(SoundManager::SRC::PLAY_BGM, SoundManager::PLAYTYPE::LOOP);
 }
 
 void FreePlay::ChangePhaseEdit(void)
@@ -123,6 +130,10 @@ void FreePlay::ChangePhaseEdit(void)
 
 	//次のフェーズ遷移の設定
 	checkChangePhase_->SetNextPhase(PHASE::ACTION_PHASE);
+
+	//BGMの切り替え
+	sndMng_.Stop(SoundManager::SRC::PLAY_BGM);
+	sndMng_.Play(SoundManager::SRC::EDIT_BGM, SoundManager::PLAYTYPE::LOOP);
 }
 
 void FreePlay::NormalUpdate()
@@ -164,4 +175,11 @@ void FreePlay::DrawEdit()
 	//編集終了
 	editEscape_->Draw();
 
+}
+
+void FreePlay::LoadSound()
+{
+	sndMng_.LoadResource(SoundManager::SRC::EDIT_BGM);
+	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM);
+	sndMng_.SetLoadedSoundsVolume();
 }

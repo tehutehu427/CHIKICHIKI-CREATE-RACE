@@ -86,20 +86,6 @@ void Resource::Load(void)
 		handleId_ = AddFontResourceEx(path_.c_str(), FR_PRIVATE, NULL);
 		break;
 
-	case Resource::TYPE::VERTEX_SHADER:
-		//頂点シェーダー
-		handleId_ = LoadVertexShader(path_.c_str());
-		break;
-
-	case Resource::TYPE::PIXEL_SHADER:
-		//ピクセルシェーダー
-		handleId_ = LoadPixelShader(path_.c_str());
-		break;
-
-	case Resource::TYPE::SOUND:
-		//音声
-		handleId_ = LoadSoundMem(path_.c_str());
-		break;
 	}
 
 	//リソースが読み込めたか確認
@@ -154,18 +140,6 @@ void Resource::Release(void)
 
 	case Resource::TYPE::FONT:
 		RemoveFontResourceEx(path_.c_str(), FR_PRIVATE, NULL);
-		break;
-
-	case Resource::TYPE::VERTEX_SHADER:
-		DeleteShader(handleId_);
-		break;
-
-	case Resource::TYPE::PIXEL_SHADER:
-		DeleteShader(handleId_);
-		break;
-
-	case Resource::TYPE::SOUND:
-		DeleteSoundMem(handleId_);
 		break;
 	}
 

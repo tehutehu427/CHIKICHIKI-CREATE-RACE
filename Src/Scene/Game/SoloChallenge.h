@@ -24,5 +24,8 @@ private:
 
 	//アクション時の更新処理
 	void UpdateAction(void) override;
+
+	//サウンド読み込み
+	void LoadSound(void) override;
 };
 

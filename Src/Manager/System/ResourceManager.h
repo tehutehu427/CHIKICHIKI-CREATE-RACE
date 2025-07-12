@@ -162,23 +162,6 @@ public:
 		SKY_DOME,			//スカイドーム
 		CHICKEN,			//チキンモデル
 
-		//サウンド
-		TEST_SE,			//テスト
-		TEST2_SE,			//テスト2
-		TITLE_BGM,		
-		MULTI_GAME_BGM_1,
-		MULTI_GAME_BGM_2,
-		MULTI_GAME_BGM_3,
-		PLAYER_PUNCH_HIT,
-		PLAYER_PUNCH_MOTION,
-		PLAYER_DASH_START,
-		PLAYER_JUMP,
-		SPRING_SE,
-		SLIME_SE,
-		CLICK_OBJECT_SE,
-		CREATE_OBJECT_SE,
-		ERROR_SE,
-
 		//エフェクト
 		WIND_EFF,			//風エフェクト
 		BLAST_EFF,			//爆発エフェクト

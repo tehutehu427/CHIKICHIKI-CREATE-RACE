@@ -75,7 +75,7 @@ void EditItemReady::UpdateNotReady(void)
 		}
 		if (parent_.IsError() < 0)
 		{
-			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+			SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
 			return;
 		}
 		ChangeReady(READY_PHASE::CHECK);
@@ -86,7 +86,7 @@ void EditItemReady::UpdateCheck(void)
 {
 	if (parent_.IsError() < 0)
 	{
-		SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+		SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
 		ChangeReady(READY_PHASE::NOT_READY);
 		return;
 	}

@@ -266,6 +266,11 @@ void MultiParty::CheckPlayerFinish()
 	}
 }
 
+void MultiParty::LoadSound()
+{
+
+}
+
 void MultiParty::DebagUpdate()
 {
 	//次のフェーズへ状態遷移する

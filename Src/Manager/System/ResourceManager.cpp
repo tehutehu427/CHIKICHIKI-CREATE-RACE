@@ -214,55 +214,6 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::CHICKEN, std::move(res));
 #pragma endregion 
 
-#pragma region サウンド
-	//BGM
-	//--------------------------------------------------------------------
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "TitleBgm.wav");
-	resourcesMap_.emplace(SRC::TITLE_BGM, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm1.mp3");
-	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_1, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm2.mp3");
-	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_2, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm3.mp3");
-	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm3.mp3");
-	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, std::move(res));
-
-	//SE
-	//--------------------------------------------------------------------
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "PunchHit.mp3");
-	resourcesMap_.emplace(SRC::PLAYER_PUNCH_HIT, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "PunchMotion.mp3");
-	resourcesMap_.emplace(SRC::PLAYER_PUNCH_MOTION, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "dash.mp3");
-	resourcesMap_.emplace(SRC::PLAYER_DASH_START, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "jump.mp3");
-	resourcesMap_.emplace(SRC::PLAYER_JUMP, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "Spring.mp3");
-	resourcesMap_.emplace(SRC::SPRING_SE, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "SlimeFloor.mp3");
-	resourcesMap_.emplace(SRC::SLIME_SE, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "ClickItem.ogg");
-	resourcesMap_.emplace(SRC::CLICK_OBJECT_SE, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "CreateItem.ogg");
-	resourcesMap_.emplace(SRC::CREATE_OBJECT_SE, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "Error.mp3");
-	resourcesMap_.emplace(SRC::ERROR_SE, std::move(res));
-
-	
-#pragma endregion 
 
 #pragma region エフェクト
 	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Wind.efkefc");

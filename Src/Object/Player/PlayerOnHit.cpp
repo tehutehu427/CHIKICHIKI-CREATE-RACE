@@ -154,7 +154,7 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 {
 	//リソースID
 	auto& res = ResourceManager::GetInstance();
-	int hitSE = res.Load(ResourceManager::SRC::PLAYER_PUNCH_HIT).handleId_;
+	//int hitSE = res.Load(ResourceManager::SRC::PLAYER_PUNCH_HIT).handleId_;
 	//パンチしたプレイヤーの向いてる方向をセットする
  	VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
 
@@ -162,7 +162,7 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 	action_.SetDir(Utility::GetMoveVec(punchedPlayerPos, trans_.pos));
 
 	//パンチヒット音再生()
-	SoundManager::GetInstance().Play(hitSE, SoundManager::PLAYTYPE::BACK);
+	SoundManager::GetInstance().Play(SoundManager::SRC::PLAYER_PUNCH_HIT, SoundManager::PLAYTYPE::BACK);
 
 	//ノックバック状態遷移
 	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
@@ -176,11 +176,11 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 	HitModelCommon(_hitCol);
 	//リソースID
 	auto& res = ResourceManager::GetInstance();
-	int hitSE = res.Load(ResourceManager::SRC::SPRING_SE).handleId_;
+	//int hitSE = res.Load(ResourceManager::SRC::SPRING_SE).handleId_;
 	if (!isSide_)
 	{
 		//バネジャンプ音再生()
-		SoundManager::GetInstance().Play(hitSE, SoundManager::PLAYTYPE::BACK);
+		SoundManager::GetInstance().Play(SoundManager::SRC::SPRING_SE, SoundManager::PLAYTYPE::BACK);
 		action_.SetJumpDecel(SPRING_JUMP_POW);
 		action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
 	}
