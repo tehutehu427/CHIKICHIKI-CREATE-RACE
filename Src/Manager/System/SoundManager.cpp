@@ -72,19 +72,16 @@ void SoundManager::Init()
     resourcesMap_.emplace(SRC::EDIT_BGM, res);
 
     res.path = path_Bgm + "PlayBgm.mp3";
-    resourcesMap_.emplace(SRC::PLAY_BGM, res);
+    resourcesMap_.emplace(SRC::PLAY_BGM_1, res);
 
-    res.path = path_Bgm  + "MultiGameBgm1.mp3";
-    resourcesMap_.emplace(SRC::MULTI_GAME_BGM_1, res);
+    res.path = path_Bgm + "PlayBgm2.mp3";
+    resourcesMap_.emplace(SRC::PLAY_BGM_2, res);
 
-    res.path = path_Bgm  + "MultiGameBgm2.mp3";
-    resourcesMap_.emplace(SRC::MULTI_GAME_BGM_2, res);
+    res.path = path_Bgm  + "MultiBgm.mp3";
+    resourcesMap_.emplace(SRC::MULTI_BGM_1, res);
 
-    res.path = path_Bgm  + "MultiGameBgm3.mp3";
-    resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, res);
-
-    res.path = path_Bgm  + "MultiGameBgm3.mp3";
-    resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, res);
+    res.path = path_Bgm  + "MultiBgm2.mp3";
+    resourcesMap_.emplace(SRC::MULTI_BGM_2, res);
 #pragma endregion
 
 #pragma region SE
@@ -116,6 +113,24 @@ void SoundManager::Init()
 
     res.path = path_Se + "Error.mp3";
     resourcesMap_.emplace(SRC::ERROR_SE, res);
+
+	res.path = path_Se + "ChickenVoice1.mp3";
+	resourcesMap_.emplace(SRC::CHICKEN_SE, res);
+
+	res.path = path_Se + "ChickenVoice2.mp3";
+	resourcesMap_.emplace(SRC::CHICKEN_SE_2, res);
+
+	res.path = path_Se + "ChickenVoice3.mp3";
+	resourcesMap_.emplace(SRC::CHICKEN_SE_3, res);
+
+	res.path = path_Se + "ChickenVoice4.mp3";
+	resourcesMap_.emplace(SRC::CHICKEN_SE_4, res);
+
+	res.path = path_Se + "TitleSceneChange.mp3";
+	resourcesMap_.emplace(SRC::TITLE_SCENE_CHANGE, res);
+
+	res.path = path_Se + "Decision.mp3";
+	resourcesMap_.emplace(SRC::DECISION, res);
 
 #pragma endregion
 

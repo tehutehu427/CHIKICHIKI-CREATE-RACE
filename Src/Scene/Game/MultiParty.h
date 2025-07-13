@@ -1,5 +1,6 @@
 #pragma once
 #include "GameScene.h"
+#include "../../Manager/System/SoundManager.h"
 
 class MultiResult;
 class RoundDisplay;
@@ -85,8 +86,17 @@ private:
 	//サウンド読み込み
 	void LoadSound() override;
 
+	//ランダムBGMを取得
+	void RandomBgm();
+
 	//デバッグ処理
 	void DebagUpdate() override;
+
+	//エディットBGM種類
+	SoundManager::SRC editBgmSrc_;
+
+	//プレイBGM種類
+	SoundManager::SRC playBgmSrc_;
 
 	//フェーズ遷移タイマー更新
 	float phaseChangeTimer_;

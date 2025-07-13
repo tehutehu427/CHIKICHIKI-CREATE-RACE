@@ -11,22 +11,39 @@ public:
 	/// </summary>
 	enum class SRC
 	{
-		TITLE_BGM,
-		SELECT_BGM,
-		EDIT_BGM,
-		PLAY_BGM,
-		MULTI_GAME_BGM_1,
-		MULTI_GAME_BGM_2,
-		MULTI_GAME_BGM_3,
-		PLAYER_PUNCH_HIT,
-		PLAYER_PUNCH_MOTION,
-		PLAYER_DASH_START,
-		PLAYER_JUMP,
-		SPRING_SE,
-		SLIME_SE,
-		CLICK_OBJECT_SE,
-		CREATE_OBJECT_SE,
-		ERROR_SE,
+		NONE,					//なし
+
+		//BGM
+		TITLE_BGM,				//タイトルBGM
+		SELECT_BGM,				//セレクトBGM		
+		EDIT_BGM,				//エディットBGM
+		PLAY_BGM_1,				//プレイBGM1
+		PLAY_BGM_2,				//プレイBGM2
+		MULTI_BGM_1,			//マルチBGM1
+		MULTI_BGM_2,			//マルチBGM2
+
+		//システム効果音
+		TITLE_SCENE_CHANGE,		//タイトルシーン遷移
+		DECISION,				//決定
+
+		//プレイヤー効果音
+		PLAYER_PUNCH_HIT,		//プレイヤーパンチヒット
+		PLAYER_PUNCH_MOTION,	//プレイヤーパンチモーション
+		PLAYER_DASH_START,		//プレイヤーダッシュスタート
+		PLAYER_JUMP,			//プレイヤージャンプ
+
+		//エディット効果音
+		SPRING_SE,				//スプリングSE
+		SLIME_SE,				//スライムSE
+		CLICK_OBJECT_SE,		//クリックオブジェクトSE
+		CREATE_OBJECT_SE,		//オブジェクト生成SE
+		ERROR_SE,				//エラーSE
+	
+		//チキン鳴き声
+		CHICKEN_SE,				//チキンSE
+		CHICKEN_SE_2,			//チキンSE2
+		CHICKEN_SE_3,			//チキンSE3
+		CHICKEN_SE_4,			//チキンSE4
 	};
 
 	/// <summary>
@@ -155,4 +172,5 @@ private:
 
 	//再生種類を取得
 	int GetPlayType(const PLAYTYPE _playType);
+
 };

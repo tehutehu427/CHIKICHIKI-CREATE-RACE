@@ -39,6 +39,8 @@ void TitleScene::Load(void)
 	imgTitleLogo_ = res.Load(ResourceManager::SRC::TITLE_LOGO).handleId_;
 	imgMessage_ = res.Load(ResourceManager::SRC::PUSHSPACE).handleId_;
 	sndMng_.LoadResource(SoundManager::SRC::TITLE_BGM);
+	sndMng_.LoadResource(SoundManager::SRC::TITLE_SCENE_CHANGE);
+	sndMng_.LoadResource(SoundManager::SRC::CHICKEN_SE);
 
 	//ƒtƒHƒ“ƒg‚Ì“o˜^
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
@@ -70,6 +72,8 @@ void TitleScene::NormalUpdate(void)
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		sndMng_.Stop(SoundManager::SRC::TITLE_BGM);
+		sndMng_.Play(SoundManager::SRC::TITLE_SCENE_CHANGE, SoundManager::PLAYTYPE::BACK);
+		sndMng_.Play(SoundManager::SRC::CHICKEN_SE, SoundManager::PLAYTYPE::NORMAL);
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
 		return;
 	}

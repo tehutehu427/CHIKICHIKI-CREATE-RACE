@@ -16,6 +16,8 @@ MultiParty::MultiParty(void)
 {
 	result_ = nullptr;
 	round_ = nullptr;
+	editBgmSrc_ = SoundManager::SRC::NONE;
+	playBgmSrc_ = SoundManager::SRC::NONE;
 	phaseChangeTimer_ = 0.0f;
 	phaseChanges_.emplace(PHASE::ROUND_PHASE, std::bind(&MultiParty::ChangePhaseRound, this));
 	phaseChanges_.emplace(PHASE::SELECT_PHASE, std::bind(&MultiParty::ChangePhaseSelect, this));
@@ -47,6 +49,12 @@ void MultiParty::Load(void)
 
 	//スコアマネージャーを生成
 	ScoreManager::GetInstance().CreateInstance();
+
+	//ランダムBGMを取得
+	RandomBgm();
+
+	//BGMボリュームを設定
+	sndMng_.SetLoadedSoundsVolume();
 }
 
 void MultiParty::Init(void)
@@ -104,6 +112,12 @@ void MultiParty::RoundReset()
 
 	//フェーズを遷移
 	ChangePhase(PHASE::ROUND_PHASE);
+
+	//BGMを停止
+	sndMng_.Stop(playBgmSrc_);
+
+	//BGMをランダム設定
+	RandomBgm();
 }
 
 void MultiParty::NormalDraw(void)
@@ -175,6 +189,12 @@ void MultiParty::ChangePhaseAction()
 
 	//画面を分割する
 	scnMng_.SetIsSplitMode(true);
+
+	//BGMを停止
+	sndMng_.Stop(editBgmSrc_);
+
+	//BGMを再生
+	sndMng_.Play(playBgmSrc_, SoundManager::PLAYTYPE::LOOP);
 }
 
 void MultiParty::ChangePhaseRound()
@@ -194,6 +214,8 @@ void MultiParty::ChangePhaseSelect()
 	phaseDraw_ = std::bind(&MultiParty::DrawSelect, this);
 	//画面分割はしない
 	scnMng_.SetIsSplitMode(false);
+	//BGMを再生
+	sndMng_.Play(editBgmSrc_, SoundManager::PLAYTYPE::LOOP);
 }
 
 void MultiParty::ChangePhaseResult()
@@ -268,7 +290,44 @@ void MultiParty::CheckPlayerFinish()
 
 void MultiParty::LoadSound()
 {
+	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_1);
+	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_2);
+	sndMng_.LoadResource(SoundManager::SRC::MULTI_BGM_1);
+	sndMng_.LoadResource(SoundManager::SRC::MULTI_BGM_2);
+}
 
+void MultiParty::RandomBgm()
+{
+	constexpr int EDIT_BGM_NUM = 2;	//エディットBGMの数
+	constexpr int PLAY_BGM_NUM = 2;	//プレイBGMの数
+
+	int index = GetRand(EDIT_BGM_NUM);
+	switch (index)
+	{
+	case 0:
+		editBgmSrc_ = SoundManager::SRC::MULTI_BGM_1;
+		break;
+	case 1:
+		editBgmSrc_ = SoundManager::SRC::MULTI_BGM_2;
+		break;
+	default:
+		editBgmSrc_ = SoundManager::SRC::MULTI_BGM_1;
+		break;
+	}
+
+	index = GetRand(PLAY_BGM_NUM);
+	switch (index)
+	{
+	case 0:
+		playBgmSrc_ = SoundManager::SRC::PLAY_BGM_1;
+		break;
+	case 1:
+		playBgmSrc_ = SoundManager::SRC::PLAY_BGM_2;
+		break;
+	default:
+		playBgmSrc_ = SoundManager::SRC::PLAY_BGM_1;
+		break;
+	}
 }
 
 void MultiParty::DebagUpdate()

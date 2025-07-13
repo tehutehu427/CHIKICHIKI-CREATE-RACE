@@ -38,6 +38,9 @@ void FreePlay::Load(void)
 	//編集終了
 	editEscape_ = std::make_unique<EditEscape>(editControllers_[0]->GetCursorPos());
 	editEscape_->Load();
+
+	//BGMボリュームを設定
+	sndMng_.SetLoadedSoundsVolume();
 }
 
 void FreePlay::Init(void)
@@ -120,7 +123,7 @@ void FreePlay::ChangePhaseAction(void)
 
 	//BGMの切り替え
 	sndMng_.Stop(SoundManager::SRC::EDIT_BGM);
-	sndMng_.Play(SoundManager::SRC::PLAY_BGM, SoundManager::PLAYTYPE::LOOP);
+	sndMng_.Play(SoundManager::SRC::PLAY_BGM_1, SoundManager::PLAYTYPE::LOOP);
 }
 
 void FreePlay::ChangePhaseEdit(void)
@@ -132,7 +135,7 @@ void FreePlay::ChangePhaseEdit(void)
 	checkChangePhase_->SetNextPhase(PHASE::ACTION_PHASE);
 
 	//BGMの切り替え
-	sndMng_.Stop(SoundManager::SRC::PLAY_BGM);
+	sndMng_.Stop(SoundManager::SRC::PLAY_BGM_1);
 	sndMng_.Play(SoundManager::SRC::EDIT_BGM, SoundManager::PLAYTYPE::LOOP);
 }
 
@@ -180,6 +183,6 @@ void FreePlay::DrawEdit()
 void FreePlay::LoadSound()
 {
 	sndMng_.LoadResource(SoundManager::SRC::EDIT_BGM);
-	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM);
+	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_1);
 	sndMng_.SetLoadedSoundsVolume();
 }
