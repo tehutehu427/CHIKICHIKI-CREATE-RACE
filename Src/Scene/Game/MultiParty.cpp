@@ -206,6 +206,8 @@ void MultiParty::ChangePhaseRound()
 	scnMng_.SetIsSplitMode(false);
 	//ƒ‰ƒEƒ“ƒh‚ğ’Ç‰Á
 	round_->AddNumberIndex(1);
+	//BGM‚ğÄ¶
+	sndMng_.Play(SoundManager::SRC::ROUND_JINGLE, SoundManager::PLAYTYPE::BACK);
 }
 
 void MultiParty::ChangePhaseSelect()
@@ -215,6 +217,7 @@ void MultiParty::ChangePhaseSelect()
 	//‰æ–Ê•ªŠ„‚Í‚µ‚È‚¢
 	scnMng_.SetIsSplitMode(false);
 	//BGM‚ğÄ¶
+	sndMng_.Stop(SoundManager::SRC::ROUND_JINGLE);
 	sndMng_.Play(editBgmSrc_, SoundManager::PLAYTYPE::LOOP);
 }
 
@@ -294,6 +297,7 @@ void MultiParty::LoadSound()
 	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_2);
 	sndMng_.LoadResource(SoundManager::SRC::MULTI_BGM_1);
 	sndMng_.LoadResource(SoundManager::SRC::MULTI_BGM_2);
+	sndMng_.LoadResource(SoundManager::SRC::ROUND_JINGLE);
 }
 
 void MultiParty::RandomBgm()

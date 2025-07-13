@@ -2,6 +2,7 @@
 #include "../../../Manager/System/SceneManager.h"
 #include "../../../Manager/System/Camera.h"
 #include "../../../Manager/System/ResourceManager.h"
+#include "../../../Manager/System/SoundManager.h"
 #include "../../../Manager/System/InputManager.h"
 #include "../../../Manager/Game/ItemManager.h"
 #include "../../../Manager/Game/MapEditer.h"
@@ -44,6 +45,12 @@ void EditorPaletteBase::Load()
 	//パレット
 	pal_ = std::make_unique<Palette>();
 	pal_->Load();
+
+	SoundManager& sndMng = SoundManager::GetInstance();
+	sndMng.LoadResource(SoundManager::SRC::PALETTE_OPEN);
+	sndMng.LoadResource(SoundManager::SRC::PALETTE_CLOSE);
+	sndMng.LoadResource(SoundManager::SRC::PALETTE_CLICK);
+	sndMng.LoadResource(SoundManager::SRC::DECISION);
 }
 
 void EditorPaletteBase::Init()
@@ -135,6 +142,8 @@ void EditorPaletteBase::UpdateWait()
 		
 		//パレットの状態遷移
 		pal_->ChangeState(Palette::STATE::ADMISSION_EDGE);
+
+		SoundManager::GetInstance().Play(SoundManager::SRC::PALETTE_OPEN, SoundManager::PLAYTYPE::BACK);
 	}
 }
 
@@ -154,6 +163,8 @@ void EditorPaletteBase::UpdateSelect()
 
 		//アイコンの状態変更
 		palIcon_->ChangeState(PaletteIcon::STATE::NONE);
+		
+		SoundManager::GetInstance().Play(SoundManager::SRC::PALETTE_CLOSE, SoundManager::PLAYTYPE::BACK);
 
 		//処理終了
 		return;
@@ -175,7 +186,10 @@ void EditorPaletteBase::UpdateSelect()
 		pal_->ChangeState(Palette::STATE::EXIT_EDGE);
 
 		//アイコンの状態変更
-		palIcon_->ChangeState(PaletteIcon::STATE::NONE);
+		palIcon_->ChangeState(PaletteIcon::STATE::NONE); 
+		
+		SoundManager::GetInstance().Play(SoundManager::SRC::PALETTE_CLICK, SoundManager::PLAYTYPE::BACK);
+
 	}
 }
 

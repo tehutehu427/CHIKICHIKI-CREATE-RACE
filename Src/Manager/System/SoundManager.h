@@ -24,21 +24,33 @@ public:
 
 		//システム効果音
 		TITLE_SCENE_CHANGE,		//タイトルシーン遷移
+		SELECT_SCENE_CHANGE,	//セレクトシーン遷移
 		DECISION,				//決定
+		CANCEL,					//キャンセル
+		OK,						//OK
+
+		//マルチモード効果音
+		ROUND_JINGLE,			//ラウンドジングル
 
 		//プレイヤー効果音
 		PLAYER_PUNCH_HIT,		//プレイヤーパンチヒット
 		PLAYER_PUNCH_MOTION,	//プレイヤーパンチモーション
 		PLAYER_DASH_START,		//プレイヤーダッシュスタート
 		PLAYER_JUMP,			//プレイヤージャンプ
-
-		//エディット効果音
+		DELON,					//デロンSE
 		SPRING_SE,				//スプリングSE
 		SLIME_SE,				//スライムSE
+
+		//エディット効果音
 		CLICK_OBJECT_SE,		//クリックオブジェクトSE
 		CREATE_OBJECT_SE,		//オブジェクト生成SE
 		ERROR_SE,				//エラーSE
-	
+		PALETTE_CLICK,			//パレットクリックSE
+		PALETTE_OPEN,			//パレット開く
+		PALETTE_CLOSE,			//パレット閉じる
+		EDIT_SYSTEM_ICON_CLICK,	//エディットシステムアイコンクリック
+		CHANGE_PHASE_ICON_CLICK,	//フェーズアイコンクリック
+
 		//チキン鳴き声
 		CHICKEN_SE,				//チキンSE
 		CHICKEN_SE_2,			//チキンSE2

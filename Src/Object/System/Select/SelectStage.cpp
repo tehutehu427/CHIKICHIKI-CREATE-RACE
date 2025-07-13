@@ -3,6 +3,7 @@
 #include "../../../Manager/System/DateBank.h"
 #include "../../../Manager/System/SceneManager.h"
 #include "../../../Manager/System/ResourceManager.h"
+#include "../../../Manager/System/SoundManager.h"
 #include "../../../Utility/Utility.h"
 #include "../../../Scene/SelectScene.h"
 
@@ -11,8 +12,8 @@ SelectStage::SelectStage()
 	stageIndex_ = 0;
 	selectIcon_ = -1;
 	imgArrow_ = -1;
-	int i = -1;
-	imgMessages_ = &i;
+	imgLevels_ = nullptr;
+	imgMessages_ = nullptr;
 }
 
 SelectStage::~SelectStage()
@@ -34,10 +35,12 @@ void SelectStage::Init()
 void SelectStage::Update(SelectScene& _parent)
 {
 	KeyConfig& key = KeyConfig::GetInstance();
+	SoundManager& sndMng = SoundManager::GetInstance();
 
 	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//モードセレクトへ戻る
+		sndMng.Play(SoundManager::SRC::CANCEL, SoundManager::PLAYTYPE::BACK);
 		_parent.ChangeState(SelectScene::STATE::SELECT_MENU);
 		return;
 	}
@@ -51,18 +54,23 @@ void SelectStage::Update(SelectScene& _parent)
 
 		//ソロチャレンジにシーン遷移
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SOLO);
+		
+		sndMng.Play(SoundManager::SRC::SELECT_SCENE_CHANGE, SoundManager::PLAYTYPE::BACK);
+		sndMng.Stop(SoundManager::SRC::SELECT_BGM);
 		return;
 	}
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//左キーで選択をひとつ戻す（範囲内でループ）
 		stageIndex_ = (stageIndex_ - 1 + STAGE_TYPE_MAX) % STAGE_TYPE_MAX;
+		sndMng.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		return;
 	}
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//右キーで選択をひとつ進める（範囲内でループ）
 		stageIndex_ = (stageIndex_ + 1) % STAGE_TYPE_MAX;
+		sndMng.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		return;
 	}
 }

@@ -2,6 +2,7 @@
 #include <string>
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Common/FontRegistry.h"
 #include "../../Utility/Utility.h"
@@ -46,6 +47,8 @@ void EditEscape::Load()
 
 	responder_ = std::make_unique<YesNoResponder>();
 	responder_->Load();
+
+	SoundManager::GetInstance().LoadResource(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK);
 }
 
 void EditEscape::Init()
@@ -90,6 +93,8 @@ void EditEscape::UpdateWait()
 		(Utility::IsPointInRect(key_.GetMousePos(), leftTop, rightBottom) || 
 			Utility::IsPointInRect(padCursorPos_, leftTop, rightBottom))))
 	{
+		SoundManager::GetInstance().Play(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK, SoundManager::PLAYTYPE::BACK);
+
 		//ƒŠƒZƒbƒg
 		responder_->Reset();
 

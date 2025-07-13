@@ -35,23 +35,29 @@ SelectScene::SelectScene()
 	menuFuncTable_ = {
 		{SELECT_MENU::SOLO,[this]()
 		{
+			sndMng_.Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
 			ChangeState(STATE::SELECT_STAGE);
 		}},
 		{SELECT_MENU::MULTI,[this]()
 		{
+			sndMng_.Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
 			ChangeState(STATE::CHECK_PLAYER);
 		}},
 		{SELECT_MENU::FREE,[this]()
 		{
+			sndMng_.Play(SoundManager::SRC::SELECT_SCENE_CHANGE, SoundManager::PLAYTYPE::BACK);
+			sndMng_.Stop(SoundManager::SRC::SELECT_BGM);
 			DateBank::GetInstance().SetPlayerNum(1);
 			scnMng_.ChangeScene(SceneManager::SCENE_ID::FREE);
 		}},
 		{SELECT_MENU::SETTING,[this]()
 		{
+			sndMng_.Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
 			ChangeState(STATE::SETTING);
 		}},
 		{SELECT_MENU::EXIT,[this]()
 		{
+			sndMng_.Play(SoundManager::SRC::CANCEL, SoundManager::PLAYTYPE::BACK);
 			scnMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 		}}
 	};
@@ -90,6 +96,12 @@ void SelectScene::Load()
 
 	//ÉäÉ\Å[ÉXÇÃì«Ç›çûÇ›
 	sndMng_.LoadResource(SoundManager::SRC::SELECT_BGM);
+	sndMng_.LoadResource(SoundManager::SRC::DECISION);
+	sndMng_.LoadResource(SoundManager::SRC::CLICK_OBJECT_SE);
+	sndMng_.LoadResource(SoundManager::SRC::CANCEL);
+	sndMng_.LoadResource(SoundManager::SRC::OK);
+	sndMng_.LoadResource(SoundManager::SRC::CHICKEN_SE_3);
+	sndMng_.LoadResource(SoundManager::SRC::SELECT_SCENE_CHANGE);
 	sndMng_.SetLoadedSoundsVolume();
 }
 

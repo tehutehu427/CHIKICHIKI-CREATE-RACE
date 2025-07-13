@@ -129,9 +129,38 @@ void SoundManager::Init()
 	res.path = path_Se + "TitleSceneChange.mp3";
 	resourcesMap_.emplace(SRC::TITLE_SCENE_CHANGE, res);
 
+    res.path = path_Se + "SelectSceneChange.mp3";
+    resourcesMap_.emplace(SRC::SELECT_SCENE_CHANGE, res);
+
 	res.path = path_Se + "Decision.mp3";
 	resourcesMap_.emplace(SRC::DECISION, res);
 
+    res.path = path_Se + "Cancel.mp3";
+    resourcesMap_.emplace(SRC::CANCEL, res);
+
+	res.path = path_Se + "Ok.mp3";
+	resourcesMap_.emplace(SRC::OK, res);
+
+	res.path = path_Se + "Delon.mp3";
+	resourcesMap_.emplace(SRC::DELON, res);
+
+	res.path = path_Se + "RoundJingle.mp3";
+	resourcesMap_.emplace(SRC::ROUND_JINGLE, res);
+
+	res.path = path_Se + "PaletteClick.mp3";
+	resourcesMap_.emplace(SRC::PALETTE_CLICK, res);
+
+	res.path = path_Se + "PaletteOpen.mp3";
+	resourcesMap_.emplace(SRC::PALETTE_OPEN, res);
+
+	res.path = path_Se + "PaletteClose.mp3";
+	resourcesMap_.emplace(SRC::PALETTE_CLOSE, res);
+
+	res.path = path_Se + "EditSystemIconClick.mp3";
+	resourcesMap_.emplace(SRC::EDIT_SYSTEM_ICON_CLICK, res);
+
+	res.path = path_Se + "ChangePhaseIcon.mp3";
+	resourcesMap_.emplace(SRC::CHANGE_PHASE_ICON_CLICK, res);
 #pragma endregion
 
 }

@@ -44,6 +44,11 @@ EditController::EditController(int playerNum)
 	cPos_ = SceneManager::GetInstance().GetCamera(playerNum).lock()->GetPos();
 	cAngles_ = SceneManager::GetInstance().GetCamera(playerNum).lock()->GetAngles();
 	cTargetPos_ = SceneManager::GetInstance().GetCamera(playerNum).lock()->GetTargetPos();
+
+	SoundManager & sndMng = SoundManager::GetInstance();
+	sndMng.LoadResource(SoundManager::SRC::CLICK_OBJECT_SE);	//オブジェクトをクリック
+	sndMng.LoadResource(SoundManager::SRC::CREATE_OBJECT_SE);	//オブジェクトを生成
+	sndMng.LoadResource(SoundManager::SRC::ERROR_SE);			//エラー
 }
 
 EditController::~EditController()

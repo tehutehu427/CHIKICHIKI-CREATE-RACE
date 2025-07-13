@@ -11,6 +11,7 @@
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "../../Manager/Game/MapEditer.h"
 #include "../System/YesNoResponder.h"
@@ -82,6 +83,12 @@ void MapDataIO::Load()
     //回答を返す
     responder_ = std::make_unique<YesNoResponder>();
     responder_->Load();
+
+    SoundManager & sndMng = SoundManager::GetInstance();
+	sndMng.LoadResource(SoundManager::SRC::DECISION);               //決定音
+	sndMng.LoadResource(SoundManager::SRC::CANCEL);                 //キャンセル音
+	sndMng.LoadResource(SoundManager::SRC::CLICK_OBJECT_SE);        //クリック音
+	sndMng.LoadResource(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK); //アイコンのクリック音
 }
 
 void MapDataIO::Init()
@@ -436,10 +443,12 @@ void MapDataIO::RegisterState(const STATE _state, std::function<void()> _update,
 void MapDataIO::UpdateWait()
 {
     KeyConfig& ins = KeyConfig::GetInstance();
+	SoundManager& sndMng = SoundManager::GetInstance();
 
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (IsTriggerExport())
     {
+		sndMng.Play(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK, SoundManager::PLAYTYPE::BACK);
         SetMouseDispFlag(true);
         selectFile_ = Utility::ShowSaveJsonDialog();
         if (selectFile_.empty())
@@ -460,6 +469,7 @@ void MapDataIO::UpdateWait()
 
     else if (IsTriggerImport())
     {
+        sndMng.Play(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK, SoundManager::PLAYTYPE::BACK);
         SetMouseDispFlag(true);
         //ファイルを読み込む
         if (!ReadFileBool(selectFile_))
@@ -549,6 +559,7 @@ void MapDataIO::UpdateFinish()
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
     {
+		SoundManager::GetInstance().Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
         ChangeState(STATE::WAIT);
     }
 }

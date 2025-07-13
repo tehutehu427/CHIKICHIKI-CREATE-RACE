@@ -5,6 +5,7 @@
 #include "../../../Scene/SceneBase.h"
 
 class KeyConfig;
+class SoundManager;
 class MultiInputCheck;
 class SelectScene;
 class MultiCheckPlayer;
@@ -78,9 +79,11 @@ private:
 	//クリアスコアの最大値
 	static constexpr int CLEAR_SCORE_MAX = 15;
 
-
 	//入力管理クラス
 	KeyConfig& keyConfig_;
+
+	//サウンド管理クラス
+	SoundManager& sndMng_;
 
 	//メッセージ画像
 	int* imgMessages_;

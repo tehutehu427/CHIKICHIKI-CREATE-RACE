@@ -50,8 +50,12 @@ SystemSetting::SystemSetting()
 		}},
 		{STATE::SOUND_VOLUME,[this]()
 		{
-			//右キーで選択をひとつ進める（範囲内でループ）
-			soundVolume_ = (soundVolume_ + SOUND_VOLUME_STEP) % SOUND_VOLUME_MAX;
+			// 右キーで音量を一段階上げる（最大を超えたら最小に戻る）
+			soundVolume_ += SOUND_VOLUME_STEP;
+			if (soundVolume_ > SOUND_VOLUME_MAX)
+			{
+				soundVolume_ = 0;
+			}
 		}}
 	};
 
@@ -69,9 +73,13 @@ SystemSetting::SystemSetting()
 		}},
 		{STATE::SOUND_VOLUME,[this]()
 		{
-			//左キーで選択をひとつ戻す（範囲内でループ）
-			soundVolume_ = (soundVolume_ - SOUND_VOLUME_STEP + SOUND_VOLUME_MAX) % SOUND_VOLUME_MAX;
-}		}
+			// 左キーで音量を一段階下げる（最小未満になったら最大に戻る）
+			soundVolume_ -= SOUND_VOLUME_STEP;
+			if (soundVolume_ < 0)
+			{
+				soundVolume_ = SOUND_VOLUME_MAX;
+			}
+		}}
 	};
 
 	//描画関数の登録
@@ -214,11 +222,13 @@ void SystemSetting::DrawSettingFinish()
 void SystemSetting::UpdateSelect(SelectScene& _parent)
 {
 	KeyConfig& key = KeyConfig::GetInstance();
+	SoundManager& sound = SoundManager::GetInstance();
 
 	//決定
 	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, KeyConfig::JOYPAD_NO::PAD1) && stateIndex_ == static_cast<int>(STATE::APPLY))
 	{
 		updateType_ = UPDATE_TYPE::APPLY; //更新タイプを適用に変更
+		sound.Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK); //決定音を再生
 		return;
 	}
 	//上へ
@@ -226,6 +236,7 @@ void SystemSetting::UpdateSelect(SelectScene& _parent)
 	{
 		//下キーで選択をひとつ戻す（範囲内でループ）
 		stateIndex_ = (stateIndex_ - 1 + STATE_MAX) % STATE_MAX;
+		sound.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK); //クリック音を再生
 		return;
 	}
 	//下へ
@@ -233,24 +244,28 @@ void SystemSetting::UpdateSelect(SelectScene& _parent)
 	{
 		//上キーで選択をひとつ進める（範囲内でループ）
 		stateIndex_ = (stateIndex_ + 1) % STATE_MAX;
+		sound.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK); //クリック音を再生
 		return;
 	}
 	//右
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		rightStateMap_[static_cast<STATE>(stateIndex_)](); //右の処理を実行
+		sound.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK); //クリック音を再生
 		return;
 	}
 	//左
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		leftStateMap_[static_cast<STATE>(stateIndex_)](); //左の処理を実行
+		sound.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK); //クリック音を再生
 		return;
 	}
 	//メニューに戻る
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		_parent.ChangeState(SelectScene::STATE::SELECT_MENU); //メニューに戻る
+		sound.Play(SoundManager::SRC::CANCEL, SoundManager::PLAYTYPE::BACK); //キャンセル音を再生
 		return;
 	}
 }
@@ -263,6 +278,8 @@ void SystemSetting::UpdateApply(SelectScene& _parent)
 	{
 		//データの反映
 		ApplyData();
+
+		SoundManager::GetInstance().Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK); //決定音を再生
 
 		//更新タイプを選択に戻す
 		updateType_ = UPDATE_TYPE::SELECT;
@@ -282,7 +299,7 @@ void SystemSetting::ApplyData()
 	//data.SetSkip(isSkip_);
 
 	//サウンドボリュームの設定
-	sound.SetSystemVolume(soundVolume_, static_cast<int>(SoundManager::TYPE::BGM));
+	sound.SetSystemVolume(soundVolume_, static_cast<int>(SoundManager::TYPE::SE));
 }
 
 void SystemSetting::DrawCursor()

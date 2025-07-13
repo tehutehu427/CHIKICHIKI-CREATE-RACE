@@ -4,6 +4,7 @@
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/InputManager.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Utility/Utility.h"
 //#include "../../Scene/Game/GameScene.h"
 
@@ -24,6 +25,8 @@ void CheckChangePhase::Load()
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgIcons_ = res.Load(ResourceManager::SRC::CHANGE_PHASE_ICONS).handleIds_;
+
+	SoundManager::GetInstance().LoadResource(SoundManager::SRC::CHANGE_PHASE_ICON_CLICK);
 }
 
 void CheckChangePhase::Init()
@@ -43,6 +46,7 @@ void CheckChangePhase::Update(GameScene& _parent)
 	if (IsCheckChangePhase(_parent))
 	{
 		//フェーズを遷移
+		SoundManager::GetInstance().Play(SoundManager::SRC::CHANGE_PHASE_ICON_CLICK, SoundManager::PLAYTYPE::BACK);
 		_parent.ChangePhase(nextPhase_);
 	}
 }

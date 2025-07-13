@@ -1,7 +1,7 @@
 #include<cmath>
 #include"../../Utility/Utility.h"
 #include"../../Manager/System/ResourceManager.h"
-#include"../../Utility/Utility.h"
+#include"../../Manager/System/SoundManager.h"
 #include"../System/DateBank.h"
 #include "PlayerManager.h"
 PlayerManager* PlayerManager::instance_ = nullptr;
@@ -70,6 +70,12 @@ void PlayerManager::Load(void)
 
 		player->Load();
 		players_.push_back(std::move(player));
+
+		SoundManager& sndMng = SoundManager::GetInstance();
+		sndMng.LoadResource(SoundManager::SRC::PLAYER_DASH_START);
+		sndMng.LoadResource(SoundManager::SRC::PLAYER_JUMP);
+		sndMng.LoadResource(SoundManager::SRC::PLAYER_PUNCH_HIT);
+		sndMng.LoadResource(SoundManager::SRC::PLAYER_PUNCH_MOTION);
 	}
 }
 

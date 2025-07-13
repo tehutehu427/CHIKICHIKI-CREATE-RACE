@@ -2,6 +2,7 @@
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../../Manager/System/KeyConfig.h"
 #include "../../../Manager/System/DateBank.h"
+#include "../../../Manager/System/SoundManager.h"
 #include "../../../Manager/Game/PlayerManager.h"
 #include "../../../Scene/SelectScene.h"
 #include "../../../Utility/Utility.h"
@@ -10,7 +11,8 @@
 
 
 MultiReady::MultiReady() :
-	 keyConfig_(KeyConfig::GetInstance())
+	 keyConfig_(KeyConfig::GetInstance()),
+	sndMng_(SoundManager::GetInstance())
 {
 	//状態別処理の登録
 	RegisterProcessFunc(STATE::NUM_CHECK, SceneBase::ProcessFunction{ [&]() { UpdateNumCheck(); },  [&]() { DrawNumCheck(); } });
@@ -60,6 +62,8 @@ void MultiReady::Update(SelectScene& _parent)
 	//戻る処理
 	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL, KeyConfig::JOYPAD_NO::PAD1))
 	{
+		sndMng_.Play(SoundManager::SRC::CANCEL, SoundManager::PLAYTYPE::BACK);
+
 		//ひとつ前の状態を取得
 		int state = static_cast<int>(state_) - 1;
 		if (state < 0)
@@ -104,15 +108,19 @@ void MultiReady::UpdateNumCheck()
 	{
 		//左キーで選択をひとつ戻す（範囲内でループ）
 		playerNum_ = (playerNum_ - 1 + PLAYER_NUM_CHOICES) % PLAYER_NUM_CHOICES;
+		sndMng_.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 	}
 	else if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//右キーで選択をひとつ進める（範囲内でループ）
 		playerNum_ = (playerNum_ + 1) % PLAYER_NUM_CHOICES;
+		sndMng_.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 	}
 	else if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		int playerNum = playerNum_ + PLAYER_NUM_MIN;
+
+		sndMng_.Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
 
 		//データ格納（実際の人数は MIN を加算）
 		DateBank::GetInstance().SetPlayerNum(playerNum);
@@ -164,6 +172,9 @@ void MultiReady::UpdateFinalCheck()
 	//最終確認
 	if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER,KeyConfig::JOYPAD_NO::PAD1))
 	{
+		sndMng_.Play(SoundManager::SRC::SELECT_SCENE_CHANGE, SoundManager::PLAYTYPE::BACK);
+		sndMng_.Stop(SoundManager::SRC::SELECT_BGM); 
+
 		//アニメーション開始
 		for (auto& player : players_)
 		{

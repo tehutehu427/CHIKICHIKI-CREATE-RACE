@@ -30,7 +30,7 @@ public:
 	static constexpr int CLEAR_SCORE_MAX = 15;	
 
 	//サウンドボリュームの最大値
-	static constexpr int SOUND_VOLUME_MAX = 101;
+	static constexpr int SOUND_VOLUME_MAX = 100;
 
 	//サウンドの増加量
 	static constexpr int SOUND_VOLUME_STEP = 10;
