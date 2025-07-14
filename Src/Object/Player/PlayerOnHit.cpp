@@ -201,6 +201,7 @@ void PlayerOnHit::DrawDebug(void)
 	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
 	colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
 	colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
+	colParam_[EYE_LINE_NO].geometry_->Draw();
 
 
 	if (action_.GetIsHitPunch())
@@ -223,12 +224,17 @@ void PlayerOnHit::DrawDebug(void)
 void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 {
 	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
+	//当たったモデルの情報を取得
 	//移動後座標と現在座標で早い移動速度でも対応させる
 	VECTOR hitPos = hitModel.GetHitLineInfo().HitPosition;
+	//移動後と移動前のコライダ
 	auto& moveLineCol = colParam_[MOVE_LINE_COL_NO].collider_;
+	//上下を引いたラインのコライダ(接地)
 	auto& upDownLine = colParam_[UP_AND_DOWN_LINE_COL_NO].collider_;
 	//球の当たり判定(プレイヤーの周囲)
 	auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
+	//目線のライン(プレイヤーの目線)
+	auto& eyeLine = colParam_[EYE_LINE_NO].collider_;
 
 	//アクションに渡すフラグの初期化
 	isLandHit_ = false;
@@ -277,6 +283,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	isSide_ = false;
 	if (bodyShere->IsHit())
 	{
+
 		auto& hitInfo = hitModel.GetHitInfo();
 		//std::vector<VECTOR> collPos;
 		VECTOR vec = VSub(moveDiff_, movedPos_);
@@ -296,6 +303,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 				{
 					isSide_ = true;
 					VECTOR normal = hit.Normal;
+					//y座標を抜いて押しだす
 					normal.y = 0.0f;
  					movedPos_ = VAdd(movedPos_, VScale(normal, HIT_NORMAL_OFFSET));
 					
@@ -306,6 +314,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 				}
 				break;
 			}
+			
 		}
 		//VECTOR hitPos = {};
 		//int num = hitInfo.HitNum;
@@ -317,7 +326,10 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		//float sub = RADIUS - Utility::Distance(hitPos, trans.pos);
 		//VECTOR norm = VNorm(VSub(hitPos, trans.pos));
 		//movedPos_ = VSub(trans.pos, VScale(norm, sub));
+
+
 	}
+	//目線がモデルに当たって無ければ上に押し上げる
 
 
 	////移動前の座標を格納する

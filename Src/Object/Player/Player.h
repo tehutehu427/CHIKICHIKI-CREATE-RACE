@@ -39,6 +39,11 @@ public:
 	//デフォルトのアニメーションスピード
 	static constexpr float DEFAULT_ANIM_SPD = 60.0f;
 
+	//プレイヤーの目の高さ
+	static constexpr VECTOR EYE_HEIGHT = { 0.0f, 15.0f, 0.0f };
+	//プレイヤーのアイラインの長さ
+	static constexpr VECTOR EYE_RANGE = { 0.0f, 15.0f, 100.0f };
+
 	//******************************************
 
 
@@ -205,6 +210,10 @@ private:
 	static constexpr VECTOR LOCAL_UP_POS = { 0.0f,RADIUS+ LINE_RANGE,0.0f };
 	//プレイヤーの下
 	static constexpr VECTOR LOCAL_DOWN_POS = { 0.0f,-RADIUS- LINE_RANGE,0.0f };
+
+
+
+	//プレイヤーの目の高さ(ローカル座標)
 
 	//***********************************
 	//アニメーション関連
