@@ -54,6 +54,7 @@ public:
 		PALETTE_CLOSE,			//パレット閉じる
 		EDIT_SYSTEM_ICON_CLICK,	//エディットシステムアイコンクリック
 		CHANGE_PHASE_ICON_CLICK,	//フェーズアイコンクリック
+		COUNTDOWN_SE,	//笛の音
 
 		//プレイモード効果音
 		GAME_OVER,			//ゲームオーバー

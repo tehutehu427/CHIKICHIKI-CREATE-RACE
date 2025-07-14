@@ -186,6 +186,7 @@ void FreePlay::DrawEdit()
 
 void FreePlay::LoadSound()
 {
+	GameScene::LoadSound();
 	sndMng_.LoadResource(SoundManager::SRC::EDIT_BGM);
 	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_1);
 	sndMng_.SetLoadedSoundsVolume();

@@ -1,4 +1,5 @@
 #include <DxLib.h>
+#include <cmath>
 #include "../../Application.h"
 #include "../Common/FontRegistry.h"
 #include "../../Utility/Utility.h"
@@ -292,18 +293,19 @@ void GameScene::UpdateEdit(void)
 
 void GameScene::UpdateAction(void)
 {
-	int beforTime = static_cast<int>(actionStartTime_);
+	int beforTime = static_cast<int>(std::floor(actionStartTime_));
 	actionStartTime_ -= SceneManager::GetInstance().GetDeltaTime();
-	if (actionStartTime_ > 0)
+	int afterTime = static_cast<int>(std::floor(actionStartTime_));
+	if (afterTime >= 0)
 	{
-		if (beforTime != static_cast<int>(actionStartTime_))
+		if (beforTime != afterTime)
 		{
-			SoundManager::GetInstance().Play(SoundManager::SRC::CHICKEN_SE_2, SoundManager::PLAYTYPE::BACK);
+			SoundManager::GetInstance().Play(SoundManager::SRC::COUNTDOWN_SE, SoundManager::PLAYTYPE::BACK);
 		}
 		return;
 	}
 
-	if (beforTime != static_cast<int>(actionStartTime_) && static_cast<int>(actionStartTime_) > -1)
+	if (beforTime != afterTime && afterTime >= -1)
 	{
 		SoundManager::GetInstance().Play(SoundManager::SRC::CHICKEN_SE, SoundManager::PLAYTYPE::BACK);
 	}
@@ -392,6 +394,8 @@ void GameScene::DrawClear()
 
 void GameScene::LoadSound(void)
 {
+	sndMng_.LoadResource(SoundManager::SRC::CHICKEN_SE);
+	sndMng_.LoadResource(SoundManager::SRC::COUNTDOWN_SE);
 }
 
 void GameScene::CheckPlayerFinish(void)
