@@ -17,8 +17,14 @@ public:
 	//プレイヤー1人
 	static constexpr int PLAYER_SINGLE = 1;
 
-
-
+	//プレイヤーカラー
+	static constexpr COLOR_F PLAYER_COLOR[PLAYER_NUM_MAX] =
+	{		
+		{0.6f,0.8f,1.0f,1.0f},
+		{1.0f,0.6f,0.9f,1.0f},
+		{0.7f,1.0f,0.8f,1.0f},
+		{1.0f,1.0f,0.7f,1.0f},
+	};
 
 	
 	enum class PLAYER
@@ -49,27 +55,21 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	//プレイヤー同士の当たり判定
-	void PlayersCollision(void);
-
-	//カプセル同士の当たり判定(完全ではない)
-	//bool IsHitCapsules(const std::weak_ptr<Capsule> cap1,const std::weak_ptr<Capsule> cap2);
-
-
 	//*****************************************
 	//ゲッタ
 	//*****************************************
 	//モデル情報ゲッタ
 	const Transform& GetPlayerTransform(const int _num) { return players_[_num]->GetTransform(); }
 
-	//移動後座標
-	const VECTOR GetPlayerMovedPos(const int _num) { return players_[_num]->GetMovedPos(); }
-
-	const std::vector<bool>GetPlayersIsDeath(void);
+	////移動後座標
+	//const VECTOR GetPlayerMovedPos(const int _num) { return players_[_num]->GetMovedPos(); }
 
 	std::vector<std::unique_ptr<Player>>&GetPlayers(void) { return players_; }
 
 	Player& GetPlayer(int _num) { return *players_[_num]; }
+
+	//ゴールタイムのゲッタ
+	const std::vector<float> GetGoalTime(void);
 
 	//****************************************
 	//セッタ
@@ -78,17 +78,24 @@ public:
 	void SetInitPos(VECTOR _worldPos);
 
 	/// <summary>
-	///プレイヤー全員がゴールに行ったかどうかを判定
+	/// 指定したプレイヤーがゴール済みか調べる
 	/// </summary>
-	/// <param name=""></param>
-	/// <returns>true:全員ゴールに行った　false:誰か一人でもゴールに行ってない</returns>
-	std::vector<bool> IsGoalPlayers(void);
+	/// <param name="_playerIndex">プレイヤーインデックス</param>
+	/// <returns>ゴールしてたらtrue,してなければfalse</returns>
+	const bool IsPlayerGoal(const int _playerIndex) { return players_[_playerIndex]->IsGoal(); }
+	
+	/// <summary>
+	/// 指定したプレイヤーが倒れたか調べる
+	/// </summary>
+	/// <param name="_playerIndex">プレイヤーインデックス</param>
+	/// <returns>倒れてたらtrue,なければfalse</returns>
+	const bool IsPlayerDeath(const int _playerIndex) { return players_[_playerIndex]->IsDeath(); }
 
-	//当たり判定で調べる座標
-	IntVector3 GetPlayerColPos(const int _num) { return players_[_num]->GetColPos(); }
-
-	//全員がゴールしてるか死んでるか
-	bool IsPlayersEnd(void);
+	/// <summary>
+	///　全てのプレイヤーが操作を終えているか
+	/// </summary>
+	/// <returns>終えてたらtrue,なければfalse</returns>
+	bool IsPlayersEnd();
 
 
 
@@ -96,11 +103,19 @@ private:
 	//プレイヤーの大きさ
 	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
 
+
+
 	//初期座標
 	static constexpr float START_POS = 50.0f;
 
 	//静的インスタンス
 	static PlayerManager* instance_;
+
+	//始まってからの総タイム
+	//float time_;
+
+	//ゴール時間
+	std::vector<float>goalTime_;
 
 	//*****************************************
 	//メンバ変数
@@ -108,17 +123,9 @@ private:
 	//プレイヤー
 	std::vector<std::unique_ptr<Player>> players_;
 
-	//プレイヤーゴール判定
-	std::vector<bool>isGoal_;
-
-	//プレイヤー生存判定
-	std::vector<bool>isDeath_;
-
-
 	//プレイヤー人数
 	int playerNum_;
 
-	//*****************************************
 	//*****************************************
 	//メンバ関数
 	//*****************************************
@@ -126,12 +133,8 @@ private:
 	//プレイヤー番号ごとでモデル情報を決定する
 	Transform FixTrans(int _playerNum);
 
-	/// <summary>
-	/// パンチの当たり判定
-	/// </summary>
-	/// <param name="p1">判定したい1人目のプレイヤ</param>
-	/// <param name="p2">判定したい2人目のプレイヤ</param>
-	void PunchPlayersColl(int p1,int p2);
+	//プレイヤーカラーを設定
+	void InitPlayerColor();
 
 	/// <summary>
 	/// コンストラクタ

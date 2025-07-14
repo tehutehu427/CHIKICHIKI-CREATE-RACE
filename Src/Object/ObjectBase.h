@@ -8,6 +8,7 @@
 class ResourceManager;
 class SceneManager;
 class Geometry;
+class EffectController;
 
 class ObjectBase
 {
@@ -30,7 +31,7 @@ public:
 	virtual void Load(void) = 0;
 	//初期化
 	virtual void Init(void) = 0;
-	//更新d
+	//更新
 	virtual void Update(void) = 0;
 	//描画
 	virtual void Draw(void) = 0;
@@ -65,11 +66,18 @@ protected:
 	//当たり判定関係
 	std::vector<ColParam> colParam_;
 
+	//エフェクト
+	std::unique_ptr<EffectController> effect_;
+
 	/// <summary>
 	/// 当たり判定作成(形状情報作成後)
 	/// </summary>
 	/// <param name="_tag">自身の当たり判定タグ</param>
 	/// <param name="_Geometry">自身の形状情報</param>
-	void MakeCollider(const Collider::TAG _tag, std::unique_ptr<Geometry> _geometry);
+	/// <param name="_notHitTags">衝突させないタグ</param>
+	void MakeCollider(const std::vector<Collider::TAG> _tag, std::unique_ptr<Geometry> _geometry, const std::vector<Collider::TAG> _notHitTags = {});
+
+	//特定の配列番号の当たり判定削除
+	void DeleteCollider(const int _arrayNum);
 };
 

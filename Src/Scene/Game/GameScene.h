@@ -2,9 +2,9 @@
 #include <memory>
 #include <functional>
 #include"../Object/Player/Player.h"
-#include"../Object/Editor/EditController.h"
 #include "../SceneBase.h"
 
+class EditController;
 class EditorPaletteBase;
 class Grid;
 class SkyDome;
@@ -17,18 +17,20 @@ class GameScene : public SceneBase
 public:
 
 	static constexpr VECTOR ACTION_CAMERA_POS = { 2000.0f, 1700.0f, -2000.0f };	//アクション時のカメラ位置
-
+	static constexpr float ACTION_START_TIME = 3.0f;	//アクション開始時のカウント
 
 	/// <summary>
 	/// フェーズ
 	/// </summary>
 	enum class PHASE
 	{		
+		ROUND_PHASE,	//ラウンドを表示
 		SELECT_PHASE,	//選択(マルチのみ)
 		EDIT_PHASE,		//エディット
 		ACTION_PHASE,	//アクション
 		RESULT_PHASE,	//リザルト(マルチのみ)	
 		CLEAR_PHASE,	//クリア
+		GAME_OVER,		//ゲームオーバー
 	};
 
 
@@ -56,8 +58,22 @@ public:
 	/// <param name=""></param>
 	virtual void Init(void) override;	
 	
-	//フェーズ遷移
+	/// <summary>
+	/// フェーズ遷移
+	/// </summary>
+	/// <param name="phase">フェーズ</param>
 	void ChangePhase(const PHASE phase);
+
+	/// <summary>
+	/// リセット
+	/// </summary>
+	virtual void Reset();
+
+	/// <summary>
+	/// フェーズを取得する
+	/// </summary>
+	/// <returns>現在のフェーズ</returns>
+	const PHASE GetPhase() const { return phase_; }
 
 protected:
 
@@ -82,6 +98,8 @@ protected:
 	//マップ情報の入出力
 	std::unique_ptr<MapDataIO> mapIO_;
 	
+	float actionStartTime_;	//アクション開始のカウントダウン
+
 	//フェーズ管理(遷移時の初期処理)
 	std::map<PHASE, std::function<void(void)>> phaseChanges_;
 
@@ -89,6 +107,9 @@ protected:
 	std::function<void(void)> phaseUpdate_;
 	std::function<void(void)> phaseDraw_;	
 	
+	//グリッドを表示するかプレイヤー別
+	std::vector<bool> isGrid_;
+
 	//更新関数
 	virtual void NormalUpdate(void) override;
 
@@ -101,7 +122,7 @@ protected:
 	//フェーズ遷移
 	virtual void ChangePhaseEdit(void);
 	virtual void ChangePhaseAction(void);
-	void ChangePhaseClear(void);
+	virtual void ChangePhaseClear(void);
 	
 	//フェーズ別更新処理
 	virtual void UpdateEdit(void);		//エディット時の更新処理
@@ -113,8 +134,11 @@ protected:
 	virtual void DrawAction();
 	void DrawClear();
 
-	//プレイヤーがクリアオブジェクトに当たった後の遷移
-	void ChangePlayerClearPhase(void);
+	//サウンド読み込み
+	virtual void LoadSound(void);
+
+	//プレイヤーがゲームを終了か調べる
+	virtual void CheckPlayerFinish(void);
 
 	//デバッグ時の更新処理
 	virtual void DebagUpdate(void);	

@@ -17,6 +17,7 @@ Camera::Camera(int _playerNum)
 	targetPos_ = Utility::VECTOR_ZERO;
 	followTransform_ = nullptr;
 	padNo_ = static_cast<KeyConfig::JOYPAD_NO>(_playerNum + 1);
+	localPos_ = Utility::VECTOR_ZERO;
 }
 
 Camera::~Camera(void)
@@ -137,6 +138,7 @@ void Camera::ChangeMode(MODE mode)
 	case Camera::MODE::FIXED_POINT:
 		break;
 	case Camera::MODE::FOLLOW:
+		localPos_ = LOCAL_F2C_POS;
 		break;
 	}
 
@@ -184,7 +186,7 @@ void Camera::SyncFollow(void)
 	targetPos_ = VAdd(pos, localPos);
 
 	// カメラ位置
-	localPos = rot_.PosAxis(LOCAL_F2C_POS);
+	localPos = rot_.PosAxis(localPos_);
 	pos_ = VAdd(pos, localPos);
 
 	// カメラの上方向
@@ -227,23 +229,26 @@ void Camera::ProcessRot(void)
 {
 	auto& ins = KeyConfig::GetInstance();
 	float rotPow = Utility::Deg2RadF(SPEED);
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_RIGHT, padNo_,KeyConfig::TYPE::KEYBORD_MOUSE)) { angles_.y += rotPow; }
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_LEFT, padNo_, KeyConfig::TYPE::KEYBORD_MOUSE)) { angles_.y -= rotPow; }
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_UP, padNo_, KeyConfig::TYPE::KEYBORD_MOUSE)) { angles_.x += rotPow; }
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_DOWN, padNo_, KeyConfig::TYPE::KEYBORD_MOUSE)) { angles_.x -= rotPow; }
+	auto playerMaxNum = DateBank::GetInstance().GetPlayerNum();
+	auto keyType = playerMaxNum == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_RIGHT, padNo_, keyType)) { angles_.y += rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_LEFT, padNo_, keyType)) { angles_.y -= rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_UP, padNo_, keyType)) { angles_.x += rotPow; }
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_MOVE_DOWN, padNo_, keyType)) { angles_.x -= rotPow; }
 
 
 	auto rStick = ins.GetKnockRStickSize(padNo_);
 	rotPow = SPEED_PAD;
 	angles_.x += Utility::Deg2RadF(rStick.y * rotPow);
 	angles_.y += Utility::Deg2RadF(rStick.x * rotPow);
-
-	auto mouseMove = ins.GetMouseMove();
-	rotPow = SPEED_MOUSE;
-	angles_.x += Utility::Deg2RadF(mouseMove.y * rotPow);
-	angles_.y += Utility::Deg2RadF(mouseMove.x * rotPow);
-
-	KeyConfig::GetInstance().SetMousePosScreen();
+	if (keyType == KeyConfig::TYPE::ALL)
+	{
+		auto mouseMove = ins.GetMouseMove();
+		rotPow = SPEED_MOUSE;
+		angles_.x += Utility::Deg2RadF(mouseMove.y * rotPow);
+		angles_.y += Utility::Deg2RadF(mouseMove.x * rotPow);
+	}
+	KeyConfig::GetInstance().SetMousePos({ Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y});
 
 	if (angles_.x >= LIMIT_X_UP_RAD)
 	{
@@ -252,6 +257,27 @@ void Camera::ProcessRot(void)
 	else if (angles_.x <= LIMIT_X_DW_RAD)
 	{
 		angles_.x = LIMIT_X_DW_RAD;
+	}
+}
+
+void Camera::ProcessZoom(void)
+{
+	auto& ins = KeyConfig::GetInstance();
+	auto playerMaxNum = DateBank::GetInstance().GetPlayerNum();
+	auto keyType = playerMaxNum == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
+	auto vec = VNorm(VSub(LOCAL_F2T_POS,LOCAL_F2C_POS));
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_ZOOM_IN, padNo_, keyType))
+	{
+		localPos_ = VAdd(localPos_, VScale(vec, ZOOM_SPEED));
+	}
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAY_CAMERA_ZOOM_OUT, padNo_, keyType))
+	{
+		localPos_ = VAdd(localPos_, VScale(VScale(vec,-1), ZOOM_SPEED));
+	}
+	if (Utility::Distance(LOCAL_F2C_POS, localPos_) > ZOOM_RADIUS)
+	{
+		vec = VNorm(VSub(localPos_,LOCAL_F2C_POS));
+		localPos_ = VAdd(LOCAL_F2C_POS, VScale(vec, ZOOM_RADIUS));
 	}
 }
 
@@ -288,9 +314,9 @@ void Camera::SetBeforeDrawFollow(void)
 	// カメラ操作
 	ProcessRot();
 
+	ProcessZoom();
 	// 追従対象との相対位置を同期
 	SyncFollow();
-
 }
 
 void Camera::SetBeforeDrawSelfShot(void)
@@ -370,6 +396,14 @@ void Camera::SetBeforeDrawFreeControll(void)
 	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_RIGHT, padNo_,keyType))
 	{
 		pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetRight(), moveSpeed));
+	}
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_UP, padNo_,keyType))
+	{
+		pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetUp(), moveSpeed));
+	}
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_MOVE_DOWN, padNo_,keyType))
+	{
+		pos_ =VAdd(pos_, VScale(Quaternion::Quaternion(angles_).GetDown(), moveSpeed));
 	}
 
 	VECTOR localPos;

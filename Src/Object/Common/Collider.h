@@ -1,5 +1,6 @@
 #pragma once
 
+#include<vector>
 #include"Geometry/Geometry.h"
 
 class ObjectBase;
@@ -17,6 +18,10 @@ public :
 		PLAYER3,		//プレイヤー3
 		PLAYER4,		//プレイヤー4
 
+		PUNCH,			//パンチ
+
+		SHADOW,			//影
+
 		START,			//開始地点
 		GOAL,			//終了地点
 
@@ -27,7 +32,10 @@ public :
 		SLIME_FLOOR,	//スライム床
 		SPRING,			//ばね
 		WIND,
-		KILLER_ITEM,	//接触すると死ぬアイテム
+		KILLER_ALL,			//接触すると死ぬモデル
+		KILLER_SPECIFIC,	//一定の場所に当たると死ぬモデル
+		
+		
 
 		DESTROYER,		//アイテムオブジェクトを破壊する
 	};
@@ -35,27 +43,28 @@ public :
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="type">衝突用タグ</param>
-	/// <param name="geometry">当たり判定の形状</param>
-	Collider(ObjectBase& _parent, const TAG _tag, Geometry& _geometry);
+	/// <param name="_tags">自身の衝突用タグ</param>
+	/// <param name="_geometry">当たり判定の形状</param>
+	/// <param name="_notHitTags">衝突させないタグ</param>
+	Collider(ObjectBase& _parent, const std::vector<TAG> _tags, Geometry& _geometry, const std::vector<TAG> _notHitTags);
 
 	// デストラクタ
 	~Collider(void);
 
 	//衝突用タグの取得
-	inline const TAG GetTag(void)const { return tag_; }
+	inline const std::vector<TAG> GetTags(void)const { return tags_; }
 
 	//当たり判定の形状を取得
 	inline Geometry& GetGeometry(void)const { return geometry_; }
+
+	//衝突させないタグの取得
+	inline const std::vector<TAG> GetNotHitTags(void)const { return notHitTags_; }
 
 	//親を取得
 	inline const ObjectBase& GetParent(void)const { return parent_; }
 
 	//当たったかの判定の取得
 	inline const bool IsHit(void)const { return isHit_; }
-
-	//当たっていない
-	inline void NotHit(void) { isHit_ = false; }
 
 	//終了判定の取得
 	inline const bool IsDead(void)const { return isDead_; }
@@ -75,7 +84,10 @@ private:
 	ObjectBase& parent_;
 
 	// 衝突用タグ
-	TAG tag_;
+	std::vector<TAG> tags_;
+
+	// 衝突しないタグ
+	std::vector<TAG> notHitTags_;
 
 	//当たり判定の形状
 	Geometry& geometry_;

@@ -1,7 +1,9 @@
 #pragma once
+#include<map>
 #include "../ItemBase.h"
 
 class CannonShot;
+class ToonStyle;
 
 class Cannon : public ItemBase
 {
@@ -12,6 +14,7 @@ public:
 
 	//マップ
 	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };				//マップサイズ
+	static constexpr IntVector3 HIT_SIZE = { 0,0,1 };				//当たり判定用サイズ
 	static constexpr VECTOR MAP_LOCALPOS = { 60.0f,0.0f,40.0f };	//マップとの相対座標
 
 	//サイズ
@@ -41,16 +44,34 @@ public:
 	//描画
 	void Draw(void)override;
 
+	//当たり判定サイズ
+	const IntVector3 GetHitSize(void)const override { return MAP_SIZE + HIT_SIZE; }
+
 	/// <summary>
 	/// 当たり判定後の処理
 	/// </summary>
 	/// <param name="_hitColTag">相手側の当たり判定</param>
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
-	//モデルの色変え
-	void ChangeModelColor(const COLOR_F _colorScale)override;
+	/// <summary>
+	/// モデルのカラーを設定
+	/// </summary>
+	/// <param name="_r">赤</param>
+	/// <param name="_g">緑</param>
+	/// <param name="_b">青</param>
+	/// <param name="_a">アルファ値</param>
+	void SetModelColor(const float _r, const float _g, const float _b, const float _a) override;
+
+	//アイテムの値リセット
+	void ResetValue(void)override;
+
+	//砲台の値合わせ
+	void BarrelValueToTurret(void);
 
 private:
+
+	//シェーダー
+	std::unique_ptr<ToonStyle> toonBarrel_;
 
 	//弾関係
 	std::unique_ptr<CannonShot> shot_;		//弾
@@ -62,7 +83,8 @@ private:
 	VECTOR barrelAddRot_;	//砲身の回転量
 
 	//対象
-	VECTOR targetPos_;		//狙う対象の位置情報
+	std::map<Collider::TAG,VECTOR> compPos_;	//狙う対象の比較用位置情報
+	VECTOR targetPos_;							//狙う対象の位置情報
 
 	//砲台の回転
 	void RotateTurret(void);
@@ -75,5 +97,8 @@ private:
 
 	//弾の削除
 	void DeleteShot(void);
+
+	//シェーダーの設定
+	void InitShader(void) override;
 };
 

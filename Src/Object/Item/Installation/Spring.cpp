@@ -39,9 +39,15 @@ void Spring::SetParam(void)
 	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
+	//移動力初期化
+	InitMovePow();
+
 	//コライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::SPRING, std::move(geo));
+	MakeCollider({ Collider::TAG::SPRING }, std::move(geo));
+
+	//マップサイズ
+	mapSize_ = MAP_SIZE;
 }
 
 void Spring::Update(void)
@@ -50,4 +56,10 @@ void Spring::Update(void)
 
 void Spring::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
+}
+
+void Spring::InitMovePow(void)
+{
+	//移動力初期化
+	movePow_ = VScale(trans_.quaRot.PosAxis(trans_.quaRot.GetUp()), MOVE_POW);
 }

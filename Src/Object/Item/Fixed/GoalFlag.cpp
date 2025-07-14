@@ -39,9 +39,21 @@ void GoalFlag::SetParam(void)
 	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
+	//コピー
+	colModelTrans_ = trans_;
+
+	//当たり判定用モデル
+	colModelTrans_.SetModel(resMng_.LoadModelDuplicate(
+		ResourceManager::SRC::COL_CUBE));
+
+	colModelTrans_.Update();
+
 	//コライダの作成
-	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::GOAL, std::move(geo));
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, colModelTrans_.modelId);
+	MakeCollider({ Collider::TAG::GOAL }, std::move(geo));
+
+	//マップサイズ
+	mapSize_ = MAP_SIZE;
 }
 
 void GoalFlag::Update(void)

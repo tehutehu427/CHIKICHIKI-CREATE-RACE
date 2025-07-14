@@ -31,7 +31,16 @@ public:
 	/// <param name=""></param>
 	void Init(void) override;
 
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name=""></param>
+	void Draw(void)	override;
+
 private:
+
+	//タイトル画像
+	int imgTitle_;
 
 	//状態別更新
 	void UpdateSelect()override;		//選ぶ

@@ -4,6 +4,9 @@
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/System/Camera.h"
 #include "../../Manager/System/SceneManager.h"
+#include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SoundManager.h"
+#include "../../Object/Common/EffectController.h"
 #include "../../Object/Common/AnimationController.h"
 
 #include "PlayerAction.h"
@@ -13,18 +16,19 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	,scnMng_(_scnMng)
 	,animationController_(_animationController)
 {
-	
 	//操作関連
 	//----------------------------------------------------
 	changeAction_.emplace(ATK_ACT::NONE, [this]() {ChangeNone(); });
 	changeAction_.emplace(ATK_ACT::MOVE, [this]() {ChangeMove(); });
+	changeAction_.emplace(ATK_ACT::DASHMOVE, [this]() {ChangeDashMove(); });
 	changeAction_.emplace(ATK_ACT::INPUT, [this]() {ChangeInput(); });
-	changeAction_.emplace(ATK_ACT::JUMP, [this]() {ChangeJump(); });
+ 	changeAction_.emplace(ATK_ACT::JUMP, [this]() {ChangeJump(); });
 	changeAction_.emplace(ATK_ACT::PUNCH, [this]() {ChangePunch(); });
 	changeAction_.emplace(ATK_ACT::KNOCKBACK, [this]() {ChangeKnockBack(); });
 
+	//エフェクト
+	effect_ = std::make_unique<EffectController>();
 	
-
 	//ジャンプ関係
 	isJump_ = false;
 	stepJump_ = 0.0f;
@@ -37,26 +41,69 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	punchPos_ = Utility::VECTOR_ZERO;
 	punchedCnt_ = PUNCHED_TIME;
 
+	effectArrayNum_ = 0.0f;
+
+	isPunchHitTime_ = false;
 	input_ = nullptr;
 }
 
 PlayerAction::~PlayerAction(void)
 {
-	
+	StopResource();
 }
 
 void PlayerAction::Init(void)
 {
 	auto num = player_.GetPadNum();
 	auto cntl = player_.GetCntl();
-	input_ = std::make_shared<PlayerInput>(num, cntl);
+	//入力
+	input_ = std::make_unique<PlayerInput>(num, cntl);
+	input_->Init();
+
+	//ジャンプ関係
+	isJump_ = false;
+	stepJump_ = 0.0f;
+	jumpPow_ = Utility::VECTOR_ZERO;
+	jumpDeceralation_ = POW_JUMP;
+  	movePow_ = Utility::VECTOR_ZERO;
+
+	//スピード
+	speed_ = 0.0f;
+
+	isPunchHitTime_ = false;
+
+	//パンチ関係の初期化
+	punchCnt_ = 0.0f;
+	punchCoolCnt_ = 0.0f;
+	punchPos_ = Utility::VECTOR_ZERO;
+	punchedCnt_ = PUNCHED_TIME;
+
+	effectArrayNum_ = 0.0f;
+
 	ChangeAction(ATK_ACT::INPUT);
+}
+
+void PlayerAction::Load(void)
+{
+	auto& res = ResourceManager::GetInstance();
+	actSE_.emplace(ACT_SE::DASH,SoundManager::SRC::PLAYER_DASH_START);
+	actSE_.emplace(ACT_SE::JUMP,SoundManager::SRC::PLAYER_JUMP);
+	actSE_.emplace(ACT_SE::PUNCH, SoundManager::SRC::PLAYER_PUNCH_MOTION);
+	actSE_.emplace(ACT_SE::SLIME, SoundManager::SRC::SLIME_SE);
+
+	effect_->Add(res.Load(ResourceManager::SRC::DASH_EFF).handleId_, EffectController::EFF_TYPE::DASH);
+	effect_->Add(res.Load(ResourceManager::SRC::JUMP_EFF).handleId_, EffectController::EFF_TYPE::JUMP);
+	effect_->Add(res.Load(ResourceManager::SRC::LANDING_EFF).handleId_, EffectController::EFF_TYPE::LANDING);
+	effect_->Add(res.Load(ResourceManager::SRC::PUNCH_HIT_EFF).handleId_, EffectController::EFF_TYPE::PUNCH_HIT);
 }
 
 void PlayerAction::Update(void)
 {
 	//入力更新
 	input_->Update();
+
+	//エフェクト更新
+	effect_->Update();
 
 	//プレイヤーの下を設定
 	static VECTOR dirDown = player_.GetTransform().GetDown();
@@ -88,9 +135,14 @@ void PlayerAction::ActionInputUpdate(void)
 {
 	//入力に応じてアクションを変える
 	using ACT_CNTL = PlayerInput::ACT_CNTL;
-	if (input_->CheckAct(ACT_CNTL::MOVE)|| input_->CheckAct(ACT_CNTL::DASHMOVE))
+	if (input_->CheckAct(ACT_CNTL::MOVE))
 	{
 		ChangeAction(ATK_ACT::MOVE);
+		return;
+	}
+	if (input_->CheckAct(ACT_CNTL::DASHMOVE))
+	{
+		ChangeAction(ATK_ACT::DASHMOVE);
 		return;
 	}
 	if (input_->CheckAct(ACT_CNTL::PUNCH))
@@ -98,7 +150,7 @@ void PlayerAction::ActionInputUpdate(void)
 		ChangeAction(ATK_ACT::PUNCH);
 		return;
 	}
-	if (input_->CheckAct(ACT_CNTL::JUMP))
+	if (CheckJumpInput())
 	{
 		ChangeAction(ATK_ACT::JUMP);
 		return;
@@ -107,14 +159,23 @@ void PlayerAction::ActionInputUpdate(void)
 
 void PlayerAction::ChangeAction(ATK_ACT _act)
 {
+	if (act_ == _act)return;
 	act_ = _act;
 	changeAction_[act_]();
 }
 
-
 void PlayerAction::ChangeInput(void)
 {
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::IDLE));
+	isJump_ = false;
+	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
+	for (int i = 0; i <= effNum; i++)
+	{
+		effect_->Stop(EffectController::EFF_TYPE::DASH, i);
+	}
+
+	StopResource();
+
 	actionUpdate_ = std::bind(&PlayerAction::ActionInputUpdate, this);
 }
 
@@ -125,16 +186,20 @@ void PlayerAction::ChangeNone(void)
 
 void PlayerAction::MoveUpdate(void)
 {
-	speed_ = MOVE_SPEED;
-	if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
-	{
-		speed_ = DASH_SPEED;
-	}
+	Speed();
 	//移動中に入力が入った時の状態遷移
-	if (input_->CheckAct(PlayerInput::ACT_CNTL::JUMP))
+	if (CheckJumpInput())
 	{
 		ChangeAction(ATK_ACT::JUMP);
 		return;
+	}
+	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
+	{
+		ChangeAction(ATK_ACT::MOVE);
+	}
+	if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
+	{
+		ChangeAction(ATK_ACT::DASHMOVE);
 	}
 	else if (input_->CheckAct(PlayerInput::ACT_CNTL::PUNCH))
 	{
@@ -149,6 +214,14 @@ void PlayerAction::MoveUpdate(void)
 		ChangeAction(ATK_ACT::INPUT);
 		return;
 	}
+
+	//エフェクトの座標と角度の追従
+	effect_->SetPos(EffectController::EFF_TYPE::DASH, 0, player_.GetTransform().pos);
+	effect_->SetQuaRot(EffectController::EFF_TYPE::DASH, 0, player_.GetTransform().quaRot);
+
+	float animationSpeed = Player::DEFAULT_ANIM_SPD * (speed_ / MOVE_SPEED)*3.0f;
+	animationController_.SetAnimSpeed(animationSpeed);
+
 	//入力方向の移動
 	MoveDirFronInput();
 }
@@ -161,7 +234,6 @@ void PlayerAction::MoveDirFronInput(void)
 	//プレイヤー入力クラスから角度を取得
 	VECTOR getDir = input_->GetDir();
 	float deg = input_->GetMoveDeg();
-
 
 	int playerNum = player_.GetPlayerNum();
 	Quaternion cameraRot = scnMng_.GetCamera(playerNum).lock()->GetQuaRotOutX();
@@ -178,9 +250,46 @@ void PlayerAction::MoveDirFronInput(void)
 
 void PlayerAction::ChangeMove(void)
 {
+	speed_ = MOVE_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
+
+	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
+	if (player_.GetIsSlimeFloor())
+	{
+		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
+	}
+
+	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
+	for (int i = 0; i <= effNum; i++)
+	{
+		effect_->Stop(EffectController::EFF_TYPE::DASH, i);
+	}
+
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
 }
+
+void PlayerAction::ChangeDashMove(void)
+{
+	speed_ = DASH_SPEED;
+	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
+	SoundManager::GetInstance().Play(actSE_[ACT_SE::DASH], SoundManager::PLAYTYPE::LOOP);
+	auto& trans = player_.GetTransform();
+	const float SCL = 10.0f;
+
+	//エフェクトの再生
+	effect_->Play(EffectController::EFF_TYPE::DASH, trans.pos, trans.quaRot, { SCL,SCL,SCL },50.0f);
+	effectArrayNum_++;
+
+	//スライム床内ならスライム音再生
+	if (player_.GetIsSlimeFloor())
+	{
+		SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
+		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::LOOP);
+	}
+	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
+}
+
+
 
 void PlayerAction::UpdateMoveDirAndPow(void)
 {
@@ -190,9 +299,8 @@ void PlayerAction::UpdateMoveDirAndPow(void)
 	movePow_ = VScale(moveDir_, speed_);
 }
 
-void PlayerAction::JumpUpdate(void)
+void PlayerAction::Speed(void)
 {
-	//移動入力があったらスピードセット
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
 	{
 		speed_ = MOVE_SPEED;
@@ -205,7 +313,17 @@ void PlayerAction::JumpUpdate(void)
 	{
 		speed_ = 0.0f;
 	}
-		
+	if (speed_ > 0.0f && player_.GetIsSlimeFloor())
+	{
+		//スライム床の上だけスピードを半分にする
+		speed_ /= 2.0f;
+	}
+}
+
+void PlayerAction::JumpUpdate(void)
+{
+	//移動入力があったらスピードセット
+	Speed();
 	//ジャンプ処理
 	Jump();
 }
@@ -217,7 +335,11 @@ void PlayerAction::Jump(void)
 	stepJump_ += deltaTime;
 
 	//空中アニメーションステップのループ設定
-	animationController_.SetEndLoop(23.0f, 25.0f, 5.0f);
+	animationController_.SetEndLoop(JUMP_ANIM_LOOP_START_FRAME
+		, JUMP_ANIM_LOOP_END_FRAME, JUMP_ANIM_ATTACK_BLEND_TIME);
+
+
+	SoundManager::GetInstance().Stop(SoundManager::SRC::PLAYER_DASH_START);
 
 	//ジャンプ中も移動できるようにする
 	MoveDirFronInput();
@@ -246,46 +368,76 @@ void PlayerAction::Jump(void)
 		jumpPow_ = Utility::VECTOR_ZERO;
 		stepJump_ = 0.0f;
 
+		//着地エフェクト
+		Transform trans = player_.GetTransform();
+		const float EFF_SCL = 30.0f;
+		effect_->Play(EffectController::EFF_TYPE::LANDING, trans.pos, trans.quaRot, { EFF_SCL,EFF_SCL, EFF_SCL });
+
 		//動いていた場合の移動量リセット
 		speed_ = 0.0f;
 		ChangeAction(ATK_ACT::INPUT);
 		return;
 	}
+
 }
 
 void PlayerAction::ChangeJump(void)
 {
 	//ジャンプ関係
-	isJump_ = true;
+  	isJump_ = true;
 	stepJump_ = 0.0f;
+
+	//プレイヤーの情報
+	Transform trans = player_.GetTransform();
+	//エフェクトのスケール
+	const VECTOR EFF_SCL = { 10.0f,10.0f,10.0f };
 	//アニメーションの再生
 	animationController_.Play(
-		(int)Player::ANIM_TYPE::JUMP, false, 10.0f, 60.0f);
+		(int)Player::ANIM_TYPE::JUMP, false, JUMP_ANIM_START_FRAME, JUMP_ANIM_END_FRAME);
+
+	//サウンド
+	SoundManager::GetInstance().Play(SoundManager::SRC::PLAYER_JUMP, SoundManager::PLAYTYPE::BACK);
+
+	//ジャンプエフェクト
+	effect_->Play(EffectController::EFF_TYPE::JUMP, trans.pos, trans.quaRot, EFF_SCL, 50.0f);
+
+	if(player_.GetIsSlimeFloor())SetJumpDecel(SLIME_FLOOR_JUMP_POW);
+
+	//パンチの当たり判定を消す
+	isPunchHitTime_ = false;
+	player_.KillPunchCol();
+
 	//状態遷移
-	actionUpdate_ = std::bind(&PlayerAction::JumpUpdate, this);
+	actionUpdate_ = [this]() {JumpUpdate(); };
+}
+
+bool PlayerAction::CheckJumpInput(void)
+{
+	return input_->CheckAct(PlayerInput::ACT_CNTL::JUMP);
 }
 
 void PlayerAction::Punch(void)
 {
 	//プレイヤーの手の座標を設定する
-	punchPos_ = MV1GetFramePosition(player_.GetTransform().modelId, 10);
-
-	//アニメーション
-	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
+	punchPos_ = MV1GetFramePosition(player_.GetTransform().modelId, HAND_FRAME_NUM);
 
 	//アニメステップを取得して一定のところで攻撃判定を発生させる
 	float animStep = animationController_.GetAnimStep();
 
-
 	if (animStep > PUNCH_HIT_END_ANIM_STEP)
 	{
+		//パンチの当たり判定を消す
 		isPunchHitTime_ = false;
+		player_.KillPunchCol();
 	}
 	else if (animStep > PUNCH_HIT_START_ANIM_STEP)
 	{
+		//パンチの当たり判定を作る
+		player_.MakePunchCol();
 		isPunchHitTime_ = true;
 	}
-
+	
+	//アニメーションが終わったら
 	if (animationController_.IsEnd())
 	{
 		//パンチクールタイムセット
@@ -298,7 +450,12 @@ void PlayerAction::ChangePunch(void)
 {
 	punchCnt_ = 0.0f;
 	punchCoolCnt_ = PUNCH_COOL_TIME;
-	actionUpdate_ = std::bind(&PlayerAction::Punch, this);
+	//アニメーション
+	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
+	//パンチサウンド再生
+	SoundManager::GetInstance().Play(actSE_[ACT_SE::PUNCH], SoundManager::PLAYTYPE::BACK);
+
+	actionUpdate_ = [this]() {Punch(); };
 }
 
 void PlayerAction::KnockBack(void)
@@ -308,6 +465,7 @@ void PlayerAction::KnockBack(void)
 	if (punchedCnt_ < 0.0f)
 	{
 		punchedCnt_ = PUNCHED_TIME;
+		speed_ = 0.0f;
 		ChangeAction(ATK_ACT::INPUT);
 	}
 }
@@ -317,7 +475,15 @@ void PlayerAction::ChangeKnockBack(void)
 	//ダメージアニメーション
 	//animationController_->Play((int)ANIM_TYPE::DAMAGE,true,)
 	speed_ = FLY_AWAY_SPEED;
-	actionUpdate_ = std::bind(&PlayerAction::KnockBack, this);
+	actionUpdate_ = [this]() {KnockBack(); };
+	//エフェクト
+	Transform trans = player_.GetTransform();
+	const float EFF_SCL = 15.0f;
+	effect_->Play(EffectController::EFF_TYPE::PUNCH_HIT, trans.pos, trans.quaRot, { EFF_SCL,EFF_SCL, EFF_SCL });
+	//パンチの当たり判定を消す
+	isPunchHitTime_ = false;
+	player_.KillPunchCol();
+	
 }
 
 
@@ -332,9 +498,14 @@ VECTOR PlayerAction::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECT
 	return VAdd(_followPos, addPos);
 }
 
+void PlayerAction::StopSe(const ACT_SE _se)
+{
+
+}
+
 void PlayerAction::Rotate(void)
 {
-	stepRotTime_ -= PlayerInput::DELTA_TIME;
+	stepRotTime_ -= SceneManager::GetInstance().GetDeltaTime();
 	// 回転の球面補間
 	playerRotY_ = Quaternion::Slerp(
 		playerRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);
@@ -357,4 +528,18 @@ void PlayerAction::SetGoalRotate(double _deg)
 		stepRotTime_ = TIME_ROT;
 	}
 	goalQuaRot_ = axis;
+}
+
+void PlayerAction::StopResource(void)
+{
+	for (auto& se : actSE_)
+	{
+		SoundManager::GetInstance().Stop(se.second);
+	}
+	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
+	for (int i = 0; i <= effNum; i++)
+	{
+		effect_->Stop(EffectController::EFF_TYPE::DASH, i);
+	}
+	
 }

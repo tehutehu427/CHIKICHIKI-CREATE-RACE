@@ -1,6 +1,6 @@
 #pragma once
 #include<DxLib.h>
-#include"ItemManager.h"
+#include"../Object/Item/ItemBase.h"
 #include"../../Common/Quaternion.h"
 #include"../../Common/IntVector3.h"
 class MapEditer
@@ -49,8 +49,8 @@ public:
 	/// </summary>
 	/// <param name="mapPos"></param>
 	/// <param name="size"></param>
-	/// <returns></returns>
-	bool IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize,float _rotY);
+	/// <returns>0の場合　重なっていない　-1の場合　範囲外に出ている -2の場合　重なっている</returns>
+	int IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize,float _rotY);
 
 	void AddItem(STATUS _status, IntVector3 _size,IntVector3 _hitSize, float _rotY);
 	void DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos, float _rotY , IntVector3 _size,IntVector3 _hitSize);
@@ -61,6 +61,8 @@ public:
 	/// <returns>マップ座標</returns>
 	IntVector3 WorldToMapPos(VECTOR _worldPos);
 	VECTOR MapToWorldPos(IntVector3 _mapPos);
+
+	void ApplyRotation(IntVector3& _mapPos, IntVector3& _size, IntVector3& _hitSize, int _rotY);
 
 	void DeleteAllItem(void);
 protected:

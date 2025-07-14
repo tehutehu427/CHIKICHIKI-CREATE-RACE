@@ -15,7 +15,7 @@ Capsule::Capsule(const VECTOR& _pos, const Quaternion& _rot, const VECTOR _local
 	localPosDown_(_localPosDown),
 	radius_(_radius)
 {
-	hitInfo_ = {};
+	std::memset(&hitInfo_, 0, sizeof(hitInfo_));
 }
 
 Capsule::Capsule(const Capsule& _copyBase, const VECTOR& _pos, const Quaternion& _rot) : Geometry(_pos,_rot)
@@ -23,13 +23,11 @@ Capsule::Capsule(const Capsule& _copyBase, const VECTOR& _pos, const Quaternion&
 	radius_ = _copyBase.GetRadius();
 	localPosTop_ = _copyBase.GetLocalPosTop();
 	localPosDown_ = _copyBase.GetLocalPosDown();
-	hitInfo_ = {};
+	std::memset(&hitInfo_, 0, sizeof(hitInfo_));
 }
 
 Capsule::~Capsule(void)
 {
-	//“–‚½‚è”»’èî•ñ‚Ì‰ğ•ú
-	MV1CollResultPolyDimTerminate(hitInfo_);
 }
 
 void Capsule::Draw(void)
@@ -178,6 +176,18 @@ const bool Capsule::IsHit(Line& _line)
 	float distance = sqrt(VDot(diff, diff));
 
 	return distance <= GetRadius();
+}
+
+void Capsule::HitAfter(void)
+{
+	if (hitInfo_.HitNum > 0 && hitInfo_.Dim != nullptr)
+	{
+		//“–‚½‚è”»’èî•ñ‚Ì‰ğ•ú
+		MV1CollResultPolyDimTerminate(hitInfo_);
+
+		//Ä‰Šú‰»
+		std::memset(&hitInfo_, 0, sizeof(hitInfo_));
+	}
 }
 
 const VECTOR Capsule::GetCenter(void) const

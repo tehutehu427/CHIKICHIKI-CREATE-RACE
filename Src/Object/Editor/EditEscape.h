@@ -27,8 +27,8 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="_padCursolPos">パッドのカーソル位置</param>
-	EditEscape(const Vector2& _padCursolPos);
+	/// <param name="_padCursorPos">パッドのカーソル位置</param>
+	EditEscape(const Vector2& _padCursorPos);
 
 	/// <summary>
 	/// デストラクタ
@@ -55,21 +55,29 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 編集可能か返す
+	/// </summary>
+	/// <returns>trueなら編集可、falseのときは不可</returns>
+	const bool IsEdit() const; 
+
 private:
-
-
 
 	//フォントサイズ
 	static constexpr int FONT_SIZE = 48;
 
+	//システムメッセージ画像インデックス
+	static constexpr int SYS_MES_INDEX = 2;
+
 	//パッドのカーソル位置
-	const Vector2& padCursolPos_;
+	const Vector2& padCursorPos_;
 
 	//キー管理
 	KeyConfig& key_;
 
 	//アイコン画像
 	int imgIcon_;
+	int* imgSystemMessages_;
 	
 	//フォント
 	int font_;
@@ -87,7 +95,7 @@ private:
 	std::unordered_map < STATE, SceneBase::ProcessFunction > stateFunc_;
 
 	//状態変更
-	inline void ChangeState(const STATE _state) { state_ = _state; }
+	void ChangeState(const STATE _state) { state_ = _state; }
 
 	//処理の登録
 	void RegisterStateFunction(const STATE _state, SceneBase::ProcessFunction _func);

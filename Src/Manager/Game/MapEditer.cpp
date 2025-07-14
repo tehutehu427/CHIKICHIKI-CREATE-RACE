@@ -1,3 +1,5 @@
+#include <cassert>
+#include "../Utility/Utility.h"
 #include "MapEditer.h"
 
 MapEditer* MapEditer::instance_ = nullptr;
@@ -13,22 +15,13 @@ void MapEditer::CreateInstance(void)
 
 MapEditer& MapEditer::GetInstance(void)
 {
+	assert(instance_ && "MapEditer::GetInstance() called before CreateInstance()");
 	return *instance_;
 }
 
 void MapEditer::Init(void)
 {
-	for (int i = 0;i < MAP_SIZE.x;i++)
-	{
-		for (int j = 0;j < MAP_SIZE.y;j++)
-		{
-			for (int k = 0;k < MAP_SIZE.z;k++)
-			{
-				isMapPosItem_[i][j][k] = ItemBase::ITEM_TYPE::NONE;
-				leaderMapPos_[i][j][k] = { -1,-1,-1 };
-			}
-		}
-	}
+	DeleteAllItem();
 }
 
 
@@ -47,28 +40,12 @@ bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos)
 	return GetItemType(mapPos) != ItemBase::ITEM_TYPE::NONE;
 }
 
-bool MapEditer::IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size,IntVector3 _hitSize,float _rotY)
+int MapEditer::IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size,IntVector3 _hitSize,float _rotY)
 {
 
-	int rot = static_cast<int>(_rotY) % 360;
-	switch (rot)
-	{
-	case 0:
-		break;
-	case 90:
-		std::swap(_hitSize.x, _hitSize.z);
-		_mapPos.z -= _hitSize.z - _size.z;
-		break;
-	case 180:
-		_mapPos.x -= _hitSize.x - _size.x;
-		break;
-	case 270:
-		std::swap(_hitSize.x, _hitSize.z);
-		break;
-	default:
-		break;
-	}
-
+	IntVector3 mapPos = _mapPos;	_rotY += 360.0f;
+	int rot = Utility::Round(_rotY);
+	ApplyRotation(_mapPos, _size, _hitSize, rot);
 
 	for (int x = 0;x < _hitSize.x;x++)
 	{
@@ -78,43 +55,27 @@ bool MapEditer::IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size,IntVector3
 			{
 				IntVector3 sizeLoop = { x,y,z };
 				IntVector3 mapPos = _mapPos + sizeLoop;
-				if (mapPos.x < 0 || mapPos.x > MAP_SIZE.x ||
-					mapPos.y < 0 || mapPos.y >MAP_SIZE.y ||
-					mapPos.z <0 || mapPos.z > MAP_SIZE.z)
+				if (mapPos.x < 0 || mapPos.x >= MAP_SIZE.x ||
+					mapPos.y < 0 || mapPos.y >=MAP_SIZE.y ||
+					mapPos.z <0 || mapPos.z >= MAP_SIZE.z)
 				{
-					return true;
+					return -1;
 				}
 				if (IsObjectAtMapPos(mapPos))
 				{
-					return true;
+					return -2;
 				}
 			}
 		}
 	}
-	return false;
+	return 0;
 }
 
 void MapEditer::AddItem(STATUS _status, IntVector3 _size ,IntVector3 _hitSize, float _rotY)
 {
-	IntVector3 mapPos = _status.mapPos;
-	int rot = static_cast<int>(_rotY) % 360;
-	switch (rot)
-	{
-	case 0:
-		break;
-	case 90:
-		std::swap(_hitSize.x, _hitSize.z);
-		_status.mapPos.z -= _hitSize.z - _size.z;
-		break;
-	case 180:
-		_status.mapPos.x -= _hitSize.x - _size.x;
-		break;
-	case 270:
-		std::swap(_hitSize.x, _hitSize.z);
-		break;
-	default:
-		break;
-	}
+	IntVector3 mapPos = _status.mapPos;	_rotY += 360.0f;
+	int rot = Utility::Round(_rotY);
+	ApplyRotation(_status.mapPos, _size, _hitSize, rot);
 
 
 	//アイテムの配置
@@ -134,24 +95,9 @@ void MapEditer::AddItem(STATUS _status, IntVector3 _size ,IntVector3 _hitSize, f
 
 void MapEditer::DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos ,float _rotY ,IntVector3 _size ,IntVector3 _hitSize)
 {
-	int rot = static_cast<int>(_rotY) % 360;
-	switch (rot)
-	{
-	case 0:
-		break;
-	case 90:
-		std::swap(_hitSize.x, _hitSize.z);
-		_mapPos.z -= _hitSize.z - _size.z;
-		break;
-	case 180:
-		_mapPos.x -= _hitSize.x - _size.x;
-		break;
-	case 270:
-		std::swap(_hitSize.x, _hitSize.z);
-		break;
-	default:
-		break;
-	}
+	_rotY += 360.0f;
+	int rot = Utility::Round(_rotY);
+	ApplyRotation(_mapPos, _size, _hitSize, rot);
 
 	//アイテムの消去
 	for (int i = 0; i < _hitSize.x; i++)
@@ -187,16 +133,37 @@ VECTOR MapEditer::MapToWorldPos(IntVector3 mapPos)
 	return worldPos;
 }
 
+void MapEditer::ApplyRotation(IntVector3& _mapPos, IntVector3& _size, IntVector3& _hitSize, int _rotY)
+{
+	int rot = static_cast<int>(_rotY) % 360;
+	switch (rot)
+	{
+	case 0: break;
+	case 90:
+		std::swap(_hitSize.x, _hitSize.z);
+		_mapPos.z -= _hitSize.z - _size.z;
+		break;
+	case 180:
+		_mapPos.x -= _hitSize.x - _size.x;
+		break;
+	case 270:
+		std::swap(_hitSize.x, _hitSize.z);
+		break;
+	default: break;
+	}
+}
+
+
 void MapEditer::DeleteAllItem(void)
 {
-	for (int i = 0; i < MAP_SIZE.x; i++)
+	for (int x = 0; x < MAP_SIZE.x; x++)
 	{
-		for (int j = 0; j < MAP_SIZE.y; j++)
+		for (int y = 0; y < MAP_SIZE.y; y++)
 		{
-			for (int k = 0; k < MAP_SIZE.z; k++)
+			for (int z = 0; z < MAP_SIZE.z; z++)
 			{
-				isMapPosItem_[i][j][k] = ItemBase::ITEM_TYPE::NONE;
-				leaderMapPos_[i][j][k] = { -1,-1,-1 };
+				isMapPosItem_[x][y][z] = ItemBase::ITEM_TYPE::NONE;
+				leaderMapPos_[x][y][z] = { -1,-1,-1 };
 			}
 		}
 	}
@@ -204,9 +171,9 @@ void MapEditer::DeleteAllItem(void)
 
 MapEditer::MapEditer(void)
 {
-	isMapPosItem_[(MAP_SIZE.x)][(MAP_SIZE.y)][(MAP_SIZE.z)] = {};
 }
 
 MapEditer::~MapEditer(void)
 {
 }
+

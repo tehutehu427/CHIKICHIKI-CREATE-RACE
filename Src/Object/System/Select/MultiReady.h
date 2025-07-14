@@ -5,8 +5,10 @@
 #include "../../../Scene/SceneBase.h"
 
 class KeyConfig;
+class SoundManager;
 class MultiInputCheck;
 class SelectScene;
+class MultiCheckPlayer;
 
 class MultiReady
 {
@@ -19,7 +21,14 @@ public:
 	{
 		NUM_CHECK,	//人数確認
 		PAD_CHECK,	//コントローラー確認
-		FINAL_CHECK	//最終確認
+		FINAL_CHECK,//最終確認
+		PLAYER_ANIM,//プレイヤーアニメーション
+	};
+
+	enum class GAME_RULR
+	{
+		CLEAR_SCORE,
+		SKIP,
 	};
 
 	/// <summary>
@@ -58,11 +67,53 @@ private:
 	//選べるプレイヤー人数の最小
 	static constexpr int PLAYER_NUM_MIN = 2;
 
+	//メッセージ画像拡大率
+	static constexpr float MESSAGE_RATE = 0.7f;
+
+	//ナンバー画像の拡大率
+	static constexpr float NUMBER_RATE = 2.0f;
+
+	//アイコンの数
+	static constexpr int ICON_NUM = 2;
+
+	//クリアスコアの最大値
+	static constexpr int CLEAR_SCORE_MAX = 15;
+
 	//入力管理クラス
 	KeyConfig& keyConfig_;
 
+	//サウンド管理クラス
+	SoundManager& sndMng_;
+
+	//メッセージ画像
+	int* imgMessages_;
+
+	//ナンバー画像
+	int* imgNumbers_;
+
+	//ボタン押してね画像
+	int imgPushButton_;
+
+	//選択画像
+	int imgSelectIcon_;
+
 	//プレイヤー人数
 	int playerNum_;
+
+	//クリアスコア
+	int clearScore_;
+
+	//サウンドボリューム
+	int soundVolume_;
+
+	//メッセージのアルファ値
+	int mesAlpha_;
+
+	//アルファ値の変化方向
+	int alphaDir_;
+
+	//スキップの有無
+	bool isSkip_;
 
 	//状態
 	STATE state_;
@@ -70,24 +121,37 @@ private:
 	//入力確認クラス
 	std::unique_ptr<MultiInputCheck> multiInputChecks_;
 
+	//ルール項目別右の処理
+	std::unordered_map<GAME_RULR, std::function<void()>> ruleRightMap_;
+
+	//ルール項目別左の処理
+	std::unordered_map<GAME_RULR, std::function<void()>> ruleLeftMap_;
+
 	//状態別処理の管理
 	std::unordered_map<STATE, SceneBase::ProcessFunction> stateTables_;
+
+	//プレイヤー
+	std::vector<std::unique_ptr<MultiCheckPlayer>> players_;
 
 	//状態別処理登録
 	void RegisterProcessFunc(const STATE _state, SceneBase::ProcessFunction _funcs);
 
 	//状態変更
-	inline const void ChangeState(const STATE _state) { state_ = _state; }
+	const void ChangeState(const STATE _state) { state_ = _state; }
 
 	//状態別更新処理
 	void UpdateNumCheck();
 	void UpdatePadCheck();
 	void UpdateFinalCheck();
+	void UpdatePlayerAnimation();
 
 	//状態別描画処理
 	void DrawNumCheck();
 	void DrawPadCheck();
 	void DrawFinalCheck();
+
+	//メッセージの描画
+	void DrawMessage(const int _posX, const int _posY, const int _imgIndex_);
 
 };
 

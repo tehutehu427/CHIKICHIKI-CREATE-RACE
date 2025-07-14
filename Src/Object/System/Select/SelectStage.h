@@ -6,8 +6,18 @@ class SelectStage
 {
 public:
 
-	static constexpr int COL = 2;
-	static constexpr int LINE = 2;
+
+
+	enum class STAGE_TYPE
+	{
+		BEGINNER,		//初級
+		INTERMEDIATE,	//中級
+		ADVANCED,		//上級
+		MAX
+	};
+
+	//ステージ最大数
+	static constexpr int STAGE_TYPE_MAX = static_cast<int>(STAGE_TYPE::MAX);
 
 	/// <summary>
 	/// コンストラクタ
@@ -40,10 +50,28 @@ public:
 	/// </summary>
 	void Draw();
 
-private:
+private:	
+	
+	//矢印の数
+	static constexpr int ARROW_NUM = 2;
+
+	//メッセージ画像
+	int* imgMessages_;
+
+	//レベル選択用画像
+	int* imgLevels_;
+
+	//矢印のアイコン
+	int imgArrow_;
+
+	//選択用アイコン
+	int selectIcon_;
 
 	//選択してるステージインデックス
 	int stageIndex_;
+
+	//メッセージの描画
+	void DrawMessage();
 
 };
 

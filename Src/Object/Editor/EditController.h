@@ -11,15 +11,31 @@ class EditItemReady;
 class EditController
 {
 public:
-	static constexpr float PAD_STICK_RATE = 0.0251f;	//パッドスティックの感度
+	static constexpr float PAD_STICK_RATE = 0.0125f;	//パッドスティックの感度
+	static constexpr float PAD_STICK_RATE_UP = 2.0f;	//パッドスティックの感度倍率
 	static constexpr float MOVE_ARROW_LENGTH = 75.0f;	//移動矢印の長さ
-	static constexpr float MOVE_ARROW_SIZE = 10.0f;		//移動矢印の先端の大きさ
-	static constexpr int DELAY_MOVE_ARROW = 20;			//移動矢印の先端からの猶予座標
+	static constexpr float MOVE_ARROW_RADIUS = 15.0f;		//移動矢印の先端の半径
+	static constexpr float MOVE_ARROW_SIZE = 60.0f;		//移動矢印の先端の長さ
+
+	static constexpr float MOVED_ARROW_LENGTH = 100.0f;	//移動時の矢印の長さ
+	static constexpr float MOVED_ARROW_RADIUS = 30.0f;		//移動時の矢印の先端の半径
+	static constexpr float MOVED_ARROW_SIZE = 90.0f;		//移動時の矢印の先端の長さ
+
+	static constexpr int MOVE_ARROW_VARTEXNUM = 32;	//移動矢印の先端の頂点数
+	static constexpr int DELAY_MOVE_ARROW = 30;			//移動矢印の先端からの猶予座標
+
+	static constexpr int CURSOR_LOCAL_POS_X = 16;	//カーソルのローカル座標X
+	static constexpr int CURSOR_LOCAL_POS_Y = 16;	//カーソルのローカル座標X
+	static constexpr int CURSOR_POINT = 2;			//カーソルのポイントサイズ
 	static constexpr IntVector3 ERROR_POS = { -1,-1,-1 };	//生成不可の座標
 	static constexpr IntVector3 PLAYER1_INIT_EDIT_POS = { 5,0,0 };	//プレイヤー1のエディター初期座標
 	static constexpr IntVector3 PLAYER2_INIT_EDIT_POS = { 10,0,0 };	//プレイヤー1のエディター初期座標
 	static constexpr IntVector3 PLAYER3_INIT_EDIT_POS = { 15,0,0 };	//プレイヤー1のエディター初期座標
 	static constexpr IntVector3 PLAYER4_INIT_EDIT_POS = { 20,0,0 };	//プレイヤー1のエディター初期座標
+
+	static constexpr float GO_DUMMY_DISTANCE = 700.0f;
+
+	static constexpr float ERROR_STRING_TIME = 1.0f;	//エラー文字列の表示時間
 
 	enum class MODE
 	{
@@ -37,6 +53,22 @@ public:
 		XY,		//XY平面
 		XZ,		//XZ平面
 		YZ,		//YZ平面
+	};
+
+	enum class ERROR_TYPE
+	{
+		NONE,			//エラーなし
+		ITEM_RANGE_OUT,	//アイテムが範囲外に出ている
+		ITEM_OVER_LAP,	//アイテムが重なっている
+		ITEM_NOT_SET,	//アイテムが設置できない場所
+	};
+
+	enum class CAMERA_MODE	//エディット時のカメラ
+	{
+		FREE,				//自由移動
+		GO_DUMMY,		//ダミー
+		FIXED_UP,			//上固定
+		MAX,
 	};
 
 	//コンストラクタ
@@ -65,12 +97,21 @@ public:
 	Vector2 GetScreenSize(void) const { return screenSize_; }	//スクリーンサイズ取得
 
 	void SetReady(void);	//マルチ時に準備完了の処理
+
+	void UpdateCursor(void);	//カーソル更新
+
+	void UpdateError(void);	//エラー関係の更新
+
+	int IsError(void);	//エラーかどうか
+
+	void SetError(int errorType);
 protected:
 
 private:
 
 	std::unique_ptr<EditItemReady> ready_;	//マルチ時にアイテムを置き終わったか
-
+	ERROR_TYPE errorType_;	//エラーの種類
+	float errorStringTime_;	//エラー文字列の表示時間
 	int playerNum_;	//プレイヤー番号
 	int playerMaxNum_;	//プレイヤーの最大数
 	KeyConfig::JOYPAD_NO padNum_;	//パッド番号
@@ -81,6 +122,8 @@ private:
 	Vector2 cursorPos_;	//2Dのカーソル座標
 	IntVector3 mapPos_;	//3Dのマップ座標
 	IntVector3 initMapPos_;	//初期マップ座標
+
+	CAMERA_MODE cameraMode_;	//カメラのモード
 
 	MODE mode_;	//モード
 	ItemBase::ITEM_TYPE itemType_;	//アイテムの種類
@@ -111,20 +154,37 @@ private:
 	//アイテム選択解除
 	void ItemNotSelect(void);		
 	
-	//近くのオブジェクトの直前座標を取得
-	IntVector3 NearObjectFrontPos(void);	
+	//近くのオブジェクトの直前座標を取得 スクリーン座標を渡す
+	IntVector3 NearObjectFrontPos(Vector2 pos);	
 	
 	//移動するアイテムの座標を取得
 	void  MoveItem(void);			
 
 	//移動方向を取得
-	MOVE_DIR GetMoveDir(void) const;			
+	MOVE_DIR GetMoveDir(void) ;		//クリックした方向の円錐をもとに算出
 
+	MOVE_DIR GetMoveDirTwo(void);	//カメラの方向をもとに算出
+
+	int IsChengeMoveDir(void);	//移動方向を変えていいか -1 :NONE　0: 元のまま 1:変える
 	void DebugUpdate(void);	//デバッグ用更新
 	void DebugDraw(void);	//デバッグ用描画
 
 	void RotateObject(void) const;	//オブジェクト回転
 
 	void DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY);	//範囲内のアイテムを削除
+
+	bool IsChengeVecDir(const VECTOR vec1, const VECTOR vec2) const;	//ベクトルの方向が変わったか　変わったら　true
+
+	void DrawXArrow(VECTOR worldPos, bool isBig);	//X方向の矢印を描画
+	void DrawYArrow(VECTOR worldPos, bool isBig);	//Y方向の矢印を描画
+	void DrawZArrow(VECTOR worldPos, bool isBig);	//Z方向の矢印を描画
+
+	void SetCameraPosToDummyObject(void);	//ダミーオブジェクトにカメラを近づける
+
+	void ChengeCameraMode(void);	//カメラのモードを変える
+	void ChengeCameraMode(CAMERA_MODE mode);	//カメラのモードを変える
+	VECTOR cPos_;		//カメラの座標
+	VECTOR cAngles_;	//カメラの回転
+	VECTOR cTargetPos_;	//カメラの中止店
 };
 

@@ -59,6 +59,9 @@ void FerrisWheel::SetParam(void)
 	
 	//ルート設定
 	InitRoute();
+
+	//マップサイズ
+	mapSize_ = MAP_SIZE;
 }
 
 void FerrisWheel::Update(void)
@@ -72,6 +75,13 @@ void FerrisWheel::Update(void)
 
 void FerrisWheel::Draw(void)
 {
+	//カメラ範囲に含まれるか調べる
+	if (IsInCameraView())
+	{
+		//含まれる場合
+		return;	//描画を行わない
+	}
+
 	DrawLine3D(VAdd(route_[0], MAP_LOCALPOS), VAdd(route_[1], MAP_LOCALPOS), Utility::BLACK);
 	MV1DrawModel(trans_.modelId);
 }

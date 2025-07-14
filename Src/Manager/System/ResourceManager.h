@@ -35,6 +35,54 @@ public:
 	static constexpr int CHANGE_PHASE_ICONS_SIZE_X = 160;//フェーズ遷移用アイコン大きさX
 	static constexpr int CHANGE_PHASE_ICONS_SIZE_Y = 80;//フェーズ遷移用アイコン大きさY
 
+	static constexpr int NUMBERS_DIV_X = 5;	//ナンバーの分割数X
+	static constexpr int NUMBERS_DIV_Y = 2;	//ナンバーの分割数Y
+	static constexpr int NUMBERS_SIZE = 128; //ナンバーの各画像サイズ
+
+	static constexpr int SELECT_MES_DIV_X = 1;	//セレクトシーン用メッセージ分割数X
+	static constexpr int SELECT_MES_DIV_Y = 5;	//セレクトシーン用メッセージ分割数Y
+	static constexpr int SELECT_MES_SIZE_X = 1024; //セレクトシーン用メッセージ各画像サイズX
+	static constexpr int SELECT_MES_SIZE_Y = 128; //セレクトシーン用メッセージ各画像サイズY
+
+	static constexpr int CLEAR_MENUS_DIV_X = 1;//クリア時用メッセージ分割数X
+	static constexpr int CLEAR_MENUS_DIV_Y = 3;//クリア時用メッセージ分割数Y
+	static constexpr int CLEAR_MENUS_SIZE_X = 796;//クリア時用メッセージ各画像サイズX
+	static constexpr int CLEAR_MENUS_SIZE_Y = 128;//クリア時用メッセージ各画像サイズY
+
+	static constexpr int SMOKE_EFE_DIV_X = 16;	//煙エフェクト分割数X
+	static constexpr int SMOKE_EFE_DIV_Y = 1;	//煙エフェクト分割数Y
+	static constexpr int SMOKE_EFE_SIZE = 64;	//煙エフェクトサイズ
+
+	static constexpr int LEVEL_SLE_DIV_X = 2;		//レベル分割数X
+	static constexpr int LEVEL_SLE_DIV_Y = 2;		//レベル分割数Y
+	static constexpr int LEVEL_SLE_SIZE_X = 400;	//レベルサイズ
+	static constexpr int LEVEL_SLE_SIZE_Y = 300;	//レベルサイズ
+
+	static constexpr int YES_NO_DIV_X = 1;		//YesNo分割数X
+	static constexpr int YES_NO_DIV_Y = 2;		//YesNo分割数Y
+	static constexpr int YES_NO_SIZE_X = 192;	//YesNoサイズX
+	static constexpr int YES_NO_SIZE_Y = 64;	//YesNoサイズY
+
+	static constexpr int EDIT_MESSAGES_DIV_X = 1;	//エディットメッセージ分割数X
+	static constexpr int EDIT_MESSAGES_DIV_Y = 3;	//エディットメッセージ分割数Y
+	static constexpr int EDIT_MESSAGES_SIZE_X = 980; //エディットメッセージ各画像サイズX
+	static constexpr int EDIT_MESSAGES_SIZE_Y = 128; //エディットメッセージ各画像サイズY
+
+	static constexpr int SYSTEM_MESSAGES_DIV_X = 1;	//システムメッセージ分割数X
+	static constexpr int SYSTEM_MESSAGES_DIV_Y = 2;	//システムメッセージ分割数Y
+	static constexpr int SYSTEM_MESSAGES_SIZE_X = 286; //システムメッセージ各画像サイズX
+	static constexpr int SYSTEM_MESSAGES_SIZE_Y = 64; //システムメッセージ各画像サイズY
+
+	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_X = 1;	//システム設定メッセージ分割数X
+	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_Y = 3;	//システム設定メッセージ分割数Y
+	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_X = 576; //システム設定メッセージ各画像サイズX
+	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_Y = 64; //システム設定メッセージ各画像サイズY
+
+	static constexpr int ONOFF_DIV_X = 1; //有無の分割数X
+	static constexpr int ONOFF_DIV_Y = 2; //有無の分割数Y
+	static constexpr int ONOFF_SIZE_X = 128; //有無の各画像サイズX
+	static constexpr int ONOFF_SIZE_Y = 64; //有無の各画像サイズY
+
 	// リソース名
 	enum class SRC
 	{
@@ -51,9 +99,17 @@ public:
 		EXPLAN_BACK,
 		CHANGE_PHASE_ICONS,
 		CANCEL_ICON,
+		READY_IMG,
+		EDIT_MESSAGES,
+		SYSTEM_MESSAGES,
+		YES_NO,
+		ERROR_MAP_OUT_IMG,
+		ERROR_OVERLAP_IMG,
+
 
 		//クリア
 		CLEAR,
+		CLEAR_MENUS,
 		PLAYER_PLATES,
 		WIN,
 
@@ -70,6 +126,23 @@ public:
 		BACK_ARC,
 		SHADOW_ARC,
 		CURSORS,
+		SELECT_MESSAGES,
+		LEVEL_SELECTS,
+		SYSTEM_SETTING,
+		SETTING_ITEMS,
+		PUSH_B_BUTTON_MES,
+		ONOFF,
+		SETTING_FINISH,
+
+
+		//ゲームシーン用画像
+		NUMBERS,
+		OK,
+		ROUND,
+		SELECT_ITEM_MES,
+		PROGRESS,
+		SELECT_ITEM,
+
 
 		//アイテムモデル
 		FLOOR,				//足場
@@ -81,12 +154,25 @@ public:
 		CANNON_SHOT,		//大砲の弾
 		START_CUBE,			//スタート
 		GOAL_CUBE,			//ゴール
+		COL_CUBE,			//当たり判定用箱
 		SPRING,				//ばね
 		SPIKE,				//とげ
 		SLIME_FLOOR,		//スライム床
 		FAN,				//扇風機
 		SKY_DOME,			//スカイドーム
 		CHICKEN,			//チキンモデル
+
+		//エフェクト
+		WIND_EFF,			//風エフェクト
+		BLAST_EFF,			//爆発エフェクト
+		DASH_EFF,			//ダッシュエフェクト
+		JUMP_EFF,			//ジャンプエフェクト
+		LANDING_EFF,		//着地エフェクト
+		PUNCH_HIT_EFF,		//パンチヒットエフェクト
+
+		//2Dエフェクト
+		SMOKE_EFE_SPR,		//煙エフェクト
+
 	};
 
 	// 明示的にインステンスを生成する

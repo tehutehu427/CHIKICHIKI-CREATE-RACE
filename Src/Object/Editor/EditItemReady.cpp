@@ -1,5 +1,7 @@
 #include "../Utility/Utility.h"
 #include "../Manager/System/KeyConfig.h"
+#include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/SoundManager.h"
 #include "EditController.h"
 #include "EditItemReady.h"
 
@@ -8,10 +10,11 @@ EditItemReady::EditItemReady(EditController& parent) : parent_(parent)
 	ready_ = READY_PHASE::NOT_READY;
 	hitSize_ = { HIT_WIDTH,HIT_HEIGHT };
 	pos_ = { MARGIN,MARGIN };
+	readyImg_ = -1;
 	phaseChanges_.emplace(READY_PHASE::NOT_READY, std::bind(&EditItemReady::ChengePhaseNotRedy, this));
 	phaseChanges_.emplace(READY_PHASE::CHECK, std::bind(&EditItemReady::ChengePhaseCheck, this));
 	phaseChanges_.emplace(READY_PHASE::READY, std::bind(&EditItemReady::ChengePhaseReady, this));
-
+	readyImg_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::READY_IMG).handleId_;
 }
 
 EditItemReady::~EditItemReady()
@@ -20,7 +23,7 @@ EditItemReady::~EditItemReady()
 
 void EditItemReady::Init()
 {
-	phaseChanges_[READY_PHASE::NOT_READY]();
+	ChangeReady(READY_PHASE::NOT_READY);
 }
 
 void EditItemReady::Update()
@@ -70,12 +73,27 @@ void EditItemReady::UpdateNotReady(void)
 		{
 			return; //カーソルが当たり判定の外にある場合は何もしない
 		}
+		int errorType = parent_.IsError();
+		if (errorType < 0)
+		{
+			SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
+			parent_.SetError(errorType);
+			return;
+		}
 		ChangeReady(READY_PHASE::CHECK);
 	}
 }
 
 void EditItemReady::UpdateCheck(void)
 {
+	int errorType = parent_.IsError();
+	if (errorType < 0)
+	{
+		SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
+		parent_.SetError(errorType);
+		ChangeReady(READY_PHASE::NOT_READY);
+		return;
+	}
 	KeyConfig& ins = KeyConfig::GetInstance();
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL, parent_.GetPadNum(), KeyConfig::TYPE::PAD))
 	{
@@ -96,7 +114,8 @@ void EditItemReady::UpdateReady(void)
 
 void EditItemReady::DrawNotReady(void)
 {
-	DrawBox(MARGIN, MARGIN, MARGIN + hitSize_.x, MARGIN + hitSize_.y, 0x000000, true);
+	//DrawBox(MARGIN, MARGIN, MARGIN + hitSize_.x, MARGIN + hitSize_.y, 0x000000, true);
+	DrawModiGraph(MARGIN, MARGIN + hitSize_.y, MARGIN, MARGIN, MARGIN + hitSize_.x, MARGIN, MARGIN + hitSize_.x, MARGIN + hitSize_.y, readyImg_, true);
 }
 
 void EditItemReady::DrawCheck(void)
@@ -120,5 +139,6 @@ void EditItemReady::DrawReady(void)
 	DrawBox(0, 0, screenSize.x, screenSize.y, 0x000000, true);
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255); //不透明にする
+	DrawRotaGraph(screenSize.x / 2, screenSize.y / 2, 1.0f, 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::OK).handleId_, true); //中央に準備完了の画像を表示
 
 }

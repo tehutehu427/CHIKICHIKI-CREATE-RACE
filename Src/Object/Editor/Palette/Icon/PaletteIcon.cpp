@@ -2,6 +2,7 @@
 #include <cassert>
 #include <algorithm>
 #include "../../../../Manager/System/ResourceManager.h"
+#include "../../../../Manager/System/SoundManager.h"
 #include "../../../../Manager/System/InputManager.h"
 #include "../../../../Manager/System/DateBank.h"
 #include "../../../../Utility/Utility.h"
@@ -215,12 +216,17 @@ void PaletteIcon::UpdateSelect()
 	KeyConfig& ins = KeyConfig::GetInstance();
 
 	//クリックしたか調べる
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PALETTE_CURSOR_SELECT,KeyConfig::JOYPAD_NO::PAD1)) {
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PALETTE_CURSOR_SELECT,KeyConfig::JOYPAD_NO::PAD1))
+	{
 		//マウス位置を取得
 		Vector2 mousePos = ins.GetMousePos();
 
 		//スクロールをクリックしたか調べる（クリックしてた場合処理終了）
-		if (CheckScrollIcon(mousePos)) { return; }
+		if (CheckScrollIcon(mousePos)) 
+		{
+			SoundManager::GetInstance().Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
+			return; 
+		}
 
 		//アイテムアイコンをクリックしたか判定を返す
 		isCreate_ = CheckItemIcon(mousePos);
@@ -372,6 +378,7 @@ bool PaletteIcon::CheckItemIcon(const Vector2 _mPos, const int _playerIndex)
 		//位置の確認
 		if (Utility::IsPointInRect(_mPos, leftTop, rightBotm))
 		{
+			SoundManager::GetInstance().Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
 			selectTypes_[_playerIndex] = static_cast<ItemBase::ITEM_TYPE>(ic.num);
 			sleCnt_[_playerIndex] = i;
 			break;

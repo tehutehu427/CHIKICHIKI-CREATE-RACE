@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/KeyConfig.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Utility/Utility.h"
 
 
@@ -61,6 +62,7 @@ void ManualTab::UpdateWait()
 		(Utility::IsPointInRectCircle(key_.GetMousePos(), uiPos_, RADIUS) || 
 			Utility::IsPointInRectCircle(padCursolPos_, uiPos_, RADIUS)))
 	{
+		SoundManager::GetInstance().Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
 		ChangeState(STATE::DISPLAY);
 	}
 }
@@ -70,6 +72,7 @@ void ManualTab::UpdateDisplay()
 	if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::MANUAL, KeyConfig::JOYPAD_NO::PAD1) ||
 		key_.IsTrgDown(KeyConfig::CONTROL_TYPE::MANUAL_ICON_CLICK, KeyConfig::JOYPAD_NO::PAD1)) 
 	{
+		SoundManager::GetInstance().Play(SoundManager::SRC::CANCEL, SoundManager::PLAYTYPE::BACK);
 		ChangeState(STATE::WAIT);
 	}
 }
@@ -84,7 +87,8 @@ void ManualTab::DrawWait()
 		0.0f,
 		imgIcon_,
 		true,
-		false);
+		false
+	);
 }
 
 void ManualTab::DrawDisplay()
@@ -97,13 +101,4 @@ void ManualTab::DrawDisplay()
 		Utility::BLUE,
 		true
 	);
-
-	/*DrawRotaGraph(
-		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y,
-		1.0f,
-		0.0f,
-		imgManual_,
-		true,
-		false);*/
 }

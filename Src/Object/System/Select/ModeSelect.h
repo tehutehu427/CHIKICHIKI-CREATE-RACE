@@ -1,5 +1,6 @@
 #pragma once
 #include<functional>
+#include<unordered_map>
 #include<DxLib.h>
 #include "../../../Application.h"
 #include "../../../Common/Vector2.h"
@@ -7,9 +8,10 @@
 class SceneManager;
 class DateBank;
 class SelectScene;
-class SelectUIGlow;
-class SelectUIDarkly;
 class ManualTab;
+class SelectSceneActors;
+class PixelMaterial;
+class PixelRenderer;
 
 class ModeSelect
 {
@@ -24,16 +26,6 @@ public:
 		SELECT,	//選択
 		ROTATE,	//回転
 	};
-
-	//円弧の描画数
-	static constexpr int DRAW_ARC_NUM = 4;	//描画数
-
-	//円弧の回転
-	static constexpr int ROTATE_CENTER_X = 0;
-	static constexpr int ROTATE_CENTER_Y = Application::SCREEN_HALF_Y;
-	static constexpr float ROTATE_STEP = DX_PI_F / 2.0f;	// 90度
-	static constexpr float ROTATE_SPEED = 0.1f;				// 回転アニメ速度
-	static constexpr float ORBIT_RADIUS = 300.0f;			// 中心からの半径
 
 	/// <summary>
 	/// コンストラクタ
@@ -67,6 +59,24 @@ public:
 
 private:
 
+	//円弧の描画数
+	static constexpr int DRAW_ARC_NUM = 4;	//描画数
+
+	//円弧の回転
+	static constexpr int ROTATE_CENTER_X = 0;
+	static constexpr int ROTATE_CENTER_Y = Application::SCREEN_HALF_Y;
+	static constexpr float ROTATE_STEP = DX_PI_F / 2.0f;	// 90度
+	static constexpr float ROTATE_SPEED = 0.1f;				// 回転アニメ速度
+	static constexpr float ORBIT_RADIUS = 300.0f;			// 中心からの半径
+	static constexpr float BLUR_DISTANCE = 16.0f;			// ブラー距離
+
+	//矢印の数
+	static constexpr int ARROWS = 2;
+
+	//矢印の位置
+	static constexpr int ARROW_POS_X = 320;
+	static constexpr int ARROW_POS_Y[ARROWS] = { 50, 600 };
+
 	//シーン管理
 	SceneManager& scnMng_;
 
@@ -82,9 +92,11 @@ private:
 	};
 
 	//画像のハンドル
-	int imgBackArc_;
+	int* imgMessages_;
 	int* imgArcs_;
+	int imgBackArc_;
 	int imgShadowArc_;
+	int imgArrow_;
 
 	//移動角度
 	float currentAngle_;
@@ -110,11 +122,14 @@ private:
 	//更新関数
 	std::function<void(SelectScene&)> selectUpdateFunc_;
 
-	//エフェクトグロー
-	std::unique_ptr<SelectUIGlow> uiGlow_;
+	//アクター
+	std::unique_ptr<SelectSceneActors> actors_;
 
-	//エフェクトダークリー
-	std::unique_ptr<SelectUIDarkly> uiDarkly_;
+	//マテリアル
+	std::unique_ptr<PixelMaterial> material_;
+
+	//レンダラー
+	std::unique_ptr<PixelRenderer> renderer_;
 
 	//マニュアル
 	std::unique_ptr<ManualTab> manual_;
@@ -132,11 +147,17 @@ private:
 	//次に表示される円弧にメニュー項目を与える
 	void SetMenuItem(const int _imgIndex, const int _arcIndex);
 
+	//メッセージを描画させる関数
+	void DrawMessage();
+
 	//画像を暗く描画する
 	void DrawDarkly(const int _index);
 
 	//画像周りを発光させる
 	void DrawGlow(const int _index);
+
+	//矢印の描画
+	void DrawArrow();
 
 	//デバッグ
 	void DebugUpdate();	//更新

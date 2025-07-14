@@ -14,7 +14,11 @@ public:
 		KEY_BORD,	//キーボード操作		ソロ用
 		CONTROLLER,	//コントローラー操作	マルチ用
 		ERORE		//プレイヤー人数がerore
-	};
+	};	
+	
+	//通常のスコア量
+	static constexpr  int DEFAULT_SCORE = 5;
+
 
 	/// <summary>
 	/// 明示的にインステンスを生成する
@@ -47,6 +51,12 @@ public:
 	/// <param name="num">プレイヤー人数</param>
 	/// <returns>正しく設定できればtrue,問題が起きればfalse</returns>
 	bool SetPlayerNum(int _num);
+	
+	/// <summary>
+	/// マルチでのクリアスコアの設定
+	/// </summary>
+	/// <param name="_clearScore"></param>
+	void SetMultiClearScore(const int _clearScore) { multiClearScore_ = _clearScore; }
 
 	/// <summary>
 	/// プレイヤー人数を返す
@@ -67,22 +77,26 @@ public:
 	/// </summary>
 	/// <param name="_stageNo">ステージ番号</param>
 	/// <returns></returns>
-	inline const void SetStageNo(const int _stageNo) { stageNo_ = _stageNo; }
+	const void SetStageNo(const int _stageNo) { stageNo_ = _stageNo; }
 
 	/// <summary>
 	/// ステージの番号を返す
 	/// </summary>
 	/// <returns>ステージ番号</returns>
-	inline const int GetStageNo()const { return stageNo_; }
+	const int GetStageNo()const { return stageNo_; }
+
+	const int GetMultiClearScore() const { return multiClearScore_; }
 
 	/// <summary>
 	/// アイテムの名前を返す
 	/// </summary>
 	/// <param name="_type">アイテムの種類</param>
 	/// <returns>アイテムネーム</returns>
-	inline const std::string GetItemName(const ItemBase::ITEM_TYPE _type)const { return itemNames_[static_cast<int>(_type)]; }
+	const std::string GetItemName(const ItemBase::ITEM_TYPE _type)const { return itemNames_[static_cast<int>(_type)]; }
 
 private:
+
+
 	static DateBank* instance_;
 	DateBank(void);
 	DateBank(const DateBank& instance_) = default;
@@ -90,6 +104,7 @@ private:
 	int playerNum_;		//プレイヤーの人数
 	int maxPlayerNum_;	//コントローラー数よりプレイヤー人数が多くならないようにする
 	int stageNo_;		//ステージ番号
+	int multiClearScore_;	//マルチでのクリアとなるスコア量
 
 	//種類ごとの名前
 	std::string itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::MAX)];

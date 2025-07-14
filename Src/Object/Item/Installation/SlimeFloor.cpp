@@ -1,6 +1,3 @@
-#include "../Utility/Utility.h"
-#include "../Common/Quaternion.h"
-#include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
 #include"../../Common/Geometry/Model.h"
 #include "SlimeFloor.h"
@@ -43,7 +40,10 @@ void SlimeFloor::SetParam(void)
 
 	//コライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::SLIME_FLOOR, std::move(geo));
+	MakeCollider({ Collider::TAG::SLIME_FLOOR }, std::move(geo));
+
+	//マップサイズ
+	mapSize_ = MAP_SIZE;
 }
 
 void SlimeFloor::Update(void)

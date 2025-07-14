@@ -1,7 +1,7 @@
 #pragma once
 
 #include<DxLib.h>
-#include"../Common/Quaternion.h"
+#include"../../../Common/Quaternion.h"
 
 class Model;
 class Cube;
@@ -29,6 +29,9 @@ public:
 	virtual const bool IsHit(Sphere& _sphere) = 0;
 	virtual const bool IsHit(Capsule& _capsule) = 0;
 	virtual const bool IsHit(Line& _line) = 0;
+	
+	//ƒqƒbƒgŒã‚Ìˆ—
+	virtual void HitAfter(void);
 
 	//eî•ñ‚ğ•Ô‚·
 	inline const VECTOR& GetColPos(void)const { return pos_; }

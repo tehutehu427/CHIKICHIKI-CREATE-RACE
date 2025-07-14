@@ -1,3 +1,4 @@
+#include "../Utility/Utility.h"
 #include "../Object/Item/Fixed/StartFlag.h"
 #include "../Object/Item/Fixed/GoalFlag.h"
 #include "../Object/Item/Installation/Floor.h"
@@ -67,18 +68,25 @@ void ItemManager::Draw(void)
 		}
 
 		//他オブジェクトと重なっているか
-		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize(),item.second->GetHitSize(),GetDummyItemRotY(item.first)))
+		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize(),item.second->GetHitSize(),GetDummyItemRotY(item.first)) < 0)
 		{
 			item.second->ChangeModelColor(ItemManager::DUMMY_OVERLAP_COLOR);
+			item.second->SetModelColor(DUMMY_OVERLAP_COLOR.r, DUMMY_OVERLAP_COLOR.g, DUMMY_OVERLAP_COLOR.b, DUMMY_OVERLAP_COLOR.a);
 		}
 		//重なっていない
 		else
 		{
 			item.second->ChangeModelColor(ItemManager::DUMMY_DEFAULT_COLOR);
+			item.second->SetModelColor(DUMMY_DEFAULT_COLOR.r, DUMMY_DEFAULT_COLOR.g, DUMMY_DEFAULT_COLOR.b, DUMMY_DEFAULT_COLOR.a);
 		}
+
+
 		//モデル描画
 		item.second->Draw();
+
+		//色をもとに戻す
 		item.second->ChangeModelColor(ItemManager::DEFAULT_COLOR);
+		item.second->SetModelColor(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 }
 
@@ -92,20 +100,24 @@ void ItemManager::Destroy(void)
 	}
 }
 
-void ItemManager::AddItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type,float rotY)
+void ItemManager::AddItem(IntVector3 _mapPos, Quaternion _rot, ItemBase::ITEM_TYPE _type,float _rotY)
 {
 	//アイテム
 	std::shared_ptr<ItemBase> item;
 
 	//アイテムを生成
-	item = CreateItem(type, mapPos, rot);
+	item = CreateItem(_type, _mapPos, _rot);
 	if (item == nullptr)
 	{
 		return;
 	}
-	item->SetRotY(rotY);
+	_rotY += 360.0f;
+	int rot = Utility::Round(_rotY);
+	rot = static_cast<int>(_rotY) % 360;
+
+	item->SetRotY(rot);
 	//配列に追加
-	items_[type].emplace_back(std::move(item));
+	items_[_type].emplace_back(std::move(item));
 }
 
 void ItemManager::DeleteItem(VECTOR mapPos, int range)
@@ -225,7 +237,7 @@ IntVector3 ItemManager::GetDummyItemSize(int playerNum)
 	return size;
 }
 
-Transform ItemManager::GetDummyItemTransform(int playerNum)
+const Transform& ItemManager::GetDummyItemTransform(int playerNum)
 {
 	//モデル情報
 	Transform transform;
@@ -237,7 +249,7 @@ Transform ItemManager::GetDummyItemTransform(int playerNum)
 		{
 			return Transform();
 		}
-		transform = dummyItems_[playerNum]->GetTransform();
+		return dummyItems_[playerNum]->GetTransform();
 	}
 	else
 	{
@@ -249,29 +261,29 @@ Transform ItemManager::GetDummyItemTransform(int playerNum)
 	return transform;
 }
 
-void ItemManager::ResetDummyItem(int playerNum, ItemBase::ITEM_TYPE type,IntVector3 mapPos)
-{
-	//指定プレイヤーのダミーアイテムがあるか
-	if (dummyItems_.find(playerNum) != dummyItems_.end())
-	{
-		if (dummyItems_[playerNum] == nullptr)
-		{
-			return;
-		}
-		//モデルの回転情報は保存
-		Transform transform = dummyItems_[playerNum]->GetTransform();
-		
-		//新たに指定されたアイテムを生成
-		std::shared_ptr<ItemBase> dummy;
-		dummy = CreateItem(type, mapPos, transform.quaRot);
-		dummy->SetRotY(GetDummyItemRotY(playerNum));
-		//元あったアイテムの削除
-		dummyItems_.erase(playerNum);
-
-		//置き換え
-		dummyItems_[playerNum] = dummy;
-	}
-}
+//void ItemManager::ResetDummyItem(int playerNum, ItemBase::ITEM_TYPE type,IntVector3 mapPos)
+//{
+//	//指定プレイヤーのダミーアイテムがあるか
+//	if (dummyItems_.find(playerNum) != dummyItems_.end())
+//	{
+//		if (dummyItems_[playerNum] == nullptr)
+//		{
+//			return;
+//		}
+//		//モデルの回転情報は保存
+//		Transform transform = dummyItems_[playerNum]->GetTransform();
+//		
+//		//新たに指定されたアイテムを生成
+//		std::shared_ptr<ItemBase> dummy;
+//		dummy = CreateItem(type, mapPos, transform.quaRot);
+//		dummy->SetRotY(GetDummyItemRotY(playerNum));
+//		//元あったアイテムの削除
+//		dummyItems_.erase(playerNum);
+//
+//		//置き換え
+//		dummyItems_[playerNum] = dummy;
+//	}
+//}
 
 void ItemManager::DummyItemSetMapPos(IntVector3 mapPos, int playerNum)
 {
@@ -429,7 +441,7 @@ bool ItemManager::IsDummyItem(int playerNum)
 	return false;
 }
 
-Transform ItemManager::GetItemTransform(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type) const
+const Transform& ItemManager::GetItemTransform(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type) const
 {
 	for (auto& items : items_)
 	{
@@ -556,7 +568,7 @@ bool ItemManager::AllDummyItemAddItems(void)
 		}
 
 		//他オブジェクトと重なっているか
-		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize(),item.second->GetHitSize(),GetDummyItemRotY(item.first)))
+		if (MapEditer::GetInstance().IsObjectAtMapPos(item.second->GetInitMapPos(), item.second->GetSize(),item.second->GetHitSize(),GetDummyItemRotY(item.first)) < 0)
 		{
 			isClear = false;
 		}

@@ -47,6 +47,8 @@ public:
 		LEFTBUTTON_DOWN,		// 下
 		LEFTBUTTON_LEFT,		// 左
 		LEFTBUTTON_RIGHT,		// 右
+		LEFT_STICK,				// 左スティック押し込み
+		RIGHT_STICK,			// 右スティック押し込み
 		MAX
 	};
 
@@ -116,9 +118,17 @@ public:
 		EDIT_CAMERA_MOVE_BACK,	//エディット時のカメラ移動後ろ
 		EDIT_CAMERA_MOVE_LEFT,	//エディット時のカメラ移動左
 		EDIT_CAMERA_MOVE_RIGHT,	//エディット時のカメラ移動右
+		EDIT_CAMERA_MOVE_UP,	//エディット時のカメラ移動上
+		EDIT_CAMERA_MOVE_DOWN,	//エディット時のカメラ移動下
+		EDIT_CAMERA_CHENGE,		//エディット時のカメラを変更する
 
 		EDIT_ITEM_SELECT,		//エディット時のアイテム選択
 		EDIT_ITEM_ROTATE,		//エディット時のアイテム回転
+		EDIT_ITEM_DELETE,		//エディット時のアイテム削除
+
+		EDIT_GRID_ON_OFF,		//エディット時のグリッドのオンオフ
+
+		CURSOR_SPEED_UP,		//カーソルの移動速度アップ
 
 		PLAYER_JUMP,			//プレイヤーのジャンプ
 		PLAYER_PUNCH,			//プレイヤーのパンチ
@@ -132,6 +142,8 @@ public:
 		PLAY_CAMERA_MOVE_DOWN,	//プレイのカメラ移動下
 		PLAY_CAMERA_MOVE_RIGHT,	//プレイのカメラ移動右
 		PLAY_CAMERA_MOVE_LEFT,	//プレイのカメラ移動左
+		PLAY_CAMERA_ZOOM_IN,	//プレイのカメラズームイン
+		PLAY_CAMERA_ZOOM_OUT,	//プレイのカメラズームアウト
 
 		
 
@@ -171,6 +183,8 @@ public:
 
 	//マウスの座標を設定
 	void SetMousePosScreen(void);
+
+	void SetMousePos(const Vector2& pos);
 	float GetLStickDeg(KeyConfig::JOYPAD_NO no) const;
 
 	float GetRStickDeg(KeyConfig::JOYPAD_NO no) const;

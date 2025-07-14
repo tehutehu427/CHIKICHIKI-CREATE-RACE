@@ -1,8 +1,15 @@
 #include "ScoreGageManager.h"
+#include "../../../Application.h"
 #include "../../../Manager/System/DateBank.h"
+#include "../../../Manager/System/ResourceManager.h"
+#include "../../../Utility/Utility.h"
 
 ScoreGageManager::ScoreGageManager()
 {
+	alphaDir_ = -1; 
+	imgTitle_ = -1;
+	mesAlpha_ = -1; 
+	imgPushButton_ = -1;
 }
 
 ScoreGageManager::~ScoreGageManager()
@@ -11,6 +18,10 @@ ScoreGageManager::~ScoreGageManager()
 
 void ScoreGageManager::Load()
 {
+	ResourceManager& res = ResourceManager::GetInstance();
+	imgTitle_ = res.Load(ResourceManager::SRC::PROGRESS).handleId_;
+	imgPushButton_ = res.Load(ResourceManager::SRC::PUSH_B_BUTTON_MES).handleId_;
+
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = 0; i < playerNum; ++i)
 	{
@@ -26,6 +37,9 @@ void ScoreGageManager::Init()
 	{
 		scoreGage->Init();
 	}
+
+	mesAlpha_ = 0; //メッセージのアルファ値
+	alphaDir_ = 1; //アルファ値の変化方向
 
 }
 
@@ -66,4 +80,64 @@ const bool ScoreGageManager::IsFinishAnimation() const
 	}
 	//全てのゲージがアニメーションを終えてたのでtrueを返す
 	return true;
+}
+
+void ScoreGageManager::DecorationDraw()
+{	
+	constexpr int LENGTH = 350;
+	constexpr float THICKNESS = 5.0f;
+	constexpr int TITLE_POS_Y = 50;
+	constexpr float ALPHA_STEP = 1.5f; //アルファ値の変化量
+	constexpr float ALPHA_MIN = 50.0f; //アルファ値の変化量
+
+	//縮小開始ライン
+	DrawLine(
+		ScoreGage::GAGE_SIZE_X + ScoreGage::GAGE_POS_P1_X,
+		ScoreGage::GAGE_POS_P1_Y, 
+		ScoreGage::GAGE_SIZE_X + ScoreGage::GAGE_POS_P1_X,
+		ScoreGage::GAGE_POS_P1_Y + LENGTH,
+		Utility::BLACK,
+		THICKNESS
+		);
+
+	//クリアライン
+	DrawLine(
+		ScoreGage::GAGE_SIZE_X + ScoreGage::GAGE_POS_P1_X + ScoreGage::GAGE_LENGTH_MAX,
+		ScoreGage::GAGE_POS_P1_Y,
+		ScoreGage::GAGE_SIZE_X + ScoreGage::GAGE_POS_P1_X + ScoreGage::GAGE_LENGTH_MAX,
+		ScoreGage::GAGE_POS_P1_Y + LENGTH,
+		Utility::BLACK,
+		THICKNESS
+	);
+
+	//見出しの描画
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		TITLE_POS_Y,
+		1.0f,
+		0.0f,
+		imgTitle_,
+		true
+	);
+
+	for (const auto& scoreGage : scoreGages_)
+	{
+		if (scoreGage->GetState() != ScoreGage::STATE::AFTER_WAIT) { return; }
+	}
+	
+	//アルファ値を変え
+	mesAlpha_ = Utility::PingPongUpdate(mesAlpha_, ALPHA_STEP, Utility::ALPHA_MAX, ALPHA_MIN, alphaDir_);
+
+	//ボタンを押してね画像の描画
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, mesAlpha_);
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y,
+		1.0f,
+		0.0f,
+		imgPushButton_,
+		true,
+		false
+	);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }

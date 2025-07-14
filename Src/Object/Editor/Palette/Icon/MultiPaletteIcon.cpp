@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "../../../../Manager/System/ResourceManager.h"
 #include "../../../../Manager/System/DateBank.h"
+#include "../../../../Manager/System/SoundManager.h"
 #include "../Utility/Utility.h"
 #include "../Utility/UtilityTemplates.h"
 #include "../PaletteCursor.h"
@@ -39,11 +40,20 @@ void MultiPaletteIcon::Load()
 }
 
 void MultiPaletteIcon::Init()
-{
+{		
+	
+	//状態変更
+	ChangeState(STATE::NONE);
+
+	//初期化
+	icons_.clear();
+	selectTypes_.clear();
+	sleCnt_.clear();
+	candidates_.clear();
+	
 	//除外番号を除いたアイテム配列を生成
 	SetExcludingItemTypeArray();
 
-	//初期化
 	for (int i = 0; i < CREATE_NUM; i++)
 	{
 		EditorPaletteBase::ImgInfo info;
@@ -79,8 +89,7 @@ void MultiPaletteIcon::Init()
 	//マスクスクリーンの初期設定
 	InitMaskScreen();
 
-	//状態変更
-	ChangeState(STATE::NONE);
+
 }
 
 void MultiPaletteIcon::Draw()
@@ -102,6 +111,7 @@ void MultiPaletteIcon::SetExcludingItemTypeArray()
 		static_cast<int>(ItemBase::ITEM_TYPE::NONE),
 		static_cast<int>(ItemBase::ITEM_TYPE::START),
 		static_cast<int>(ItemBase::ITEM_TYPE::GOAL),
+		static_cast<int>(ItemBase::ITEM_TYPE::BOMB_BIG),
 		static_cast<int>(ItemBase::ITEM_TYPE::MAX)
 	};
 
@@ -193,6 +203,7 @@ bool MultiPaletteIcon::CheckItemIcon(const Vector2 _cPos, const int _playerIndex
 		//位置の確認
 		if (Utility::IsPointInRect(_cPos, leftTop, rightBotm) && !IsChosenByOtherPlayer(i, _playerIndex))
 		{
+			SoundManager::GetInstance().Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);	//選択音を鳴らす
 			selectTypes_[_playerIndex] = static_cast<ItemBase::ITEM_TYPE>(ic.num);
 			sleCnt_[_playerIndex] = i;
 			return true;

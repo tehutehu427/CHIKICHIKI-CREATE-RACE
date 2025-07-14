@@ -4,6 +4,7 @@
 #include "Manager/System/KeyConfig.h"
 #include "Manager/System/ResourceManager.h"
 #include "Manager/System/SceneManager.h"
+#include "Manager/System/SoundManager.h"
 #include "FpsControl/FpsControl.h"
 #include "Common/FontRegistry.h"
 #include "Application.h"
@@ -13,7 +14,8 @@ Application* Application::instance_ = nullptr;
 const std::string Application::PATH_IMAGE = "Data/Image/";
 const std::string Application::PATH_MODEL = "Data/Model/";
 const std::string Application::PATH_EFFECT = "Data/Effect/";
-const std::string Application::PATH_SOUND = "Data/Sound/";
+const std::string Application::PATH_SOUND_BGM = "Data/Sound/BGM/";
+const std::string Application::PATH_SOUND_SE = "Data/Sound/SE/";
 const std::string Application::PATH_FONT = "Data/Font/";
 const std::string Application::PATH_TEXT = "Data/Text/";
 const std::string Application::PATH_JSON = "Data/JSON/";
@@ -60,12 +62,17 @@ void Application::Init(void)
 	SetUseDirectInputFlag(true);
 
 	// リソース管理初期化
-	ResourceManager::CreateInstance();
+	ResourceManager::CreateInstance();	
+	
+	//入力管理の初期化
+	KeyConfig::CreateInstance();
+
+	//サウンド関係の初期化
+	SoundManager::CreateInstance();
 
 	// シーン管理初期化
 	SceneManager::CreateInstance();
 
-	KeyConfig::CreateInstance();
 	// FPS初期化
 	fps_ = std::make_unique<FpsControl>();
 	fps_->Init();
@@ -104,9 +111,11 @@ void Application::Run(void)
 void Application::Destroy(void)
 {
 	fontReg_->Destroy();
-	ResourceManager::GetInstance().Destroy();
 	SceneManager::GetInstance().Destroy();
+	SoundManager::GetInstance().Destroy();	
 	KeyConfig::GetInstance().Destroy();
+	ResourceManager::GetInstance().Destroy();
+
 	// Effekseerを終了する。
 	Effkseer_End();
 
@@ -117,7 +126,7 @@ void Application::Destroy(void)
 	}
 
 	delete instance_;
-
+	instance_ = nullptr;
 }
 
 bool Application::IsInitFail(void) const

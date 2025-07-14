@@ -9,27 +9,26 @@
 #include "../../Common/FontRegistry.h"
 #include "../../Manager/System/InputManager.h"
 #include "../../Manager/System/DateBank.h"
-#include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Manager/Game/ItemManager.h"
 #include "../../Manager/Game/MapEditer.h"
 #include "../System/YesNoResponder.h"
+#include "../System/Select/SelectStage.h"
 
+// JSONライブラリのエイリアス
 using json = nlohmann::json;
 
 namespace
 {
-    constexpr int MARGIN = 200;             //間   
-    const Vector2 OFFSET_POS = { 150, 40 }; //座標調整用
-    const Vector2 YES_POS = {               
-            Application::SCREEN_HALF_X - OFFSET_POS.x,
-            Application::SCREEN_HALF_Y + OFFSET_POS.y,
-    };
+	constexpr int MARGIN = 200;    	 //間
+	constexpr int OFFSET_Y = 120; //座標調整用
+    const std::string path_json = Application::PATH_JSON;   //パス
 }
 
-MapDataIO::MapDataIO(const Vector2& _padCursolPos):
-    padCursolPos_(_padCursolPos)
+MapDataIO::MapDataIO(const Vector2& _padCursorPos):
+    padCursorPos_(_padCursorPos)
 {
     imgBack_ = -1;
     imgLoad_ = -1;
@@ -42,23 +41,20 @@ MapDataIO::MapDataIO(const Vector2& _padCursolPos):
     state_ = STATE::NONE;
     selectFile_ = "";
     responder_ = nullptr;
+	imgSystemMessages_ = nullptr;   
+	imgEditMessages_ = nullptr;   
 
     //状態ごとの処理を登録
     RegisterState(STATE::WAIT, [&]() { UpdateWait(); }, [&]() { DrawWait(); });
     RegisterState(STATE::CHECK_EXPORT, [&]() { UpdateCheckExport(); }, [&]() { DrawCheckExport(); });
     RegisterState(STATE::CHECK_IMPORT, [&]() { UpdateCheckImport(); }, [&]() { DrawCheckImport(); });
+    RegisterState(STATE::FINISH, [&]() { UpdateFinish(); }, [&]() { DrawFinish(); });
 
-    //メッセージを設定
-    messages_[static_cast<int>(MESSAGE_TYPE::IMPORT)] = "今配置してるアイテムは消えますがよろしいですか？";
-    messages_[static_cast<int>(MESSAGE_TYPE::EXPORT)] = "データを保存しますか？";
-    messages_[static_cast<int>(MESSAGE_TYPE::YES)] = "はい";
-    messages_[static_cast<int>(MESSAGE_TYPE::NO)] = "いいえ";
-    messages_[static_cast<int>(MESSAGE_TYPE::REPORT_EXPORT)] = "ファイルに保存されました";
-    messages_[static_cast<int>(MESSAGE_TYPE::REPORT_IMPORT)] = "ファイルをインポートしました";
-
+    //モード別に処理を登録
+    RegisterGetFileName(SceneManager::SCENE_ID::FREE, [&]() { return GetFreeFileName(); });
+    RegisterGetFileName(SceneManager::SCENE_ID::SOLO, [&]() {return GetSoloFileName(); });
+    RegisterGetFileName(SceneManager::SCENE_ID::MULTI, [&]() {return GetMultiFileName(); });
 }
-
-
 
 MapDataIO::~MapDataIO()
 {
@@ -69,7 +65,7 @@ MapDataIO::~MapDataIO()
 void MapDataIO::Load()
 {
     //ファイルパスの指定
-    selectFile_ = GetFileName();
+    selectFile_ = Application::PATH_JSON + getFileNameMap_[SceneManager::GetInstance().GetSceneID()]();
     ImportJsonFile();
 
     //画像
@@ -77,6 +73,8 @@ void MapDataIO::Load()
     imgLoad_ = res.Load(ResourceManager::SRC::LOAD_ICON).handleId_;
     imgSave_ = res.Load(ResourceManager::SRC::SAVE_ICON).handleId_;
     imgBack_ = res.Load(ResourceManager::SRC::EXPLAN_BACK).handleId_;
+	imgEditMessages_ = res.Load(ResourceManager::SRC::EDIT_MESSAGES).handleIds_;
+	imgSystemMessages_ = res.Load(ResourceManager::SRC::SYSTEM_MESSAGES).handleIds_;
 
     //フォント生成
     font_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), FONT_SIZE, 0);
@@ -85,6 +83,12 @@ void MapDataIO::Load()
     //回答を返す
     responder_ = std::make_unique<YesNoResponder>();
     responder_->Load();
+
+    SoundManager & sndMng = SoundManager::GetInstance();
+	sndMng.LoadResource(SoundManager::SRC::DECISION);               //決定音
+	sndMng.LoadResource(SoundManager::SRC::CANCEL);                 //キャンセル音
+	sndMng.LoadResource(SoundManager::SRC::CLICK_OBJECT_SE);        //クリック音
+	sndMng.LoadResource(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK); //アイコンのクリック音
 }
 
 void MapDataIO::Init()
@@ -121,13 +125,22 @@ void MapDataIO::Draw()
     }
 }
 
+const bool MapDataIO::IsEdit() const
+{
+    return state_ == STATE::NONE || state_ == STATE::WAIT;
+}
+
+void MapDataIO::Reset()
+{
+    //ファイルパスの指定
+    selectFile_ = Application::PATH_JSON + getFileNameMap_[SceneManager::GetInstance().GetSceneID()]();
+    ImportJsonFile();
+}
+
 void MapDataIO::ExportJsonFile(const std::string _fileName)
 {
     //メッセージカウントを設定
     messageDisplayCnt_ = MES_DISPLAY_TIME;
-
-    //表示メッセージを設定
-    messageType_ = static_cast<int>(MESSAGE_TYPE::REPORT_EXPORT);
 
     nlohmann::json j;
     constexpr int INDENT = 4;
@@ -142,6 +155,8 @@ void MapDataIO::ExportJsonFile(const std::string _fileName)
         {
             //座標格納用の配列を用意
             nlohmann::json positions = nlohmann::json::array();
+            nlohmann::json rotations = nlohmann::json::array();
+            nlohmann::json quaternions = nlohmann::json::array();
 
             //アイテム分回す
             for (const auto& item : *items)
@@ -153,17 +168,46 @@ void MapDataIO::ExportJsonFile(const std::string _fileName)
                 VECTOR pos = item->GetTransform().pos;
                 positions.push_back(
                     {   //格納
-                    {"x", pos.x},
-                    {"y", pos.y},
-                    {"z", pos.z}
-                    });
+                        {"x", pos.x},
+                        {"y", pos.y},
+                        {"z", pos.z}
+                    }
+                );
+
+                //角度情報
+                VECTOR rot = item->GetTransform().rot;
+                rotations.push_back(
+                    {
+                        {"x", rot.x},
+                        {"y", rot.y},
+                        {"z", rot.z}
+                    }
+                );
+
+                //クォータニオン情報
+                Quaternion quaRot = item->GetTransform().quaRot;
+                quaternions.push_back(
+                    {
+                        {"x", quaRot.x},
+                        {"y", quaRot.y},
+                        {"z", quaRot.z},
+                        {"w", quaRot.w},
+                    }
+                );
+
+
             }
 
             //名前取得
             std::string typeName = DateBank::GetInstance().GetItemName(type);
             if (!typeName.empty()) // 空文字チェック
             {
-                j[typeName] = positions;
+                j[typeName] = 
+                {
+                    {"positions", positions},
+                    {"rotations", rotations},
+                    {"quaternions", quaternions}
+                };
             }
             else
             {
@@ -200,9 +244,6 @@ void MapDataIO::ImportJsonFile()
     //メッセージカウントを設定
     messageDisplayCnt_ = MES_DISPLAY_TIME;
 
-    //表示メッセージを設定
-    messageType_ = static_cast<int>(MESSAGE_TYPE::REPORT_IMPORT);
-
     //今あるオブジェクトを削除
     itemMng.AllDeleteItem();
 
@@ -210,18 +251,20 @@ void MapDataIO::ImportJsonFile()
     auto items = LoadItemsFromJson(selectFile_);
 
     // 読み込んだアイテムを確認
-    for (const auto& [type, positions] : items)
+    for (const auto& [type, importData] : items)
     {
-        for (const auto& pos : positions) 
+        for (int i = 0; i < items[type].positions.size(); i++)
         {
             //マップ座標に変換
-            IntVector3 mapPos = MapEditer::GetInstance().WorldToMapPos(pos);
+            IntVector3 mapPos = MapEditer::GetInstance().WorldToMapPos(items[type].positions[i]);
 
             //格納
-            itemMng.AddItem(mapPos, Quaternion(), type,0.0f);
+            itemMng.AddItem(mapPos, items[type].quaternions[i], type, Utility::Rad2DegF(items[type].rotations[i].y));
 			MapEditer::GetInstance().AddItem(
-				{ mapPos, Quaternion(), type },itemMng.GetItemSize(type),
-                itemMng.GetItemHitSize(type),0.0f);
+				{ mapPos, items[type].quaternions[i], type},
+                itemMng.GetItemSize(type),
+                itemMng.GetItemHitSize(type), 
+                Utility::Rad2DegF(items[type].rotations[i].y));
         }
     }
 }
@@ -237,7 +280,7 @@ bool MapDataIO::IsTriggerExport() const
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EXPORT_FILE, KeyConfig::JOYPAD_NO::PAD1) || 
         ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EXPORT_FILE_CLICK, KeyConfig::JOYPAD_NO::PAD1) && 
-       ( Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown) || Utility::IsPointInRect(padCursolPos_, rightPos, leftDown)))
+       ( Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown) || Utility::IsPointInRect(padCursorPos_, rightPos, leftDown)))
     {
         return true;
     }
@@ -253,15 +296,10 @@ inline bool MapDataIO::IsTriggerImport() const
     const Vector2 rightPos = { ICON_SIZE_X, 0 };
     const Vector2 leftDown = { ICON_SIZE_X * 2, ICON_SIZE_Y };
 
-    if (Utility::IsPointInRect(padCursolPos_, rightPos, leftDown))
-    {
-        int x = 0;
-    }
-
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::IMPORT_FILE, KeyConfig::JOYPAD_NO::PAD1) ||
         ins.IsTrgDown(KeyConfig::CONTROL_TYPE::IMPORT_FILE_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
-        (Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown) || Utility::IsPointInRect(padCursolPos_, rightPos, leftDown)))
+        (Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown) || Utility::IsPointInRect(padCursorPos_, rightPos, leftDown)))
     {
         return true;
     }
@@ -269,9 +307,9 @@ inline bool MapDataIO::IsTriggerImport() const
     return false;
 }
 
-std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItemsFromJson(const std::string& _filepath)
+std::unordered_map<ItemBase::ITEM_TYPE, MapDataIO::ImportData> MapDataIO::LoadItemsFromJson(const std::string& _filepath)
 {
-    std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> items = {};
+    std::unordered_map<ItemBase::ITEM_TYPE, MapDataIO::ImportData> items = {};
 
     std::ifstream inFile(_filepath);
     if (!inFile.is_open()) 
@@ -293,42 +331,108 @@ std::unordered_map<ItemBase::ITEM_TYPE, std::vector<VECTOR>> MapDataIO::LoadItem
 
         if (j.contains(typeName))
         {
-            std::vector<VECTOR> positions;
-            for (auto& pos : j[typeName])
+            // positions
+            if (j[typeName].contains("positions"))
             {
-                VECTOR position;
-                position.x = pos["x"].get<float>();
-                position.y = pos["y"].get<float>();
-                position.z = pos["z"].get<float>();  
-                positions.push_back(position);
+                std::vector<VECTOR> positions;
+                for (const auto& pos : j[typeName]["positions"])
+                {
+                    VECTOR position;
+                    position.x = pos["x"].get<float>();
+                    position.y = pos["y"].get<float>();
+                    position.z = pos["z"].get<float>();
+                    positions.push_back(position);
+                }
+                items[type].positions = positions;
             }
-            items[type] = positions;
+
+            // rotations
+            if (j[typeName].contains("rotations"))
+            {
+                std::vector<VECTOR> rotations;
+                for (const auto& rot : j[typeName]["rotations"])
+                {
+                    VECTOR rotation;
+                    rotation.x = rot["x"].get<float>();
+                    rotation.y = rot["y"].get<float>();
+                    rotation.z = rot["z"].get<float>();
+                    rotations.push_back(rotation);
+                }
+                items[type].rotations = rotations;
+            }
+
+            // quaternions
+            if (j[typeName].contains("quaternions"))
+            {
+                std::vector<Quaternion> quaternions;
+                for (const auto& qua : j[typeName]["quaternions"])
+                {
+                    Quaternion quaternion;
+                    quaternion.x = qua["x"].get<float>();
+                    quaternion.y = qua["y"].get<float>();
+                    quaternion.z = qua["z"].get<float>();
+                    quaternion.w = qua["w"].get<float>();
+                    quaternions.push_back(quaternion);
+                }
+                items[type].quaternions = quaternions;
+            }
         }
     }
 
     return items;
 }
 
-std::string MapDataIO::GetFileName()
+std::string MapDataIO::GetFreeFileName()
 {
-    //パス指定
-    std::string path = Application::PATH_JSON;
+    return "DefaultStage.json";
+}
 
-    //シーンごとに呼び出すファイルを変える
-    switch (SceneManager::GetInstance().GetSceneID())
+std::string MapDataIO::GetSoloFileName()
+{
+    int selectNum = DateBank::GetInstance().GetStageNo();
+    switch (selectNum)
     {
-    case SceneManager::SCENE_ID::MULTI:
-    case SceneManager::SCENE_ID::FREE:
-        return path + "DefaultStage.json";
+    case static_cast<int>(SelectStage::STAGE_TYPE::BEGINNER):
+        return "BeginnerStage.json";
         break;
-   
-    case SceneManager::SCENE_ID::SOLO:
-        return path + "ChallengeStage.json";
+
+    case static_cast<int>(SelectStage::STAGE_TYPE::INTERMEDIATE):
+        return "IntermediateStage.json";
+        break;
+
+    case static_cast<int>(SelectStage::STAGE_TYPE::ADVANCED):
+        return "AdvancedStage.json";
+        break;
+    }
+}
+
+std::string MapDataIO::GetMultiFileName()
+{
+    int randNum = GetRand(MULTI_STAGE_TYPES);
+    switch (randNum)
+    {
+    case 0:
+        return "MultiStage1.json";
+        break;
+    case 1:
+        return "MultiStage2.json";
+        break;
+    case 2:
+        return "MultiStage3.json";
+        break;
+    case 3:
+        return "MultiStage4.json";
         break;
 
     default:
+        return "MultiStage1.json";
         break;
     }
+}
+
+void MapDataIO::RegisterGetFileName(const SceneManager::SCENE_ID _sceneId, std::function<std::string()> _func)
+{
+    getFileNameMap_[_sceneId] = _func;
 }
 
 void MapDataIO::RegisterState(const STATE _state, std::function<void()> _update, std::function<void()> _draw)
@@ -339,10 +443,22 @@ void MapDataIO::RegisterState(const STATE _state, std::function<void()> _update,
 void MapDataIO::UpdateWait()
 {
     KeyConfig& ins = KeyConfig::GetInstance();
+	SoundManager& sndMng = SoundManager::GetInstance();
 
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (IsTriggerExport())
     {
+		sndMng.Play(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK, SoundManager::PLAYTYPE::BACK);
+        SetMouseDispFlag(true);
+        selectFile_ = Utility::ShowSaveJsonDialog();
+        if (selectFile_.empty())
+        {
+            // キャンセルされた
+            SetMouseDispFlag(false);
+            return;
+        }
+        SetMouseDispFlag(false);
+
         //リセット
         responder_->Reset();
 
@@ -353,9 +469,12 @@ void MapDataIO::UpdateWait()
 
     else if (IsTriggerImport())
     {
+        sndMng.Play(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK, SoundManager::PLAYTYPE::BACK);
+        SetMouseDispFlag(true);
         //ファイルを読み込む
         if (!ReadFileBool(selectFile_))
         {
+            SetMouseDispFlag(false);
             //読み込まない場合処理を終える
             return;
         }
@@ -365,6 +484,8 @@ void MapDataIO::UpdateWait()
 
         //確認へ移る
         ChangeState(STATE::CHECK_IMPORT);
+
+        SetMouseDispFlag(false);
         return;
     }
 
@@ -383,12 +504,14 @@ void MapDataIO::UpdateCheckExport()
     }
     else if (res == YesNoResponder::RESPON::YES)
     {
-
         //現在の配置データを出力する
-        ExportJsonFile("3DStageDataFile.json");
+        ExportJsonFile(selectFile_);
+
+        //画像用インデックス設定
+        systemMessageIndex_ = IMG_EXPORT_INDEX;
 
         //状態遷移
-        ChangeState(STATE::WAIT);
+        ChangeState(STATE::FINISH);
         return;
     }
     else
@@ -410,11 +533,15 @@ void MapDataIO::UpdateCheckImport()
     }
     else if (res == YesNoResponder::RESPON::YES)
     {
+   
         //外部データを読み込む    
         ImportJsonFile();
 
+        //画像用インデックス設定
+        systemMessageIndex_ = IMG_IMPORT_INDEX;
+
         //状態遷移
-        ChangeState(STATE::WAIT);
+        ChangeState(STATE::FINISH);
         return;
     }
     else
@@ -422,6 +549,18 @@ void MapDataIO::UpdateCheckImport()
         //状態遷移
         ChangeState(STATE::WAIT);
         return;
+    }
+}
+
+void MapDataIO::UpdateFinish()
+{
+	KeyConfig& ins = KeyConfig::GetInstance();
+
+    //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
+    if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
+    {
+		SoundManager::GetInstance().Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
+        ChangeState(STATE::WAIT);
     }
 }
 
@@ -446,15 +585,6 @@ void MapDataIO::DrawWait()
         true,
         false
     );
-    if (messageDisplayCnt_ <= 0.0f) { return; }
-    constexpr int MESSAGE_POS_X = 10;
-    constexpr int MESSAGE_POS_Y = Application::SCREEN_SIZE_Y - 145;
-    DrawFormatStringToHandle(
-        MESSAGE_POS_X,
-        MESSAGE_POS_Y,
-        Utility::CYAN,
-        font_,
-        messages_[messageType_].c_str());
 }
 
 void MapDataIO::DrawCheckExport()
@@ -462,20 +592,14 @@ void MapDataIO::DrawCheckExport()
     //確認画面の描画
     responder_->Draw();
 
-    //メッセージ描画位置調整
-    std::string mes = messages_[static_cast<int>(MESSAGE_TYPE::EXPORT)];
-    const Vector2 OFFSET_POS = { 
-        static_cast<int>(mes.length() * FONT_SIZE / 4),
-        -50
-    };
-
     //メッセージの描画
-    DrawFormatStringToHandle(
-        Application::SCREEN_HALF_X - OFFSET_POS.x,
-        Application::SCREEN_HALF_Y + OFFSET_POS.y,
-        Utility::BLUE,
-        font_,
-        mes.c_str());
+    DrawRotaGraph(
+        Application::SCREEN_HALF_X,
+        Application::SCREEN_HALF_Y - OFFSET_Y,
+        0.7f,
+        0.0f,
+        imgEditMessages_[IMG_EXPORT_INDEX],
+        true);
 }
 
 void MapDataIO::DrawCheckImport()
@@ -483,20 +607,26 @@ void MapDataIO::DrawCheckImport()
     //確認画面の描画
     responder_->Draw();
 
-    //メッセージ描画位置調整
-    std::string mes = messages_[static_cast<int>(MESSAGE_TYPE::IMPORT)];
-    const Vector2 OFFSET_POS = {
-        static_cast<int>(mes.length() * EXPORT_FONT_SIZE / 4),
-        -50
-    };
-
     //メッセージの描画
-    DrawFormatStringToHandle(
-        Application::SCREEN_HALF_X - OFFSET_POS.x,
-        Application::SCREEN_HALF_Y + OFFSET_POS.y,
-        Utility::BLUE,
-        exportFont_,
-        mes.c_str());
+    DrawRotaGraph(
+        Application::SCREEN_HALF_X,
+        Application::SCREEN_HALF_Y - OFFSET_Y,
+        0.7f,
+        0.0f,
+        imgEditMessages_[IMG_IMPORT_INDEX],
+        true);
+}
+
+void MapDataIO::DrawFinish()
+{
+    //メッセージの描画
+    DrawRotaGraph(
+        Application::SCREEN_HALF_X,
+        Application::SCREEN_HALF_Y,
+        2.0f,
+        0.0f,
+        imgSystemMessages_[systemMessageIndex_],
+        true);
 }
 
 bool MapDataIO::ReadFileBool(std::string &_file)

@@ -12,6 +12,7 @@ void InputManager::Init(void)
 	Add(KEY_INPUT_M);
 	Add(KEY_INPUT_Z);
 	Add(KEY_INPUT_X);
+	Add(KEY_INPUT_G);
 
 	Add(KEY_INPUT_UP);
 	Add(KEY_INPUT_RIGHT);
@@ -209,6 +210,13 @@ void InputManager::SetMousePosScreen(void)
 	SetMousePoint(static_cast<int>(mousePos_.x), static_cast<int>(mousePos_.y));
 }
 
+void InputManager::SetMousePos(const Vector2& pos)
+{
+	mousePos_ = pos;
+	mousePrePos_ = pos;
+	SetMousePoint(static_cast<int>(mousePos_.x), static_cast<int>(mousePos_.y));
+}
+
 int InputManager::GetMouse(void) const
 {
 	return mouseInput_;
@@ -364,6 +372,12 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(KeyConfig::JOYPAD_
 
 		idx = static_cast<int>(KeyConfig::JOYPAD_BTN::LEFTBUTTON_RIGHT);
 		ret.ButtonsNew[idx] = x.Buttons[3]; // LEFTBUTTON_RIGHT
+
+		idx = static_cast<int>(KeyConfig::JOYPAD_BTN::LEFT_STICK);
+		ret.ButtonsNew[idx] = x.Buttons[6]; // 左スティック押し込み
+
+		idx = static_cast<int>(KeyConfig::JOYPAD_BTN::RIGHT_STICK);
+		ret.ButtonsNew[idx] = x.Buttons[7]; // 右スティック押し込み
 
 		// 左スティック
 		ret.AKeyLX = d.X;

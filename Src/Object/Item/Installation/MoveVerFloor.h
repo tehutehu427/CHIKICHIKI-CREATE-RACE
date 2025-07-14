@@ -36,6 +36,7 @@ public:
 	//サイズの取得
 	inline const IntVector3 GetHitSize(void)const override;
 
+	void ResetValue(void)override;
 private:
 
 	//ルート関係
@@ -46,7 +47,7 @@ private:
 
 	//移動関係
 	float speed_;		//移動速度
-	double distance_;	//ルートまでの距離
+	float distance_;	//ルートまでの距離
 	VECTOR moveVec_;	//移動方向
 
 	//移動

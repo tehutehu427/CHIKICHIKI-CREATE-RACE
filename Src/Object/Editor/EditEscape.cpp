@@ -2,6 +2,7 @@
 #include <string>
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Common/FontRegistry.h"
 #include "../../Utility/Utility.h"
@@ -16,13 +17,14 @@ namespace
 	};
 }
 
-EditEscape::EditEscape(const Vector2& _padCursolPos):
-	padCursolPos_(_padCursolPos),
+EditEscape::EditEscape(const Vector2& _padCursorPos):
+	padCursorPos_(_padCursorPos),
 	key_(KeyConfig::GetInstance())
 {
 	//初期化
 	pos_ = {};
 	imgIcon_ = -1;
+	imgSystemMessages_ = nullptr;
 	font_ = 0;
 
 	//処理の登録
@@ -39,11 +41,14 @@ void EditEscape::Load()
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgIcon_ = res.Load(ResourceManager::SRC::CANCEL_ICON).handleId_;
+	imgSystemMessages_ = res.Load(ResourceManager::SRC::EDIT_MESSAGES).handleIds_;
 
 	font_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), FONT_SIZE, 0);
 
 	responder_ = std::make_unique<YesNoResponder>();
 	responder_->Load();
+
+	SoundManager::GetInstance().LoadResource(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK);
 }
 
 void EditEscape::Init()
@@ -66,6 +71,11 @@ void EditEscape::Draw()
 	stateFunc_[state_].drawFunc_();
 }
 
+const bool EditEscape::IsEdit() const
+{
+	return state_ == STATE::WAIT;
+}
+
 void EditEscape::RegisterStateFunction(const STATE _state, SceneBase::ProcessFunction _func)
 {
 	//処理の登録
@@ -79,9 +89,12 @@ void EditEscape::UpdateWait()
 	Vector2 rightBottom = Vector2::AddVector2(pos_, iconHalfSize);
 
 	if(key_.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ESCAPE, KeyConfig::JOYPAD_NO::PAD1) ||
-		key_.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ESCAPE_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
-		(Utility::IsPointInRect(key_.GetMousePos(), leftTop, rightBottom) || Utility::IsPointInRect(padCursolPos_, leftTop, rightBottom)))
+		(key_.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ESCAPE_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
+		(Utility::IsPointInRect(key_.GetMousePos(), leftTop, rightBottom) || 
+			Utility::IsPointInRect(padCursorPos_, leftTop, rightBottom))))
 	{
+		SoundManager::GetInstance().Play(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK, SoundManager::PLAYTYPE::BACK);
+
 		//リセット
 		responder_->Reset();
 
@@ -135,18 +148,15 @@ void EditEscape::DrawCheck()
 	responder_->Draw();
 
 	//メッセージの描画
-	std::string mes = "本当に今のモードをやめますか？";
+	constexpr int OFFSET_Y = 120;
 
-	const Vector2 pos = {
-		static_cast<int>(Application::SCREEN_HALF_X - mes.length() * FONT_SIZE / 4),
-		Application::SCREEN_HALF_Y - 50,
-	};
-
-	DrawFormatStringToHandle(
-		pos.x,
-		pos.y,
-		Utility::BLUE,
-		font_,
-		mes.c_str()
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y - OFFSET_Y,
+		0.7f,
+		0.0f,
+		imgSystemMessages_[SYS_MES_INDEX],
+		true,
+		false
 	);
 }

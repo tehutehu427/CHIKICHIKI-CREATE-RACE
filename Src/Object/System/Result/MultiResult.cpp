@@ -1,9 +1,12 @@
 #include "MultiResult.h"
 #include "../../../Manager/Game/ScoreManager.h"
 #include "../../../Manager/System/SceneManager.h"
+#include "../../../Manager/System/SoundManager.h"
+#include "../../../Manager/System/DateBank.h"
 #include "../../../Scene/Game/MultiParty.h"
-#include "../MultiInputCheck.h"
+#include "../../../Utility/Utility.h"
 #include "../../Editor/Palette/Palette.h"
+#include "../MultiInputCheck.h"
 #include "ScoreGage.h"
 #include "ScoreGageManager.h"
 
@@ -38,6 +41,10 @@ void MultiResult::Load()
 	//入力チェック
 	inputCheck_ = std::make_unique<MultiInputCheck>();
 	inputCheck_->Load();
+
+	SoundManager& sndMng = SoundManager::GetInstance();
+	sndMng.LoadResource(SoundManager::SRC::DRUM_ROLL);
+	sndMng.LoadResource(SoundManager::SRC::DRUM_ROLL_END);
 }
 
 void MultiResult::Init()
@@ -51,14 +58,6 @@ void MultiResult::Init()
 
 	//入力確認
 	inputCheck_->Init();
-
-	//デバッグ
-	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
-	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
-	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
-	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
-	ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::CLEAR);
-	ScoreManager::GetInstance().AddScore(1, ScoreManager::SCORE_TYPE::CLEAR);
 }
 
 void MultiResult::Update(MultiParty& _parent)
@@ -68,9 +67,33 @@ void MultiResult::Update(MultiParty& _parent)
 
 void MultiResult::Draw()
 {
+	//パレット
 	palette_->Draw();
 
+
+	//スコアゲージ
 	scoreGages_->Draw();
+
+	//ゲージ装飾
+	if (palette_->GetState() == Palette::STATE::CENTER) { scoreGages_->DecorationDraw(); }
+
+	//入力確認
+	inputCheck_->Draw();
+}
+
+void MultiResult::Reset()
+{
+	//パレット初期状態
+	palette_->ChangeState(Palette::STATE::ADMISSION);
+
+	//入力確認リセット
+	inputCheck_->Reset();
+
+	//ゲージの初期化
+	scoreGages_->Init();
+
+	//初期状態の変更
+	ChangeState(STATE::READY);
 }
 
 void MultiResult::RegisterStateFunction(const STATE _state, std::function<void(MultiParty&)> _update)
@@ -92,6 +115,9 @@ void MultiResult::UpdateStateReady(MultiParty& _parent)
 
 		//待機時間設定
 		waitStep_ = WAIT_TIME;
+
+		//スコアゲージを待機状態へ
+		scoreGages_->ChangeAllState(ScoreGage::STATE::WAIT);
 	}
 }
 
@@ -111,6 +137,9 @@ void MultiResult::UpdateStateWait(MultiParty& _parent)
 
 		//スコアゲージの状態を更新
 		scoreGages_->ChangeAllState(ScoreGage::STATE::ANIMATION);
+
+		//ドラムロールの再生
+		SoundManager::GetInstance().Play(SoundManager::SRC::DRUM_ROLL, SoundManager::PLAYTYPE::BACK);
 	}
 }
 
@@ -122,7 +151,12 @@ void MultiResult::UpdateStateScore(MultiParty& _parent)
 	//全員のスコアゲージのアニメーションを終えたら
 	if (scoreGages_->IsFinishAnimation())
 	{
-		int clearLine = 5;
+		SoundManager& sndMng = SoundManager::GetInstance();
+		int clearLine = DateBank::GetInstance().GetMultiClearScore();
+
+		//ドラムロールの停止
+		sndMng.Stop(SoundManager::SRC::DRUM_ROLL);
+		sndMng.Play(SoundManager::SRC::DRUM_ROLL_END, SoundManager::PLAYTYPE::BACK);
 
 		//状態遷移するか確認
 		//勝者がいる場合クリアフェーズへ移る
@@ -148,7 +182,7 @@ void MultiResult::UpdateStateResult(MultiParty& _parent)
 	if (inputCheck_->IsAllInput())
 	{
 		//状態遷移
-		_parent.ChangePhase(MultiParty::PHASE::SELECT_PHASE);
+		_parent.RoundReset();
 		return;
 	}
 

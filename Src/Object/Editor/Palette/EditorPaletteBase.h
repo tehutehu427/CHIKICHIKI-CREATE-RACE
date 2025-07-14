@@ -103,7 +103,7 @@ public:
 	/// 状態を返す
 	/// </summary>
 	/// <returns></returns>状態
-	inline const STATE GetState()const { return state_; }
+	const STATE GetState()const { return state_; }
 
 protected:
 
@@ -119,6 +119,12 @@ protected:
 	//画像
 	int imgPalette_;	//パレット	
 
+	//状態
+	STATE state_;
+
+	//音源の読み込み
+	void LoadSounds();
+
 private:
 	
 	//状態変更処理の管理
@@ -127,8 +133,7 @@ private:
 	//更新処理管理
 	std::function<void()> stateUpdate_;
 
-	//状態
-	STATE state_;
+
 
 	//状態変更
 	void ChangeStateNone();			//なし

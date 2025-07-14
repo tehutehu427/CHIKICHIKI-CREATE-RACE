@@ -8,9 +8,10 @@
 #include "../../Scene/Game/MultiParty.h"
 #include "../../Scene/Game/SoloChallenge.h"
 #include "../Game/PlayerManager.h"
+#include "../Game/CollisionManager.h"
 #include "Camera.h"
 #include "ResourceManager.h"
-#include "../Game/CollisionManager.h"
+#include "SoundManager.h"
 #include "DateBank.h"
 #include "SceneManager.h"
 
@@ -111,7 +112,7 @@ void SceneManager::Update(void)
 	{
 		Fade();
 	}
-	
+
 	//シーンごとの更新
 	scene_->Update();
 
@@ -225,6 +226,7 @@ void SceneManager::Destroy(void)
 	
 	//自身のインスタンス解放
 	delete instance_;
+	instance_ = nullptr;
 }
 
 void SceneManager::ChangeScene(SCENE_ID nextId)
@@ -281,7 +283,7 @@ void SceneManager::CreateCameras(const int _playerNum)
 
 void SceneManager::CreateSplitScreen(const int _playerNum)
 {
-	//引数が１以下もしくは
+	//引数が１以下
 	// 最大人数を超える場合,
 	// または引数と現在のスクリーン数が同じとき
 	if (_playerNum <= 1 || 
@@ -324,6 +326,8 @@ void SceneManager::CreateSplitScreen(const int _playerNum)
 
 SceneManager::SceneManager(void)
 {
+	mainScreen_ = -1;	//メインスクリーンの初期化
+	screenIndex_ = 0;	//分割スクリーンのインデックス初期化
 
 	sceneId_ = SCENE_ID::NONE;
 	waitSceneId_ = SCENE_ID::NONE;
@@ -356,16 +360,23 @@ void SceneManager::ResetDeltaTime(void)
 void SceneManager::DoChangeScene(SCENE_ID sceneId)
 {
 	// リソースの解放
-	ResourceManager::GetInstance().Release();
+	ResourceManager::GetInstance().Release();	
+	SoundManager::GetInstance().Release();	
 
 	// シーンを変更する
  	sceneId_ = sceneId;
+	
+	//初期化
+	screenIndex_ = 0;		
 
 	// 現在のシーンを解放
 	if (scene_ != nullptr)
 	{
 		scene_.reset();
 	}
+	
+	//現在使用している音源の解放
+
 
 	//シーンに合わせて生成数を設定
 	const int createNum = (sceneId == SCENE_ID::MULTI) ? DateBank::GetInstance().GetPlayerNum() : 1;
@@ -464,6 +475,7 @@ void SceneManager::DrawMultiScreen()
 			index == PlayerManager::PLAYER_NUM_MAX - 1)
 		{
 			index = 1;
+			screenIndex_ = 1;
 		}
 
 		//分割スクリーンの設定

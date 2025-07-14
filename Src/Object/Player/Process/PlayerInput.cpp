@@ -2,18 +2,6 @@
 #include"../Utility/Utility.h"
 #include "PlayerInput.h"
 
-
-#ifdef DEBUG_ON
-void PlayerInput::ChangeInput(KeyConfig::TYPE _type)
-{
-	if (padNum_ > KeyConfig::JOYPAD_NO::PAD1||cntl_==_type)return;
-	Init();
-	cntl_ = _type;
-}
-#endif //DEBUG_ON
-
-
-
 PlayerInput::PlayerInput(KeyConfig::JOYPAD_NO _padNum, KeyConfig::TYPE _cntl):padNum_(_padNum),cntl_(_cntl)
 {
 	actCntl_ = ACT_CNTL::NONE;
@@ -64,10 +52,10 @@ void PlayerInput::InputKeyBoard(void)
 	actCntl_ = ACT_CNTL::NONE;
 
 #ifdef _DEBUG
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHANGE_INPUT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::PAD))
-	{
-		ChangeInput(KeyConfig::TYPE::PAD);
-	}
+	//if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHANGE_INPUT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::PAD))
+	//{
+	//	ChangeInput(KeyConfig::TYPE::PAD);
+	//}
 #endif // _DEBUG
 	
 	//à⁄ìÆäpìxÇåàÇﬂÇÈ
@@ -192,10 +180,10 @@ void PlayerInput::InputPad(void)
 	actCntl_ = ACT_CNTL::NONE;
 
 #ifdef _DEBUG
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHANGE_INPUT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::PAD))
-	{
-		ChangeInput(KeyConfig::TYPE::ALL);
-	}
+	//if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHANGE_INPUT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::PAD))
+	//{
+	//	ChangeInput(KeyConfig::TYPE::ALL);
+	//}
 #endif // _DEBUG
 
 
@@ -206,8 +194,6 @@ void PlayerInput::InputPad(void)
 	//ècé≤
 	//leftStickY_ = ins.GetJPadInputState(padNum_).AKeyLY;
 	//auto stickRad = static_cast<float>(atan2(static_cast<double>(leftStickY_), static_cast<double>(leftStickX_)));
-
-
 
 	int LstickUpSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_UP);
 	int LstickLeftSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_LEFT);

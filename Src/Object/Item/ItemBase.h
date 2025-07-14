@@ -1,6 +1,8 @@
 #pragma once
 #include "../ObjectBase.h"
 
+class ToonStyle;
+
 class ItemBase : public ObjectBase
 {
 public:
@@ -87,7 +89,7 @@ public:
 	virtual const IntVector3 GetHitSize(void)const { return size_; }
 	
 	//初期マップ座標の取得
-	inline const IntVector3 GetInitMapPos(void)const { return InitMapPos_; }	
+	inline const IntVector3 GetInitMapPos(void)const { return initMapPos_; }	
 
 	//Y回転の取得
 	inline const float GetRotY(void)const { return rotY_; }
@@ -101,18 +103,45 @@ public:
 	//アイテムの値リセット
 	virtual void ResetValue(void);
 
+	/// <summary>
+	/// モデルのカラーを設定
+	/// </summary>
+	/// <param name="_r">赤</param>
+	/// <param name="_g">緑</param>
+	/// <param name="_b">青</param>
+	/// <param name="_a">アルファ値</param>
+	virtual void SetModelColor(const float _r, const float _g, const float _b, const float _a);
+
 protected:
 
 	//共通変数
 	Status status_;				//ステータス
-	IntVector3 InitMapPos_;		//初期マップ座標
+	IntVector3 initMapPos_;		//初期マップ座標
 	float rotY_;				//Y回転
 	VECTOR movePow_;			//移動量
-	std::vector<int*> models_;	//全モデル
+	IntVector3 mapSize_;			//マップサイズ
+	std::vector<int*> models_;	//全モデル	
+	
+	//トゥーンスタイル
+	std::unique_ptr<ToonStyle> toonStyle_;
+
 
 	//サイズの倍率調整
-	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;
+	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;	
+	
+	//シェーダーの設定
+	virtual void InitShader();
+
+	/// <summary>
+	/// カメラ範囲内か調べる
+	/// </summary>
+	/// <returns>trueなら範囲内、falseなら範囲外</returns>
+	bool IsInCameraView();
 
 private:
+
+
+
+
 };
 

@@ -3,6 +3,7 @@
 #include "../Utility/Utility.h"
 #include "../Manager/Game/ScoreManager.h"
 #include "../Manager/System/SceneManager.h"
+#include "../Manager/System/DateBank.h"
 
 ScoreGage::ScoreGage(const int _playerIndex) : 
 	playerIndex_(_playerIndex)
@@ -10,11 +11,13 @@ ScoreGage::ScoreGage(const int _playerIndex) :
 	pos_ = {};
 	size_ = {};
 	imgScoreGage_ = 0;
-	rate_ = 0.0f;
+	animStep_ = 0.0f;
+	color_ = 0;
 	state_ = STATE::NONE;
 	stateChanges_.emplace(STATE::NONE, std::bind(&ScoreGage::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::WAIT, std::bind(&ScoreGage::ChangeStateWait, this));
 	stateChanges_.emplace(STATE::ANIMATION, std::bind(&ScoreGage::ChangeStateAnimation, this));
+	stateChanges_.emplace(STATE::AFTER_WAIT, std::bind(&ScoreGage::ChangeStateAfterWait, this));
 }
 
 ScoreGage::~ScoreGage()
@@ -33,11 +36,14 @@ void ScoreGage::Init()
 	//プレイヤー番号ごとに設定
 	SetParamToPlayerNo();	
 
-	//ゲージサイズ
-	size_ = { 100,GAGE_SIZE_Y };
+	//アニメーションステップ初期化
+	animStep_ = 0.0f;
 
-	//デバッグ
-	//ScoreManager::GetInstance().AddScore(playerIndex_, ScoreManager::SCORE_TYPE::CLEAR);
+	//ゲージサイズ
+	size_ = { GAGE_SIZE_X,GAGE_SIZE_Y };
+
+	//1スコア当たりのゲージ長さ
+	lengthPerPoint_ = GAGE_LENGTH_MAX / DateBank::GetInstance().GetMultiClearScore();
 }
 
 void ScoreGage::Update()
@@ -76,7 +82,7 @@ void ScoreGage::ChangeStateNone()
 
 void ScoreGage::ChangeStateWait()
 {
-	stateUpdate_ = std::bind(&ScoreGage::UpdateStateWait, this);
+	stateUpdate_ = std::bind(&ScoreGage::UpdateStateNone, this);
 }
 
 void ScoreGage::ChangeStateAnimation()
@@ -84,14 +90,15 @@ void ScoreGage::ChangeStateAnimation()
 	stateUpdate_ = std::bind(&ScoreGage::UpdateStateAnimation, this);
 
 	//長さの更新値を決定
-	updateLength_ = size_.x + ScoreManager::GetInstance().GetScore(playerIndex_) * GAGE_LENGTH_PER_POINT;
+	updateLength_ = size_.x + ScoreManager::GetInstance().GetScore(playerIndex_) * lengthPerPoint_;
+}
+
+void ScoreGage::ChangeStateAfterWait()
+{
+	stateUpdate_ = std::bind(&ScoreGage::UpdateStateNone, this);
 }
 
 void ScoreGage::UpdateStateNone()
-{
-}
-
-void ScoreGage::UpdateStateWait()
 {
 }
 
@@ -105,7 +112,7 @@ void ScoreGage::UpdateStateAnimation()
 	float goal = static_cast<float>(updateLength_);	//目標位置
 
 	//移動量を求める
-	float move = Utility::EaseInQuad(animStep_, ANIM_TIME, start, goal);
+	float move = Utility::EaseOutQuad(animStep_, ANIM_TIME, start, goal);
 
 	//座標更新
 	size_.x = static_cast<int>(move);
@@ -113,7 +120,7 @@ void ScoreGage::UpdateStateAnimation()
 	//目標位置に到達したら状態を変更
 	if (size_.x >= updateLength_)
 	{
-		ChangeState(STATE::WAIT);
+		ChangeState(STATE::AFTER_WAIT);
 	}
 }
 
@@ -129,11 +136,11 @@ void ScoreGage::SetParamToPlayerNo()
 	switch (playerIndex_)
 	{
 	case 0:
-		color_ = Utility::PINK;
+		color_ = Utility::BLUE;
 		break;
 
 	case 1:
-		color_ = Utility::BLUE;
+		color_ = Utility::PINK;
 		break;
 
 	case 2:

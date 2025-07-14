@@ -23,7 +23,8 @@ public:
 	static const std::string PATH_IMAGE;
 	static const std::string PATH_MODEL;
 	static const std::string PATH_EFFECT;
-	static const std::string PATH_SOUND;
+	static const std::string PATH_SOUND_BGM;
+	static const std::string PATH_SOUND_SE;
 	static const std::string PATH_FONT;
 	static const std::string PATH_TEXT;
 	static const std::string PATH_JSON;

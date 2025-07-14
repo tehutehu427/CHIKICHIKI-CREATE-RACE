@@ -4,6 +4,7 @@
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
 #include"../../Common/Geometry/Model.h"
+#include"../../Common/ToonStyle.h"
 #include "MoveVerFloor.h"
 
 MoveVerFloor::MoveVerFloor()
@@ -16,7 +17,7 @@ MoveVerFloor::MoveVerFloor()
 	startRoute_ = Utility::VECTOR_ZERO;
 	goalRoute_ = Utility::VECTOR_ZERO;
 	speed_ = 0.0f;
-	distance_ = 0.0;
+	distance_ = 0.0f;
 	moveVec_ = Utility::VECTOR_ZERO;
 }
 
@@ -54,10 +55,13 @@ void MoveVerFloor::SetParam(void)
 
 	//コライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::MOVE_VER_FLOOR, std::move(geo));
+	MakeCollider({ Collider::TAG::MOVE_VER_FLOOR }, std::move(geo));
 
 	//ルート設定
 	InitRoute();
+
+	//マップサイズ
+	mapSize_ = MAP_SIZE;
 }
 
 void MoveVerFloor::Update(void)
@@ -71,8 +75,15 @@ void MoveVerFloor::Update(void)
 
 void MoveVerFloor::Draw(void)
 {
+	//カメラ範囲に含まれるか調べる
+	if (IsInCameraView())
+	{
+		//含まれる場合
+		return;	//描画を行わない
+	}
+
 	DrawLine3D(VAdd(route_[0], MAP_LOCALPOS), VAdd(route_[1], MAP_LOCALPOS), Utility::BLACK);
-	MV1DrawModel(trans_.modelId);
+	toonStyle_->Draw();
 }
 
 void MoveVerFloor::OnHit(const std::weak_ptr<Collider> _hitCol)
@@ -82,6 +93,12 @@ void MoveVerFloor::OnHit(const std::weak_ptr<Collider> _hitCol)
 const IntVector3 MoveVerFloor::GetHitSize(void) const
 {
 	return size_ + IntVector3(0, MOVE_Y, 0);
+}
+
+void MoveVerFloor::ResetValue(void)
+{
+	InitRoute();
+	ItemBase::ResetValue();
 }
 
 void MoveVerFloor::Move(void)
@@ -102,8 +119,11 @@ void MoveVerFloor::Move(void)
 
 void MoveVerFloor::InitRoute(void)
 {
+	//ルートナンバーの初期化
+	routeNum_ = 0;
+
 	//初期位置保存
-	route_[routeNum_] = trans_.pos;
+	route_[routeNum_] = MapEditer::GetInstance().MapToWorldPos(initMapPos_);
 
 	//マップ座標をワールド座標に
 	VECTOR intPos = MapEditer::GetInstance().MapToWorldPos({ 0, MOVE_Y, 0 });
@@ -111,6 +131,11 @@ void MoveVerFloor::InitRoute(void)
 	//移動量
 	VECTOR movePos = trans_.quaRot.PosAxis(intPos);
 	
+	//(微妙な小数点を消すために四捨五入処理)
+	movePos.x = Utility::Round(movePos.x);
+	movePos.y = Utility::Round(movePos.y);
+	movePos.z = Utility::Round(movePos.z);
+
 	//目標地点
 	VECTOR goalPos = VAdd(route_[routeNum_], movePos);
 
@@ -121,7 +146,7 @@ void MoveVerFloor::InitRoute(void)
 	distance_ = static_cast<float>(Utility::Round(Utility::Distance(route_[routeNum_], route_[routeNum_ + 1])));
 
 	//速度設定
-	speed_ = static_cast<float>(distance_) / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
+	speed_ = distance_ / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();
 
 	//初期ルート設定
 	SetRoute();

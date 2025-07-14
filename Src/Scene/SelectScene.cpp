@@ -7,11 +7,14 @@
 #include "../Utility/Utility.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/SoundManager.h"
 #include "../Manager/System/InputManager.h"
 #include "../Manager/System/DateBank.h"
+#include "../Manager/System/Camera.h"
 #include "../Object/System/Select/ModeSelect.h"
 #include "../Object/System/Select/MultiReady.h"
 #include "../Object/System/Select/SelectStage.h"
+#include "../Object/System/Select/SystemSetting.h"
 #include "../Object/SkyDome/SkyDome.h"
 
 SelectScene::SelectScene()
@@ -32,22 +35,29 @@ SelectScene::SelectScene()
 	menuFuncTable_ = {
 		{SELECT_MENU::SOLO,[this]()
 		{
+			sndMng_.Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
 			ChangeState(STATE::SELECT_STAGE);
 		}},
 		{SELECT_MENU::MULTI,[this]()
 		{
+			sndMng_.Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
 			ChangeState(STATE::CHECK_PLAYER);
 		}},
 		{SELECT_MENU::FREE,[this]()
 		{
+			sndMng_.Play(SoundManager::SRC::SELECT_SCENE_CHANGE, SoundManager::PLAYTYPE::BACK);
+			sndMng_.Stop(SoundManager::SRC::SELECT_BGM);
+			DateBank::GetInstance().SetPlayerNum(1);
 			scnMng_.ChangeScene(SceneManager::SCENE_ID::FREE);
 		}},
 		{SELECT_MENU::SETTING,[this]()
 		{
+			sndMng_.Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
 			ChangeState(STATE::SETTING);
 		}},
 		{SELECT_MENU::EXIT,[this]()
 		{
+			sndMng_.Play(SoundManager::SRC::CANCEL, SoundManager::PLAYTYPE::BACK);
 			scnMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 		}}
 	};
@@ -80,6 +90,19 @@ void SelectScene::Load()
 
 	skyDome_ = std::make_unique<SkyDome>();
 	skyDome_->Load();
+
+	systemSetting_ = std::make_unique<SystemSetting>();
+	systemSetting_->Load();
+
+	//リソースの読み込み
+	sndMng_.LoadResource(SoundManager::SRC::SELECT_BGM);
+	sndMng_.LoadResource(SoundManager::SRC::DECISION);
+	sndMng_.LoadResource(SoundManager::SRC::CLICK_OBJECT_SE);
+	sndMng_.LoadResource(SoundManager::SRC::CANCEL);
+	sndMng_.LoadResource(SoundManager::SRC::OK);
+	sndMng_.LoadResource(SoundManager::SRC::CHICKEN_SE_3);
+	sndMng_.LoadResource(SoundManager::SRC::SELECT_SCENE_CHANGE);
+	sndMng_.SetLoadedSoundsVolume();
 }
 
 void SelectScene::Init(void)
@@ -88,9 +111,14 @@ void SelectScene::Init(void)
 	multiReady_->Init();
 	selectStage_->Init();
 	skyDome_->Init();
+	systemSetting_->Init();
 
 	//初期化時点で人数を一人に設定しておく
 	DateBank::GetInstance().SetPlayerNum(1);
+	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FIXED_POINT);
+
+	//BGMを再生
+	sndMng_.Play(SoundManager::SRC::SELECT_BGM, SoundManager::PLAYTYPE::LOOP);
 }
 
 void SelectScene::ProcessMenuFunction(const SELECT_MENU _menu)
@@ -134,7 +162,7 @@ void SelectScene::UpdateCheckPlayer()
 
 void SelectScene::UpdateSetting()
 {
-
+	systemSetting_->Update(*this);
 }
 
 void SelectScene::DrawSelectMenu()
@@ -154,7 +182,7 @@ void SelectScene::DrawCheckPlayer()
 
 void SelectScene::DrawSetting()
 {
-
+	systemSetting_->Draw();
 }
 
 void SelectScene::NormalDraw()

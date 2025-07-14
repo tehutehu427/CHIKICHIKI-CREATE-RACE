@@ -21,6 +21,7 @@ void MultiPalette::Load(void)
 	//リソースの読み込み
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgPalette_ = res.Load(ResourceManager::SRC::PALETTE).handleId_;
+	imgTitle_ = res.Load(ResourceManager::SRC::SELECT_ITEM).handleId_;
 
 	//パレットアイコン
 	palIcon_ = std::make_unique<MultiPaletteIcon>();
@@ -29,6 +30,9 @@ void MultiPalette::Load(void)
 	//パレット
 	pal_ = std::make_unique<Palette>();
 	pal_->Load();
+
+	//音源の読み込み
+	LoadSounds();
 }
 
 void MultiPalette::Init(void)
@@ -46,6 +50,28 @@ void MultiPalette::Init(void)
 	pal_->ChangeState(Palette::STATE::EXPANSION);
 }
 
+void MultiPalette::Draw(void)
+{
+	//元の描画
+	EditorPaletteBase::Draw();
+
+	//見出しの描画
+	if (state_ == STATE::SELECT)
+	{
+		constexpr int POS_Y = 50; //見出しのY座標
+		constexpr float RATE = 0.6f; //見出しの拡大率
+
+		DrawRotaGraph(
+			Application::SCREEN_HALF_X,
+			POS_Y,
+			RATE,
+			0.0f,
+			imgTitle_,
+			true
+		);
+	}
+}
+
 void MultiPalette::UpdateSelect()
 {
 	//パレットアイコンに関する処理
@@ -61,7 +87,7 @@ void MultiPalette::UpdateSelect()
 	//人数分コントローラに設定
 	for (int i = 0; i < editControllers_.size(); i++)
 	{
-		editControllers_[i]->SetItemType(palIcon_->GetSelectType());
+		editControllers_[i]->SetItemType(palIcon_->GetSelectType(i));
 	}
 
 	//状態変更

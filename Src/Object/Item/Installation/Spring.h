@@ -12,6 +12,9 @@ public:
 	//サイズ
 	static constexpr VECTOR MODEL_SIZE = { 32.0f,18.0f,32.0f };		//モデルのサイズ
 
+	//移動力
+	static constexpr float MOVE_POW = 5.0f;		//移動力(プレイヤーを跳ねさせる専用)
+
 	//コンストラクタ
 	Spring();
 	//デストラクタ
@@ -28,5 +31,9 @@ public:
 	/// <param name="_hitColTag">相手側の当たり判定</param>
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
+private:
+
+	//移動力を初期化
+	void InitMovePow(void);
 };
 

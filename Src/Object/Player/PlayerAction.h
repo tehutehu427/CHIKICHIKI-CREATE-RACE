@@ -4,21 +4,42 @@
 #include<functional>
 #include<map>
 
+#include"../Manager/System/SoundManager.h"
+
 class Player;
 class PlayerInput;
 class AnimationController;
 class PlayerAction
 {
 public:
+	//定数
+	//****************************************
+	//パンチ有効時間
+	static constexpr float PUNCH_TIME_MAX = 0.5f;
+
+	//ジャンプ力
+	static constexpr float POW_JUMP = 20.0f;
+	//****************************************
+
 	enum class ATK_ACT
 	{
 		NONE,	//何もなし
 		INPUT,	//入力
 		MOVE,	//移動
+		DASHMOVE,//ダッシュ
 		PUNCH,	//パンチ
 		KNOCKBACK,//パンチされた状態
 		JUMP
 	};
+
+	enum class ACT_SE
+	{
+		DASH,
+		JUMP,
+		PUNCH,
+		SLIME,
+	};
+
 	PlayerAction(Player& _player, SceneManager& _scnMng,AnimationController& _animationController);
 	~PlayerAction(void);
 
@@ -27,6 +48,11 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	void Init(void);
+
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	void Load(void);
 
 	/// <summary>
 	/// 更新処理
@@ -55,17 +81,29 @@ public:
 	//プレイヤーの角度Y
 	const Quaternion GetPlayerRotY(void) { return playerRotY_; }
 
-
 	//パンチ座標
 	const VECTOR& GetPunchPos(void) { return punchPos_; }
 
 	//パンチ中か
-	const bool GetIsHitPunch(void) { return isPunchHitTime_; }
+	bool GetIsHitPunch(void) { return isPunchHitTime_; }
+
+	//ジャンプ中
+	const bool GetIsJump(void) { return isJump_; }
+
+	//状態
+	const ATK_ACT GetAct(void)const { return act_; }
+
 	//*****************************************
 	//セッタ
 	//*****************************************
 	//ジャンプ力
 	void SetJumpPow(const VECTOR _jumpPow) { jumpPow_ = _jumpPow;};
+
+	//移動量
+	void SetMovePow(const VECTOR _movePow) { movePow_ = _movePow; }
+
+	//スピード
+	void SetSpeed(const float _spd) { speed_ = _spd; }
 
 	//空中かどうか
 	void SetIsJump(const bool _isJump) { isJump_ = _isJump; }
@@ -78,6 +116,9 @@ public:
 
 	//方向
 	void SetDir(const VECTOR _dir) { dir_ = _dir; }
+
+	//再生しているリソースをすべて止める
+	void StopResource(void);
 
 	//デバッグ
 	float GetJumpDecel(void) { return jumpDeceralation_; }
@@ -93,6 +134,10 @@ private:
 	//----------------------------------
 	//移動スピード
 	static constexpr float MOVE_SPEED = 6.0f;
+
+	//スライム床上での移動速度(通常)
+	static constexpr float SLIME_FLOOR_MOVE_SPD = 3.0f;
+
 	//ダッシュスピード
 	static constexpr float DASH_SPEED = 11.0f;
 	//ぶっ飛ぶスピード
@@ -100,32 +145,50 @@ private:
 	//落ちているときの重力制限(jumpPowに加算しているのでjumpPowに適用)
 	static constexpr float LIMIT_GRAVITY = -20.0f;
 
+	//ダッシュアニメーションスピード
+	static constexpr float DASH_ANIM_SPEED = 200.0f;
+
 	//----------------------------------
 	//ジャンプ
 	//----------------------------------
-	//ジャンプ力
-	static constexpr float POW_JUMP = 20.0f;
+
 	//ジャンプ加速の倍率
 	static constexpr float TIME_JUMP_SCALE = 1.0f;
 	//ジャンプ時間
 	static constexpr float TIME_JUMP = 3.0f;
 
+	//スライム床上でのジャンプ力
+	static constexpr float SLIME_FLOOR_JUMP_POW = 10.0f;
+
+	//ジャンプアニメーションループ開始
+	static constexpr float JUMP_ANIM_LOOP_START_FRAME = 23.0f;
+	//ジャンプアニメーションループ完了
+	static constexpr float JUMP_ANIM_LOOP_END_FRAME = 25.0f;
+	//ジャンプアニメーションループ中のスピード
+	static constexpr float JUMP_ANIM_ATTACK_BLEND_TIME = 5.0f;
+
+	//ジャンプ開始アニメステップ
+	static constexpr float JUMP_ANIM_START_FRAME = 10.0f;
+	static constexpr float JUMP_ANIM_END_FRAME = 60.0f;
+
 	//----------------------------------
 	//パンチ
 	//----------------------------------
-	//パンチ有効時間
-	static constexpr float PUNCH_TIME_MAX = 0.5f;
+	//モデルの手のフレームＩＤ
+	static constexpr int HAND_FRAME_NUM = 10;
 	//パンチクールタイム
 	static constexpr float PUNCH_COOL_TIME = 0.5f;
 	// 回転完了までの時間
 	static constexpr float TIME_ROT = 0.1f;
 	//パンチの当たり判定時間中フラグを始めるアニメーションステップ
-	static constexpr float PUNCH_HIT_START_ANIM_STEP = 22.0f;
+	static constexpr float PUNCH_HIT_START_ANIM_STEP = 20.0f;
+	//static constexpr float PUNCH_HIT_START_ANIM_STEP = 0.0f;
 	//パンチの当たり判定時間中フラグを終えるアニメーションステップ
-	static constexpr float PUNCH_HIT_END_ANIM_STEP = 35.0f;
+	static constexpr float PUNCH_HIT_END_ANIM_STEP = 40.0f;
+	//static constexpr float PUNCH_HIT_END_ANIM_STEP = 60.0f;
 
 	//吹き飛び効果時間
-	static constexpr float PUNCHED_TIME = 0.2f;
+	static constexpr float PUNCHED_TIME = 0.1f;
 
 	//-------------------------------------------------
 	//メンバ変数
@@ -146,13 +209,23 @@ private:
 	std::function<void(void)>actionUpdate_;
 
 	//操作入力
-	std::shared_ptr<PlayerInput> input_;
+	std::unique_ptr<PlayerInput> input_;
+
+	//エフェクト
+	std::unique_ptr<EffectController> effect_;
 
 	//状態
 	ATK_ACT act_;
 
-	//地面との当たり判定
-	bool isLandHit_;
+	//素材関連
+	//------------------------
+	std::map<ACT_SE,SoundManager::SRC>actSE_;
+
+	//スライムSEの間隔カウント
+	float slimeSEcnt_;
+
+	int effectArrayNum_;
+
 	//移動
 	//------------------------
 	float speed_;			// 移動スピード
@@ -161,7 +234,7 @@ private:
 	VECTOR dir_;			//方向
 
 	//回転
-	Quaternion playerRotY_;
+	Quaternion playerRotY_;		//プレイヤーY角度
 	Quaternion goalQuaRot_;
 	float stepRotTime_;
 
@@ -198,16 +271,24 @@ private:
 	void MoveUpdate(void);
 	//入力方向に応じて方向を決める
 	void MoveDirFronInput(void);
-	//移動に変更する
+	//移動状態変更
 	void ChangeMove(void);
+
+	//ダッシュ
+	void ChangeDashMove(void);
+
 	//毎フレーム移動方向とスピードを更新する
 	void UpdateMoveDirAndPow(void);
-
+	//移動速度
+	void Speed(void);
 
 	//ジャンプ
 	void JumpUpdate(void);
 	void Jump(void);
 	void ChangeJump(void);
+
+	//ジャンプができる条件
+	bool CheckJumpInput(void);
 
 	//パンチ
 	void Punch(void);
@@ -225,10 +306,17 @@ private:
 	/// <param name="_localPos">相対座標</param>
 	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _localPos);
 
+	/// <summary>
+	/// 再生させたいSE以外すべて止める
+	/// </summary>
+	/// <param name="_se">現在再生させたいSE</param>
+	void StopSe(const ACT_SE _se);
 
 	//回転
 	void Rotate(void);
 	//最終的に動かしたい角度の設定
 	void SetGoalRotate(double _deg);
+
+
 };
 

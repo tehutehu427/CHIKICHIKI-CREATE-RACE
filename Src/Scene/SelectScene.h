@@ -1,4 +1,5 @@
 #pragma once
+#include <unordered_map>
 #include "../Common/Vector2.h"
 #include "SceneBase.h"
 
@@ -6,6 +7,7 @@ class MultiReady;
 class ModeSelect;
 class SelectStage;
 class SkyDome;
+class SystemSetting;
 
 class SelectScene : public SceneBase
 {
@@ -30,6 +32,17 @@ public:
 		CHECK_PLAYER,	//プレイヤー確認
 		SETTING,		//設定
 	};	
+
+	//メッセージ種類
+	enum class SELECT_MES
+	{
+		MODE_SELECT,	
+		STAGE_SELECT,
+		PLAYER_NUM,
+		PUSH_BUTTON,
+		GAME_START,
+		MAX
+	};
 
 	//セレクトメニューの項目数
 	static constexpr int MENU_LIST_NUM = static_cast<int>(SELECT_MENU::MAX);	//項目数
@@ -64,7 +77,7 @@ public:
 	/// 状態遷移
 	/// </summary>
 	/// <param name="state_">変更先の状態</param>
-	inline const void ChangeState(const STATE _state) { state_ = _state; }
+	const void ChangeState(const STATE _state) { state_ = _state; }
 
 private:
 
@@ -85,6 +98,9 @@ private:
 
 	//ステージセレクト
 	std::unique_ptr<SelectStage> selectStage_;
+
+	//システム設定
+	std::unique_ptr<SystemSetting> systemSetting_;
 
 	//スカイドーム
 	std::unique_ptr<SkyDome> skyDome_;

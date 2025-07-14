@@ -10,7 +10,7 @@ class ItemManager
 {
 public:
 
-	static constexpr float DUMMY_ITEM_OPACITY_RATE = 0.5f;	//ダミーアイテムの半透明度
+	static constexpr float DUMMY_ITEM_OPACITY_RATE = 0.3f;	//ダミーアイテムの半透明度
 	static constexpr float DEFAULT_OPACITY_RATE = 1.0f;		//デフォルトの半透明度
 	static constexpr COLOR_F DUMMY_OVERLAP_COLOR = { 1.0f,0.1f,0.1f,DUMMY_ITEM_OPACITY_RATE };	//ダミーの重なっているときの色
 	static constexpr COLOR_F DUMMY_DEFAULT_COLOR = { 0.1f,0.1f,1.0f,DUMMY_ITEM_OPACITY_RATE };	//ダミーのデフォルトの色
@@ -29,7 +29,7 @@ public:
 	/// <param name="mapPos">生成させるマップ座標</param>
 	/// <param name="rot">生成させる時の回転情報</param>
 	/// <param name="type">アイテムの種類</param>
-	void AddItem(IntVector3 mapPos,Quaternion rot,ItemBase::ITEM_TYPE type,float rotY);
+	void AddItem(IntVector3 _mapPos,Quaternion _rot,ItemBase::ITEM_TYPE _type,float _rotY);
 
 	/// <summary>
 	/// アイテム消去
@@ -82,14 +82,14 @@ public:
 	/// </summary>
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのTransform</returns>
-	Transform GetDummyItemTransform(int playerNum);
+	const Transform& GetDummyItemTransform(int playerNum);
 	/// <summary>
 	/// ダミーアイテムを置き換える
 	/// </summary>
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <param name="type">アイテムの種類</param>
 	/// <param name="mapPos">マップ座標</param>
-	void ResetDummyItem(int playerNum,ItemBase::ITEM_TYPE type,IntVector3 mapPos);
+	//void ResetDummyItem(int playerNum,ItemBase::ITEM_TYPE type,IntVector3 mapPos);
 
 	/// <summary>
 	/// ダミーアイテムの座標設定
@@ -148,7 +148,7 @@ public:
 	/// <param name="_mapPos">マップ座標</param>
 	/// <param name="_type">アイテムの種類</param>
 	/// <returns></returns>
-	Transform GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
+	const Transform& GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
 	/// <summary>
 	/// アイテムの当たり判定大きさを取得
 	/// </summary>

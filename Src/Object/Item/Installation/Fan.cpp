@@ -2,6 +2,7 @@
 #include"../Manager/System/Resource.h"
 #include"../Manager/System/ResourceManager.h"
 #include"../../Common/Geometry/Model.h"
+#include"../../Common/ToonStyle.h"
 #include "../SubItem/Wind.h"
 #include "Fan.h"
 
@@ -29,6 +30,9 @@ void Fan::SetParam(void)
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
 
+	//前方へ回転
+	trans_.quaRot.PosAxis(Utility::AXIS_Z);
+
 	//サイズ倍率
 	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
 
@@ -44,13 +48,19 @@ void Fan::SetParam(void)
 
 	//コライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
-	MakeCollider(Collider::TAG::NORMAL_ITEM, std::move(geo));
+	MakeCollider({ Collider::TAG::NORMAL_ITEM }, std::move(geo));
+
+	//マップサイズ
+	mapSize_ = MAP_SIZE;
 }
 
 void Fan::Update(void)
 {
 	//風を一つ生成
 	if (wind_ == nullptr)CreateWind();
+
+	//風の更新
+	wind_->Update();
 }
 
 void Fan::Draw(void)
@@ -66,11 +76,28 @@ void Fan::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
 }
 
+void Fan::ResetValue(void)
+{
+	//風の消去
+	wind_.reset();
+
+	//共通
+	ItemBase::ResetValue();
+}
+
 void Fan::CreateWind(void)
 {
 	//風生成
-	wind_ = std::make_unique<Wind>(trans_.pos, trans_.quaRot, trans_.scl, MODEL_SIZE);
+	wind_ = std::make_unique<Wind>(VAdd(trans_.pos,trans_.localPos), trans_.quaRot, trans_.scl, MODEL_SIZE);
 
 	//初期設定
 	wind_->SetParam();
 }
+
+void Fan::InitShader()
+{
+	toonStyle_ = std::make_unique<ToonStyle>();
+	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::NO_TEXTURE);
+	toonStyle_->Init();
+}
+

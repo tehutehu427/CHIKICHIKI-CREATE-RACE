@@ -1,4 +1,4 @@
-#include "../Common/Quaternion.h"
+#include "../../../Common/Quaternion.h"
 #include "Geometry.h"
 
 //***************************************************
@@ -17,4 +17,8 @@ const VECTOR Geometry::GetRotPos(const VECTOR& _localPos) const
 {
 	VECTOR localRotPos = quaRot_.PosAxis(_localPos);
 	return VAdd(pos_, localRotPos);
+}
+
+void Geometry::HitAfter(void)
+{
 }

@@ -54,6 +54,11 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// リセット
+	/// </summary>
+	void Reset();
+
 private:
 
 	//待機用ステップ
@@ -71,9 +76,6 @@ private:
 	//スコアゲージ
 	std::unique_ptr<ScoreGageManager> scoreGages_;
 
-	//プレイヤー
-	//std::unique_ptr<ResultPlayer> player_;
-
 	//全体入力確認
 	std::unique_ptr<MultiInputCheck> inputCheck_;
 
@@ -81,7 +83,7 @@ private:
 	void RegisterStateFunction(const STATE _state, std::function<void(MultiParty&)> _update);
 
 	//状態変更
-	inline const void ChangeState(const STATE _state) { state_ = _state; }
+	const void ChangeState(const STATE _state) { state_ = _state; }
 
 	//状態別更新処理
 	void UpdateStateReady(MultiParty& _parent);

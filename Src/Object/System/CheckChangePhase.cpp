@@ -4,10 +4,11 @@
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/InputManager.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Utility/Utility.h"
 //#include "../../Scene/Game/GameScene.h"
 
-CheckChangePhase::CheckChangePhase(const Vector2& _padCursolPos):
+CheckChangePhase::CheckChangePhase(const Vector2& _padCursolPos) :
 	padCursolPos_(_padCursolPos)
 {
 	int i = -1;
@@ -24,6 +25,8 @@ void CheckChangePhase::Load()
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgIcons_ = res.Load(ResourceManager::SRC::CHANGE_PHASE_ICONS).handleIds_;
+
+	SoundManager::GetInstance().LoadResource(SoundManager::SRC::CHANGE_PHASE_ICON_CLICK);
 }
 
 void CheckChangePhase::Init()
@@ -33,16 +36,17 @@ void CheckChangePhase::Init()
 		ICON_SIZE_X / 2,
 		Application::SCREEN_SIZE_Y - ICON_SIZE_Y / 2,
 	};
-	
+
 	iconIndex_ = 0;
 }
 
 void CheckChangePhase::Update(GameScene& _parent)
-{	
+{
 	//特定のキーを押す、もしくはアイコンをクリックした場合
-	if (IsCheckChangePhase())
+	if (IsCheckChangePhase(_parent))
 	{
 		//フェーズを遷移
+		SoundManager::GetInstance().Play(SoundManager::SRC::CHANGE_PHASE_ICON_CLICK, SoundManager::PLAYTYPE::BACK);
 		_parent.ChangePhase(nextPhase_);
 	}
 }
@@ -77,7 +81,7 @@ void CheckChangePhase::SetNextPhase(const GameScene::PHASE _nextPhase)
 	}
 }
 
-bool CheckChangePhase::IsCheckChangePhase()
+bool CheckChangePhase::IsCheckChangePhase(GameScene& _parent)
 {
 	KeyConfig& key = KeyConfig::GetInstance();
 	Vector2 rightTop = {
@@ -90,10 +94,20 @@ bool CheckChangePhase::IsCheckChangePhase()
 		pos_.y + ICON_SIZE_Y / 2,
 	};
 
-	//特定のキーを押す、もしくはアイコンをクリックする
-	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHENGE, KeyConfig::JOYPAD_NO::PAD1) ||
-		(key.IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHENGE_CHECK, KeyConfig::JOYPAD_NO::PAD1) &&
-		(Utility::IsPointInRect(key.GetMousePos(), rightTop, leftBottom) || (Utility::IsPointInRect(padCursolPos_, rightTop, leftBottom)))))
+	//特定のキーを押す
+	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHENGE, KeyConfig::JOYPAD_NO::PAD1))
+	{
+		return true;
+	}
+	//エディット時以外は以下の処理をしない
+	if(_parent.GetPhase() != GameScene::PHASE::EDIT_PHASE)
+	{
+		return false;
+	}
+	//アイコンをクリックする(Editのみ)
+	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHENGE_CHECK, KeyConfig::JOYPAD_NO::PAD1) &&
+		(Utility::IsPointInRect(key.GetMousePos(), rightTop, leftBottom) ||
+		Utility::IsPointInRect(padCursolPos_, rightTop, leftBottom)))
 	{
 		return true;
 	}

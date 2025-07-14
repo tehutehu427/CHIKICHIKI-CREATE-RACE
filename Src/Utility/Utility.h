@@ -65,6 +65,9 @@ public:
 	//値を反転させる溜めのスケール
 	static constexpr float REVERSE_SCALE = -1.0f;
 
+	//アルファ最大値
+	static constexpr int ALPHA_MAX = 255;
+
 	// 四捨五入
 	static int Round(float v);
 
@@ -256,9 +259,19 @@ public:
 	/// <param name="_time">経過時間</param>
 	/// <param name="_totalTime">アニメーション総時間</param>
 	/// <param name="_start">開始位置</param>
-	/// <param name="_change">終了位置</param>
+	/// <param name="_end">終了位置</param>
 	/// <returns>変化量</returns>
 	static float EaseOutQuad(float _time, const float _totalTime, const float _start, const float _end);
+
+	/// <summary>
+	/// イーズインアウトバック
+	/// </summary>
+	/// <param name="_time">経過時間</param>
+	/// <param name="_totalTime">アニメーション総時間</param>
+	/// <param name="_start">開始位置</param>
+	/// <param name="_end">終了位置</param>
+	/// <returns>変化量</returns>
+	static float EaseInOutBack(float _time, const float _totalTime, const float _start, const float _end);
 
 	static constexpr float DEFAULT_SHAKE_SPEED = 5.0f;		//揺れの振幅
 	static constexpr float DEFAULT_SHAKE_AMPLITUDE = 10.0f;	//揺れの速さ
@@ -271,4 +284,41 @@ public:
 	/// <param name="_amplitude">振幅</param>
 	/// <returns></returns>揺らす計算した値
 	static float GetShake(const float _value, float _time, const float _speed = DEFAULT_SHAKE_SPEED, const float _amplitude = DEFAULT_SHAKE_AMPLITUDE);
+
+	/// <summary>
+	/// 指定した桁数の数字を返す
+	/// </summary>
+	/// <param name="_value">桁値を求める値</param>
+	/// <param name="_digit">桁数</param>
+	/// <returns>桁値</returns>
+	static int GetDigit(const int _value, const int _digit);
+
+	/// <summary>
+	/// 桁数を返す
+	/// </summary>
+	/// <param name="_value">桁数を調べる値</param>
+	/// <returns>桁数</returns>
+	static int GetDigitCount(const int _value);
+
+	/// <summary>
+	/// JSON保存ダイアログを表示し、パスをUTF-8文字列で返す
+	/// </summary>
+	/// <returns>文字列を返す</returns>
+	static std::string ShowSaveJsonDialog();
+
+	/// <summary>
+	/// ワイド文字列をUTF-8に変換する
+	/// </summary>
+	static std::string WideToUtf8(const std::wstring& wstr);
+
+	/// <summary>
+	/// 値を上下に動かす処理
+	/// </summary>
+	/// <param name="_value">現在の値</param>
+	/// <param name="_step">増減量</param>
+	/// <param name="_max">最大値</param>
+	/// <param name="_min">最小値</param>
+	/// <param name="_dir">増加方向（参照）1なら増加中、-1なら減少中</param>
+	/// <returns>処理後の値</returns>
+	static float PingPongUpdate(const float _value, const float _step, const float _max, const float _min, int& _dir);
 };

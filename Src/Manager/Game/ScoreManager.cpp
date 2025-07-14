@@ -1,6 +1,8 @@
 #include "ScoreManager.h"
 #include <cassert>
+#include <algorithm>
 #include "../System/DateBank.h"
+#include "PlayerManager.h"
 
 ScoreManager* ScoreManager::instance_ = nullptr;
 
@@ -43,6 +45,41 @@ void ScoreManager::AddScore(const int _playerIndex, const SCORE_TYPE _type)
 {
 	assert(_playerIndex >= 0 && _playerIndex < static_cast<int>(scores_.size()));
 	scores_[_playerIndex] += SCORE_TYPE_VALUES[static_cast<int>(_type)];
+}
+
+void ScoreManager::SetPlayersScore()
+{
+	PlayerManager& pMng = PlayerManager::GetInstance();
+
+
+	//クリアタイム取得
+	std::vector<float> playerTimes = pMng.GetGoalTime();
+
+	//配列のサイズが一緒か調べる
+	int ret = playerTimes.size() == scores_.size() ? 0 : -1;
+	assert(ret != -1);
+
+	// プレイヤーのインデックスとタイムをペアで保持
+	std::vector<std::pair<int, float>> indexAndTime;
+	for (int i = 0; i < playerTimes.size(); i++)
+	{
+		if (!pMng.IsPlayerDeath(i)) {
+			indexAndTime.emplace_back(i, playerTimes[i]);
+		}
+	}
+
+	// タイムを基準に昇順ソート（小さいほど速い）
+	std::sort(indexAndTime.begin(), indexAndTime.end(),
+		[](const auto& a, const auto& b) {
+			return a.second < b.second;
+		});
+
+	// ランクに応じてスコアを追加
+	for (int rank = 0; rank < indexAndTime.size(); rank++)
+	{
+		int playerIndex = indexAndTime[rank].first;
+		scores_[playerIndex] += GetScoreByRank(rank);
+	}
 }
 
 const int ScoreManager::GetWinnerPlayerIndex(const int _clearLine) const
@@ -98,4 +135,12 @@ const int ScoreManager::GetWinnerPlayerIndex(const int _clearLine) const
 ScoreManager::ScoreManager()
 {
 	scores_.clear();
+}
+
+int ScoreManager::GetScoreByRank(const int _rank)
+{
+	//1位は2点
+	if (_rank == 0) { return SCORE_TYPE_VALUES[static_cast<int>(SCORE_TYPE::FIRST)]; }
+	//それ以外でゴールした人は1点
+	else { return SCORE_TYPE_VALUES[static_cast<int>(SCORE_TYPE::CLEAR)]; }
 }
