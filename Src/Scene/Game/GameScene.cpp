@@ -292,11 +292,22 @@ void GameScene::UpdateEdit(void)
 
 void GameScene::UpdateAction(void)
 {
+	int beforTime = static_cast<int>(actionStartTime_);
 	actionStartTime_ -= SceneManager::GetInstance().GetDeltaTime();
 	if (actionStartTime_ > 0)
 	{
+		if (beforTime != static_cast<int>(actionStartTime_))
+		{
+			SoundManager::GetInstance().Play(SoundManager::SRC::CHICKEN_SE_2, SoundManager::PLAYTYPE::BACK);
+		}
 		return;
 	}
+
+	if (beforTime != static_cast<int>(actionStartTime_) && static_cast<int>(actionStartTime_) == -1)
+	{
+		SoundManager::GetInstance().Play(SoundManager::SRC::CHICKEN_SE, SoundManager::PLAYTYPE::BACK);
+	}
+
 	ItemManager::GetInstance().Update();
 
 	//プレイヤーの更新
