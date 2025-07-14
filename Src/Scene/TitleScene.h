@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include "SceneBase.h"
 #include "../Common/Vector2.h"
 
@@ -9,16 +10,16 @@ class TitleScene : public SceneBase
 public:
 
 	// コンストラクタ
-	TitleScene(void);
+	TitleScene();
 
 	// デストラクタ
-	~TitleScene(void) override;
+	~TitleScene() override;
 
 	//読み込み処理
-	void Load(void) override;
+	void Load() override;
 
 	//初期化処理
-	void Init(void) override;
+	void Init() override;
 
 private:
 
@@ -49,18 +50,26 @@ private:
 	//メッセージ座標
 	float mesPosY_;
 
+	//更新処理の管理
+	std::function<void()> titleUpdateFunc_;
+
 	//スカイドーム
 	std::unique_ptr<SkyDome> skyDome_;
 
 	//更新関数
-	void NormalUpdate(void) override;
+	void NormalUpdate() override;
 
 	//描画関数
-	void NormalDraw(void) override;
+	void NormalDraw() override;
 
 	//処理の変更
-	void ChangeNormal(void) override;
+	void ChangeNormal() override;
 
 	//メッセージの描画
-	void DrawMessage(void);
+	void DrawMessage();
+
+	//状態別更新処理
+	void UpdateWait();
+	void UpdatePlaySe();
+	void UpdateNone();
 };
