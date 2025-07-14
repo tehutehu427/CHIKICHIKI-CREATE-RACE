@@ -109,7 +109,11 @@ void FreePlay::UpdateEdit(void)
 	}
 	else
 	{
-		for (auto& controller : editControllers_) { controller->CursorUpdate(); }
+		for (auto& controller : editControllers_) 
+		{ 
+			controller->UpdateCursor(); 
+			controller->UpdateError(); 
+		}
 	}
 }
 

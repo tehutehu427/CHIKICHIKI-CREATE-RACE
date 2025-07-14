@@ -248,7 +248,7 @@ void Camera::ProcessRot(void)
 		angles_.x += Utility::Deg2RadF(mouseMove.y * rotPow);
 		angles_.y += Utility::Deg2RadF(mouseMove.x * rotPow);
 	}
-	KeyConfig::GetInstance().SetMousePosScreen();
+	KeyConfig::GetInstance().SetMousePos({ Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y});
 
 	if (angles_.x >= LIMIT_X_UP_RAD)
 	{
