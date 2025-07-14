@@ -86,11 +86,10 @@ void PlayerAction::Init(void)
 void PlayerAction::Load(void)
 {
 	auto& res = ResourceManager::GetInstance();
-	//actSE_.emplace(ACT_SE::DASH,res.Load(ResourceManager::SRC::PLAYER_DASH_START).handleId_);
-	//actSE_.emplace(ACT_SE::JUMP,res.Load(ResourceManager::SRC::PLAYER_JUMP).handleId_);
-	//actSE_.emplace(ACT_SE::PUNCH,res.Load(ResourceManager::SRC::PLAYER_PUNCH_MOTION).handleId_);
-	//actSE_.emplace(ACT_SE::DASH,res.Load(ResourceManager::SRC::PLAYER_DASH_START).handleId_);
-	//actSE_.emplace(ACT_SE::SLIME,res.Load(ResourceManager::SRC::SLIME_SE).handleId_);
+	actSE_.emplace(ACT_SE::DASH,SoundManager::SRC::PLAYER_DASH_START);
+	actSE_.emplace(ACT_SE::JUMP,SoundManager::SRC::PLAYER_JUMP);
+	actSE_.emplace(ACT_SE::PUNCH, SoundManager::SRC::PLAYER_PUNCH_MOTION);
+	actSE_.emplace(ACT_SE::SLIME, SoundManager::SRC::SLIME_SE);
 
 	effect_->Add(res.Load(ResourceManager::SRC::DASH_EFF).handleId_, EffectController::EFF_TYPE::DASH);
 	effect_->Add(res.Load(ResourceManager::SRC::JUMP_EFF).handleId_, EffectController::EFF_TYPE::JUMP);
@@ -175,7 +174,7 @@ void PlayerAction::ChangeInput(void)
 		effect_->Stop(EffectController::EFF_TYPE::DASH, i);
 	}
 
-	SoundManager::GetInstance().Stop(SoundManager::SRC::SLIME_SE);
+	StopResource();
 
 	actionUpdate_ = std::bind(&PlayerAction::ActionInputUpdate, this);
 }
@@ -253,10 +252,11 @@ void PlayerAction::ChangeMove(void)
 {
 	speed_ = MOVE_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
-	SoundManager::GetInstance().Play(SoundManager::SRC::PLAYER_DASH_START, SoundManager::PLAYTYPE::BACK);
+
+	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 	if (player_.GetIsSlimeFloor())
 	{
-		SoundManager::GetInstance().Play(SoundManager::SRC::SLIME_SE, SoundManager::PLAYTYPE::BACK);
+		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
 	}
 
 	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
@@ -272,14 +272,19 @@ void PlayerAction::ChangeDashMove(void)
 {
 	speed_ = DASH_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
-	SoundManager::GetInstance().Play(SoundManager::SRC::PLAYER_JUMP, SoundManager::PLAYTYPE::LOOP);
+	SoundManager::GetInstance().Play(actSE_[ACT_SE::DASH], SoundManager::PLAYTYPE::LOOP);
 	auto& trans = player_.GetTransform();
 	const float SCL = 10.0f;
+
+	//エフェクトの再生
 	effect_->Play(EffectController::EFF_TYPE::DASH, trans.pos, trans.quaRot, { SCL,SCL,SCL },50.0f);
 	effectArrayNum_++;
+
+	//スライム床内ならスライム音再生
 	if (player_.GetIsSlimeFloor())
 	{
-		SoundManager::GetInstance().Play(SoundManager::SRC::SLIME_SE, SoundManager::PLAYTYPE::BACK);
+		SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
+		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::LOOP);
 	}
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
 }
@@ -332,6 +337,7 @@ void PlayerAction::Jump(void)
 	//空中アニメーションステップのループ設定
 	animationController_.SetEndLoop(JUMP_ANIM_LOOP_START_FRAME
 		, JUMP_ANIM_LOOP_END_FRAME, JUMP_ANIM_ATTACK_BLEND_TIME);
+
 
 	SoundManager::GetInstance().Stop(SoundManager::SRC::PLAYER_DASH_START);
 
@@ -388,8 +394,10 @@ void PlayerAction::ChangeJump(void)
 	//アニメーションの再生
 	animationController_.Play(
 		(int)Player::ANIM_TYPE::JUMP, false, JUMP_ANIM_START_FRAME, JUMP_ANIM_END_FRAME);
+
 	//サウンド
 	SoundManager::GetInstance().Play(SoundManager::SRC::PLAYER_JUMP, SoundManager::PLAYTYPE::BACK);
+
 	//ジャンプエフェクト
 	effect_->Play(EffectController::EFF_TYPE::JUMP, trans.pos, trans.quaRot, EFF_SCL, 50.0f);
 
@@ -445,7 +453,7 @@ void PlayerAction::ChangePunch(void)
 	//アニメーション
 	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
 	//パンチサウンド再生
-	SoundManager::GetInstance().Play(SoundManager::SRC::PLAYER_PUNCH_HIT, SoundManager::PLAYTYPE::BACK);
+	SoundManager::GetInstance().Play(actSE_[ACT_SE::PUNCH], SoundManager::PLAYTYPE::BACK);
 
 	actionUpdate_ = [this]() {Punch(); };
 }
@@ -490,6 +498,11 @@ VECTOR PlayerAction::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECT
 	return VAdd(_followPos, addPos);
 }
 
+void PlayerAction::StopSe(const ACT_SE _se)
+{
+
+}
+
 void PlayerAction::Rotate(void)
 {
 	stepRotTime_ -= SceneManager::GetInstance().GetDeltaTime();
@@ -519,10 +532,10 @@ void PlayerAction::SetGoalRotate(double _deg)
 
 void PlayerAction::StopResource(void)
 {
-	/*for (auto& se : actSE_)
+	for (auto& se : actSE_)
 	{
 		SoundManager::GetInstance().Stop(se.second);
-	}*/
+	}
 	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
 	for (int i = 0; i <= effNum; i++)
 	{
