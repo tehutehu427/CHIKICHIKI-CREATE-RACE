@@ -303,7 +303,7 @@ void GameScene::UpdateAction(void)
 		return;
 	}
 
-	if (beforTime != static_cast<int>(actionStartTime_) && static_cast<int>(actionStartTime_) == -1)
+	if (beforTime != static_cast<int>(actionStartTime_) && static_cast<int>(actionStartTime_) > -1)
 	{
 		SoundManager::GetInstance().Play(SoundManager::SRC::CHICKEN_SE, SoundManager::PLAYTYPE::BACK);
 	}
