@@ -162,7 +162,7 @@ void PlayerAction::ChangeAction(ATK_ACT _act)
 	if (act_ == _act)return;
 	act_ = _act;
 	changeAction_[act_]();
-}
+ }
 
 void PlayerAction::ChangeInput(void)
 {
@@ -272,7 +272,10 @@ void PlayerAction::ChangeDashMove(void)
 {
 	speed_ = DASH_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
+
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::DASH], SoundManager::PLAYTYPE::LOOP);
+	
+
 	auto& trans = player_.GetTransform();
 	const float SCL = 10.0f;
 

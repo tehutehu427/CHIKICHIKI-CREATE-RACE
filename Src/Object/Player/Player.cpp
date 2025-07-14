@@ -243,6 +243,7 @@ void Player::AliveUpdate(void)
 	else if (onHitCol_->GetIsGoal())
 	{
 		ChangeState(PLAYER_STATE::GOAL);
+		return;
 	}
 	//アクション関係更新
 	Action();
@@ -283,6 +284,7 @@ void Player::GoalUpdate(void)
 {
 	//ゴール時の処理
 	//落ちているアニメーション再生
+	
 	animationController_->Play(static_cast<int>(ANIM_TYPE::GOAL), true);
 }
 
@@ -290,7 +292,7 @@ void Player::Action(void)
 {
 	//アクション関係の更新
 	action_->Update();
-
+	
 	//死んだら何もしないようにする
 	if (IsDeath())
 	{

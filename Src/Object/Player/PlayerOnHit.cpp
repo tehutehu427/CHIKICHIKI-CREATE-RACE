@@ -256,7 +256,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 			movedPos_.y = hitLinePos.y + Player::RADIUS + POSITION_OFFSET;
 			//’n–Ê‚Æ“–‚½‚Á‚Ä‚¢‚é
 			isLandHit_ = true;
-
 			action_.SetJumpPow(Utility::VECTOR_ZERO);
 		}
 		else
