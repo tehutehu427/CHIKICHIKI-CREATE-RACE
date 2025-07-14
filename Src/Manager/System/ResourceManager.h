@@ -105,6 +105,7 @@ public:
 		YES_NO,
 		ERROR_MAP_OUT_IMG,
 		ERROR_OVERLAP_IMG,
+		ERROR_CANT_ITEM_IMG,
 
 
 		//クリア
@@ -133,6 +134,7 @@ public:
 		PUSH_B_BUTTON_MES,
 		ONOFF,
 		SETTING_FINISH,
+
 
 
 		//ゲームシーン用画像

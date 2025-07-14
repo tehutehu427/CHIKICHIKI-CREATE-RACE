@@ -19,6 +19,8 @@ public:
 		WAIT,			//キャラクター現在のスコアを表示、
 		SCORE_UPDATE,	//スコアを更新
 		RESULT,			//結果に応じた演出やアニメーションを実行
+		AFTER_WAIT,		//結果後の待機
+		INPUT_CHECK,	//入力確認
 	};
 
 	//待機時間
@@ -90,6 +92,8 @@ private:
 	void UpdateStateWait(MultiParty& _parent);
 	void UpdateStateScore(MultiParty& _parent);
 	void UpdateStateResult(MultiParty& _parent);
+	void UpdateStateAfterWait(MultiParty& _parent);
+	void UpdateStateInputCheck(MultiParty& _parent);
 
 };
 

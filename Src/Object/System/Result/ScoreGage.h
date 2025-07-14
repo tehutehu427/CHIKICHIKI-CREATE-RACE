@@ -12,6 +12,7 @@ public:
 		WAIT,		//待機
 		ANIMATION,	//アニメーションを実行
 		AFTER_WAIT,	//アニメーション後の待機
+
 	};
 
 	//ゲージYサイズ	

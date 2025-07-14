@@ -125,7 +125,7 @@ void EditController::DrawUI(void)
 		break;
 	case EditController::ERROR_TYPE::ITEM_NOT_SET:
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		Utility::DrawStringPlace("アイテムが設置できませんでした", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		DrawRotaGraph(screenSize_.x / 2, screenSize_.y / 2, rate, 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_CANT_ITEM_IMG).handleId_, true);
 		break;
 	default:
 		break;

@@ -187,3 +187,11 @@ void MultiResult::UpdateStateResult(MultiParty& _parent)
 	}
 
 }
+
+void MultiResult::UpdateStateAfterWait(MultiParty& _parent)
+{
+}
+
+void MultiResult::UpdateStateInputCheck(MultiParty& _parent)
+{
+}

@@ -247,7 +247,7 @@ void MultiParty::UpdateClear()
 {
 	GameScene::UpdateClear();
 
-	if (!sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_JINGLE))
+	if (!sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_JINGLE) && sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_BGM))
 	{
 		sndMng_.Play(SoundManager::SRC::MULTI_CLEAR_BGM, SoundManager::PLAYTYPE::LOOP); //ÉNÉäÉABGMÇçƒê∂
 	}

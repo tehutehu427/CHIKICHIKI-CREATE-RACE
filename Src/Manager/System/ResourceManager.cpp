@@ -68,6 +68,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "OverLapItem.png");
 	resourcesMap_.emplace(SRC::ERROR_OVERLAP_IMG, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "CanNotItemPlace.png");
+	resourcesMap_.emplace(SRC::ERROR_CANT_ITEM_IMG, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "ChangePhaseIcons.png", CHANGE_PHASE_ICONS_DIV_X, CHANGE_PHASE_ICONS_DIV_Y, CHANGE_PHASE_ICONS_SIZE_X, CHANGE_PHASE_ICONS_SIZE_Y);
 	resourcesMap_.emplace(SRC::CHANGE_PHASE_ICONS, std::move(res));
 

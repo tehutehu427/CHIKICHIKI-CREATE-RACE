@@ -43,6 +43,8 @@ void TitleScene::Load(void)
 	sndMng_.LoadResource(SoundManager::SRC::TITLE_SCENE_CHANGE);
 	sndMng_.LoadResource(SoundManager::SRC::CHICKEN_SE);
 
+	sndMng_.SetLoadedSoundsVolume();
+
 	//ƒtƒHƒ“ƒg‚Ì“o˜^
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
