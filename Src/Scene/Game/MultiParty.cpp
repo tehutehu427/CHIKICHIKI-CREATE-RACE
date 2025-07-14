@@ -313,6 +313,7 @@ void MultiParty::CheckPlayerFinish()
 
 void MultiParty::LoadSound()
 {
+	GameScene::LoadSound();
 	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_1);
 	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_2);
 	sndMng_.LoadResource(SoundManager::SRC::MULTI_BGM_1);

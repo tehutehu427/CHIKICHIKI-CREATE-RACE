@@ -166,6 +166,9 @@ void SoundManager::Init()
 	res.path = path_Se + "ChangePhaseIcon.mp3";
 	resourcesMap_.emplace(SRC::CHANGE_PHASE_ICON_CLICK, res);
 
+	res.path = path_Se + "CountDown.mp3";
+	resourcesMap_.emplace(SRC::COUNTDOWN_SE, res);
+
 	res.path = path_Se + "DrumRoll.mp3";
 	resourcesMap_.emplace(SRC::DRUM_ROLL, res);
 
