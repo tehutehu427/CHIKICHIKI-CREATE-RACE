@@ -28,6 +28,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_.emplace(TAG::SPRING, [this](const std::weak_ptr<Collider> _hitCol) {ColSpring(_hitCol); });
 	colUpdates_.emplace(TAG::CANNON_AIM, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
 	colUpdates_.emplace(TAG::SHADOW, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
+
 	
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
@@ -80,15 +81,17 @@ void PlayerOnHit::Update(void)
 		{
 			continue;
 		}
-		isLandHit_ = false;
-		isHitSlimeFloor_ = false;
+
+		//現在座標を起点に移動後座標を決める
+
 	}
 
 	//移動前の座標を格納する
 	moveDiff_ = trans_.pos;
 	//移動
 	trans_.pos = movedPos_;
-	//現在座標を起点に移動後座標を決める
+
+
 }
 
 void PlayerOnHit::ColUpdate(const std::weak_ptr<Collider> _hitCol)
@@ -227,7 +230,10 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	//球の当たり判定(プレイヤーの周囲)
 	auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
 
+	//アクションに渡すフラグの初期化
 	isLandHit_ = false;
+	isHitSlimeFloor_ = false;
+
 
 	if (moveLineCol->IsHit() > 0)
 	{
@@ -274,6 +280,9 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	{
 		auto& hitInfo = hitModel.GetHitInfo();
 		//std::vector<VECTOR> collPos;
+		VECTOR vec = VSub(moveDiff_, movedPos_);
+		vec = VNorm(vec);
+		vec.y = 0.0f;
 		for (int i = 0; i < hitInfo.HitNum; i++)
 		{
 			auto hit = hitInfo.Dim[i];
@@ -287,8 +296,9 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 				if (pHit)
 				{
 					isSide_ = true;
-					
- 					movedPos_ = VAdd(movedPos_, VScale(hit.Normal, HIT_NORMAL_OFFSET));
+					VECTOR normal = hit.Normal;
+					normal.y = 0.0f;
+ 					movedPos_ = VAdd(movedPos_, VScale(normal, HIT_NORMAL_OFFSET));
 					
 					//カプセルを移動させる
 					trans.pos = movedPos_;
