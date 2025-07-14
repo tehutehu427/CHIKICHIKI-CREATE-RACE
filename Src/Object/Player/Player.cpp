@@ -275,9 +275,9 @@ void Player::ChangeGoal(void)
 {
 	goalTime_ = time_;
 	KillPunchCol();
+	action_->StopResource();
 	stateUpdate_ = std::bind(&Player::GoalUpdate, this);
 
-	action_->StopResource();
 }
 void Player::GoalUpdate(void)
 {
