@@ -302,6 +302,10 @@ int EditController::IsError(void)
 {
 	ItemManager& itemMIns = ItemManager::GetInstance();
 	int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
+	{
+		errorType = 0;
+	}
 	return errorType;
 }
 
