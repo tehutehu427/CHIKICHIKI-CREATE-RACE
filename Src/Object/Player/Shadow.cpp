@@ -36,6 +36,9 @@ void Shadow::Load(void)
 
 void Shadow::Init(void)
 {
+	alpha_ = 0.0f;
+	isDraw_ = false;
+	pos_ = {};
 }
 
 void Shadow::Update(void)
