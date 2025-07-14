@@ -190,7 +190,7 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 {
 	HitModelCommon(_hitCol);
-	if (!isSide_)
+	if (!isSide_&&isLandHit_)
 	{
 		isGoal_ = true;
 	}
@@ -265,7 +265,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 			if (action_.GetJumpDecel() > 0.0f)
 			{
 				//オブジェクトの下に当たったら跳ね返るようにする
-				action_.SetJumpDecel(-DOWN_BOUNCE_DECELERATION);
+				action_.SetJumpDecel(DOWN_BOUNCE_DECELERATION);
 			}
 		}
 		
