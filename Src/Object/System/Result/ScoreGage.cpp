@@ -112,7 +112,7 @@ void ScoreGage::UpdateStateAnimation()
 	float goal = static_cast<float>(updateLength_);	//目標位置
 
 	//移動量を求める
-	float move = Utility::EaseInQuad(animStep_, ANIM_TIME, start, goal);
+	float move = Utility::EaseOutQuad(animStep_, ANIM_TIME, start, goal);
 
 	//座標更新
 	size_.x = static_cast<int>(move);

@@ -1,6 +1,7 @@
 #include "MultiResult.h"
 #include "../../../Manager/Game/ScoreManager.h"
 #include "../../../Manager/System/SceneManager.h"
+#include "../../../Manager/System/SoundManager.h"
 #include "../../../Manager/System/DateBank.h"
 #include "../../../Scene/Game/MultiParty.h"
 #include "../../../Utility/Utility.h"
@@ -40,6 +41,10 @@ void MultiResult::Load()
 	//入力チェック
 	inputCheck_ = std::make_unique<MultiInputCheck>();
 	inputCheck_->Load();
+
+	SoundManager& sndMng = SoundManager::GetInstance();
+	sndMng.LoadResource(SoundManager::SRC::DRUM_ROLL);
+	sndMng.LoadResource(SoundManager::SRC::DRUM_ROLL_END);
 }
 
 void MultiResult::Init()
@@ -132,6 +137,9 @@ void MultiResult::UpdateStateWait(MultiParty& _parent)
 
 		//スコアゲージの状態を更新
 		scoreGages_->ChangeAllState(ScoreGage::STATE::ANIMATION);
+
+		//ドラムロールの再生
+		SoundManager::GetInstance().Play(SoundManager::SRC::DRUM_ROLL, SoundManager::PLAYTYPE::BACK);
 	}
 }
 
@@ -143,7 +151,12 @@ void MultiResult::UpdateStateScore(MultiParty& _parent)
 	//全員のスコアゲージのアニメーションを終えたら
 	if (scoreGages_->IsFinishAnimation())
 	{
+		SoundManager& sndMng = SoundManager::GetInstance();
 		int clearLine = DateBank::GetInstance().GetMultiClearScore();
+
+		//ドラムロールの停止
+		sndMng.Stop(SoundManager::SRC::DRUM_ROLL);
+		sndMng.Play(SoundManager::SRC::DRUM_ROLL_END, SoundManager::PLAYTYPE::BACK);
 
 		//状態遷移するか確認
 		//勝者がいる場合クリアフェーズへ移る

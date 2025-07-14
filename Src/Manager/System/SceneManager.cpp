@@ -360,7 +360,8 @@ void SceneManager::ResetDeltaTime(void)
 void SceneManager::DoChangeScene(SCENE_ID sceneId)
 {
 	// リソースの解放
-	ResourceManager::GetInstance().Release();
+	ResourceManager::GetInstance().Release();	
+	SoundManager::GetInstance().Release();	
 
 	// シーンを変更する
  	sceneId_ = sceneId;
@@ -375,7 +376,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	}
 	
 	//現在使用している音源の解放
-	SoundManager::GetInstance().Release();	
+
 
 	//シーンに合わせて生成数を設定
 	const int createNum = (sceneId == SCENE_ID::MULTI) ? DateBank::GetInstance().GetPlayerNum() : 1;

@@ -66,11 +66,13 @@ private:
 	//ó‘Ô‘JˆÚ
 	void ChangePhaseEdit() override;
 	void ChangePhaseAction() override;
+	void ChangePhaseClear() override;	
 	void ChangePhaseRound();
 	void ChangePhaseSelect();
 	void ChangePhaseResult();
 
 	//ó‘Ô•ÊXVˆ—
+	void UpdateClear() override;
 	void UpdateRound();
 	void UpdateSelect();
 	void UpdateResult();

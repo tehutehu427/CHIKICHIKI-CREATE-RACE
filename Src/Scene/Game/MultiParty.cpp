@@ -172,7 +172,17 @@ void MultiParty::DrawEdit(void)
 {
 	GameScene::DrawEdit();
 }
+
+void MultiParty::ChangePhaseClear()
+{
+	GameScene::ChangePhaseClear();	
 
+	//BGMの停止
+	sndMng_.Stop(playBgmSrc_);
+
+	//クリアジングル再生
+	sndMng_.Play(SoundManager::SRC::MULTI_CLEAR_JINGLE, SoundManager::PLAYTYPE::BACK);
+}
 void MultiParty::ChangePhaseEdit()
 {
 	//親クラスの処理を呼びだし
@@ -231,6 +241,16 @@ void MultiParty::ChangePhaseResult()
 
 	//クリア時間に応じてスコアを格納
 	ScoreManager::GetInstance().SetPlayersScore();
+}
+
+void MultiParty::UpdateClear()
+{
+	GameScene::UpdateClear();
+
+	if (!sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_JINGLE))
+	{
+		sndMng_.Play(SoundManager::SRC::MULTI_CLEAR_BGM, SoundManager::PLAYTYPE::LOOP); //クリアBGMを再生
+	}
 }
 
 void MultiParty::UpdateRound()
@@ -298,6 +318,8 @@ void MultiParty::LoadSound()
 	sndMng_.LoadResource(SoundManager::SRC::MULTI_BGM_1);
 	sndMng_.LoadResource(SoundManager::SRC::MULTI_BGM_2);
 	sndMng_.LoadResource(SoundManager::SRC::ROUND_JINGLE);
+	sndMng_.LoadResource(SoundManager::SRC::MULTI_CLEAR_BGM);
+	sndMng_.LoadResource(SoundManager::SRC::MULTI_CLEAR_JINGLE);
 }
 
 void MultiParty::RandomBgm()

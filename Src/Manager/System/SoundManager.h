@@ -21,6 +21,7 @@ public:
 		PLAY_BGM_2,				//プレイBGM2
 		MULTI_BGM_1,			//マルチBGM1
 		MULTI_BGM_2,			//マルチBGM2
+		MULTI_CLEAR_BGM,		//マルチクリアBGM
 
 		//システム効果音
 		TITLE_SCENE_CHANGE,		//タイトルシーン遷移
@@ -31,6 +32,9 @@ public:
 
 		//マルチモード効果音
 		ROUND_JINGLE,			//ラウンドジングル
+		DRUM_ROLL,				//ドラムロール
+		DRUM_ROLL_END,			//ドラムロール終了
+		MULTI_CLEAR_JINGLE,		//マルチクリアジングル
 
 		//プレイヤー効果音
 		PLAYER_PUNCH_HIT,		//プレイヤーパンチヒット
@@ -50,6 +54,10 @@ public:
 		PALETTE_CLOSE,			//パレット閉じる
 		EDIT_SYSTEM_ICON_CLICK,	//エディットシステムアイコンクリック
 		CHANGE_PHASE_ICON_CLICK,	//フェーズアイコンクリック
+
+		//プレイモード効果音
+		GAME_OVER,			//ゲームオーバー
+		CLEAR,				//クリア
 
 		//チキン鳴き声
 		CHICKEN_SE,				//チキンSE
@@ -136,6 +144,13 @@ public:
 	/// </summary>
 	/// <param name="_src">リソース種類</param>
 	void Stop(const SRC _src);
+
+	/// <summary>
+	/// 再生中かを返す
+	/// </summary>
+	/// <param name="_src">リソース種類</param>
+	/// <returns>trueの場合再生中,falseの場合再生していない</returns>
+	bool IsPlay(const SRC _src) const;
 
 	/// <summary>
 	/// 読み込んだ音量を設定する

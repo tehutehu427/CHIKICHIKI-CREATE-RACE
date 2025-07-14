@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "../../../../Manager/System/ResourceManager.h"
 #include "../../../../Manager/System/DateBank.h"
+#include "../../../../Manager/System/SoundManager.h"
 #include "../Utility/Utility.h"
 #include "../Utility/UtilityTemplates.h"
 #include "../PaletteCursor.h"
@@ -202,6 +203,7 @@ bool MultiPaletteIcon::CheckItemIcon(const Vector2 _cPos, const int _playerIndex
 		//位置の確認
 		if (Utility::IsPointInRect(_cPos, leftTop, rightBotm) && !IsChosenByOtherPlayer(i, _playerIndex))
 		{
+			SoundManager::GetInstance().Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);	//選択音を鳴らす
 			selectTypes_[_playerIndex] = static_cast<ItemBase::ITEM_TYPE>(ic.num);
 			sleCnt_[_playerIndex] = i;
 			return true;

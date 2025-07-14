@@ -46,11 +46,8 @@ void EditorPaletteBase::Load()
 	pal_ = std::make_unique<Palette>();
 	pal_->Load();
 
-	SoundManager& sndMng = SoundManager::GetInstance();
-	sndMng.LoadResource(SoundManager::SRC::PALETTE_OPEN);
-	sndMng.LoadResource(SoundManager::SRC::PALETTE_CLOSE);
-	sndMng.LoadResource(SoundManager::SRC::PALETTE_CLICK);
-	sndMng.LoadResource(SoundManager::SRC::DECISION);
+	//âπåπÇÃì«Ç›çûÇ›
+	LoadSounds();
 }
 
 void EditorPaletteBase::Init()
@@ -224,4 +221,13 @@ void EditorPaletteBase::UpdatePaletteAnim()
 			break;
 		}
 	}
+}
+
+void EditorPaletteBase::LoadSounds()
+{
+	SoundManager& sndMng = SoundManager::GetInstance();
+	sndMng.LoadResource(SoundManager::SRC::PALETTE_OPEN);
+	sndMng.LoadResource(SoundManager::SRC::PALETTE_CLOSE);
+	sndMng.LoadResource(SoundManager::SRC::PALETTE_CLICK);
+	sndMng.LoadResource(SoundManager::SRC::DECISION);
 }

@@ -30,6 +30,9 @@ void MultiPalette::Load(void)
 	//ƒpƒŒƒbƒg
 	pal_ = std::make_unique<Palette>();
 	pal_->Load();
+
+	//‰¹Œ¹‚Ì“Ç‚İ‚İ
+	LoadSounds();
 }
 
 void MultiPalette::Init(void)

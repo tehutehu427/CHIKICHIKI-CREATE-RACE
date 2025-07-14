@@ -82,6 +82,10 @@ void SoundManager::Init()
 
     res.path = path_Bgm  + "MultiBgm2.mp3";
     resourcesMap_.emplace(SRC::MULTI_BGM_2, res);
+
+	res.path = path_Bgm + "MultiClearBgm.mp3";
+    resourcesMap_.emplace(SRC::MULTI_CLEAR_BGM, res);
+
 #pragma endregion
 
 #pragma region SE
@@ -93,10 +97,10 @@ void SoundManager::Init()
     res.path = path_Se + "PunchMotion.mp3";
     resourcesMap_.emplace(SRC::PLAYER_PUNCH_MOTION, res);
 
-    res.path = path_Se + "dash.mp3";
+    res.path = path_Se + "Dash.mp3";
     resourcesMap_.emplace(SRC::PLAYER_DASH_START, res);
 
-    res.path = path_Se + "jump.mp3";
+    res.path = path_Se + "Jump.mp3";
     resourcesMap_.emplace(SRC::PLAYER_JUMP, res);
 
     res.path = path_Se + "Spring.mp3";
@@ -161,6 +165,21 @@ void SoundManager::Init()
 
 	res.path = path_Se + "ChangePhaseIcon.mp3";
 	resourcesMap_.emplace(SRC::CHANGE_PHASE_ICON_CLICK, res);
+
+	res.path = path_Se + "DrumRoll.mp3";
+	resourcesMap_.emplace(SRC::DRUM_ROLL, res);
+
+	res.path = path_Se + "DrumRollEnd.mp3";
+	resourcesMap_.emplace(SRC::DRUM_ROLL_END, res);
+
+	res.path = path_Se + "MultiClearJingle.mp3";
+	resourcesMap_.emplace(SRC::MULTI_CLEAR_JINGLE, res);
+
+	res.path = path_Se + "GameOver.mp3";
+	resourcesMap_.emplace(SRC::GAME_OVER, res);
+
+	res.path = path_Se + "Clear.mp3";
+	resourcesMap_.emplace(SRC::CLEAR, res);
 #pragma endregion
 
 }
@@ -190,6 +209,16 @@ void SoundManager::Stop(const SRC _src)
 {
     //‰¹Œ¹‚Ì’âŽ~
     StopSoundMem(loadedMap_[_src].handleId);
+}
+
+bool SoundManager::IsPlay(const SRC _src) const
+{
+    const auto it = loadedMap_.find(_src);
+    if (it == loadedMap_.end())
+    {
+        return false; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í–¢Ä¶‚Æ‚·‚é
+    }
+    return CheckSoundMem(it->second.handleId) == 1;
 }
 
 void SoundManager::SetSystemVolume(const int _volumePercent, const int _type)

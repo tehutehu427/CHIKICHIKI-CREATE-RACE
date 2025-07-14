@@ -122,7 +122,7 @@ protected:
 	//フェーズ遷移
 	virtual void ChangePhaseEdit(void);
 	virtual void ChangePhaseAction(void);
-	void ChangePhaseClear(void);
+	virtual void ChangePhaseClear(void);
 	
 	//フェーズ別更新処理
 	virtual void UpdateEdit(void);		//エディット時の更新処理
