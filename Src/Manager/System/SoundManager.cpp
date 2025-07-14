@@ -232,6 +232,11 @@ void SoundManager::SetSystemVolume(const int _volumePercent, const int _type)
     //音量調整
 	for (const auto& pair : loadedMap_)
 	{
+        //種類が異なるものはスキップ
+		if (pair.second.type != static_cast<TYPE>(_type)) 
+        {
+			continue;
+		}
         ChangeVolumeSoundMem(VOLUME_MAX * volume_[_type] / DIV, pair.second.handleId);
 	}
 }

@@ -23,6 +23,7 @@ void DateBank::Init(void)
 	maxPlayerNum_ = GetJoypadNum();
 	stageNo_ = 0;
 	multiClearScore_ = DEFAULT_SCORE;
+	isItemSetSkip_ = true;
 
 	//–¼‘O‚ÌŠi”[
 	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::NONE)] = "";

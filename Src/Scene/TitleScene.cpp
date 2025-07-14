@@ -24,6 +24,7 @@ TitleScene::TitleScene(void)
 	alphaDir_ = 1; 
 	mesPosY_ = 0.0f;
 	mesAlpha_ = 0;
+	titleUpdateFunc_ = std::bind(&TitleScene::UpdateWait, this);	//初期更新処理
 }
 
 TitleScene::~TitleScene(void)
@@ -66,17 +67,8 @@ void TitleScene::NormalUpdate(void)
 	//ステップの更新
 	step_ += SceneManager::GetInstance().GetDeltaTime();
 
-	// シーン遷移
-	KeyConfig& ins = KeyConfig::GetInstance();
-	SoundManager& snd = SoundManager::GetInstance();
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
-	{
-		sndMng_.Stop(SoundManager::SRC::TITLE_BGM);
-		sndMng_.Play(SoundManager::SRC::TITLE_SCENE_CHANGE, SoundManager::PLAYTYPE::BACK);
-		sndMng_.Play(SoundManager::SRC::CHICKEN_SE, SoundManager::PLAYTYPE::NORMAL);
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
-		return;
-	}
+	//状態別更新処理
+	titleUpdateFunc_();
 
 	//スカイドーム更新
 	skyDome_->Update();
@@ -135,5 +127,40 @@ void TitleScene::DrawMessage(void)
 		false
 	);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void TitleScene::UpdateWait()
+{
+	// シーン遷移
+	KeyConfig& ins = KeyConfig::GetInstance();
+	SoundManager& snd = SoundManager::GetInstance();
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
+	{
+		//BGMの停止
+		sndMng_.Stop(SoundManager::SRC::TITLE_BGM);
+
+		//BGMの再生
+		sndMng_.Play(SoundManager::SRC::TITLE_SCENE_CHANGE, SoundManager::PLAYTYPE::BACK);
+		sndMng_.Play(SoundManager::SRC::CHICKEN_SE, SoundManager::PLAYTYPE::BACK);
+
+		//更新処理の変更
+		titleUpdateFunc_ = std::bind(&TitleScene::UpdatePlaySe, this);
+		return;
+	}
+}
+
+void TitleScene::UpdatePlaySe()
+{
+	if (!sndMng_.IsPlay(SoundManager::SRC::CHICKEN_SE))
+	{
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
+		//更新処理の変更
+		titleUpdateFunc_ = std::bind(&TitleScene::UpdateNone, this);
+		return;
+	}
+}
+
+void TitleScene::UpdateNone()
+{
 }
 

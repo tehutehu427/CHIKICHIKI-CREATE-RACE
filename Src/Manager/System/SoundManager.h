@@ -162,7 +162,15 @@ public:
 	/// 音量の設定
 	/// </summary>
 	/// <param name="_volumePercent">音量パーセント</param>
+	/// <param name="_type">サウンド種類</param>
 	void SetSystemVolume(const int _volumePercent, const int _type);
+
+	/// <summary>
+	/// 音量を返す
+	/// </summary>
+	/// <param name="_type">サウンド種類</param>
+	/// <returns>指定したサウンド種類の音量を返す</returns>
+	const int GetSoundTypeVolume(const int _type) const { return volume_[_type]; }
 
 private:
 
