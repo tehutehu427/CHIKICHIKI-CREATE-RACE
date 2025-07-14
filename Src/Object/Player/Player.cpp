@@ -180,7 +180,7 @@ void Player::Draw(void)
 	shadow_->Draw();
 
 #ifdef DEBUG_ON
-	//DrawDebug();
+	DrawDebug();
 #endif // DEBUG_ON
 }
 

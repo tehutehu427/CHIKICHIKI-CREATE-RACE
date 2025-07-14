@@ -28,8 +28,6 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_.emplace(TAG::SPRING, [this](const std::weak_ptr<Collider> _hitCol) {ColSpring(_hitCol); });
 	colUpdates_.emplace(TAG::CANNON_AIM, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
 	colUpdates_.emplace(TAG::SHADOW, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
-
-
 	
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
@@ -179,7 +177,7 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 	//int hitSE = res.Load(ResourceManager::SRC::SPRING_SE).handleId_;
 	if (!isSide_)
 	{
-		//バネジャンプ音再生()
+		//バネジャンプ音再生
 		SoundManager::GetInstance().Play(SoundManager::SRC::SPRING_SE, SoundManager::PLAYTYPE::BACK);
 		action_.SetJumpDecel(SPRING_JUMP_POW);
 		action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);

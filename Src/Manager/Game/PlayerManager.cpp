@@ -76,6 +76,8 @@ void PlayerManager::Load(void)
 		sndMng.LoadResource(SoundManager::SRC::PLAYER_JUMP);
 		sndMng.LoadResource(SoundManager::SRC::PLAYER_PUNCH_HIT);
 		sndMng.LoadResource(SoundManager::SRC::PLAYER_PUNCH_MOTION);
+		sndMng.LoadResource(SoundManager::SRC::SLIME_SE);
+		sndMng.LoadResource(SoundManager::SRC::SPRING_SE);
 	}
 }
 

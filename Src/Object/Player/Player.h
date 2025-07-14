@@ -6,7 +6,7 @@
 #include"./PlayerAction.h"
 #include "../ObjectBase.h"
 
-//#define DEBUG_ON
+#define DEBUG_ON
 class AnimationController;
 class Camera;
 class PlayerAction;
