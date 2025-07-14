@@ -96,6 +96,7 @@ void Player::Load(void)
 
 	//‰e
 	shadow_ = std::make_unique<Shadow>(trans_);
+	shadow_->Load();
 
 	//“–‚½‚è”»’è
 	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_, tag_);
@@ -139,6 +140,8 @@ void Player::Init(void)
 
 	//XV
 	trans_.Update();
+
+	shadow_->Init();
 }
 
 void Player::Update(void)

@@ -73,9 +73,11 @@ void EditItemReady::UpdateNotReady(void)
 		{
 			return; //カーソルが当たり判定の外にある場合は何もしない
 		}
-		if (parent_.IsError() < 0)
+		int errorType = parent_.IsError();
+		if (errorType < 0)
 		{
 			SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
+			parent_.SetError(errorType);
 			return;
 		}
 		ChangeReady(READY_PHASE::CHECK);
@@ -84,9 +86,11 @@ void EditItemReady::UpdateNotReady(void)
 
 void EditItemReady::UpdateCheck(void)
 {
-	if (parent_.IsError() < 0)
+	int errorType = parent_.IsError();
+	if (errorType < 0)
 	{
 		SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
+		parent_.SetError(errorType);
 		ChangeReady(READY_PHASE::NOT_READY);
 		return;
 	}

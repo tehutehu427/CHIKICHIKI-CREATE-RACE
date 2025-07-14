@@ -70,9 +70,13 @@ void EditController::Update(void)
 	{
 		errorType_ = ERROR_TYPE::NONE;	//エラーの初期化
 	}
-	CursorUpdate();	//カーソル更新
+	UpdateCursor();	//カーソル更新
 	ready_->Update();
 
+	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_CHENGE, padNum_))
+	{
+		ChengeCameraMode();
+	}
 	DebugUpdate();
 
 	if (GetReady())
@@ -83,26 +87,11 @@ void EditController::Update(void)
 
 	//モード別更新処理
 	modeUpdate_();
-	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_CHENGE, padNum_))
-	{
-		ChengeCameraMode();
-	}
 	if (moveDir_ == MOVE_DIR::NONE)
 	{
 		ItemNotSelect();
 	}
-	if (errorType_ != ERROR_TYPE::NONE &&errorStringTime_ == 0)
-	{
-		errorStringTime_ = ERROR_STRING_TIME;	//エラー文字列の表示時間初期化
-	}
-	else if (errorStringTime_ > 0)
-	{
-		errorStringTime_ -= SceneManager::GetInstance().GetDeltaTime();	//エラー文字列の表示時間減少
-		if (errorStringTime_ <= 0)
-		{
-			errorStringTime_ = 0.0f;	//エラー文字列の表示時間初期化
-		}
-	}
+	UpdateError();
 }
 
 void EditController::Draw(void)
@@ -263,7 +252,7 @@ void EditController::SetReady(void)
 	itemMIns.DummyItemAddItems(playerNum_);
 }
 
-void EditController::CursorUpdate(void)
+void EditController::UpdateCursor(void)
 {
 	auto lStick = KeyConfig::GetInstance().GetKnockLStickSize(padNum_);
 	auto& itemMIns = ItemManager::GetInstance();
@@ -292,11 +281,33 @@ void EditController::CursorUpdate(void)
 	mousePos_ = cursorPos_;
 }
 
+void EditController::UpdateError(void)
+{
+	if (errorType_ != ERROR_TYPE::NONE && errorStringTime_ == 0)
+	{
+		errorStringTime_ = ERROR_STRING_TIME;	//エラー文字列の表示時間初期化
+	}
+	else if (errorStringTime_ > 0)
+	{
+		errorStringTime_ -= SceneManager::GetInstance().GetDeltaTime();	//エラー文字列の表示時間減少
+		if (errorStringTime_ <= 0)
+		{
+			errorStringTime_ = 0.0f;	//エラー文字列の表示時間初期化
+			errorType_ = ERROR_TYPE::NONE;
+		}
+	}
+}
+
 int EditController::IsError(void)
 {
 	ItemManager& itemMIns = ItemManager::GetInstance();
 	int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
 	return errorType;
+}
+
+void EditController::SetError(int errorType)
+{
+	errorType_ = static_cast<ERROR_TYPE>((abs(errorType)));
 }
 
 void EditController::ChengeModeItemSelect(void)
