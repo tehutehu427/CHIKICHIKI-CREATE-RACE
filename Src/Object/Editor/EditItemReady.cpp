@@ -80,6 +80,7 @@ void EditItemReady::UpdateNotReady(void)
 			parent_.SetError(errorType);
 			return;
 		}
+		SoundManager::GetInstance().Play(SoundManager::SRC::OK, SoundManager::PLAYTYPE::BACK);
 		ChangeReady(READY_PHASE::CHECK);
 	}
 }
@@ -97,11 +98,13 @@ void EditItemReady::UpdateCheck(void)
 	KeyConfig& ins = KeyConfig::GetInstance();
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL, parent_.GetPadNum(), KeyConfig::TYPE::PAD))
 	{
+		SoundManager::GetInstance().Play(SoundManager::SRC::CANCEL, SoundManager::PLAYTYPE::BACK);
 		ChangeReady(READY_PHASE::NOT_READY);
 		return;
 	}
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, parent_.GetPadNum(), KeyConfig::TYPE::PAD))
 	{
+		SoundManager::GetInstance().Play(SoundManager::SRC::OK, SoundManager::PLAYTYPE::BACK);
 		ChangeReady(READY_PHASE::READY);
 		return;
 	}

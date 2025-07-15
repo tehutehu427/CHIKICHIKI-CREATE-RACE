@@ -396,6 +396,8 @@ void GameScene::LoadSound(void)
 {
 	sndMng_.LoadResource(SoundManager::SRC::CHICKEN_SE);
 	sndMng_.LoadResource(SoundManager::SRC::COUNTDOWN_SE);
+	sndMng_.LoadResource(SoundManager::SRC::OK);
+	sndMng_.LoadResource(SoundManager::SRC::CANCEL);
 }
 
 void GameScene::CheckPlayerFinish(void)
