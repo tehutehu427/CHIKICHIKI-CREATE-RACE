@@ -403,6 +403,10 @@ std::string MapDataIO::GetSoloFileName()
     case static_cast<int>(SelectStage::STAGE_TYPE::ADVANCED):
         return "AdvancedStage.json";
         break;
+
+    case static_cast<int>(SelectStage::STAGE_TYPE::ABYSS):
+        return "AbyssStage.json";
+        break;
     }
 }
 

@@ -6,13 +6,15 @@ class SelectStage
 {
 public:
 
-
-
+	/// <summary>
+	/// ステージ種類
+	/// </summary>
 	enum class STAGE_TYPE
 	{
 		BEGINNER,		//初級
 		INTERMEDIATE,	//中級
 		ADVANCED,		//上級
+		ABYSS,			//アビス
 		MAX
 	};
 
