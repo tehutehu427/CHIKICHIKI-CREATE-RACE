@@ -79,5 +79,7 @@ protected:
 
 	//“Á’è‚Ì”z—ñ”Ô†‚Ì“–‚½‚è”»’èíœ
 	void DeleteCollider(const int _arrayNum);
+
+	void DeleteAllCollider(void);
 };
 

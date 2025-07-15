@@ -65,3 +65,13 @@ void ObjectBase::DeleteCollider(const int _arrayNum)
 	//”z—ñ‚Ìíœ
 	colParam_.erase(colParam_.begin() + arrayNum);
 }
+
+void ObjectBase::DeleteAllCollider(void)
+{
+	for (auto& col : colParam_)
+	{
+		if (col.collider_ == nullptr)continue;
+		col.collider_->Kill();
+	}
+	colParam_.clear();
+}
