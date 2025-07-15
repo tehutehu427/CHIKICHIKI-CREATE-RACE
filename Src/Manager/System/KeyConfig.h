@@ -153,6 +153,7 @@ public:
 		DEBUG_CHANGE_INPUT,			//デバッグ用入力デバイス切り替え
 		DATA_INPUT,				//データを入力
 		DATA_EXPORT,			//データを出力
+		SELECT_SKIP,
 		MAX,
 	};
 

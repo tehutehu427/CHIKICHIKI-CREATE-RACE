@@ -184,7 +184,7 @@ void PlayerAction::ChangeInput(void)
 		effect_->Stop(EffectController::EFF_TYPE::DASH, i);
 	}
 
-   	StopResource();
+	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 
 	actionUpdate_ = std::bind(&PlayerAction::ActionInputUpdate, this);
 }
@@ -405,7 +405,6 @@ void PlayerAction::ChangeJump(void)
 		(int)Player::ANIM_TYPE::JUMP, false, JUMP_ANIM_START_FRAME, JUMP_ANIM_END_FRAME);
 
 	//サウンド
-	StopSe(ACT_SE::JUMP);
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::JUMP], SoundManager::PLAYTYPE::BACK);
 
 	//ジャンプエフェクト
@@ -462,8 +461,8 @@ void PlayerAction::ChangePunch(void)
 	punchCoolCnt_ = PUNCH_COOL_TIME;
 	//アニメーション
 	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
-	//パンチサウンド再生
-	StopSe(ACT_SE::PUNCH);
+
+	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::PUNCH], SoundManager::PLAYTYPE::BACK);
 
 	actionUpdate_ = [this]() {Punch(); };

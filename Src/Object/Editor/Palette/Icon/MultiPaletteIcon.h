@@ -46,6 +46,8 @@ private:
 	//カーソル画像
 	int* imgCursors_;
 
+	std::vector<bool> isSkips_;
+
 	//種類ごとにアイテム残数を管理する
 	std::map<ItemBase::ITEM_TYPE, int> itemIconMap_;
 

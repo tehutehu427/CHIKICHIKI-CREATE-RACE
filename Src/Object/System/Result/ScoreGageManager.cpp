@@ -159,7 +159,7 @@ void ScoreGageManager::DrawIsWinning()
 	//ƒvƒŒƒCƒ„[–¼‚Ì•`‰æ
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X - 150,
-		TITLE_POS_Y - 25,
+		TITLE_POS_Y - 10,
 		0.7f,
 		0.0f,
 		imgPlayers_[index],
