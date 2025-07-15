@@ -72,7 +72,7 @@ const bool ScoreGageManager::IsFinishAnimation() const
 	for (auto& scoreGage : scoreGages_)
 	{
 		//ゲージがまだアニメーション状態の時
-		if (scoreGage->GetState() == ScoreGage::STATE::ANIMATION)
+		if (scoreGage->GetState() != ScoreGage::STATE::AFTER_WAIT)
 		{
 			//アニメーションが終わっていないのでfalseを返す
 			return false;
@@ -82,13 +82,11 @@ const bool ScoreGageManager::IsFinishAnimation() const
 	return true;
 }
 
-void ScoreGageManager::DecorationDraw()
+void ScoreGageManager::DrawGageDecoration()
 {	
 	constexpr int LENGTH = 350;
 	constexpr float THICKNESS = 5.0f;
 	constexpr int TITLE_POS_Y = 50;
-	constexpr float ALPHA_STEP = 1.5f; //アルファ値の変化量
-	constexpr float ALPHA_MIN = 50.0f; //アルファ値の変化量
 
 	//縮小開始ライン
 	DrawLine(
@@ -118,13 +116,15 @@ void ScoreGageManager::DecorationDraw()
 		0.0f,
 		imgTitle_,
 		true
-	);
+	);	
 
-	for (const auto& scoreGage : scoreGages_)
-	{
-		if (scoreGage->GetState() != ScoreGage::STATE::AFTER_WAIT) { return; }
-	}
-	
+}
+
+void ScoreGageManager::DrawPushButton()
+{	
+	constexpr float ALPHA_STEP = 1.5f; //アルファ値の変化量
+	constexpr float ALPHA_MIN = 50.0f; //アルファ値の変化量
+
 	//アルファ値を変え
 	mesAlpha_ = Utility::PingPongUpdate(mesAlpha_, ALPHA_STEP, Utility::ALPHA_MAX, ALPHA_MIN, alphaDir_);
 

@@ -52,7 +52,12 @@ public:
 	const bool IsFinishAnimation() const;
 
 	//装飾類の描画
-	void DecorationDraw();
+	void DrawGageDecoration();
+
+	//ボタンを押してねの描画
+	void DrawPushButton();
+
+
 
 private:
 	// タイトル画像

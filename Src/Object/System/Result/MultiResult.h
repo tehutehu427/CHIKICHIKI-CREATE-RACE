@@ -19,12 +19,12 @@ public:
 		WAIT,			//キャラクター現在のスコアを表示、
 		SCORE_UPDATE,	//スコアを更新
 		RESULT,			//結果に応じた演出やアニメーションを実行
-		AFTER_WAIT,		//結果後の待機
 		INPUT_CHECK,	//入力確認
 	};
 
 	//待機時間
 	static constexpr float WAIT_TIME = 0.8f;	
+	static constexpr float AFTER_WAIT_TIME = 1.5f;	
 
 	/// <summary>
 	/// コンストラクタ
@@ -70,7 +70,10 @@ private:
 	STATE state_;
 
 	//状態別更新処理を管理
-	std::unordered_map<STATE, std::function<void(MultiParty&)>> stateMap_;
+	std::unordered_map<STATE, std::function<void(MultiParty&)>> stateUpdateMap_;
+
+	//状態別描画処理を管理
+	std::unordered_map<STATE, std::function<void()>> stateDrawMap_;
 
 	//パレット
 	std::unique_ptr<Palette> palette_;
@@ -82,7 +85,10 @@ private:
 	std::unique_ptr<MultiInputCheck> inputCheck_;
 
 	//状態別更新処理を登録
-	void RegisterStateFunction(const STATE _state, std::function<void(MultiParty&)> _update);
+	void RegisterStateUpdateFunction(const STATE _state, std::function<void(MultiParty&)> _update);
+
+	//状態別描画処理を登録
+	void RegisterStateDrawFunction(const STATE _state, std::function<void()> _draw);
 
 	//状態変更
 	const void ChangeState(const STATE _state) { state_ = _state; }
@@ -92,8 +98,12 @@ private:
 	void UpdateStateWait(MultiParty& _parent);
 	void UpdateStateScore(MultiParty& _parent);
 	void UpdateStateResult(MultiParty& _parent);
-	void UpdateStateAfterWait(MultiParty& _parent);
 	void UpdateStateInputCheck(MultiParty& _parent);
 
-};
+	void DrawStateReady();
+	void DrawStateWait();
+	void DrawStateScore();
+	void DrawStateResult();
+	void DrawStateInputCheck();
 
+};

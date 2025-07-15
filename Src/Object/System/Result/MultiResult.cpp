@@ -12,10 +12,17 @@
 
 MultiResult::MultiResult()
 {
-	RegisterStateFunction(STATE::READY, [this](MultiParty& _parent) { UpdateStateReady(_parent); });
-	RegisterStateFunction(STATE::WAIT, [this](MultiParty& _parent) { UpdateStateWait(_parent); });
-	RegisterStateFunction(STATE::SCORE_UPDATE, [this](MultiParty& _parent) { UpdateStateScore(_parent); });
-	RegisterStateFunction(STATE::RESULT, [this](MultiParty& _parent) { UpdateStateResult(_parent); });
+	RegisterStateUpdateFunction(STATE::READY, [this](MultiParty& _parent) { UpdateStateReady(_parent); });
+	RegisterStateUpdateFunction(STATE::WAIT, [this](MultiParty& _parent) { UpdateStateWait(_parent); });
+	RegisterStateUpdateFunction(STATE::SCORE_UPDATE, [this](MultiParty& _parent) { UpdateStateScore(_parent); });
+	RegisterStateUpdateFunction(STATE::RESULT, [this](MultiParty& _parent) { UpdateStateResult(_parent); });
+	RegisterStateUpdateFunction(STATE::INPUT_CHECK, [this](MultiParty& _parent) { UpdateStateInputCheck(_parent); });
+
+	RegisterStateDrawFunction(STATE::READY, [this]() { DrawStateReady(); });
+	RegisterStateDrawFunction(STATE::WAIT, [this]() { DrawStateWait(); });
+	RegisterStateDrawFunction(STATE::SCORE_UPDATE, [this]() { DrawStateScore(); });
+	RegisterStateDrawFunction(STATE::RESULT, [this]() { DrawStateResult(); });
+	RegisterStateDrawFunction(STATE::INPUT_CHECK, [this]() { DrawStateInputCheck(); });
 
 	state_ = STATE::READY;
 	palette_ = nullptr;
@@ -62,7 +69,7 @@ void MultiResult::Init()
 
 void MultiResult::Update(MultiParty& _parent)
 {
-	stateMap_[state_](_parent);
+	stateUpdateMap_[state_](_parent);
 }
 
 void MultiResult::Draw()
@@ -70,15 +77,8 @@ void MultiResult::Draw()
 	//パレット
 	palette_->Draw();
 
-
-	//スコアゲージ
-	scoreGages_->Draw();
-
-	//ゲージ装飾
-	if (palette_->GetState() == Palette::STATE::CENTER) { scoreGages_->DecorationDraw(); }
-
-	//入力確認
-	inputCheck_->Draw();
+	//状態別描画処理の呼び出し
+	stateDrawMap_[state_]();
 }
 
 void MultiResult::Reset()
@@ -96,10 +96,15 @@ void MultiResult::Reset()
 	ChangeState(STATE::READY);
 }
 
-void MultiResult::RegisterStateFunction(const STATE _state, std::function<void(MultiParty&)> _update)
+void MultiResult::RegisterStateUpdateFunction(const STATE _state, std::function<void(MultiParty&)> _update)
 {
 	//処理の登録
-	stateMap_[_state] = _update;
+	stateUpdateMap_[_state] = _update;
+}
+
+void MultiResult::RegisterStateDrawFunction(const STATE _state, std::function<void()> _draw)
+{
+	stateDrawMap_[_state] = _draw;
 }
 
 void MultiResult::UpdateStateReady(MultiParty& _parent)
@@ -152,30 +157,47 @@ void MultiResult::UpdateStateScore(MultiParty& _parent)
 	if (scoreGages_->IsFinishAnimation())
 	{
 		SoundManager& sndMng = SoundManager::GetInstance();
-		int clearLine = DateBank::GetInstance().GetMultiClearScore();
 
 		//ドラムロールの停止
 		sndMng.Stop(SoundManager::SRC::DRUM_ROLL);
+
+		//ドラムロールの終了音を再生
 		sndMng.Play(SoundManager::SRC::DRUM_ROLL_END, SoundManager::PLAYTYPE::BACK);
 
+		//待機時間設定
+		waitStep_ = AFTER_WAIT_TIME;
+
+		//状態遷移
+		ChangeState(STATE::RESULT);
+	}
+}
+
+void MultiResult::UpdateStateResult(MultiParty& _parent)
+{
+	//ステップ更新
+	waitStep_ -= SceneManager::GetInstance().GetDeltaTime();
+
+	if (waitStep_ <= 0)
+	{		
 		//状態遷移するか確認
-		//勝者がいる場合クリアフェーズへ移る
+		//勝者がいる場合クリアフェーズへ移る	
+		int clearLine = DateBank::GetInstance().GetMultiClearScore();
 		if (ScoreManager::GetInstance().GetWinnerPlayerIndex(clearLine) != -1)
 		{
 			_parent.ChangePhase(MultiParty::PHASE::CLEAR_PHASE);
 			return;
 		}
 
-		//状態遷移
-		ChangeState(STATE::RESULT);
-
 		//パッド入力状況のリセット
 		inputCheck_->ResetInput();
+
+		//状態遷移
+		ChangeState(STATE::INPUT_CHECK);
 	}
 }
 
-void MultiResult::UpdateStateResult(MultiParty& _parent)
-{
+void MultiResult::UpdateStateInputCheck(MultiParty& _parent)
+{	
 	inputCheck_->Update();
 
 	//全員がボタンを押して確認ができたら
@@ -185,13 +207,51 @@ void MultiResult::UpdateStateResult(MultiParty& _parent)
 		_parent.RoundReset();
 		return;
 	}
-
 }
 
-void MultiResult::UpdateStateAfterWait(MultiParty& _parent)
+void MultiResult::DrawStateReady()
 {
 }
 
-void MultiResult::UpdateStateInputCheck(MultiParty& _parent)
+void MultiResult::DrawStateWait()
 {
+	//スコアゲージ
+	scoreGages_->Draw();
+
+	//ゲージ装飾
+	scoreGages_->DrawGageDecoration();
 }
+
+void MultiResult::DrawStateScore()
+{
+	//スコアゲージ
+	scoreGages_->Draw();
+
+	//ゲージ装飾
+	scoreGages_->DrawGageDecoration();
+}
+
+void MultiResult::DrawStateResult()
+{
+	//スコアゲージ
+	scoreGages_->Draw();
+
+	//ゲージ装飾
+	scoreGages_->DrawGageDecoration();
+}
+
+void MultiResult::DrawStateInputCheck()
+{
+	//スコアゲージ
+	scoreGages_->Draw();
+
+	//ゲージ装飾
+	scoreGages_->DrawGageDecoration();
+
+	//ボタンを押してねの描画
+	scoreGages_->DrawPushButton();
+
+	//入力確認
+	inputCheck_->Draw();
+}
+

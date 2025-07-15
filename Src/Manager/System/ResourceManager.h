@@ -141,7 +141,6 @@ public:
 		NUMBERS,
 		OK,
 		ROUND,
-		SELECT_ITEM_MES,
 		PROGRESS,
 		SELECT_ITEM,
 

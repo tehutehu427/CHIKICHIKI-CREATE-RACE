@@ -108,17 +108,18 @@ void ScoreGage::UpdateStateAnimation()
 
 	//必要な情報を設定
 	constexpr float ANIM_TIME = 3.0f;	//アニメーション時間
+	constexpr int OFFSET = 2;	//目標位置に到達したときのオフセット
 	float start = static_cast<float>(size_.x);	//開始位置
 	float goal = static_cast<float>(updateLength_);	//目標位置
 
 	//移動量を求める
-	float move = Utility::EaseOutQuad(animStep_, ANIM_TIME, start, goal);
+	float move = Utility::EaseInQuad(animStep_, ANIM_TIME, start, goal);
 
 	//座標更新
 	size_.x = static_cast<int>(move);
 
 	//目標位置に到達したら状態を変更
-	if (size_.x >= updateLength_)
+	if (size_.x >= updateLength_ - OFFSET)
 	{
 		ChangeState(STATE::AFTER_WAIT);
 	}
