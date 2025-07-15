@@ -84,7 +84,8 @@ void TitleScene::NormalUpdate(void)
 		//デモへ
 		ChangeDemo();
 	}
-	//スカイドーム更新
+
+	//スカイドーム更新
 	skyDome_->Update();
 }
 
