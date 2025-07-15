@@ -6,14 +6,14 @@
 #include"./PlayerAction.h"
 #include "../ObjectBase.h"
 
-#define DEBUG_ON
+//#define DEBUG_ON
 class AnimationController;
 class Camera;
 class PlayerAction;
 class PlayerOnHit;
 class DateBank;
 class Shadow;
-
+class Camera;
 class ModelMaterial;
 class ModelRenderer;
 
@@ -165,6 +165,7 @@ public:
 	/// </summary>
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos);
+
 	//*****************************************
 	//モデル色を変更
 	void ChangeModelColor(const COLOR_F _colorScale)override;
@@ -174,8 +175,6 @@ public:
 
 	//パンチの当たり判定を消す
 	void KillPunchCol(void);
-
-
 
 private:
 	//***********************************************
@@ -230,7 +229,6 @@ private:
 	//ゲームパッド番号
 	KeyConfig::JOYPAD_NO padNum_;
 
-
 	//オブジェクト関連
 	//--------------------------------------------
 		//行動系
@@ -251,6 +249,9 @@ private:
 
 	//エフェクト
 	std::unique_ptr<EffectController> effect_;
+
+	//カメラ
+	std::weak_ptr<Camera>camera_;
 
 	//メンバ変数
 	//--------------------------------------------
@@ -276,6 +277,7 @@ private:
 	std::function<void(void)>stateUpdate_;
 
 	VECTOR moveVec_;
+
 
 
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
