@@ -151,6 +151,7 @@ public:
 		PLAYER_GAGES,
 		PLAYER_GAGE_OUTLINE,
 		SELECT_SKIP,
+		DRAW_MES,
 
 
 		//アイテムモデル

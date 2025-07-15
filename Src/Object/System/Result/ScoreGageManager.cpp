@@ -10,6 +10,7 @@ ScoreGageManager::ScoreGageManager()
 	alphaDir_ = -1; 
 	imgTitle_ = -1;
 	mesAlpha_ = -1; 
+	imgDraw_ = -1;
 	imgPushButton_ = -1;
 	imgIsWinning_ = -1;
 	imgPlayers_ = nullptr;
@@ -26,6 +27,7 @@ void ScoreGageManager::Load()
 	imgPushButton_ = res.Load(ResourceManager::SRC::PUSH_B_BUTTON_MES).handleId_;
 	imgIsWinning_ = res.Load(ResourceManager::SRC::IS_WINNING_MES).handleId_;
 	imgPlayers_ = res.Load(ResourceManager::SRC::PLAYER_PLATES).handleIds_;
+	imgDraw_ = res.Load(ResourceManager::SRC::DRAW_MES).handleId_;
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = 0; i < playerNum; ++i)
@@ -156,23 +158,40 @@ void ScoreGageManager::DrawIsWinning()
 	ScoreManager & score = ScoreManager::GetInstance();
 
 	int index = score.GetNowWinnerPlayerIndex();
-	//プレイヤー名の描画
-	DrawRotaGraph(
-		Application::SCREEN_HALF_X - 150,
-		TITLE_POS_Y - 10,
-		0.7f,
-		0.0f,
-		imgPlayers_[index],
-		true
-	);
 
-	//勝利メッセージの描画
-	DrawRotaGraph(
-		Application::SCREEN_HALF_X + 194,
-		TITLE_POS_Y,
-		1.0f,
-		0.0f,
-		imgIsWinning_,
-		true
-	);
+	if (index == -1)
+	{
+		//引き分け
+		DrawRotaGraph(
+			Application::SCREEN_HALF_X,
+			TITLE_POS_Y,
+			0.7f,
+			0.0f,
+			imgDraw_,
+			true
+		);
+	}
+	else
+	{
+		//プレイヤー名の描画
+		DrawRotaGraph(
+			Application::SCREEN_HALF_X - 150,
+			TITLE_POS_Y - 10,
+			0.7f,
+			0.0f,
+			imgPlayers_[index],
+			true
+		);
+
+		//勝利メッセージの描画
+		DrawRotaGraph(
+			Application::SCREEN_HALF_X + 194,
+			TITLE_POS_Y,
+			1.0f,
+			0.0f,
+			imgIsWinning_,
+			true
+		);
+	}
+	
 }

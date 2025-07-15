@@ -73,6 +73,9 @@ private:
 	//が勝っている画像
 	int imgIsWinning_;
 
+	//引き分けメッセージ
+	int imgDraw_;
+
 	//プレイヤープレート
 	int* imgPlayers_;
 
