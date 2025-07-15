@@ -49,6 +49,8 @@ private:
 	static constexpr float ROUND_CHANGE_TIME = 3.5f;
 	//エディットからの遷移時間
 	static constexpr float EDIT_CHANGE_TIME = 2.0f;
+	//アクションからの遷移時間
+	static constexpr float ACTION_CHANGE_TIME = 2.0f;
 	//描画関数
 	void NormalDraw(void) override;
 
@@ -106,6 +108,10 @@ private:
 
 	//エディットからのフェーズ遷移時間管理
 	float editChengeTime_;
+
+	//アクションからのフェーズ遷移時間管理
+	float actionChangeTime_;
+
 	//リザルト処理
 	std::unique_ptr<MultiResult> result_;
 	std::unique_ptr<RoundDisplay> round_;

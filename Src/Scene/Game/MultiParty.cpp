@@ -19,6 +19,8 @@ MultiParty::MultiParty(void)
 	editBgmSrc_ = SoundManager::SRC::NONE;
 	playBgmSrc_ = SoundManager::SRC::NONE;
 	phaseChangeTimer_ = 0.0f;
+	actionChangeTime_ = 0.0f;
+	editChengeTime_ = 0.0f;
 	phaseChanges_.emplace(PHASE::ROUND_PHASE, std::bind(&MultiParty::ChangePhaseRound, this));
 	phaseChanges_.emplace(PHASE::SELECT_PHASE, std::bind(&MultiParty::ChangePhaseSelect, this));
 	phaseChanges_.emplace(PHASE::RESULT_PHASE, std::bind(&MultiParty::ChangePhaseResult, this));
@@ -212,6 +214,9 @@ void MultiParty::ChangePhaseAction()
 	//画面を分割する
 	scnMng_.SetIsSplitMode(true);
 
+	//アクションフェーズの時間を設定
+	actionChangeTime_ = ACTION_CHANGE_TIME;
+
 	//BGMを停止
 	sndMng_.Stop(editBgmSrc_);
 
@@ -317,9 +322,19 @@ void MultiParty::DrawResult()
 
 void MultiParty::CheckPlayerFinish()
 {
+	//プレイヤーの処理が終わったか確認
 	if (PlayerManager::GetInstance().IsPlayersEnd())
-	{
-		ChangePhase(PHASE::RESULT_PHASE);
+	{			
+		//アクションフェーズの時間を更新
+		actionChangeTime_ -= SceneManager::GetInstance().GetDeltaTime();	
+
+		//アクションフェーズの時間が経過したら
+		if (actionChangeTime_ <= 0.0f)
+		{
+			//リザルトへ遷移	
+			ChangePhase(PHASE::RESULT_PHASE);
+			return;
+		}
 	}
 }
 

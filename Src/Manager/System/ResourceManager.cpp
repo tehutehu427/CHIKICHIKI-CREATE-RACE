@@ -164,6 +164,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "GageOutline.png");
 	resourcesMap_.emplace(SRC::PLAYER_GAGE_OUTLINE, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "SelectSkipMes.png");
+	resourcesMap_.emplace(SRC::SELECT_SKIP, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Effect + "SmokeSprites.png", SMOKE_EFE_DIV_X, SMOKE_EFE_DIV_Y, SMOKE_EFE_SIZE, SMOKE_EFE_SIZE);
 	resourcesMap_.emplace(SRC::SMOKE_EFE_SPR, std::move(res));
 #pragma endregion 
