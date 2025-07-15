@@ -1,4 +1,5 @@
 #include <DxLib.h>
+#include <cmath>
 #include "../../Application.h"
 #include "../Common/FontRegistry.h"
 #include "../../Utility/Utility.h"
@@ -13,7 +14,6 @@
 #include "../../Manager/Game/MapEditer.h"
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/Game/PlayerManager.h"
-#include "../../Object/Player/Player.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Object/Editor/MapDataIO.h"
@@ -292,18 +292,19 @@ void GameScene::UpdateEdit(void)
 
 void GameScene::UpdateAction(void)
 {
-	int beforTime = static_cast<int>(actionStartTime_);
+	int beforTime = static_cast<int>(std::floor(actionStartTime_));
 	actionStartTime_ -= SceneManager::GetInstance().GetDeltaTime();
-	if (actionStartTime_ > 0)
+	int afterTime = static_cast<int>(std::floor(actionStartTime_));
+	if (afterTime >= 0)
 	{
-		if (beforTime != static_cast<int>(actionStartTime_))
+		if (beforTime != afterTime)
 		{
-			SoundManager::GetInstance().Play(SoundManager::SRC::CHICKEN_SE_2, SoundManager::PLAYTYPE::BACK);
+			SoundManager::GetInstance().Play(SoundManager::SRC::COUNTDOWN_SE, SoundManager::PLAYTYPE::BACK);
 		}
 		return;
 	}
 
-	if (beforTime != static_cast<int>(actionStartTime_) && static_cast<int>(actionStartTime_) > -1)
+	if (beforTime != afterTime && afterTime >= -1)
 	{
 		SoundManager::GetInstance().Play(SoundManager::SRC::CHICKEN_SE, SoundManager::PLAYTYPE::BACK);
 	}
@@ -392,6 +393,11 @@ void GameScene::DrawClear()
 
 void GameScene::LoadSound(void)
 {
+	sndMng_.LoadResource(SoundManager::SRC::CHICKEN_SE);
+	sndMng_.LoadResource(SoundManager::SRC::COUNTDOWN_SE);
+	sndMng_.LoadResource(SoundManager::SRC::OK);
+	sndMng_.LoadResource(SoundManager::SRC::CANCEL);
+	sndMng_.LoadResource(SoundManager::SRC::BOMB_SE);
 }
 
 void GameScene::CheckPlayerFinish(void)

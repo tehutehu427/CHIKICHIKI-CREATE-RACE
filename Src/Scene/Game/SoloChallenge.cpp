@@ -43,5 +43,6 @@ void SoloChallenge::UpdateAction(void)
 
 void SoloChallenge::LoadSound(void)
 {
+	GameScene::LoadSound();
 	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_1);
 }

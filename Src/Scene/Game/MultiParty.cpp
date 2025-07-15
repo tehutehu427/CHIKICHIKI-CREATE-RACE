@@ -161,7 +161,11 @@ void MultiParty::UpdateEdit(void)
 	}
 	if (ready)
 	{
-		ChangePhase(PHASE::ACTION_PHASE);
+		editChengeTime_ -= SceneManager::GetInstance().GetDeltaTime();
+		if (editChengeTime_ < 0)
+		{
+			ChangePhase(PHASE::ACTION_PHASE);
+		}
 	}
 }
 
@@ -189,6 +193,8 @@ void MultiParty::ChangePhaseEdit()
 {
 	//eƒNƒ‰ƒX‚Ìˆ—‚ðŒÄ‚Ñ‚¾‚µ
 	GameScene::ChangePhaseEdit();
+
+	editChengeTime_ = EDIT_CHANGE_TIME;
 
 	//‰æ–Ê‚ð•ªŠ„‚·‚é
 	scnMng_.SetIsSplitMode(true);
@@ -315,6 +321,7 @@ void MultiParty::CheckPlayerFinish()
 
 void MultiParty::LoadSound()
 {
+	GameScene::LoadSound();
 	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_1);
 	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_2);
 	sndMng_.LoadResource(SoundManager::SRC::MULTI_BGM_1);

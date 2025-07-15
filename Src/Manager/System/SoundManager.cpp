@@ -166,6 +166,9 @@ void SoundManager::Init()
 	res.path = path_Se + "ChangePhaseIcon.mp3";
 	resourcesMap_.emplace(SRC::CHANGE_PHASE_ICON_CLICK, res);
 
+	res.path = path_Se + "CountDown.mp3";
+	resourcesMap_.emplace(SRC::COUNTDOWN_SE, res);
+
 	res.path = path_Se + "DrumRoll.mp3";
 	resourcesMap_.emplace(SRC::DRUM_ROLL, res);
 
@@ -180,6 +183,9 @@ void SoundManager::Init()
 
 	res.path = path_Se + "Clear.mp3";
 	resourcesMap_.emplace(SRC::CLEAR, res);
+
+	res.path = path_Se + "Bomb.mp3";
+	resourcesMap_.emplace(SRC::BOMB_SE, res);
 #pragma endregion
 
 }
