@@ -80,6 +80,16 @@ void PlayerAction::Init(void)
 
 	effectArrayNum_ = 0.0f;
 
+
+	if (scnMng_.GetInstance().GetSceneID() == SceneManager::SCENE_ID::TITLE)
+	{
+		cameraNo_ = 0;
+	}
+	else
+	{
+		cameraNo_ = player_.GetPlayerNum();
+	}
+
 	ChangeAction(ATK_ACT::INPUT);
 }
 
@@ -235,8 +245,7 @@ void PlayerAction::MoveDirFronInput(void)
 	VECTOR getDir = input_->GetDir();
 	float deg = input_->GetMoveDeg();
 
-	int playerNum = player_.GetPlayerNum();
-	Quaternion cameraRot = scnMng_.GetCamera(playerNum).lock()->GetQuaRotOutX();
+	Quaternion cameraRot = scnMng_.GetCamera(cameraNo_).lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
 	dir_ = cameraRot.PosAxis(getDir);
 	dir_ = VNorm(dir_);
@@ -521,7 +530,7 @@ void PlayerAction::Rotate(void)
 void PlayerAction::SetGoalRotate(double _deg)
 {
 	//ƒJƒƒ‰‚ÌŠp“x‚ðŽæ“¾
-	VECTOR cameraRot = scnMng_.GetCamera(player_.GetPlayerNum()).lock()->GetAngles();
+	VECTOR cameraRot = scnMng_.GetCamera(cameraNo_).lock()->GetAngles();
 	Quaternion axis = Quaternion::AngleAxis(
 		(double)cameraRot.y + Utility::Deg2RadF(_deg), Utility::AXIS_Y);
 
