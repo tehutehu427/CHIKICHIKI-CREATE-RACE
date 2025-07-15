@@ -175,6 +175,10 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	//}
 	if (itemType == ItemBase::ITEM_TYPE::NONE)
 	{
+		if (playerMaxNum_ != 1)
+		{
+			ready_->ChangeReady(EditItemReady::READY_PHASE::READY);
+		}
 		return;
 	}
 	auto& itemMIns = ItemManager::GetInstance();
