@@ -183,6 +183,9 @@ void SoundManager::Init()
 
 	res.path = path_Se + "Clear.mp3";
 	resourcesMap_.emplace(SRC::CLEAR, res);
+
+	res.path = path_Se + "Bomb.mp3";
+	resourcesMap_.emplace(SRC::BOMB_SE, res);
 #pragma endregion
 
 }
