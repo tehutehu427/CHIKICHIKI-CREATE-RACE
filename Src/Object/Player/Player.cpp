@@ -137,6 +137,10 @@ void Player::Init(void)
 
 	goalTime_ = 0.0f;
 
+	finishDelay_ = 0.0f;
+
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+
 	//バッファー設定
 	material_->AddConstBufVS(FLOAT4{ 3.0f,0.0f,0.0f ,0.0f });	//輪郭線太さ
 	material_->AddConstBufPS(FLOAT4{ 0.0f,0.0f,0.0f ,1.0f });	//輪郭線カラー
@@ -271,6 +275,8 @@ void Player::ChangeDeath(void)
 void Player::DeathUpdate(void)
 {
 	//死んだ時の処理
+	//終了からの遅延時間を計測
+	finishDelay_ += scnMng_.GetInstance().GetDeltaTime();
 	//落ちているアニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
 	//アニメーションループ
@@ -289,7 +295,8 @@ void Player::ChangeGoal(void)
 }
 void Player::GoalUpdate(void)
 {
-	//ゴール時の処理
+	//終了からの遅延時間を計測
+	finishDelay_ += scnMng_.GetInstance().GetDeltaTime();
 	//落ちているアニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::GOAL), true);
 }
@@ -325,17 +332,11 @@ const bool Player::GetIsSlimeFloor(void)
 
 const bool Player::IsGoal(void) const
 {
-	return state_ == PLAYER_STATE::GOAL;
+	return state_ == PLAYER_STATE::GOAL&&finishDelay_>=GOAL_DELAY;
 }
 bool Player::IsDeath(void)
 {
-	//奈落に落ちるorデスオブジェクトに当たったら
-	//if (trans_.pos.y <= DEATH_POS_Y||onHitCol_->GetIsDeath())
-	if (state_==PLAYER_STATE::DEATH)
-	{
-		return true;
-	}
-	return false;
+	return state_ == PLAYER_STATE::DEATH && finishDelay_ >= DEATH_DELAY;
 }
 
 void Player::SetPos(const VECTOR _worldPos)
