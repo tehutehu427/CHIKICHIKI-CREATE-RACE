@@ -79,7 +79,7 @@ void EditController::Update(void)
 	}
 	DebugUpdate();
 
-	if (GetReady())
+	if (ready_->GetReady() == EditItemReady::READY_PHASE::READY)
 	{
 		//マルチプレイ時にアイテムを置き終わった
 		return;
@@ -230,7 +230,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 
 bool EditController::GetReady(void) const
 {
-	return ready_->GetReady() == EditItemReady::READY_PHASE::READY;
+	return (ready_->GetReady() == EditItemReady::READY_PHASE::READY && !SoundManager::GetInstance().IsPlay(SoundManager::SRC::BOMB_SE));
 }
 
 void EditController::SetReady(void)

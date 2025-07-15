@@ -159,7 +159,11 @@ void MultiParty::UpdateEdit(void)
 	}
 	if (ready)
 	{
-		ChangePhase(PHASE::ACTION_PHASE);
+		editChengeTime_ -= SceneManager::GetInstance().GetDeltaTime();
+		if (editChengeTime_ < 0)
+		{
+			ChangePhase(PHASE::ACTION_PHASE);
+		}
 	}
 }
 
@@ -187,6 +191,8 @@ void MultiParty::ChangePhaseEdit()
 {
 	//eƒNƒ‰ƒX‚Ìˆ—‚ðŒÄ‚Ñ‚¾‚µ
 	GameScene::ChangePhaseEdit();
+
+	editChengeTime_ = EDIT_CHANGE_TIME;
 
 	//‰æ–Ê‚ð•ªŠ„‚·‚é
 	scnMng_.SetIsSplitMode(true);
