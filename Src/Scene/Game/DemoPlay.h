@@ -20,5 +20,14 @@ public:
 	void Draw(void);
 
 private:
+
+	static constexpr float CAMERA_SUB_Z = 100.0f;										//カメラのZ位置を下げる用
+	static constexpr VECTOR CAMERA_POS = { 600.0f,1000.0f,-600.0f - CAMERA_SUB_Z };		//カメラ位置
+	static constexpr VECTOR CAMERA_TARGET_POS = { 600.0f,-100.0,600.0 - CAMERA_SUB_Z };	//カメラターゲット位置
+
+	float step_;	//カウンタ
+
+	//デモステージの生成
+	void CreateDemoStage(void);
 };
 

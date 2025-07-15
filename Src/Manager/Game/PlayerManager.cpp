@@ -176,8 +176,9 @@ Transform PlayerManager::FixTrans(int _playerNum)
 
 void PlayerManager::InitPlayerColor()
 {
-	//マルチ以外は設定を行わない
-	if (SceneManager::GetInstance().GetSceneID() != SceneManager::SCENE_ID::MULTI)
+	//マルチ 又は タイトル以外は設定を行わない
+	if (SceneManager::GetInstance().GetSceneID() != SceneManager::SCENE_ID::MULTI
+		&& SceneManager::GetInstance().GetSceneID() != SceneManager::SCENE_ID::TITLE)
 	{
 		//色はデフォルトの白になる
 		return;

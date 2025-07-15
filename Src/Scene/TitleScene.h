@@ -27,6 +27,7 @@ private:
 	static constexpr float DEMO_CHANGE_TIME = 10.0f;	//デモプレイへの遷移時間
 	static constexpr int DEMO_IMAGE_ALPHA = 100;		//デモプレイでの画像の透明度
 	static constexpr float DEMO_LOGO_MOVE_TIME = 2.0f;	//デモプレイでのロゴの移動時間
+	static constexpr float DEMO_CHANGE_SIZE = 16.0f;	//デモプレイでのロゴの縮小倍率
 
 	//ロゴ
 	static constexpr int LOGO_POS_Y = 250;				//ロゴの基本Y座標

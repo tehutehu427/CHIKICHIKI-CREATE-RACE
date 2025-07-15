@@ -145,7 +145,7 @@ public:
 		PLAY_CAMERA_ZOOM_IN,	//プレイのカメラズームイン
 		PLAY_CAMERA_ZOOM_OUT,	//プレイのカメラズームアウト
 
-		
+		DEMO_TO_TITLE_BACK,		//デモからタイトルに戻る
 
 
 		DEBUG_CHENGE_TITLE,		//デバッグ用タイトル画面に戻る
