@@ -14,8 +14,8 @@ static std::mt19937 gen(rd());
 
 MultiPaletteIcon::MultiPaletteIcon()
 {
-	int i = -1;
-	imgCursors_ = &i;
+	imgCursors_ = nullptr;
+	isSkips_.clear();
 	cursors_.clear();
 }
 
@@ -37,6 +37,9 @@ void MultiPaletteIcon::Load()
 	for (int i = 0; i < playerNum; i++)
 	{
 		cursors_.push_back(std::move(std::make_unique<PaletteCursor>(i, imgCursors_[i])));
+
+		//スキップも設定
+		isSkips_.push_back(false);
 	}
 }
 
@@ -90,7 +93,11 @@ void MultiPaletteIcon::Init()
 	//マスクスクリーンの初期設定
 	InitMaskScreen();
 
-
+	//初期化
+	for (auto isSkip : isSkips_)
+	{
+		isSkip = false;
+	}
 }
 
 void MultiPaletteIcon::Draw()
@@ -154,10 +161,19 @@ void MultiPaletteIcon::UpdateSelect()
 	for (int i = 0; i < cursors_.size(); i++)
 	{
 		//選択済みのプレイヤーは処理を飛ばす
-		if (selectTypes_[i] != ItemBase::ITEM_TYPE::NONE) 
+		if (selectTypes_[i] != ItemBase::ITEM_TYPE::NONE || isSkips_[i])
 		{
+
 			continue;
 		}
+
+		if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_SKIP, static_cast<KeyConfig::JOYPAD_NO>(i + 1)))
+		{
+			selectTypes_[i] = ItemBase::ITEM_TYPE::NONE;	//NONEにする
+			cursors_[i]->SetDecide(true);					//カーソルを決定済みにする
+			isSkips_[i] = true;								//スキップする
+			continue;
+		}	
 
 		//カーソルが決定済みの時
 		if (cursors_[i]->IsDecide())

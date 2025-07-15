@@ -325,7 +325,7 @@ void MultiParty::CheckPlayerFinish()
 		actionChangeTime_ -= SceneManager::GetInstance().GetDeltaTime();	
 
 		//アクションフェーズの時間が経過したら
-		if (actionChangeTime_ > 0.0f)
+		if (actionChangeTime_ <= 0.0f)
 		{
 			//リザルトへ遷移	
 			ChangePhase(PHASE::RESULT_PHASE);

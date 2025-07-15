@@ -22,6 +22,7 @@ void MultiPalette::Load(void)
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgPalette_ = res.Load(ResourceManager::SRC::PALETTE).handleId_;
 	imgTitle_ = res.Load(ResourceManager::SRC::SELECT_ITEM).handleId_;
+	imgSkip_ = res.Load(ResourceManager::SRC::SELECT_SKIP).handleId_;
 
 	//パレットアイコン
 	palIcon_ = std::make_unique<MultiPaletteIcon>();
@@ -67,6 +68,15 @@ void MultiPalette::Draw(void)
 			RATE,
 			0.0f,
 			imgTitle_,
+			true
+		);
+
+		DrawRotaGraph(
+			Application::SCREEN_HALF_X + 120,
+			Application::SCREEN_SIZE_Y - 100,
+			RATE,
+			0.0f,
+			imgSkip_,
 			true
 		);
 	}
