@@ -69,6 +69,11 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,Utility::VECTOR_ZERO);
 	MakeCollider({ tag_ }, std::move(moveLineGeo));
 
+	//階段の当たり判定のためのプレイヤーの目線からのライン
+		//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
+	std::unique_ptr<Line>eyeLine = std::make_unique<Line>(trans_.pos, trans_.quaRot, EYE_HEIGHT, EYE_RANGE);
+	MakeCollider({ tag_ }, std::move(eyeLine));
+
 	//*****************************************************
 }
 
@@ -243,6 +248,7 @@ void Player::AliveUpdate(void)
 	else if (onHitCol_->GetIsGoal())
 	{
 		ChangeState(PLAYER_STATE::GOAL);
+		return;
 	}
 	//アクション関係更新
 	Action();
@@ -275,14 +281,15 @@ void Player::ChangeGoal(void)
 {
 	goalTime_ = time_;
 	KillPunchCol();
+	action_->StopResource();
 	stateUpdate_ = std::bind(&Player::GoalUpdate, this);
 
-	action_->StopResource();
 }
 void Player::GoalUpdate(void)
 {
 	//ゴール時の処理
 	//落ちているアニメーション再生
+	
 	animationController_->Play(static_cast<int>(ANIM_TYPE::GOAL), true);
 }
 
@@ -290,7 +297,7 @@ void Player::Action(void)
 {
 	//アクション関係の更新
 	action_->Update();
-
+	
 	//死んだら何もしないようにする
 	if (IsDeath())
 	{

@@ -103,17 +103,22 @@ private:
 	//ヒットした法線方向へのオフセット
 	static constexpr float HIT_NORMAL_OFFSET = 3.0f;
 
+	//接地しているときのラインのコライダ
+	static constexpr int UP_AND_DOWN_LINE_COL_NO = 0;
+
 	//プレイヤーの体の球
 	static constexpr int BODY_SPHERE_COL_NO = 1;
-
-	//プレイヤーの手の座標
-	static constexpr int HAND_SPHERE_COL_NO = 3;
 
 	//現在の座標と移動後座標を結んだ線のコライダ
 	static constexpr int MOVE_LINE_COL_NO = 2;
 
-	//接地しているときのラインのコライダ
-	static constexpr int UP_AND_DOWN_LINE_COL_NO = 0;
+	//現在の座標と移動後座標を結んだ線のコライダ
+	static constexpr int EYE_LINE_NO = 3;
+
+	//プレイヤーの手の座標
+	static constexpr int HAND_SPHERE_COL_NO = 4;
+
+
 	//ラインの長さ
 	static constexpr float LINE_RANGE = 10.0f;
 	//プレイヤーの上の座標
@@ -123,13 +128,14 @@ private:
 
 
 	//当たり判定のめりこみ防止用
-	static constexpr float POSITION_OFFSET = 0.1f;
+	static constexpr float POSITION_OFFSET = 1.0f;
 
 	//オブジェクトの下に当たった時の跳ね返り減速セット
 	static constexpr float DOWN_BOUNCE_DECELERATION = -10.0f;
 
 	static constexpr float MOVE_LINE_Y_OFFSET = Player::RADIUS - 1.0f;
-	static constexpr float MOVE_LINE_Y_CHECK_VALUE = Player::RADIUS - 1.5f;
+	//static constexpr float MOVE_LINE_Y_CHECK_VALUE = Player::RADIUS - 1.5f;
+	static constexpr float MOVE_LINE_Y_CHECK_VALUE = Player::RADIUS + 1.5f;
 
 	//--------------------------------------
 	//メンバ変数
