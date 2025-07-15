@@ -24,6 +24,7 @@ void MultiInputCheck::Load()
 	SoundManager& sndMng = SoundManager::GetInstance();
 	imgOk_ = res.Load(ResourceManager::SRC::OK).handleId_;
 	sndMng.LoadResource(SoundManager::SRC::OK);
+	sndMng.LoadResource(SoundManager::SRC::CHICKEN_SE_3);
 }
 
 void MultiInputCheck::Init()
@@ -44,7 +45,7 @@ void MultiInputCheck::Update()
 
 	for (int i = 0; i < players_.size(); i++)
 	{
-		if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, static_cast<KeyConfig::JOYPAD_NO>(OFFSET + i)))
+		if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, static_cast<KeyConfig::JOYPAD_NO>(OFFSET + i)) && !players_[i].isProcess)
 		{
 			players_[i].isProcess = true;
 			sndMng.Play(SoundManager::SRC::OK, SoundManager::PLAYTYPE::BACK);
