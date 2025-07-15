@@ -188,6 +188,10 @@ void MultiParty::ChangePhaseClear()
 
 	//クリアジングル再生
 	sndMng_.Play(SoundManager::SRC::MULTI_CLEAR_JINGLE, SoundManager::PLAYTYPE::BACK);
+
+	auto camera = SceneManager::GetInstance().GetCamera(0).lock();
+	camera->ChangeMode(Camera::MODE::FOLLOW);
+	camera->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(ScoreManager::GetInstance().GetWinnerPlayerIndex()));
 }
 void MultiParty::ChangePhaseEdit()
 {
