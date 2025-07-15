@@ -61,6 +61,7 @@ public:
 		NONE,
 		FIXED_POINT,
 		FOLLOW,
+		FOLLOW_ROTATION,	//ついじゅうしながら自動回転操作不能
 		SELF_SHOT,
 		FPS,
 		FREE_CONTROLL,
@@ -153,6 +154,7 @@ private:
 	// モード別更新ステップ
 	void SetBeforeDrawFixedPoint(void);
 	void SetBeforeDrawFollow(void);
+	void SetBeforeDrawFollowRotation(void);
 	void SetBeforeDrawSelfShot(void);
 	void SetBeforeDrawFPS(void);
 	void SetBeforeDrawFreeControll(void);

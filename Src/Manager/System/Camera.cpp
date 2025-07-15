@@ -49,6 +49,9 @@ void Camera::SetBeforeDraw(void)
 	case Camera::MODE::FOLLOW:
 		SetBeforeDrawFollow();
 		break;
+	case Camera::MODE::FOLLOW_ROTATION:
+		SetBeforeDrawFollowRotation();
+		break;
 	case Camera::MODE::SELF_SHOT:
 		SetBeforeDrawSelfShot();
 		break;
@@ -315,6 +318,23 @@ void Camera::SetBeforeDrawFollow(void)
 	ProcessRot();
 
 	ProcessZoom();
+	// �Ǐ]�ΏۂƂ̑��Έʒu�𓯊�
+	SyncFollow();
+}
+
+void Camera::SetBeforeDrawFollowRotation(void)
+{
+	const float SPEED_DEG = 1.5f;
+	angles_.y += Utility::Deg2RadF(SPEED_DEG);
+
+	auto vec = VNorm(VSub(LOCAL_F2T_POS, LOCAL_F2C_POS));
+	localPos_ = VAdd(localPos_, VScale(vec, ZOOM_SPEED));
+	if (Utility::Distance(LOCAL_F2C_POS, localPos_) > ZOOM_RADIUS)
+	{
+		vec = VNorm(VSub(localPos_, LOCAL_F2C_POS));
+		localPos_ = VAdd(LOCAL_F2C_POS, VScale(vec, ZOOM_RADIUS));
+	}
+
 	// �Ǐ]�ΏۂƂ̑��Έʒu�𓯊�
 	SyncFollow();
 }
