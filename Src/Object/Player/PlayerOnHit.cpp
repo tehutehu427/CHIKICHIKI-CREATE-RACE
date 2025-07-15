@@ -283,7 +283,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	isSide_ = false;
 	if (bodyShere->IsHit())
 	{
-
 		auto& hitInfo = hitModel.GetHitInfo();
 		//std::vector<VECTOR> collPos;
 		VECTOR vec = VSub(moveDiff_, movedPos_);
