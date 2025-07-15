@@ -57,7 +57,11 @@ public:
 	//ボタンを押してねの描画
 	void DrawPushButton();
 
+	//タイトルの描画
+	void DrawTitle();
 
+	//勝っているかの描画
+	void DrawIsWinning();
 
 private:
 	// タイトル画像
@@ -65,6 +69,12 @@ private:
 
 	// ボタンを押してね画像
 	int imgPushButton_; 
+
+	//が勝っている画像
+	int imgIsWinning_;
+
+	//プレイヤープレート
+	int* imgPlayers_;
 
 	//メッセージのアルファ値
 	int mesAlpha_;

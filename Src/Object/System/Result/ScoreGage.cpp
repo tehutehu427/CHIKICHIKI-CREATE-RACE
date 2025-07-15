@@ -2,12 +2,15 @@
 #include <DxLib.h>
 #include "../Utility/Utility.h"
 #include "../Manager/Game/ScoreManager.h"
+#include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/DateBank.h"
 
 ScoreGage::ScoreGage(const int _playerIndex) : 
 	playerIndex_(_playerIndex)
 {
+	imgGages_ = nullptr;
+	imgGageOutline_ = -1;
 	pos_ = {};
 	size_ = {};
 	imgScoreGage_ = 0;
@@ -26,6 +29,13 @@ ScoreGage::~ScoreGage()
 
 void ScoreGage::Load()
 {
+	//リソースの読み込み
+	ResourceManager& res = ResourceManager::GetInstance();
+	imgGageOutline_ = res.Load(ResourceManager::SRC::PLAYER_GAGE_OUTLINE).handleId_;
+	imgGages_ = res.Load(ResourceManager::SRC::PLAYER_GAGES).handleIds_;
+
+	//パラメーター設定
+	SetParamToPlayerNo();
 }
 
 void ScoreGage::Init()
@@ -56,14 +66,28 @@ void ScoreGage::Draw()
 	//一定の状態の場合描画させない
 	if (state_ == STATE::NONE) { return; }
 
-	//スコアゲージの描画
+	constexpr int OUTLINE = 5;
+
+	//輪郭線
 	DrawBox(
+		pos_.x - OUTLINE,
+		pos_.y - OUTLINE,
+		pos_.x + size_.x + OUTLINE,
+		pos_.y + size_.y + OUTLINE,
+		Utility::BLACK,
+		true
+	);
+
+	//スコアゲージの描画
+	DrawRectGraph(
 		pos_.x,
 		pos_.y,
-		pos_.x + size_.x,
-		pos_.y + size_.y,
-		color_,
-		true);
+		0,0,
+		size_.x,
+		size_.y,
+		imgGages_[playerIndex_],
+		true
+	);
 }
 
 void ScoreGage::ChangeState(const STATE _state)

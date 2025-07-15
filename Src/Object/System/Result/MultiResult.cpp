@@ -180,9 +180,8 @@ void MultiResult::UpdateStateResult(MultiParty& _parent)
 	if (waitStep_ <= 0)
 	{		
 		//状態遷移するか確認
-		//勝者がいる場合クリアフェーズへ移る	
-		int clearLine = DateBank::GetInstance().GetMultiClearScore();
-		if (ScoreManager::GetInstance().GetWinnerPlayerIndex(clearLine) != -1)
+		//勝者がいる場合クリアフェーズへ移る
+		if (ScoreManager::GetInstance().GetWinnerPlayerIndex() != -1)
 		{
 			_parent.ChangePhase(MultiParty::PHASE::CLEAR_PHASE);
 			return;
@@ -220,6 +219,9 @@ void MultiResult::DrawStateWait()
 
 	//ゲージ装飾
 	scoreGages_->DrawGageDecoration();
+
+	//タイトルの描画
+	scoreGages_->DrawTitle();
 }
 
 void MultiResult::DrawStateScore()
@@ -229,6 +231,9 @@ void MultiResult::DrawStateScore()
 
 	//ゲージ装飾
 	scoreGages_->DrawGageDecoration();
+
+	//タイトルの描画
+	scoreGages_->DrawTitle();
 }
 
 void MultiResult::DrawStateResult()
@@ -238,6 +243,9 @@ void MultiResult::DrawStateResult()
 
 	//ゲージ装飾
 	scoreGages_->DrawGageDecoration();
+
+	//勝者の描画
+	scoreGages_->DrawIsWinning();
 }
 
 void MultiResult::DrawStateInputCheck()
@@ -247,6 +255,9 @@ void MultiResult::DrawStateInputCheck()
 
 	//ゲージ装飾
 	scoreGages_->DrawGageDecoration();
+
+	//勝者の描画
+	scoreGages_->DrawIsWinning();
 
 	//ボタンを押してねの描画
 	scoreGages_->DrawPushButton();

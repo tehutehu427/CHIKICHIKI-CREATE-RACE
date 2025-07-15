@@ -19,6 +19,9 @@ public:
 	static constexpr int GAGE_SIZE_X = 75;	//ゲージのデフォルトサイズ
 	static constexpr int GAGE_SIZE_Y = 50;	//ゲージの太さ
 
+	static constexpr int GAGE_OUTLINE_X = 610;
+	static constexpr int GAGE_OUTLINE_Y = 60;
+
 	//ゲージ座標
 	static constexpr int GAGE_POS_P1_X = 200;
 	static constexpr int GAGE_POS_P1_Y = 180;
@@ -73,6 +76,12 @@ public:
 	inline const STATE GetState() const { return state_; }
 
 private:
+
+	//ゲージ画像
+	int* imgGages_;
+
+	//ゲージ輪郭線
+	int imgGageOutline_;
 
 	// プレイヤー番号
 	int playerIndex_;

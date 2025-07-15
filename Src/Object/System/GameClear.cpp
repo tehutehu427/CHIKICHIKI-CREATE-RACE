@@ -252,7 +252,7 @@ void GameClear::DrawWaiting()
 
 void GameClear::DrawDisplay()
 {
-	const int index = ScoreManager::GetInstance().GetWinnerPlayerIndex(DateBank::GetInstance().GetMultiClearScore());	//UI用インデックス
+	const int index = ScoreManager::GetInstance().GetWinnerPlayerIndex();	//UI用インデックス
 	constexpr int POS_X = Application::SCREEN_HALF_X;	//X座標共通
 	constexpr int WINNER_POS_Y = 250;	//勝者UIのY座標
 	constexpr int WIN_POS_Y = 400;		//WINのY座標

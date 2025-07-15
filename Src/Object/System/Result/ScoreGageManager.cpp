@@ -1,6 +1,7 @@
 #include "ScoreGageManager.h"
 #include "../../../Application.h"
 #include "../../../Manager/System/DateBank.h"
+#include "../../../Manager/Game/ScoreManager.h"
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../../Utility/Utility.h"
 
@@ -10,6 +11,8 @@ ScoreGageManager::ScoreGageManager()
 	imgTitle_ = -1;
 	mesAlpha_ = -1; 
 	imgPushButton_ = -1;
+	imgIsWinning_ = -1;
+	imgPlayers_ = nullptr;
 }
 
 ScoreGageManager::~ScoreGageManager()
@@ -21,6 +24,8 @@ void ScoreGageManager::Load()
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgTitle_ = res.Load(ResourceManager::SRC::PROGRESS).handleId_;
 	imgPushButton_ = res.Load(ResourceManager::SRC::PUSH_B_BUTTON_MES).handleId_;
+	imgIsWinning_ = res.Load(ResourceManager::SRC::IS_WINNING_MES).handleId_;
+	imgPlayers_ = res.Load(ResourceManager::SRC::PLAYER_PLATES).handleIds_;
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = 0; i < playerNum; ++i)
@@ -86,7 +91,6 @@ void ScoreGageManager::DrawGageDecoration()
 {	
 	constexpr int LENGTH = 350;
 	constexpr float THICKNESS = 5.0f;
-	constexpr int TITLE_POS_Y = 50;
 
 	//縮小開始ライン
 	DrawLine(
@@ -107,16 +111,6 @@ void ScoreGageManager::DrawGageDecoration()
 		Utility::BLACK,
 		THICKNESS
 	);
-
-	//見出しの描画
-	DrawRotaGraph(
-		Application::SCREEN_HALF_X,
-		TITLE_POS_Y,
-		1.0f,
-		0.0f,
-		imgTitle_,
-		true
-	);	
 
 }
 
@@ -140,4 +134,45 @@ void ScoreGageManager::DrawPushButton()
 		false
 	);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void ScoreGageManager::DrawTitle()
+{
+	constexpr int TITLE_POS_Y = 50;
+	//見出しの描画
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		TITLE_POS_Y,
+		1.0f,
+		0.0f,
+		imgTitle_,
+		true
+	);
+}
+
+void ScoreGageManager::DrawIsWinning()
+{
+	constexpr int TITLE_POS_Y = 50;
+	ScoreManager & score = ScoreManager::GetInstance();
+
+	int index = score.GetNowWinnerPlayerIndex();
+	//プレイヤー名の描画
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X - 150,
+		TITLE_POS_Y - 25,
+		0.7f,
+		0.0f,
+		imgPlayers_[index],
+		true
+	);
+
+	//勝利メッセージの描画
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X + 194,
+		TITLE_POS_Y,
+		1.0f,
+		0.0f,
+		imgIsWinning_,
+		true
+	);
 }

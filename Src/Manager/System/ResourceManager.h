@@ -83,6 +83,11 @@ public:
 	static constexpr int ONOFF_SIZE_X = 128; //有無の各画像サイズX
 	static constexpr int ONOFF_SIZE_Y = 64; //有無の各画像サイズY
 
+	static constexpr int PLAYER_GAGES_DIV_X = 1; //プレイヤーゲージの分割数X
+	static constexpr int PLAYER_GAGES_DIV_Y = 4; //プレイヤーゲージの分割数Y
+	static constexpr int PLAYER_GAGES_SIZE_X = 600; //プレイヤーゲージの各画像サイズX
+	static constexpr int PLAYER_GAGES_SIZE_Y = 50; //プレイヤーゲージの各画像サイズY
+
 	// リソース名
 	enum class SRC
 	{
@@ -106,7 +111,6 @@ public:
 		ERROR_MAP_OUT_IMG,
 		ERROR_OVERLAP_IMG,
 		ERROR_CANT_ITEM_IMG,
-
 
 		//クリア
 		CLEAR,
@@ -134,6 +138,7 @@ public:
 		PUSH_B_BUTTON_MES,
 		ONOFF,
 		SETTING_FINISH,
+		IS_WINNING_MES,
 
 
 
@@ -143,7 +148,8 @@ public:
 		ROUND,
 		PROGRESS,
 		SELECT_ITEM,
-
+		PLAYER_GAGES,
+		PLAYER_GAGE_OUTLINE,
 
 		//アイテムモデル
 		FLOOR,				//足場
