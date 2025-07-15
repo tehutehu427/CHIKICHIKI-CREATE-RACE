@@ -99,6 +99,7 @@ void Player::Load(void)
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
 	action_->Load();
 
+
 	//‰e
 	shadow_ = std::make_unique<Shadow>(trans_);
 	shadow_->Load();
@@ -398,5 +399,6 @@ void Player::KillPunchCol(void)
 		}
 	}
 }
+
 
 

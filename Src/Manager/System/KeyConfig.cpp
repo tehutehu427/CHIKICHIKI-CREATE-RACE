@@ -154,6 +154,7 @@ void KeyConfig::Init(void)
 
 	//デモからタイトルに戻る
 	Add(CONTROL_TYPE::DEMO_TO_TITLE_BACK, KeyConfig::JOYPAD_BTN::START_BUTTON);
+	Add(CONTROL_TYPE::DEMO_TO_TITLE_BACK, KEY_INPUT_BACK);
 
 #ifdef _DEBUG
 	//デバッグ処理

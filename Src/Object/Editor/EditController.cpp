@@ -124,8 +124,7 @@ void EditController::DrawUI(void)
 		DrawRotaGraph(screenSize_.x / 2, screenSize_.y / 2, rate, 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_OVERLAP_IMG).handleId_, true);
 		break;
 	case EditController::ERROR_TYPE::ITEM_NOT_SET:
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		DrawRotaGraph(screenSize_.x / 2, screenSize_.y / 2, rate, 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_CANT_ITEM_IMG).handleId_, true);
+		DrawRotaGraph(screenSize_.x / 2, screenSize_.y / 2, rate * 2, 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_CANT_ITEM_IMG).handleId_, true);
 		break;
 	default:
 		break;
