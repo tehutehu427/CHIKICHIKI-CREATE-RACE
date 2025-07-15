@@ -65,11 +65,11 @@ void Fan::Update(void)
 
 void Fan::Draw(void)
 {
-	//‹¤’Ê
-	ItemBase::Draw();
-
 	//•—
 	if (wind_ != nullptr)wind_->Draw();
+
+	//‹¤’Ê
+	ItemBase::Draw();
 }
 
 void Fan::OnHit(const std::weak_ptr<Collider> _hitCol)

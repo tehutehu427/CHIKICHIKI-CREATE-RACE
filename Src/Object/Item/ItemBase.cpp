@@ -140,8 +140,14 @@ void ItemBase::InitShader()
 
 bool ItemBase::IsInCameraView()
 {
+	//ç¿ïWÇP
 	VECTOR boxPos1 = trans_.pos;
-	VECTOR boxPos2 = MapEditer::GetInstance().MapToWorldPos(initMapPos_ + GetHitSize());
+
+	//ç¿ïWÇQ
+	IntVector3 initPos = initMapPos_;
+	IntVector3 hitSize = GetHitSize();
+	MapEditer::GetInstance().ApplyRotation(initPos, size_, hitSize, rotY_);
+	VECTOR boxPos2 = MapEditer::GetInstance().MapToWorldPos(initPos + hitSize);
 
 	if (CheckCameraViewClip_Box(boxPos1, boxPos2))
 	{
