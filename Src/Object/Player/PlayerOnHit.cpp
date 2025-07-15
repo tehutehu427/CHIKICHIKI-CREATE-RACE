@@ -275,7 +275,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		}
 		
 	}
-
+	Collider::TAG tag = _hitCol.lock()->GetTags()[0];
 	//ˆÚ“®ŒãÀ•W‚ğˆê‰ñŠi”[‚µAˆÚ“®‘O‚ğ‚Æ‚é
 	Transform trans = Transform(trans_);
 	trans.pos = movedPos_;
@@ -292,9 +292,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		for (int i = 0; i < hitInfo.HitNum; i++)
 		{
 			auto hit = hitInfo.Dim[i];
-			//VECTOR hitPos = VAdd(VScale(hit.Position[0], hit.PositionWeight[0]), VAdd(VScale(hit.Position[1], hit.PositionWeight[1]), VScale(hit.Position[2], hit.PositionWeight[2])));
 			VECTOR hitPos = hit.HitPosition;
-			//collPos.push_back(hitPos);
 			for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
 			{
 				int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
@@ -315,6 +313,21 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 				break;
 			}
 			
+		}
+		if(isSide_)
+		{
+			Line& eyeLineGeo = dynamic_cast<Line&>(eyeLine->GetGeometry());
+			int modelId = _hitCol.lock()->GetParent().GetTransform().modelId;
+			VECTOR pos1 = eyeLineGeo.GetPosPoint1();
+			VECTOR pos2 = eyeLineGeo.GetPosPoint2();
+			if (MV1CollCheck_Line(modelId,-1, pos1,pos2).HitFlag==0)
+			{
+				if (!Utility::EqualsVZero(action_.GetMovePow()))
+				{
+					movedPos_.y += Player::EYE_HEIGHT.y;
+				}
+				
+			}
 		}
 		//VECTOR hitPos = {};
 		//int num = hitInfo.HitNum;
