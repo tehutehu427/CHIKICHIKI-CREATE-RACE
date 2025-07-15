@@ -75,17 +75,8 @@ void TitleScene::NormalUpdate(void)
 	//ステップの更新
 	step_ += delta;
 
-	// シーン遷移
-	KeyConfig& ins = KeyConfig::GetInstance();
-	SoundManager& snd = SoundManager::GetInstance();
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
-	{
-		sndMng_.Stop(SoundManager::SRC::TITLE_BGM);
-		sndMng_.Play(SoundManager::SRC::TITLE_SCENE_CHANGE, SoundManager::PLAYTYPE::BACK);
-		sndMng_.Play(SoundManager::SRC::CHICKEN_SE, SoundManager::PLAYTYPE::NORMAL);
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
-		return;
-	}
+	//状態別更新処理
+	titleUpdateFunc_();
 
 	//デモへの遷移
 	if (step_ >= DEMO_CHANGE_TIME)
@@ -95,8 +86,6 @@ void TitleScene::NormalUpdate(void)
 	}
 	//スカイドーム更新
 	skyDome_->Update();
-	//状態別更新処理
-	titleUpdateFunc_();
 }
 
 void TitleScene::DemoUpdate(void)
