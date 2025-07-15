@@ -921,6 +921,7 @@ void EditController::RotateObject(void) const
 
 void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY)
 {
+	SoundManager::GetInstance().Play(SoundManager::SRC::BOMB_SE, SoundManager::PLAYTYPE::BACK);
 	MapEditer& editer = MapEditer::GetInstance();
 	ItemManager& itemM = ItemManager::GetInstance();
 	_rotY += 360.0f;
@@ -966,7 +967,7 @@ void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector
 					continue;
 				}
 				itemM.DeleteItem(lPos, type);
-				itemM.DeleteDummyItem(playerNum_);
+				//itemM.DeleteDummyItem(playerNum_);
 				editer.DeleteItem(type, lPos, rotY, size, hitSize);
 			}
 		}
