@@ -29,6 +29,7 @@ void ScoreManager::Init()
 {
 	// プレイヤー数に応じてスコアを初期化
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
+	scores_.clear(); // 既存のスコアをクリア
 	scores_.resize(playerNum, 0); // 各プレイヤーのスコアを0で初期化
 }
 

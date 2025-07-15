@@ -84,6 +84,8 @@ void MultiParty::Init(void)
 
 void MultiParty::Reset()
 {
+	sndMng_.Stop(SoundManager::SRC::MULTI_CLEAR_BGM);
+
 	MapEditer::GetInstance().DeleteAllItem();
 
 	//マップの初期化
@@ -92,8 +94,8 @@ void MultiParty::Reset()
 	//初期化
 	Init();
 
-	//ラウンド別リセット
-	RoundReset();
+	//BGMをランダム設定
+	RandomBgm();
 
 	//スコア初期化
 	ScoreManager::GetInstance().Init();
@@ -253,7 +255,7 @@ void MultiParty::UpdateClear()
 {
 	GameScene::UpdateClear();
 
-	if (!sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_JINGLE) && sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_BGM))
+	if (!sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_JINGLE) && !sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_BGM))
 	{
 		sndMng_.Play(SoundManager::SRC::MULTI_CLEAR_BGM, SoundManager::PLAYTYPE::LOOP); //クリアBGMを再生
 	}

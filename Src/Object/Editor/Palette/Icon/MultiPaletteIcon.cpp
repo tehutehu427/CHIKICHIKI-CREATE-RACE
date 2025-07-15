@@ -16,6 +16,7 @@ MultiPaletteIcon::MultiPaletteIcon()
 {
 	int i = -1;
 	imgCursors_ = &i;
+	cursors_.clear();
 }
 
 MultiPaletteIcon::~MultiPaletteIcon()
@@ -35,7 +36,7 @@ void MultiPaletteIcon::Load()
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = 0; i < playerNum; i++)
 	{
-		cursors_.push_back(std::make_unique<PaletteCursor>(i, imgCursors_[i]));
+		cursors_.push_back(std::move(std::make_unique<PaletteCursor>(i, imgCursors_[i])));
 	}
 }
 
