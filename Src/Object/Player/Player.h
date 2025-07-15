@@ -84,7 +84,7 @@ public:
 		PUNCH = 12,
 		JUMP = 13,
 		LAND=14,
-		GOAL=5,
+		GOAL=6,
 	};
 
 	

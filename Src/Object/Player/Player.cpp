@@ -93,6 +93,7 @@ void Player::Load(void)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL), DEFAULT_ANIM_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_ANIM_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::GOAL), DEFAULT_ANIM_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_ANIM_SPD / PlayerAction::PUNCH_TIME_MAX);
 
 	//アクション
@@ -290,7 +291,6 @@ void Player::GoalUpdate(void)
 {
 	//ゴール時の処理
 	//落ちているアニメーション再生
-	
 	animationController_->Play(static_cast<int>(ANIM_TYPE::GOAL), true);
 }
 
