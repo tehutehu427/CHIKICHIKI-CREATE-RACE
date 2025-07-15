@@ -56,5 +56,8 @@ private:
 	//エディット中の描画
 	void DrawEdit() override;
 
+	//音源の読み込み
+	void LoadSound() override;
+
 };
 

@@ -80,17 +80,26 @@ void PlayerAction::Init(void)
 
 	effectArrayNum_ = 0.0f;
 
+
+	if (scnMng_.GetInstance().GetSceneID() == SceneManager::SCENE_ID::TITLE)
+	{
+		cameraNo_ = 0;
+	}
+	else
+	{
+		cameraNo_ = player_.GetPlayerNum();
+	}
+
 	ChangeAction(ATK_ACT::INPUT);
 }
 
 void PlayerAction::Load(void)
 {
 	auto& res = ResourceManager::GetInstance();
-	actSE_.emplace(ACT_SE::DASH,res.Load(ResourceManager::SRC::PLAYER_DASH_START).handleId_);
-	actSE_.emplace(ACT_SE::JUMP,res.Load(ResourceManager::SRC::PLAYER_JUMP).handleId_);
-	actSE_.emplace(ACT_SE::PUNCH,res.Load(ResourceManager::SRC::PLAYER_PUNCH_MOTION).handleId_);
-	actSE_.emplace(ACT_SE::DASH,res.Load(ResourceManager::SRC::PLAYER_DASH_START).handleId_);
-	actSE_.emplace(ACT_SE::SLIME,res.Load(ResourceManager::SRC::SLIME_SE).handleId_);
+	actSE_.emplace(ACT_SE::DASH,SoundManager::SRC::PLAYER_DASH_START);
+	actSE_.emplace(ACT_SE::JUMP,SoundManager::SRC::PLAYER_JUMP);
+	actSE_.emplace(ACT_SE::PUNCH, SoundManager::SRC::PLAYER_PUNCH_MOTION);
+	actSE_.emplace(ACT_SE::SLIME, SoundManager::SRC::SLIME_SE);
 
 	effect_->Add(res.Load(ResourceManager::SRC::DASH_EFF).handleId_, EffectController::EFF_TYPE::DASH);
 	effect_->Add(res.Load(ResourceManager::SRC::JUMP_EFF).handleId_, EffectController::EFF_TYPE::JUMP);
@@ -163,7 +172,7 @@ void PlayerAction::ChangeAction(ATK_ACT _act)
 	if (act_ == _act)return;
 	act_ = _act;
 	changeAction_[act_]();
-}
+ }
 
 void PlayerAction::ChangeInput(void)
 {
@@ -236,8 +245,7 @@ void PlayerAction::MoveDirFronInput(void)
 	VECTOR getDir = input_->GetDir();
 	float deg = input_->GetMoveDeg();
 
-	int playerNum = player_.GetPlayerNum();
-	Quaternion cameraRot = scnMng_.GetCamera(playerNum).lock()->GetQuaRotOutX();
+	Quaternion cameraRot = scnMng_.GetCamera(cameraNo_).lock()->GetQuaRotOutX();
 	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
 	dir_ = cameraRot.PosAxis(getDir);
 	dir_ = VNorm(dir_);
@@ -253,6 +261,7 @@ void PlayerAction::ChangeMove(void)
 {
 	speed_ = MOVE_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
+
 	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 	if (player_.GetIsSlimeFloor())
 	{
@@ -272,13 +281,21 @@ void PlayerAction::ChangeDashMove(void)
 {
 	speed_ = DASH_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
+
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::DASH], SoundManager::PLAYTYPE::LOOP);
+	
+
 	auto& trans = player_.GetTransform();
 	const float SCL = 10.0f;
+
+	//エフェクトの再生
 	effect_->Play(EffectController::EFF_TYPE::DASH, trans.pos, trans.quaRot, { SCL,SCL,SCL },50.0f);
 	effectArrayNum_++;
+
+	//スライム床内ならスライム音再生
 	if (player_.GetIsSlimeFloor())
 	{
+		SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
 	}
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
@@ -333,8 +350,6 @@ void PlayerAction::Jump(void)
 	animationController_.SetEndLoop(JUMP_ANIM_LOOP_START_FRAME
 		, JUMP_ANIM_LOOP_END_FRAME, JUMP_ANIM_ATTACK_BLEND_TIME);
 
-	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
-
 	//ジャンプ中も移動できるようにする
 	MoveDirFronInput();
 
@@ -388,8 +403,10 @@ void PlayerAction::ChangeJump(void)
 	//アニメーションの再生
 	animationController_.Play(
 		(int)Player::ANIM_TYPE::JUMP, false, JUMP_ANIM_START_FRAME, JUMP_ANIM_END_FRAME);
+
 	//サウンド
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::JUMP], SoundManager::PLAYTYPE::BACK);
+
 	//ジャンプエフェクト
 	effect_->Play(EffectController::EFF_TYPE::JUMP, trans.pos, trans.quaRot, EFF_SCL, 50.0f);
 
@@ -444,7 +461,8 @@ void PlayerAction::ChangePunch(void)
 	punchCoolCnt_ = PUNCH_COOL_TIME;
 	//アニメーション
 	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
-	//パンチサウンド再生
+
+	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::PUNCH], SoundManager::PLAYTYPE::BACK);
 
 	actionUpdate_ = [this]() {Punch(); };
@@ -472,6 +490,7 @@ void PlayerAction::ChangeKnockBack(void)
 	Transform trans = player_.GetTransform();
 	const float EFF_SCL = 15.0f;
 	effect_->Play(EffectController::EFF_TYPE::PUNCH_HIT, trans.pos, trans.quaRot, { EFF_SCL,EFF_SCL, EFF_SCL });
+	//SoundManager::GetInstance().Play(actSE_[ACT_SE::])
 	//パンチの当たり判定を消す
 	isPunchHitTime_ = false;
 	player_.KillPunchCol();
@@ -490,6 +509,15 @@ VECTOR PlayerAction::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECT
 	return VAdd(_followPos, addPos);
 }
 
+void PlayerAction::StopSe(const ACT_SE _se)
+{
+	for (auto& se : actSE_)
+	{
+		if (se.first == _se)continue;
+		SoundManager::GetInstance().Stop(se.second);
+	}
+}
+
 void PlayerAction::Rotate(void)
 {
 	stepRotTime_ -= SceneManager::GetInstance().GetDeltaTime();
@@ -501,7 +529,7 @@ void PlayerAction::Rotate(void)
 void PlayerAction::SetGoalRotate(double _deg)
 {
 	//カメラの角度を取得
-	VECTOR cameraRot = scnMng_.GetCamera(player_.GetPlayerNum()).lock()->GetAngles();
+	VECTOR cameraRot = scnMng_.GetCamera(cameraNo_).lock()->GetAngles();
 	Quaternion axis = Quaternion::AngleAxis(
 		(double)cameraRot.y + Utility::Deg2RadF(_deg), Utility::AXIS_Y);
 

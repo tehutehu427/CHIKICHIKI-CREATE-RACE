@@ -5,6 +5,7 @@
 #include "../../../Scene/SceneBase.h"
 
 class KeyConfig;
+class SoundManager;
 class MultiInputCheck;
 class SelectScene;
 class MultiCheckPlayer;
@@ -78,15 +79,20 @@ private:
 	//クリアスコアの最大値
 	static constexpr int CLEAR_SCORE_MAX = 15;
 
-
 	//入力管理クラス
 	KeyConfig& keyConfig_;
+
+	//サウンド管理クラス
+	SoundManager& sndMng_;
 
 	//メッセージ画像
 	int* imgMessages_;
 
 	//ナンバー画像
 	int* imgNumbers_;
+
+	//ボタン押してね画像
+	int imgPushButton_;
 
 	//選択画像
 	int imgSelectIcon_;
@@ -99,6 +105,12 @@ private:
 
 	//サウンドボリューム
 	int soundVolume_;
+
+	//メッセージのアルファ値
+	int mesAlpha_;
+
+	//アルファ値の変化方向
+	int alphaDir_;
 
 	//スキップの有無
 	bool isSkip_;
@@ -128,14 +140,12 @@ private:
 	const void ChangeState(const STATE _state) { state_ = _state; }
 
 	//状態別更新処理
-	void UpdateRuleSet();
 	void UpdateNumCheck();
 	void UpdatePadCheck();
 	void UpdateFinalCheck();
 	void UpdatePlayerAnimation();
 
 	//状態別描画処理
-	void DrawRuleSet();
 	void DrawNumCheck();
 	void DrawPadCheck();
 	void DrawFinalCheck();

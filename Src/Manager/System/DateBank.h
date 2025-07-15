@@ -85,6 +85,10 @@ public:
 	/// <returns>ステージ番号</returns>
 	const int GetStageNo()const { return stageNo_; }
 
+	/// <summary>
+	/// マルチのクリア条件スコアを返す
+	/// </summary>
+	/// <returns>マルチのクリア条件スコア</returns>
 	const int GetMultiClearScore() const { return multiClearScore_; }
 
 	/// <summary>
@@ -93,6 +97,18 @@ public:
 	/// <param name="_type">アイテムの種類</param>
 	/// <returns>アイテムネーム</returns>
 	const std::string GetItemName(const ItemBase::ITEM_TYPE _type)const { return itemNames_[static_cast<int>(_type)]; }
+
+	/// <summary>
+	/// アイテムの配置スキップの有無を返す
+	/// </summary>
+	/// <returns>trueの場合あり、falseの場合なし</returns>
+	const bool IsItemSetSkip() const { return isItemSetSkip_; }
+
+	/// <summary>
+	/// アイテムの配置スキップの有無を設定
+	/// </summary>
+	/// <param name="_isSkip">スキップの有無</param>
+	void SetItemSetSkip(const bool _isSkip) { isItemSetSkip_ = _isSkip; }
 
 private:
 
@@ -105,6 +121,7 @@ private:
 	int maxPlayerNum_;	//コントローラー数よりプレイヤー人数が多くならないようにする
 	int stageNo_;		//ステージ番号
 	int multiClearScore_;	//マルチでのクリアとなるスコア量
+	bool isItemSetSkip_;	//アイテムセットスキップの有無
 
 	//種類ごとの名前
 	std::string itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::MAX)];

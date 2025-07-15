@@ -5,6 +5,7 @@
 #include "../../../Common/FontRegistry.h"
 #include "../../../Utility/Utility.h"
 #include "../../../Manager/System/SceneManager.h"
+#include "../../../Manager/System/SoundManager.h"
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../../Manager/System/InputManager.h"
 #include "../../../Manager/System/KeyConfig.h"
@@ -199,6 +200,7 @@ void ModeSelect::SelectUpdate(SelectScene& _parent)
 	constexpr int OFFSET_INDEX = 2;	//選択メニューのオフセット
 
 	KeyConfig& key = KeyConfig::GetInstance();
+	SoundManager& sndMng = SoundManager::GetInstance();
 
 	//決定
 	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, KeyConfig::JOYPAD_NO::PAD1))
@@ -210,6 +212,8 @@ void ModeSelect::SelectUpdate(SelectScene& _parent)
 	//上へ
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_UP, KeyConfig::JOYPAD_NO::PAD1))
 	{
+		sndMng.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
+
 		//新しく出るメニュー項目を変える
 		SetMenuItem(menuIndex_ - OFFSET_INDEX, arcIndex_ - OFFSET_INDEX);
 
@@ -231,6 +235,8 @@ void ModeSelect::SelectUpdate(SelectScene& _parent)
 	//下へ
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_DOWN, KeyConfig::JOYPAD_NO::PAD1))
 	{
+		sndMng.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
+
 		//新しく出るメニュー項目を変える
 		SetMenuItem(menuIndex_ + OFFSET_INDEX, arcIndex_ + OFFSET_INDEX);
 

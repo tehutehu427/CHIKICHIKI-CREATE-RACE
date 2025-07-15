@@ -1,5 +1,6 @@
 #pragma once
 #include "GameScene.h"
+#include "../../Manager/System/SoundManager.h"
 
 class MultiResult;
 class RoundDisplay;
@@ -46,7 +47,10 @@ private:
 
 	//ラウンド遷移タイム
 	static constexpr float ROUND_CHANGE_TIME = 3.5f;
-
+	//エディットからの遷移時間
+	static constexpr float EDIT_CHANGE_TIME = 2.0f;
+	//アクションからの遷移時間
+	static constexpr float ACTION_CHANGE_TIME = 2.0f;
 	//描画関数
 	void NormalDraw(void) override;
 
@@ -65,11 +69,13 @@ private:
 	//状態遷移
 	void ChangePhaseEdit() override;
 	void ChangePhaseAction() override;
+	void ChangePhaseClear() override;	
 	void ChangePhaseRound();
 	void ChangePhaseSelect();
 	void ChangePhaseResult();
 
 	//状態別更新処理
+	void UpdateClear() override;
 	void UpdateRound();
 	void UpdateSelect();
 	void UpdateResult();
@@ -82,11 +88,29 @@ private:
 	//プレイヤーらの処理が終えたか調べる
 	void CheckPlayerFinish() override;
 
+	//サウンド読み込み
+	void LoadSound() override;
+
+	//ランダムBGMを取得
+	void RandomBgm();
+
 	//デバッグ処理
 	void DebagUpdate() override;
 
+	//エディットBGM種類
+	SoundManager::SRC editBgmSrc_;
+
+	//プレイBGM種類
+	SoundManager::SRC playBgmSrc_;
+
 	//フェーズ遷移タイマー更新
 	float phaseChangeTimer_;
+
+	//エディットからのフェーズ遷移時間管理
+	float editChengeTime_;
+
+	//アクションからのフェーズ遷移時間管理
+	float actionChangeTime_;
 
 	//リザルト処理
 	std::unique_ptr<MultiResult> result_;

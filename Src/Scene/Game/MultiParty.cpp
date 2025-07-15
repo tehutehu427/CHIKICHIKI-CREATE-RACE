@@ -4,6 +4,7 @@
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/Game/ScoreManager.h"
 #include "../../Manager/Game/PlayerManager.h"
+#include "../../Manager/Game/MapEditer.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Object/Editor/MapDataIO.h"
@@ -15,7 +16,11 @@ MultiParty::MultiParty(void)
 {
 	result_ = nullptr;
 	round_ = nullptr;
+	editBgmSrc_ = SoundManager::SRC::NONE;
+	playBgmSrc_ = SoundManager::SRC::NONE;
 	phaseChangeTimer_ = 0.0f;
+	actionChangeTime_ = 0.0f;
+	editChengeTime_ = 0.0f;
 	phaseChanges_.emplace(PHASE::ROUND_PHASE, std::bind(&MultiParty::ChangePhaseRound, this));
 	phaseChanges_.emplace(PHASE::SELECT_PHASE, std::bind(&MultiParty::ChangePhaseSelect, this));
 	phaseChanges_.emplace(PHASE::RESULT_PHASE, std::bind(&MultiParty::ChangePhaseResult, this));
@@ -46,6 +51,12 @@ void MultiParty::Load(void)
 
 	//スコアマネージャーを生成
 	ScoreManager::GetInstance().CreateInstance();
+
+	//ランダムBGMを取得
+	RandomBgm();
+
+	//BGMボリュームを設定
+	sndMng_.SetLoadedSoundsVolume();
 }
 
 void MultiParty::Init(void)
@@ -75,14 +86,18 @@ void MultiParty::Init(void)
 
 void MultiParty::Reset()
 {
+	sndMng_.Stop(SoundManager::SRC::MULTI_CLEAR_BGM);
+
+	MapEditer::GetInstance().DeleteAllItem();
+
 	//マップの初期化
 	mapIO_->Reset();
 
 	//初期化
 	Init();
 
-	//ラウンド別リセット
-	RoundReset();
+	//BGMをランダム設定
+	RandomBgm();
 
 	//スコア初期化
 	ScoreManager::GetInstance().Init();
@@ -101,6 +116,12 @@ void MultiParty::RoundReset()
 
 	//フェーズを遷移
 	ChangePhase(PHASE::ROUND_PHASE);
+
+	//BGMを停止
+	sndMng_.Stop(playBgmSrc_);
+
+	//BGMをランダム設定
+	RandomBgm();
 }
 
 void MultiParty::NormalDraw(void)
@@ -142,7 +163,11 @@ void MultiParty::UpdateEdit(void)
 	}
 	if (ready)
 	{
-		ChangePhase(PHASE::ACTION_PHASE);
+		editChengeTime_ -= SceneManager::GetInstance().GetDeltaTime();
+		if (editChengeTime_ < 0)
+		{
+			ChangePhase(PHASE::ACTION_PHASE);
+		}
 	}
 }
 
@@ -155,11 +180,27 @@ void MultiParty::DrawEdit(void)
 {
 	GameScene::DrawEdit();
 }
+
+void MultiParty::ChangePhaseClear()
+{
+	GameScene::ChangePhaseClear();	
 
+	//BGMの停止
+	sndMng_.Stop(playBgmSrc_);
+
+	//クリアジングル再生
+	sndMng_.Play(SoundManager::SRC::MULTI_CLEAR_JINGLE, SoundManager::PLAYTYPE::BACK);
+
+	auto camera = SceneManager::GetInstance().GetCamera(0).lock();
+	camera->ChangeMode(Camera::MODE::FOLLOW);
+	camera->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(ScoreManager::GetInstance().GetWinnerPlayerIndex()));
+}
 void MultiParty::ChangePhaseEdit()
 {
 	//親クラスの処理を呼びだし
 	GameScene::ChangePhaseEdit();
+
+	editChengeTime_ = EDIT_CHANGE_TIME;
 
 	//画面を分割する
 	scnMng_.SetIsSplitMode(true);
@@ -172,6 +213,15 @@ void MultiParty::ChangePhaseAction()
 
 	//画面を分割する
 	scnMng_.SetIsSplitMode(true);
+
+	//アクションフェーズの時間を設定
+	actionChangeTime_ = ACTION_CHANGE_TIME;
+
+	//BGMを停止
+	sndMng_.Stop(editBgmSrc_);
+
+	//BGMを再生
+	sndMng_.Play(playBgmSrc_, SoundManager::PLAYTYPE::LOOP);
 }
 
 void MultiParty::ChangePhaseRound()
@@ -183,6 +233,8 @@ void MultiParty::ChangePhaseRound()
 	scnMng_.SetIsSplitMode(false);
 	//ラウンドを追加
 	round_->AddNumberIndex(1);
+	//BGMを再生
+	sndMng_.Play(SoundManager::SRC::ROUND_JINGLE, SoundManager::PLAYTYPE::BACK);
 }
 
 void MultiParty::ChangePhaseSelect()
@@ -191,6 +243,9 @@ void MultiParty::ChangePhaseSelect()
 	phaseDraw_ = std::bind(&MultiParty::DrawSelect, this);
 	//画面分割はしない
 	scnMng_.SetIsSplitMode(false);
+	//BGMを再生
+	sndMng_.Stop(SoundManager::SRC::ROUND_JINGLE);
+	sndMng_.Play(editBgmSrc_, SoundManager::PLAYTYPE::LOOP);
 }
 
 void MultiParty::ChangePhaseResult()
@@ -203,6 +258,16 @@ void MultiParty::ChangePhaseResult()
 
 	//クリア時間に応じてスコアを格納
 	ScoreManager::GetInstance().SetPlayersScore();
+}
+
+void MultiParty::UpdateClear()
+{
+	GameScene::UpdateClear();
+
+	if (!sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_JINGLE) && !sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_BGM))
+	{
+		sndMng_.Play(SoundManager::SRC::MULTI_CLEAR_BGM, SoundManager::PLAYTYPE::LOOP); //クリアBGMを再生
+	}
 }
 
 void MultiParty::UpdateRound()
@@ -257,9 +322,65 @@ void MultiParty::DrawResult()
 
 void MultiParty::CheckPlayerFinish()
 {
+	//プレイヤーの処理が終わったか確認
 	if (PlayerManager::GetInstance().IsPlayersEnd())
+	{			
+		//アクションフェーズの時間を更新
+		actionChangeTime_ -= SceneManager::GetInstance().GetDeltaTime();	
+
+		//アクションフェーズの時間が経過したら
+		if (actionChangeTime_ <= 0.0f)
+		{
+			//リザルトへ遷移	
+			ChangePhase(PHASE::RESULT_PHASE);
+			return;
+		}
+	}
+}
+
+void MultiParty::LoadSound()
+{
+	GameScene::LoadSound();
+	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_1);
+	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_2);
+	sndMng_.LoadResource(SoundManager::SRC::MULTI_BGM_1);
+	sndMng_.LoadResource(SoundManager::SRC::MULTI_BGM_2);
+	sndMng_.LoadResource(SoundManager::SRC::ROUND_JINGLE);
+	sndMng_.LoadResource(SoundManager::SRC::MULTI_CLEAR_BGM);
+	sndMng_.LoadResource(SoundManager::SRC::MULTI_CLEAR_JINGLE);
+}
+
+void MultiParty::RandomBgm()
+{
+	constexpr int EDIT_BGM_NUM = 2;	//エディットBGMの数
+	constexpr int PLAY_BGM_NUM = 2;	//プレイBGMの数
+
+	int index = GetRand(EDIT_BGM_NUM);
+	switch (index)
 	{
-		ChangePhase(PHASE::RESULT_PHASE);
+	case 0:
+		editBgmSrc_ = SoundManager::SRC::MULTI_BGM_1;
+		break;
+	case 1:
+		editBgmSrc_ = SoundManager::SRC::MULTI_BGM_2;
+		break;
+	default:
+		editBgmSrc_ = SoundManager::SRC::MULTI_BGM_1;
+		break;
+	}
+
+	index = GetRand(PLAY_BGM_NUM);
+	switch (index)
+	{
+	case 0:
+		playBgmSrc_ = SoundManager::SRC::PLAY_BGM_1;
+		break;
+	case 1:
+		playBgmSrc_ = SoundManager::SRC::PLAY_BGM_2;
+		break;
+	default:
+		playBgmSrc_ = SoundManager::SRC::PLAY_BGM_1;
+		break;
 	}
 }
 

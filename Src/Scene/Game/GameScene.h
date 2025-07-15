@@ -122,7 +122,7 @@ protected:
 	//フェーズ遷移
 	virtual void ChangePhaseEdit(void);
 	virtual void ChangePhaseAction(void);
-	void ChangePhaseClear(void);
+	virtual void ChangePhaseClear(void);
 	
 	//フェーズ別更新処理
 	virtual void UpdateEdit(void);		//エディット時の更新処理
@@ -133,6 +133,9 @@ protected:
 	virtual void DrawEdit();
 	virtual void DrawAction();
 	void DrawClear();
+
+	//サウンド読み込み
+	virtual void LoadSound(void);
 
 	//プレイヤーがゲームを終了か調べる
 	virtual void CheckPlayerFinish(void);

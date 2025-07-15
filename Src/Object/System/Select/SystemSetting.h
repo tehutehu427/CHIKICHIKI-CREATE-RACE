@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <functional>
+#include "../../../Manager/System/SoundManager.h"
 
 class SelectScene;
 
@@ -12,7 +13,8 @@ public:
 	{
 		CLEAR_SCORE,	//クリアスコア設定
 		SKIP,			//スキップ設定
-		SOUND_VOLUME,	//サウンドボリューム設定
+		BGM_VOLUME,		//BGMボリューム設定
+		SE_VOLUME,		//SEボリューム設定
 		APPLY,			//設定適用
 		MAX				//最大値
 	};
@@ -29,8 +31,14 @@ public:
 	//クリアスコアの最大値
 	static constexpr int CLEAR_SCORE_MAX = 15;	
 
+	//クリアスコアの最小値
+	static constexpr int CLEAR_SCORE_MIN = 1;
+
+	//クリアスコアの範囲
+	static constexpr int CLEAR_SCORE_RANGE = CLEAR_SCORE_MAX - CLEAR_SCORE_MIN + 1;
+
 	//サウンドボリュームの最大値
-	static constexpr int SOUND_VOLUME_MAX = 101;
+	static constexpr int SOUND_VOLUME_MAX = 100;
 
 	//サウンドの増加量
 	static constexpr int SOUND_VOLUME_STEP = 10;
@@ -85,7 +93,7 @@ private:
 	int clearScore_;	
 
 	//サウンドボリューム
-	int soundVolume_;	
+	int soundVolume_[SoundManager::TYPE_MAX];
 	
 	//スキップ設定
 	bool isSkip_;
@@ -130,7 +138,7 @@ private:
 	//状態別の描画
 	void DrawClearScore();
 	void DrawSkip();
-	void DrawSoundVolume();
+	void DrawSoundVolume(const STATE _state, const int _type);
 
 	//適用時のメッセージ描画
 	void DrawApplyMessage();

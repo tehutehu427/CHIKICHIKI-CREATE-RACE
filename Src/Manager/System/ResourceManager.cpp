@@ -68,6 +68,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "OverLapItem.png");
 	resourcesMap_.emplace(SRC::ERROR_OVERLAP_IMG, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "CanNotItemPlace.png");
+	resourcesMap_.emplace(SRC::ERROR_CANT_ITEM_IMG, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "ChangePhaseIcons.png", CHANGE_PHASE_ICONS_DIV_X, CHANGE_PHASE_ICONS_DIV_Y, CHANGE_PHASE_ICONS_SIZE_X, CHANGE_PHASE_ICONS_SIZE_Y);
 	resourcesMap_.emplace(SRC::CHANGE_PHASE_ICONS, std::move(res));
 
@@ -152,6 +155,18 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "SelectItem.png");
 	resourcesMap_.emplace(SRC::SELECT_ITEM, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "IsWinningMes.png");
+	resourcesMap_.emplace(SRC::IS_WINNING_MES, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Game + "PlayerGages.png", PLAYER_GAGES_DIV_X, PLAYER_GAGES_DIV_Y, PLAYER_GAGES_SIZE_X, PLAYER_GAGES_SIZE_Y);
+	resourcesMap_.emplace(SRC::PLAYER_GAGES, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "GageOutline.png");
+	resourcesMap_.emplace(SRC::PLAYER_GAGE_OUTLINE, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "SelectSkipMes.png");
+	resourcesMap_.emplace(SRC::SELECT_SKIP, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Effect + "SmokeSprites.png", SMOKE_EFE_DIV_X, SMOKE_EFE_DIV_Y, SMOKE_EFE_SIZE, SMOKE_EFE_SIZE);
 	resourcesMap_.emplace(SRC::SMOKE_EFE_SPR, std::move(res));
 #pragma endregion 
@@ -214,55 +229,6 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::CHICKEN, std::move(res));
 #pragma endregion 
 
-#pragma region サウンド
-	//BGM
-	//--------------------------------------------------------------------
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "TitleBgm.wav");
-	resourcesMap_.emplace(SRC::TITLE_BGM, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm1.mp3");
-	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_1, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm2.mp3");
-	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_2, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm3.mp3");
-	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_BGM + "MultiGameBgm3.mp3");
-	resourcesMap_.emplace(SRC::MULTI_GAME_BGM_3, std::move(res));
-
-	//SE
-	//--------------------------------------------------------------------
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "PunchHit.mp3");
-	resourcesMap_.emplace(SRC::PLAYER_PUNCH_HIT, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "PunchMotion.mp3");
-	resourcesMap_.emplace(SRC::PLAYER_PUNCH_MOTION, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "dash.mp3");
-	resourcesMap_.emplace(SRC::PLAYER_DASH_START, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "jump.mp3");
-	resourcesMap_.emplace(SRC::PLAYER_JUMP, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "Spring.mp3");
-	resourcesMap_.emplace(SRC::SPRING_SE, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "SlimeFloor.mp3");
-	resourcesMap_.emplace(SRC::SLIME_SE, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "ClickItem.ogg");
-	resourcesMap_.emplace(SRC::CLICK_OBJECT_SE, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "CreateItem.ogg");
-	resourcesMap_.emplace(SRC::CREATE_OBJECT_SE, std::move(res));
-
-	res = std::make_unique<Resource>(Resource::TYPE::SOUND, PATH_SOUND_SE + "Error.mp3");
-	resourcesMap_.emplace(SRC::ERROR_SE, std::move(res));
-
-	
-#pragma endregion 
 
 #pragma region エフェクト
 	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Wind.efkefc");

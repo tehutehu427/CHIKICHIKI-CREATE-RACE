@@ -1,11 +1,18 @@
 #include "ScoreGageManager.h"
 #include "../../../Application.h"
 #include "../../../Manager/System/DateBank.h"
+#include "../../../Manager/Game/ScoreManager.h"
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../../Utility/Utility.h"
 
 ScoreGageManager::ScoreGageManager()
 {
+	alphaDir_ = -1; 
+	imgTitle_ = -1;
+	mesAlpha_ = -1; 
+	imgPushButton_ = -1;
+	imgIsWinning_ = -1;
+	imgPlayers_ = nullptr;
 }
 
 ScoreGageManager::~ScoreGageManager()
@@ -16,6 +23,9 @@ void ScoreGageManager::Load()
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgTitle_ = res.Load(ResourceManager::SRC::PROGRESS).handleId_;
+	imgPushButton_ = res.Load(ResourceManager::SRC::PUSH_B_BUTTON_MES).handleId_;
+	imgIsWinning_ = res.Load(ResourceManager::SRC::IS_WINNING_MES).handleId_;
+	imgPlayers_ = res.Load(ResourceManager::SRC::PLAYER_PLATES).handleIds_;
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = 0; i < playerNum; ++i)
@@ -32,6 +42,9 @@ void ScoreGageManager::Init()
 	{
 		scoreGage->Init();
 	}
+
+	mesAlpha_ = 0; //メッセージのアルファ値
+	alphaDir_ = 1; //アルファ値の変化方向
 
 }
 
@@ -64,7 +77,7 @@ const bool ScoreGageManager::IsFinishAnimation() const
 	for (auto& scoreGage : scoreGages_)
 	{
 		//ゲージがまだアニメーション状態の時
-		if (scoreGage->GetState() == ScoreGage::STATE::ANIMATION)
+		if (scoreGage->GetState() != ScoreGage::STATE::AFTER_WAIT)
 		{
 			//アニメーションが終わっていないのでfalseを返す
 			return false;
@@ -74,11 +87,10 @@ const bool ScoreGageManager::IsFinishAnimation() const
 	return true;
 }
 
-void ScoreGageManager::DecorationDraw()
+void ScoreGageManager::DrawGageDecoration()
 {	
 	constexpr int LENGTH = 350;
 	constexpr float THICKNESS = 5.0f;
-	constexpr int TITLE_POS_Y = 50;
 
 	//縮小開始ライン
 	DrawLine(
@@ -100,6 +112,33 @@ void ScoreGageManager::DecorationDraw()
 		THICKNESS
 	);
 
+}
+
+void ScoreGageManager::DrawPushButton()
+{	
+	constexpr float ALPHA_STEP = 1.5f; //アルファ値の変化量
+	constexpr float ALPHA_MIN = 50.0f; //アルファ値の変化量
+
+	//アルファ値を変え
+	mesAlpha_ = Utility::PingPongUpdate(mesAlpha_, ALPHA_STEP, Utility::ALPHA_MAX, ALPHA_MIN, alphaDir_);
+
+	//ボタンを押してね画像の描画
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, mesAlpha_);
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y,
+		1.0f,
+		0.0f,
+		imgPushButton_,
+		true,
+		false
+	);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void ScoreGageManager::DrawTitle()
+{
+	constexpr int TITLE_POS_Y = 50;
 	//見出しの描画
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
@@ -107,6 +146,33 @@ void ScoreGageManager::DecorationDraw()
 		1.0f,
 		0.0f,
 		imgTitle_,
+		true
+	);
+}
+
+void ScoreGageManager::DrawIsWinning()
+{
+	constexpr int TITLE_POS_Y = 50;
+	ScoreManager & score = ScoreManager::GetInstance();
+
+	int index = score.GetNowWinnerPlayerIndex();
+	//プレイヤー名の描画
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X - 150,
+		TITLE_POS_Y - 10,
+		0.7f,
+		0.0f,
+		imgPlayers_[index],
+		true
+	);
+
+	//勝利メッセージの描画
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X + 194,
+		TITLE_POS_Y,
+		1.0f,
+		0.0f,
+		imgIsWinning_,
 		true
 	);
 }

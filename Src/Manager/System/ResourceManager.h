@@ -74,14 +74,19 @@ public:
 	static constexpr int SYSTEM_MESSAGES_SIZE_Y = 64; //システムメッセージ各画像サイズY
 
 	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_X = 1;	//システム設定メッセージ分割数X
-	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_Y = 3;	//システム設定メッセージ分割数Y
-	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_X = 576; //システム設定メッセージ各画像サイズX
-	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_Y = 64; //システム設定メッセージ各画像サイズY
+	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_Y = 4;	//システム設定メッセージ分割数Y
+	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_X = 544; //システム設定メッセージ各画像サイズX
+	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_Y = 48; //システム設定メッセージ各画像サイズY
 
 	static constexpr int ONOFF_DIV_X = 1; //有無の分割数X
 	static constexpr int ONOFF_DIV_Y = 2; //有無の分割数Y
 	static constexpr int ONOFF_SIZE_X = 128; //有無の各画像サイズX
 	static constexpr int ONOFF_SIZE_Y = 64; //有無の各画像サイズY
+
+	static constexpr int PLAYER_GAGES_DIV_X = 1; //プレイヤーゲージの分割数X
+	static constexpr int PLAYER_GAGES_DIV_Y = 4; //プレイヤーゲージの分割数Y
+	static constexpr int PLAYER_GAGES_SIZE_X = 600; //プレイヤーゲージの各画像サイズX
+	static constexpr int PLAYER_GAGES_SIZE_Y = 50; //プレイヤーゲージの各画像サイズY
 
 	// リソース名
 	enum class SRC
@@ -105,7 +110,7 @@ public:
 		YES_NO,
 		ERROR_MAP_OUT_IMG,
 		ERROR_OVERLAP_IMG,
-
+		ERROR_CANT_ITEM_IMG,
 
 		//クリア
 		CLEAR,
@@ -133,15 +138,19 @@ public:
 		PUSH_B_BUTTON_MES,
 		ONOFF,
 		SETTING_FINISH,
+		IS_WINNING_MES,
+
 
 
 		//ゲームシーン用画像
 		NUMBERS,
 		OK,
 		ROUND,
-		SELECT_ITEM_MES,
 		PROGRESS,
 		SELECT_ITEM,
+		PLAYER_GAGES,
+		PLAYER_GAGE_OUTLINE,
+		SELECT_SKIP,
 
 
 		//アイテムモデル
@@ -161,23 +170,6 @@ public:
 		FAN,				//扇風機
 		SKY_DOME,			//スカイドーム
 		CHICKEN,			//チキンモデル
-
-		//サウンド
-		TEST_SE,			//テスト
-		TEST2_SE,			//テスト2
-		TITLE_BGM,		
-		MULTI_GAME_BGM_1,
-		MULTI_GAME_BGM_2,
-		MULTI_GAME_BGM_3,
-		PLAYER_PUNCH_HIT,
-		PLAYER_PUNCH_MOTION,
-		PLAYER_DASH_START,
-		PLAYER_JUMP,
-		SPRING_SE,
-		SLIME_SE,
-		CLICK_OBJECT_SE,
-		CREATE_OBJECT_SE,
-		ERROR_SE,
 
 		//エフェクト
 		WIND_EFF,			//風エフェクト

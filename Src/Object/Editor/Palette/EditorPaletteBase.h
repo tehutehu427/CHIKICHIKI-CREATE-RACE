@@ -122,6 +122,9 @@ protected:
 	//ó‘Ô
 	STATE state_;
 
+	//‰¹Œ¹‚Ì“Ç‚İ‚İ
+	void LoadSounds();
+
 private:
 	
 	//ó‘Ô•ÏXˆ—‚ÌŠÇ—

@@ -52,11 +52,35 @@ public:
 	const bool IsFinishAnimation() const;
 
 	//装飾類の描画
-	void DecorationDraw();
+	void DrawGageDecoration();
+
+	//ボタンを押してねの描画
+	void DrawPushButton();
+
+	//タイトルの描画
+	void DrawTitle();
+
+	//勝っているかの描画
+	void DrawIsWinning();
 
 private:
-	
-	int imgTitle_; // タイトル画像
+	// タイトル画像
+	int imgTitle_;
+
+	// ボタンを押してね画像
+	int imgPushButton_; 
+
+	//が勝っている画像
+	int imgIsWinning_;
+
+	//プレイヤープレート
+	int* imgPlayers_;
+
+	//メッセージのアルファ値
+	int mesAlpha_;
+
+	//アルファ値の変化方向
+	int alphaDir_;
 
 	// スコアゲージのリスト
 	std::vector<std::unique_ptr<ScoreGage>> scoreGages_; 

@@ -32,7 +32,7 @@ public:
 	/// <summary>
 	/// アニメーションの開始
 	/// </summary>
-	const void PlayAnimation() { isPlay_ = true; }
+	void PlayAnimation();
 
 	/// <summary>
 	/// 再生判定

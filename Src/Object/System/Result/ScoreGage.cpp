@@ -2,12 +2,15 @@
 #include <DxLib.h>
 #include "../Utility/Utility.h"
 #include "../Manager/Game/ScoreManager.h"
+#include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/DateBank.h"
 
 ScoreGage::ScoreGage(const int _playerIndex) : 
 	playerIndex_(_playerIndex)
 {
+	imgGages_ = nullptr;
+	imgGageOutline_ = -1;
 	pos_ = {};
 	size_ = {};
 	imgScoreGage_ = 0;
@@ -17,6 +20,7 @@ ScoreGage::ScoreGage(const int _playerIndex) :
 	stateChanges_.emplace(STATE::NONE, std::bind(&ScoreGage::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::WAIT, std::bind(&ScoreGage::ChangeStateWait, this));
 	stateChanges_.emplace(STATE::ANIMATION, std::bind(&ScoreGage::ChangeStateAnimation, this));
+	stateChanges_.emplace(STATE::AFTER_WAIT, std::bind(&ScoreGage::ChangeStateAfterWait, this));
 }
 
 ScoreGage::~ScoreGage()
@@ -25,6 +29,13 @@ ScoreGage::~ScoreGage()
 
 void ScoreGage::Load()
 {
+	//リソースの読み込み
+	ResourceManager& res = ResourceManager::GetInstance();
+	imgGageOutline_ = res.Load(ResourceManager::SRC::PLAYER_GAGE_OUTLINE).handleId_;
+	imgGages_ = res.Load(ResourceManager::SRC::PLAYER_GAGES).handleIds_;
+
+	//パラメーター設定
+	SetParamToPlayerNo();
 }
 
 void ScoreGage::Init()
@@ -55,14 +66,28 @@ void ScoreGage::Draw()
 	//一定の状態の場合描画させない
 	if (state_ == STATE::NONE) { return; }
 
-	//スコアゲージの描画
+	constexpr int OUTLINE = 5;
+
+	//輪郭線
 	DrawBox(
+		pos_.x - OUTLINE,
+		pos_.y - OUTLINE,
+		pos_.x + size_.x + OUTLINE,
+		pos_.y + size_.y + OUTLINE,
+		Utility::BLACK,
+		true
+	);
+
+	//スコアゲージの描画
+	DrawRectGraph(
 		pos_.x,
 		pos_.y,
-		pos_.x + size_.x,
-		pos_.y + size_.y,
-		color_,
-		true);
+		0,0,
+		size_.x,
+		size_.y,
+		imgGages_[playerIndex_],
+		true
+	);
 }
 
 void ScoreGage::ChangeState(const STATE _state)
@@ -81,7 +106,7 @@ void ScoreGage::ChangeStateNone()
 
 void ScoreGage::ChangeStateWait()
 {
-	stateUpdate_ = std::bind(&ScoreGage::UpdateStateWait, this);
+	stateUpdate_ = std::bind(&ScoreGage::UpdateStateNone, this);
 }
 
 void ScoreGage::ChangeStateAnimation()
@@ -92,11 +117,12 @@ void ScoreGage::ChangeStateAnimation()
 	updateLength_ = size_.x + ScoreManager::GetInstance().GetScore(playerIndex_) * lengthPerPoint_;
 }
 
-void ScoreGage::UpdateStateNone()
+void ScoreGage::ChangeStateAfterWait()
 {
+	stateUpdate_ = std::bind(&ScoreGage::UpdateStateNone, this);
 }
 
-void ScoreGage::UpdateStateWait()
+void ScoreGage::UpdateStateNone()
 {
 }
 
@@ -106,6 +132,7 @@ void ScoreGage::UpdateStateAnimation()
 
 	//必要な情報を設定
 	constexpr float ANIM_TIME = 3.0f;	//アニメーション時間
+	constexpr int OFFSET = 2;	//目標位置に到達したときのオフセット
 	float start = static_cast<float>(size_.x);	//開始位置
 	float goal = static_cast<float>(updateLength_);	//目標位置
 
@@ -116,9 +143,9 @@ void ScoreGage::UpdateStateAnimation()
 	size_.x = static_cast<int>(move);
 
 	//目標位置に到達したら状態を変更
-	if (size_.x >= updateLength_)
+	if (size_.x >= updateLength_ - OFFSET)
 	{
-		ChangeState(STATE::WAIT);
+		ChangeState(STATE::AFTER_WAIT);
 	}
 }
 

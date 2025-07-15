@@ -15,11 +15,8 @@ public:
 		IMGS,
 		MASK,
 		MODEL,
-		SOUND,
 		FONT,
-		EFFEKSEER,
-		VERTEX_SHADER,
-		PIXEL_SHADER,
+		EFFEKSEER
 	};
 
 	// コンストラクタ

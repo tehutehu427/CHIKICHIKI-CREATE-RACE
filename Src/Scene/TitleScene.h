@@ -1,35 +1,49 @@
 #pragma once
+#include <functional>
 #include "SceneBase.h"
 #include "../Common/Vector2.h"
 
 class SkyDome;
+class DemoPlay;
 
 class TitleScene : public SceneBase
 {
 public:
 
 	// コンストラクタ
-	TitleScene(void);
+	TitleScene();
 
 	// デストラクタ
-	~TitleScene(void) override;
+	~TitleScene() override;
 
 	//読み込み処理
-	void Load(void) override;
+	void Load() override;
 
 	//初期化処理
-	void Init(void) override;
+	void Init() override;
 
 private:
 
-	//ロゴのY座標
-	static constexpr int LOGO_POS_Y = 250;
+	//デモプレイ
+	static constexpr float DEMO_CHANGE_TIME = 10.0f;	//デモプレイへの遷移時間
+	static constexpr int DEMO_IMAGE_ALPHA = 100;		//デモプレイでの画像の透明度
+	static constexpr float DEMO_LOGO_MOVE_TIME = 2.0f;	//デモプレイでのロゴの移動時間
+	static constexpr float DEMO_CHANGE_SIZE = 16.0f;	//デモプレイでのロゴの縮小倍率
+
+	//ロゴ
+	static constexpr int LOGO_POS_Y = 250;				//ロゴの基本Y座標
+	static constexpr float LOGO_MIN_SIZE = 0.5f;		//ロゴの最小サイズ
+	static constexpr int LOGO_MIN_POS_X = 140;			//ロゴの最小X座標
+	static constexpr int LOGO_MIN_POS_Y = 120;			//ロゴの最小Y座標
 
 	//メッセージのY座標
 	static constexpr float MES_POS_Y = 550.0f;
 
 	//タイトル画像
 	int imgTitleLogo_;
+
+	//タイトルロゴサイズ
+	float logoSize_;
 
 	//メッセージ画像
 	int imgMessage_;
@@ -39,6 +53,7 @@ private:
 
 	//ステップの更新
 	float step_;
+	float demoUIStep_;
 
 	//アルファ値
 	int mesAlpha_;
@@ -49,18 +64,41 @@ private:
 	//メッセージ座標
 	float mesPosY_;
 
+	//更新処理の管理
+	std::function<void()> titleUpdateFunc_;
+
 	//スカイドーム
 	std::unique_ptr<SkyDome> skyDome_;
 
-	//更新関数
+	//デモ
+	std::unique_ptr<DemoPlay>demo_;
+
+	//更新関数(通常)
 	void NormalUpdate(void) override;
 
-	//描画関数
+	//更新関数(デモプレイ)
+	void DemoUpdate(void);
+
+	//描画関数(通常)
 	void NormalDraw(void) override;
 
-	//処理の変更
+	//描画関数(デモプレイ)
+	void DemoDraw(void);
+
+	//処理の変更(通常)
 	void ChangeNormal(void) override;
+
+	//処理の変更(デモプレイ)
+	void ChangeDemo(void);
 
 	//メッセージの描画
 	void DrawMessage(void);
+
+	//デモプレイのメッセージ描画
+	void DemoMessage(void);
+
+	//状態別更新処理
+	void UpdateWait();
+	void UpdatePlaySe();
+	void UpdateNone();
 };

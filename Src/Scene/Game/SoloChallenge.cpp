@@ -1,4 +1,5 @@
 #include "SoloChallenge.h"
+#include "../Manager/System/SoundManager.h"
 
 SoloChallenge::SoloChallenge(void)
 {
@@ -12,6 +13,9 @@ void SoloChallenge::Load(void)
 {
 	//親クラスの読み込み処理を呼ぶ
 	GameScene::Load();
+
+	//BGMボリュームを設定
+	sndMng_.SetLoadedSoundsVolume();
 }
 
 void SoloChallenge::Init(void)
@@ -21,6 +25,8 @@ void SoloChallenge::Init(void)
 
 	//アクションフェーズへ移る
 	ChangePhase(PHASE::ACTION_PHASE);
+
+	sndMng_.Play(SoundManager::SRC::PLAY_BGM_1, SoundManager::PLAYTYPE::LOOP);
 }
 
 void SoloChallenge::NormalDraw(void)
@@ -33,4 +39,10 @@ void SoloChallenge::UpdateAction(void)
 {
 	//親クラスのアクション時の更新処理を呼ぶ
 	GameScene::UpdateAction();
+}
+
+void SoloChallenge::LoadSound(void)
+{
+	GameScene::LoadSound();
+	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_1);
 }

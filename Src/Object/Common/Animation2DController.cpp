@@ -58,3 +58,10 @@ void Animation2DController::Update()
 	//アニメーション設定
 	animIndex_ = startIndex_ + static_cast<int>(animStep_) % animMax;
 }
+
+void Animation2DController::PlayAnimation()
+{
+	isPlay_ = true; //再生フラグを立てる
+	animStep_ = 0.0f; //ステップを初期化
+	animIndex_ = startIndex_; //アニメーションインデックスを開始位置に設定
+}

@@ -4,6 +4,8 @@
 #include<functional>
 #include<map>
 
+#include"../Manager/System/SoundManager.h"
+
 class Player;
 class PlayerInput;
 class AnimationController;
@@ -217,7 +219,7 @@ private:
 
 	//素材関連
 	//------------------------
-	std::map<ACT_SE, int>actSE_;
+	std::map<ACT_SE,SoundManager::SRC>actSE_;
 
 	//スライムSEの間隔カウント
 	float slimeSEcnt_;
@@ -252,6 +254,8 @@ private:
 	float punchCoolCnt_;			//パンチクールタイム
 	VECTOR punchPos_;			//攻撃座標
 	float punchedCnt_;			//パンチ効果時間カウント
+
+	int cameraNo_;				//カメラ番号
 	//-------------------------------------------------
 	//メンバ関数
 	//-------------------------------------------------
@@ -304,6 +308,11 @@ private:
 	/// <param name="_localPos">相対座標</param>
 	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _localPos);
 
+	/// <summary>
+	/// 再生させたいSE以外すべて止める
+	/// </summary>
+	/// <param name="_se">現在再生させたいSE</param>
+	void StopSe(const ACT_SE _se);
 
 	//回転
 	void Rotate(void);

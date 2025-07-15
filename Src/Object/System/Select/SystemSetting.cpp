@@ -4,7 +4,6 @@
 #include "../../../Manager/System/SceneManager.h"
 #include "../../../Manager/System/KeyConfig.h"
 #include "../../../Manager/System/DateBank.h"
-#include "../../../Manager/System/SoundManager.h"
 #include "../../../Utility/Utility.h"
 #include "../../../Common/IntVector3.h"
 #include "../Scene/SelectScene.h"
@@ -21,7 +20,7 @@ SystemSetting::SystemSetting()
 	//初期化
 	stateIndex_ = -1;
 	clearScore_ = -1;
-	soundVolume_ = -1;
+	for (int i = 0; i < SoundManager::TYPE_MAX; i++) { soundVolume_[i] = -1; }
 	isSkip_ = false;
 	updateType_ = UPDATE_TYPE::SELECT;
 
@@ -42,16 +41,29 @@ SystemSetting::SystemSetting()
 		{STATE::CLEAR_SCORE,[this]()
 		{
 			//右キーで選択をひとつ進める（範囲内でループ）
-			clearScore_ = (clearScore_ + 1) % CLEAR_SCORE_MAX;
+			clearScore_ = (clearScore_ - CLEAR_SCORE_MIN + 1) % CLEAR_SCORE_RANGE + CLEAR_SCORE_MIN;
 		}},
 		{STATE::SKIP,[this]()
 		{
 			isSkip_ = !isSkip_;
 		}},
-		{STATE::SOUND_VOLUME,[this]()
+		{STATE::BGM_VOLUME,[this]()
 		{
-			//右キーで選択をひとつ進める（範囲内でループ）
-			soundVolume_ = (soundVolume_ + SOUND_VOLUME_STEP) % SOUND_VOLUME_MAX;
+			// 右キーで音量を一段階上げる（最大を超えたら最小に戻る）
+			soundVolume_[static_cast<int>(SoundManager::TYPE::BGM)] += SOUND_VOLUME_STEP;
+			if (soundVolume_[static_cast<int>(SoundManager::TYPE::BGM)] > SOUND_VOLUME_MAX)
+			{
+				soundVolume_[static_cast<int>(SoundManager::TYPE::BGM)] = 0;
+			}
+		}},
+		{STATE::SE_VOLUME,[this]()
+		{
+			// 右キーで音量を一段階上げる（最大を超えたら最小に戻る）
+			soundVolume_[static_cast<int>(SoundManager::TYPE::SE)] += SOUND_VOLUME_STEP;
+			if (soundVolume_[static_cast<int>(SoundManager::TYPE::SE)] > SOUND_VOLUME_MAX)
+			{
+				soundVolume_[static_cast<int>(SoundManager::TYPE::SE)] = 0;
+			}
 		}}
 	};
 
@@ -61,17 +73,30 @@ SystemSetting::SystemSetting()
 		{STATE::CLEAR_SCORE,[this]()
 		{
 			//左キーで選択をひとつ戻す（範囲内でループ）
-			clearScore_ = (clearScore_ - 1 + CLEAR_SCORE_MAX) % CLEAR_SCORE_MAX;
+			clearScore_ = (clearScore_ - CLEAR_SCORE_MIN - 1 + CLEAR_SCORE_RANGE) % CLEAR_SCORE_RANGE + CLEAR_SCORE_MIN;
 		}},
 		{STATE::SKIP,[this]()
 		{
 			isSkip_ = !isSkip_;
 		}},
-		{STATE::SOUND_VOLUME,[this]()
+		{STATE::BGM_VOLUME,[this]()
 		{
-			//左キーで選択をひとつ戻す（範囲内でループ）
-			soundVolume_ = (soundVolume_ - SOUND_VOLUME_STEP + SOUND_VOLUME_MAX) % SOUND_VOLUME_MAX;
-}		}
+			// 左キーで音量を一段階下げる（最小未満になったら最大に戻る）
+			soundVolume_[static_cast<int>(SoundManager::TYPE::BGM)] -= SOUND_VOLUME_STEP;
+			if (soundVolume_[static_cast<int>(SoundManager::TYPE::BGM)] < 0)
+			{
+				soundVolume_[static_cast<int>(SoundManager::TYPE::BGM)] = SOUND_VOLUME_MAX;
+			}
+		}},
+		{STATE::SE_VOLUME,[this]()
+		{
+			// 左キーで音量を一段階下げる（最小未満になったら最大に戻る）
+			soundVolume_[static_cast<int>(SoundManager::TYPE::SE)] -= SOUND_VOLUME_STEP;
+			if (soundVolume_[static_cast<int>(SoundManager::TYPE::SE)] < 0)
+			{
+				soundVolume_[static_cast<int>(SoundManager::TYPE::SE)] = SOUND_VOLUME_MAX;
+			}
+		}}
 	};
 
 	//描画関数の登録
@@ -85,9 +110,13 @@ SystemSetting::SystemSetting()
 		{
 			DrawSkip();
 		}},
-		{STATE::SOUND_VOLUME,[this]()
+		{STATE::BGM_VOLUME,[this]()
 		{
-			DrawSoundVolume();
+			DrawSoundVolume(STATE::BGM_VOLUME, static_cast<int>(SoundManager::TYPE::BGM));
+		}},
+		{STATE::SE_VOLUME,[this]()
+		{
+			DrawSoundVolume(STATE::SE_VOLUME, static_cast<int>(SoundManager::TYPE::SE));
 		}}
 	};
 
@@ -125,10 +154,14 @@ void SystemSetting::Load()
 
 void SystemSetting::Init()
 {	
+	DateBank& data = DateBank::GetInstance();
+	SoundManager& sound = SoundManager::GetInstance();
+
 	//初期状態
 	stateIndex_ = 0;
-	clearScore_ = DateBank::DEFAULT_SCORE;
-	soundVolume_ = SoundManager::DEFAULT_VOLUME;
+	clearScore_ = data.GetMultiClearScore();
+	isSkip_ = data.IsItemSetSkip(); 
+	for (int i = 0; i < SoundManager::TYPE_MAX; i++) { soundVolume_[i] = sound.GetSoundTypeVolume(i); }
 }
 
 void SystemSetting::Update(SelectScene& _parent)
@@ -214,11 +247,13 @@ void SystemSetting::DrawSettingFinish()
 void SystemSetting::UpdateSelect(SelectScene& _parent)
 {
 	KeyConfig& key = KeyConfig::GetInstance();
+	SoundManager& sound = SoundManager::GetInstance();
 
 	//決定
 	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, KeyConfig::JOYPAD_NO::PAD1) && stateIndex_ == static_cast<int>(STATE::APPLY))
 	{
 		updateType_ = UPDATE_TYPE::APPLY; //更新タイプを適用に変更
+		sound.Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK); //決定音を再生
 		return;
 	}
 	//上へ
@@ -226,6 +261,7 @@ void SystemSetting::UpdateSelect(SelectScene& _parent)
 	{
 		//下キーで選択をひとつ戻す（範囲内でループ）
 		stateIndex_ = (stateIndex_ - 1 + STATE_MAX) % STATE_MAX;
+		sound.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK); //クリック音を再生
 		return;
 	}
 	//下へ
@@ -233,24 +269,28 @@ void SystemSetting::UpdateSelect(SelectScene& _parent)
 	{
 		//上キーで選択をひとつ進める（範囲内でループ）
 		stateIndex_ = (stateIndex_ + 1) % STATE_MAX;
+		sound.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK); //クリック音を再生
 		return;
 	}
 	//右
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		rightStateMap_[static_cast<STATE>(stateIndex_)](); //右の処理を実行
+		sound.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK); //クリック音を再生
 		return;
 	}
 	//左
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		leftStateMap_[static_cast<STATE>(stateIndex_)](); //左の処理を実行
+		sound.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK); //クリック音を再生
 		return;
 	}
 	//メニューに戻る
 	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		_parent.ChangeState(SelectScene::STATE::SELECT_MENU); //メニューに戻る
+		sound.Play(SoundManager::SRC::CANCEL, SoundManager::PLAYTYPE::BACK); //キャンセル音を再生
 		return;
 	}
 }
@@ -263,6 +303,8 @@ void SystemSetting::UpdateApply(SelectScene& _parent)
 	{
 		//データの反映
 		ApplyData();
+
+		SoundManager::GetInstance().Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK); //決定音を再生
 
 		//更新タイプを選択に戻す
 		updateType_ = UPDATE_TYPE::SELECT;
@@ -282,7 +324,7 @@ void SystemSetting::ApplyData()
 	//data.SetSkip(isSkip_);
 
 	//サウンドボリュームの設定
-	sound.SetVolume(soundVolume_);
+	for (int i = 0; i < SoundManager::TYPE_MAX; i++) { sound.SetSystemVolume(soundVolume_[i], i); }
 }
 
 void SystemSetting::DrawCursor()
@@ -383,18 +425,18 @@ void SystemSetting::DrawSkip()
 	);
 }
 
-void SystemSetting::DrawSoundVolume()
+void SystemSetting::DrawSoundVolume(const STATE _state, const int _type)
 {
 	constexpr int POS_X = 900; //X座標
 	constexpr int MARGIN_X = 64; //数字の間隔	
 	constexpr int OFFSET_X = 90; //数字の位置を調整
-	const int posY = START_POS_Y + static_cast<int>(STATE::SOUND_VOLUME) * HEIGHT_MARGIN; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
-	const int numberDigit = Utility::GetDigitCount(soundVolume_); //数字の桁数
+	const int posY = START_POS_Y + static_cast<int>(_state) * HEIGHT_MARGIN; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
+	const int numberDigit = Utility::GetDigitCount(soundVolume_[_type]); //数字の桁数
 
 	//数字の描画
 	for (int i = 0; i < numberDigit; i++)
 	{
-		int index = Utility::GetDigit(soundVolume_, numberDigit - 1 - i);
+		int index = Utility::GetDigit(soundVolume_[_type], numberDigit - 1 - i);
 
 		DrawRotaGraph(
 			POS_X + i * MARGIN_X - OFFSET_X,
@@ -430,7 +472,7 @@ void SystemSetting::DrawApplyMessage()
 void SystemSetting::DrawSelectStateName(const int _index)
 {
 	constexpr int POS_X = 100; //X座標
-	const int posY = START_POS_Y + _index * HEIGHT_MARGIN - 32; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
+	const int posY = START_POS_Y + _index * HEIGHT_MARGIN - 16; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
 
 	//設定項目の描画
 	DrawGraph(

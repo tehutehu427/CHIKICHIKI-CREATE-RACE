@@ -145,7 +145,7 @@ public:
 		PLAY_CAMERA_ZOOM_IN,	//プレイのカメラズームイン
 		PLAY_CAMERA_ZOOM_OUT,	//プレイのカメラズームアウト
 
-		
+		DEMO_TO_TITLE_BACK,		//デモからタイトルに戻る
 
 
 		DEBUG_CHENGE_TITLE,		//デバッグ用タイトル画面に戻る
@@ -153,6 +153,7 @@ public:
 		DEBUG_CHANGE_INPUT,			//デバッグ用入力デバイス切り替え
 		DATA_INPUT,				//データを入力
 		DATA_EXPORT,			//データを出力
+		SELECT_SKIP,
 		MAX,
 	};
 

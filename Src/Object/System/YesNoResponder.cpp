@@ -2,6 +2,7 @@
 #include "../../Application.h"
 #include "../../Common/FontRegistry.h"
 #include "../../Common/IntVector3.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Utility/Utility.h"
@@ -49,6 +50,7 @@ void YesNoResponder::Init()
 void YesNoResponder::Update()
 {
 	KeyConfig& key = KeyConfig::GetInstance();
+	SoundManager& sndMng = SoundManager::GetInstance();
 
     //コマンドの選択
     if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1) ||
@@ -59,6 +61,8 @@ void YesNoResponder::Update()
 
         //ステップ更新
         index_ += dir;
+
+		sndMng.GetInstance().Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 
         //範囲の巻き戻し
         if (index_ < 0)
@@ -79,11 +83,13 @@ void YesNoResponder::Update()
         if (index_ == static_cast<int>(RESPON::YES))
         {
             respon_ = RESPON::YES;
+            sndMng.GetInstance().Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
             return;
         }
         else
         {
             respon_ = RESPON::NO;
+            sndMng.GetInstance().Play(SoundManager::SRC::CANCEL, SoundManager::PLAYTYPE::BACK);
             return;
         }
     }
@@ -111,11 +117,13 @@ void YesNoResponder::Update()
                 if (index_ == static_cast<int>(RESPON::YES))
                 {
                     respon_ = RESPON::YES;
+                    sndMng.GetInstance().Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
                     return;
                 }
                 else
                 {
                     respon_ = RESPON::NO;
+                    sndMng.GetInstance().Play(SoundManager::SRC::CANCEL, SoundManager::PLAYTYPE::BACK);
                     return;
                 }
             }

@@ -1,6 +1,7 @@
 #include "../Utility/Utility.h"
 #include "../Manager/System/KeyConfig.h"
 #include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/SoundManager.h"
 #include "EditController.h"
 #include "EditItemReady.h"
 
@@ -72,20 +73,38 @@ void EditItemReady::UpdateNotReady(void)
 		{
 			return; //カーソルが当たり判定の外にある場合は何もしない
 		}
+		int errorType = parent_.IsError();
+		if (errorType < 0)
+		{
+			SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
+			parent_.SetError(errorType);
+			return;
+		}
+		SoundManager::GetInstance().Play(SoundManager::SRC::OK, SoundManager::PLAYTYPE::BACK);
 		ChangeReady(READY_PHASE::CHECK);
 	}
 }
 
 void EditItemReady::UpdateCheck(void)
 {
+	int errorType = parent_.IsError();
+	if (errorType < 0)
+	{
+		SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
+		parent_.SetError(errorType);
+		ChangeReady(READY_PHASE::NOT_READY);
+		return;
+	}
 	KeyConfig& ins = KeyConfig::GetInstance();
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL, parent_.GetPadNum(), KeyConfig::TYPE::PAD))
 	{
+		SoundManager::GetInstance().Play(SoundManager::SRC::CANCEL, SoundManager::PLAYTYPE::BACK);
 		ChangeReady(READY_PHASE::NOT_READY);
 		return;
 	}
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, parent_.GetPadNum(), KeyConfig::TYPE::PAD))
 	{
+		SoundManager::GetInstance().Play(SoundManager::SRC::OK, SoundManager::PLAYTYPE::BACK);
 		ChangeReady(READY_PHASE::READY);
 		return;
 	}

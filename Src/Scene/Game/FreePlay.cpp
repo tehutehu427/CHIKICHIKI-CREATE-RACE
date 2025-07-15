@@ -1,4 +1,5 @@
 #include "FreePlay.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Object/Editor/MapDataIO.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
@@ -37,6 +38,9 @@ void FreePlay::Load(void)
 	//編集終了
 	editEscape_ = std::make_unique<EditEscape>(editControllers_[0]->GetCursorPos());
 	editEscape_->Load();
+
+	//BGMボリュームを設定
+	sndMng_.SetLoadedSoundsVolume();
 }
 
 void FreePlay::Init(void)
@@ -60,6 +64,8 @@ void FreePlay::Init(void)
 	editEscape_->Init();
 
 	ChangePhase(PHASE::EDIT_PHASE);
+
+	sndMng_.Play(SoundManager::SRC::EDIT_BGM, SoundManager::PLAYTYPE::LOOP);
 }
 
 void FreePlay::UpdateAction(void)
@@ -103,7 +109,11 @@ void FreePlay::UpdateEdit(void)
 	}
 	else
 	{
-		for (auto& controller : editControllers_) { controller->CursorUpdate(); }
+		for (auto& controller : editControllers_) 
+		{ 
+			controller->UpdateCursor(); 
+			controller->UpdateError(); 
+		}
 	}
 }
 
@@ -114,6 +124,10 @@ void FreePlay::ChangePhaseAction(void)
 
 	//次のフェーズ遷移の設定
 	checkChangePhase_->SetNextPhase(PHASE::EDIT_PHASE);
+
+	//BGMの切り替え
+	sndMng_.Stop(SoundManager::SRC::EDIT_BGM);
+	sndMng_.Play(SoundManager::SRC::PLAY_BGM_1, SoundManager::PLAYTYPE::LOOP);
 }
 
 void FreePlay::ChangePhaseEdit(void)
@@ -123,6 +137,10 @@ void FreePlay::ChangePhaseEdit(void)
 
 	//次のフェーズ遷移の設定
 	checkChangePhase_->SetNextPhase(PHASE::ACTION_PHASE);
+
+	//BGMの切り替え
+	sndMng_.Stop(SoundManager::SRC::PLAY_BGM_1);
+	sndMng_.Play(SoundManager::SRC::EDIT_BGM, SoundManager::PLAYTYPE::LOOP);
 }
 
 void FreePlay::NormalUpdate()
@@ -164,4 +182,12 @@ void FreePlay::DrawEdit()
 	//編集終了
 	editEscape_->Draw();
 
+}
+
+void FreePlay::LoadSound()
+{
+	GameScene::LoadSound();
+	sndMng_.LoadResource(SoundManager::SRC::EDIT_BGM);
+	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_1);
+	sndMng_.SetLoadedSoundsVolume();
 }

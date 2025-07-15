@@ -5,6 +5,7 @@
 #include "../../Common/FontRegistry.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/InputManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/Game/ScoreManager.h"
 #include "../../Scene/Game/GameScene.h"
@@ -18,7 +19,8 @@ namespace
 
 GameClear::GameClear():
 	scnMng_(SceneManager::GetInstance()),
-	keyConfig_(KeyConfig::GetInstance())
+	keyConfig_(KeyConfig::GetInstance()),
+	sndMng_(SoundManager::GetInstance())
 {
 	//状態別ファンクション処理の初期化と登録
 	stateMap_.clear();
@@ -86,6 +88,12 @@ void GameClear::Load()
 	imgWin_ = res.Load(ResourceManager::SRC::WIN).handleId_;
 	imgClear_ = res.Load(ResourceManager::SRC::CLEAR).handleId_;
 	imgOver_ = res.Load(ResourceManager::SRC::GAMEOVER).handleId_;
+
+	sndMng_.LoadResource(SoundManager::SRC::CANCEL);
+	sndMng_.LoadResource(SoundManager::SRC::DECISION);
+	sndMng_.LoadResource(SoundManager::SRC::CLICK_OBJECT_SE);
+	sndMng_.LoadResource(SoundManager::SRC::GAME_OVER);
+	sndMng_.LoadResource(SoundManager::SRC::CLEAR);
 }
 
 void GameClear::Init()
@@ -126,11 +134,13 @@ void GameClear::SetGameResultPhase(const bool _typs)
 	if (_typs)
 	{
 		imgWaitDrawUi_ = imgClear_;
+		sndMng_.Play(SoundManager::SRC::CLEAR, SoundManager::PLAYTYPE::BACK);
 		return;
 	}
 	else
 	{
 		imgWaitDrawUi_ = imgOver_;
+		sndMng_.Play(SoundManager::SRC::GAME_OVER, SoundManager::PLAYTYPE::BACK);
 		return;
 	}
 }
@@ -201,12 +211,14 @@ void GameClear::UpdateMenu(GameScene& _parent)
 	{
 		//選択メニューの更新
 		menuIndex_ = (menuIndex_ - 1 + MENU_LIST_NUM) % MENU_LIST_NUM;
+		sndMng_.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		return;
 	}
 	else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_DOWN, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//選択メニューの更新		
 		menuIndex_ = (menuIndex_ + 1) % MENU_LIST_NUM;
+		sndMng_.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		return;
 	}
 
@@ -218,6 +230,8 @@ void GameClear::UpdateMenu(GameScene& _parent)
 
 		//アルファ値初期化
 		alpha_ = 0;
+
+		sndMng_.Play(SoundManager::SRC::DECISION, SoundManager::PLAYTYPE::BACK);
 		return;
 	}
 }
@@ -238,7 +252,7 @@ void GameClear::DrawWaiting()
 
 void GameClear::DrawDisplay()
 {
-	const int index = ScoreManager::GetInstance().GetWinnerPlayerIndex(5);	//UI用インデックス
+	const int index = ScoreManager::GetInstance().GetWinnerPlayerIndex();	//UI用インデックス
 	constexpr int POS_X = Application::SCREEN_HALF_X;	//X座標共通
 	constexpr int WINNER_POS_Y = 250;	//勝者UIのY座標
 	constexpr int WIN_POS_Y = 400;		//WINのY座標

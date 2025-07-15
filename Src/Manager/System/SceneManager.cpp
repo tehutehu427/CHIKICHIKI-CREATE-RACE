@@ -8,9 +8,10 @@
 #include "../../Scene/Game/MultiParty.h"
 #include "../../Scene/Game/SoloChallenge.h"
 #include "../Game/PlayerManager.h"
+#include "../Game/CollisionManager.h"
 #include "Camera.h"
 #include "ResourceManager.h"
-#include "../Game/CollisionManager.h"
+#include "SoundManager.h"
 #include "DateBank.h"
 #include "SceneManager.h"
 
@@ -325,6 +326,8 @@ void SceneManager::CreateSplitScreen(const int _playerNum)
 
 SceneManager::SceneManager(void)
 {
+	mainScreen_ = -1;	//メインスクリーンの初期化
+	screenIndex_ = 0;	//分割スクリーンのインデックス初期化
 
 	sceneId_ = SCENE_ID::NONE;
 	waitSceneId_ = SCENE_ID::NONE;
@@ -357,7 +360,8 @@ void SceneManager::ResetDeltaTime(void)
 void SceneManager::DoChangeScene(SCENE_ID sceneId)
 {
 	// リソースの解放
-	ResourceManager::GetInstance().Release();
+	ResourceManager::GetInstance().Release();	
+	SoundManager::GetInstance().Release();	
 
 	// シーンを変更する
  	sceneId_ = sceneId;
@@ -370,6 +374,9 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	{
 		scene_.reset();
 	}
+	
+	//現在使用している音源の解放
+
 
 	//シーンに合わせて生成数を設定
 	const int createNum = (sceneId == SCENE_ID::MULTI) ? DateBank::GetInstance().GetPlayerNum() : 1;

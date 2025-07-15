@@ -6,6 +6,7 @@
 #include "../../Common/Vector2.h"
 #include "../../Scene/Game/GameScene.h"
 
+class SoundManager;
 class SceneManager;
 class KeyConfig;
 class MultiParty;
@@ -153,6 +154,9 @@ private:
 
 	//入力管理
 	KeyConfig& keyConfig_;
+
+	//サウンド管理
+	SoundManager& sndMng_;
 
 	//状態別更新処理を登録
 	void RegisterStateFunction(const STATE _state, std::function<void(GameScene&)> _update, std::function<void()> _draw);

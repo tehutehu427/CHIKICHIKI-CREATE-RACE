@@ -70,7 +70,13 @@ public:
 	/// </summary>
 	/// <param name="_clearLine">クリア値</param>
 	/// <returns>プレイヤー番号、もしいなければ-1</returns>
-	const int GetWinnerPlayerIndex(const int _clearLine) const;
+	const int GetWinnerPlayerIndex() const;
+
+	/// <summary>
+	/// 現在のスコアが高いプレイヤー番号を返す
+	/// </summary>
+	/// <returns>勝者のインデックスを返し、引き分けの場合-1を返す</returns>
+	const int GetNowWinnerPlayerIndex() const;
 
 	/// <summary>
 	/// スコアを返す

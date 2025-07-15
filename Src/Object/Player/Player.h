@@ -13,7 +13,7 @@ class PlayerAction;
 class PlayerOnHit;
 class DateBank;
 class Shadow;
-
+class Camera;
 class ModelMaterial;
 class ModelRenderer;
 
@@ -38,6 +38,11 @@ public:
 
 	//デフォルトのアニメーションスピード
 	static constexpr float DEFAULT_ANIM_SPD = 60.0f;
+
+	//プレイヤーの目の高さ
+	static constexpr VECTOR EYE_HEIGHT = { 0.0f, 15.0f, 0.0f };
+	//プレイヤーのアイラインの長さ
+	static constexpr VECTOR EYE_RANGE = { 0.0f, 15.0f, 100.0f };
 
 	//******************************************
 
@@ -79,7 +84,7 @@ public:
 		PUNCH = 12,
 		JUMP = 13,
 		LAND=14,
-		GOAL=5,
+		GOAL=6,
 	};
 
 	
@@ -160,6 +165,7 @@ public:
 	/// </summary>
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos);
+
 	//*****************************************
 	//モデル色を変更
 	void ChangeModelColor(const COLOR_F _colorScale)override;
@@ -169,8 +175,6 @@ public:
 
 	//パンチの当たり判定を消す
 	void KillPunchCol(void);
-
-
 
 private:
 	//***********************************************
@@ -205,6 +209,12 @@ private:
 	static constexpr VECTOR LOCAL_UP_POS = { 0.0f,RADIUS+ LINE_RANGE,0.0f };
 	//プレイヤーの下
 	static constexpr VECTOR LOCAL_DOWN_POS = { 0.0f,-RADIUS- LINE_RANGE,0.0f };
+	//--------------------------------------------------
+	//ゲームオーバーの待機時間
+	static constexpr float DEATH_DELAY = 2.0f;
+
+	//ゴール時の待機時間
+	static constexpr float GOAL_DELAY = 1.0f;
 
 	//***********************************
 	//アニメーション関連
@@ -220,7 +230,6 @@ private:
 
 	//ゲームパッド番号
 	KeyConfig::JOYPAD_NO padNum_;
-
 
 	//オブジェクト関連
 	//--------------------------------------------
@@ -242,6 +251,9 @@ private:
 
 	//エフェクト
 	std::unique_ptr<EffectController> effect_;
+
+	//カメラ
+	std::weak_ptr<Camera>camera_;
 
 	//メンバ変数
 	//--------------------------------------------
@@ -266,7 +278,8 @@ private:
 	//状態更新
 	std::function<void(void)>stateUpdate_;
 
-	VECTOR moveVec_;
+	float finishDelay_;	//ゲーム終了時の待機時間
+
 
 
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ

@@ -11,11 +11,16 @@ public:
 		NONE,		//非表示
 		WAIT,		//待機
 		ANIMATION,	//アニメーションを実行
+		AFTER_WAIT,	//アニメーション後の待機
+
 	};
 
 	//ゲージYサイズ	
 	static constexpr int GAGE_SIZE_X = 75;	//ゲージのデフォルトサイズ
 	static constexpr int GAGE_SIZE_Y = 50;	//ゲージの太さ
+
+	static constexpr int GAGE_OUTLINE_X = 610;
+	static constexpr int GAGE_OUTLINE_Y = 60;
 
 	//ゲージ座標
 	static constexpr int GAGE_POS_P1_X = 200;
@@ -72,6 +77,12 @@ public:
 
 private:
 
+	//ゲージ画像
+	int* imgGages_;
+
+	//ゲージ輪郭線
+	int imgGageOutline_;
+
 	// プレイヤー番号
 	int playerIndex_;
 
@@ -109,10 +120,10 @@ private:
 	void ChangeStateNone();
 	void ChangeStateWait();
 	void ChangeStateAnimation();
+	void ChangeStateAfterWait();
 
 	//状態別更新処理
 	void UpdateStateNone();
-	void UpdateStateWait();
 	void UpdateStateAnimation();
 
 	//プレイヤーの番号ごとにパラメーターを割り当て

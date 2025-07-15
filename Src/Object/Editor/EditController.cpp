@@ -44,6 +44,11 @@ EditController::EditController(int playerNum)
 	cPos_ = SceneManager::GetInstance().GetCamera(playerNum).lock()->GetPos();
 	cAngles_ = SceneManager::GetInstance().GetCamera(playerNum).lock()->GetAngles();
 	cTargetPos_ = SceneManager::GetInstance().GetCamera(playerNum).lock()->GetTargetPos();
+
+	SoundManager & sndMng = SoundManager::GetInstance();
+	sndMng.LoadResource(SoundManager::SRC::CLICK_OBJECT_SE);	//オブジェクトをクリック
+	sndMng.LoadResource(SoundManager::SRC::CREATE_OBJECT_SE);	//オブジェクトを生成
+	sndMng.LoadResource(SoundManager::SRC::ERROR_SE);			//エラー
 }
 
 EditController::~EditController()
@@ -60,14 +65,21 @@ void EditController::Init(void)
 
 void EditController::Update(void)
 {
+
 	if (errorStringTime_ == 0.0f)
 	{
 		errorType_ = ERROR_TYPE::NONE;	//エラーの初期化
 	}
-	CursorUpdate();	//カーソル更新
+	UpdateCursor();	//カーソル更新
+	ready_->Update();
+
+	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_CHENGE, padNum_))
+	{
+		ChengeCameraMode();
+	}
 	DebugUpdate();
 
-	if (GetReady())
+	if (ready_->GetReady() == EditItemReady::READY_PHASE::READY)
 	{
 		//マルチプレイ時にアイテムを置き終わった
 		return;
@@ -75,26 +87,11 @@ void EditController::Update(void)
 
 	//モード別更新処理
 	modeUpdate_();
-	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_CHENGE, padNum_))
-	{
-		ChengeCameraMode();
-	}
 	if (moveDir_ == MOVE_DIR::NONE)
 	{
 		ItemNotSelect();
 	}
-	if (errorType_ != ERROR_TYPE::NONE &&errorStringTime_ == 0)
-	{
-		errorStringTime_ = ERROR_STRING_TIME;	//エラー文字列の表示時間初期化
-	}
-	else if (errorStringTime_ > 0)
-	{
-		errorStringTime_ -= SceneManager::GetInstance().GetDeltaTime();	//エラー文字列の表示時間減少
-		if (errorStringTime_ <= 0)
-		{
-			errorStringTime_ = 0.0f;	//エラー文字列の表示時間初期化
-		}
-	}
+	UpdateError();
 }
 
 void EditController::Draw(void)
@@ -127,8 +124,7 @@ void EditController::DrawUI(void)
 		DrawRotaGraph(screenSize_.x / 2, screenSize_.y / 2, rate, 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_OVERLAP_IMG).handleId_, true);
 		break;
 	case EditController::ERROR_TYPE::ITEM_NOT_SET:
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-		Utility::DrawStringPlace("アイテムが設置できませんでした", screenSize_.x / 2, screenSize_.y / 2, Utility::RED, Utility::STRING_PLACE::CENTER);	//エラー文字列描画
+		DrawRotaGraph(screenSize_.x / 2, screenSize_.y / 2, rate * 2, 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_CANT_ITEM_IMG).handleId_, true);
 		break;
 	default:
 		break;
@@ -190,7 +186,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 			if (errorType < 0)
 			{
 
-				SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+				SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
 				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
 				//アイテムが重なっている
 				return;
@@ -221,7 +217,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	{
 		errorType_ = ERROR_TYPE::ITEM_NOT_SET;	//アイテムが設置できない場所
 
-		SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+		SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
 		itemMIns.DeleteDummyItem(playerNum_);
 		return;
 	}
@@ -233,7 +229,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 
 bool EditController::GetReady(void) const
 {
-	return ready_->GetReady() == EditItemReady::READY_PHASE::READY;
+	return (ready_->GetReady() == EditItemReady::READY_PHASE::READY && !SoundManager::GetInstance().IsPlay(SoundManager::SRC::BOMB_SE));
 }
 
 void EditController::SetReady(void)
@@ -255,7 +251,7 @@ void EditController::SetReady(void)
 	itemMIns.DummyItemAddItems(playerNum_);
 }
 
-void EditController::CursorUpdate(void)
+void EditController::UpdateCursor(void)
 {
 	auto lStick = KeyConfig::GetInstance().GetKnockLStickSize(padNum_);
 	auto& itemMIns = ItemManager::GetInstance();
@@ -270,31 +266,51 @@ void EditController::CursorUpdate(void)
 	if (playerMaxNum_ == 1)
 	{
 		cursorPos_ = Vector2::AddVector2(cursorPos_, mouseMove);
-		cursorPos_.x = std::clamp(cursorPos_.x , 0,screenSize_.x);
+		cursorPos_.x = std::clamp(cursorPos_.x, 0, screenSize_.x);
 		cursorPos_.y = std::clamp(cursorPos_.y, 0, screenSize_.y);
 		KeyConfig::GetInstance().SetMousePos(cursorPos_);
 	}
-	else 
+	else
 	{
 		cursorPos_.x = std::clamp(cursorPos_.x, 0, screenSize_.x);
 		cursorPos_.y = std::clamp(cursorPos_.y, 0, screenSize_.y);
 
-		int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_),itemMIns.GetDummyItemHitSize(playerNum_),itemMIns.GetDummyItemRotY(playerNum_));
-		if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER || errorType == 0) 
-		{
-			ready_->Update();
-		}
-		else
-		{
-			ready_->ChangeReady(EditItemReady::READY_PHASE::NOT_READY);
-			if (errorType_ == ERROR_TYPE::NONE)
-			{
-				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));
-				SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
-			}
-		}
+
 	}
 	mousePos_ = cursorPos_;
+}
+
+void EditController::UpdateError(void)
+{
+	if (errorType_ != ERROR_TYPE::NONE && errorStringTime_ == 0)
+	{
+		errorStringTime_ = ERROR_STRING_TIME;	//エラー文字列の表示時間初期化
+	}
+	else if (errorStringTime_ > 0)
+	{
+		errorStringTime_ -= SceneManager::GetInstance().GetDeltaTime();	//エラー文字列の表示時間減少
+		if (errorStringTime_ <= 0)
+		{
+			errorStringTime_ = 0.0f;	//エラー文字列の表示時間初期化
+			errorType_ = ERROR_TYPE::NONE;
+		}
+	}
+}
+
+int EditController::IsError(void)
+{
+	ItemManager& itemMIns = ItemManager::GetInstance();
+	int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
+	{
+		errorType = 0;
+	}
+	return errorType;
+}
+
+void EditController::SetError(int errorType)
+{
+	errorType_ = static_cast<ERROR_TYPE>((abs(errorType)));
 }
 
 void EditController::ChengeModeItemSelect(void)
@@ -404,7 +420,7 @@ void EditController::ItemNotSelect(void)
 				//if (MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_)))
 			{
 				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
-				SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+				SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
 				return;
 			}
 			if (itemMIns.IsDummyItem(playerNum_))
@@ -445,7 +461,7 @@ void EditController::ItemNotSelect(void)
 			MapEditer::GetInstance().DeleteItem(itemType_, leaderPos, ItemManager::GetInstance().GetDummyItemRotY(playerNum_), ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_));
 			mapPos_ = leaderPos;
 			ChengeMode(MODE::MOVE_ROTATE);
-			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CLICK_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+			SoundManager::GetInstance().Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		}
 		else
 		{
@@ -455,7 +471,7 @@ void EditController::ItemNotSelect(void)
 			if (errorType < 0)
 			{
 				errorType_ = static_cast<ERROR_TYPE>(abs(errorType));	//アイテムが重なっている
-				SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::ERROR_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+				SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
 				return;
 			}
 			//アイテムを追加
@@ -468,7 +484,7 @@ void EditController::ItemNotSelect(void)
 			//ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 			//選択解除
 			ChengeMode(MODE::ITEM_SELECT);
-			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CREATE_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+			SoundManager::GetInstance().Play(SoundManager::SRC::CREATE_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		}
 	}
 }
@@ -753,7 +769,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 		{
 			moveDir = MOVE_DIR::X;
 			distance = Utility::Distance(mousePos_, x2D);
-			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CLICK_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+			SoundManager::GetInstance().Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		}
 	}
 	//Y軸移動の球をクリックした場合
@@ -764,7 +780,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 		{
 			moveDir = MOVE_DIR::Y;
 			distance = Utility::Distance(mousePos_, y2D);
-			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CLICK_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+			SoundManager::GetInstance().Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		}
 	}
 	//Z軸移動の球をクリックした場合
@@ -775,7 +791,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 		{
 			moveDir = MOVE_DIR::Z;
 			distance = Utility::Distance(mousePos_, z2D);
-			SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CLICK_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+			SoundManager::GetInstance().Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		}
 	}
 	return moveDir;
@@ -827,7 +843,7 @@ EditController::MOVE_DIR EditController::GetMoveDirTwo(void)
 	{
 		moveDir = MOVE_DIR::XY;	//X軸とY軸の移動
 	}
-	SoundManager::GetInstance().Play(ResourceManager::GetInstance().Load(ResourceManager::SRC::CLICK_OBJECT_SE).handleId_, SoundManager::PLAYTYPE::BACK);
+	SoundManager::GetInstance().Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 	return moveDir;
 }
 
@@ -904,6 +920,7 @@ void EditController::RotateObject(void) const
 
 void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY)
 {
+	SoundManager::GetInstance().Play(SoundManager::SRC::BOMB_SE, SoundManager::PLAYTYPE::BACK);
 	MapEditer& editer = MapEditer::GetInstance();
 	ItemManager& itemM = ItemManager::GetInstance();
 	_rotY += 360.0f;
@@ -949,7 +966,7 @@ void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector
 					continue;
 				}
 				itemM.DeleteItem(lPos, type);
-				itemM.DeleteDummyItem(playerNum_);
+				//itemM.DeleteDummyItem(playerNum_);
 				editer.DeleteItem(type, lPos, rotY, size, hitSize);
 			}
 		}

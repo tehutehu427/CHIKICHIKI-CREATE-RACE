@@ -1,4 +1,5 @@
 #include <DxLib.h>
+#include <cmath>
 #include "../../Application.h"
 #include "../Common/FontRegistry.h"
 #include "../../Utility/Utility.h"
@@ -13,7 +14,6 @@
 #include "../../Manager/Game/MapEditer.h"
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/Game/PlayerManager.h"
-#include "../../Object/Player/Player.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Object/Editor/MapDataIO.h"
@@ -91,7 +91,8 @@ void GameScene::Load(void)
 	mapIO_ = std::make_unique<MapDataIO>(editControllers_[0]->GetCursorPos());
 	mapIO_->Load();
 
-	
+	//音源の読み込み
+	LoadSound();
 }
 
 void GameScene::Init(void)
@@ -281,17 +282,33 @@ void GameScene::UpdateEdit(void)
 	}
 	else
 	{
-		for (auto& controller : editControllers_) { controller->CursorUpdate(); }
+		for (auto& controller : editControllers_) 
+		{ 
+			controller->UpdateCursor(); 
+			controller->UpdateError();
+		}
 	}
 }
 
 void GameScene::UpdateAction(void)
 {
+	int beforTime = static_cast<int>(std::floor(actionStartTime_));
 	actionStartTime_ -= SceneManager::GetInstance().GetDeltaTime();
-	if (actionStartTime_ > 0)
+	int afterTime = static_cast<int>(std::floor(actionStartTime_));
+	if (afterTime >= 0)
 	{
+		if (beforTime != afterTime)
+		{
+			SoundManager::GetInstance().Play(SoundManager::SRC::COUNTDOWN_SE, SoundManager::PLAYTYPE::BACK);
+		}
 		return;
 	}
+
+	if (beforTime != afterTime && afterTime >= -1)
+	{
+		SoundManager::GetInstance().Play(SoundManager::SRC::CHICKEN_SE, SoundManager::PLAYTYPE::BACK);
+	}
+
 	ItemManager::GetInstance().Update();
 
 	//プレイヤーの更新
@@ -372,6 +389,15 @@ void GameScene::DrawClear()
 
 	//ゲームクリアの描画
 	gameClear_->Draw();
+}
+
+void GameScene::LoadSound(void)
+{
+	sndMng_.LoadResource(SoundManager::SRC::CHICKEN_SE);
+	sndMng_.LoadResource(SoundManager::SRC::COUNTDOWN_SE);
+	sndMng_.LoadResource(SoundManager::SRC::OK);
+	sndMng_.LoadResource(SoundManager::SRC::CANCEL);
+	sndMng_.LoadResource(SoundManager::SRC::BOMB_SE);
 }
 
 void GameScene::CheckPlayerFinish(void)

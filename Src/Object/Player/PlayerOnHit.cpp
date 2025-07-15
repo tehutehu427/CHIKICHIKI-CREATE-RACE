@@ -29,7 +29,6 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_.emplace(TAG::CANNON_AIM, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
 	colUpdates_.emplace(TAG::SHADOW, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
 
-
 	
 
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
@@ -83,15 +82,17 @@ void PlayerOnHit::Update(void)
 		{
 			continue;
 		}
-		isLandHit_ = false;
-		isHitSlimeFloor_ = false;
+
+		//現在座標を起点に移動後座標を決める
+
 	}
 
 	//移動前の座標を格納する
 	moveDiff_ = trans_.pos;
 	//移動
 	trans_.pos = movedPos_;
-	//現在座標を起点に移動後座標を決める
+
+
 }
 
 void PlayerOnHit::ColUpdate(const std::weak_ptr<Collider> _hitCol)
@@ -155,7 +156,7 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 {
 	//リソースID
 	auto& res = ResourceManager::GetInstance();
-	int hitSE = res.Load(ResourceManager::SRC::PLAYER_PUNCH_HIT).handleId_;
+	//int hitSE = res.Load(ResourceManager::SRC::PLAYER_PUNCH_HIT).handleId_;
 	//パンチしたプレイヤーの向いてる方向をセットする
  	VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
 
@@ -163,7 +164,7 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 	action_.SetDir(Utility::GetMoveVec(punchedPlayerPos, trans_.pos));
 
 	//パンチヒット音再生()
-	SoundManager::GetInstance().Play(hitSE, SoundManager::PLAYTYPE::BACK);
+	SoundManager::GetInstance().Play(SoundManager::SRC::PLAYER_PUNCH_HIT, SoundManager::PLAYTYPE::BACK);
 
 	//ノックバック状態遷移
 	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
@@ -177,11 +178,11 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 	HitModelCommon(_hitCol);
 	//リソースID
 	auto& res = ResourceManager::GetInstance();
-	int hitSE = res.Load(ResourceManager::SRC::SPRING_SE).handleId_;
+	//int hitSE = res.Load(ResourceManager::SRC::SPRING_SE).handleId_;
 	if (!isSide_)
 	{
-		//バネジャンプ音再生()
-		SoundManager::GetInstance().Play(hitSE, SoundManager::PLAYTYPE::BACK);
+		//バネジャンプ音再生
+		SoundManager::GetInstance().Play(SoundManager::SRC::SPRING_SE, SoundManager::PLAYTYPE::BACK);
 		action_.SetJumpDecel(SPRING_JUMP_POW);
 		action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
 	}
@@ -190,7 +191,7 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 {
 	HitModelCommon(_hitCol);
-	if (!isSide_)
+	if (!isSide_&&isLandHit_)
 	{
 		isGoal_ = true;
 	}
@@ -201,6 +202,7 @@ void PlayerOnHit::DrawDebug(void)
 	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
 	colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
 	colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
+	colParam_[EYE_LINE_NO].geometry_->Draw();
 
 
 	if (action_.GetIsHitPunch())
@@ -223,14 +225,22 @@ void PlayerOnHit::DrawDebug(void)
 void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 {
 	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
+	//当たったモデルの情報を取得
 	//移動後座標と現在座標で早い移動速度でも対応させる
 	VECTOR hitPos = hitModel.GetHitLineInfo().HitPosition;
+	//移動後と移動前のコライダ
 	auto& moveLineCol = colParam_[MOVE_LINE_COL_NO].collider_;
+	//上下を引いたラインのコライダ(接地)
 	auto& upDownLine = colParam_[UP_AND_DOWN_LINE_COL_NO].collider_;
 	//球の当たり判定(プレイヤーの周囲)
 	auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
+	//目線のライン(プレイヤーの目線)
+	auto& eyeLine = colParam_[EYE_LINE_NO].collider_;
 
+	//アクションに渡すフラグの初期化
 	isLandHit_ = false;
+	isHitSlimeFloor_ = false;
+
 
 	if (moveLineCol->IsHit() > 0)
 	{
@@ -253,7 +263,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 			movedPos_.y = hitLinePos.y + Player::RADIUS + POSITION_OFFSET;
 			//地面と当たっている
 			isLandHit_ = true;
-
 			action_.SetJumpPow(Utility::VECTOR_ZERO);
 		}
 		else
@@ -267,7 +276,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		}
 		
 	}
-
+	Collider::TAG tag = _hitCol.lock()->GetTags()[0];
 	//移動後座標を一回格納し、移動前をとる
 	Transform trans = Transform(trans_);
 	trans.pos = movedPos_;
@@ -275,14 +284,16 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	isSide_ = false;
 	if (bodyShere->IsHit())
 	{
+
 		auto& hitInfo = hitModel.GetHitInfo();
 		//std::vector<VECTOR> collPos;
+		VECTOR vec = VSub(moveDiff_, movedPos_);
+		vec = VNorm(vec);
+		vec.y = 0.0f;
 		for (int i = 0; i < hitInfo.HitNum; i++)
 		{
 			auto hit = hitInfo.Dim[i];
-			//VECTOR hitPos = VAdd(VScale(hit.Position[0], hit.PositionWeight[0]), VAdd(VScale(hit.Position[1], hit.PositionWeight[1]), VScale(hit.Position[2], hit.PositionWeight[2])));
 			VECTOR hitPos = hit.HitPosition;
-			//collPos.push_back(hitPos);
 			for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
 			{
 				int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
@@ -290,9 +301,10 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 				if (pHit)
 				{
 					isSide_ = true;
-					
- 					movedPos_ = VAdd(movedPos_, VScale(hit.Normal, HIT_NORMAL_OFFSET));
- 					//movedPos_ = VAdd(movedPos_, VScale(hit.Normal, HIT_NORMAL_OFFSET));
+					VECTOR normal = hit.Normal;
+					//y座標を抜いて押しだす
+					normal.y = 0.0f;
+ 					movedPos_ = VAdd(movedPos_, VScale(normal, HIT_NORMAL_OFFSET));
 					
 					//カプセルを移動させる
 					trans.pos = movedPos_;
@@ -300,6 +312,22 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 					continue;
 				}
 				break;
+			}
+			
+		}
+		if(isSide_)
+		{
+			Line& eyeLineGeo = dynamic_cast<Line&>(eyeLine->GetGeometry());
+			int modelId = _hitCol.lock()->GetParent().GetTransform().modelId;
+			VECTOR pos1 = eyeLineGeo.GetPosPoint1();
+			VECTOR pos2 = eyeLineGeo.GetPosPoint2();
+			if (MV1CollCheck_Line(modelId,-1, pos1,pos2).HitFlag==0)
+			{
+				if (!Utility::EqualsVZero(action_.GetMovePow()))
+				{
+					movedPos_.y += Player::EYE_HEIGHT.y;
+				}
+				
 			}
 		}
 		//VECTOR hitPos = {};
@@ -312,7 +340,10 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		//float sub = RADIUS - Utility::Distance(hitPos, trans.pos);
 		//VECTOR norm = VNorm(VSub(hitPos, trans.pos));
 		//movedPos_ = VSub(trans.pos, VScale(norm, sub));
+
+
 	}
+	//目線がモデルに当たって無ければ上に押し上げる
 
 
 	////移動前の座標を格納する

@@ -42,6 +42,9 @@ private:
 	//タイトル画像
 	int imgTitle_;
 
+	//スキップ画像
+	int imgSkip_;
+
 	//状態別更新
 	void UpdateSelect()override;		//選ぶ
 };

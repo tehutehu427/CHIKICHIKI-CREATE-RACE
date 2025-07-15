@@ -50,8 +50,22 @@ void CollisionManager::Update(void)
 
 	for (int i = 0; i < colliders_.size() - 1; i++)
 	{
+		//コライダが死亡済みなら
+		if (colliders_[i]->IsDead())
+		{
+			//飛ばす
+			continue;
+		}
+
 		for (int j = i + 1; j < colliders_.size(); j++)
 		{
+			//コライダが死亡済みなら
+			if (colliders_[j]->IsDead())
+			{
+				//飛ばす
+				continue;
+			}
+
 			//当たり判定をするか
 			if (!JudgeIsCollision(i, j))
 			{
@@ -62,10 +76,11 @@ void CollisionManager::Update(void)
 			//当たり判定
 			if(IsCollision(colliders_[i],colliders_[j]))
 			{
+
 				//それぞれの当たった処理
 				colliders_[i]->OnHit(colliders_[j]);
 				colliders_[j]->OnHit(colliders_[i]);
-				
+
 				//当たった後の処理
 				colliders_[i]->GetGeometry().HitAfter();
 				colliders_[j]->GetGeometry().HitAfter();

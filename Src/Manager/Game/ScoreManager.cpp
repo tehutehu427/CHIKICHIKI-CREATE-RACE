@@ -29,6 +29,7 @@ void ScoreManager::Init()
 {
 	// プレイヤー数に応じてスコアを初期化
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
+	scores_.clear(); // 既存のスコアをクリア
 	scores_.resize(playerNum, 0); // 各プレイヤーのスコアを0で初期化
 }
 
@@ -82,13 +83,15 @@ void ScoreManager::SetPlayersScore()
 	}
 }
 
-const int ScoreManager::GetWinnerPlayerIndex(const int _clearLine) const
+const int ScoreManager::GetWinnerPlayerIndex() const
 {
+	int clearLine = DateBank::GetInstance().GetMultiClearScore();	
+
 	std::vector<int> winners;
 	for (int i = 0; i < scores_.size(); i++)
 	{
 		// スコアがクリアライン以上のプレイヤーを探す
-		if (scores_[i] >= _clearLine)
+		if (scores_[i] >= clearLine)
 		{
 			winners.push_back(i);
 		}
@@ -100,12 +103,12 @@ const int ScoreManager::GetWinnerPlayerIndex(const int _clearLine) const
 		return -1;
 	}
 	// 1人だけクリアした場合、そのプレイヤーのインデックスを返す
-	else if (winners.size() == 1) 
+	else if (winners.size() == 1)
 	{
 		return winners[0];
 	}
 	// 複数のプレイヤーがクリアした場合、最もスコアが高いプレイヤーを返す
-	else if (winners.size() > 1) 
+	else if (winners.size() > 1)
 	{
 		int maxScore = -1;		//最大スコア
 		int winnerIndex = -1;	//勝者
@@ -114,7 +117,7 @@ const int ScoreManager::GetWinnerPlayerIndex(const int _clearLine) const
 			//現在の最大スコアより大きい場合、更新
 			if (scores_[index] > maxScore)
 			{
-				maxScore = scores_[index];	
+				maxScore = scores_[index];
 				winnerIndex = index;
 			}
 			//同じ場合(引き分けの場合)
@@ -125,11 +128,41 @@ const int ScoreManager::GetWinnerPlayerIndex(const int _clearLine) const
 			}
 		}
 		return winnerIndex;
-	}	
+	}
 	else
 	{
 		return -1;
 	}
+}
+
+const int ScoreManager::GetNowWinnerPlayerIndex() const
+{
+
+	// 配列が空の場合
+	if (scores_.empty()) return -1;
+
+	// 最大スコアとそのインデックス
+	int max = scores_[0];			// 最大値
+	int maxIndex = 0;				// 最大値のインデックス
+	int count = 1;					// 最大値の個数（最初の1個）
+
+	// 配列を走査して最大値とその出現回数を調べる
+	for (int i = 1; i < scores_.size(); i++)
+	{
+		if (scores_[i] > max)
+		{
+			max = scores_[i];		// 最大スコア更新
+			maxIndex = i;			// インデックス更新
+			count = 1;				// 新しい最大値が見つかったのでカウントをリセット
+		}
+		else if (scores_[i] == max)
+		{
+			count++;				// 同じ最大値があればカウント追加
+		}
+	}
+
+	// 最大値が複数存在するなら -1、それ以外はインデックスを返す
+	return (count > 1) ? -1 : maxIndex;
 }
 
 ScoreManager::ScoreManager()

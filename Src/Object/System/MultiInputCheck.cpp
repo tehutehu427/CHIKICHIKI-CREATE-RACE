@@ -3,6 +3,7 @@
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/SoundManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Utility/Utility.h"
 
@@ -20,7 +21,9 @@ void MultiInputCheck::Load()
 {
 	//リソースの読み込み
 	ResourceManager& res = ResourceManager::GetInstance();
+	SoundManager& sndMng = SoundManager::GetInstance();
 	imgOk_ = res.Load(ResourceManager::SRC::OK).handleId_;
+	sndMng.LoadResource(SoundManager::SRC::OK);
 }
 
 void MultiInputCheck::Init()
@@ -30,6 +33,8 @@ void MultiInputCheck::Init()
 
 void MultiInputCheck::Update()
 {
+	SoundManager& sndMng = SoundManager::GetInstance();
+
 	// すべての入力が完了している場合は何もしない
 	if (IsAllInput()) { return; }
 
@@ -42,6 +47,8 @@ void MultiInputCheck::Update()
 		if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, static_cast<KeyConfig::JOYPAD_NO>(OFFSET + i)))
 		{
 			players_[i].isProcess = true;
+			sndMng.Play(SoundManager::SRC::OK, SoundManager::PLAYTYPE::BACK);
+			sndMng.Play(SoundManager::SRC::CHICKEN_SE_3, SoundManager::PLAYTYPE::BACK);
 		}
 		//画像の拡大イージング処理
 		if (players_[i].isProcess)

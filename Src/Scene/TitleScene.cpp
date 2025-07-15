@@ -9,6 +9,7 @@
 #include "../Manager/System/InputManager.h"
 #include "../Manager/System/SoundManager.h"
 #include "../Object/SkyDome/SkyDome.h"
+#include "Game/DemoPlay.h"
 #include "TitleScene.h"
 
 TitleScene::TitleScene(void)
@@ -24,6 +25,9 @@ TitleScene::TitleScene(void)
 	alphaDir_ = 1; 
 	mesPosY_ = 0.0f;
 	mesAlpha_ = 0;
+	demoUIStep_ = 0.0f;
+	logoSize_ = 1.0f;
+	titleUpdateFunc_ = std::bind(&TitleScene::UpdateWait, this);	//初期更新処理
 }
 
 TitleScene::~TitleScene(void)
@@ -38,7 +42,11 @@ void TitleScene::Load(void)
 	//リソースの読み込み
 	imgTitleLogo_ = res.Load(ResourceManager::SRC::TITLE_LOGO).handleId_;
 	imgMessage_ = res.Load(ResourceManager::SRC::PUSHSPACE).handleId_;
-	bgm_ = res.Load(ResourceManager::SRC::TITLE_BGM).handleId_;
+	sndMng_.LoadResource(SoundManager::SRC::TITLE_BGM);
+	sndMng_.LoadResource(SoundManager::SRC::TITLE_SCENE_CHANGE);
+	sndMng_.LoadResource(SoundManager::SRC::CHICKEN_SE);
+
+	sndMng_.SetLoadedSoundsVolume();
 
 	//フォントの登録
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
@@ -52,9 +60,8 @@ void TitleScene::Init(void)
 {
 	mesAlpha_ = Utility::ALPHA_MAX;
 	
-
 	//BGMを再生
-	sndMng_.Play(bgm_, SoundManager::PLAYTYPE::LOOP);
+	sndMng_.Play(SoundManager::SRC::TITLE_BGM, SoundManager::PLAYTYPE::LOOP);
 
 	//スカイドーム初期化
 	skyDome_->Init();
@@ -62,21 +69,60 @@ void TitleScene::Init(void)
 
 void TitleScene::NormalUpdate(void)
 {	
-	//ステップの更新
-	step_ += SceneManager::GetInstance().GetDeltaTime();
+	//デルタタイム
+	float delta = SceneManager::GetInstance().GetDeltaTime();
 
-	// シーン遷移
-	KeyConfig& ins = KeyConfig::GetInstance();
-	SoundManager& snd = SoundManager::GetInstance();
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
+	//ステップの更新
+	step_ += delta;
+
+	//状態別更新処理
+	titleUpdateFunc_();
+
+	//デモへの遷移
+	if (step_ >= DEMO_CHANGE_TIME)
 	{
-		sndMng_.Stop(bgm_);
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
-		return;
+		//デモへ
+		ChangeDemo();
 	}
 
 	//スカイドーム更新
 	skyDome_->Update();
+}
+
+void TitleScene::DemoUpdate(void)
+{
+	//デルタタイム
+	float delta = SceneManager::GetInstance().GetDeltaTime();
+
+	//ステップの更新
+	step_ += delta;
+	demoUIStep_ += delta;
+
+	float moveSize =1.0f - LOGO_MIN_SIZE;
+	float moveTime = moveSize / DEMO_LOGO_MOVE_TIME;
+
+	//ロゴのサイズ変更
+	logoSize_ = std::clamp(1.0f - demoUIStep_ / (DEMO_CHANGE_SIZE * moveTime), LOGO_MIN_SIZE, 1.0f);
+
+	//スカイドーム更新
+	skyDome_->Update();
+
+	//デモプレイ更新
+	demo_->Update();
+
+	// シーン遷移
+	KeyConfig& ins = KeyConfig::GetInstance();
+	SoundManager& snd = SoundManager::GetInstance();
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEMO_TO_TITLE_BACK, KeyConfig::JOYPAD_NO::PAD1))
+	{
+		//カウンタの初期化
+		step_ = 0.0f;
+		demoUIStep_ = 0.0f;
+
+		//最初に戻る
+		ChangeNormal();
+		return;
+	}
 }
 
 void TitleScene::NormalDraw(void)
@@ -99,11 +145,62 @@ void TitleScene::NormalDraw(void)
 	DrawMessage();
 }
 
+void TitleScene::DemoDraw(void)
+{
+	//スカイドーム描画
+	skyDome_->Draw();
+
+	//デモプレイ描画
+	demo_->Draw();
+
+	//透明度追加
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, DEMO_IMAGE_ALPHA);
+
+	float movePosX = Application::SCREEN_HALF_X - LOGO_MIN_POS_X;
+	float moveTimeX = movePosX / DEMO_LOGO_MOVE_TIME;
+	float movePosY = LOGO_POS_Y - LOGO_MIN_POS_Y;
+	float moveTimeY = movePosY / DEMO_LOGO_MOVE_TIME;
+
+	//タイトルロゴ
+	DrawRotaGraph(
+		std::clamp(Application::SCREEN_HALF_X - demoUIStep_ * moveTimeX, static_cast<float>(LOGO_MIN_POS_X), static_cast<float>(Application::SCREEN_HALF_X)),
+		std::clamp(LOGO_POS_Y - demoUIStep_ * moveTimeY,static_cast<float>(LOGO_MIN_POS_Y), static_cast<float>(LOGO_POS_Y)),
+		logoSize_,
+		0.0f,
+		imgTitleLogo_,
+		true,
+		false
+	);
+
+	//元に戻す
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	//メッセージの描画
+	DemoMessage();
+}
+
 void TitleScene::ChangeNormal(void)
 {
 	//処理変更
 	func_.updataFunc_ = std::bind(&TitleScene::NormalUpdate, this);
 	func_.drawFunc_ = std::bind(&TitleScene::NormalDraw, this);
+
+	//デモの解放
+	demo_.reset();
+}
+
+void TitleScene::ChangeDemo(void)
+{
+	//処理変更
+	func_.updataFunc_ = std::bind(&TitleScene::DemoUpdate, this);
+	func_.drawFunc_ = std::bind(&TitleScene::DemoDraw, this);
+
+	//生成しなおす
+	demo_ = std::make_unique<DemoPlay>();
+	demo_->Load();
+
+	//初期化も
+	demo_->Init();
 }
 
 void TitleScene::DrawMessage(void)
@@ -132,5 +229,65 @@ void TitleScene::DrawMessage(void)
 		false
 	);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void TitleScene::DemoMessage(void)
+{
+	constexpr float RATE = 0.6f;
+	constexpr float ALPHA_STEP = 3.0f;
+	constexpr float SHAKE_SPEED = 5.0f;
+	constexpr float SHAKE_AMPLITUDE = 5.0f;
+
+	//座標を揺らす
+	mesPosY_ = MES_POS_Y;
+	mesPosY_ = Utility::GetShake(mesPosY_, step_, SHAKE_SPEED, SHAKE_AMPLITUDE);
+
+	//メッセージ
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, DEMO_IMAGE_ALPHA);
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		mesPosY_,
+		RATE,
+		0.0f,
+		imgMessage_,
+		true,
+		false
+	);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void TitleScene::UpdateWait()
+{
+	// シーン遷移
+	KeyConfig& ins = KeyConfig::GetInstance();
+	SoundManager& snd = SoundManager::GetInstance();
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))
+	{
+		//BGMの停止
+		sndMng_.Stop(SoundManager::SRC::TITLE_BGM);
+
+		//BGMの再生
+		sndMng_.Play(SoundManager::SRC::TITLE_SCENE_CHANGE, SoundManager::PLAYTYPE::BACK);
+		sndMng_.Play(SoundManager::SRC::CHICKEN_SE, SoundManager::PLAYTYPE::BACK);
+
+		//更新処理の変更
+		titleUpdateFunc_ = std::bind(&TitleScene::UpdatePlaySe, this);
+		return;
+	}
+}
+
+void TitleScene::UpdatePlaySe()
+{
+	if (!sndMng_.IsPlay(SoundManager::SRC::CHICKEN_SE))
+	{
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
+		//更新処理の変更
+		titleUpdateFunc_ = std::bind(&TitleScene::UpdateNone, this);
+		return;
+	}
+}
+
+void TitleScene::UpdateNone()
+{
 }
 

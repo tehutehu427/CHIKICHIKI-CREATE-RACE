@@ -71,6 +71,11 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,Utility::VECTOR_ZERO);
 	MakeCollider({ tag_ }, std::move(moveLineGeo));
 
+	//階段の当たり判定のためのプレイヤーの目線からのライン
+		//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
+	std::unique_ptr<Line>eyeLine = std::make_unique<Line>(trans_.pos, trans_.quaRot, EYE_HEIGHT, EYE_RANGE);
+	MakeCollider({ tag_ }, std::move(eyeLine));
+
 	//*****************************************************
 }
 
@@ -90,14 +95,17 @@ void Player::Load(void)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL), DEFAULT_ANIM_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_ANIM_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::GOAL), DEFAULT_ANIM_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_ANIM_SPD / PlayerAction::PUNCH_TIME_MAX);
 
 	//アクション
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
 	action_->Load();
 
+
 	//影
 	shadow_ = std::make_unique<Shadow>(trans_);
+	shadow_->Load();
 
 	//当たり判定
 	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_, tag_);
@@ -133,6 +141,10 @@ void Player::Init(void)
 
 	goalTime_ = 0.0f;
 
+	finishDelay_ = 0.0f;
+
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+
 	//バッファー設定
 	material_->AddConstBufVS(FLOAT4{ 3.0f,0.0f,0.0f ,0.0f });	//輪郭線太さ
 	material_->AddConstBufPS(FLOAT4{ 0.0f,0.0f,0.0f ,1.0f });	//輪郭線カラー
@@ -143,6 +155,8 @@ void Player::Init(void)
 
 	//更新
 	trans_.Update();
+
+	shadow_->Init();
 }
 
 void Player::Update(void)
@@ -240,6 +254,7 @@ void Player::AliveUpdate(void)
 	else if (onHitCol_->GetIsGoal())
 	{
 		ChangeState(PLAYER_STATE::GOAL);
+		return;
 	}
 	//アクション関係更新
 	Action();
@@ -265,6 +280,8 @@ void Player::ChangeDeath(void)
 void Player::DeathUpdate(void)
 {
 	//死んだ時の処理
+	//終了からの遅延時間を計測
+	finishDelay_ += scnMng_.GetInstance().GetDeltaTime();
 	//落ちているアニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
 	//アニメーションループ
@@ -277,13 +294,14 @@ void Player::ChangeGoal(void)
 {
 	goalTime_ = time_;
 	KillPunchCol();
+	action_->StopResource();
 	stateUpdate_ = std::bind(&Player::GoalUpdate, this);
 
-	action_->StopResource();
 }
 void Player::GoalUpdate(void)
 {
-	//ゴール時の処理
+	//終了からの遅延時間を計測
+	finishDelay_ += scnMng_.GetInstance().GetDeltaTime();
 	//落ちているアニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::GOAL), true);
 }
@@ -292,7 +310,7 @@ void Player::Action(void)
 {
 	//アクション関係の更新
 	action_->Update();
-
+	
 	//死んだら何もしないようにする
 	if (IsDeath())
 	{
@@ -319,17 +337,11 @@ const bool Player::GetIsSlimeFloor(void)
 
 const bool Player::IsGoal(void) const
 {
-	return state_ == PLAYER_STATE::GOAL;
+	return state_ == PLAYER_STATE::GOAL&&finishDelay_>=GOAL_DELAY;
 }
 bool Player::IsDeath(void)
 {
-	//奈落に落ちるorデスオブジェクトに当たったら
-	//if (trans_.pos.y <= DEATH_POS_Y||onHitCol_->GetIsDeath())
-	if (state_==PLAYER_STATE::DEATH)
-	{
-		return true;
-	}
-	return false;
+	return state_ == PLAYER_STATE::DEATH && finishDelay_ >= DEATH_DELAY;
 }
 
 void Player::SetPos(const VECTOR _worldPos)
@@ -393,5 +405,6 @@ void Player::KillPunchCol(void)
 		}
 	}
 }
+
 
 
