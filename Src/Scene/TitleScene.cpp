@@ -22,6 +22,7 @@ TitleScene::TitleScene(void)
 
 	imgTitleLogo_ = -1;
 	imgMessage_ = -1;
+	imgDemoMessage_ = -1;
 	skyDome_ = nullptr;
 	alphaDir_ = 1; 
 	mesPosY_ = 0.0f;
@@ -43,6 +44,7 @@ void TitleScene::Load(void)
 	//リソースの読み込み
 	imgTitleLogo_ = res.Load(ResourceManager::SRC::TITLE_LOGO).handleId_;
 	imgMessage_ = res.Load(ResourceManager::SRC::PUSHSPACE).handleId_;
+	imgDemoMessage_ = res.Load(ResourceManager::SRC::PUSH_DEMO).handleId_;
 	sndMng_.LoadResource(SoundManager::SRC::TITLE_BGM);
 	sndMng_.LoadResource(SoundManager::SRC::TITLE_SCENE_CHANGE);
 	sndMng_.LoadResource(SoundManager::SRC::CHICKEN_SE);
@@ -242,17 +244,17 @@ void TitleScene::DemoMessage(void)
 	constexpr float SHAKE_AMPLITUDE = 5.0f;
 
 	//座標を揺らす
-	mesPosY_ = MES_POS_Y;
+	mesPosY_ = DEMO_MES_POS_Y;
 	mesPosY_ = Utility::GetShake(mesPosY_, step_, SHAKE_SPEED, SHAKE_AMPLITUDE);
 
-	//メッセージ
+	//デモメッセージ
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, DEMO_IMAGE_ALPHA);
 	DrawRotaGraph(
-		Application::SCREEN_HALF_X,
+		DEMO_MES_POS_X,
 		mesPosY_,
 		RATE,
-		0.0f,
-		imgMessage_,
+		Utility::Deg2RadF(270.0f),
+		imgDemoMessage_,
 		true,
 		false
 	);

@@ -36,8 +36,10 @@ private:
 	static constexpr int LOGO_MIN_POS_X = 140;			//ロゴの最小X座標
 	static constexpr int LOGO_MIN_POS_Y = 120;			//ロゴの最小Y座標
 
-	//メッセージのY座標
-	static constexpr float MES_POS_Y = 550.0f;
+	//メッセージ
+	static constexpr float MES_POS_Y = 550.0f;			//メッセージのY座標
+	static constexpr float DEMO_MES_POS_X = 600.0f;		//デモメッセージのX座標
+	static constexpr float DEMO_MES_POS_Y = 750.0f;		//デモメッセージのY座標
 
 	//タイトル画像
 	int imgTitleLogo_;
@@ -47,6 +49,9 @@ private:
 
 	//メッセージ画像
 	int imgMessage_;
+
+	//デモメッセージ画像
+	int imgDemoMessage_;
 
 	//BGM
 	int bgm_;

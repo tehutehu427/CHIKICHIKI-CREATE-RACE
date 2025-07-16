@@ -126,6 +126,7 @@ public:
 		//タイトルシーン用画像
 		TITLE_LOGO,
 		PUSHSPACE,
+		PUSH_DEMO,
 
 		//セレクトシーン用画像
 		ARC,
