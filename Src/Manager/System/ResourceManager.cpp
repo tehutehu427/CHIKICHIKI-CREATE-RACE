@@ -37,6 +37,7 @@ void ResourceManager::Init(void)
 	std::string path_GameOver = Application::PATH_IMAGE + "GameOver/";
 	std::string path_Game = Application::PATH_IMAGE + "Game/";
 	std::string path_Effect = Application::PATH_IMAGE + "Effect/";
+	std::string path_Manual = Application::PATH_IMAGE + "Manual/";
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "ScrollArrowIcon.png");
 	resourcesMap_.emplace(SRC::SCROLL_ARROW_ICON, std::move(res));
@@ -88,6 +89,12 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_EditUi + "YesNo.png", YES_NO_DIV_X, YES_NO_DIV_Y, YES_NO_SIZE_X, YES_NO_SIZE_Y);
 	resourcesMap_.emplace(SRC::YES_NO, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "PadExplanation.png");
+	resourcesMap_.emplace(SRC::PAD_EXPLANATION, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "KeyExplanation.png");
+	resourcesMap_.emplace(SRC::KEY_EXPLANATION, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Select + "SelectArcs.png", IMG_ARCS_DIV_X, IMG_ARCS_DIV_Y, IMG_ARC_SIZE, IMG_ARC_SIZE);
 	resourcesMap_.emplace(SRC::ARCS, std::move(res));
@@ -169,6 +176,21 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "DrawMes.png");
 	resourcesMap_.emplace(SRC::DRAW_MES, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Manual + "FreeManual.png");
+	resourcesMap_.emplace(SRC::FREE_MANUAL, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Manual + "FreeManual2.png");
+	resourcesMap_.emplace(SRC::FREE_MANUAL_2, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Manual + "FreeManual3.png");
+	resourcesMap_.emplace(SRC::FREE_MANUAL_3, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Manual + "SelectManualKey.png");
+	resourcesMap_.emplace(SRC::SELECT_MANUAL_KEY, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Manual + "SelectManualPad.png");
+	resourcesMap_.emplace(SRC::SELECT_MANUAL_PAD, std::move(res));
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Effect + "SmokeSprites.png", SMOKE_EFE_DIV_X, SMOKE_EFE_DIV_Y, SMOKE_EFE_SIZE, SMOKE_EFE_SIZE);
 	resourcesMap_.emplace(SRC::SMOKE_EFE_SPR, std::move(res));

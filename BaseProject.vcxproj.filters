@@ -121,6 +121,7 @@
     <ClCompile Include="Src\Object\Common\Animation2DController.cpp" />
     <ClCompile Include="Src\Object\System\Select\SystemSetting.cpp" />
     <ClCompile Include="Src\Scene\Game\DemoPlay.cpp" />
+    <ClCompile Include="Src\Object\Editor\EditorExplanation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -271,6 +272,7 @@
     <ClInclude Include="Src\Object\Common\Animation2DController.h" />
     <ClInclude Include="Src\Object\System\Select\SystemSetting.h" />
     <ClInclude Include="Src\Scene\Game\DemoPlay.h" />
+    <ClInclude Include="Src\Object\Editor\EditorExplanation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

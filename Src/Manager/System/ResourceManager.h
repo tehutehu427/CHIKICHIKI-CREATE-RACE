@@ -111,6 +111,8 @@ public:
 		ERROR_MAP_OUT_IMG,
 		ERROR_OVERLAP_IMG,
 		ERROR_CANT_ITEM_IMG,
+		KEY_EXPLANATION,
+		PAD_EXPLANATION,
 
 		//クリア
 		CLEAR,
@@ -141,7 +143,6 @@ public:
 		IS_WINNING_MES,
 
 
-
 		//ゲームシーン用画像
 		NUMBERS,
 		OK,
@@ -152,6 +153,13 @@ public:
 		PLAYER_GAGE_OUTLINE,
 		SELECT_SKIP,
 		DRAW_MES,
+
+		//マニュアル
+		FREE_MANUAL,
+		FREE_MANUAL_2,
+		FREE_MANUAL_3,
+		SELECT_MANUAL_KEY,
+		SELECT_MANUAL_PAD,
 
 
 		//アイテムモデル
