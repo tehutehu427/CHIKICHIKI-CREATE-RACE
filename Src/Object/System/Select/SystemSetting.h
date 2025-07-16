@@ -15,6 +15,7 @@ public:
 		SKIP,			//スキップ設定
 		BGM_VOLUME,		//BGMボリューム設定
 		SE_VOLUME,		//SEボリューム設定
+		FULL_SCREEN,	//フルスクリーン		
 		APPLY,			//設定適用
 		MAX				//最大値
 	};
@@ -98,6 +99,9 @@ private:
 	//スキップ設定
 	bool isSkip_;
 
+	//フルスクリーン設定
+	bool isFullScreen_;
+
 	//更新状態
 	UPDATE_TYPE updateType_;
 	
@@ -137,7 +141,7 @@ private:
 
 	//状態別の描画
 	void DrawClearScore();
-	void DrawSkip();
+	void DrawSwitch(const STATE _state, const bool _flag);
 	void DrawSoundVolume(const STATE _state, const int _type);
 
 	//適用時のメッセージ描画

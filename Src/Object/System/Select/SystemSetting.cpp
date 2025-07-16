@@ -22,6 +22,7 @@ SystemSetting::SystemSetting()
 	clearScore_ = -1;
 	for (int i = 0; i < SoundManager::TYPE_MAX; i++) { soundVolume_[i] = -1; }
 	isSkip_ = false;
+	isFullScreen_ = false;
 	updateType_ = UPDATE_TYPE::SELECT;
 
 	//画像の初期化
@@ -64,6 +65,10 @@ SystemSetting::SystemSetting()
 			{
 				soundVolume_[static_cast<int>(SoundManager::TYPE::SE)] = 0;
 			}
+		}},
+		{STATE::FULL_SCREEN,[this]()
+		{
+			isFullScreen_ = !isFullScreen_;
 		}}
 	};
 
@@ -96,6 +101,10 @@ SystemSetting::SystemSetting()
 			{
 				soundVolume_[static_cast<int>(SoundManager::TYPE::SE)] = SOUND_VOLUME_MAX;
 			}
+		}},
+		{STATE::FULL_SCREEN,[this]()
+		{
+			isFullScreen_ = !isFullScreen_;
 		}}
 	};
 
@@ -108,7 +117,7 @@ SystemSetting::SystemSetting()
 		}},
 		{STATE::SKIP,[this]()
 		{
-			DrawSkip();
+			DrawSwitch(STATE::SKIP, isSkip_);
 		}},
 		{STATE::BGM_VOLUME,[this]()
 		{
@@ -117,7 +126,11 @@ SystemSetting::SystemSetting()
 		{STATE::SE_VOLUME,[this]()
 		{
 			DrawSoundVolume(STATE::SE_VOLUME, static_cast<int>(SoundManager::TYPE::SE));
-		}}
+		}},
+		{STATE::FULL_SCREEN,[this]()
+		{
+			DrawSwitch(STATE::FULL_SCREEN, isFullScreen_);
+		}},
 	};
 
 	//更新関数の登録
@@ -321,10 +334,13 @@ void SystemSetting::ApplyData()
 	data.SetMultiClearScore(clearScore_);
 
 	//スキップ設定の反映
-	//data.SetSkip(isSkip_);
+	data.SetItemSetSkip(isSkip_);
 
 	//サウンドボリュームの設定
 	for (int i = 0; i < SoundManager::TYPE_MAX; i++) { sound.SetSystemVolume(soundVolume_[i], i); }
+
+	//スクリーン設定
+	ChangeWindowMode(!isFullScreen_);
 }
 
 void SystemSetting::DrawCursor()
@@ -408,10 +424,10 @@ void SystemSetting::DrawClearScore()
 	};
 }
 
-void SystemSetting::DrawSkip()
+void SystemSetting::DrawSwitch(const STATE _state, const bool _flag)
 {
 	constexpr int POS_X = 850; //X座標
-	const int posY = START_POS_Y + static_cast<int>(STATE::SKIP) * HEIGHT_MARGIN; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
+	const int posY = START_POS_Y + static_cast<int>(_state) * HEIGHT_MARGIN; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
 
 	//スキップ設定の描画
 	DrawRotaGraph(
@@ -419,7 +435,7 @@ void SystemSetting::DrawSkip()
 		posY,
 		1.0f,
 		0.0f,
-		imgOnOff_[isSkip_ ? 0 : 1],
+		imgOnOff_[_flag ? 0 : 1],
 		true,
 		false
 	);
