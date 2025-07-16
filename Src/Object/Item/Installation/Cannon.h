@@ -21,7 +21,8 @@ public:
 	static constexpr VECTOR MODEL_SIZE = { 120.0f,100.0f,80.0f };	//モデルのサイズ
 
 	//エイム
-	static constexpr float  AIM_RADIUS = 1000.0f;	//狙う範囲半径
+	static constexpr VECTOR INIT_TARGET_POS = { -1000.0f,-1000.0f,-1000.0f };	//狙う範囲半径
+	static constexpr float  AIM_RADIUS = 1200.0f;	//狙う範囲半径
 	static constexpr float AIM_TIME_TURRET = 1.0f;	//対象に向くまでの時間
 	static constexpr float AIM_TIME_BARREL = 1.0f;	//対象に向くまでの時間
 

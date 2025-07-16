@@ -22,6 +22,8 @@ ObjectBase::~ObjectBase(void)
 		//所持している全コライダの削除
 		colParam.collider_->Kill();
 	}
+
+	colParam_.clear();
 }
 
 void ObjectBase::ChangeModelColor(const COLOR_F _colorScale)

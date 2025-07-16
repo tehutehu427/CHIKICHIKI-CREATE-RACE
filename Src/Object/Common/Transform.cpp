@@ -10,6 +10,7 @@ Transform::Transform(void)
 	rot = Utility::VECTOR_ZERO;
 	pos = Utility::VECTOR_ZERO;
 	localPos = Utility::VECTOR_ZERO;
+	overAllPos = Utility::VECTOR_ZERO;
 
 	matScl = MGetIdent();
 	matRot = MGetIdent();
@@ -48,8 +49,11 @@ void Transform::Update(void)
 	rot = quaRot.ToEuler();
 	matRot = quaRot.ToMatrix();
 
+	//ëççáà íu
+	overAllPos = VAdd(pos, localPos);
+
 	// à íu
-	matPos = MGetTranslate(VAdd(pos, localPos));
+	matPos = MGetTranslate(overAllPos);
 
 	// çsóÒÇÃçáê¨
 	MATRIX mat = MGetIdent();

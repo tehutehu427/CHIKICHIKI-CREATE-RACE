@@ -49,7 +49,7 @@ void GoalFlag::SetParam(void)
 	colModelTrans_.Update();
 
 	//コライダの作成
-	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, colModelTrans_.modelId);
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.overAllPos, trans_.quaRot, colModelTrans_.modelId);
 	MakeCollider({ Collider::TAG::GOAL }, std::move(geo));
 
 	//マップサイズ

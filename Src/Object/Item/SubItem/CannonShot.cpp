@@ -5,6 +5,7 @@
 #include"../../Common/Geometry/Model.h"
 #include"../../Common/Geometry/Sphere.h"
 #include"../../Common/EffectController.h"
+#include"../../Common/ToonStyle.h"
 #include "CannonShot.h"
 
 CannonShot::CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl)
@@ -20,6 +21,8 @@ CannonShot::CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR
 
 CannonShot::~CannonShot()
 {
+	update_.clear();
+	draw_.clear();
 }
 
 void CannonShot::SetParam(void)
@@ -54,7 +57,7 @@ void CannonShot::SetParam(void)
 	isAlive_ = true;
 
 	//コライダの作成
-	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.overAllPos, trans_.quaRot, trans_.modelId);
 	MakeCollider({ Collider::TAG::KILLER_ALL }, std::move(geo));
 }
 
@@ -120,7 +123,8 @@ void CannonShot::UpdateDead(void)
 void CannonShot::DrawAlive(void)
 {
 	//モデル描画
-	MV1DrawModel(trans_.modelId);
+	//MV1DrawModel(trans_.modelId);
+	toonStyle_->Draw();
 }
 
 void CannonShot::DrawBlast(void)
@@ -161,4 +165,11 @@ void CannonShot::Kill(void)
 
 	//弾を削除
 	isAlive_ = false;
+}
+
+void CannonShot::InitShader()
+{
+	toonStyle_ = std::make_unique<ToonStyle>();
+	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::NO_TEXTURE);
+	toonStyle_->Init();
 }

@@ -47,7 +47,7 @@ void Fan::SetParam(void)
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
 	//コライダの作成
-	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.overAllPos, trans_.quaRot, trans_.modelId);
 	MakeCollider({ Collider::TAG::NORMAL_ITEM }, std::move(geo));
 
 	//マップサイズ
@@ -88,7 +88,7 @@ void Fan::ResetValue(void)
 void Fan::CreateWind(void)
 {
 	//風生成
-	wind_ = std::make_unique<Wind>(VAdd(trans_.pos,trans_.localPos), trans_.quaRot, trans_.scl, MODEL_SIZE);
+	wind_ = std::make_unique<Wind>(trans_.overAllPos, trans_.quaRot, trans_.scl, MODEL_SIZE);
 
 	//初期設定
 	wind_->SetParam();
