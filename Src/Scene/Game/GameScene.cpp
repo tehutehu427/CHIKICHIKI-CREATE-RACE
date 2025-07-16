@@ -108,6 +108,8 @@ void GameScene::NormalUpdate(void)
 {
 	//フェーズ別の処理
 	phaseUpdate_();
+	//終了した当たり判定の消去
+	CollisionManager::GetInstance().Sweep();
 
 	//スカイドームは常に更新
 	sky_->Update();

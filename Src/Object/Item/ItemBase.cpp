@@ -22,6 +22,11 @@ ItemBase::ItemBase()
 
 ItemBase::~ItemBase()
 {
+	for (auto model : models_)
+	{
+		model = nullptr;
+	}
+	models_.clear();
 }
 
 void ItemBase::Load()

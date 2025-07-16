@@ -152,6 +152,7 @@ void ItemManager::AllDeleteItem()
 {
 	//アイテム全削除
 	items_.clear();
+	dummyItems_.clear();
 }
 
 void ItemManager::CreateDummyItem(IntVector3 mapPos, Quaternion rot, ItemBase::ITEM_TYPE type,int playerNum)
