@@ -558,6 +558,22 @@ void KeyConfig::Destroy(void)
 	delete instance_;
 }
 
+void KeyConfig::PadVibration(KeyConfig::JOYPAD_NO _no, int _time, int _pow)
+{
+	int InputType = _no == JOYPAD_NO::PAD1 ? DX_INPUT_PAD1 :
+		_no == JOYPAD_NO::PAD2 ? DX_INPUT_PAD2 :
+		_no == JOYPAD_NO::PAD3 ? DX_INPUT_PAD3 : DX_INPUT_PAD4;
+	StartJoypadVibration(InputType, _pow, _time);
+}
+
+void KeyConfig::StopPadVibration(KeyConfig::JOYPAD_NO _no)
+{
+	int InputType = _no == JOYPAD_NO::PAD1 ? DX_INPUT_PAD1 :
+		_no == JOYPAD_NO::PAD2 ? DX_INPUT_PAD2 :
+		_no == JOYPAD_NO::PAD3 ? DX_INPUT_PAD3 : DX_INPUT_PAD4;
+	StopJoypadVibration(InputType);
+}
+
 KeyConfig::KeyConfig(void)
 {
 }
