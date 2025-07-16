@@ -29,7 +29,8 @@ public:
 	static constexpr VECTOR DEFAULT_CAMERA_POS = { 0.0f, 100.0f, -500.0f };
 
 	// 追従位置からカメラ位置までの相対座標
-	static constexpr VECTOR LOCAL_F2C_POS = { 0.0f, -200.0f, -1000.0f };
+	static constexpr VECTOR LOCAL_F2C_POS = { 0.0f, 0.0f, -400.0f };
+	//static constexpr VECTOR LOCAL_F2C_POS = { 0.0f, -1000.0f, -200.0f };
 
 	//FPSの時の相対座標
 	static constexpr VECTOR FPS_LOCAL_F2C_POS = { 0.0f, 130.0f, 20.0f };
