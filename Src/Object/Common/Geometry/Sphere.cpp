@@ -39,10 +39,7 @@ const bool Sphere::IsHit(Geometry& _geometry)
 
 const bool Sphere::IsHit(Model& _model)
 {
-	//球体とモデルの当たり判定
-	auto col = MV1CollCheck_Sphere(_model.GetParentModel(), -1, GetColPos(), GetRadius());
-
-	return col.HitNum >= 1;
+	return _model.IsHit(*this);
 }
 
 const bool Sphere::IsHit(Cube& _cube)

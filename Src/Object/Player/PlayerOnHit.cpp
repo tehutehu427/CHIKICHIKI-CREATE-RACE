@@ -167,8 +167,6 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 
 	//ノックバック状態遷移
 	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
-
-
 }
 
 void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
@@ -328,18 +326,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 				
 			}
 		}
-		//VECTOR hitPos = {};
-		//int num = hitInfo.HitNum;
-		//for (int i = 0; i < num; i++)
-		//{
-		//	hitPos = VAdd(hitPos, collPos[i]);
-		//}
-		//hitPos = VScale(hitPos, 1.0 / num);
-		//float sub = RADIUS - Utility::Distance(hitPos, trans.pos);
-		//VECTOR norm = VNorm(VSub(hitPos, trans.pos));
-		//movedPos_ = VSub(trans.pos, VScale(norm, sub));
-
-
 	}
 	//目線がモデルに当たって無ければ上に押し上げる
 
