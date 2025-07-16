@@ -45,7 +45,7 @@ void MultiInputCheck::Update()
 
 	for (int i = 0; i < players_.size(); i++)
 	{
-		if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_KEY_AND_PAD, static_cast<KeyConfig::JOYPAD_NO>(OFFSET + i)) && !players_[i].isProcess)
+		if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::INPUT_CHECK, static_cast<KeyConfig::JOYPAD_NO>(OFFSET + i)) && !players_[i].isProcess)
 		{
 			players_[i].isProcess = true;
 			sndMng.Play(SoundManager::SRC::OK, SoundManager::PLAYTYPE::BACK);

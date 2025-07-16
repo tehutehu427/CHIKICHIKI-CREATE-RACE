@@ -167,7 +167,8 @@ void MultiPaletteIcon::UpdateSelect()
 			continue;
 		}
 
-		if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_SKIP, static_cast<KeyConfig::JOYPAD_NO>(i + 1)))
+		if (DateBank::GetInstance().IsItemSetSkip() && 
+			KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_SKIP, static_cast<KeyConfig::JOYPAD_NO>(i + 1)))
 		{
 			selectTypes_[i] = ItemBase::ITEM_TYPE::NONE;	//NONEÇ…Ç∑ÇÈ
 			cursors_[i]->SetDecide(true);					//ÉJÅ[É\ÉãÇåàíËçœÇ›Ç…Ç∑ÇÈ
