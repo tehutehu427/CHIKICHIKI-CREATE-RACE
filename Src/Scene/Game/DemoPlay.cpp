@@ -55,7 +55,7 @@ void DemoPlay::Init(void)
 	//角度
 	camera->SetTargetPos(CAMERA_TARGET_POS);
 
-	//でもステージ生成
+	//デモステージ生成
 	CreateDemoStage();
 }
 
@@ -83,6 +83,20 @@ void DemoPlay::Update(void)
 
 	//当たり判定更新
 	colMng.Update();
+
+	//プレイヤー
+	for (auto& player : plMng.GetPlayers())
+	{
+		//死んだら
+		if (player->IsDeath())
+		{
+			//復活
+			player->Init();
+			//プレイヤーの初期座標
+			VECTOR initPos = { 200.0f,2000.0f,200.0f };
+			player->SetPos(initPos);
+		}
+	}
 }
 
 void DemoPlay::Draw(void)

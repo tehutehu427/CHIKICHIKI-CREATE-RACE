@@ -125,6 +125,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Title + "PushSpace.png");
 	resourcesMap_.emplace(SRC::PUSHSPACE, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Title + "PushDemo.png");
+	resourcesMap_.emplace(SRC::PUSH_DEMO, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_GameOver + "GameOver.png");
 	resourcesMap_.emplace(SRC::GAMEOVER, std::move(res));
 
