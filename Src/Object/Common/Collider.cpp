@@ -14,6 +14,8 @@ Collider::Collider(ObjectBase& _parent, const std::vector<TAG> _tags, Geometry& 
 
 Collider::~Collider(void)
 {
+	notHitTags_.clear();
+	tags_.clear();
 }
 
 void Collider::OnHit(const std::weak_ptr<Collider> _collider)

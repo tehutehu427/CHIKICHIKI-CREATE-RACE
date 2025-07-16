@@ -246,7 +246,7 @@ void MapDataIO::ImportJsonFile()
 
     //今あるオブジェクトを削除
     itemMng.AllDeleteItem();
-
+    MapEditer::GetInstance().DeleteAllItem();
     //読み込み
     auto items = LoadItemsFromJson(selectFile_);
 

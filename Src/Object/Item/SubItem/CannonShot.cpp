@@ -20,6 +20,8 @@ CannonShot::CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR
 
 CannonShot::~CannonShot()
 {
+	update_.clear();
+	draw_.clear();
 }
 
 void CannonShot::SetParam(void)
