@@ -103,38 +103,38 @@ private:
 	//ヒットした法線方向へのオフセット
 	static constexpr float HIT_NORMAL_OFFSET = 3.0f;
 
-	////接地しているときのラインのコライダ
-	//static constexpr int UP_AND_DOWN_LINE_COL_NO = 0;
-
-	////プレイヤーの体の球
-	//static constexpr int BODY_SPHERE_COL_NO = 1;
-
-	////現在の座標と移動後座標を結んだ線のコライダ
-	//static constexpr int MOVE_LINE_COL_NO = 2;
-
-	////現在の座標と移動後座標を結んだ線のコライダ
-	//static constexpr int EYE_LINE_NO = 3;
-
-	////プレイヤーの手の座標
-	//static constexpr int HAND_SPHERE_COL_NO = 4;
-
-
-
-
 	//接地しているときのラインのコライダ
-	static constexpr int UP_AND_DOWN_LINE_COL_NO = 1;
+	static constexpr int UP_AND_DOWN_LINE_COL_NO = 0;
 
 	//プレイヤーの体の球
-	static constexpr int BODY_SPHERE_COL_NO = 2;
+	static constexpr int BODY_SPHERE_COL_NO = 1;
 
 	//現在の座標と移動後座標を結んだ線のコライダ
-	static constexpr int MOVE_LINE_COL_NO = 0;
+	static constexpr int MOVE_LINE_COL_NO = 2;
 
 	//現在の座標と移動後座標を結んだ線のコライダ
 	static constexpr int EYE_LINE_NO = 3;
 
 	//プレイヤーの手の座標
 	static constexpr int HAND_SPHERE_COL_NO = 4;
+
+
+
+
+	////接地しているときのラインのコライダ
+	//static constexpr int UP_AND_DOWN_LINE_COL_NO = 1;
+
+	////プレイヤーの体の球
+	//static constexpr int BODY_SPHERE_COL_NO = 2;
+
+	////現在の座標と移動後座標を結んだ線のコライダ
+	//static constexpr int MOVE_LINE_COL_NO = 0;
+
+	////現在の座標と移動後座標を結んだ線のコライダ
+	//static constexpr int EYE_LINE_NO = 3;
+
+	////プレイヤーの手の座標
+	//static constexpr int HAND_SPHERE_COL_NO = 4;
 
 
 
