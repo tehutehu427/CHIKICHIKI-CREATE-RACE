@@ -167,8 +167,6 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 
 	//ノックバック状態遷移
 	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
-
-
 }
 
 void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)

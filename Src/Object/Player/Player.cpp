@@ -54,25 +54,25 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	changeStates_.emplace(PLAYER_STATE::DEATH, [this]() {ChangeDeath(); });
 	changeStates_.emplace(PLAYER_STATE::GOAL, [this]() {ChangeGoal(); });
 
-	//コライダ作成
-	//*****************************************************
-	//接地しているときのライン(床上にとどまっているとき)
-	//Lineを引くための上と下の座標をとる
-	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
-	MakeCollider({ tag_ }, std::move(lineGeo));
+	//////コライダ作成
+	////*****************************************************
+	////接地しているときのライン(床上にとどまっているとき)
+	////Lineを引くための上と下の座標をとる
+	//std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
+	//MakeCollider({ tag_ }, std::move(lineGeo));
 
-	//プレイヤーの体
-	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
-	MakeCollider({ tag_ }, std::move(bodySphereGeo));
+	////プレイヤーの体
+	//std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
+	//MakeCollider({ tag_ }, std::move(bodySphereGeo));
 
-	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
-	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,Utility::VECTOR_ZERO);
-	MakeCollider({ tag_ }, std::move(moveLineGeo));
+	////現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
+	//std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,Utility::VECTOR_ZERO);
+	//MakeCollider({ tag_ }, std::move(moveLineGeo));
 
-	//階段の当たり判定のためのプレイヤーの目線からのライン
-		//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
-	std::unique_ptr<Line>eyeLine = std::make_unique<Line>(trans_.pos, trans_.quaRot, EYE_HEIGHT, EYE_RANGE);
-	MakeCollider({ tag_ }, std::move(eyeLine));
+	////階段の当たり判定のためのプレイヤーの目線からのライン
+	//	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
+	//std::unique_ptr<Line>eyeLine = std::make_unique<Line>(trans_.pos, trans_.quaRot, EYE_HEIGHT, EYE_RANGE);
+	//MakeCollider({ tag_ }, std::move(eyeLine));
 
 	//*****************************************************
 }
@@ -117,29 +117,34 @@ void Player::Load(void)
 
 void Player::Init(void)
 {
-
+	//コライダがある場合、削除する
+	for (auto& col : colParam_)
+	{
+		col.collider_->Kill();
+	}
+	colParam_.clear();
 
 	//本来コライダを作りたい場所
-	////コライダ作成
-	////*****************************************************
-	////接地しているときのライン(床上にとどまっているとき)
-	////Lineを引くための上と下の座標をとる
-	//std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos, trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
-	//MakeCollider({ tag_ }, std::move(lineGeo));
+	//コライダ作成
+	//*****************************************************
+	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
+	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos, trans_.quaRot, Utility::VECTOR_ZERO, Utility::VECTOR_ZERO);
+	MakeCollider({ tag_ }, std::move(moveLineGeo));
 
-	////プレイヤーの体
-	//std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
-	//MakeCollider({ tag_ }, std::move(bodySphereGeo));
+	//接地しているときのライン(床上にとどまっているとき)
+	//Lineを引くための上と下の座標をとる
+	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos, trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
+	MakeCollider({ tag_ }, std::move(lineGeo));
 
-	////現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
-	//std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos, trans_.quaRot, Utility::VECTOR_ZERO, Utility::VECTOR_ZERO);
-	//MakeCollider({ tag_ }, std::move(moveLineGeo));
+	//プレイヤーの体
+	std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
+	MakeCollider({ tag_ }, std::move(bodySphereGeo));
 
-	////階段の当たり判定のためのプレイヤーの目線からのライン
-	//	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
-	//std::unique_ptr<Line>eyeLine = std::make_unique<Line>(trans_.pos, trans_.quaRot, EYE_HEIGHT, EYE_RANGE);
-	//MakeCollider({ tag_ }, std::move(eyeLine));
-	////*****************************************************
+	//階段の当たり判定のためのプレイヤーの目線からのライン
+	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
+	std::unique_ptr<Line>eyeLine = std::make_unique<Line>(trans_.pos, trans_.quaRot, EYE_HEIGHT, EYE_RANGE);
+	MakeCollider({ tag_ }, std::move(eyeLine));
+	//*****************************************************
 
 
 	//Transformの設定
@@ -294,6 +299,11 @@ void Player::ChangeDeath(void)
 {
 	goalTime_ = -1;
 	KillPunchCol();
+	for (auto& col : colParam_)
+	{
+		col.collider_->Kill();
+	}
+	colParam_.clear();
 	action_->StopResource();
 	stateUpdate_ = std::bind(&Player::DeathUpdate, this);
 }
@@ -314,6 +324,11 @@ void Player::ChangeGoal(void)
 {
 	goalTime_ = time_;
 	KillPunchCol();
+	for (auto& col : colParam_)
+	{
+		col.collider_->Kill();
+	}
+	colParam_.clear();
 	action_->StopResource();
 	stateUpdate_ = std::bind(&Player::GoalUpdate, this);
 
