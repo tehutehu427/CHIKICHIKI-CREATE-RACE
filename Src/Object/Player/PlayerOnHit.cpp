@@ -254,6 +254,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	if (upDownLine->IsHit() > 0)
 	{
 		Line& upDown = dynamic_cast<Line&>(upDownLine->GetGeometry());
+		Collider::TAG tag = upDownLine->GetTags()[0];
 		VECTOR hitLinePos = upDown.GetHitInfo().HitPosition;
 		if (movedPos_.y > hitLinePos.y)
 		{
@@ -271,7 +272,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 				action_.SetJumpDecel(DOWN_BOUNCE_DECELERATION);
 			}
 		}
-		
 	}
 	Collider::TAG tag = _hitCol.lock()->GetTags()[0];
 	//ˆÚ“®ŒãÀ•W‚ğˆê‰ñŠi”[‚µAˆÚ“®‘O‚ğ‚Æ‚é
@@ -311,7 +311,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 			}
 			
 		}
-		if(isSide_)
+		if(isSide_&&_hitCol.lock()->GetTags()[0]!=Collider::TAG::KILLER_SPECIFIC)
 		{
 			Line& eyeLineGeo = dynamic_cast<Line&>(eyeLine->GetGeometry());
 			int modelId = _hitCol.lock()->GetParent().GetTransform().modelId;
