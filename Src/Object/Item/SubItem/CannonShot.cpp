@@ -57,7 +57,7 @@ void CannonShot::SetParam(void)
 	isAlive_ = true;
 
 	//ÉRÉâÉCÉ_ÇÃçÏê¨
-	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.overAllPos, trans_.quaRot, trans_.modelId);
 	MakeCollider({ Collider::TAG::KILLER_ALL }, std::move(geo));
 }
 

@@ -14,7 +14,7 @@
 Cannon::Cannon()
 {
 	shotCreateCnt_ = 0.0f;
-	targetPos_ = { 0.0f,0.0f,0.0f };
+	targetPos_ = INIT_TARGET_POS;
 	turretAddRot_ = Utility::VECTOR_ZERO;
 	barrelAddRot_ = Utility::VECTOR_ZERO;
 }
@@ -55,7 +55,7 @@ void Cannon::SetParam(void)
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
 	//砲台のコライダの作成
-	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.overAllPos, trans_.quaRot, trans_.modelId);
 	MakeCollider({ Collider::TAG::NORMAL_ITEM }, std::move(geo));
 	
 	//砲台の値合わせ
@@ -72,11 +72,11 @@ void Cannon::SetParam(void)
 	models_.emplace_back(&barrelTrans_.modelId);
 
 	//砲身のコライダの作成
-	geo = std::make_unique<Model>(barrelTrans_.pos, barrelTrans_.quaRot, barrelTrans_.modelId);
+	geo = std::make_unique<Model>(barrelTrans_.overAllPos, barrelTrans_.quaRot, barrelTrans_.modelId);
 	MakeCollider({ Collider::TAG::NORMAL_ITEM }, std::move(geo));
 
 	//大砲のエイム範囲
-	std::unique_ptr<Sphere>aimGeo = std::make_unique<Sphere>(trans_.pos, AIM_RADIUS);
+	std::unique_ptr<Sphere>aimGeo = std::make_unique<Sphere>(trans_.overAllPos, AIM_RADIUS);
 	MakeCollider({ Collider::TAG::CANNON_AIM }, std::move(aimGeo), { Collider::TAG::SHADOW });
 
 	//マップサイズ
@@ -86,17 +86,21 @@ void Cannon::SetParam(void)
 
 void Cannon::Update(void)
 {	
-	//デルタタイム取得
-	float delta = SceneManager::GetInstance().GetDeltaTime();
+	//距離が短いなら
+	if (Utility::Distance(trans_.overAllPos, targetPos_) <= AIM_RADIUS)
+	{
+		//デルタタイム取得
+		float delta = SceneManager::GetInstance().GetDeltaTime();
 
-	//生成間隔カウント
-	shotCreateCnt_ += delta;
+		//生成間隔カウント
+		shotCreateCnt_ += delta;
 
-	//砲台の回転
-	RotateTurret();
+		//砲台の回転
+		RotateTurret();
 
-	//砲身の回転
-	RotateBarrel();
+		//砲身の回転
+		RotateBarrel();
+	}
 
 	if (shot_ != nullptr)
 	{
@@ -106,6 +110,9 @@ void Cannon::Update(void)
 		//弾の削除処理
 		DeleteShot();
 	}
+
+	//標的座標の初期化
+	targetPos_ = INIT_TARGET_POS;
 }
 
 void Cannon::Draw(void)

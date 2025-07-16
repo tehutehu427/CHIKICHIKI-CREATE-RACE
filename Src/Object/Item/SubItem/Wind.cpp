@@ -37,7 +37,7 @@ void Wind::SetParam(void)
 	VECTOR forward = trans_.quaRot.GetForward();
 
 	//‘O•û‚ðŒü‚­
-	trans_.quaRot = trans_.quaRot.AngleAxis(Utility::Deg2RadF(90.0f), Utility::AXIS_Y);
+	trans_.quaRot = trans_.quaRot.AngleAxis(Utility::Deg2RadF(180.0f), Utility::AXIS_Y);
 
 	//ˆÚ“®—Ê
 	movePow_ = VScale(forward, POW);
@@ -63,7 +63,7 @@ void Wind::Update(void)
 
 void Wind::Draw(void)
 {
-
+	//colParam_[0].geometry_->Draw();
 }
 
 void Wind::OnHit(const std::weak_ptr<Collider> _hitCol)

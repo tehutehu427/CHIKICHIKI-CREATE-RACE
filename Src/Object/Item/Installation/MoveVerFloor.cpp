@@ -54,7 +54,7 @@ void MoveVerFloor::SetParam(void)
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
 	//コライダの作成
-	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.pos, trans_.quaRot, trans_.modelId);
+	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.overAllPos, trans_.quaRot, trans_.modelId);
 	MakeCollider({ Collider::TAG::MOVE_VER_FLOOR }, std::move(geo));
 
 	//ルート設定
