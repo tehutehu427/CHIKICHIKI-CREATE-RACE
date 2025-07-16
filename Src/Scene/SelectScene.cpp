@@ -68,6 +68,7 @@ SelectScene::SelectScene()
 	multiReady_ = nullptr;
 	selectStage_ = nullptr;
 	skyDome_ = nullptr;
+	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FIXED_POINT);
 }
 
 SelectScene::~SelectScene()
@@ -116,7 +117,6 @@ void SelectScene::Init(void)
 
 	//‰Šú‰»“_‚Ål”‚ğˆêl‚Éİ’è‚µ‚Ä‚¨‚­
 	DateBank::GetInstance().SetPlayerNum(1);
-	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FIXED_POINT);
 
 	//BGM‚ğÄ¶
 	sndMng_.Play(SoundManager::SRC::SELECT_BGM, SoundManager::PLAYTYPE::LOOP);
