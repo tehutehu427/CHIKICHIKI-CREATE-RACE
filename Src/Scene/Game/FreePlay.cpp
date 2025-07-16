@@ -6,6 +6,7 @@
 #include "../../Object/System/CheckChangePhase.h"
 #include "../../Object/System/ManualTab.h"
 #include "../../Object/Editor/EditEscape.h"
+#include "../../Object/Editor/EditorExplanation.h"
 
 FreePlay::FreePlay(void)
 {
@@ -39,6 +40,10 @@ void FreePlay::Load(void)
 	editEscape_ = std::make_unique<EditEscape>(editControllers_[0]->GetCursorPos());
 	editEscape_->Load();
 
+	//エディターの説明
+	editorExplanation_ = std::make_unique<EditorExplanation>();
+	editorExplanation_->Load();
+
 	//BGMボリュームを設定
 	sndMng_.SetLoadedSoundsVolume();
 }
@@ -62,6 +67,9 @@ void FreePlay::Init(void)
 
 	//編集
 	editEscape_->Init();
+
+	//エディターの説明
+	editorExplanation_->Init();
 
 	ChangePhase(PHASE::EDIT_PHASE);
 
@@ -173,14 +181,17 @@ void FreePlay::DrawEdit()
 	//親クラスの描画
 	GameScene::DrawEdit();
 
+	//エディターの説明の描画
+	editorExplanation_->Draw();
+
 	//マップデータの描画
 	mapIO_->Draw();
 
-	//マニュアルの描画
-	manual_->Draw();
-
 	//編集終了
 	editEscape_->Draw();
+	
+	//マニュアルの描画(最後に描画)
+	manual_->Draw();
 
 }
 

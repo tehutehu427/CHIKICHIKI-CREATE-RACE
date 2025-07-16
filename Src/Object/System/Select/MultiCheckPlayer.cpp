@@ -10,6 +10,7 @@
 
 MultiCheckPlayer::MultiCheckPlayer()
 {
+	playerIndex_ = -1;
 	RegisterStateUpdate(STATE::SMOKE, [this]() { UpdateSmoke(); });
 	RegisterStateUpdate(STATE::ANIMATION, [this]() { UpdateAnimation(); });
 }
