@@ -2,6 +2,7 @@
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/Resource.h"
 #include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/SoundManager.h"
 #include"../../Common/Geometry/Model.h"
 #include"../../Common/Geometry/Sphere.h"
 #include"../../Common/EffectController.h"
@@ -149,6 +150,9 @@ void CannonShot::Blast(void)
 
 	//爆発エフェクト
 	effect_->Play(EffectController::EFF_TYPE::BLAST, trans_.pos, Quaternion(), VGet(BLAST_SCALE, BLAST_SCALE, BLAST_SCALE));
+
+	//爆発音
+	SoundManager::GetInstance().Play(SoundManager::SRC::BOMB_SE, SoundManager::PLAYTYPE::BACK);
 
 	//コライダの作成
 	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.pos, BLAST_COL_SCALE);
