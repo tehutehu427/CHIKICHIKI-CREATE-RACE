@@ -4,6 +4,7 @@
 #include "../Manager/Game/ItemManager.h"
 #include "../Manager/Game/GravityManager.h"
 #include "../Manager/Game/PlayerManager.h"
+#include "../Manager/Game/MapEditer.h"
 #include "../Utility/Utility.h"
 #include "DemoPlay.h"
 
@@ -92,9 +93,7 @@ void DemoPlay::Update(void)
 		{
 			//復活
 			player->Init();
-			//プレイヤーの初期座標
-			VECTOR initPos = { 200.0f,2000.0f,200.0f };
-			player->SetPos(initPos);
+			player->SetPos(revivalPos_[GetRand(1)]);
 		}
 	}
 }
@@ -121,6 +120,7 @@ void DemoPlay::CreateDemoStage(void)
 	//プレイヤーの初期座標
 	VECTOR initPos = { 200.0f,200.0f,200.0f };
 	plMng.SetInitPos(initPos);
+	revivalPos_.emplace_back(VGet(initPos.x, initPos.y + 2000.0f, initPos.z));
 
 	//生成座標
 	IntVector3 mapPos = { 0,0,0 };
@@ -139,6 +139,8 @@ void DemoPlay::CreateDemoStage(void)
 
 	//座標変更
 	mapPos = { 8,0,4 };
+	VECTOR revPos = VAdd(initPos, MapEditer::GetInstance().MapToWorldPos(mapPos));
+	revivalPos_.emplace_back(VGet(revPos.x, revPos.y + 2000.0f, revPos.z));
 
 	//生成
 	itemMng.AddItem(mapPos, rot, ItemBase::ITEM_TYPE::FLOOR, rotY);

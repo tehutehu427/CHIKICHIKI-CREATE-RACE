@@ -27,6 +27,8 @@ private:
 
 	float step_;	//カウンタ
 
+	std::vector<VECTOR> revivalPos_;	//復活座標
+
 	//デモステージの生成
 	void CreateDemoStage(void);
 };
