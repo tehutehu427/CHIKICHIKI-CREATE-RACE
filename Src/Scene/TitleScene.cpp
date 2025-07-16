@@ -67,8 +67,7 @@ void TitleScene::Init(void)
 	//スカイドーム初期化
 	skyDome_->Init();
 	auto camera = scnMng_.GetCamera(0).lock();
-	camera->ChangeMode(Camera::MODE::FOLLOW);
-	camera->SetFollow(&skyDome_->GetTransform());
+	camera->ChangeMode(Camera::MODE::FIXED_POINT);
 }
 
 void TitleScene::NormalUpdate(void)

@@ -1,6 +1,7 @@
 #include<cmath>
 #include"../../Utility/Utility.h"
 #include"../../Manager/System/ResourceManager.h"
+#include"../../Manager/System/Camera.h"
 #include"../../Manager/System/SoundManager.h"
 #include"../System/DateBank.h"
 #include "PlayerManager.h"
@@ -98,6 +99,24 @@ void PlayerManager::Update(void)
 	for (auto& p : players_)
 	{
 		p->Update();
+	}
+
+	for (int i = 0; i < playerNum_; i++)
+	{
+		if (players_[i]->IsDeath() || players_[i]->IsGoal())
+		{
+			auto camera =SceneManager::GetInstance().GetCamera(i).lock();
+			if (camera->GetMode() != Camera::MODE::FREE_CONTROLL)
+			{
+				VECTOR pos = camera->GetPos();
+				VECTOR targetPos = camera->GetTargetPos();
+				VECTOR angle = camera->GetAngles();
+				camera->ChangeMode(Camera::MODE::FREE_CONTROLL);
+				camera->SetPos(pos);
+				camera->SetTargetPos(targetPos);
+				camera->SetAngles(angle);
+			}
+		}
 	}
 	//PlayersCollision();
 

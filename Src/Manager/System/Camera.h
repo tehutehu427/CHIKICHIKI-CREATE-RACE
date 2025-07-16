@@ -18,7 +18,7 @@ public:
 	static constexpr float ZOOM_SPEED = 5.0f;
 
 	//カメラのズーム範囲
-	static constexpr float ZOOM_RADIUS = 500.0f;
+	static constexpr float ZOOM_RADIUS = 300.0f;
 	// カメラクリップ：NEAR
 	static constexpr float CAMERA_NEAR = 10.0f;
 
@@ -48,7 +48,7 @@ public:
 	static constexpr VECTOR LOCAL_F2T_POS = { 0.0f, 0.0f, 100.0f };
 
 	// カメラのX回転上限度角
-	static constexpr float LIMIT_X_UP_RAD = 40.0f * (DX_PI_F / 180.0f);
+	static constexpr float LIMIT_X_UP_RAD = 60.0f * (DX_PI_F / 180.0f);
 	static constexpr float LIMIT_X_DW_RAD = 15.0f * (DX_PI_F / 180.0f);
 
 	//FPSの上限角
@@ -99,6 +99,8 @@ public:
 
 	// カメラモードの変更
 	void ChangeMode(MODE mode);
+
+	MODE GetMode(void) { return mode_; }
 
 	// 追従対象の設定
 	void SetFollow(const Transform* follow);
