@@ -100,6 +100,10 @@ void PlayerManager::Update(void)
 	{
 		p->Update();
 	}
+	if (SceneManager::GetInstance().GetSceneID() == SceneManager::SCENE_ID::TITLE)
+	{
+		return;
+	}
 
 	for (int i = 0; i < playerNum_; i++)
 	{
