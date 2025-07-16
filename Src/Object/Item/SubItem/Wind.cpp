@@ -55,7 +55,7 @@ void Wind::Update(void)
 	//ˆê‚Â‚à‚È‚¢
 	if (effect_->GetPlayNum(EffectController::EFF_TYPE::WIND) < 1)
 	{
-		effect_->Play(EffectController::EFF_TYPE::WIND, trans_.pos, trans_.quaRot, VGet(10.0f, 10.0f, 10.0f), true);
+		effect_->Play(EffectController::EFF_TYPE::WIND, trans_.pos, trans_.quaRot, VGet(SIZE, SIZE, SIZE), true);
 	}
 
 	effect_->Update();
