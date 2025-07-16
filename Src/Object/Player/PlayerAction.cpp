@@ -405,6 +405,7 @@ void PlayerAction::ChangeJump(void)
 		(int)Player::ANIM_TYPE::JUMP, false, JUMP_ANIM_START_FRAME, JUMP_ANIM_END_FRAME);
 
 	//サウンド
+	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::JUMP], SoundManager::PLAYTYPE::BACK);
 
 	//ジャンプエフェクト
