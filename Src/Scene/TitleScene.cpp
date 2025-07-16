@@ -6,6 +6,7 @@
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/KeyConfig.h"
+#include "../Manager/System/Camera.h"
 #include "../Manager/System/InputManager.h"
 #include "../Manager/System/SoundManager.h"
 #include "../Object/SkyDome/SkyDome.h"
@@ -65,6 +66,9 @@ void TitleScene::Init(void)
 
 	//スカイドーム初期化
 	skyDome_->Init();
+	auto camera = scnMng_.GetCamera(0).lock();
+	camera->ChangeMode(Camera::MODE::FOLLOW);
+	camera->SetFollow(&skyDome_->GetTransform());
 }
 
 void TitleScene::NormalUpdate(void)

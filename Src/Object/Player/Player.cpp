@@ -117,6 +117,31 @@ void Player::Load(void)
 
 void Player::Init(void)
 {
+
+
+	//本来コライダを作りたい場所
+	////コライダ作成
+	////*****************************************************
+	////接地しているときのライン(床上にとどまっているとき)
+	////Lineを引くための上と下の座標をとる
+	//std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos, trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
+	//MakeCollider({ tag_ }, std::move(lineGeo));
+
+	////プレイヤーの体
+	//std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
+	//MakeCollider({ tag_ }, std::move(bodySphereGeo));
+
+	////現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
+	//std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos, trans_.quaRot, Utility::VECTOR_ZERO, Utility::VECTOR_ZERO);
+	//MakeCollider({ tag_ }, std::move(moveLineGeo));
+
+	////階段の当たり判定のためのプレイヤーの目線からのライン
+	//	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
+	//std::unique_ptr<Line>eyeLine = std::make_unique<Line>(trans_.pos, trans_.quaRot, EYE_HEIGHT, EYE_RANGE);
+	//MakeCollider({ tag_ }, std::move(eyeLine));
+	////*****************************************************
+
+
 	//Transformの設定
 	trans_.quaRot = Quaternion();
 	trans_.scl = MODEL_SCL;
@@ -136,6 +161,10 @@ void Player::Init(void)
 	action_->Init();
 
 	goalTime_ = 0.0f;
+
+	finishDelay_ = 0.0f;
+
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
 	//バッファー設定
 	material_->AddConstBufVS(FLOAT4{ 3.0f,0.0f,0.0f ,0.0f });	//輪郭線太さ
@@ -271,6 +300,8 @@ void Player::ChangeDeath(void)
 void Player::DeathUpdate(void)
 {
 	//死んだ時の処理
+	//終了からの遅延時間を計測
+	finishDelay_ += scnMng_.GetInstance().GetDeltaTime();
 	//落ちているアニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
 	//アニメーションループ
@@ -289,7 +320,8 @@ void Player::ChangeGoal(void)
 }
 void Player::GoalUpdate(void)
 {
-	//ゴール時の処理
+	//終了からの遅延時間を計測
+	finishDelay_ += scnMng_.GetInstance().GetDeltaTime();
 	//落ちているアニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::GOAL), true);
 }
@@ -325,17 +357,11 @@ const bool Player::GetIsSlimeFloor(void)
 
 const bool Player::IsGoal(void) const
 {
-	return state_ == PLAYER_STATE::GOAL;
+	return state_ == PLAYER_STATE::GOAL&&finishDelay_>=GOAL_DELAY;
 }
 bool Player::IsDeath(void)
 {
-	//奈落に落ちるorデスオブジェクトに当たったら
-	//if (trans_.pos.y <= DEATH_POS_Y||onHitCol_->GetIsDeath())
-	if (state_==PLAYER_STATE::DEATH)
-	{
-		return true;
-	}
-	return false;
+	return state_ == PLAYER_STATE::DEATH && finishDelay_ >= DEATH_DELAY;
 }
 
 void Player::SetPos(const VECTOR _worldPos)

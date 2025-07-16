@@ -209,10 +209,12 @@ private:
 	static constexpr VECTOR LOCAL_UP_POS = { 0.0f,RADIUS+ LINE_RANGE,0.0f };
 	//プレイヤーの下
 	static constexpr VECTOR LOCAL_DOWN_POS = { 0.0f,-RADIUS- LINE_RANGE,0.0f };
+	//--------------------------------------------------
+	//ゲームオーバーの待機時間
+	static constexpr float DEATH_DELAY = 2.0f;
 
-
-
-	//プレイヤーの目の高さ(ローカル座標)
+	//ゴール時の待機時間
+	static constexpr float GOAL_DELAY = 1.0f;
 
 	//***********************************
 	//アニメーション関連
@@ -276,7 +278,7 @@ private:
 	//状態更新
 	std::function<void(void)>stateUpdate_;
 
-	VECTOR moveVec_;
+	float finishDelay_;	//ゲーム終了時の待機時間
 
 
 
