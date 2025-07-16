@@ -82,5 +82,7 @@ private:
 
 	//íœ
 	inline void Kill(void);
+
+	void InitShader() override;
 };
 
