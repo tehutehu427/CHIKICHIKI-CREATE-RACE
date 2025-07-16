@@ -196,7 +196,18 @@ public:
 	int PadStickOverSize(KeyConfig::JOYPAD_NO no, KeyConfig::JOYPAD_STICK stick)const;
 	// リソースの破棄
 	void Destroy(void);
-
+	/// <summary>
+	/// パッドを振動する
+	/// </summary>
+	/// <param name="_no">振動させるPAD番号</param>
+	/// <param name="_time">ミリ秒　,-1で無限に続けることができる(STOP 必須)</param>
+	/// <param name="_pow">1～1000</param>
+	void PadVibration(KeyConfig::JOYPAD_NO _no, int _time, int _pow);
+	/// <summary>
+	/// 振動を止める
+	/// </summary>
+	/// <param name="_no"></param>
+	void StopPadVibration(KeyConfig::JOYPAD_NO _no);
 private:
 	std::unique_ptr<InputManager> inputManager_;	//入力管理クラスのインスタンス
 
