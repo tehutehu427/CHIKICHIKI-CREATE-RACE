@@ -7,6 +7,9 @@ public:
 	//風の強さ
 	static constexpr float POW = 1.0f;
 
+	//風自体の大きさ
+	static constexpr float SIZE = 10.0f;
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
