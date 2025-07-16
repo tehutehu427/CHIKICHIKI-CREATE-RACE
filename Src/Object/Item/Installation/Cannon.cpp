@@ -124,9 +124,6 @@ void Cannon::Draw(void)
 	toonStyle_->Draw();
 	//–Cg‚Ì•`‰æ
 	toonBarrel_->Draw();
-	
-	//’e‚Ì•`‰æ	
-	if (shot_ != nullptr)shot_->Draw();
 }
 
 void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
