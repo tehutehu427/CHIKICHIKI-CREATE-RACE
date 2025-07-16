@@ -205,6 +205,7 @@ void Player::Update(void)
 
 void Player::Draw(void)
 {
+	if (IsDeath())return;
 	//ƒ‚ƒfƒ‹•`‰æ‚ÌZBuffer‚ð–³Œø‚É‚·‚é
 	MV1SetWriteZBuffer(trans_.modelId, false);
 
@@ -440,6 +441,3 @@ void Player::KillPunchCol(void)
 		}
 	}
 }
-
-
-

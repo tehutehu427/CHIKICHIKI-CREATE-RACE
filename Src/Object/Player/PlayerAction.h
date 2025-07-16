@@ -148,6 +148,9 @@ private:
 	//ダッシュアニメーションスピード
 	static constexpr float DASH_ANIM_SPEED = 200.0f;
 
+	//ダッシュSE間隔
+	static constexpr float DASH_SE_TIME = 0.2f;
+
 	//----------------------------------
 	//ジャンプ
 	//----------------------------------
@@ -224,7 +227,10 @@ private:
 	//スライムSEの間隔カウント
 	float slimeSEcnt_;
 
+	//エフェクト音配列数
 	int effectArrayNum_;
+
+	float dashSeCnt_;
 
 	//移動
 	//------------------------

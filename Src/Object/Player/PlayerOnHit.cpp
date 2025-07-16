@@ -326,18 +326,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 				
 			}
 		}
-		//VECTOR hitPos = {};
-		//int num = hitInfo.HitNum;
-		//for (int i = 0; i < num; i++)
-		//{
-		//	hitPos = VAdd(hitPos, collPos[i]);
-		//}
-		//hitPos = VScale(hitPos, 1.0 / num);
-		//float sub = RADIUS - Utility::Distance(hitPos, trans.pos);
-		//VECTOR norm = VNorm(VSub(hitPos, trans.pos));
-		//movedPos_ = VSub(trans.pos, VScale(norm, sub));
-
-
 	}
 	//–Úü‚ªƒ‚ƒfƒ‹‚É“–‚½‚Á‚Ä–³‚¯‚ê‚Îã‚É‰Ÿ‚µã‚°‚é
 

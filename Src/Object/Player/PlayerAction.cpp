@@ -43,6 +43,8 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 
 	effectArrayNum_ = 0.0f;
 
+	dashSeCnt_ = 0.0f;
+
 	isPunchHitTime_ = false;
 	input_ = nullptr;
 }
@@ -69,6 +71,8 @@ void PlayerAction::Init(void)
 
 	//スピード
 	speed_ = 0.0f;
+
+	dashSeCnt_ = 0.0f;
 
 	isPunchHitTime_ = false;
 
@@ -179,13 +183,12 @@ void PlayerAction::ChangeInput(void)
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::IDLE));
 	isJump_ = false;
 	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
-	for (int i = 0; i <= effNum; i++)
-	{
-		effect_->Stop(EffectController::EFF_TYPE::DASH, i);
-	}
+	//for (int i = 0; i <= effNum; i++)
+	//{
+	//	effect_->Delete(EffectController::EFF_TYPE::DASH, i);
+	//}
 
 	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
-
 	actionUpdate_ = std::bind(&PlayerAction::ActionInputUpdate, this);
 }
 
@@ -232,6 +235,17 @@ void PlayerAction::MoveUpdate(void)
 	float animationSpeed = Player::DEFAULT_ANIM_SPD * (speed_ / MOVE_SPEED)*3.0f;
 	animationController_.SetAnimSpeed(animationSpeed);
 
+	//ダッシュカウント
+	if (act_ == ATK_ACT::DASHMOVE)
+	{
+		dashSeCnt_ += scnMng_.GetInstance().GetDeltaTime();
+		if (dashSeCnt_ >= DASH_SE_TIME)
+		{
+			SoundManager::GetInstance().Play(actSE_[ACT_SE::DASH], SoundManager::PLAYTYPE::BACK);
+			dashSeCnt_ = 0.0f;
+		}
+	}
+
 	//入力方向の移動
 	MoveDirFronInput();
 }
@@ -261,8 +275,6 @@ void PlayerAction::ChangeMove(void)
 {
 	speed_ = MOVE_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
-
-	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 	if (player_.GetIsSlimeFloor())
 	{
 		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
@@ -282,13 +294,11 @@ void PlayerAction::ChangeDashMove(void)
 	speed_ = DASH_SPEED;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
 
-	SoundManager::GetInstance().Play(actSE_[ACT_SE::DASH], SoundManager::PLAYTYPE::LOOP);
-	
-
 	auto& trans = player_.GetTransform();
 	const float SCL = 10.0f;
 
 	//エフェクトの再生
+	effect_->Delete(EffectController::EFF_TYPE::DASH,0);
 	effect_->Play(EffectController::EFF_TYPE::DASH, trans.pos, trans.quaRot, { SCL,SCL,SCL },50.0f);
 	effectArrayNum_++;
 
@@ -387,7 +397,6 @@ void PlayerAction::Jump(void)
 		ChangeAction(ATK_ACT::INPUT);
 		return;
 	}
-
 }
 
 void PlayerAction::ChangeJump(void)
@@ -404,11 +413,10 @@ void PlayerAction::ChangeJump(void)
 	animationController_.Play(
 		(int)Player::ANIM_TYPE::JUMP, false, JUMP_ANIM_START_FRAME, JUMP_ANIM_END_FRAME);
 
-	//サウンド
-	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::JUMP], SoundManager::PLAYTYPE::BACK);
 
 	//ジャンプエフェクト
+	effect_->Stop(EffectController::EFF_TYPE::JUMP,0);
 	effect_->Play(EffectController::EFF_TYPE::JUMP, trans.pos, trans.quaRot, EFF_SCL, 50.0f);
 
 	if(player_.GetIsSlimeFloor())SetJumpDecel(SLIME_FLOOR_JUMP_POW);
@@ -463,7 +471,6 @@ void PlayerAction::ChangePunch(void)
 	//アニメーション
 	animationController_.Play((int)Player::ANIM_TYPE::PUNCH, false);
 
-	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::PUNCH], SoundManager::PLAYTYPE::BACK);
 
 	actionUpdate_ = [this]() {Punch(); };
