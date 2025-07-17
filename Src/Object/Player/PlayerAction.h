@@ -34,10 +34,11 @@ public:
 
 	enum class ACT_SE
 	{
-		DASH,
-		JUMP,
-		PUNCH,
-		SLIME,
+		DASH,	//ダッシュ
+		JUMP,	//ジャンプ
+		PUNCH,	//パンチ
+		PUNCH_HIT,//パンチヒット
+		SLIME,	//スライム
 	};
 
 	PlayerAction(Player& _player, SceneManager& _scnMng,AnimationController& _animationController);
