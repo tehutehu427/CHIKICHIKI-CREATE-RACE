@@ -698,6 +698,17 @@ int Utility::GetSign(int f)
 
 std::string Utility::OpenFileDialog()
 {
+    // --- 現在のカレントディレクトリを保存 ---
+    DWORD buffer_size = GetCurrentDirectoryA(0, nullptr);
+    std::string original_cwd;
+    if (buffer_size != 0) {
+        std::vector<char> current_dir_buffer(buffer_size);
+        if (GetCurrentDirectoryA(buffer_size, current_dir_buffer.data()) != 0) {
+            original_cwd = current_dir_buffer.data();
+        }
+    }
+    // エラーハンドリングは必要に応じて追加してください。
+
     char filename[MAX_PATH] = "";
 
     OPENFILENAMEA ofn = {};
@@ -707,11 +718,20 @@ std::string Utility::OpenFileDialog()
     ofn.lpstrFilter = "JSON Files\0*.json\0All Files\0*.*\0";
     ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
 
-    if (GetOpenFileNameA(&ofn))
+    std::string selected_path = ""; // 選択されたパスを保持する変数
+
+    if (GetOpenFileNameA(&ofn)) // ファイルを開くダイアログを表示
     {
-        return std::string(filename);
+        selected_path = std::string(filename);
     }
-    return ""; // キャンセルされた場合
+
+    // --- 元のカレントディレクトリに戻す ---
+    if (!original_cwd.empty()) {
+        SetCurrentDirectoryA(original_cwd.c_str());
+    }
+    // エラーハンドリングは必要に応じて追加してください。
+
+    return selected_path; // キャンセルされた場合やエラー時は空文字列を返す
 }
 
 VECTOR Utility::ReverseValue(VECTOR _vec)
@@ -843,23 +863,47 @@ int Utility::GetDigitCount(const int _value)
 
 std::string Utility::ShowSaveJsonDialog()
 {
-    // 構造体をゼロ初期化
-    OPENFILENAMEW ofn = {};
-    wchar_t fileName[MAX_PATH] = L""; // ワイド文字バッファ
+    // --- 現在のカレントディレクトリを保存 ---
+      // GetCurrentDirectoryA で必要なバッファサイズを取得
+    DWORD buffer_size = GetCurrentDirectoryA(0, nullptr);
+    std::string original_cwd;
+    if (buffer_size != 0) {
+        std::vector<char> current_dir_buffer(buffer_size);
+        if (GetCurrentDirectoryA(buffer_size, current_dir_buffer.data()) != 0) {
+            original_cwd = current_dir_buffer.data();
+        }
+    }
+    // ここでエラーチェックを省略していますが、実際のアプリケーションではエラーハンドリングをしっかり行うことを推奨します。
 
-    ofn.lStructSize = sizeof(OPENFILENAMEW);
-    ofn.lpstrFilter = L"JSONファイル (*.json)\0*.json\0すべてのファイル (*.*)\0*.*\0";
+    // 構造体をゼロ初期化
+    OPENFILENAMEA ofn = {}; // Aサフィックスの構造体を使用
+
+    // ファイル名バッファをマルチバイト文字 (char) に変更
+    char fileName[MAX_PATH] = "";
+
+    ofn.lStructSize = sizeof(OPENFILENAMEA);
+    ofn.lpstrFilter = "JSONファイル (*.json)\0*.json\0すべてのファイル (*.*)\0*.*\0";
     ofn.lpstrFile = fileName;
     ofn.nMaxFile = MAX_PATH;
     ofn.Flags = OFN_OVERWRITEPROMPT;
-    ofn.lpstrDefExt = L"json";
+    ofn.lpstrDefExt = "json"; // 既定の拡張子もマルチバイト文字
 
-    if (GetSaveFileNameW(&ofn))
+    std::string selected_path = ""; // 選択されたパスを保持する変数
+
+    if (GetSaveFileNameA(&ofn)) // Aサフィックスの関数を使用
     {
-        return WideToUtf8(fileName); // UTF-8へ変換
+        // 取得したパスは、システムの現在のANSIコードページ (通常はSJIS) でエンコードされています。
+        // そのまま std::string に変換して返します。
+        selected_path = std::string(fileName);
     }
 
-    return ""; // キャンセルされたとき
+    // --- 元のカレントディレクトリに戻す ---
+    if (!original_cwd.empty()) {
+        SetCurrentDirectoryA(original_cwd.c_str());
+    }
+    // ここでもエラーチェックを省略していますが、SetCurrentDirectoryA が失敗する可能性も考慮してください。
+
+    return selected_path; // キャンセルされたときには空文字列が返る
 }
 
 std::string Utility::WideToUtf8(const std::wstring& wstr)

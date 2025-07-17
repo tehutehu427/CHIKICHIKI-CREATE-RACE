@@ -124,7 +124,7 @@ void ManualTab::DrawDisplay()
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
 		Application::SCREEN_HALF_Y + OFFSET_POS_Y,
-		1.0f,
+		0.7f,
 		0.0f,
 		imgs_[index_],
 		true,
