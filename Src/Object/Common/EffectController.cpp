@@ -27,10 +27,10 @@ void EffectController::Update(void)
 				if (effect.second.playData[i].isLoop)
 				{
 					//もう一回
-					RePlay(effect.first, i);
+ 					RePlay(effect.first, i);
 				}
 				//ループしない
-				else
+				else 
 				{
 					//消去
 					Delete(effect.first, i);
@@ -71,6 +71,7 @@ const int EffectController::Play(const EFF_TYPE _effType, const VECTOR _pos, con
 		return -1;
 	}
 
+
 	//プレイハンドルを設定
 	PlayData playData;
 	playData.playId = PlayEffekseer3DEffect(effects_[_effType].resId);
@@ -104,9 +105,11 @@ const int EffectController::Play(const EFF_TYPE _effType, const VECTOR _pos, con
 	//カウンタ増加
 	effects_[_effType].playNum++;
 
+
 	//配列番号を返す
 	return ret;
 }
+
 
 void EffectController::SetPos(const EFF_TYPE _effType, const int _arrayNum, const VECTOR _pos)
 {

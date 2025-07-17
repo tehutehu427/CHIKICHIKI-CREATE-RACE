@@ -162,9 +162,6 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 	//パンチしたプレイヤーの位置と自分の位置を比較して、
 	action_.SetDir(Utility::GetMoveVec(punchedPlayerPos, trans_.pos));
 
-	//パンチヒット音再生()
-	SoundManager::GetInstance().Play(SoundManager::SRC::PLAYER_PUNCH_HIT, SoundManager::PLAYTYPE::BACK);
-
 	//ノックバック状態遷移
 	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
 }
@@ -196,11 +193,10 @@ void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 #ifdef DEBUG_ON
 void PlayerOnHit::DrawDebug(void)
 {
-	if()
-	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
-	colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
-	colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
-	colParam_[EYE_LINE_NO].geometry_->Draw();
+	//colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
+	//colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
+	//colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
+	//colParam_[EYE_LINE_NO].geometry_->Draw();
 
 
 	if (action_.GetIsHitPunch())

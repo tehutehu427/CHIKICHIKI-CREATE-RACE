@@ -141,6 +141,7 @@ private:
 	static constexpr float NORMAL_MULTI = 1.0f;	//通常倍率
 
 	std::map<EFF_TYPE, EffectData> effects_;	//エフェクト関連
+	std::list<EffectData>onePlayEffect_;
 
 	/// <summary>
 	/// もう一度再生
