@@ -153,9 +153,9 @@ void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 {
+	if (action_.GetAct() == PlayerAction::ATK_ACT::KNOCKBACK||colParam_[EYE_LINE_NO].collider_->IsHit())return;
 	//リソースID
 	auto& res = ResourceManager::GetInstance();
-	//int hitSE = res.Load(ResourceManager::SRC::PLAYER_PUNCH_HIT).handleId_;
 	//パンチしたプレイヤーの向いてる方向をセットする
  	VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
 
@@ -196,6 +196,7 @@ void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 #ifdef DEBUG_ON
 void PlayerOnHit::DrawDebug(void)
 {
+	if()
 	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
 	colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
 	colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();

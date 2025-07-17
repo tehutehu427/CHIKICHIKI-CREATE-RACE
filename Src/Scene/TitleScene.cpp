@@ -74,21 +74,8 @@ void TitleScene::Init(void)
 
 void TitleScene::NormalUpdate(void)
 {	
-	//デルタタイム
-	float delta = SceneManager::GetInstance().GetDeltaTime();
-
-	//ステップの更新
-	step_ += delta;
-
 	//状態別更新処理
 	titleUpdateFunc_();
-
-	//デモへの遷移
-	if (step_ >= DEMO_CHANGE_TIME)
-	{
-		//デモへ
-		ChangeDemo();
-	}
 
 	//スカイドーム更新
 	skyDome_->Update();
@@ -189,6 +176,7 @@ void TitleScene::ChangeNormal(void)
 	//処理変更
 	func_.updataFunc_ = std::bind(&TitleScene::NormalUpdate, this);
 	func_.drawFunc_ = std::bind(&TitleScene::NormalDraw, this);
+	titleUpdateFunc_ = std::bind(&TitleScene::UpdateWait, this);
 
 	//デモの解放
 	demo_.reset();
@@ -197,7 +185,7 @@ void TitleScene::ChangeNormal(void)
 void TitleScene::ChangeDemo(void)
 {
 	//処理変更
-	func_.updataFunc_ = std::bind(&TitleScene::DemoUpdate, this);
+	titleUpdateFunc_ = std::bind(&TitleScene::DemoUpdate, this);
 	func_.drawFunc_ = std::bind(&TitleScene::DemoDraw, this);
 
 	//生成しなおす
@@ -263,6 +251,12 @@ void TitleScene::DemoMessage(void)
 
 void TitleScene::UpdateWait()
 {
+	//デルタタイム
+	float delta = SceneManager::GetInstance().GetDeltaTime();
+
+	//ステップの更新
+	step_ += delta;
+
 	// シーン遷移
 	KeyConfig& ins = KeyConfig::GetInstance();
 	SoundManager& snd = SoundManager::GetInstance();
@@ -278,6 +272,13 @@ void TitleScene::UpdateWait()
 		//更新処理の変更
 		titleUpdateFunc_ = std::bind(&TitleScene::UpdatePlaySe, this);
 		return;
+	}
+
+	//デモへの遷移
+	if (step_ >= DEMO_CHANGE_TIME)
+	{
+		//デモへ
+		ChangeDemo();
 	}
 }
 
