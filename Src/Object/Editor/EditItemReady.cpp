@@ -112,6 +112,12 @@ void EditItemReady::UpdateCheck(void)
 
 void EditItemReady::UpdateReady(void)
 {
+	KeyConfig& ins = KeyConfig::GetInstance();
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, parent_.GetPadNum(), KeyConfig::TYPE::PAD))
+	{
+		SoundManager::SRC type = GetRand(CHIKEN_VOICE_RATE) == 0 ? SoundManager::SRC::CHICKEN_SE : SoundManager::SRC::CLICK_OBJECT_SE;
+		SoundManager::GetInstance().Play(type, SoundManager::PLAYTYPE::BACK);
+	}
 
 }
 

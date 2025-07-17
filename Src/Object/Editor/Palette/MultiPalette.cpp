@@ -71,6 +71,10 @@ void MultiPalette::Draw(void)
 			true
 		);
 
+		if (!DateBank::GetInstance().IsItemSetSkip())
+		{
+			return;
+		}
 		DrawRotaGraph(
 			Application::SCREEN_HALF_X + 120,
 			Application::SCREEN_SIZE_Y - 100,

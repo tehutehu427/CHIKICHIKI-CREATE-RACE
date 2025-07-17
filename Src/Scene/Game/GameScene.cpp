@@ -367,7 +367,7 @@ void GameScene::DrawAction(void)
 
 	if (PlayerManager::GetInstance().IsPlayerDeath(screenIndex))
 	{
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 64);
 		DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, Utility::BLACK, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}

@@ -147,6 +147,7 @@ public:
 
 		DEMO_TO_TITLE_BACK,		//デモからタイトルに戻る
 
+		INPUT_CHECK,			//マルチ時の入力確認
 
 		DEBUG_CHENGE_TITLE,		//デバッグ用タイトル画面に戻る
 		DEBUG_CHENGE_CLEAR,		//デバッグ用クリア画面に戻る
