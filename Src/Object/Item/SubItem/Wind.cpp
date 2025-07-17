@@ -37,7 +37,7 @@ void Wind::SetParam(void)
 	VECTOR forward = trans_.quaRot.GetForward();
 
 	//‘O•û‚ðŒü‚­
-	trans_.quaRot = trans_.quaRot.AngleAxis(Utility::Deg2RadF(180.0f), Utility::AXIS_Y);
+	trans_.quaRot = trans_.quaRot.AngleAxis(Utility::Deg2RadF(270.0f), Utility::AXIS_Y);
 
 	//ˆÚ“®—Ê
 	movePow_ = VScale(forward, POW);
