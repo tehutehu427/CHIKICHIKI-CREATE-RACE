@@ -129,12 +129,6 @@ void PlayerInput::InputAll(void)
 	}
 
 
-
-	int LstickUpSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_UP);
-	int LstickLeftSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_LEFT);
-	int LstickDownSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_DOWN);
-	int LstickRightSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_RIGHT);
-
 	LStickAngleSize_ = ins.GetKnockLStickSize(padNum_);
 
 	//スティックの倒れ値が200以上だったら
