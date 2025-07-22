@@ -20,7 +20,7 @@ MultiParty::MultiParty(void)
 	playBgmSrc_ = SoundManager::SRC::NONE;
 	phaseChangeTimer_ = 0.0f;
 	actionChangeTime_ = 0.0f;
-	editChengeTime_ = 0.0f;
+	editChangeTime_ = 0.0f;
 	phaseChanges_.emplace(PHASE::ROUND_PHASE, std::bind(&MultiParty::ChangePhaseRound, this));
 	phaseChanges_.emplace(PHASE::SELECT_PHASE, std::bind(&MultiParty::ChangePhaseSelect, this));
 	phaseChanges_.emplace(PHASE::RESULT_PHASE, std::bind(&MultiParty::ChangePhaseResult, this));
@@ -163,8 +163,8 @@ void MultiParty::UpdateEdit(void)
 	}
 	if (ready)
 	{
-		editChengeTime_ -= SceneManager::GetInstance().GetDeltaTime();
-		if (editChengeTime_ < 0)
+		editChangeTime_ -= SceneManager::GetInstance().GetDeltaTime();
+		if (editChangeTime_ < 0)
 		{
 			ChangePhase(PHASE::ACTION_PHASE);
 		}
@@ -200,7 +200,7 @@ void MultiParty::ChangePhaseEdit()
 	//eƒNƒ‰ƒX‚Ìˆ—‚ðŒÄ‚Ñ‚¾‚µ
 	GameScene::ChangePhaseEdit();
 
-	editChengeTime_ = EDIT_CHANGE_TIME;
+	editChangeTime_ = EDIT_CHANGE_TIME;
 
 	//‰æ–Ê‚ð•ªŠ„‚·‚é
 	scnMng_.SetIsSplitMode(true);

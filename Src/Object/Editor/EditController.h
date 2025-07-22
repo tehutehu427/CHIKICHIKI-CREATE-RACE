@@ -13,6 +13,7 @@ class EditController
 public:
 	static constexpr float PAD_STICK_RATE = 0.0125f;	//パッドスティックの感度
 	static constexpr float PAD_STICK_RATE_UP = 2.0f;	//パッドスティックの感度倍率
+	static constexpr int ERROR_PAD_VIBE_POW = 400.0f;		//エラー時のパッドバイブの強さ
 	static constexpr float MOVE_ARROW_LENGTH = 75.0f;	//移動矢印の長さ
 	static constexpr float MOVE_ARROW_RADIUS = 15.0f;		//移動矢印の先端の半径
 	static constexpr float MOVE_ARROW_SIZE = 60.0f;		//移動矢印の先端の長さ
@@ -86,7 +87,7 @@ public:
 
 	void Reset(void);	//リセット
 	//モード変更
-	void ChengeMode(MODE mode);
+	void ChangeMode(MODE mode);
 	//アイテム設定
 	void SetItemType(ItemBase::ITEM_TYPE itemType);
 
@@ -142,8 +143,8 @@ private:
 	std::function<void(void)> modeDraw_;
 
 	//モード別変更処理
-	void ChengeModeItemSelect(void);
-	void ChengeModeMove(void);
+	void ChangeModeItemSelect(void);
+	void ChangeModeMove(void);
 
 	//モード別更新処理
 	void ItemSelectUpdate(void);		//アイテム選択
@@ -167,7 +168,7 @@ private:
 
 	MOVE_DIR GetMoveDirTwo(void);	//カメラの方向をもとに算出
 
-	int IsChengeMoveDir(void);	//移動方向を変えていいか -1 :NONE　0: 元のまま 1:変える
+	int IsChangeMoveDir(void);	//移動方向を変えていいか -1 :NONE　0: 元のまま 1:変える
 	void DebugUpdate(void);	//デバッグ用更新
 	void DebugDraw(void);	//デバッグ用描画
 
@@ -175,7 +176,7 @@ private:
 
 	void DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY);	//範囲内のアイテムを削除
 
-	bool IsChengeVecDir(const VECTOR vec1, const VECTOR vec2) const;	//ベクトルの方向が変わったか　変わったら　true
+	bool IsChangeVecDir(const VECTOR vec1, const VECTOR vec2) const;	//ベクトルの方向が変わったか　変わったら　true
 
 	void DrawXArrow(VECTOR worldPos, bool isBig);	//X方向の矢印を描画
 	void DrawYArrow(VECTOR worldPos, bool isBig);	//Y方向の矢印を描画
@@ -183,8 +184,8 @@ private:
 
 	void SetCameraPosToDummyObject(void);	//ダミーオブジェクトにカメラを近づける
 
-	void ChengeCameraMode(void);	//カメラのモードを変える
-	void ChengeCameraMode(CAMERA_MODE mode);	//カメラのモードを変える
+	void ChangeCameraMode(void);	//カメラのモードを変える
+	void ChangeCameraMode(CAMERA_MODE mode);	//カメラのモードを変える
 	VECTOR cPos_;		//カメラの座標
 	VECTOR cAngles_;	//カメラの回転
 	VECTOR cTargetPos_;	//カメラの中止店

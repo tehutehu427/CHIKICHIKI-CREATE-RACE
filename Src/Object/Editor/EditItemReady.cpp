@@ -11,9 +11,9 @@ EditItemReady::EditItemReady(EditController& parent) : parent_(parent)
 	hitSize_ = { HIT_WIDTH,HIT_HEIGHT };
 	pos_ = { MARGIN,MARGIN };
 	readyImg_ = -1;
-	phaseChanges_.emplace(READY_PHASE::NOT_READY, std::bind(&EditItemReady::ChengePhaseNotRedy, this));
-	phaseChanges_.emplace(READY_PHASE::CHECK, std::bind(&EditItemReady::ChengePhaseCheck, this));
-	phaseChanges_.emplace(READY_PHASE::READY, std::bind(&EditItemReady::ChengePhaseReady, this));
+	phaseChanges_.emplace(READY_PHASE::NOT_READY, std::bind(&EditItemReady::ChangePhaseNotRedy, this));
+	phaseChanges_.emplace(READY_PHASE::CHECK, std::bind(&EditItemReady::ChangePhaseCheck, this));
+	phaseChanges_.emplace(READY_PHASE::READY, std::bind(&EditItemReady::ChangePhaseReady, this));
 	readyImg_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::READY_IMG).handleId_;
 }
 
@@ -43,19 +43,19 @@ void EditItemReady::ChangeReady(const READY_PHASE _ready)
 
 }
 
-void EditItemReady::ChengePhaseNotRedy(void)
+void EditItemReady::ChangePhaseNotRedy(void)
 {
 	phaseUpdate_ = std::bind(&EditItemReady::UpdateNotReady, this);
 	phaseDraw_ = std::bind(&EditItemReady::DrawNotReady, this);
 }
 
-void EditItemReady::ChengePhaseCheck(void)
+void EditItemReady::ChangePhaseCheck(void)
 {
 	phaseUpdate_ = std::bind(&EditItemReady::UpdateCheck, this);
 	phaseDraw_ = std::bind(&EditItemReady::DrawCheck, this);
 }
 
-void EditItemReady::ChengePhaseReady(void)
+void EditItemReady::ChangePhaseReady(void)
 {
 	phaseUpdate_ = std::bind(&EditItemReady::UpdateReady, this);
 	phaseDraw_ = std::bind(&EditItemReady::DrawReady, this);
