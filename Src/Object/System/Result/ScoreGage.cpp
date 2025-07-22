@@ -15,7 +15,8 @@ ScoreGage::ScoreGage(const int _playerIndex) :
 	size_ = {};
 	imgScoreGage_ = 0;
 	animStep_ = 0.0f;
-	color_ = 0;
+	lengthPerPoint_ = 0.0f;
+	updateLength_  = 0.0f; 
 	state_ = STATE::NONE;
 	stateChanges_.emplace(STATE::NONE, std::bind(&ScoreGage::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::WAIT, std::bind(&ScoreGage::ChangeStateWait, this));
@@ -52,8 +53,10 @@ void ScoreGage::Init()
 	//ゲージサイズ
 	size_ = { GAGE_SIZE_X,GAGE_SIZE_Y };
 
+	scoreMax_ = DateBank::GetInstance().GetMultiClearScore();
+
 	//1スコア当たりのゲージ長さ
-	lengthPerPoint_ = GAGE_LENGTH_MAX / DateBank::GetInstance().GetMultiClearScore();
+	lengthPerPoint_ = GAGE_LENGTH_MAX / scoreMax_;
 }
 
 void ScoreGage::Update()
@@ -99,6 +102,11 @@ void ScoreGage::ChangeState(const STATE _state)
 	stateChanges_[state_]();	
 }
 
+void ScoreGage::SetLengthPerPoint(const int _lengthPerPoint)
+{
+	lengthPerPoint_ = _lengthPerPoint;
+}
+
 void ScoreGage::ChangeStateNone()
 {
 	stateUpdate_ = std::bind(&ScoreGage::UpdateStateNone, this);
@@ -111,7 +119,19 @@ void ScoreGage::ChangeStateWait()
 
 void ScoreGage::ChangeStateAnimation()
 {
+	ScoreManager& scoreMng = ScoreManager::GetInstance();
+
+	//更新処理
 	stateUpdate_ = std::bind(&ScoreGage::UpdateStateAnimation, this);
+
+	//現在の勝者のスコアを取得
+	const int nowScore = scoreMng.GetScore(scoreMng.GetWinnerPlayerIndex());
+
+	//スコア最大値を更新
+	scoreMax_ = scoreMax_ > nowScore ? scoreMax_ : nowScore;
+
+	//1点に対するスコアの増幅値を計算
+	lengthPerPoint_ = GAGE_LENGTH_MAX / scoreMax_;
 
 	//長さの更新値を決定
 	updateLength_ = size_.x + ScoreManager::GetInstance().GetScore(playerIndex_) * lengthPerPoint_;
@@ -156,24 +176,4 @@ void ScoreGage::SetParamToPlayerNo()
 
 	//プレイヤー番号ごとに座標をずらす
 	pos_.y += playerIndex_ * GAGE_POS_Y_OFFSET;
-
-	//カラー
-	switch (playerIndex_)
-	{
-	case 0:
-		color_ = Utility::BLUE;
-		break;
-
-	case 1:
-		color_ = Utility::PINK;
-		break;
-
-	case 2:
-		color_ = Utility::GREEN;
-		break;
-
-	case 3:
-		color_ = Utility::YELLOW;
-		break;
-	}
 }

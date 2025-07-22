@@ -81,7 +81,7 @@ private:
 	static constexpr float MES_DISPLAY_TIME = 2.0f;
 
 	//マルチステージ種類
-	static constexpr float MULTI_STAGE_TYPES = 4;
+	static constexpr int MULTI_STAGE_TYPES = 4;
 
 	//カーソル座標
 	const Vector2& padCursorPos_;
