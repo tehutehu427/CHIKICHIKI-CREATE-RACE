@@ -194,6 +194,13 @@ private:
 	//吹き飛び効果時間
 	static constexpr float PUNCHED_TIME = 0.1f;
 
+
+	//ノックバックのパッド振動時間
+	static constexpr int KNOCKBACK_PAD_VIBRATIION_TIME = 300;
+
+	//ノックバックのパッド振動の強さ
+	static constexpr int KNOCKBACK_PAD_VIBRATIION_POW = 300;
+
 	//-------------------------------------------------
 	//メンバ変数
 	//-------------------------------------------------

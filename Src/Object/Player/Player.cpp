@@ -312,6 +312,9 @@ void Player::ChangeDeath(void)
 
 	//死んだらコインを落とす
 	onHitCol_->SetCoinNum(0);
+	//パッド振動
+	KeyConfig::GetInstance().PadVibration(padNum_, 300, 300);
+
 	stateUpdate_ = std::bind(&Player::DeathUpdate, this);
 }
 void Player::DeathUpdate(void)
@@ -321,6 +324,8 @@ void Player::DeathUpdate(void)
 	finishDelay_ += scnMng_.GetInstance().GetDeltaTime();
 	//落ちているアニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
+
+	KeyConfig::GetInstance().PadVibration(padNum_, DEATH_PAD_VIBRATION_TIME, DEATH_PAD_VIBRATION_POW);
 	//アニメーションループ
 	if (animationController_->GetAnimStep() >= FALL_ANIM_START)
 	{
