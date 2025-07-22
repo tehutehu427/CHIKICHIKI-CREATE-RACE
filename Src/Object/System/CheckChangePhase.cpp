@@ -95,7 +95,7 @@ bool CheckChangePhase::IsCheckChangePhase(GameScene& _parent)
 	};
 
 	//特定のキーを押す
-	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHENGE, KeyConfig::JOYPAD_NO::PAD1))
+	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHANGE, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		return true;
 	}
@@ -105,7 +105,7 @@ bool CheckChangePhase::IsCheckChangePhase(GameScene& _parent)
 		return false;
 	}
 	//アイコンをクリックする(Editのみ)
-	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHENGE_CHECK, KeyConfig::JOYPAD_NO::PAD1) &&
+	if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::PHASE_CHANGE_CHECK, KeyConfig::JOYPAD_NO::PAD1) &&
 		(Utility::IsPointInRect(key.GetMousePos(), rightTop, leftBottom) ||
 		Utility::IsPointInRect(padCursolPos_, rightTop, leftBottom)))
 	{

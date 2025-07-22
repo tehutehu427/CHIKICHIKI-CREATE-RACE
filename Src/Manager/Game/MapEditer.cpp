@@ -1,5 +1,6 @@
 #include <cassert>
 #include "../Utility/Utility.h"
+#include "../Object/Editor/EditController.h"
 #include "MapEditer.h"
 
 MapEditer* MapEditer::instance_ = nullptr;
@@ -43,7 +44,7 @@ bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos)
 int MapEditer::IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size,IntVector3 _hitSize,float _rotY)
 {
 
-	IntVector3 mapPos = _mapPos;	_rotY += 360.0f;
+	IntVector3 mapPos = _mapPos;	_rotY += ONE_LAP_DEG;
 	int rot = Utility::Round(_rotY);
 	ApplyRotation(_mapPos, _size, _hitSize, rot);
 
@@ -59,21 +60,21 @@ int MapEditer::IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size,IntVector3 
 					mapPos.y < 0 || mapPos.y >=MAP_SIZE.y ||
 					mapPos.z <0 || mapPos.z >= MAP_SIZE.z)
 				{
-					return -1;
+					return -static_cast<int>(EditController::ERROR_TYPE::ITEM_RANGE_OUT);
 				}
 				if (IsObjectAtMapPos(mapPos))
 				{
-					return -2;
+					return -static_cast<int>(EditController::ERROR_TYPE::ITEM_OVER_LAP);
 				}
 			}
 		}
 	}
-	return 0;
+	return -static_cast<int>(EditController::ERROR_TYPE::NONE);
 }
 
 void MapEditer::AddItem(STATUS _status, IntVector3 _size ,IntVector3 _hitSize, float _rotY)
 {
-	IntVector3 mapPos = _status.mapPos;	_rotY += 360.0f;
+	IntVector3 mapPos = _status.mapPos;	_rotY += ONE_LAP_DEG;
 	int rot = Utility::Round(_rotY);
 	ApplyRotation(_status.mapPos, _size, _hitSize, rot);
 
@@ -95,7 +96,7 @@ void MapEditer::AddItem(STATUS _status, IntVector3 _size ,IntVector3 _hitSize, f
 
 void MapEditer::DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos ,float _rotY ,IntVector3 _size ,IntVector3 _hitSize)
 {
-	_rotY += 360.0f;
+	_rotY += ONE_LAP_DEG;
 	int rot = Utility::Round(_rotY);
 	ApplyRotation(_mapPos, _size, _hitSize, rot);
 
@@ -108,7 +109,7 @@ void MapEditer::DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos ,float 
 			{
 				IntVector3 mapPos = { _mapPos.x + i,_mapPos.y + j,_mapPos.z + k };
 				isMapPosItem_[mapPos.x][mapPos.y][mapPos.z] = ItemBase::ITEM_TYPE::NONE;
-				leaderMapPos_[mapPos.x][mapPos.y][mapPos.z] = { -1,-1,-1 };
+				leaderMapPos_[mapPos.x][mapPos.y][mapPos.z] = EditController::ERROR_POS;
 
 			}
 		}
@@ -135,18 +136,18 @@ VECTOR MapEditer::MapToWorldPos(IntVector3 mapPos)
 
 void MapEditer::ApplyRotation(IntVector3& _mapPos, IntVector3& _size, IntVector3& _hitSize, int _rotY)
 {
-	int rot = static_cast<int>(_rotY) % 360;
+	int rot = static_cast<int>(_rotY) % static_cast<int>(ONE_LAP_DEG);
 	switch (rot)
 	{
 	case 0: break;
-	case 90:
+	case QUATER_ONE_LAP_DEG:
 		std::swap(_hitSize.x, _hitSize.z);
 		_mapPos.z -= _hitSize.z - _size.z;
 		break;
-	case 180:
+	case HALF_ONE_LAP_DEG:
 		_mapPos.x -= _hitSize.x - _size.x;
 		break;
-	case 270:
+	case static_cast<int>(ONE_LAP_DEG) - QUATER_ONE_LAP_DEG:
 		std::swap(_hitSize.x, _hitSize.z);
 		break;
 	default: break;
@@ -163,7 +164,7 @@ void MapEditer::DeleteAllItem(void)
 			for (int z = 0; z < MAP_SIZE.z; z++)
 			{
 				isMapPosItem_[x][y][z] = ItemBase::ITEM_TYPE::NONE;
-				leaderMapPos_[x][y][z] = { -1,-1,-1 };
+				leaderMapPos_[x][y][z] = EditController::ERROR_POS;
 			}
 		}
 	}
@@ -171,6 +172,19 @@ void MapEditer::DeleteAllItem(void)
 
 MapEditer::MapEditer(void)
 {
+	//ƒ}ƒbƒv‚Ì‰Šú‰»
+	for (int x = 0; x < MAP_SIZE.x; x++)
+	{
+		for (int y = 0; y < MAP_SIZE.y; y++)
+		{
+			for (int z = 0; z < MAP_SIZE.z; z++)
+			{
+				isMapPosItem_[x][y][z] = ItemBase::ITEM_TYPE::NONE;
+				leaderMapPos_[x][y][z] = EditController::ERROR_POS;
+			}
+		}
+	}
+
 }
 
 MapEditer::~MapEditer(void)

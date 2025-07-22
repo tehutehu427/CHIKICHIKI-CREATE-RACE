@@ -12,6 +12,7 @@
 #include "../Object/Item/Installation/Spring.h"
 #include "../Object/Item/Destroyer/SmallBomb.h"
 #include "../Object/Item/Destroyer/BigBomb.h"
+#include "../Object/Editor/EditController.h"
 #include "MapEditer.h"
 #include "ItemManager.h"
 
@@ -86,7 +87,7 @@ void ItemManager::Draw(void)
 
 		//色をもとに戻す
 		item.second->ChangeModelColor(ItemManager::DEFAULT_COLOR);
-		item.second->SetModelColor(1.0f, 1.0f, 1.0f, 1.0f);
+		item.second->SetModelColor(DEFAULT_COLOR.r, DEFAULT_COLOR.g, DEFAULT_COLOR.b, DEFAULT_COLOR.a);
 	}
 }
 
@@ -111,11 +112,11 @@ void ItemManager::AddItem(IntVector3 _mapPos, Quaternion _rot, ItemBase::ITEM_TY
 	{
 		return;
 	}
-	_rotY += 360.0f;
+	_rotY += MapEditer::ONE_LAP_DEG;
 	int rot = Utility::Round(_rotY);
-	rot = static_cast<int>(_rotY) % 360;
+	rot = static_cast<int>(_rotY) % static_cast<int>(MapEditer::ONE_LAP_DEG);
 
-	item->SetRotY(rot);
+	item->SetRotY(static_cast<float>(rot));
 	//配列に追加
 	items_[_type].emplace_back(std::move(item));
 }
@@ -207,7 +208,7 @@ IntVector3 ItemManager::GetDummyItemMapPos(int playerNum)
 	else
 	{
 		//見つからなかった
-		mapPos = { -1,-1,-1 };
+		mapPos = EditController::ERROR_POS;
 	}
 
 	//マップ座標を返す
@@ -220,7 +221,7 @@ IntVector3 ItemManager::GetDummyItemHitSize(int playerNum)
 	IntVector3 size;
 	if (dummyItems_.find(playerNum) == dummyItems_.end() || dummyItems_[playerNum] == nullptr)
 	{
-		return { -1,-1,-1 };
+		return EditController::ERROR_POS;
 	}
 	size = dummyItems_[playerNum]->GetHitSize();
 	return size;
@@ -232,7 +233,7 @@ IntVector3 ItemManager::GetDummyItemSize(int playerNum)
 	IntVector3 size;
 	if (dummyItems_.find(playerNum) == dummyItems_.end() || dummyItems_[playerNum] == nullptr)
 	{
-		return { -1,-1,-1 };
+		return EditController::ERROR_POS;
 	}
 	size = dummyItems_[playerNum]->GetSize();
 	return size;
@@ -469,8 +470,8 @@ const Transform& ItemManager::GetItemTransform(IntVector3 _mapPos, ItemBase::ITE
 IntVector3 ItemManager::GetItemHitSize(ItemBase::ITEM_TYPE _type) const
 {
 	//アイテムのサイズ
-	IntVector3 size = { -1,-1,-1 };
-	auto item = GetInstance().CreateItem(_type, { -1,-1,-1 }, {});
+	IntVector3 size = EditController::ERROR_POS;
+	auto item = GetInstance().CreateItem(_type, EditController::ERROR_POS, {});
 	size = item->GetHitSize();
 	return size;
 }
@@ -478,8 +479,8 @@ IntVector3 ItemManager::GetItemHitSize(ItemBase::ITEM_TYPE _type) const
 IntVector3 ItemManager::GetItemSize(ItemBase::ITEM_TYPE _type) const
 {
 	//アイテムのサイズ
-	IntVector3 size = { -1,-1,-1 };
-	auto item = GetInstance().CreateItem(_type, { -1,-1,-1 }, {});
+	IntVector3 size = EditController::ERROR_POS;
+	auto item = GetInstance().CreateItem(_type, EditController::ERROR_POS, {});
 	size =item->GetSize();
 	return size;
 }
@@ -532,7 +533,7 @@ float ItemManager::GetItemRotY(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos)
 
 VECTOR ItemManager::GetStartWorldPos(void) const
 {
-	VECTOR startPos = { -1.0f,-1.0f,-1.0f };
+	VECTOR startPos = { static_cast<float>(EditController::ERROR_POS.x),static_cast<float>(EditController::ERROR_POS .y),static_cast<float>(EditController::ERROR_POS .z)};
 	auto it = items_.find(ItemBase::ITEM_TYPE::START);
 	if (it != items_.end())
 	{

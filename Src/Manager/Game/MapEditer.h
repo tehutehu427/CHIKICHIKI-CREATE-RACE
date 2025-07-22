@@ -7,14 +7,23 @@ class MapEditer
 {
 public:
 
+	// マップのサイズ
 	static constexpr IntVector3 MAP_SIZE = { 40,5,30 };
+	// グリッドのサイズ
 	static constexpr int GRID_SIZE = 100;
+
+	static constexpr float ONE_LAP_DEG = 360.0f;	//1周の角度
+
+	static constexpr int HALF_ONE_LAP_DEG = 180;	//1/2周の角度
+
+	static constexpr int QUATER_ONE_LAP_DEG = 90;	//1/4周の角度	
+
 
 	struct STATUS
 	{
-		IntVector3 mapPos = {-1,-1,-1};
-		Quaternion rotate = {};
-		ItemBase::ITEM_TYPE type = ItemBase::ITEM_TYPE::NONE;
+		IntVector3 mapPos = { -1,-1,-1 };	//マップ座標
+		Quaternion rotate = {};		//回転情報
+		ItemBase::ITEM_TYPE type = ItemBase::ITEM_TYPE::NONE;	//アイテムの種類
 	};
 	// 明示的にインステンスを生成する
 	static void CreateInstance(void);
@@ -62,6 +71,13 @@ public:
 	IntVector3 WorldToMapPos(VECTOR _worldPos);
 	VECTOR MapToWorldPos(IntVector3 _mapPos);
 
+	/// <summary>
+	/// 回転時にマップ座標とサイズを調整する
+	/// </summary>
+	/// <param name="_mapPos"></param>
+	/// <param name="_size"></param>
+	/// <param name="_hitSize"></param>
+	/// <param name="_rotY"></param>
 	void ApplyRotation(IntVector3& _mapPos, IntVector3& _size, IntVector3& _hitSize, int _rotY);
 
 	void DeleteAllItem(void);
