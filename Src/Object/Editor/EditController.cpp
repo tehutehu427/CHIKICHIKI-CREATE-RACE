@@ -913,8 +913,8 @@ void EditController::RotateObject(void) const
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ITEM_ROTATE,padNum_,type))
 	{
 		Quaternion rot = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
-		float rotScale = Utility::Deg2RadF(90.0f);
-		ItemManager::GetInstance().SetDummyItemRotY(playerNum_, ItemManager::GetInstance().GetDummyItemRotY(playerNum_) + 90.0f);
+		float rotScale = Utility::Deg2RadF(MapEditer::QUATER_ONE_LAP_DEG);
+		ItemManager::GetInstance().SetDummyItemRotY(playerNum_, ItemManager::GetInstance().GetDummyItemRotY(playerNum_) + MapEditer::QUATER_ONE_LAP_DEG);
 		rot = Quaternion::Mult(rot, Quaternion::AngleAxis(rotScale,Utility::AXIS_Y));
 		auto& itemIns = ItemManager::GetInstance();
 		ItemManager::GetInstance().DummyItemSetRotate(rot, playerNum_);
@@ -927,26 +927,9 @@ void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector
 	SoundManager::GetInstance().Play(SoundManager::SRC::BOMB_SE, SoundManager::PLAYTYPE::BACK);
 	MapEditer& editer = MapEditer::GetInstance();
 	ItemManager& itemM = ItemManager::GetInstance();
-	_rotY += 360.0f;
+	_rotY += static_cast<int>(MapEditer::ONE_LAP_DEG);
  	int rot = Utility::Round(_rotY);
- 	rot = static_cast<int>(_rotY) % 360;
-	switch (rot)
-	{
-	case 0:
-		break;
-	case 90:
-		std::swap(_hitSize.x, _hitSize.z);
-		_mapPos.z -= _hitSize.z - _size.z;
-		break;
-	case 180:
-		_mapPos.x -= _hitSize.x - _size.x;
-		break;
-	case 270:
-		std::swap(_hitSize.x, _hitSize.z);
-		break;
-	default:
-		break;
-	}
+	editer.ApplyRotation(_mapPos, _size, _hitSize, rot);
 	for (int x = 0; x < _hitSize.x;x++)
 	{
 		for (int y = 0; y < _hitSize.y;y++)
@@ -1057,7 +1040,7 @@ void EditController::ChengeCameraMode(void)
 		camera->ChangeMode(Camera::MODE::FIXED_UP);
 		VECTOR pos = { MapEditer::MAP_SIZE.x / 2 * MapEditer::GRID_SIZE,3500,MapEditer::MAP_SIZE.z / 2 * MapEditer::GRID_SIZE };
 		camera->SetPos(pos);
-		camera->SetTargetPos(VAdd(pos, { 0.0f,-5000.0f,0.0f }));
+		camera->SetTargetPos(VAdd(pos,UP_CAMERA_POS));
 		break;
 	}
 	case EditController::CAMERA_MODE::MAX:
@@ -1099,7 +1082,7 @@ void EditController::ChengeCameraMode(CAMERA_MODE mode)
 		camera->ChangeMode(Camera::MODE::FIXED_UP);
 		VECTOR pos = { MapEditer::MAP_SIZE.x / 2 * MapEditer::GRID_SIZE,3500,MapEditer::MAP_SIZE.z / 2 * MapEditer::GRID_SIZE };
 		camera->SetPos(pos);
-		camera->SetTargetPos(VAdd(pos, { 0.0f,-5000.0f,0.0f }));
+		camera->SetTargetPos(VAdd(pos, UP_CAMERA_POS));
 		break;
 	}
 	case EditController::CAMERA_MODE::MAX:
