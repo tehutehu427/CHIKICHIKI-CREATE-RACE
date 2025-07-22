@@ -81,8 +81,14 @@ public:
 	//スライム床と当たっているか
 	inline const bool GetIsSlimeHit(void)const { return isHitSlimeFloor_; }
 
+	//コインの枚数
+	inline const int GetCoinNum(void)const { return coinNum_; }
+
 	//セッタ
 	void SetMovedPos(const VECTOR& _movedPos) { movedPos_ = _movedPos; }
+
+	//コイン枚数
+	inline void SetCoinNum(const int _num) { coinNum_ = _num; }
 
 private:
 	//--------------------------------------
@@ -207,6 +213,9 @@ private:
 	//プレイヤーのサイドが当たっている
 	bool isSide_;
 
+	//コインの枚数
+	int coinNum_;
+
 	//メンバ関数
 	//----------------------------------
 		//当たり判定
@@ -238,6 +247,9 @@ private:
 
 	//ゴールした時の処理
 	void ColGoal(const std::weak_ptr<Collider> _hitCol);
+
+	//コインと当たった時
+	void ColCoin(void);
 
 	//モデルの当たった時の共通処理
 	void HitModelCommon(const std::weak_ptr<Collider> _hitCol);

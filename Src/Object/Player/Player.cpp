@@ -54,6 +54,8 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	changeStates_.emplace(PLAYER_STATE::DEATH, [this]() {ChangeDeath(); });
 	changeStates_.emplace(PLAYER_STATE::GOAL, [this]() {ChangeGoal(); });
 
+	coinNum_ = 0;
+
 	//////コライダ作成
 	////*****************************************************
 	////接地しているときのライン(床上にとどまっているとき)
@@ -257,7 +259,7 @@ void Player::DrawDebug(void)
 	unsigned int color = 0xffffff;
 	const int HIGH = 10;
 	const int WIDTH = 200;
-	onHitCol_->DrawDebug();
+	//onHitCol_->DrawDebug();
 
 
 	VECTOR pow = action_->GetMovePow();
@@ -273,7 +275,7 @@ void Player::DrawDebug(void)
 		,onHitCol_->GetIsLandHit()
 	);
 
-	//action_->DrawDebug();
+	action_->DrawDebug();
 
 	if (IsDeath())
 	{
@@ -326,6 +328,9 @@ void Player::ChangeDeath(void)
 	}
 	colParam_.clear();
 	action_->StopResource();
+
+	//死んだらコインを落とす
+	onHitCol_->SetCoinNum(0);
 	stateUpdate_ = std::bind(&Player::DeathUpdate, this);
 }
 void Player::DeathUpdate(void)
