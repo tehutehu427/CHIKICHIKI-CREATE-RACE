@@ -28,6 +28,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_.emplace(TAG::SPRING, [this](const std::weak_ptr<Collider> _hitCol) {ColSpring(_hitCol); });
 	colUpdates_.emplace(TAG::CANNON_AIM, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
 	colUpdates_.emplace(TAG::SHADOW, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
+	//colUpdates_.emplace(TAG::COIN, [this](const std::weak_ptr<Collider> _hitCol) {CollCoin(); });
 
 	
 
@@ -40,6 +41,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	}
 	isGoal_ = false;
 	isDeath_ = false;
+	coinNum_ = 0;
 }
 
 PlayerOnHit::~PlayerOnHit(void)
@@ -56,6 +58,7 @@ void PlayerOnHit::Init(void)
 {
 	isGoal_ = false;
 	isDeath_ = false;
+	coinNum_ = 0;
 }
 
 void PlayerOnHit::Update(void)
@@ -176,6 +179,7 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 	if (!isSide_)
 	{
 		//バネジャンプ音再生
+		action_.SetStepJump(0.0f);
 		SoundManager::GetInstance().Play(SoundManager::SRC::SPRING_SE, SoundManager::PLAYTYPE::BACK);
 		action_.SetJumpDecel(SPRING_JUMP_POW);
 		action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
@@ -189,6 +193,12 @@ void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 	{
 		isGoal_ = true;
 	}
+}
+void PlayerOnHit::ColCoin(void)
+{
+	//コインと体が当たっているとき以外処理を飛ばす
+	if (!colParam_[BODY_SPHERE_COL_NO].collider_->IsHit())return;
+	coinNum_++;
 }
 #ifdef DEBUG_ON
 void PlayerOnHit::DrawDebug(void)

@@ -166,6 +166,7 @@ public:
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos);
 
+
 	//*****************************************
 	//モデル色を変更
 	void ChangeModelColor(const COLOR_F _colorScale)override;
@@ -175,6 +176,8 @@ public:
 
 	//パンチの当たり判定を消す
 	void KillPunchCol(void);
+
+
 
 private:
 	//***********************************************
@@ -280,9 +283,9 @@ private:
 
 	float finishDelay_;	//ゲーム終了時の待機時間
 
-
-
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
+					
+	int coinNum_;		//コイン枚数
 
 	//--------------------------------------------
 	//******************************************
