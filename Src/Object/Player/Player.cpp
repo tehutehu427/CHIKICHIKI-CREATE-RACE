@@ -54,6 +54,8 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	changeStates_.emplace(PLAYER_STATE::DEATH, [this]() {ChangeDeath(); });
 	changeStates_.emplace(PLAYER_STATE::GOAL, [this]() {ChangeGoal(); });
 
+	coinNum_ = 0;
+
 	//////コライダ作成
 	////*****************************************************
 	////接地しているときのライン(床上にとどまっているとき)
@@ -257,21 +259,21 @@ void Player::DrawDebug(void)
 	unsigned int color = 0xffffff;
 	const int HIGH = 10;
 	const int WIDTH = 200;
-	onHitCol_->DrawDebug();
+	//onHitCol_->DrawDebug();
 
 
-	//VECTOR pow = action_->GetMovePow();
-	//VECTOR jumpPow = action_->GetJumpPow();
-	//VECTOR movedPos = onHitCol_->GetMovedPos();
-	//DrawFormatString(0, 16*(playerNum_*9), 0x000000
-	//	, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nisJump(%d)\nisLand(%d)"
-	//	, trans_.rot.x, trans_.rot.y, trans_.rot.z
-	//	,action_->GetJumpDecel()
-	//	,action_->GetStepJump()
-	//	, jumpPow.x, jumpPow.y, jumpPow.z
-	//	,action_->GetIsJump()
-	//	,onHitCol_->GetIsLandHit()
-	//);
+	VECTOR pow = action_->GetMovePow();
+	VECTOR jumpPow = action_->GetJumpPow();
+	VECTOR movedPos = onHitCol_->GetMovedPos();
+	DrawFormatString(0, 16*(playerNum_*9), 0x000000
+		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nisJump(%d)\nisLand(%d)"
+		, trans_.rot.x, trans_.rot.y, trans_.rot.z
+		,action_->GetJumpDecel()
+		,action_->GetStepJump()
+		, jumpPow.x, jumpPow.y, jumpPow.z
+		,action_->GetIsJump()
+		,onHitCol_->GetIsLandHit()
+	);
 
 	action_->DrawDebug();
 
@@ -326,6 +328,9 @@ void Player::ChangeDeath(void)
 	}
 	colParam_.clear();
 	action_->StopResource();
+
+	//死んだらコインを落とす
+	onHitCol_->SetCoinNum(0);
 	stateUpdate_ = std::bind(&Player::DeathUpdate, this);
 }
 void Player::DeathUpdate(void)
