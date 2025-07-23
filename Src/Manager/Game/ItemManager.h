@@ -182,8 +182,17 @@ public:
 	//アイテムの値リセット
 	void ResetItemValue(void);
 
+	/// <summary>
+	/// ダミーアイテムのY軸回転を取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <returns></returns>
 	float GetDummyItemRotY(int playerNum);
-
+	/// <summary>
+	/// ダミーアイテムのY軸回転を設定
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	/// <param name="rotY">設定する値</param>
 	void SetDummyItemRotY(int playerNum , float rotY);
 
 protected:

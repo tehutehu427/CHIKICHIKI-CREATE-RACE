@@ -85,8 +85,8 @@ public:
 		DECISION_MOUSE,			//決定(MOUSE)
 		CANCEL,					//キャンセル
 
-		PHASE_CHENGE,			//フェーズ変更
-		PHASE_CHENGE_CHECK,		//フェーズ変更
+		PHASE_CHANGE,			//フェーズ変更
+		PHASE_CHANGE_CHECK,		//フェーズ変更
 
 		IMPORT_FILE,			//ファイル入力
 		IMPORT_FILE_CLICK,		//ファイル入力クリック
@@ -120,7 +120,7 @@ public:
 		EDIT_CAMERA_MOVE_RIGHT,	//エディット時のカメラ移動右
 		EDIT_CAMERA_MOVE_UP,	//エディット時のカメラ移動上
 		EDIT_CAMERA_MOVE_DOWN,	//エディット時のカメラ移動下
-		EDIT_CAMERA_CHENGE,		//エディット時のカメラを変更する
+		EDIT_CAMERA_CHANGE,		//エディット時のカメラを変更する
 
 		EDIT_ITEM_SELECT,		//エディット時のアイテム選択
 		EDIT_ITEM_ROTATE,		//エディット時のアイテム回転
@@ -149,8 +149,8 @@ public:
 
 		INPUT_CHECK,			//マルチ時の入力確認
 
-		DEBUG_CHENGE_TITLE,		//デバッグ用タイトル画面に戻る
-		DEBUG_CHENGE_CLEAR,		//デバッグ用クリア画面に戻る
+		DEBUG_CHANGE_TITLE,		//デバッグ用タイトル画面に戻る
+		DEBUG_CHANGE_CLEAR,		//デバッグ用クリア画面に戻る
 		DEBUG_CHANGE_INPUT,			//デバッグ用入力デバイス切り替え
 		DATA_INPUT,				//データを入力
 		DATA_EXPORT,			//データを出力

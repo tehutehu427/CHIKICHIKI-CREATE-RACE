@@ -69,6 +69,9 @@ public:
 	/// <param name="_state">変更先の状態</param>
 	void ChangeState(const STATE _state);
 
+	//1スコア当たりの長さを設定
+	void SetLengthPerPoint(const int _lengthPerPoint);
+
 	/// <summary>
 	/// 状態を返す
 	/// </summary>
@@ -86,8 +89,8 @@ private:
 	// プレイヤー番号
 	int playerIndex_;
 
-	//カラー
-	int color_;
+	//スコア最大値
+	int scoreMax_;
 
 	// 座標
 	Vector2 pos_;

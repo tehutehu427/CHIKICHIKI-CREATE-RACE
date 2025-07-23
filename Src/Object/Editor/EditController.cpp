@@ -28,8 +28,8 @@ EditController::EditController(int playerNum)
 	mapPos_ = {};
 	moveDir_ = MOVE_DIR::NONE;
 	//モード管理(遷移時の初期処理)
-	modeChanges_.emplace(MODE::ITEM_SELECT, std::bind(&EditController::ChengeModeItemSelect, this));
-	modeChanges_.emplace(MODE::MOVE_ROTATE, std::bind(&EditController::ChengeModeMove, this));
+	modeChanges_.emplace(MODE::ITEM_SELECT, std::bind(&EditController::ChangeModeItemSelect, this));
+	modeChanges_.emplace(MODE::MOVE_ROTATE, std::bind(&EditController::ChangeModeMove, this));
 	mapPosObject_ = ERROR_POS;
 	mode_ = MODE::MAX;
 	itemType_ = ItemBase::ITEM_TYPE::NONE;
@@ -59,7 +59,7 @@ EditController::~EditController()
 void EditController::Init(void)
 {
 	//モード変更
-	ChengeMode(MODE::ITEM_SELECT);
+	ChangeMode(MODE::ITEM_SELECT);
 	Reset();
 }
 
@@ -73,9 +73,9 @@ void EditController::Update(void)
 	UpdateCursor();	//カーソル更新
 	ready_->Update();
 
-	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_CHENGE, padNum_))
+	if (KeyConfig::GetInstance().IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_CAMERA_CHANGE, padNum_))
 	{
-		ChengeCameraMode();
+		ChangeCameraMode();
 	}
 	DebugUpdate();
 
@@ -149,7 +149,7 @@ void EditController::Reset(void)
 	ready_->Init();
 }
 
-void EditController::ChengeMode(MODE mode)
+void EditController::ChangeMode(MODE mode)
 {
 	if (mode_ != mode)
 	{
@@ -227,8 +227,8 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	}
 	itemMIns.CreateDummyItem(mapPos, rot, itemType_, playerNum_);
 	mapPos_ = mapPos;
-	ChengeMode(MODE::MOVE_ROTATE);
-	ChengeCameraMode(CAMERA_MODE::GO_DUMMY);
+	ChangeMode(MODE::MOVE_ROTATE);
+	ChangeCameraMode(CAMERA_MODE::GO_DUMMY);
 }
 
 bool EditController::GetReady(void) const
@@ -288,6 +288,7 @@ void EditController::UpdateError(void)
 {
 	if (errorType_ != ERROR_TYPE::NONE && errorStringTime_ == 0)
 	{
+		KeyConfig::GetInstance().PadVibration(padNum_, -1, ERROR_PAD_VIBE_POW);	//パッドの振動を止める
 		errorStringTime_ = ERROR_STRING_TIME;	//エラー文字列の表示時間初期化
 	}
 	else if (errorStringTime_ > 0)
@@ -295,6 +296,7 @@ void EditController::UpdateError(void)
 		errorStringTime_ -= SceneManager::GetInstance().GetDeltaTime();	//エラー文字列の表示時間減少
 		if (errorStringTime_ <= 0)
 		{
+			KeyConfig::GetInstance().StopPadVibration(padNum_);	//パッドの振動を止める
 			errorStringTime_ = 0.0f;	//エラー文字列の表示時間初期化
 			errorType_ = ERROR_TYPE::NONE;
 		}
@@ -317,13 +319,13 @@ void EditController::SetError(int errorType)
 	errorType_ = static_cast<ERROR_TYPE>((abs(errorType)));
 }
 
-void EditController::ChengeModeItemSelect(void)
+void EditController::ChangeModeItemSelect(void)
 {
 	modeUpdate_ = std::bind(&EditController::ItemSelectUpdate, this);
 	modeDraw_ = std::bind(&EditController::ItemSelectDraw, this);
 }
 
-void EditController::ChengeModeMove(void)
+void EditController::ChangeModeMove(void)
 {
 	modeUpdate_ = std::bind(&EditController::MoveRotateObjectUpdate, this);
 	modeDraw_ = std::bind(&EditController::MoveRotateObjectDraw, this);
@@ -344,7 +346,7 @@ void EditController::MoveRotateObjectUpdate(void)
 			if (itemMins.GetDummyItemStatus(playerNum_).effType != ItemBase::EFFECT_TYPE::FIXED)
 			{
 				itemMins.DeleteDummyItem(playerNum_);	//ダミーアイテムを削除
-				ChengeMode(MODE::ITEM_SELECT);	//モードをアイテム選択に変更
+				ChangeMode(MODE::ITEM_SELECT);	//モードをアイテム選択に変更
 				return;
 			}
 		}
@@ -464,7 +466,7 @@ void EditController::ItemNotSelect(void)
 			}
 			MapEditer::GetInstance().DeleteItem(itemType_, leaderPos, ItemManager::GetInstance().GetDummyItemRotY(playerNum_), ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_));
 			mapPos_ = leaderPos;
-			ChengeMode(MODE::MOVE_ROTATE);
+			ChangeMode(MODE::MOVE_ROTATE);
 			SoundManager::GetInstance().Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		}
 		else
@@ -487,7 +489,7 @@ void EditController::ItemNotSelect(void)
 			itemType_ = ItemBase::ITEM_TYPE::NONE;
 			//ItemManager::GetInstance().DummyItemAddItems(playerNum_);
 			//選択解除
-			ChengeMode(MODE::ITEM_SELECT);
+			ChangeMode(MODE::ITEM_SELECT);
 			SoundManager::GetInstance().Play(SoundManager::SRC::CREATE_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		}
 	}
@@ -509,7 +511,7 @@ IntVector3 EditController::NearObjectFrontPos(Vector2 cursorPos)
 	{
 		nearWorldPos = VAdd(nearWorldPos, normalmousePos3D);
 		VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
-		if (IsChengeVecDir(normalmousePos, normalmousePos3D))
+		if (IsChangeVecDir(normalmousePos, normalmousePos3D))
 		{
 			return mapPos;	//カーソルの方向が変わったら終了
 		}
@@ -521,7 +523,7 @@ IntVector3 EditController::NearObjectFrontPos(Vector2 cursorPos)
 	{
 		farWorldPos = VSub(farWorldPos, normalmousePos3D);
 		VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
-		if (IsChengeVecDir(normalmousePos, normalmousePos3D))
+		if (IsChangeVecDir(normalmousePos, normalmousePos3D))
 		{
 			return mapPos;	//カーソルの方向が変わったら終了
 		}
@@ -644,7 +646,7 @@ void EditController::MoveItem(void)
 		{
 			farWorldPos = VSub(farWorldPos, normalmousePos3D);
 			VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
-			if (IsChengeVecDir(normalmousePos, normalmousePos3D))
+			if (IsChangeVecDir(normalmousePos, normalmousePos3D))
 			{
 				return;	//カーソルの方向が変わったら終了
 			}
@@ -657,7 +659,7 @@ void EditController::MoveItem(void)
 		{
 			farWorldPos = VSub(farWorldPos, normalmousePos3D);
 			VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
-			if (IsChengeVecDir(normalmousePos, normalmousePos3D))
+			if (IsChangeVecDir(normalmousePos, normalmousePos3D))
 			{
 				return;	//カーソルの方向が変わったら終了
 			}
@@ -670,7 +672,7 @@ void EditController::MoveItem(void)
 		{
 			farWorldPos = VSub(farWorldPos, normalmousePos3D);
 			VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
-			if (IsChengeVecDir(normalmousePos, normalmousePos3D))
+			if (IsChangeVecDir(normalmousePos, normalmousePos3D))
 			{
 				return;	//カーソルの方向が変わったら終了
 			}
@@ -683,7 +685,7 @@ void EditController::MoveItem(void)
 		{
 			farWorldPos = VSub(farWorldPos, normalmousePos3D);
 			VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
-			if (IsChengeVecDir(normalmousePos, normalmousePos3D))
+			if (IsChangeVecDir(normalmousePos, normalmousePos3D))
 			{
 				return;	//カーソルの方向が変わったら終了
 			}
@@ -699,7 +701,7 @@ void EditController::MoveItem(void)
 		{
 			farWorldPos = VSub(farWorldPos, normalmousePos3D);
 			VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
-			if (IsChengeVecDir(normalmousePos, normalmousePos3D))
+			if (IsChangeVecDir(normalmousePos, normalmousePos3D))
 			{
 				return;	//カーソルの方向が変わったら終了
 			}
@@ -714,7 +716,7 @@ void EditController::MoveItem(void)
 		{
 			farWorldPos = VSub(farWorldPos, normalmousePos3D);
 			VECTOR normalmousePos = VNorm(VSub(farWorldPos, nearWorldPos));
-			if (IsChengeVecDir(normalmousePos, normalmousePos3D))
+			if (IsChangeVecDir(normalmousePos, normalmousePos3D))
 			{
 				return;	//カーソルの方向が変わったら終了
 			}
@@ -737,12 +739,12 @@ void EditController::MoveItem(void)
 EditController::MOVE_DIR EditController::GetMoveDir(void)
 {
 	MOVE_DIR moveDir = MOVE_DIR::NONE;
-	int isChenge = IsChengeMoveDir();
-	if (isChenge == -1)
+	int isChange = IsChangeMoveDir();
+	if (isChange == -1)
 	{
 		return moveDir;	//移動方向が決まっていないからnoneを返す
 	}
-	else if (isChenge == 0)
+	else if (isChange == 0)
 	{
 		return moveDir_;	//移動方向が決まっているからそのまま返す
 	}
@@ -804,12 +806,12 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 EditController::MOVE_DIR EditController::GetMoveDirTwo(void)
 {
 	MOVE_DIR moveDir = MOVE_DIR::NONE;
-	int isChenge = IsChengeMoveDir();
-	if (isChenge == -1)
+	int isChange = IsChangeMoveDir();
+	if (isChange == -1)
 	{
 		return moveDir;	//移動方向が決まっていないからnoneを返す
 	}
-	else if (isChenge == 0)
+	else if (isChange == 0)
 	{
 		return moveDir_;	//移動方向が決まっているからそのまま返す
 	}
@@ -851,7 +853,7 @@ EditController::MOVE_DIR EditController::GetMoveDirTwo(void)
 	return moveDir;
 }
 
-int EditController::IsChengeMoveDir(void)
+int EditController::IsChangeMoveDir(void)
 {
 	KeyConfig& ins = KeyConfig::GetInstance();
 	auto type = playerMaxNum_ == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
@@ -913,8 +915,8 @@ void EditController::RotateObject(void) const
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ITEM_ROTATE,padNum_,type))
 	{
 		Quaternion rot = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
-		float rotScale = Utility::Deg2RadF(90.0f);
-		ItemManager::GetInstance().SetDummyItemRotY(playerNum_, ItemManager::GetInstance().GetDummyItemRotY(playerNum_) + 90.0f);
+		float rotScale = Utility::Deg2RadF(MapEditer::QUATER_ONE_LAP_DEG);
+		ItemManager::GetInstance().SetDummyItemRotY(playerNum_, ItemManager::GetInstance().GetDummyItemRotY(playerNum_) + MapEditer::QUATER_ONE_LAP_DEG);
 		rot = Quaternion::Mult(rot, Quaternion::AngleAxis(rotScale,Utility::AXIS_Y));
 		auto& itemIns = ItemManager::GetInstance();
 		ItemManager::GetInstance().DummyItemSetRotate(rot, playerNum_);
@@ -927,26 +929,9 @@ void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector
 	SoundManager::GetInstance().Play(SoundManager::SRC::BOMB_SE, SoundManager::PLAYTYPE::BACK);
 	MapEditer& editer = MapEditer::GetInstance();
 	ItemManager& itemM = ItemManager::GetInstance();
-	_rotY += 360.0f;
+	_rotY += static_cast<int>(MapEditer::ONE_LAP_DEG);
  	int rot = Utility::Round(_rotY);
- 	rot = static_cast<int>(_rotY) % 360;
-	switch (rot)
-	{
-	case 0:
-		break;
-	case 90:
-		std::swap(_hitSize.x, _hitSize.z);
-		_mapPos.z -= _hitSize.z - _size.z;
-		break;
-	case 180:
-		_mapPos.x -= _hitSize.x - _size.x;
-		break;
-	case 270:
-		std::swap(_hitSize.x, _hitSize.z);
-		break;
-	default:
-		break;
-	}
+	editer.ApplyRotation(_mapPos, _size, _hitSize, rot);
 	for (int x = 0; x < _hitSize.x;x++)
 	{
 		for (int y = 0; y < _hitSize.y;y++)
@@ -978,7 +963,7 @@ void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector
 	itemM.DeleteDummyItem(playerNum_);
 }
 
-bool EditController::IsChengeVecDir(const VECTOR vec1, const VECTOR vec2) const
+bool EditController::IsChangeVecDir(const VECTOR vec1, const VECTOR vec2) const
 {
 	if (Utility::GetSign(vec1.x) != Utility::GetSign(vec2.x) ||
 		Utility::GetSign(vec1.y) != Utility::GetSign(vec2.y) ||
@@ -1020,7 +1005,7 @@ void EditController::SetCameraPosToDummyObject(void)
 
 }
 
-void EditController::ChengeCameraMode(void)
+void EditController::ChangeCameraMode(void)
 {
 	CAMERA_MODE nextMode = static_cast<CAMERA_MODE>((static_cast<int>(cameraMode_) + 1) % static_cast<int>(CAMERA_MODE::MAX));
 	auto& sceneM = SceneManager::GetInstance();
@@ -1057,7 +1042,7 @@ void EditController::ChengeCameraMode(void)
 		camera->ChangeMode(Camera::MODE::FIXED_UP);
 		VECTOR pos = { MapEditer::MAP_SIZE.x / 2 * MapEditer::GRID_SIZE,3500,MapEditer::MAP_SIZE.z / 2 * MapEditer::GRID_SIZE };
 		camera->SetPos(pos);
-		camera->SetTargetPos(VAdd(pos, { 0.0f,-5000.0f,0.0f }));
+		camera->SetTargetPos(VAdd(pos,UP_CAMERA_POS));
 		break;
 	}
 	case EditController::CAMERA_MODE::MAX:
@@ -1067,7 +1052,7 @@ void EditController::ChengeCameraMode(void)
 	}
 }
 
-void EditController::ChengeCameraMode(CAMERA_MODE mode)
+void EditController::ChangeCameraMode(CAMERA_MODE mode)
 {
 	auto& sceneM = SceneManager::GetInstance();
 	auto camera = sceneM.GetCamera(playerNum_).lock();
@@ -1099,7 +1084,7 @@ void EditController::ChengeCameraMode(CAMERA_MODE mode)
 		camera->ChangeMode(Camera::MODE::FIXED_UP);
 		VECTOR pos = { MapEditer::MAP_SIZE.x / 2 * MapEditer::GRID_SIZE,3500,MapEditer::MAP_SIZE.z / 2 * MapEditer::GRID_SIZE };
 		camera->SetPos(pos);
-		camera->SetTargetPos(VAdd(pos, { 0.0f,-5000.0f,0.0f }));
+		camera->SetTargetPos(VAdd(pos, UP_CAMERA_POS));
 		break;
 	}
 	case EditController::CAMERA_MODE::MAX:

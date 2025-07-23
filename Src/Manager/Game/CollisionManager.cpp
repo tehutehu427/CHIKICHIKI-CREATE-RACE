@@ -260,7 +260,7 @@ const bool CollisionManager::JudgeIsColTag(const Collider::TAG _tag1, const Coll
 	return ret;
 }
 
-bool CollisionManager::IsCollision(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2)
+const bool CollisionManager::IsCollision(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2)const
 {
 	//1‚Â–Ú‚Ì“–‚½‚è”»’èŒ`ó
 	auto& geo1 = _col1.lock()->GetGeometry();
