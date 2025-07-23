@@ -18,7 +18,7 @@ Shadow::Shadow(Transform& trans) : parentTrans_(trans)
 	NoneTags_.push_back(Collider::TAG::SHADOW);
 	NoneTags_.push_back(Collider::TAG::CANNON_AIM);
 	NoneTags_.push_back(Collider::TAG::KILLER_ALL);
-	NoneTags_.push_back(Collider::TAG::KILLER_SPECIFIC);
+	//NoneTags_.push_back(Collider::TAG::KILLER_SPECIFIC);
 	NoneTags_.push_back(Collider::TAG::WIND);
 
 	//‰e‚Ì“–‚½‚è”»’è
