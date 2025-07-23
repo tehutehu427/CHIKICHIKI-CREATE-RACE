@@ -120,12 +120,6 @@ void ItemManager::AddItem(IntVector3 _mapPos, Quaternion _rot, ItemBase::ITEM_TY
 	//”z—ñ‚É’Ç‰Á
 	items_[_type].emplace_back(std::move(item));
 }
-
-void ItemManager::DeleteItem(VECTOR mapPos, int range)
-{
-
-}
-
 void ItemManager::DeleteItem(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type)
 {
 	for (auto& items : items_)
