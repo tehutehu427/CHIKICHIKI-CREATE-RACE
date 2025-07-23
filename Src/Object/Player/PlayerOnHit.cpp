@@ -3,6 +3,7 @@
 #include "../../Manager/System/SoundManager.h"
 #include "../../Object/Common/Geometry/Line.h"
 #include"../../Object/Common/Geometry/Model.h"
+#include"./CollisionResolver/CollisionModelResolver.h"
 #include"../../Utility/Utility.h"
 #include"./Player.h"
 #include "PlayerOnHit.h"
@@ -46,6 +47,8 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	isHitSlimeFloor_ = false;
 	moveDiff_ = Utility::VECTOR_ZERO;
 	movedPos_ = Utility::VECTOR_ZERO;
+	modelResolve_ = std::make_unique<CollisionModelResolver>( moveDiff_,trans_.pos,movedPos_, action_, colParam_);
+
 	isSide_ = false;
 	coinNum_ = 0;
 }
@@ -181,7 +184,6 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 	HitModelCommon(_hitCol);
 	//リソースID
 	auto& res = ResourceManager::GetInstance();
-	//int hitSE = res.Load(ResourceManager::SRC::SPRING_SE).handleId_;
 	if (!isSide_)
 	{
 		//バネジャンプ音再生
@@ -234,120 +236,120 @@ void PlayerOnHit::DrawDebug(void)
 
 void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 {
-	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
-	//当たったモデルの情報を取得
-	//移動後座標と現在座標で早い移動速度でも対応させる
-	VECTOR hitPos = hitModel.GetHitLineInfo().HitPosition;
-	//移動後と移動前のコライダ
-	auto& moveLineCol = colParam_[MOVE_LINE_COL_NO].collider_;
-	//上下を引いたラインのコライダ(接地)
-	auto& upDownLine = colParam_[UP_AND_DOWN_LINE_COL_NO].collider_;
-	//球の当たり判定(プレイヤーの周囲)
-	auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
-	//目線のライン(プレイヤーの目線)
-	auto& eyeLine = colParam_[EYE_LINE_NO].collider_;
+	modelResolve_->Resolve(_hitCol);
+	//Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
+	////当たったモデルの情報を取得
+	////移動後座標と現在座標で早い移動速度でも対応させる
+	//VECTOR hitPos = hitModel.GetHitLineInfo().HitPosition;
+	////移動後と移動前のコライダ
+	//auto& moveLineCol = colParam_[MOVE_LINE_COL_NO].collider_;
+	////上下を引いたラインのコライダ(接地)
+	//auto& upDownLine = colParam_[UP_AND_DOWN_LINE_COL_NO].collider_;
+	////球の当たり判定(プレイヤーの周囲)
+	//auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
+	////目線のライン(プレイヤーの目線)
+	//auto& eyeLine = colParam_[EYE_LINE_NO].collider_;
 
-	//アクションに渡すフラグの初期化
-	isLandHit_ = false;
-	isHitSlimeFloor_ = false;
-
-
-	if (moveLineCol->IsHit())
-	{
-		//Y座標のみ半径分上に移動させる
-		movedPos_.y = hitPos.y + Player::RADIUS + POSITION_OFFSET;
-		action_.SetJumpPow(Utility::VECTOR_ZERO);
-		action_.SetIsJump(false);
-
-		//現在座標の更新
-		trans_.pos = movedPos_;
-		return;
-	}
-	//プレイヤーの接地
-	if (upDownLine->IsHit())
-	{
-		Line& upDown = dynamic_cast<Line&>(upDownLine->GetGeometry());
-		Collider::TAG tag = upDownLine->GetTags()[0];
-		VECTOR hitLinePos = upDown.GetHitInfo().HitPosition;
-		if (movedPos_.y > hitLinePos.y)
-		{
-			movedPos_.y = hitLinePos.y + Player::RADIUS + POSITION_OFFSET;
-			//地面と当たっている
-			isLandHit_ = true;
-			action_.SetJumpPow(Utility::VECTOR_ZERO);
-		}
-		else
-		{
-			movedPos_.y = hitLinePos.y - Player::RADIUS - POSITION_OFFSET;
-			if (action_.GetJumpDecel() > 0.0f)
-			{
-				//オブジェクトの下に当たったら跳ね返るようにする
-				action_.SetJumpDecel(DOWN_BOUNCE_DECELERATION);
-			}
-		}
-	}
-	Collider::TAG tag = _hitCol.lock()->GetTags()[0];
-	//移動後座標を一回格納し、移動前をとる
-	Transform trans = Transform(trans_);
-	trans.pos = movedPos_;
-	trans.Update();
-	isSide_ = false;
-	if (bodyShere->IsHit())
-	{
-		auto& hitInfo = hitModel.GetHitInfo();
-		//std::vector<VECTOR> collPos;
-		VECTOR vec = VSub(moveDiff_, movedPos_);
-		vec = VNorm(vec);
-		vec.y = 0.0f;
-		for (int i = 0; i < hitInfo.HitNum; i++)
-		{
-			auto hit = hitInfo.Dim[i];
-			VECTOR hitPos = hit.HitPosition;
-			for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
-			{
-				int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
-					, hit.Position[0], hit.Position[1], hit.Position[2]);
-				if (pHit)
-				{
-					isSide_ = true;
-					VECTOR normal = hit.Normal;
-					//y座標を抜いて押しだす
-					normal.y = 0.0f;
- 					movedPos_ = VAdd(movedPos_, VScale(normal, HIT_NORMAL_OFFSET));
-					
-					//カプセルを移動させる
-					trans.pos = movedPos_;
-					trans.Update();
-					continue;
-				}
-				break;
-			}
-			
-		}
-		if(isSide_&&_hitCol.lock()->GetTags()[0]!=Collider::TAG::KILLER_SPECIFIC)
-		{
-			Line& eyeLineGeo = dynamic_cast<Line&>(eyeLine->GetGeometry());
-			int modelId = _hitCol.lock()->GetParent().GetTransform().modelId;
-			VECTOR pos1 = eyeLineGeo.GetPosPoint1();
-			VECTOR pos2 = eyeLineGeo.GetPosPoint2();
-			if (MV1CollCheck_Line(modelId,-1, pos1,pos2).HitFlag==0)
-			{
-				if (!Utility::EqualsVZero(action_.GetMovePow()))
-				{
-					movedPos_.y += Player::EYE_HEIGHT.y;
-				}
-				
-			}
-		}
-	}
-	//目線がモデルに当たって無ければ上に押し上げる
+	////アクションに渡すフラグの初期化
+	//isLandHit_ = false;
+	//isHitSlimeFloor_ = false;
 
 
-	////移動前の座標を格納する
-	moveDiff_ = trans_.pos;
-	//移動
-	trans_.pos = movedPos_;
-	//trans_.Update();
+	//if (moveLineCol->IsHit())
+	//{
+	//	//Y座標のみ半径分上に移動させる
+	//	movedPos_.y = hitPos.y + Player::RADIUS + POSITION_OFFSET;
+	//	action_.SetJumpPow(Utility::VECTOR_ZERO);
+	//	action_.SetIsJump(false);
+
+	//	//現在座標の更新
+	//	trans_.pos = movedPos_;
+	//	return;
+	//}
+	////プレイヤーの接地
+	//if (upDownLine->IsHit())
+	//{
+	//	Line& upDown = dynamic_cast<Line&>(upDownLine->GetGeometry());
+	//	Collider::TAG tag = upDownLine->GetTags()[0];
+	//	VECTOR hitLinePos = upDown.GetHitInfo().HitPosition;
+	//	if (movedPos_.y > hitLinePos.y)
+	//	{
+	//		movedPos_.y = hitLinePos.y + Player::RADIUS + POSITION_OFFSET;
+	//		//地面と当たっている
+	//		isLandHit_ = true;
+	//		action_.SetJumpPow(Utility::VECTOR_ZERO);
+	//	}
+	//	else
+	//	{
+	//		movedPos_.y = hitLinePos.y - Player::RADIUS - POSITION_OFFSET;
+	//		if (action_.GetJumpDecel() > 0.0f)
+	//		{
+	//			//オブジェクトの下に当たったら跳ね返るようにする
+	//			action_.SetJumpDecel(DOWN_BOUNCE_DECELERATION);
+	//		}
+	//	}
+	//}
+	//Collider::TAG tag = _hitCol.lock()->GetTags()[0];
+	////移動後座標を一回格納し、移動前をとる
+	//Transform trans = Transform(trans_);
+	//trans.pos = movedPos_;
+	//trans.Update();
+	//isSide_ = false;
+	//if (bodyShere->IsHit())
+	//{
+	//	auto& hitInfo = hitModel.GetHitInfo();
+	//	//std::vector<VECTOR> collPos;
+	//	VECTOR vec = VSub(moveDiff_, movedPos_);
+	//	vec = VNorm(vec);
+	//	vec.y = 0.0f;
+	//	for (int i = 0; i < hitInfo.HitNum; i++)
+	//	{
+	//		auto hit = hitInfo.Dim[i];
+	//		VECTOR hitPos = hit.HitPosition;
+	//		for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
+	//		{
+	//			int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
+	//				, hit.Position[0], hit.Position[1], hit.Position[2]);
+	//			if (pHit)
+	//			{
+	//				isSide_ = true;
+	//				VECTOR normal = hit.Normal;
+	//				//y座標を抜いて押しだす
+	//				normal.y = 0.0f;
+ //					movedPos_ = VAdd(movedPos_, VScale(normal, HIT_NORMAL_OFFSET));
+	//				
+	//				//カプセルを移動させる
+	//				trans.pos = movedPos_;
+	//				trans.Update();
+	//				continue;
+	//			}
+	//			break;
+	//		}
+	//		
+	//	}
+	//	if(isSide_&&_hitCol.lock()->GetTags()[0]!=Collider::TAG::KILLER_SPECIFIC)
+	//	{
+	//		Line& eyeLineGeo = dynamic_cast<Line&>(eyeLine->GetGeometry());
+	//		int modelId = _hitCol.lock()->GetParent().GetTransform().modelId;
+	//		VECTOR pos1 = eyeLineGeo.GetPosPoint1();
+	//		VECTOR pos2 = eyeLineGeo.GetPosPoint2();
+	//		if (MV1CollCheck_Line(modelId,-1, pos1,pos2).HitFlag==0)
+	//		{
+	//			if (!Utility::EqualsVZero(action_.GetMovePow()))
+	//			{
+	//				movedPos_.y += Player::EYE_HEIGHT.y;
+	//			}
+	//			
+	//		}
+	//	}
+	//}
+	////目線がモデルに当たって無ければ上に押し上げる
+
+
+	//////移動前の座標を格納する
+	//moveDiff_ = trans_.pos;
+	////移動
+	//trans_.pos = movedPos_;
 }
 
 

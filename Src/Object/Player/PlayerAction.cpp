@@ -180,6 +180,12 @@ void PlayerAction::ChangeAction(ATK_ACT _act)
 	changeAction_[act_]();
  }
 
+void PlayerAction::StopJump(void)
+{
+	jumpPow_ = Utility::VECTOR_ZERO;
+	stepJump_ = 0.0f;
+}
+
 void PlayerAction::ChangeInput(void)
 {
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::IDLE));

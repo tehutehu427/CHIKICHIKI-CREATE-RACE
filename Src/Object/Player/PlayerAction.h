@@ -61,13 +61,13 @@ public:
 	/// <param name=""></param>
 	void Update(void);
 
-
 	void DrawDebug(void);
-
-
 	
 	//状態遷移
 	void ChangeAction(ATK_ACT _act);
+
+	//ジャンプをストップさせる
+	void StopJump(void);
 
 
 	//*****************************************
@@ -120,6 +120,8 @@ public:
 
 	//再生しているリソースをすべて止める
 	void StopResource(void);
+
+	
 
 	//デバッグ
 	float GetJumpDecel(void) { return jumpDeceralation_; }

@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Player\CollisionResolver\CollisionModelResolver.cpp" />
+    <ClCompile Include="Src\Object\Player\CollisionResolver\CollisionResolverBase.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\Coin.cpp" />
     <ClCompile Include="Src\Object\Editor\EditorExplanation.cpp" />
     <ClCompile Include="Src\Scene\Game\DemoPlay.cpp" />
@@ -122,6 +124,8 @@
     <ClCompile Include="Src\Object\System\Select\SystemSetting.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Player\CollisionResolver\CollisionModelResolver.h" />
+    <ClInclude Include="Src\Object\Player\CollisionResolver\CollisionResolverBase.h" />
     <ClInclude Include="Src\Object\Item\Installation\Coin.h" />
     <ClInclude Include="Src\Object\Editor\EditorExplanation.h" />
     <ClInclude Include="Src\Scene\Game\DemoPlay.h" />

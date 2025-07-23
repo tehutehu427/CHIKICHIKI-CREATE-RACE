@@ -123,6 +123,8 @@
     <ClCompile Include="Src\Scene\Game\DemoPlay.cpp" />
     <ClCompile Include="Src\Object\Editor\EditorExplanation.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\Coin.cpp" />
+    <ClCompile Include="Src\Object\Player\CollisionResolver\CollisionResolverBase.cpp" />
+    <ClCompile Include="Src\Object\Player\CollisionResolver\CollisionModelResolver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -275,6 +277,8 @@
     <ClInclude Include="Src\Scene\Game\DemoPlay.h" />
     <ClInclude Include="Src\Object\Editor\EditorExplanation.h" />
     <ClInclude Include="Src\Object\Item\Installation\Coin.h" />
+    <ClInclude Include="Src\Object\Player\CollisionResolver\CollisionResolverBase.h" />
+    <ClInclude Include="Src\Object\Player\CollisionResolver\CollisionModelResolver.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

@@ -4,8 +4,10 @@
 #include<map>
 #include<functional>
 #include<memory>
+#include"Player.h"
 #include"../ObjectBase.h"
 class PlayerAction;
+class CollisionModelResolver;
 class PlayerOnHit
 {
 public:
@@ -20,6 +22,33 @@ public:
 
 	//スライム床上でのジャンプ力
 	static constexpr float SPRING_JUMP_POW = 30.0f;
+
+	//コライダ配列番号
+	//--------------------------------------------------
+	//接地しているときのラインのコライダ
+	static constexpr int UP_AND_DOWN_LINE_COL_NO = 0;
+
+	//プレイヤーの体の球
+	static constexpr int BODY_SPHERE_COL_NO = 1;
+
+	//現在の座標と移動後座標を結んだ線のコライダ
+	static constexpr int MOVE_LINE_COL_NO = 2;
+
+	//現在の座標と移動後座標を結んだ線のコライダ
+	static constexpr int EYE_LINE_NO = 3;
+
+	//当たり判定のめりこみ防止用
+	static constexpr float POSITION_OFFSET = 1.0f;
+
+	//オブジェクトの下に当たった時の跳ね返り減速セット
+	static constexpr float DOWN_BOUNCE_DECELERATION = -10.0f;
+
+	static constexpr float MOVE_LINE_Y_OFFSET = Player::RADIUS - 1.0f;
+	//static constexpr float MOVE_LINE_Y_CHECK_VALUE = Player::RADIUS - 1.5f;
+	static constexpr float MOVE_LINE_Y_CHECK_VALUE = Player::RADIUS + 1.5f;
+	//--------------------------------------------------
+	//プレイヤーの手の座標
+	static constexpr int HAND_SPHERE_COL_NO = 4;
 	struct CUBE
 	{
 		VECTOR centerPos;
@@ -109,20 +138,7 @@ private:
 	//ヒットした法線方向へのオフセット
 	static constexpr float HIT_NORMAL_OFFSET = 3.0f;
 
-	//接地しているときのラインのコライダ
-	static constexpr int UP_AND_DOWN_LINE_COL_NO = 0;
 
-	//プレイヤーの体の球
-	static constexpr int BODY_SPHERE_COL_NO = 1;
-
-	//現在の座標と移動後座標を結んだ線のコライダ
-	static constexpr int MOVE_LINE_COL_NO = 2;
-
-	//現在の座標と移動後座標を結んだ線のコライダ
-	static constexpr int EYE_LINE_NO = 3;
-
-	//プレイヤーの手の座標
-	static constexpr int HAND_SPHERE_COL_NO = 4;
 
 
 
@@ -153,15 +169,7 @@ private:
 	static constexpr VECTOR LOCAL_DOWN_POS = { 0.0f,-RADIUS - LINE_RANGE,0.0f };
 
 
-	//当たり判定のめりこみ防止用
-	static constexpr float POSITION_OFFSET = 1.0f;
 
-	//オブジェクトの下に当たった時の跳ね返り減速セット
-	static constexpr float DOWN_BOUNCE_DECELERATION = -10.0f;
-
-	static constexpr float MOVE_LINE_Y_OFFSET = Player::RADIUS - 1.0f;
-	//static constexpr float MOVE_LINE_Y_CHECK_VALUE = Player::RADIUS - 1.5f;
-	static constexpr float MOVE_LINE_Y_CHECK_VALUE = Player::RADIUS + 1.5f;
 
 	//--------------------------------------
 	//メンバ変数
@@ -192,6 +200,9 @@ private:
 
 	//当たり判定関係
 	std::vector<ObjectBase::ColParam>& colParam_;
+
+	//使う押し戻し処理
+	std::unique_ptr<CollisionModelResolver>modelResolve_;
 
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
 
