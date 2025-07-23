@@ -881,6 +881,8 @@ int EditController::IsChangeMoveDir(void)
 		//‘OƒtƒŒ[ƒ€‚ÅˆÚ“®•ûŒü‚ªŒˆ‚Ü‚Á‚Ä‚¢‚é‚©‚ç‚»‚Ì‚Ü‚Ü•Ô‚·
 		return 0;
 	}
+	//ˆÚ“®•ûŒü‚ªŒˆ‚Ü‚Á‚Ä‚¢‚È‚¢‚©‚ç1‚ð•Ô‚·
+	return 1;	
 }
 
 void EditController::DebugUpdate(void)
@@ -1040,9 +1042,9 @@ void EditController::ChangeCameraMode(void)
 		cAngles_ = camera->GetAngles();
 		cTargetPos_ = camera->GetTargetPos();
 		camera->ChangeMode(Camera::MODE::FIXED_UP);
-		VECTOR pos = { MapEditer::MAP_SIZE.x / 2 * MapEditer::GRID_SIZE,3500,MapEditer::MAP_SIZE.z / 2 * MapEditer::GRID_SIZE };
+		VECTOR pos =UP_CAMERA_POS;
 		camera->SetPos(pos);
-		camera->SetTargetPos(VAdd(pos,UP_CAMERA_POS));
+		camera->SetTargetPos(VAdd(pos,UP_CAMERA_TARGET_POS));
 		break;
 	}
 	case EditController::CAMERA_MODE::MAX:
@@ -1082,9 +1084,9 @@ void EditController::ChangeCameraMode(CAMERA_MODE mode)
 		cAngles_ = camera->GetAngles();
 		cTargetPos_ = camera->GetTargetPos();
 		camera->ChangeMode(Camera::MODE::FIXED_UP);
-		VECTOR pos = { MapEditer::MAP_SIZE.x / 2 * MapEditer::GRID_SIZE,3500,MapEditer::MAP_SIZE.z / 2 * MapEditer::GRID_SIZE };
+		VECTOR pos = UP_CAMERA_POS;
 		camera->SetPos(pos);
-		camera->SetTargetPos(VAdd(pos, UP_CAMERA_POS));
+		camera->SetTargetPos(VAdd(pos, UP_CAMERA_TARGET_POS));
 		break;
 	}
 	case EditController::CAMERA_MODE::MAX:
