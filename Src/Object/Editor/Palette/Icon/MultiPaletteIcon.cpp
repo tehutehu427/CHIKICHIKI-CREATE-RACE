@@ -1,6 +1,7 @@
 #include "MultiPaletteIcon.h"
 #include <random>
 #include <algorithm>
+#include <unordered_set>
 #include "../../../../Manager/System/ResourceManager.h"
 #include "../../../../Manager/System/DateBank.h"
 #include "../../../../Manager/System/SoundManager.h"
@@ -114,18 +115,38 @@ void MultiPaletteIcon::Draw()
 
 void MultiPaletteIcon::SetExcludingItemTypeArray()
 {
-	//除外番号
-	const std::vector<int> EXCLUDED_TYPES = {
-		static_cast<int>(ItemBase::ITEM_TYPE::NONE),
-		static_cast<int>(ItemBase::ITEM_TYPE::START),
-		static_cast<int>(ItemBase::ITEM_TYPE::GOAL),
-		static_cast<int>(ItemBase::ITEM_TYPE::BOMB_BIG),
-		static_cast<int>(ItemBase::ITEM_TYPE::MAX)
+
+	const std::unordered_map<ItemBase::ITEM_TYPE, int> ITEM_WEIGHTS =
+	{
+	{ ItemBase::ITEM_TYPE::BOMB_SMALL, ITEM_WEIGHT }, // 出やすい
+	// 他のアイテムも必要に応じて追加
 	};
 
-	for (int i = 0; i <= static_cast<int>(ItemBase::ITEM_TYPE::MAX); ++i)
+	// 除外するアイテム（NONE, START, GOALなど）
+	const std::unordered_set<ItemBase::ITEM_TYPE> EXCLUDED_TYPES = 
 	{
-		if (std::find(EXCLUDED_TYPES.begin(), EXCLUDED_TYPES.end(), i) == EXCLUDED_TYPES.end())
+		ItemBase::ITEM_TYPE::NONE,
+		ItemBase::ITEM_TYPE::START,
+		ItemBase::ITEM_TYPE::GOAL,
+		ItemBase::ITEM_TYPE::MAX
+	};
+
+	for (int i = 0; i < static_cast<int>(ItemBase::ITEM_TYPE::MAX); ++i)
+	{
+		ItemBase::ITEM_TYPE type = static_cast<ItemBase::ITEM_TYPE>(i);
+
+		if (EXCLUDED_TYPES.count(type) > 0)
+		{
+			continue;
+		}
+
+		// 重みが指定されているか確認
+		auto it = ITEM_WEIGHTS.find(type);
+
+		//重みを設定(通常は1)
+		int weight = (it != ITEM_WEIGHTS.end()) ? it->second : 1;
+
+		for (int j = 0; j < weight; ++j)
 		{
 			candidates_.push_back(i);
 		}
