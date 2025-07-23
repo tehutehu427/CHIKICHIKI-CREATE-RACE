@@ -142,6 +142,7 @@ private:
 
 	std::map<EFF_TYPE, EffectData> effects_;	//エフェクト関連
 
+
 	/// <summary>
 	/// もう一度再生
 	/// </summary>

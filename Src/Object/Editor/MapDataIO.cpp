@@ -389,49 +389,38 @@ std::string MapDataIO::GetFreeFileName()
 
 std::string MapDataIO::GetSoloFileName()
 {
-    int selectNum = DateBank::GetInstance().GetStageNo();
-    switch (selectNum)
+    //配列を生成
+    const std::string stages[static_cast<int>(SelectStage::STAGE_TYPE::MAX)] =
     {
-    case static_cast<int>(SelectStage::STAGE_TYPE::BEGINNER):
-        return "BeginnerStage.json";
-        break;
+        "BeginnerStage.json",
+        "IntermediateStage.json",
+        "AdvancedStage.json",
+        "AbyssStage.json"
+    };
 
-    case static_cast<int>(SelectStage::STAGE_TYPE::INTERMEDIATE):
-        return "IntermediateStage.json";
-        break;
-
-    case static_cast<int>(SelectStage::STAGE_TYPE::ADVANCED):
-        return "AdvancedStage.json";
-        break;
-
-    case static_cast<int>(SelectStage::STAGE_TYPE::ABYSS):
-        return "AbyssStage.json";
-        break;
-    }
+    //選択したステージを取得
+    int selectNum = DateBank::GetInstance().GetStageNo();
+ 
+    //値を返す
+    return stages[selectNum];
 }
 
 std::string MapDataIO::GetMultiFileName()
 {
-    int randNum = GetRand(MULTI_STAGE_TYPES);
-    switch (randNum)
+    //配列を生成
+    const std::string stages[MULTI_STAGE_TYPES] =
     {
-    case 0:
-        return "MultiStage1.json";
-        break;
-    case 1:
-        return "MultiStage2.json";
-        break;
-    case 2:
-        return "MultiStage3.json";
-        break;
-    case 3:
-        return "MultiStage4.json";
-        break;
+        "MultiStage1.json",
+        "MultiStage2.json",
+        "MultiStage3.json",
+        "MultiStage4.json"
+    };
 
-    default:
-        return "MultiStage1.json";
-        break;
-    }
+    //ランダム値を取得
+    int randNum = GetRand(MULTI_STAGE_TYPES - 1);
+    
+    //値を返す
+    return stages[randNum];
 }
 
 void MapDataIO::RegisterGetFileName(const SceneManager::SCENE_ID _sceneId, std::function<std::string()> _func)

@@ -104,6 +104,7 @@ void PlayerAction::Load(void)
 	actSE_.emplace(ACT_SE::JUMP,SoundManager::SRC::PLAYER_JUMP);
 	actSE_.emplace(ACT_SE::PUNCH, SoundManager::SRC::PLAYER_PUNCH_MOTION);
 	actSE_.emplace(ACT_SE::SLIME, SoundManager::SRC::SLIME_SE);
+	actSE_.emplace(ACT_SE::PUNCH_HIT, SoundManager::SRC::PLAYER_PUNCH_HIT);
 
 	effect_->Add(res.Load(ResourceManager::SRC::DASH_EFF).handleId_, EffectController::EFF_TYPE::DASH);
 	effect_->Add(res.Load(ResourceManager::SRC::JUMP_EFF).handleId_, EffectController::EFF_TYPE::JUMP);
@@ -137,7 +138,8 @@ void PlayerAction::Update(void)
 
 void PlayerAction::DrawDebug(void)
 {
-	DrawFormatString(0, 300, 0x000000, "act(%d)", (int)input_->GetAct());
+	int dashSeCnt = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
+	DrawFormatString(0, 300, 0x000000, "act(%d)\ndashSESize(%d)", (int)input_->GetAct(), dashSeCnt);
 }
 
 void PlayerAction::NoneUpdate(void)
@@ -183,10 +185,10 @@ void PlayerAction::ChangeInput(void)
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::IDLE));
 	isJump_ = false;
 	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
-	//for (int i = 0; i <= effNum; i++)
-	//{
-	//	effect_->Delete(EffectController::EFF_TYPE::DASH, i);
-	//}
+	for (int i = 0; i < effNum; i++)
+	{
+		effect_->Delete(EffectController::EFF_TYPE::DASH, i);
+	}
 
 	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 	actionUpdate_ = std::bind(&PlayerAction::ActionInputUpdate, this);
@@ -238,7 +240,6 @@ void PlayerAction::MoveUpdate(void)
 	//ダッシュカウント
 	if (act_ == ATK_ACT::DASHMOVE)
 	{
-		dashSeCnt_ += scnMng_.GetInstance().GetDeltaTime();
 		if (dashSeCnt_ >= DASH_SE_TIME)
 		{
 			SoundManager::GetInstance().Play(actSE_[ACT_SE::DASH], SoundManager::PLAYTYPE::BACK);
@@ -281,9 +282,9 @@ void PlayerAction::ChangeMove(void)
 	}
 
 	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
-	for (int i = 0; i <= effNum; i++)
+	for (int i = 0; i < effNum; i++)
 	{
-		effect_->Stop(EffectController::EFF_TYPE::DASH, i);
+		effect_->Delete(EffectController::EFF_TYPE::DASH, i);
 	}
 
 	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
@@ -296,11 +297,7 @@ void PlayerAction::ChangeDashMove(void)
 
 	auto& trans = player_.GetTransform();
 	const float SCL = 10.0f;
-
-	//エフェクトの再生
-	effect_->Delete(EffectController::EFF_TYPE::DASH,0);
-	effect_->Play(EffectController::EFF_TYPE::DASH, trans.pos, trans.quaRot, { SCL,SCL,SCL },50.0f);
-	effectArrayNum_++;
+	effect_->Play(EffectController::EFF_TYPE::DASH, trans.pos, trans.quaRot, { SCL,SCL,SCL }, false, 1.0f);
 
 	//スライム床内ならスライム音再生
 	if (player_.GetIsSlimeFloor())
@@ -416,8 +413,7 @@ void PlayerAction::ChangeJump(void)
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::JUMP], SoundManager::PLAYTYPE::BACK);
 
 	//ジャンプエフェクト
-	effect_->Stop(EffectController::EFF_TYPE::JUMP,0);
-	effect_->Play(EffectController::EFF_TYPE::JUMP, trans.pos, trans.quaRot, EFF_SCL, 50.0f);
+	effect_->Play(EffectController::EFF_TYPE::JUMP, trans.pos, trans.quaRot, EFF_SCL, false, 1.0f);
 
 	if(player_.GetIsSlimeFloor())SetJumpDecel(SLIME_FLOOR_JUMP_POW);
 
@@ -480,6 +476,9 @@ void PlayerAction::KnockBack(void)
 {
 	//カウントの減算
 	punchedCnt_ -= scnMng_.GetDeltaTime();
+	//パッド振動
+	KeyConfig::GetInstance().PadVibration(player_.GetPadNum()
+		, KNOCKBACK_PAD_VIBRATIION_TIME, KNOCKBACK_PAD_VIBRATIION_POW);
 	if (punchedCnt_ < 0.0f)
 	{
 		punchedCnt_ = PUNCHED_TIME;
@@ -498,7 +497,7 @@ void PlayerAction::ChangeKnockBack(void)
 	Transform trans = player_.GetTransform();
 	const float EFF_SCL = 15.0f;
 	effect_->Play(EffectController::EFF_TYPE::PUNCH_HIT, trans.pos, trans.quaRot, { EFF_SCL,EFF_SCL, EFF_SCL });
-	//SoundManager::GetInstance().Play(actSE_[ACT_SE::])
+	SoundManager::GetInstance().Play(actSE_[ACT_SE::PUNCH_HIT], SoundManager::PLAYTYPE::BACK);
 	//パンチの当たり判定を消す
 	isPunchHitTime_ = false;
 	player_.KillPunchCol();
@@ -559,10 +558,6 @@ void PlayerAction::StopResource(void)
 	{
 		SoundManager::GetInstance().Stop(se.second);
 	}
-	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
-	for (int i = 0; i <= effNum; i++)
-	{
-		effect_->Stop(EffectController::EFF_TYPE::DASH, i);
-	}
+	effect_->AllDelete();
 	
 }

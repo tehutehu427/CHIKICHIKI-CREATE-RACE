@@ -28,6 +28,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_.emplace(TAG::SPRING, [this](const std::weak_ptr<Collider> _hitCol) {ColSpring(_hitCol); });
 	colUpdates_.emplace(TAG::CANNON_AIM, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
 	colUpdates_.emplace(TAG::SHADOW, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
+	//colUpdates_.emplace(TAG::COIN, [this](const std::weak_ptr<Collider> _hitCol) {CollCoin(); });
 
 	
 
@@ -40,6 +41,13 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	}
 	isGoal_ = false;
 	isDeath_ = false;
+	isLandHit_ = false;
+
+	isHitSlimeFloor_ = false;
+	moveDiff_ = Utility::VECTOR_ZERO;
+	movedPos_ = Utility::VECTOR_ZERO;
+	isSide_ = false;
+	coinNum_ = 0;
 }
 
 PlayerOnHit::~PlayerOnHit(void)
@@ -56,6 +64,7 @@ void PlayerOnHit::Init(void)
 {
 	isGoal_ = false;
 	isDeath_ = false;
+	coinNum_ = 0;
 }
 
 void PlayerOnHit::Update(void)
@@ -162,9 +171,6 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 	//パンチしたプレイヤーの位置と自分の位置を比較して、
 	action_.SetDir(Utility::GetMoveVec(punchedPlayerPos, trans_.pos));
 
-	//パンチヒット音再生()
-	SoundManager::GetInstance().Play(SoundManager::SRC::PLAYER_PUNCH_HIT, SoundManager::PLAYTYPE::BACK);
-
 	//ノックバック状態遷移
 	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
 }
@@ -179,6 +185,7 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 	if (!isSide_)
 	{
 		//バネジャンプ音再生
+		action_.SetStepJump(0.0f);
 		SoundManager::GetInstance().Play(SoundManager::SRC::SPRING_SE, SoundManager::PLAYTYPE::BACK);
 		action_.SetJumpDecel(SPRING_JUMP_POW);
 		action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
@@ -193,14 +200,19 @@ void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 		isGoal_ = true;
 	}
 }
+void PlayerOnHit::ColCoin(void)
+{
+	//コインと体が当たっているとき以外処理を飛ばす
+	if (!colParam_[BODY_SPHERE_COL_NO].collider_->IsHit())return;
+	coinNum_++;
+}
 #ifdef DEBUG_ON
 void PlayerOnHit::DrawDebug(void)
 {
-	if()
-	colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
-	colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
-	colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
-	colParam_[EYE_LINE_NO].geometry_->Draw();
+	//colParam_[BODY_SPHERE_COL_NO].geometry_->Draw();
+	//colParam_[MOVE_LINE_COL_NO].geometry_->Draw();
+	//colParam_[UP_AND_DOWN_LINE_COL_NO].geometry_->Draw();
+	//colParam_[EYE_LINE_NO].geometry_->Draw();
 
 
 	if (action_.GetIsHitPunch())
@@ -240,7 +252,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	isHitSlimeFloor_ = false;
 
 
-	if (moveLineCol->IsHit() > 0)
+	if (moveLineCol->IsHit())
 	{
 		//Y座標のみ半径分上に移動させる
 		movedPos_.y = hitPos.y + Player::RADIUS + POSITION_OFFSET;
@@ -252,7 +264,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		return;
 	}
 	//プレイヤーの接地
-	if (upDownLine->IsHit() > 0)
+	if (upDownLine->IsHit())
 	{
 		Line& upDown = dynamic_cast<Line&>(upDownLine->GetGeometry());
 		Collider::TAG tag = upDownLine->GetTags()[0];

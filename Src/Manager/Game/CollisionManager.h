@@ -20,7 +20,7 @@ public:
 	static constexpr float HIT_RANGE_WIND = 300.0f;		//風用の当たり判定距離
 
 	//更新用
-	static constexpr int COL_UPDATE_FRAME = 0;		//更新フレーム
+	static constexpr int COL_UPDATE_FRAME = 0;		//更新ディレイフレーム
 	
 	//インスタンス生成
 	static void CreateInstance(void);
@@ -108,7 +108,7 @@ private:
 	/// <param name="_col1">1つ目のコライダ</param>
 	/// <param name="_col2">2つ目のコライダ</param>
 	/// <returns>true:当たった</returns>
-	bool IsCollision(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2);
+	const bool IsCollision(const std::weak_ptr<Collider> _col1, const std::weak_ptr<Collider> _col2)const;
 
 };
 

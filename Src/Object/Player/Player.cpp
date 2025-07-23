@@ -54,6 +54,8 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	changeStates_.emplace(PLAYER_STATE::DEATH, [this]() {ChangeDeath(); });
 	changeStates_.emplace(PLAYER_STATE::GOAL, [this]() {ChangeGoal(); });
 
+	coinNum_ = 0;
+
 	//////コライダ作成
 	////*****************************************************
 	////接地しているときのライン(床上にとどまっているとき)
@@ -127,26 +129,7 @@ void Player::Init(void)
 	//本来コライダを作りたい場所
 	//コライダ作成
 	//*****************************************************
-	////現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
-	//std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos, trans_.quaRot, Utility::VECTOR_ZERO, Utility::VECTOR_ZERO);
-	//MakeCollider({ tag_ }, std::move(moveLineGeo));
-
-	////接地しているときのライン(床上にとどまっているとき)
-	////Lineを引くための上と下の座標をとる
-	//std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos, trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
-	//MakeCollider({ tag_ }, std::move(lineGeo));
-
-	////プレイヤーの体
-	//std::unique_ptr<Sphere>bodySphereGeo = std::make_unique<Sphere>(trans_.pos, RADIUS);
-	//MakeCollider({ tag_ }, std::move(bodySphereGeo));
-
-	////階段の当たり判定のためのプレイヤーの目線からのライン
-	////現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
-	//std::unique_ptr<Line>eyeLine = std::make_unique<Line>(trans_.pos, trans_.quaRot, EYE_HEIGHT, EYE_RANGE);
-	//MakeCollider({ tag_ }, std::move(eyeLine));
-
-
-	////接地しているときのライン(床上にとどまっているとき)
+	//接地しているときのライン(床上にとどまっているとき)
 	//Lineを引くための上と下の座標をとる
 	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
 	MakeCollider({ tag_ }, std::move(lineGeo));
@@ -257,7 +240,7 @@ void Player::DrawDebug(void)
 	unsigned int color = 0xffffff;
 	const int HIGH = 10;
 	const int WIDTH = 200;
-	onHitCol_->DrawDebug();
+	//onHitCol_->DrawDebug();
 
 
 	VECTOR pow = action_->GetMovePow();
@@ -273,7 +256,7 @@ void Player::DrawDebug(void)
 		,onHitCol_->GetIsLandHit()
 	);
 
-	//action_->DrawDebug();
+	action_->DrawDebug();
 
 	if (IsDeath())
 	{
@@ -326,6 +309,12 @@ void Player::ChangeDeath(void)
 	}
 	colParam_.clear();
 	action_->StopResource();
+
+	//死んだらコインを落とす
+	onHitCol_->SetCoinNum(0);
+	//パッド振動
+	KeyConfig::GetInstance().PadVibration(padNum_, 300, 300);
+
 	stateUpdate_ = std::bind(&Player::DeathUpdate, this);
 }
 void Player::DeathUpdate(void)
@@ -335,6 +324,8 @@ void Player::DeathUpdate(void)
 	finishDelay_ += scnMng_.GetInstance().GetDeltaTime();
 	//落ちているアニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
+
+	KeyConfig::GetInstance().PadVibration(padNum_, DEATH_PAD_VIBRATION_TIME, DEATH_PAD_VIBRATION_POW);
 	//アニメーションループ
 	if (animationController_->GetAnimStep() >= FALL_ANIM_START)
 	{
