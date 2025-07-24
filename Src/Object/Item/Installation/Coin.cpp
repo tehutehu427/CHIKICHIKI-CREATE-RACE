@@ -32,12 +32,12 @@ void Coin::SetParam(void)
 	trans_.scl = VScale(trans_.scl, SIZE_MULTI);
 
 	//相対座標
-	trans_.localPos.x = MapEditer::GetInstance().MapToWorldPos(MAP_SIZE).x;
-	trans_.localPos.y = MapEditer::GetInstance().MapToWorldPos(MAP_SIZE).y;
-	trans_.localPos.z = MapEditer::GetInstance().MapToWorldPos(MAP_SIZE).z;
+	trans_.localPos.x = MapEditer::GetInstance().MapToWorldPos(MAP_SIZE).x / 2;
+	trans_.localPos.y = MapEditer::GetInstance().MapToWorldPos(MAP_SIZE).y / 2;
+	trans_.localPos.z = MapEditer::GetInstance().MapToWorldPos(MAP_SIZE).z / 2;
 
 	//コライダの作成
-	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.overAllPos, RADIUS * trans_.scl.x);
+	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.overAllPos, RADIUS);
 	MakeCollider({ Collider::TAG::COIN }, std::move(geo));
 
 	//マップサイズ
@@ -77,12 +77,6 @@ void Coin::Update(void)
 
 	//対象に追従
 	trans_.pos = VSub(VAdd(followPos, followLocalPos), trans_.localPos);
-}
-
-void Coin::Draw(void)
-{
-	if (!colParam_.empty())colParam_[0].geometry_->Draw();
-	MV1DrawModel(trans_.modelId);
 }
 
 void Coin::OnHit(const std::weak_ptr<Collider> _hitCol)
