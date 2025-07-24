@@ -109,6 +109,10 @@ void EditController::DrawUI(void)
 	{
 		ready_->Draw();
 	}
+	else
+	{
+		DrawBox(screenSize_.x / 2 - CENTER_BOX_SIZE, screenSize_.y / 2 - CENTER_BOX_SIZE,screenSize_.x / 2 + CENTER_BOX_SIZE,screenSize_.y / 2 + CENTER_BOX_SIZE,Utility::BLACK, true);	//中央のボックス描画
+	}
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(errorStringTime_ * 255));
 	float rate = 1.0 / (playerMaxNum_ == 1 ? 2 : 4);
 	switch (errorType_)
