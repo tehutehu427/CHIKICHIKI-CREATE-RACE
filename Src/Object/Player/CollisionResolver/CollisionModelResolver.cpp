@@ -12,15 +12,26 @@ CollisionModelResolver::CollisionModelResolver(VECTOR& _moveDiff, VECTOR& _curre
 	:CollisionResolverBase(_moveDiff,_currentPos,_movedPos,_action,_colParam)
 {
 	hitPos_ = Utility::VECTOR_ZERO;
+	isSide_ = false;
+	isLandHit_ = false;
 }
 
 CollisionModelResolver::~CollisionModelResolver(void)
 {
 }
 
+void CollisionModelResolver::Init(void)
+{
+}
+
 void CollisionModelResolver::Resolve(const std::weak_ptr<Collider> _hitCol)
 {
 	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
+
+	//横と地面と当たっているフラグの初期化
+	isSide_ = false;
+	isLandHit_ = false;
+
 	hitPos_ = hitModel.GetHitLineInfo().HitPosition;
 	HitMoveLine();
 	HitUpdownLine();
@@ -41,13 +52,12 @@ void CollisionModelResolver::HitUpdownLine(void)
 	{
 		Line& upDown = dynamic_cast<Line&>(upDownLine->GetGeometry());
 		Collider::TAG tag = upDownLine->GetTags()[0];
-		//VECTOR hitLinePos = upDown.GetHitInfo().HitPosition;
 		hitPos_ = upDown.GetHitInfo().HitPosition;
 		if (movedPos_.y > hitPos_.y)
 		{
 			movedPos_.y = hitPos_.y + Player::RADIUS + POSITION_OFFSET;
 			//地面と当たっている
-			//isLandHit_ = true;
+			isLandHit_ = true;
 			action_.SetJumpPow(Utility::VECTOR_ZERO);
 		}
 		else
@@ -84,7 +94,6 @@ void CollisionModelResolver::HitBodyShere(const std::weak_ptr<Collider> _hitCol)
 	//目線のライン(プレイヤーの目線)
 	auto& eyeLine = colParam_[EYE_LINE_NO].collider_;
 	//移動後座標を一回格納し、移動前をとる
-	//Transform trans = Transform(trans_);
 	VECTOR currentPos = movedPos_;
 	//trans.Update();
 	//isSide_ = false;
@@ -101,7 +110,7 @@ void CollisionModelResolver::HitBodyShere(const std::weak_ptr<Collider> _hitCol)
 					, hit.Position[0], hit.Position[1], hit.Position[2]);
 				if (pHit)
 				{
-					//isSide_ = true;
+					isSide_ = true;
 					VECTOR normal = hit.Normal;
 					//y座標を抜いて押しだす
 					normal.y = 0.0f;
@@ -115,7 +124,9 @@ void CollisionModelResolver::HitBodyShere(const std::weak_ptr<Collider> _hitCol)
 			}
 
 		}
-		if (/*isSide_ && */_hitCol.lock()->GetTags()[0] != Collider::TAG::KILLER_SPECIFIC)
+		//目線と壁が当たっているか(階段のような地形の時は突っかからないように)
+		//Colliderの構造上、二つの当たり判定を同寺にtrueにできないので当たり判定をする
+		if (isSide_ && _hitCol.lock()->GetTags()[0] != Collider::TAG::KILLER_SPECIFIC)
 		{
 			Line& eyeLineGeo = dynamic_cast<Line&>(eyeLine->GetGeometry());
 			int modelId = _hitCol.lock()->GetParent().GetTransform().modelId;
@@ -130,10 +141,6 @@ void CollisionModelResolver::HitBodyShere(const std::weak_ptr<Collider> _hitCol)
 
 			}
 		}
-
-		////現在座標の更新
-		//moveDiff_ = currentPos_;
-		//currentPos_ = movedPos_;
 	}
 }
 

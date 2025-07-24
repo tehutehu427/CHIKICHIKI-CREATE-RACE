@@ -186,6 +186,11 @@ void PlayerAction::StopJump(void)
 	stepJump_ = 0.0f;
 }
 
+void PlayerAction::SetSlimeFloorStatus(void)
+{
+
+}
+
 void PlayerAction::ChangeInput(void)
 {
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::IDLE));
@@ -422,6 +427,7 @@ void PlayerAction::ChangeJump(void)
 	//ジャンプエフェクト
 	effect_->Play(EffectController::EFF_TYPE::JUMP, trans.pos, trans.quaRot, EFF_SCL, false, 1.0f);
 
+	//スライム床にのっているとき
 	if(player_.GetIsSlimeFloor())SetJumpDecel(SLIME_FLOOR_JUMP_POW);
 
 	//パンチの当たり判定を消す

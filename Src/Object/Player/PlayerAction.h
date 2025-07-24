@@ -69,6 +69,9 @@ public:
 	//ジャンプをストップさせる
 	void StopJump(void);
 
+	//スライム床に乗っているときのジャンプ力
+	void SetSlimeFloorStatus(void);
+
 
 	//*****************************************
 	//ゲッタ

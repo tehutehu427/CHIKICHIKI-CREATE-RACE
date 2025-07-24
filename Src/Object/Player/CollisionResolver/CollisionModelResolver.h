@@ -8,6 +8,16 @@ public:
 		, PlayerAction& _action
 		, std::vector<ObjectBase::ColParam>& _colParam);
     ~CollisionModelResolver(void)override;
+	/// <summary>
+	/// ‰Šú‰»ˆ—
+	/// </summary>
+	/// <param name=""></param>
+	void Init(void)override;
+
+	/// <summary>
+	/// ‰Ÿ‚µo‚µˆ—(ŠO•”‚Å‚Í‚±‚ê‚ğŒÄ‚Ño‚·)
+	/// </summary>
+	/// <param name="_hitCol"></param>
 	void Resolve(const std::weak_ptr<Collider> _hitCol)override;
     void HitUpdownLine(void)override;
     void HitMoveLine(void)override;
@@ -44,6 +54,5 @@ private:
 	static constexpr float HIT_NORMAL_OFFSET = 3.0f;
 	//--------------------------------------------
 
-    VECTOR hitPos_;
 };
 

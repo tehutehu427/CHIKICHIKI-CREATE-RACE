@@ -212,11 +212,11 @@ private:
 	//死亡判定
 	bool isDeath_;
 
-	//地面と当たっているか
-	bool isLandHit_;
-
 	//スライム床と当たっているか
 	bool isHitSlimeFloor_;
+
+	//地面と当たっているか
+	bool isLandHit_;
 
 	//プレイヤーのサイドが当たっている
 	bool isSide_;

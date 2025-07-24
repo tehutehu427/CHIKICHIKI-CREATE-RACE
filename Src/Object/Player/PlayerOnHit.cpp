@@ -93,7 +93,6 @@ void PlayerOnHit::Update(void)
 		{
 			continue;
 		}
-
 		//現在座標を起点に移動後座標を決める
 
 	}
@@ -142,7 +141,7 @@ void PlayerOnHit::CollKillerItemSpecific(const std::weak_ptr<Collider> _hitCol)
 {
 	HitModelCommon(_hitCol);
 	//地面に立っていたら
-	if (isLandHit_)
+	if (modelResolve_->GetIsLandHit())
 	{
 		isDeath_ = true;
 	}
@@ -184,20 +183,19 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 	HitModelCommon(_hitCol);
 	//リソースID
 	auto& res = ResourceManager::GetInstance();
-	if (!isSide_)
-	{
-		//バネジャンプ音再生
-		action_.SetStepJump(0.0f);
-		SoundManager::GetInstance().Play(SoundManager::SRC::SPRING_SE, SoundManager::PLAYTYPE::BACK);
-		action_.SetJumpDecel(SPRING_JUMP_POW);
-		action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
-	}
+
+	//バネジャンプ音再生
+	action_.SetStepJump(0.0f);
+	SoundManager::GetInstance().Play(SoundManager::SRC::SPRING_SE, SoundManager::PLAYTYPE::BACK);
+	action_.SetJumpDecel(SPRING_JUMP_POW);
+	action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
+
 }
 
 void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 {
 	HitModelCommon(_hitCol);
-	if (!isSide_&&isLandHit_)
+	if (!modelResolve_->GetIsSide() && modelResolve_->GetIsLandHit())
 	{
 		isGoal_ = true;
 	}
@@ -236,6 +234,7 @@ void PlayerOnHit::DrawDebug(void)
 
 void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 {
+	isHitSlimeFloor_ = false;
 	modelResolve_->Resolve(_hitCol);
 	//Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
 	////当たったモデルの情報を取得
