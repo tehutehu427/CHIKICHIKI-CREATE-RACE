@@ -20,9 +20,15 @@ CollisionModelResolver::~CollisionModelResolver(void)
 
 void CollisionModelResolver::Resolve(const std::weak_ptr<Collider> _hitCol)
 {
+	Model& hitModel = dynamic_cast<Model&>(const_cast<Geometry&>(_hitCol.lock()->GetGeometry()));
+	hitPos_ = hitModel.GetHitLineInfo().HitPosition;
 	HitMoveLine();
 	HitUpdownLine();
 	HitBodyShere(_hitCol);
+	
+	//現在座標の更新
+	moveDiff_ = currentPos_;
+	currentPos_ = movedPos_;
 }
 
 void CollisionModelResolver::HitUpdownLine(void)
@@ -35,43 +41,38 @@ void CollisionModelResolver::HitUpdownLine(void)
 	{
 		Line& upDown = dynamic_cast<Line&>(upDownLine->GetGeometry());
 		Collider::TAG tag = upDownLine->GetTags()[0];
-		VECTOR hitLinePos = upDown.GetHitInfo().HitPosition;
-		if (movedPos_.y > hitLinePos.y)
+		//VECTOR hitLinePos = upDown.GetHitInfo().HitPosition;
+		hitPos_ = upDown.GetHitInfo().HitPosition;
+		if (movedPos_.y > hitPos_.y)
 		{
-			movedPos_.y = hitLinePos.y + Player::RADIUS + POSITION_OFFSET;
+			movedPos_.y = hitPos_.y + Player::RADIUS + POSITION_OFFSET;
 			//地面と当たっている
 			//isLandHit_ = true;
 			action_.SetJumpPow(Utility::VECTOR_ZERO);
 		}
 		else
 		{
-			movedPos_.y = hitLinePos.y - Player::RADIUS - POSITION_OFFSET;
+			movedPos_.y = hitPos_.y - Player::RADIUS - POSITION_OFFSET;
 			if (action_.GetJumpDecel() > 0.0f)
 			{
 				//オブジェクトの下に当たったら跳ね返るようにする
 				action_.SetJumpDecel(DOWN_BOUNCE_DECELERATION);
 			}
 		}
-		//現在座標の更新
-		moveDiff_ = currentPos_;
-		currentPos_ = movedPos_;
+
 	}
 }
 
 void CollisionModelResolver::HitMoveLine(void)
 {
 	//移動ラインのコライダ(接地)
-	auto& moveLineCol = colParam_[UP_AND_DOWN_LINE_COL_NO].collider_;
+	auto& moveLineCol = colParam_[MOVE_LINE_COL_NO].collider_;
 	if (moveLineCol->IsHit())
 	{
 		//Y座標のみ半径分上に移動させる
 		movedPos_.y = hitPos_.y + Player::RADIUS + POSITION_OFFSET;
 		action_.SetJumpPow(Utility::VECTOR_ZERO);
 		action_.SetIsJump(false);
-
-		//現在座標の更新
-		moveDiff_ = currentPos_;
-		currentPos_ = movedPos_;
 	}
 }
 
@@ -130,9 +131,9 @@ void CollisionModelResolver::HitBodyShere(const std::weak_ptr<Collider> _hitCol)
 			}
 		}
 
-		//現在座標の更新
-		moveDiff_ = currentPos_;
-		currentPos_ = movedPos_;
+		////現在座標の更新
+		//moveDiff_ = currentPos_;
+		//currentPos_ = movedPos_;
 	}
 }
 
