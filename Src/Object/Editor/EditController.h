@@ -5,6 +5,7 @@
 #include "../../Common/IntVector3.h"
 #include "../../Object/Item/ItemBase.h"
 #include "../../Manager/System/KeyConfig.h"
+#include "../../Manager/Game/MapEditer.h"
 
 class EditItemReady;
 
@@ -26,15 +27,16 @@ public:
 	static constexpr int DELAY_MOVE_ARROW = 30;			//移動矢印の先端からの猶予座標
 
 	static constexpr int CURSOR_LOCAL_POS_X = 16;	//カーソルのローカル座標X
-	static constexpr int CURSOR_LOCAL_POS_Y = 16;	//カーソルのローカル座標X
+	static constexpr int CURSOR_LOCAL_POS_Y = 16;	//カーソルのローカル座標Y
 	static constexpr int CURSOR_POINT = 2;			//カーソルのポイントサイズ
 	static constexpr IntVector3 ERROR_POS = { -1,-1,-1 };	//生成不可の座標
 	static constexpr IntVector3 PLAYER1_INIT_EDIT_POS = { 5,0,0 };	//プレイヤー1のエディター初期座標
-	static constexpr IntVector3 PLAYER2_INIT_EDIT_POS = { 10,0,0 };	//プレイヤー1のエディター初期座標
-	static constexpr IntVector3 PLAYER3_INIT_EDIT_POS = { 15,0,0 };	//プレイヤー1のエディター初期座標
-	static constexpr IntVector3 PLAYER4_INIT_EDIT_POS = { 20,0,0 };	//プレイヤー1のエディター初期座標
+	static constexpr IntVector3 PLAYER2_INIT_EDIT_POS = { 10,0,0 };	//プレイヤー2のエディター初期座標
+	static constexpr IntVector3 PLAYER3_INIT_EDIT_POS = { 15,0,0 };	//プレイヤー3のエディター初期座標
+	static constexpr IntVector3 PLAYER4_INIT_EDIT_POS = { 20,0,0 };	//プレイヤー4のエディター初期座標
 
-	static constexpr VECTOR UP_CAMERA_POS = { 0.0f,-5000.0f,0.0f };	//上固定カメラの位置
+	static constexpr VECTOR UP_CAMERA_TARGET_POS = { 0.0f,-5000.0f,0.0f };	//上固定カメラの位置
+	static constexpr VECTOR UP_CAMERA_POS = { MapEditer::MAP_SIZE.x / 2 * MapEditer::GRID_SIZE,3500,MapEditer::MAP_SIZE.z / 2 * MapEditer::GRID_SIZE };	//上固定カメラの位置
 
 	static constexpr float GO_DUMMY_DISTANCE = 700.0f;
 
@@ -107,7 +109,7 @@ public:
 
 	int IsError(void);	//エラーかどうか
 
-	void SetError(int errorType);
+	void SetError(int errorType);	//エラーの種類を設定
 protected:
 
 private:
