@@ -332,10 +332,11 @@ void PlayerAction::Speed(void)
 	{
 		speed_ = 0.0f;
 	}
+	constexpr float HALF = 2.0f;
 	if (speed_ > 0.0f && player_.GetIsSlimeFloor())
 	{
 		//スライム床の上だけスピードを半分にする
-		speed_ /= 2.0f;
+		speed_ /= HALF;
 	}
 }
 
@@ -544,8 +545,9 @@ void PlayerAction::SetGoalRotate(double _deg)
 	 //現在設定されている回転との角度差を取る
 	double angleDiff = Quaternion::Angle(axis, goalQuaRot_);
 
+	constexpr float ANGLE_THRESHOLD = 0.1;
 	// しきい値
-	if (angleDiff > 0.1)
+	if (angleDiff > ANGLE_THRESHOLD)
 	{
 		stepRotTime_ = TIME_ROT;
 	}

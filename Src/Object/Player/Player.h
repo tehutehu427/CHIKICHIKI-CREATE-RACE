@@ -204,10 +204,10 @@ private:
 	static constexpr float DEATH_POS_Y = -600.0f;
 
 	//死んだときのパッド振動時間
-	static constexpr int DEATH_PAD_VIBRATION_TIME = 700;
+	static constexpr int DEATH_PAD_VIBRATION_TIME = 300;
 
 	//死んだときのパッド振動の強さ
-	static constexpr int DEATH_PAD_VIBRATION_POW = 200;
+	static constexpr int DEATH_PAD_VIBRATION_POW = 300;
 
 	//--------------------------------------------------
 	//当たり判定
