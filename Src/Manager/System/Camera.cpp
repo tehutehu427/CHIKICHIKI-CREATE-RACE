@@ -307,7 +307,7 @@ void Camera::ProcessRotMause(float* x_m, float* y_m, const float fov_per)
 
 void Camera::SetBeforeDrawFixedPoint(void)
 {
-	// ‰½‚à‚µ‚È‚¢
+	rot_ = Quaternion::Quaternion(angles_);
 }
 
 
