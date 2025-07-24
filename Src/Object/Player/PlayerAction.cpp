@@ -84,6 +84,12 @@ void PlayerAction::Init(void)
 
 	effectArrayNum_ = 0.0f;
 
+	//エフェクトの追加(タイトルシーンで生き返るため初期処理でかく)
+	auto& res = ResourceManager::GetInstance();
+	effect_->Add(res.Load(ResourceManager::SRC::DASH_EFF).handleId_, EffectController::EFF_TYPE::DASH);
+	effect_->Add(res.Load(ResourceManager::SRC::JUMP_EFF).handleId_, EffectController::EFF_TYPE::JUMP);
+	effect_->Add(res.Load(ResourceManager::SRC::LANDING_EFF).handleId_, EffectController::EFF_TYPE::LANDING);
+	effect_->Add(res.Load(ResourceManager::SRC::PUNCH_HIT_EFF).handleId_, EffectController::EFF_TYPE::PUNCH_HIT);
 
 	if (scnMng_.GetInstance().GetSceneID() == SceneManager::SCENE_ID::TITLE)
 	{
@@ -106,10 +112,7 @@ void PlayerAction::Load(void)
 	actSE_.emplace(ACT_SE::SLIME, SoundManager::SRC::SLIME_SE);
 	actSE_.emplace(ACT_SE::PUNCH_HIT, SoundManager::SRC::PLAYER_PUNCH_HIT);
 
-	effect_->Add(res.Load(ResourceManager::SRC::DASH_EFF).handleId_, EffectController::EFF_TYPE::DASH);
-	effect_->Add(res.Load(ResourceManager::SRC::JUMP_EFF).handleId_, EffectController::EFF_TYPE::JUMP);
-	effect_->Add(res.Load(ResourceManager::SRC::LANDING_EFF).handleId_, EffectController::EFF_TYPE::LANDING);
-	effect_->Add(res.Load(ResourceManager::SRC::PUNCH_HIT_EFF).handleId_, EffectController::EFF_TYPE::PUNCH_HIT);
+
 }
 
 void PlayerAction::Update(void)
@@ -260,8 +263,8 @@ void PlayerAction::MoveDirFronInput(void)
 	VECTOR getDir = input_->GetDir();
 	float deg = input_->GetMoveDeg();
 
+	//カメラの角度ど入力角度でプレイヤーの方向を変える
 	Quaternion cameraRot = scnMng_.GetCamera(cameraNo_).lock()->GetQuaRotOutX();
-	Quaternion angle = Quaternion::AngleAxis(Utility::Deg2RadF(deg), Utility::AXIS_Y);
 	dir_ = cameraRot.PosAxis(getDir);
 	dir_ = VNorm(dir_);
 
