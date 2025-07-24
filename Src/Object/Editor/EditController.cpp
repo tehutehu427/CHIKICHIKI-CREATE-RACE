@@ -464,7 +464,7 @@ void EditController::ItemNotSelect(void)
 			{
 				return;
 			}
-			MapEditer::GetInstance().DeleteItem(itemType_, leaderPos, ItemManager::GetInstance().GetDummyItemRotY(playerNum_), ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_));
+			MapEditer::GetInstance().DeleteItem(leaderPos, ItemManager::GetInstance().GetDummyItemRotY(playerNum_), ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_));
 			mapPos_ = leaderPos;
 			ChangeMode(MODE::MOVE_ROTATE);
 			SoundManager::GetInstance().Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
@@ -958,7 +958,7 @@ void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector
 				}
 				itemM.DeleteItem(lPos, type);
 				//itemM.DeleteDummyItem(playerNum_);
-				editer.DeleteItem(type, lPos, rotY, size, hitSize);
+				editer.DeleteItem(lPos, rotY, size, hitSize);
 			}
 		}
 	}
