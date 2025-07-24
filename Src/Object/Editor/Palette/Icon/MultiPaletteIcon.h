@@ -42,6 +42,8 @@ public:
 	void Draw() override;
 
 private:
+
+	static constexpr int ITEM_WEIGHT = 3;
 	
 	//ƒJ[ƒ\ƒ‹‰æ‘œ
 	int* imgCursors_;

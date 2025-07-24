@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <unordered_map>
 
 class ScoreManager
 {
@@ -10,10 +11,11 @@ public:
 	/// </summary>
 	enum class SCORE_TYPE
 	{
-		DEATH,	//死亡
-		CLEAR,	//クリア
-		FIRST,	//一番乗り
-		BONUS_ITEM,	//ボーナスアイテム	
+		DEATH,		//死亡
+		CLEAR,		//クリア
+		FIRST,		//一番乗り
+		COIN,		//コイン獲得	
+		KILL,		//キルボーナス	
 		MAX
 	};
 
@@ -22,7 +24,8 @@ public:
 		0,	//DEATH
 		1,	//CLEAR
 		2,	//FIRST
-		1,	//BONUS_ITEM
+		1,	//COIN
+		1,	//KILL
 	};
 
 	/// <summary>
@@ -83,7 +86,20 @@ public:
 	/// </summary>
 	/// <param name="_playerIndex">プレイヤー番号</param>
 	/// <returns>指定したプレイヤーのスコア値</returns>
-	inline const int GetScore(const int _playerIndex) const { return scores_[_playerIndex]; }
+	const int GetScore(const int _playerIndex) const { return scores_[_playerIndex]; }
+
+	/// <summary>
+	/// 各プレイヤーのボーナス獲得判定を設定
+	/// </summary>
+	/// <param name="_playerIndex"></param>
+	/// <param name="_type"></param>
+	/// <param name="_flag"></param>
+	void SetIsBonusScore(const int _playerIndex, const SCORE_TYPE _type, const bool _flag);
+
+	/// <summary>
+	/// リセット
+	/// </summary>
+	void ResetIsBonusScores();
 
 private:
 
@@ -104,6 +120,9 @@ private:
 
 	//スコア
 	std::vector<int> scores_;
+
+	//ボーナスフラッグ
+	std::vector<std::unordered_map<SCORE_TYPE, bool>> isBonusScoreTypes_;
 
 };
 

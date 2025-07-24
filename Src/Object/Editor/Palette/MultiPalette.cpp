@@ -10,6 +10,8 @@
 MultiPalette::MultiPalette(std::vector<std::unique_ptr<EditController>>& _editControllers)
 	: EditorPaletteBase(_editControllers)
 {
+	imgSkip_ = -1;
+	imgTitle_ = -1;
 }
 
 MultiPalette::~MultiPalette(void)
@@ -61,6 +63,8 @@ void MultiPalette::Draw(void)
 	{
 		constexpr int POS_Y = 50; //å©èoÇµÇÃYç¿ïW
 		constexpr float RATE = 0.6f; //å©èoÇµÇÃägëÂó¶
+		constexpr int OFFSET_POS_X = 120;
+		constexpr int OFFSET_POS_Y = 100;
 
 		DrawRotaGraph(
 			Application::SCREEN_HALF_X,
@@ -76,8 +80,8 @@ void MultiPalette::Draw(void)
 			return;
 		}
 		DrawRotaGraph(
-			Application::SCREEN_HALF_X + 120,
-			Application::SCREEN_SIZE_Y - 100,
+			Application::SCREEN_HALF_X + OFFSET_POS_X,
+			Application::SCREEN_SIZE_Y - OFFSET_POS_Y,
 			RATE,
 			0.0f,
 			imgSkip_,

@@ -29,7 +29,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_.emplace(TAG::SPRING, [this](const std::weak_ptr<Collider> _hitCol) {ColSpring(_hitCol); });
 	colUpdates_.emplace(TAG::CANNON_AIM, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
 	colUpdates_.emplace(TAG::SHADOW, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
-	//colUpdates_.emplace(TAG::COIN, [this](const std::weak_ptr<Collider> _hitCol) {CollCoin(); });
+	colUpdates_.emplace(TAG::COIN, [this](const std::weak_ptr<Collider> _hitCol) {CollCoin(); });
 
 	
 
@@ -200,7 +200,7 @@ void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 		isGoal_ = true;
 	}
 }
-void PlayerOnHit::ColCoin(void)
+void PlayerOnHit::CollCoin(void)
 {
 	//ƒRƒCƒ“‚Æ‘Ì‚ª“–‚½‚Á‚Ä‚¢‚é‚Æ‚«ˆÈŠOˆ—‚ð”ò‚Î‚·
 	if (!colParam_[BODY_SPHERE_COL_NO].collider_->IsHit())return;

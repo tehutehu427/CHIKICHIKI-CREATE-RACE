@@ -29,8 +29,17 @@ void ScoreManager::Init()
 {
 	// プレイヤー数に応じてスコアを初期化
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
-	scores_.clear(); // 既存のスコアをクリア
-	scores_.resize(playerNum, 0); // 各プレイヤーのスコアを0で初期化
+
+	//初期化
+	scores_.clear();			// 既存のスコアをクリア
+	isBonusScoreTypes_.clear();
+
+	// 各プレイヤーのスコアを0で初期化
+	scores_.resize(playerNum, 0); 
+
+	// 各プレイヤーの判定を初期化
+	std::unordered_map<SCORE_TYPE, bool> ret = {};
+	isBonusScoreTypes_.resize(playerNum, ret);
 }
 
 void ScoreManager::Destroy()
@@ -44,8 +53,14 @@ void ScoreManager::Destroy()
 
 void ScoreManager::AddScore(const int _playerIndex, const SCORE_TYPE _type)
 {
+	//プレイヤー番号が範囲内か調べる
 	assert(_playerIndex >= 0 && _playerIndex < static_cast<int>(scores_.size()));
+
+	//スコア格納
 	scores_[_playerIndex] += SCORE_TYPE_VALUES[static_cast<int>(_type)];
+
+	//ボーナス判定格納
+	isBonusScoreTypes_[_playerIndex][_type] = true;
 }
 
 void ScoreManager::SetPlayersScore()
@@ -163,6 +178,22 @@ const int ScoreManager::GetNowWinnerPlayerIndex() const
 
 	// 最大値が複数存在するなら -1、それ以外はインデックスを返す
 	return (count > 1) ? -1 : maxIndex;
+}
+
+void ScoreManager::SetIsBonusScore(const int _playerIndex, const SCORE_TYPE _type, const bool _flag)
+{
+	isBonusScoreTypes_[_playerIndex][_type] = _flag;
+}
+
+void ScoreManager::ResetIsBonusScores()
+{
+	for (auto& scoreMap : isBonusScoreTypes_)
+	{
+		for (auto& [scoreType, flag] : scoreMap)
+		{
+			flag = false; // 各スコアタイプのフラグを false に設定
+		}
+	}
 }
 
 ScoreManager::ScoreManager()
