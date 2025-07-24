@@ -10,6 +10,7 @@
 #include "../Object/Item/Installation/Fan.h"
 #include "../Object/Item/Installation/SlimeFloor.h"
 #include "../Object/Item/Installation/Spring.h"
+#include "../Object/Item/Installation/Coin.h"
 #include "../Object/Item/Destroyer/SmallBomb.h"
 #include "../Object/Item/Destroyer/BigBomb.h"
 #include "MapEditer.h"
@@ -684,6 +685,9 @@ std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntV
 		break;
 	case ItemBase::ITEM_TYPE::SPRING:
 		item = std::make_shared<Spring>();
+		break;
+	case ItemBase::ITEM_TYPE::COIN:
+		item = std::make_shared<Coin>();
 		break;
 	case ItemBase::ITEM_TYPE::BOMB_SMALL:
 		item = std::make_shared<SmallBomb>();

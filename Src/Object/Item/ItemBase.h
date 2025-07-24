@@ -33,6 +33,8 @@ public:
 		BOMB_SMALL,			//ФЪТe(Пђ)
 		BOMB_BIG,			//ФЪТe(Се)
 
+		COIN,				//ГRГCГУ
+
 		MAX,				//Н≈Се
 	};
 

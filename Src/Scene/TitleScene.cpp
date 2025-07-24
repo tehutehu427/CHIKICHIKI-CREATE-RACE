@@ -126,8 +126,8 @@ void TitleScene::NormalDraw(void)
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
 		LOGO_POS_Y,
-		1.0f,
-		0.0f,
+		1.0,
+		0.0,
 		imgTitleLogo_,
 		true,
 		false
@@ -157,8 +157,8 @@ void TitleScene::DemoDraw(void)
 	DrawRotaGraph(
 		std::clamp(Application::SCREEN_HALF_X - demoUIStep_ * moveTimeX, static_cast<float>(LOGO_MIN_POS_X), static_cast<float>(Application::SCREEN_HALF_X)),
 		std::clamp(LOGO_POS_Y - demoUIStep_ * moveTimeY,static_cast<float>(LOGO_MIN_POS_Y), static_cast<float>(LOGO_POS_Y)),
-		logoSize_,
-		0.0f,
+		static_cast<double>(logoSize_),
+		0.0,
 		imgTitleLogo_,
 		true,
 		false
@@ -215,7 +215,7 @@ void TitleScene::DrawMessage(void)
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
 		mesPosY_,
-		RATE,
+		static_cast<double>(RATE),
 		0.0f,
 		imgMessage_,
 		true,
@@ -230,6 +230,7 @@ void TitleScene::DemoMessage(void)
 	constexpr float ALPHA_STEP = 3.0f;
 	constexpr float SHAKE_SPEED = 5.0f;
 	constexpr float SHAKE_AMPLITUDE = 5.0f;
+	constexpr float ROTATE_ANGLE = 270.0f;
 
 	//ç¿ïWÇóhÇÁÇ∑
 	mesPosY_ = DEMO_MES_POS_Y;
@@ -240,8 +241,8 @@ void TitleScene::DemoMessage(void)
 	DrawRotaGraph(
 		DEMO_MES_POS_X,
 		mesPosY_,
-		RATE,
-		Utility::Deg2RadF(270.0f),
+		static_cast<double>(RATE),
+		Utility::Deg2RadF(ROTATE_ANGLE),
 		imgDemoMessage_,
 		true,
 		false

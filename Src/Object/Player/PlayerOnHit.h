@@ -249,7 +249,7 @@ private:
 	void ColGoal(const std::weak_ptr<Collider> _hitCol);
 
 	//ƒRƒCƒ“‚Æ“–‚½‚Á‚½
-	void ColCoin(void);
+	void CollCoin(void);
 
 	//ƒ‚ƒfƒ‹‚Ì“–‚½‚Á‚½‚Ì‹¤’Êˆ—
 	void HitModelCommon(const std::weak_ptr<Collider> _hitCol);

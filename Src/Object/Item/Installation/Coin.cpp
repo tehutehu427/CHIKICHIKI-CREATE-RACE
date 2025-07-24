@@ -1,6 +1,8 @@
 #include<algorithm>
 #include"../Manager/System/ResourceManager.h"
-#include"../../Common/Geometry/Model.h"
+#include"../Manager/Game/MapEditer.h"
+#include"../Utility/Utility.h"
+#include"../../Common/Geometry/Sphere.h"
 #include "Coin.h"
 
 Coin::Coin(void)
@@ -14,8 +16,8 @@ Coin::~Coin(void)
 void Coin::SetParam(void)
 {
 	//モデルの基本設定
-	//trans_.SetModel(resMng_.LoadModelDuplicate(
-	//	ResourceManager::SRC::FENCE));
+	trans_.SetModel(resMng_.LoadModelDuplicate(
+		ResourceManager::SRC::COIN));
 
 	//モデルIDのコピー
 	models_.emplace_back(&trans_.modelId);
@@ -26,22 +28,17 @@ void Coin::SetParam(void)
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
 
-	//サイズ倍率
-	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
-
 	//サイズ
-	trans_.scl.x *= adjustSizePer.x;
-	trans_.scl.y *= adjustSizePer.y;
-	trans_.scl.z *= adjustSizePer.z;
+	trans_.scl = VScale(trans_.scl, SIZE_MULTI);
 
 	//相対座標
-	trans_.localPos.x = MAP_LOCALPOS.x * trans_.scl.x;
-	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
-	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
+	trans_.localPos.x = MapEditer::GetInstance().MapToWorldPos(MAP_SIZE).x;
+	trans_.localPos.y = MapEditer::GetInstance().MapToWorldPos(MAP_SIZE).y;
+	trans_.localPos.z = MapEditer::GetInstance().MapToWorldPos(MAP_SIZE).z;
 
 	//コライダの作成
-	//std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.overAllPos, trans_.quaRot, trans_.modelId);
-	//MakeCollider({ Collider::TAG::NORMAL_ITEM }, std::move(geo));
+	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.overAllPos, RADIUS * trans_.scl.x);
+	MakeCollider({ Collider::TAG::COIN }, std::move(geo));
 
 	//マップサイズ
 	mapSize_ = MAP_SIZE;
@@ -49,20 +46,43 @@ void Coin::SetParam(void)
 
 void Coin::Update(void)
 {
-	//追従対象がいないなら何もしない
-	if (followCol_.lock() == nullptr)return;
+	//回転
+	trans_.quaRot = trans_.quaRot.Mult(Quaternion::AngleAxis(Utility::Deg2RadF(ROTATE_SPEED), Utility::AXIS_Y));
+
+	//モデル更新
+	trans_.Update();
+
+	//追従対象がいないなら
+	if (followCol_.lock() == nullptr)
+	{
+		//コライダがないなら再生成
+		if (colParam_.empty())
+		{
+			//コライダの作成
+			std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.overAllPos, RADIUS);
+			MakeCollider({ Collider::TAG::COIN }, std::move(geo));
+		}
+
+		//削除
+		followCol_.reset();
+
+		//何もしない
+		return;
+	}
 
 	//追従座標
 	VECTOR followPos = followCol_.lock()->GetParent().GetTransform().pos;
 	Quaternion followRot = followCol_.lock()->GetParent().GetTransform().quaRot;
+	VECTOR followLocalPos = followRot.PosAxis(FOLLOW_LOCAL_POS);
 
 	//対象に追従
-	trans_.pos = VAdd(followPos, followRot.PosAxis(FOLLOW_LOCAL_POS));
+	trans_.pos = VSub(VAdd(followPos, followLocalPos), trans_.localPos);
 }
 
 void Coin::Draw(void)
 {
-	DrawSphere3D(trans_.pos, 10.0f, 20, 0xffff00, 0xffff00, true);
+	if (!colParam_.empty())colParam_[0].geometry_->Draw();
+	MV1DrawModel(trans_.modelId);
 }
 
 void Coin::OnHit(const std::weak_ptr<Collider> _hitCol)
@@ -72,8 +92,12 @@ void Coin::OnHit(const std::weak_ptr<Collider> _hitCol)
 
 	//タグが影ならスキップ
 	auto tags = _hitCol.lock()->GetTags();
-	if (std::find(tags.begin(), tags.end(), Collider::TAG::SHADOW) == tags.end())return;
+	if (std::find(tags.begin(), tags.end(), Collider::TAG::SHADOW) != tags.end())return;
 
 	//追従
 	followCol_ = _hitCol;
+
+	//コライダの消去
+	colParam_[0].collider_->Kill();
+	colParam_.clear();
 }
