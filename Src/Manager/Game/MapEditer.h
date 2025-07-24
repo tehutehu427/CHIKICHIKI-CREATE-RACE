@@ -62,7 +62,7 @@ public:
 	int IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize,float _rotY);
 
 	void AddItem(STATUS _status, IntVector3 _size,IntVector3 _hitSize, float _rotY);
-	void DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos, float _rotY , IntVector3 _size,IntVector3 _hitSize);
+	void DeleteItem(IntVector3 _mapPos, float _rotY , IntVector3 _size,IntVector3 _hitSize);
 	/// <summary>
 	/// ワールド座標をマップ座標に変換する
 	/// </summary>

@@ -94,7 +94,7 @@ void MapEditer::AddItem(STATUS _status, IntVector3 _size ,IntVector3 _hitSize, f
 	}
 }
 
-void MapEditer::DeleteItem(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos ,float _rotY ,IntVector3 _size ,IntVector3 _hitSize)
+void MapEditer::DeleteItem(IntVector3 _mapPos ,float _rotY ,IntVector3 _size ,IntVector3 _hitSize)
 {
 	_rotY += ONE_LAP_DEG;
 	int rot = Utility::Round(_rotY);

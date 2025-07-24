@@ -8,7 +8,7 @@ public:
 	//マップ
 	static constexpr IntVector3 MAP_SIZE = { 1,1,1 };					//マップサイズ
 	static constexpr VECTOR MAP_LOCALPOS = { 50.0f,50.0f,5.0f };		//マップとの相対座標
-	static constexpr float RADIUS = 50.0f;								//当たり判定用基本半径
+	static constexpr float RADIUS = 25.0f;								//当たり判定用基本半径
 
 	//サイズ
 	static constexpr VECTOR MODEL_SIZE = { 100.0f,100.0f,10.0f };		//モデルのサイズ
@@ -30,7 +30,6 @@ public:
 	void SetParam(void)override;
 	//更新
 	void Update(void)override;
-	void Draw(void)override;
 
 	/// <summary>
 	/// 当たり判定後の処理

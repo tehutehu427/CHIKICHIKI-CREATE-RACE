@@ -157,6 +157,9 @@ public:
 	//ゴールタイムの取得
 	inline const float GetGoalTime(void)const { return goalTime_; }
 
+	//コイン枚数の取得
+	inline const int GetCoinNum(void)const { return coinNum_; }
+
 	//******************************************
 	//セッタ
 	//******************************************
