@@ -10,6 +10,7 @@
 #include "../Object/Item/Installation/Fan.h"
 #include "../Object/Item/Installation/SlimeFloor.h"
 #include "../Object/Item/Installation/Spring.h"
+#include "../Object/Item/Installation/Coin.h"
 #include "../Object/Item/Destroyer/SmallBomb.h"
 #include "../Object/Item/Destroyer/BigBomb.h"
 #include "../Object/Editor/EditController.h"
@@ -120,12 +121,6 @@ void ItemManager::AddItem(IntVector3 _mapPos, Quaternion _rot, ItemBase::ITEM_TY
 	//”z—ñ‚É’Ç‰Á
 	items_[_type].emplace_back(std::move(item));
 }
-
-void ItemManager::DeleteItem(VECTOR mapPos, int range)
-{
-
-}
-
 void ItemManager::DeleteItem(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type)
 {
 	for (auto& items : items_)
@@ -685,6 +680,9 @@ std::shared_ptr<ItemBase> ItemManager::CreateItem(ItemBase::ITEM_TYPE type, IntV
 		break;
 	case ItemBase::ITEM_TYPE::SPRING:
 		item = std::make_shared<Spring>();
+		break;
+	case ItemBase::ITEM_TYPE::COIN:
+		item = std::make_shared<Coin>();
 		break;
 	case ItemBase::ITEM_TYPE::BOMB_SMALL:
 		item = std::make_shared<SmallBomb>();

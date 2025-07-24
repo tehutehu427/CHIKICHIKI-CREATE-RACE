@@ -34,10 +34,8 @@ public:
 	/// <summary>
 	/// アイテム消去
 	/// </summary>
-	/// <param name="mapPos">消去位置</param>
-	/// <param name="range">消去範囲</param>
-	void DeleteItem(VECTOR mapPos, int range);
-
+	/// <param name="_mapPos">マップ座標</param>
+	/// <param name="_type">アイテムの種類</param>
 	void DeleteItem(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type);
 
 	/// <summary>
