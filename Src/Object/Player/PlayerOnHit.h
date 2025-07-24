@@ -207,9 +207,6 @@ private:
 	//スライム床と当たっているか
 	bool isHitSlimeFloor_;
 
-	//パンチヒット時のSE
-	int punchHitSE_;
-
 	//プレイヤーのサイドが当たっている
 	bool isSide_;
 

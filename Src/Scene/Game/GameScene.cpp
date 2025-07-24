@@ -142,13 +142,13 @@ void GameScene::DebagUpdate(void)
 {
 	// シーン遷移
 	KeyConfig& ins = KeyConfig::GetInstance();
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHENGE_TITLE, KeyConfig::JOYPAD_NO::PAD1))
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHANGE_TITLE, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
 
 	//フェーズ遷移は各アップデートに作ったのでここは消し
-	else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHENGE_CLEAR, KeyConfig::JOYPAD_NO::PAD1))
+	else if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHANGE_CLEAR, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		ChangePhase(PHASE::CLEAR_PHASE);
 	}

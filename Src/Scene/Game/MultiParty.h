@@ -107,7 +107,7 @@ private:
 	float phaseChangeTimer_;
 
 	//エディットからのフェーズ遷移時間管理
-	float editChengeTime_;
+	float editChangeTime_;
 
 	//アクションからのフェーズ遷移時間管理
 	float actionChangeTime_;

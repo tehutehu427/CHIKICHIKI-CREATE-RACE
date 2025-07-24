@@ -40,9 +40,9 @@ private:
 	std::function<void(void)> phaseDraw_;
 
 	//フェーズ遷移時の処理
-	void ChengePhaseNotRedy(void);
-	void ChengePhaseCheck(void);
-	void ChengePhaseReady(void);
+	void ChangePhaseNotRedy(void);
+	void ChangePhaseCheck(void);
+	void ChangePhaseReady(void);
 
 	//フェーズごとの更新処理
 	void UpdateNotReady(void);

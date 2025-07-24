@@ -41,6 +41,12 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	}
 	isGoal_ = false;
 	isDeath_ = false;
+	isLandHit_ = false;
+
+	isHitSlimeFloor_ = false;
+	moveDiff_ = Utility::VECTOR_ZERO;
+	movedPos_ = Utility::VECTOR_ZERO;
+	isSide_ = false;
 	coinNum_ = 0;
 }
 
@@ -246,7 +252,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	isHitSlimeFloor_ = false;
 
 
-	if (moveLineCol->IsHit() > 0)
+	if (moveLineCol->IsHit())
 	{
 		//Y座標のみ半径分上に移動させる
 		movedPos_.y = hitPos.y + Player::RADIUS + POSITION_OFFSET;
@@ -258,7 +264,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		return;
 	}
 	//プレイヤーの接地
-	if (upDownLine->IsHit() > 0)
+	if (upDownLine->IsHit())
 	{
 		Line& upDown = dynamic_cast<Line&>(upDownLine->GetGeometry());
 		Collider::TAG tag = upDownLine->GetTags()[0];

@@ -476,6 +476,9 @@ void PlayerAction::KnockBack(void)
 {
 	//カウントの減算
 	punchedCnt_ -= scnMng_.GetDeltaTime();
+	//パッド振動
+	KeyConfig::GetInstance().PadVibration(player_.GetPadNum()
+		, KNOCKBACK_PAD_VIBRATIION_TIME, KNOCKBACK_PAD_VIBRATIION_POW);
 	if (punchedCnt_ < 0.0f)
 	{
 		punchedCnt_ = PUNCHED_TIME;
