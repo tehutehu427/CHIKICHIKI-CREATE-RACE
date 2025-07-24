@@ -178,6 +178,7 @@ public:
 		SPIKE,				//とげ
 		SLIME_FLOOR,		//スライム床
 		FAN,				//扇風機
+		COIN,
 		SKY_DOME,			//スカイドーム
 		CHICKEN,			//チキンモデル
 

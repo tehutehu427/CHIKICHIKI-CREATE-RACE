@@ -60,7 +60,7 @@ void CollisionManager::Update(void)
 		for (int j = i + 1; j < colliders_.size(); j++)
 		{
 			//ƒRƒ‰ƒCƒ_‚ªŽ€–SÏ‚Ý‚È‚ç
-			if (colliders_[j]->IsDead())
+			if (colliders_[i]->IsDead() || colliders_[j]->IsDead())
 			{
 				//”ò‚Î‚·
 				continue;
@@ -74,7 +74,7 @@ void CollisionManager::Update(void)
 			}
 
 			//“–‚½‚è”»’è
-			if(IsCollision(colliders_[i],colliders_[j]))
+			if (IsCollision(colliders_[i], colliders_[j]))
 			{
 
 				//‚»‚ê‚¼‚ê‚Ì“–‚½‚Á‚½ˆ—
@@ -82,8 +82,14 @@ void CollisionManager::Update(void)
 				colliders_[j]->OnHit(colliders_[i]);
 
 				//“–‚½‚Á‚½Œã‚Ìˆ—
-				colliders_[i]->GetGeometry().HitAfter();
-				colliders_[j]->GetGeometry().HitAfter();
+				if (!colliders_[i]->IsDead())
+				{
+					colliders_[i]->GetGeometry().HitAfter();
+				}
+				if (!colliders_[j]->IsDead())
+				{
+					colliders_[j]->GetGeometry().HitAfter();
+				}
 			}
 		}
 	}
@@ -134,6 +140,7 @@ CollisionManager::CollisionManager(void)
 	hitRange_[Collider::TAG::SLIME_FLOOR] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::SPRING] = HIT_RANGE_NORMAL;
 	hitRange_[Collider::TAG::SHADOW] = HIT_RANGE_NORMAL;
+	hitRange_[Collider::TAG::COIN] = HIT_RANGE_NORMAL;
 
 
 	hitRange_[Collider::TAG::START] = HIT_RANGE_START;
