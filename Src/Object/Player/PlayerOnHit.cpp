@@ -1,6 +1,8 @@
 #include "../../Object/Common/Geometry/Sphere.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SoundManager.h"
+#include "../../Manager/System/SceneManager.h"
+#include "../../Manager/Game/ScoreManager.h"
 #include "../../Object/Common/Geometry/Line.h"
 #include"../../Object/Common/Geometry/Model.h"
 #include"../../Utility/Utility.h"
@@ -205,6 +207,14 @@ void PlayerOnHit::CollCoin(void)
 	//コインと体が当たっているとき以外処理を飛ばす
 	if (!colParam_[BODY_SPHERE_COL_NO].collider_->IsHit())return;
 	coinNum_++;
+
+	//マルチの時のみ処理を行う
+	if (SceneManager::GetInstance().GetSceneID() == SceneManager::SCENE_ID::MULTI)
+	{
+		//スコアの格納
+		ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::COIN);
+	}
+
 }
 #ifdef DEBUG_ON
 void PlayerOnHit::DrawDebug(void)

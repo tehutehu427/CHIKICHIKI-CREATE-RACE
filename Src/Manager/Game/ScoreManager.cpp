@@ -180,11 +180,6 @@ const int ScoreManager::GetNowWinnerPlayerIndex() const
 	return (count > 1) ? -1 : maxIndex;
 }
 
-void ScoreManager::SetIsBonusScore(const int _playerIndex, const SCORE_TYPE _type, const bool _flag)
-{
-	isBonusScoreTypes_[_playerIndex][_type] = _flag;
-}
-
 void ScoreManager::ResetIsBonusScores()
 {
 	for (auto& scoreMap : isBonusScoreTypes_)

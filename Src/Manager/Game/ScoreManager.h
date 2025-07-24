@@ -89,14 +89,6 @@ public:
 	const int GetScore(const int _playerIndex) const { return scores_[_playerIndex]; }
 
 	/// <summary>
-	/// 各プレイヤーのボーナス獲得判定を設定
-	/// </summary>
-	/// <param name="_playerIndex"></param>
-	/// <param name="_type"></param>
-	/// <param name="_flag"></param>
-	void SetIsBonusScore(const int _playerIndex, const SCORE_TYPE _type, const bool _flag);
-
-	/// <summary>
 	/// リセット
 	/// </summary>
 	void ResetIsBonusScores();
