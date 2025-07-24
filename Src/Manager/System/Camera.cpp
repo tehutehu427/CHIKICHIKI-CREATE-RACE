@@ -162,7 +162,6 @@ void Camera::SetDefault(void)
 	angles_.x = Utility::Deg2RadF(30.0f);
 	angles_.y = 0.0f;
 	angles_.z = 0.0f;
-
 	rot_ = Quaternion();
 
 }
@@ -308,6 +307,12 @@ void Camera::ProcessRotMause(float* x_m, float* y_m, const float fov_per)
 void Camera::SetBeforeDrawFixedPoint(void)
 {
 	rot_ = Quaternion::Quaternion(angles_);
+
+	// d—Í‚Ì•ûŒü§Œä‚É]‚¤
+	Quaternion gRot = Quaternion::Euler(VECTOR(0.0, 0.0, 0.0));
+
+	// ³–Ê‚©‚çİ’è‚³‚ê‚½Y²•ªA‰ñ“]‚³‚¹‚é
+	rotOutX_ = gRot.Mult(Quaternion::AngleAxis(angles_.y, Utility::AXIS_Y));
 }
 
 
