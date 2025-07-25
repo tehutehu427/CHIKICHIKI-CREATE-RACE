@@ -918,12 +918,13 @@ void EditController::RotateObject(void) const
 {
 	KeyConfig& ins = KeyConfig::GetInstance();
 	auto type = playerMaxNum_ == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
+	auto& itemM = ItemManager::GetInstance();
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EDIT_ITEM_ROTATE,padNum_,type))
 	{
 		Quaternion rot = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
-		float rotScale = Utility::Deg2RadF(MapEditer::QUATER_ONE_LAP_DEG);
-		ItemManager::GetInstance().SetDummyItemRotY(playerNum_, ItemManager::GetInstance().GetDummyItemRotY(playerNum_) + MapEditer::QUATER_ONE_LAP_DEG);
-		rot = Quaternion::Mult(rot, Quaternion::AngleAxis(rotScale,Utility::AXIS_Y));
+		//float rotScale = Utility::Deg2RadF(MapEditer::QUATER_ONE_LAP_DEG);
+		ItemManager::GetInstance().SetDummyItemRotY(playerNum_, static_cast<float>((static_cast<int>(itemM.GetDummyItemRotY(playerNum_)) + MapEditer::QUATER_ONE_LAP_DEG)%(itemM.GetDummyItemHitSize(playerNum_) != itemM.GetDummyItemSize(playerNum_) ? static_cast<int>(MapEditer::ONE_LAP_DEG) : MapEditer::HALF_ONE_LAP_DEG)));
+		rot =  Quaternion::AngleAxis(Utility::Deg2RadF(itemM.GetDummyItemRotY(playerNum_)), Utility::AXIS_Y);
 		auto& itemIns = ItemManager::GetInstance();
 		ItemManager::GetInstance().DummyItemSetRotate(rot, playerNum_);
 		//ItemManager::GetInstance().ResetDummyItem(playerNum_, itemType_,mapPos_);
