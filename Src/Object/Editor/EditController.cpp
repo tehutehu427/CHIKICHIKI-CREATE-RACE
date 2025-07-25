@@ -605,13 +605,22 @@ void EditController::MoveItem(void)
 		return;
 		break;
 	case EditController::MOVE_DIR::X:
+		nullWallMapPosNear.z = mapPos_.z;	//Z軸固定の壁を置く
+		nullWallMapPosFar.z = mapPos_.z + 1;	//Z軸固定の壁を置く
+		nullWallMapPosNear.y = mapPos_.y;	//Y軸固定の壁を置く
+		nullWallMapPosFar.y = mapPos_.y + 1;	//Y軸固定の壁を置く
+		break;
 	case EditController::MOVE_DIR::Y:
 		nullWallMapPosNear.z = mapPos_.z;	//Z軸固定の壁を置く
 		nullWallMapPosFar.z = mapPos_.z + 1;	//Z軸固定の壁を置く
+		nullWallMapPosNear.x = mapPos_.x;	//Z軸固定の壁を置く
+		nullWallMapPosFar.x = mapPos_.x + 1;	//Z軸固定の壁を置く
 		break;
 	case EditController::MOVE_DIR::Z:
 		nullWallMapPosNear.x = mapPos_.x;
 		nullWallMapPosFar.x = mapPos_.x + 1;
+		nullWallMapPosNear.y = mapPos_.y;
+		nullWallMapPosFar.y = mapPos_.y + 1;
 		break;
 	case EditController::MOVE_DIR::XY:
 		nullWallMapPosNear.z = mapPos_.z;	//Z軸固定の壁を置く
