@@ -109,6 +109,10 @@ void EditController::DrawUI(void)
 	{
 		ready_->Draw();
 	}
+	else
+	{
+		DrawBox(screenSize_.x / 2 - CENTER_BOX_SIZE, screenSize_.y / 2 - CENTER_BOX_SIZE,screenSize_.x / 2 + CENTER_BOX_SIZE,screenSize_.y / 2 + CENTER_BOX_SIZE,Utility::BLACK, true);	//中央のボックス描画
+	}
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(errorStringTime_ * 255));
 	float rate = 1.0 / (playerMaxNum_ == 1 ? 2 : 4);
 	switch (errorType_)
@@ -464,7 +468,7 @@ void EditController::ItemNotSelect(void)
 			{
 				return;
 			}
-			MapEditer::GetInstance().DeleteItem(itemType_, leaderPos, ItemManager::GetInstance().GetDummyItemRotY(playerNum_), ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_));
+			MapEditer::GetInstance().DeleteItem(leaderPos, ItemManager::GetInstance().GetDummyItemRotY(playerNum_), ItemManager::GetInstance().GetDummyItemSize(playerNum_),ItemManager::GetInstance().GetDummyItemHitSize(playerNum_));
 			mapPos_ = leaderPos;
 			ChangeMode(MODE::MOVE_ROTATE);
 			SoundManager::GetInstance().Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
@@ -959,7 +963,7 @@ void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector
 				}
 				itemM.DeleteItem(lPos, type);
 				//itemM.DeleteDummyItem(playerNum_);
-				editer.DeleteItem(type, lPos, rotY, size, hitSize);
+				editer.DeleteItem(lPos, rotY, size, hitSize);
 			}
 		}
 	}
