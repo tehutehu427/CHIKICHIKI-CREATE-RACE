@@ -14,7 +14,7 @@ public:
 
 	//マップ
 	static constexpr IntVector3 MAP_SIZE = { 2,2,2 };				//マップサイズ
-	static constexpr IntVector3 HIT_SIZE = { 0,0,1 };				//当たり判定用サイズ
+	static constexpr IntVector3 HIT_SIZE = { 0,0,0 };				//当たり判定用サイズ
 	static constexpr VECTOR MAP_LOCALPOS = { 60.0f,0.0f,40.0f };	//マップとの相対座標
 
 	//サイズ

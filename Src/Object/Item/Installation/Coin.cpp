@@ -3,6 +3,7 @@
 #include"../Manager/Game/MapEditer.h"
 #include"../Utility/Utility.h"
 #include"../../Common/Geometry/Sphere.h"
+#include"../../Player/Player.h"
 #include "Coin.h"
 
 Coin::Coin(void)
@@ -90,6 +91,8 @@ void Coin::OnHit(const std::weak_ptr<Collider> _hitCol)
 
 	//í«è]
 	followCol_ = _hitCol;
+
+	const Player& player = dynamic_cast<const Player&>(followCol_.lock()->GetParent());
 
 	//ÉRÉâÉCÉ_ÇÃè¡ãé
 	colParam_[0].collider_->Kill();

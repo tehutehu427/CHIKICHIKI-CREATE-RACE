@@ -1,6 +1,8 @@
 #pragma once
 #include "../ItemBase.h"
 
+class Player;
+
 class Coin : public ItemBase
 {
 public:
@@ -40,5 +42,7 @@ public:
 private:
 
 	std::weak_ptr<Collider> followCol_;		//‚Â‚¢‚Ä‚¢‚­‘ÎÛ
+
+	std::weak_ptr<Player> follower_;		//‚Â‚¢‚Ä‚¢‚­ƒvƒŒƒCƒ„[
 };
 
