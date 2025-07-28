@@ -496,7 +496,6 @@ void PlayerAction::ChangeKnockBack(void)
 	//ダメージアニメーション
 	//animationController_->Play((int)ANIM_TYPE::DAMAGE,true,)
 	speed_ = FLY_AWAY_SPEED;
-	actionUpdate_ = [this]() {KnockBack(); };
 	//エフェクト
 	Transform trans = player_.GetTransform();
 	const float EFF_SCL = 15.0f;
@@ -505,6 +504,9 @@ void PlayerAction::ChangeKnockBack(void)
 	//パンチの当たり判定を消す
 	isPunchHitTime_ = false;
 	player_.KillPunchCol();
+	stepJump_ = 0.0f;
+	jumpDeceralation_ = POW_JUMP;
+	actionUpdate_ = [this]() {KnockBack(); };
 	
 }
 
