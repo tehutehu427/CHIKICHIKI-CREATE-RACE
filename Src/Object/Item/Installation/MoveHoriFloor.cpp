@@ -39,6 +39,7 @@ void MoveHoriFloor::SetParam(void)
 	status_.isBreak = true;
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
+	status_.rotType = ROTATION_TYPE::ONE_ROTATION;
 
 	//ÉTÉCÉYî{ó¶
 	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
