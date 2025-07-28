@@ -34,7 +34,7 @@ public:
 	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
 
 	//パンチの範囲
-	static constexpr float PUNCH_RADIUS = 30.0f;
+	static constexpr float PUNCH_RADIUS = 50.0f;
 
 	//デフォルトのアニメーションスピード
 	static constexpr float DEFAULT_ANIM_SPD = 60.0f;
