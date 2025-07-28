@@ -950,6 +950,7 @@ void EditController::DebugDraw(void)
 
 void EditController::RotateObject(void) const
 {
+	int rotYMax = 0;
 	KeyConfig& ins = KeyConfig::GetInstance();
 	auto type = playerMaxNum_ == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
 	auto& itemM = ItemManager::GetInstance();
@@ -957,10 +958,18 @@ void EditController::RotateObject(void) const
 	{
 		Quaternion rot = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).quaRot;
 		//float rotScale = Utility::Deg2RadF(MapEditer::QUATER_ONE_LAP_DEG);
-		ItemManager::GetInstance().SetDummyItemRotY(playerNum_, static_cast<float>((static_cast<int>(itemM.GetDummyItemRotY(playerNum_)) + MapEditer::QUATER_ONE_LAP_DEG)%(itemM.GetDummyItemHitSize(playerNum_) != itemM.GetDummyItemSize(playerNum_) ? static_cast<int>(MapEditer::ONE_LAP_DEG) : MapEditer::HALF_ONE_LAP_DEG)));
-		rot =  Quaternion::AngleAxis(Utility::Deg2RadF(itemM.GetDummyItemRotY(playerNum_)), Utility::AXIS_Y);
+		if (itemM.GetDummyItemStatus(playerNum_).rotType == ItemBase::ROTATION_TYPE::HALF_ROTATION)
+		{
+			rotYMax = MapEditer::HALF_ONE_LAP_DEG;	//”¼‰ñ“]
+		}
+		else
+		{
+			rotYMax = static_cast<int>(MapEditer::ONE_LAP_DEG);	//1‰ñ“]
+		}
+		ItemManager::GetInstance().SetDummyItemRotY(playerNum_, static_cast<float>((static_cast<int>(itemM.GetDummyItemRotY(playerNum_)) + MapEditer::QUATER_ONE_LAP_DEG) % rotYMax));
+		rot = Quaternion::AngleAxis(Utility::Deg2RadF(itemM.GetDummyItemRotY(playerNum_)), Utility::AXIS_Y);
 		auto& itemIns = ItemManager::GetInstance();
-		ItemManager::GetInstance().DummyItemSetRotate(rot, playerNum_);
+		itemIns.DummyItemSetRotate(rot, playerNum_);
 		//ItemManager::GetInstance().ResetDummyItem(playerNum_, itemType_,mapPos_);
 	}
 }
