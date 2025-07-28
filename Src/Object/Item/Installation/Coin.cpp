@@ -1,13 +1,16 @@
 #include<algorithm>
 #include"../Manager/System/ResourceManager.h"
+#include"../Manager/Game/ItemManager.h"
 #include"../Manager/Game/MapEditer.h"
 #include"../Utility/Utility.h"
 #include"../../Common/Geometry/Sphere.h"
+#include"CoinFollower.h"
 #include"../../Player/Player.h"
 #include "Coin.h"
 
 Coin::Coin(void)
 {
+	isEnd_ = false;
 }
 
 Coin::~Coin(void)
@@ -44,10 +47,27 @@ void Coin::SetParam(void)
 
 	//マップサイズ
 	mapSize_ = MAP_SIZE;
+
+	//終了判定
+	isEnd_ = false;
 }
 
 void Coin::Update(void)
 {
+	//追従更新
+	if (follower_ != nullptr)
+	{
+		follower_->Update();
+	}
+
+	//コインの役割が終わったら
+	if (isEnd_)
+	{
+		//マップからも消す
+		Delete();
+		return;
+	}
+
 	//回転
 	trans_.quaRot = trans_.quaRot.Mult(Quaternion::AngleAxis(Utility::Deg2RadF(ROTATE_SPEED), Utility::AXIS_Y));
 
@@ -75,7 +95,7 @@ void Coin::Update(void)
 	//追従座標
 	VECTOR followPos = followCol_.lock()->GetParent().GetTransform().pos;
 	Quaternion followRot = followCol_.lock()->GetParent().GetTransform().quaRot;
-	VECTOR followLocalPos = followRot.PosAxis(FOLLOW_LOCAL_POS);
+	VECTOR followLocalPos = followRot.PosAxis(followPos_);
 
 	//対象に追従
 	trans_.pos = VSub(VAdd(followPos, followLocalPos), trans_.localPos);
@@ -93,9 +113,21 @@ void Coin::OnHit(const std::weak_ptr<Collider> _hitCol)
 	//追従
 	followCol_ = _hitCol;
 
+	//フォロワー設定
 	const Player& player = dynamic_cast<const Player&>(followCol_.lock()->GetParent());
+	follower_ = std::make_unique<CoinFollower>(*this, player);
+	followPos_ = VGet(FOLLOW_LOCAL_POS.x, FOLLOW_LOCAL_POS.y, FOLLOW_LOCAL_POS.z + COIN_DIS * player.GetCoinNum());
 
 	//コライダの消去
 	colParam_[0].collider_->Kill();
 	colParam_.clear();
+}
+
+void Coin::Delete(void)
+{
+	//マップからの削除
+	MapEditer::GetInstance().DeleteItem(initMapPos_, rotY_, size_, GetHitSize());
+
+	//アイテムマネージャからの削除
+	ItemManager::GetInstance().DeleteItem(initMapPos_,status_.itemType);
 }
