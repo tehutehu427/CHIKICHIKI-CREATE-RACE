@@ -99,8 +99,8 @@ void PlayerAction::Init(void)
 	{
 		cameraNo_ = player_.GetPlayerNum();
 	}
-
-	ChangeAction(ATK_ACT::INPUT);
+	act_ = ATK_ACT::INPUT;
+	ChangeAction(ATK_ACT::NONE);
 }
 
 void PlayerAction::Load(void)
@@ -147,7 +147,17 @@ void PlayerAction::DrawDebug(void)
 
 void PlayerAction::NoneUpdate(void)
 {
-	//‰½‚à‚µ‚È‚¢
+	//‰½‚à‚µ‚È‚¢(‰ŠúˆÊ’u‚É—‚¿‚Ä‚¢‚é‚Æ‚«‚Í‘€ì‚ğó‚¯•t‚¯‚È‚¢)
+	if (player_.GetIsLandHit())
+	{
+		ChangeAction(ATK_ACT::INPUT);
+		return;
+	}
+}
+
+void PlayerAction::ChangeNone(void)
+{
+	actionUpdate_ = std::bind(&PlayerAction::NoneUpdate, this);
 }
 
 void PlayerAction::ActionInputUpdate(void)
@@ -197,10 +207,7 @@ void PlayerAction::ChangeInput(void)
 	actionUpdate_ = std::bind(&PlayerAction::ActionInputUpdate, this);
 }
 
-void PlayerAction::ChangeNone(void)
-{
-	actionUpdate_ = std::bind(&PlayerAction::NoneUpdate, this);
-}
+
 
 void PlayerAction::MoveUpdate(void)
 {
