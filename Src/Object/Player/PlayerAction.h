@@ -69,6 +69,14 @@ public:
 	//状態遷移
 	void ChangeAction(ATK_ACT _act);
 
+	/// <summary>
+	/// 座標を足して回転
+	/// </summary>
+	/// <param name="_followPos">追従対象の座標</param>
+	/// <param name="_followRot">追従対象の角度</param>
+	/// <param name="_localPos">相対座標</param>
+	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _localPos);
+
 
 	//*****************************************
 	//ゲッタ
@@ -314,13 +322,7 @@ private:
 	void KnockBack(void);
 	void ChangeKnockBack(void);
 
-	/// <summary>
-	/// 座標を足して回転
-	/// </summary>
-	/// <param name="_followPos">追従対象の座標</param>
-	/// <param name="_followRot">追従対象の角度</param>
-	/// <param name="_localPos">相対座標</param>
-	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _localPos);
+
 
 	/// <summary>
 	/// 再生させたいSE以外すべて止める

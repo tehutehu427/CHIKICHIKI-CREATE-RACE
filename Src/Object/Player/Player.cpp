@@ -119,12 +119,6 @@ void Player::Init(void)
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
 	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,Utility::VECTOR_ZERO);
 	MakeCollider({ tag_ }, std::move(moveLineGeo));
-
-	//階段の当たり判定のためのプレイヤーの目線からのライン
-		//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
-	std::unique_ptr<Line>eyeLine = std::make_unique<Line>(trans_.pos, trans_.quaRot, EYE_HEIGHT, EYE_RANGE);
-	MakeCollider({ tag_ }, std::move(eyeLine));
-
 	//*****************************************************
 
 

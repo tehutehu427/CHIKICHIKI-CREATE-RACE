@@ -77,12 +77,6 @@ void PlayerOnHit::Update(void)
 	//移動量ラインの更新
 	VECTOR moveVec = VSub(movedPos_, trans_.pos);
 	moveVec.y -= MOVE_LINE_Y_OFFSET;
-	if (moveVec.x != 0.0f || moveVec.y != MOVE_LINE_Y_CHECK_VALUE || moveVec.z != 0.0f)
-	{
-		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
-		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
-		moveLine.SetLocalPosPoint2(moveVec);
-	}
 
 	//地面と当たっているフラグとスライム床の当たりフラグの更新
 
@@ -253,8 +247,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	auto& upDownLine = colParam_[UP_AND_DOWN_LINE_COL_NO].collider_;
 	//球の当たり判定(プレイヤーの周囲)
 	auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
-	//目線のライン(プレイヤーの目線)
-	auto& eyeLine = colParam_[EYE_LINE_NO].collider_;
+
 
 	//アクションに渡すフラグの初期化
 	isLandHit_ = false;
@@ -335,10 +328,10 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		}
 		if(isSide_&&_hitCol.lock()->GetTags()[0]!=Collider::TAG::KILLER_SPECIFIC)
 		{
-			Line& eyeLineGeo = dynamic_cast<Line&>(eyeLine->GetGeometry());
+			//Line& eyeLineGeo = dynamic_cast<Line&>(eyeLine->GetGeometry());
 			int modelId = _hitCol.lock()->GetParent().GetTransform().modelId;
-			VECTOR pos1 = eyeLineGeo.GetPosPoint1();
-			VECTOR pos2 = eyeLineGeo.GetPosPoint2();
+			VECTOR pos1 = movedPos_;
+			VECTOR pos2 = action_.AddPosRotate(movedPos_, trans_.quaRot, Player::EYE_RANGE);
 			if (MV1CollCheck_Line(modelId,-1, pos1,pos2).HitFlag==0)
 			{
 				if (!Utility::EqualsVZero(action_.GetMovePow()))
