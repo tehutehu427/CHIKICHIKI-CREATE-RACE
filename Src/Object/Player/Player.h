@@ -148,11 +148,17 @@ public:
 	//スライム床と当たっているか
 	const bool GetIsSlimeFloor(void)const;
 
-	//ゴール判定の取得
+	//ゴール判定の取得(ディレイ時間も含めて)
 	const bool IsGoal(void)const;
 
-	//死んだ判定
+	//コールした瞬間(ディレイ時間なし)
+	inline const bool GetIsGoalMoment(void)const { return state_ == PLAYER_STATE::GOAL; }
+
+	//死んだ判定(ディレイ時間も含めて)
 	bool IsDeath(void)const;
+
+	//死んだ瞬間(ディレイ時間なし)
+	inline const bool GetIsDeathMoment(void)const { return state_ == PLAYER_STATE::DEATH; }
 
 	//ゴールタイムの取得
 	inline const float GetGoalTime(void)const { return goalTime_; }
