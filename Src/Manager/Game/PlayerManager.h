@@ -61,12 +61,15 @@ public:
 	//モデル情報ゲッタ
 	const Transform& GetPlayerTransform(const int _num) { return players_[_num]->GetTransform(); }
 
-	////移動後座標
-	//const VECTOR GetPlayerMovedPos(const int _num) { return players_[_num]->GetMovedPos(); }
-
+	//プレイヤー情報
 	std::vector<std::unique_ptr<Player>>&GetPlayers(void) { return players_; }
 
-	Player& GetPlayer(int _num) { return *players_[_num]; }
+	/// <summary>
+	///プレイヤーコイン枚数
+	/// </summary>
+	/// <param name="_num">プレイヤー番号</param>
+	/// <returns></returns>
+	inline const int GetPlayerCoinNum(const int _num) { return players_[_num]->GetCoinNum(); }
 
 	//ゴールタイムのゲッタ
 	const std::vector<float> GetGoalTime(void);
