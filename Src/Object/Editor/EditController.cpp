@@ -147,6 +147,7 @@ void EditController::DrawUI(void)
 
 void EditController::Reset(void)
 {
+	mapPos_ = ERROR_POS;
 	cursorPos_ = Vector2(screenSize_.x / 2, screenSize_.y / 2);	//カーソル位置は画面の中央に設定
 	errorType_ = ERROR_TYPE::NONE;
 	errorStringTime_ = 0.0f;	//エラー文字列の表示時間初期化
@@ -257,6 +258,7 @@ void EditController::SetReady(void)
 		MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
 	}
 	itemMIns.DummyItemAddItems(playerNum_);
+	mapPos_ = ERROR_POS;
 }
 
 void EditController::UpdateCursor(void)
@@ -376,6 +378,7 @@ void EditController::MoveRotateObjectDraw(void)
 	{
 		VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
 		worldPos = VAdd(worldPos,{MapEditer::GRID_SIZE /2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
+		DrawLine3D(worldPos, VAdd(worldPos, { 0.0f,1000.0f,0.0f }), playerNum_ == 0 ? Utility::BLUE : playerNum_ == 1 ? Utility::RED : playerNum_ == 2 ? Utility::GREEN : Utility::YELLOW);
 		switch (moveDir_)
 		{
 		case EditController::MOVE_DIR::NONE:
@@ -408,8 +411,30 @@ void EditController::MoveRotateObjectDraw(void)
 			break;
 		}
 
-		DrawLine3D(worldPos, VAdd(worldPos, { 0.0f,1000.0f,0.0f }), playerNum_ == 0 ? Utility::BLUE : playerNum_ == 1 ? Utility::RED : playerNum_ == 2 ? Utility::GREEN : Utility::YELLOW);
 
+
+		if (moveDir_ != MOVE_DIR::NONE)
+		{
+			return;
+		}
+		//VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
+		float distance = DELAY_MOVE_ARROW;
+		//worldPos = VAdd(worldPos, { MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
+		VECTOR x = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)));
+		VECTOR y = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)));
+		VECTOR z = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)));
+		if (x.z > 0.0f && x.z < 1.0f)
+		{
+			DrawCircle(x.x, x.y, distance, Utility::RED, false);
+		}
+		if (y.z > 0.0f && y.z < 1.0f)
+		{
+			DrawCircle(y.x, y.y, distance, Utility::GREEN, false);
+		}
+		if (z.z > 0.0f && z.z < 1.0f)
+		{
+			DrawCircle(z.x, z.y, distance, Utility::BLUE, false);
+		}
 	}
 }
 
