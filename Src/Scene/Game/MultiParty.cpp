@@ -258,6 +258,8 @@ void MultiParty::ChangePhaseResult()
 
 	//クリア時間に応じてスコアを格納
 	ScoreManager::GetInstance().SetPlayersScore();
+	//カメラをチェンジ
+	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FIXED_POINT);
 }
 
 void MultiParty::UpdateClear()
