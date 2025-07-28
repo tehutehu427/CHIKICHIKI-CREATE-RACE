@@ -92,7 +92,6 @@ void PlayerOnHit::Update(void)
 		{
 			continue;
 		}
-
 		//現在座標を起点に移動後座標を決める
 
 	}
