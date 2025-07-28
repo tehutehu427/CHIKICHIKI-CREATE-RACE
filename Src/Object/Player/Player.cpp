@@ -349,12 +349,12 @@ void Player::TimeUpdate(void)
 	time_ += deltaTime;
 }
 
-const bool Player::GetIsLandHit(void)
+const bool Player::GetIsLandHit(void)const
 {
 	return onHitCol_->GetIsLandHit();
 }
 
-const bool Player::GetIsSlimeFloor(void)
+const bool Player::GetIsSlimeFloor(void)const
 {
 	return onHitCol_->GetIsSlimeHit();
 }
@@ -363,7 +363,7 @@ const bool Player::IsGoal(void) const
 {
 	return state_ == PLAYER_STATE::GOAL&&finishDelay_>=GOAL_DELAY;
 }
-bool Player::IsDeath(void)
+bool Player::IsDeath(void)const
 {
 	return state_ == PLAYER_STATE::DEATH && finishDelay_ >= DEATH_DELAY;
 }
