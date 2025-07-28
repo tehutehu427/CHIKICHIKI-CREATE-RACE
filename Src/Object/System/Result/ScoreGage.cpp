@@ -125,7 +125,7 @@ void ScoreGage::ChangeStateAnimation()
 	stateUpdate_ = std::bind(&ScoreGage::UpdateStateAnimation, this);
 
 	//現在の勝者のスコアを取得
-	const int nowScore = scoreMng.GetScore(scoreMng.GetWinnerPlayerIndex());
+	const int nowScore = scoreMng.GetScore(scoreMng.GetNowWinnerPlayerIndex());
 
 	//スコア最大値を更新
 	scoreMax_ = scoreMax_ > nowScore ? scoreMax_ : nowScore;
