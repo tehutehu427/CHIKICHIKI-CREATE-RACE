@@ -37,6 +37,7 @@ void Cannon::SetParam(void)
 	status_.isBreak = true;
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
+	status_.rotType = ROTATION_TYPE::ONE_ROTATION;
 
 	//ëäëŒç¿ïW
 	trans_.localPos = MAP_LOCALPOS;

@@ -46,6 +46,13 @@ public:
 		DESTROYER,		//破壊物
 	};
 
+	//回転の種類
+	enum class ROTATION_TYPE
+	{
+		HALF_ROTATION,	//半回転
+		ONE_ROTATION,	//一回転
+	};
+
 	//アイテム数
 	static constexpr int ITEM_NUM_MAX = static_cast<int>(ITEM_TYPE::MAX) - 1;	//アイテムの種類数
 
@@ -56,6 +63,7 @@ public:
 		bool isGravity;				//重力影響を受けるか(true:受ける)
 		ITEM_TYPE itemType;			//アイテムの種類
 		EFFECT_TYPE effType;		//アイテムの効果
+		ROTATION_TYPE rotType;		//回転の種類
 	};
 
 	//コンストラクタ
