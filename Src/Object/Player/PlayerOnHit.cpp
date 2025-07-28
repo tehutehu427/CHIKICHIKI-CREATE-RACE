@@ -80,12 +80,6 @@ void PlayerOnHit::Update(void)
 	//移動量ラインの更新
 	VECTOR moveVec = VSub(movedPos_, trans_.pos);
 	moveVec.y -= MOVE_LINE_Y_OFFSET;
-	if (moveVec.x != 0.0f || moveVec.y != MOVE_LINE_Y_CHECK_VALUE || moveVec.z != 0.0f)
-	{
-		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
-		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
-		moveLine.SetLocalPosPoint2(moveVec);
-	}
 
 	//地面と当たっているフラグとスライム床の当たりフラグの更新
 

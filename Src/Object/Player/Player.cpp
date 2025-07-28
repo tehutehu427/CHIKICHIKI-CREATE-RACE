@@ -119,12 +119,6 @@ void Player::Init(void)
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
 	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,Utility::VECTOR_ZERO);
 	MakeCollider({ tag_ }, std::move(moveLineGeo));
-
-	//階段の当たり判定のためのプレイヤーの目線からのライン
-		//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
-	std::unique_ptr<Line>eyeLine = std::make_unique<Line>(trans_.pos, trans_.quaRot, EYE_HEIGHT, EYE_RANGE);
-	MakeCollider({ tag_ }, std::move(eyeLine));
-
 	//*****************************************************
 
 
@@ -349,12 +343,12 @@ void Player::TimeUpdate(void)
 	time_ += deltaTime;
 }
 
-const bool Player::GetIsLandHit(void)
+const bool Player::GetIsLandHit(void)const
 {
 	return onHitCol_->GetIsLandHit();
 }
 
-const bool Player::GetIsSlimeFloor(void)
+const bool Player::GetIsSlimeFloor(void)const
 {
 	return onHitCol_->GetIsSlimeHit();
 }
@@ -363,7 +357,7 @@ const bool Player::IsGoal(void) const
 {
 	return state_ == PLAYER_STATE::GOAL&&finishDelay_>=GOAL_DELAY;
 }
-bool Player::IsDeath(void)
+bool Player::IsDeath(void)const
 {
 	return state_ == PLAYER_STATE::DEATH && finishDelay_ >= DEATH_DELAY;
 }

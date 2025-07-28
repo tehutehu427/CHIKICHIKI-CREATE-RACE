@@ -34,7 +34,7 @@ public:
 	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
 
 	//パンチの範囲
-	static constexpr float PUNCH_RADIUS = 30.0f;
+	static constexpr float PUNCH_RADIUS = 50.0f;
 
 	//デフォルトのアニメーションスピード
 	static constexpr float DEFAULT_ANIM_SPD = 60.0f;
@@ -134,7 +134,7 @@ public:
 	//プレイヤー番号
 	inline const int GetPlayerNum(void)const { return playerNum_; }
 
-	inline const KeyConfig::TYPE GetCntl(void) { return cntl_; }
+	inline const KeyConfig::TYPE GetCntl(void)const { return cntl_; }
 
 	//プレイヤー座標
 	inline const VECTOR GetPos(void)const { return trans_.pos; }
@@ -143,16 +143,22 @@ public:
 	inline const KeyConfig::JOYPAD_NO GetPadNum(void)const { return padNum_; }
 
 	//地面に当たっているか
-	const bool GetIsLandHit(void);
+	const bool GetIsLandHit(void)const;
 
 	//スライム床と当たっているか
-	const bool GetIsSlimeFloor(void);
+	const bool GetIsSlimeFloor(void)const;
 
-	//ゴール判定の取得
+	//ゴール判定の取得(ディレイ時間も含めて)
 	const bool IsGoal(void)const;
 
-	//死んだ判定
-	bool IsDeath(void);
+	//コールした瞬間(ディレイ時間なし)
+	inline const bool GetIsGoalMoment(void)const { return state_ == PLAYER_STATE::GOAL; }
+
+	//死んだ判定(ディレイ時間も含めて)
+	bool IsDeath(void)const;
+
+	//死んだ瞬間(ディレイ時間なし)
+	inline const bool GetIsDeathMoment(void)const { return state_ == PLAYER_STATE::DEATH; }
 
 	//ゴールタイムの取得
 	inline const float GetGoalTime(void)const { return goalTime_; }

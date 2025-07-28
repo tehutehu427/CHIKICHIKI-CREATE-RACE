@@ -29,6 +29,7 @@ void Fan::SetParam(void)
 	status_.isBreak = true;
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
+	status_.rotType = ROTATION_TYPE::ONE_ROTATION;
 
 	//‘O•û‚Ö‰ñ“]
 	trans_.quaRot.PosAxis(Utility::AXIS_Z);

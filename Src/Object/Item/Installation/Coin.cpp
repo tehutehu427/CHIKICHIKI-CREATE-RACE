@@ -3,6 +3,7 @@
 #include"../Manager/Game/MapEditer.h"
 #include"../Utility/Utility.h"
 #include"../../Common/Geometry/Sphere.h"
+#include"../../Player/Player.h"
 #include "Coin.h"
 
 Coin::Coin(void)
@@ -27,6 +28,7 @@ void Coin::SetParam(void)
 	status_.isBreak = true;
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::INSTALLATION;
+	status_.rotType = ROTATION_TYPE::HALF_ROTATION;
 
 	//サイズ
 	trans_.scl = VScale(trans_.scl, SIZE_MULTI);
@@ -90,6 +92,8 @@ void Coin::OnHit(const std::weak_ptr<Collider> _hitCol)
 
 	//追従
 	followCol_ = _hitCol;
+
+	const Player& player = dynamic_cast<const Player&>(followCol_.lock()->GetParent());
 
 	//コライダの消去
 	colParam_[0].collider_->Kill();

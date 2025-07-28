@@ -99,8 +99,8 @@ void PlayerAction::Init(void)
 	{
 		cameraNo_ = player_.GetPlayerNum();
 	}
-
-	ChangeAction(ATK_ACT::INPUT);
+	act_ = ATK_ACT::INPUT;
+	ChangeAction(ATK_ACT::NONE);
 }
 
 void PlayerAction::Load(void)
@@ -147,7 +147,17 @@ void PlayerAction::DrawDebug(void)
 
 void PlayerAction::NoneUpdate(void)
 {
-	//何もしない
+	//何もしない(初期位置に落ちているときは操作を受け付けない)
+	if (player_.GetIsLandHit())
+	{
+		ChangeAction(ATK_ACT::INPUT);
+		return;
+	}
+}
+
+void PlayerAction::ChangeNone(void)
+{
+	actionUpdate_ = std::bind(&PlayerAction::NoneUpdate, this);
 }
 
 void PlayerAction::ActionInputUpdate(void)
@@ -208,10 +218,7 @@ void PlayerAction::ChangeInput(void)
 	actionUpdate_ = std::bind(&PlayerAction::ActionInputUpdate, this);
 }
 
-void PlayerAction::ChangeNone(void)
-{
-	actionUpdate_ = std::bind(&PlayerAction::NoneUpdate, this);
-}
+
 
 void PlayerAction::MoveUpdate(void)
 {
@@ -508,7 +515,6 @@ void PlayerAction::ChangeKnockBack(void)
 	//ダメージアニメーション
 	//animationController_->Play((int)ANIM_TYPE::DAMAGE,true,)
 	speed_ = FLY_AWAY_SPEED;
-	actionUpdate_ = [this]() {KnockBack(); };
 	//エフェクト
 	Transform trans = player_.GetTransform();
 	const float EFF_SCL = 15.0f;
@@ -517,6 +523,9 @@ void PlayerAction::ChangeKnockBack(void)
 	//パンチの当たり判定を消す
 	isPunchHitTime_ = false;
 	player_.KillPunchCol();
+	stepJump_ = 0.0f;
+	jumpDeceralation_ = POW_JUMP;
+	actionUpdate_ = [this]() {KnockBack(); };
 	
 }
 

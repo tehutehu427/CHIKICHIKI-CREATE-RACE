@@ -25,6 +25,7 @@ void GoalFlag::SetParam(void)
 	status_.isBreak = false;
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::FIXED;
+	status_.rotType = ROTATION_TYPE::ONE_ROTATION;
 
 	//ÉTÉCÉYî{ó¶
 	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
