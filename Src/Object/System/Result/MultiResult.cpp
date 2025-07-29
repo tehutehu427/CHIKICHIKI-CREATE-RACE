@@ -65,6 +65,9 @@ void MultiResult::Init()
 
 	//“ü—ÍŠm”F
 	inputCheck_->Init();
+
+	//‰Šúó‘Ô‚Ì•ÏX
+	ChangeState(STATE::READY);
 }
 
 void MultiResult::Update(MultiParty& _parent)
