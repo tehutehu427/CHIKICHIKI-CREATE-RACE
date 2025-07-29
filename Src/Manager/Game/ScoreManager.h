@@ -23,8 +23,8 @@ public:
 	static constexpr int SCORE_TYPE_VALUES[static_cast<int>(SCORE_TYPE::MAX)] = {
 		0,	//DEATH
 		1,	//CLEAR
-		2,	//FIRST
-		1,	//COIN
+		1,	//FIRST
+		10,	//COIN
 		1,	//KILL
 	};
 
@@ -87,6 +87,14 @@ public:
 	/// <param name="_playerIndex">プレイヤー番号</param>
 	/// <returns>指定したプレイヤーのスコア値</returns>
 	const int GetScore(const int _playerIndex) const { return scores_[_playerIndex]; }
+
+	/// <summary>
+	/// ボーナスを獲得してるか返す
+	/// </summary>
+	/// <param name="_playerIndex">プレイヤー番号</param>
+	/// <param name="_type">スコアの種類</param>
+	/// <returns>獲得してたらtrue,してなければfalse</returns>
+	const bool GetIsBonus(const int _playerIndex, const SCORE_TYPE _type) { return isBonusScoreTypes_[_playerIndex][_type]; }
 
 	/// <summary>
 	/// リセット

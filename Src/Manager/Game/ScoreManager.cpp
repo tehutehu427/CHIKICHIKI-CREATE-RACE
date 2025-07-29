@@ -94,7 +94,15 @@ void ScoreManager::SetPlayersScore()
 	for (int rank = 0; rank < indexAndTime.size(); rank++)
 	{
 		int playerIndex = indexAndTime[rank].first;
-		scores_[playerIndex] += GetScoreByRank(rank);
+
+		//クリア者にスコアを付与
+		AddScore(playerIndex, SCORE_TYPE::CLEAR);
+
+		//一位の場合追加点
+		if (rank == 0)
+		{
+			AddScore(playerIndex, SCORE_TYPE::FIRST);
+		}
 	}
 }
 
@@ -154,8 +162,11 @@ const int ScoreManager::GetNowWinnerPlayerIndex() const
 {
 
 	// 配列が空の場合
-	if (scores_.empty()) return -1;
-
+	if (scores_.empty())
+	{
+		return -1;
+	}
+	
 	// 最大スコアとそのインデックス
 	int max = scores_[0];			// 最大値
 	int maxIndex = 0;				// 最大値のインデックス
@@ -176,8 +187,10 @@ const int ScoreManager::GetNowWinnerPlayerIndex() const
 		}
 	}
 
+	return maxIndex;
+
 	// 最大値が複数存在するなら -1、それ以外はインデックスを返す
-	return (count > 1) ? -1 : maxIndex;
+	//return (count > 1) ? -1 : maxIndex;
 }
 
 void ScoreManager::ResetIsBonusScores()
