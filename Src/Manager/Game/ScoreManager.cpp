@@ -67,6 +67,22 @@ void ScoreManager::SetPlayersScore()
 {
 	PlayerManager& pMng = PlayerManager::GetInstance();
 
+	//コイン獲得者がいるか調べる
+	for (int i = 0; i < scores_.size(); i++)
+	{
+		int num = pMng.GetPlayerCoinNum(i);
+
+		//コイン獲得数が0より大きいとき
+		if (num > 0)
+		{	
+			//獲得した数分スコア格納
+			for (int j = 0; j < num; j++)
+			{
+				AddScore(i, SCORE_TYPE::COIN);
+			}
+		}
+	}
+
 
 	//クリアタイム取得
 	std::vector<float> playerTimes = pMng.GetGoalTime();
