@@ -190,8 +190,6 @@ void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 }
 void PlayerOnHit::CollCoin(void)
 {
-	//コインと体が当たっているとき以外処理を飛ばす
-	if (!colParam_[BODY_SPHERE_COL_NO].collider_->IsHit())return;
 	coinNum_++;
 
 	//マルチの時のみ処理を行う
