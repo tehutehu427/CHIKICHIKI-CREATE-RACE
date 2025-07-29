@@ -211,7 +211,12 @@ void GameScene::ChangePhaseEdit(void)
 			editControllers_[i]->Reset();
 		}
 	}
+
+	//アイテムの値リセット
 	ItemManager::GetInstance().ResetItemValue();
+
+	//アイテムのエフェクトを停止する
+	//ItemManager::GetInstance().ItemEffectStop();
 }
 
 void GameScene::ChangePhaseAction(void)
@@ -233,8 +238,10 @@ void GameScene::ChangePhaseAction(void)
 		//カメラの追従対象をプレイヤーに設定
 		SceneManager::GetInstance().GetCamera(i).lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(i));
 	}
-	ItemManager::GetInstance().ResetItemValue();
 
+	//アイテムの値リセット
+	ItemManager::GetInstance().ResetItemValue();
+	
 	actionStartTime_ = ACTION_START_TIME;
 
 	//クリアの初期化

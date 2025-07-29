@@ -189,7 +189,7 @@ void EffectController::Delete(const EFF_TYPE _effType, const int _arrayNum)
 	effects_[_effType].playNum--;
 }
 
-void EffectController::AllDelete(void)
+void EffectController::AllStop(void)
 {
 	//全停止
 	for (auto& effect : effects_)
@@ -199,6 +199,12 @@ void EffectController::AllDelete(void)
 			Stop(effect.first, i);
 		}
 	}
+}
+
+void EffectController::AllDelete(void)
+{
+	//全停止
+	AllStop();
 	
 	//エフェクトのクリア
 	effects_.clear();

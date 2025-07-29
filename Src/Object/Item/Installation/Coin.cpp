@@ -4,6 +4,7 @@
 #include"../Manager/Game/MapEditer.h"
 #include"../Utility/Utility.h"
 #include"../../Common/Geometry/Sphere.h"
+#include"../../Common/EffectController.h"
 #include"CoinFollower.h"
 #include"../../Player/Player.h"
 #include "Coin.h"
@@ -11,6 +12,7 @@
 Coin::Coin(void)
 {
 	isEnd_ = false;
+	followPos_ = Utility::VECTOR_ZERO;
 }
 
 Coin::~Coin(void)
@@ -50,6 +52,9 @@ void Coin::SetParam(void)
 
 	//終了判定
 	isEnd_ = false;
+
+	//エフェクト
+	effect_->Add(ResourceManager::GetInstance().Load(ResourceManager::SRC::COIN_GOAL_EFF).handleId_, EffectController::EFF_TYPE::COIN_GOAL);
 }
 
 void Coin::Update(void)
@@ -121,6 +126,15 @@ void Coin::OnHit(const std::weak_ptr<Collider> _hitCol)
 	//コライダの消去
 	colParam_[0].collider_->Kill();
 	colParam_.clear();
+}
+
+void Coin::End(void)
+{
+	//終了
+	isEnd_ = true;
+
+	//エフェクト再生
+	effect_->Play(EffectController::EFF_TYPE::COIN_GOAL, trans_.pos, trans_.quaRot, VGet(EFFECT_SCALE, EFFECT_SCALE, EFFECT_SCALE));
 }
 
 void Coin::Delete(void)

@@ -189,6 +189,7 @@ public:
 		JUMP_EFF,			//ジャンプエフェクト
 		LANDING_EFF,		//着地エフェクト
 		PUNCH_HIT_EFF,		//パンチヒットエフェクト
+		COIN_GOAL_EFF,		//コインのゴールエフェクト
 
 		//2Dエフェクト
 		SMOKE_EFE_SPR,		//煙エフェクト

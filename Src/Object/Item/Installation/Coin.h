@@ -15,6 +15,7 @@ public:
 	//サイズ
 	static constexpr VECTOR MODEL_SIZE = { 100.0f,100.0f,10.0f };		//モデルのサイズ
 	static constexpr float SIZE_MULTI = 0.3f;							//モデルのサイズ倍率
+	static constexpr float EFFECT_SCALE = 10.0f;						//エフェクトの大きさ
 
 	//回転
 	static constexpr float ROTATE_SPEED = 2.0f;							//回転速度
@@ -41,7 +42,7 @@ public:
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
 	//終了
-	void End(void) { isEnd_ = true; }
+	void End(void);
 
 private:
 

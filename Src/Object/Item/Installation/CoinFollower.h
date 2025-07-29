@@ -16,9 +16,13 @@ public:
 	//更新
 	void Update(void);
 
+	//終了判定
+	const bool IsEnd(void)const { return isEnd_; }
+
 private:
 
 	Coin& coin_;				//コイン
 	const Player& follower_;	//所持者
+	bool isEnd_;				//終了判定
 };
 

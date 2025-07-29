@@ -603,6 +603,22 @@ void ItemManager::ResetItemValue(void)
 	}
 }
 
+void ItemManager::ItemEffectStop(void)
+{
+	//全アイテムタイプ
+	for (auto& itemType : items_)
+	{
+		//全アイテム
+		for (auto& item : itemType.second)
+		{
+			if (item == nullptr)continue;
+
+			//エフェクトを全停止
+			item->EffectAllStop();
+		}
+	}
+}
+
 float ItemManager::GetDummyItemRotY(int playerNum)
 {
 	if (dummyItems_.find(playerNum) != dummyItems_.end())

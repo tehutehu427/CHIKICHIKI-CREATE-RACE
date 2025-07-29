@@ -107,6 +107,12 @@ void ItemBase::ResetValue(void)
 	trans_.Update();
 }
 
+void ItemBase::EffectAllStop(void)
+{
+	//エフェクトを全停止
+	effect_->AllStop();
+}
+
 void ItemBase::SetModelColor(const float _r, const float _g, const float _b, const float _a)
 {
 	//指定した色に変更
