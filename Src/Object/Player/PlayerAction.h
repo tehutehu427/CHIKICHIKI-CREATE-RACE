@@ -41,7 +41,7 @@ public:
 		SLIME,	//スライム
 	};
 
-	PlayerAction(Player& _player, SceneManager& _scnMng,AnimationController& _animationController);
+	PlayerAction(Player& _player, SceneManager& _scnMng, AnimationController& _animationController);
 	~PlayerAction(void);
 
 	/// <summary>
@@ -65,7 +65,7 @@ public:
 	void DrawDebug(void);
 
 
-	
+
 	//状態遷移
 	void ChangeAction(ATK_ACT _act);
 
@@ -106,7 +106,7 @@ public:
 	//セッタ
 	//*****************************************
 	//ジャンプ力
-	void SetJumpPow(const VECTOR _jumpPow) { jumpPow_ = _jumpPow;};
+	void SetJumpPow(const VECTOR _jumpPow) { jumpPow_ = _jumpPow; };
 
 	//移動量
 	void SetMovePow(const VECTOR _movePow) { movePow_ = _movePow; }
@@ -131,7 +131,7 @@ public:
 
 	//デバッグ
 	float GetJumpDecel(void) { return jumpDeceralation_; }
-	float GetStepJump(void) {return stepJump_;}
+	float GetStepJump(void) { return stepJump_; }
 
 private:
 	//*******************************************
@@ -166,9 +166,6 @@ private:
 
 	//ジャンプ加速の倍率
 	static constexpr float TIME_JUMP_SCALE = 1.0f;
-	//ジャンプ時間
-	static constexpr float TIME_JUMP = 3.0f;
-
 	//スライム床上でのジャンプ力
 	static constexpr float SLIME_FLOOR_JUMP_POW = 10.0f;
 
@@ -194,11 +191,9 @@ private:
 	static constexpr float TIME_ROT = 0.1f;
 	//パンチの当たり判定時間中フラグを始めるアニメーションステップ
 	static constexpr float PUNCH_HIT_START_ANIM_STEP = 20.0f;
-	//static constexpr float PUNCH_HIT_START_ANIM_STEP = 0.0f;
 	//パンチの当たり判定時間中フラグを終えるアニメーションステップ
 	static constexpr float PUNCH_HIT_END_ANIM_STEP = 40.0f;
 	//static constexpr float PUNCH_HIT_END_ANIM_STEP = 60.0f;
-
 	//吹き飛び効果時間
 	static constexpr float PUNCHED_TIME = 0.1f;
 
@@ -238,7 +233,7 @@ private:
 
 	//素材関連
 	//------------------------
-	std::map<ACT_SE,SoundManager::SRC>actSE_;
+	std::map<ACT_SE, SoundManager::SRC>actSE_;
 
 	//スライムSEの間隔カウント
 	float slimeSEcnt_;

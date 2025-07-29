@@ -353,15 +353,6 @@ const bool Player::GetIsSlimeFloor(void)const
 	return onHitCol_->GetIsSlimeHit();
 }
 
-const bool Player::IsGoal(void) const
-{
-	return state_ == PLAYER_STATE::GOAL&&finishDelay_>=GOAL_DELAY;
-}
-bool Player::IsDeath(void)const
-{
-	return state_ == PLAYER_STATE::DEATH && finishDelay_ >= DEATH_DELAY;
-}
-
 void Player::SetPos(const VECTOR _worldPos)
 {
 	trans_.pos = _worldPos;
