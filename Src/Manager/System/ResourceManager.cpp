@@ -289,6 +289,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "PunchHit.efkefc");
 	resourcesMap_.emplace(SRC::PUNCH_HIT_EFF, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "CoinGoal.efkefc");
+	resourcesMap_.emplace(SRC::COIN_GOAL_EFF, std::move(res));
+
 
 #pragma endregion
 

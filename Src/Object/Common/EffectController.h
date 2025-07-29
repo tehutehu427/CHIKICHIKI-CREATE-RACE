@@ -14,10 +14,11 @@ public:
 		NONE,
 		WIND,		//風
 		BLAST,		//爆発
-		DASH,
-		JUMP,
-		LANDING,
-		PUNCH_HIT,
+		DASH,		//ダッシュ
+		JUMP,		//ジャンプ
+		LANDING,	//着地
+		PUNCH_HIT,	//パンチヒット
+		COIN_GOAL,	//コインのゴール
 	};
 
 	//コンストラクタ
@@ -68,6 +69,9 @@ public:
 	void Delete(const EFF_TYPE _effType, const int _arrayNum);
 
 	//全停止
+	void AllStop(void);
+
+	//全削除
 	void AllDelete(void);
 
 	/// <summary>

@@ -113,6 +113,9 @@ public:
 	//アイテムの値リセット
 	virtual void ResetValue(void);
 
+	//マネージャからエフェクトを停止する用
+	void EffectAllStop(void);
+
 	/// <summary>
 	/// モデルのカラーを設定
 	/// </summary>

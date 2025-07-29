@@ -129,7 +129,6 @@ void MultiPaletteIcon::SetExcludingItemTypeArray()
 		ItemBase::ITEM_TYPE::START,
 		ItemBase::ITEM_TYPE::GOAL,
 		ItemBase::ITEM_TYPE::BOMB_BIG,
-		ItemBase::ITEM_TYPE::COIN,
 		ItemBase::ITEM_TYPE::MAX
 	};
 
