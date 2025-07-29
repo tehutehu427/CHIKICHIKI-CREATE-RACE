@@ -1,7 +1,11 @@
 #pragma once
 #include <functional>
 #include <unordered_map>
+#include <memory>
 #include "../../../Common/Vector2.h"
+
+class BonusUis;
+
 class ScoreGage
 {
 public:
@@ -31,6 +35,9 @@ public:
 
 	//ゲージ最大
 	static constexpr int GAGE_LENGTH_MAX = 500;
+
+	//アニメーション時間
+	static constexpr float ANIM_TIME = 3.0f;	
 
 	/// <summary>
 	/// コンストラクタ
@@ -69,7 +76,10 @@ public:
 	/// <param name="_state">変更先の状態</param>
 	void ChangeState(const STATE _state);
 
-	//1スコア当たりの長さを設定
+	/// <summary>
+	/// 1スコア当たりの長さを設定
+	/// </summary>
+	/// <param name="_lengthPerPoint"></param>
 	void SetLengthPerPoint(const int _lengthPerPoint);
 
 	/// <summary>
@@ -119,6 +129,8 @@ private:
 	//状態別に処理
 	std::function<void()> stateUpdate_;
 
+	std::unique_ptr<BonusUis> bonus_;
+
 	//状態変更処理
 	void ChangeStateNone();
 	void ChangeStateWait();
@@ -128,9 +140,16 @@ private:
 	//状態別更新処理
 	void UpdateStateNone();
 	void UpdateStateAnimation();
+	void UpdateStateAfterWait();
 
 	//プレイヤーの番号ごとにパラメーターを割り当て
 	void SetParamToPlayerNo();
+
+	//ゲージアニメーション
+	void GageAnimation();
+
+	//ボーナスアニメーション
+	void BonusAnimation();
 
 };
 
