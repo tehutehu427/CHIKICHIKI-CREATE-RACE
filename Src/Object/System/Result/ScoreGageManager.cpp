@@ -60,6 +60,8 @@ void ScoreGageManager::Update()
 
 void ScoreGageManager::Draw()
 {
+	DrawGageDecoration();
+
 	for (auto& scoreGage : scoreGages_)
 	{
 		scoreGage->Draw();

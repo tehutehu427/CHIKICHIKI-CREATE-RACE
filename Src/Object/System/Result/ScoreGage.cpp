@@ -5,11 +5,13 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/DateBank.h"
+#include "BonusUis.h"
 
 ScoreGage::ScoreGage(const int _playerIndex) : 
 	playerIndex_(_playerIndex)
 {
 	imgGages_ = nullptr;
+	bonus_ = nullptr;
 	imgGageOutline_ = -1;
 	pos_ = {};
 	size_ = {};
@@ -35,6 +37,10 @@ void ScoreGage::Load()
 	imgGageOutline_ = res.Load(ResourceManager::SRC::PLAYER_GAGE_OUTLINE).handleId_;
 	imgGages_ = res.Load(ResourceManager::SRC::PLAYER_GAGES).handleIds_;
 
+	bonus_ = std::make_unique<BonusUis>(playerIndex_);
+	bonus_->Load();
+
+
 	//パラメーター設定
 	SetParamToPlayerNo();
 }
@@ -57,6 +63,8 @@ void ScoreGage::Init()
 
 	//1スコア当たりのゲージ長さ
 	lengthPerPoint_ = GAGE_LENGTH_MAX / scoreMax_;
+
+	bonus_->Init();
 }
 
 void ScoreGage::Update()
@@ -91,6 +99,8 @@ void ScoreGage::Draw()
 		imgGages_[playerIndex_],
 		true
 	);
+
+	bonus_->Draw();
 }
 
 void ScoreGage::ChangeState(const STATE _state)
@@ -135,11 +145,14 @@ void ScoreGage::ChangeStateAnimation()
 
 	//長さの更新値を決定
 	updateLength_ = size_.x + ScoreManager::GetInstance().GetScore(playerIndex_) * lengthPerPoint_;
+
+
+	bonus_->SetBonus();
 }
 
 void ScoreGage::ChangeStateAfterWait()
 {
-	stateUpdate_ = std::bind(&ScoreGage::UpdateStateNone, this);
+	stateUpdate_ = std::bind(&ScoreGage::UpdateStateAfterWait, this);
 }
 
 void ScoreGage::UpdateStateNone()
@@ -151,7 +164,6 @@ void ScoreGage::UpdateStateAnimation()
 	animStep_ += SceneManager::GetInstance().GetDeltaTime();
 
 	//必要な情報を設定
-	constexpr float ANIM_TIME = 3.0f;	//アニメーション時間
 	constexpr int OFFSET = 2;	//目標位置に到達したときのオフセット
 	float start = static_cast<float>(size_.x);	//開始位置
 	float goal = static_cast<float>(updateLength_);	//目標位置
@@ -162,11 +174,18 @@ void ScoreGage::UpdateStateAnimation()
 	//座標更新
 	size_.x = static_cast<int>(move);
 
+	bonus_->Update();
+
 	//目標位置に到達したら状態を変更
-	if (size_.x >= updateLength_ - OFFSET)
+	if (size_.x >= updateLength_ - OFFSET && animStep_ >= ANIM_TIME)
 	{
 		ChangeState(STATE::AFTER_WAIT);
 	}
+}
+
+void ScoreGage::UpdateStateAfterWait()
+{
+	bonus_->UpdateShake();
 }
 
 void ScoreGage::SetParamToPlayerNo()
