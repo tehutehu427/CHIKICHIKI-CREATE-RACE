@@ -156,6 +156,15 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "Ok.png");
 	resourcesMap_.emplace(SRC::OK, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "ResultNo1.png");
+	resourcesMap_.emplace(SRC::RESULT_NO1, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "ResultGoal.png");
+	resourcesMap_.emplace(SRC::RESULT_GOAL, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "ResultGetCoin.png");
+	resourcesMap_.emplace(SRC::RESULT_COIN, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "Round.png");
 	resourcesMap_.emplace(SRC::ROUND, std::move(res));
 

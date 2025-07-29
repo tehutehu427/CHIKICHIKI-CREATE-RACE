@@ -177,6 +177,9 @@ void MultiResult::UpdateStateResult(MultiParty& _parent)
 	//ステップ更新
 	waitStep_ -= SceneManager::GetInstance().GetDeltaTime();
 
+	//スコアゲージ更新
+	scoreGages_->Update();
+
 	if (waitStep_ <= 0)
 	{		
 		//状態遷移するか確認
@@ -199,6 +202,9 @@ void MultiResult::UpdateStateInputCheck(MultiParty& _parent)
 {	
 	inputCheck_->Update();
 
+	//スコアゲージ更新
+	scoreGages_->Update();
+
 	//全員がボタンを押して確認ができたら
 	if (inputCheck_->IsAllInput())
 	{
@@ -217,9 +223,6 @@ void MultiResult::DrawStateWait()
 	//スコアゲージ
 	scoreGages_->Draw();
 
-	//ゲージ装飾
-	scoreGages_->DrawGageDecoration();
-
 	//タイトルの描画
 	scoreGages_->DrawTitle();
 }
@@ -228,9 +231,6 @@ void MultiResult::DrawStateScore()
 {
 	//スコアゲージ
 	scoreGages_->Draw();
-
-	//ゲージ装飾
-	scoreGages_->DrawGageDecoration();
 
 	//タイトルの描画
 	scoreGages_->DrawTitle();
@@ -241,9 +241,6 @@ void MultiResult::DrawStateResult()
 	//スコアゲージ
 	scoreGages_->Draw();
 
-	//ゲージ装飾
-	scoreGages_->DrawGageDecoration();
-
 	//勝者の描画
 	scoreGages_->DrawIsWinning();
 }
@@ -252,9 +249,6 @@ void MultiResult::DrawStateInputCheck()
 {
 	//スコアゲージ
 	scoreGages_->Draw();
-
-	//ゲージ装飾
-	scoreGages_->DrawGageDecoration();
 
 	//勝者の描画
 	scoreGages_->DrawIsWinning();
