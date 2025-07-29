@@ -77,17 +77,11 @@ void PlayerOnHit::Update(void)
 	//移動量ラインの更新
 	VECTOR moveVec = VSub(movedPos_, trans_.pos);
 	moveVec.y -= MOVE_LINE_Y_OFFSET;
-
-	//地面と当たっているフラグとスライム床の当たりフラグの更新
-
-	for (int i = 0; i < colParam_.size(); i++)
+	if (moveVec.x != 0.0f || moveVec.y != MOVE_LINE_Y_CHECK_VALUE || moveVec.z != 0.0f)
 	{
-		if (colParam_[i].collider_->IsHit())
-		{
-			continue;
-		}
-		//現在座標を起点に移動後座標を決める
-
+		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
+		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
+		moveLine.SetLocalPosPoint2(moveVec);
 	}
 
 	//移動前の座標を格納する
@@ -176,7 +170,6 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 	HitModelCommon(_hitCol);
 	//リソースID
 	auto& res = ResourceManager::GetInstance();
-	//int hitSE = res.Load(ResourceManager::SRC::SPRING_SE).handleId_;
 	if (!isSide_)
 	{
 		//バネジャンプ音再生
@@ -197,17 +190,7 @@ void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 }
 void PlayerOnHit::CollCoin(void)
 {
-	//コインと体が当たっているとき以外処理を飛ばす
-	if (!colParam_[BODY_SPHERE_COL_NO].collider_->IsHit())return;
 	coinNum_++;
-
-	//マルチの時のみ処理を行う
-	if (SceneManager::GetInstance().GetSceneID() == SceneManager::SCENE_ID::MULTI)
-	{
-		//スコアの格納
-		ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::COIN);
-	}
-
 }
 #ifdef DEBUG_ON
 void PlayerOnHit::DrawDebug(void)
@@ -222,14 +205,6 @@ void PlayerOnHit::DrawDebug(void)
 	{
 		colParam_[HAND_SPHERE_COL_NO].geometry_->Draw();
 	}
-
-	//DrawCube3D({ cube_.centerPos.x - CUBE_W,cube_.centerPos.y - CUBE_H,cube_.centerPos.z - CUBE_D }
-	//, { cube_.centerPos.x + CUBE_W,cube_.centerPos.y + CUBE_H,cube_.centerPos.z + CUBE_D }, 0xff0000, 0xff0000, true);
-
-
-	//移動量ラインの更新
-	VECTOR moveVec = VSub(movedPos_, trans_.pos);
-	DrawFormatString(0, 300, 0x000000, "Hit(%d)", hitNum_);
 }
 #endif // DEBUG_ON
 
@@ -294,13 +269,10 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	trans.pos = movedPos_;
 	trans.Update();
 	isSide_ = false;
+	//プレイヤーの体の球が当たったら
 	if (bodyShere->IsHit())
 	{
 		auto& hitInfo = hitModel.GetHitInfo();
-		//std::vector<VECTOR> collPos;
-		VECTOR vec = VSub(moveDiff_, movedPos_);
-		vec = VNorm(vec);
-		vec.y = 0.0f;
 		for (int i = 0; i < hitInfo.HitNum; i++)
 		{
 			auto hit = hitInfo.Dim[i];
@@ -328,57 +300,23 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		}
 		if(isSide_&&_hitCol.lock()->GetTags()[0]!=Collider::TAG::KILLER_SPECIFIC)
 		{
-			//Line& eyeLineGeo = dynamic_cast<Line&>(eyeLine->GetGeometry());
 			int modelId = _hitCol.lock()->GetParent().GetTransform().modelId;
 			VECTOR pos1 = movedPos_;
-			VECTOR pos2 = action_.AddPosRotate(movedPos_, trans_.quaRot, Player::EYE_RANGE);
+			VECTOR pos2 = action_.AddPosRotate(movedPos_, trans_.quaRot, EYE_RANGE);
+			//目線がモデルに当たって無ければ上に押し上げる
 			if (MV1CollCheck_Line(modelId,-1, pos1,pos2).HitFlag==0)
 			{
 				if (!Utility::EqualsVZero(action_.GetMovePow()))
 				{
-					movedPos_.y += Player::EYE_HEIGHT.y;
+					movedPos_.y +=EYE_HEIGHT.y;
 				}
 				
 			}
 		}
 	}
-	//目線がモデルに当たって無ければ上に押し上げる
-
 
 	////移動前の座標を格納する
 	moveDiff_ = trans_.pos;
 	//移動
 	trans_.pos = movedPos_;
-	//trans_.Update();
 }
-
-
-#ifdef DEBUG_ON
-void PlayerOnHit::CubeMove(void)
-{
-	auto& input = KeyConfig::GetInstance();
-	const float SPD = 8.0f;
-	cubeMovePos_ = Utility::VECTOR_ZERO;
-	cube_.upPos = VAdd(cube_.centerPos, { 0.0f,CUBE_H,0.0f });
-	if (CheckHitKey(KEY_INPUT_UP))cubeMovePos_.z += SPD;
-	if (CheckHitKey(KEY_INPUT_DOWN))cubeMovePos_.z -= SPD;
-	if (CheckHitKey(KEY_INPUT_RIGHT))cubeMovePos_.x += SPD;
-	if (CheckHitKey(KEY_INPUT_LEFT))cubeMovePos_.x -= SPD;
-	if (CheckHitKey(KEY_INPUT_T))cubeMovePos_.y -= SPD;
-	if (CheckHitKey(KEY_INPUT_Y))cubeMovePos_.y += SPD;
-	cube_.centerPos = VAdd(cube_.centerPos, cubeMovePos_);
-}
-
-bool PlayerOnHit::CollCube(void)
-{
-	VECTOR jumpLine = VSub(movedPos_, trans_.pos);
-	VECTOR diff = VSub(cube_.centerPos, movedPos_);
-	if (fabsf(diff.x) > CUBE_W + RADIUS
-		|| fabsf(diff.y) > CUBE_H + RADIUS
-		|| fabsf(diff.z) > CUBE_D + RADIUS)
-	{
-		return false;
-	}
-	return true;
-}
-#endif // DEBUG_ON

@@ -25,25 +25,10 @@ public:
 	//******************************************
 	//定数
 	//******************************************
-	//プレイヤー情報
-	static constexpr VECTOR CAPSULE_TOP = { 0.0f, 110.0f, 0.0f };
-	static constexpr VECTOR CAPSULE_DOWN = { 0.0f, 0.0f, 0.0f };
 	//半径
 	static constexpr float RADIUS = 25.0f;
-	//プレイヤーの大きさ
-	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
-
-	//パンチの範囲
-	static constexpr float PUNCH_RADIUS = 50.0f;
-
 	//デフォルトのアニメーションスピード
 	static constexpr float DEFAULT_ANIM_SPD = 60.0f;
-
-	//プレイヤーの目の高さ
-	static constexpr VECTOR EYE_HEIGHT = { 0.0f, 15.0f, 0.0f };
-	//プレイヤーのアイラインの長さ
-	static constexpr VECTOR EYE_RANGE = { 0.0f, 15.0f, 100.0f };
-
 	//******************************************
 
 
@@ -134,10 +119,8 @@ public:
 	//プレイヤー番号
 	inline const int GetPlayerNum(void)const { return playerNum_; }
 
+	//使用するコントローラー
 	inline const KeyConfig::TYPE GetCntl(void)const { return cntl_; }
-
-	//プレイヤー座標
-	inline const VECTOR GetPos(void)const { return trans_.pos; }
 
 	//コントローラー番号
 	inline const KeyConfig::JOYPAD_NO GetPadNum(void)const { return padNum_; }
@@ -149,13 +132,13 @@ public:
 	const bool GetIsSlimeFloor(void)const;
 
 	//ゴール判定の取得(ディレイ時間も含めて)
-	const bool IsGoal(void)const;
+	inline const bool IsGoal(void)const{ return state_ == PLAYER_STATE::GOAL && finishDelay_ >= GOAL_DELAY; }
 
 	//コールした瞬間(ディレイ時間なし)
 	inline const bool GetIsGoalMoment(void)const { return state_ == PLAYER_STATE::GOAL; }
 
 	//死んだ判定(ディレイ時間も含めて)
-	bool IsDeath(void)const;
+	inline bool IsDeath(void)const{ return state_ == PLAYER_STATE::DEATH && finishDelay_ >= DEATH_DELAY; }
 
 	//死んだ瞬間(ディレイ時間なし)
 	inline const bool GetIsDeathMoment(void)const { return state_ == PLAYER_STATE::DEATH; }
@@ -164,7 +147,7 @@ public:
 	inline const float GetGoalTime(void)const { return goalTime_; }
 
 	//コイン枚数の取得
-	inline const int GetCoinNum(void)const { return coinNum_; }
+	const int GetCoinNum(void)const;
 
 	//******************************************
 	//セッタ
@@ -217,6 +200,11 @@ private:
 
 	//死んだときのパッド振動の強さ
 	static constexpr int DEATH_PAD_VIBRATION_POW = 300;
+
+	//プレイヤーの大きさ
+	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
+	//パンチの範囲
+	static constexpr float PUNCH_RADIUS = 50.0f;
 
 	//--------------------------------------------------
 	//当たり判定
@@ -299,8 +287,7 @@ private:
 	float finishDelay_;	//ゲーム終了時の待機時間
 
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
-					
-	int coinNum_;		//コイン枚数
+				
 
 	//--------------------------------------------
 	//******************************************

@@ -9,28 +9,6 @@ class PlayerAction;
 class PlayerOnHit
 {
 public:
-	//スライム床上での移動速度(通常)
-	static constexpr float SLIME_FLOOR_MOVE_SPD = 3.0f;
-
-	//スライム床上での(ダッシュ)
-	static constexpr float SLIME_FLOOR_DASH_SPD = 6.0f;
-
-	//スライム床上でのジャンプ力
-	static constexpr float SLIME_FLOOR_JUMP_POW = 10.0f;
-
-	//スライム床上でのジャンプ力
-	static constexpr float SPRING_JUMP_POW = 30.0f;
-	struct CUBE
-	{
-		VECTOR centerPos;
-		VECTOR leftPos;
-		VECTOR rightPos;
-		VECTOR upPos;
-		VECTOR downPos;
-	};
-
-
-
 	//コンストラクタ
 	PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>&_colParam,Transform& _trans,Collider::TAG _tag);
 
@@ -94,12 +72,6 @@ private:
 	//--------------------------------------
 	//定数
 	//--------------------------------------
-	//デバッグキューブのサイズ
-	static constexpr float CUBE_W = 200.0F;
-	static constexpr float CUBE_H = 10.0F;
-	static constexpr float CUBE_D = 200.0F;
-
-
 	//プレイヤーの大きさ
 	static constexpr float RADIUS = 25.0f;
 
@@ -124,33 +96,15 @@ private:
 	//プレイヤーの手の座標
 	static constexpr int HAND_SPHERE_COL_NO = 4;
 
-
-
-
-	////接地しているときのラインのコライダ
-	//static constexpr int UP_AND_DOWN_LINE_COL_NO = 1;
-
-	////プレイヤーの体の球
-	//static constexpr int BODY_SPHERE_COL_NO = 2;
-
-	////現在の座標と移動後座標を結んだ線のコライダ
-	//static constexpr int MOVE_LINE_COL_NO = 0;
-
-	////現在の座標と移動後座標を結んだ線のコライダ
-	//static constexpr int EYE_LINE_NO = 3;
-
-	////プレイヤーの手の座標
-	//static constexpr int HAND_SPHERE_COL_NO = 4;
-
-
-
-
 	//ラインの長さ
 	static constexpr float LINE_RANGE = 10.0f;
 	//プレイヤーの上の座標
 	static constexpr VECTOR LOCAL_UP_POS = { 0.0f,RADIUS + LINE_RANGE,0.0f };
 	//プレイヤーの下
 	static constexpr VECTOR LOCAL_DOWN_POS = { 0.0f,-RADIUS - LINE_RANGE,0.0f };
+
+	//スライム床上でのジャンプ力
+	static constexpr float SPRING_JUMP_POW = 30.0f;
 
 
 	//当たり判定のめりこみ防止用
@@ -159,21 +113,20 @@ private:
 	//オブジェクトの下に当たった時の跳ね返り減速セット
 	static constexpr float DOWN_BOUNCE_DECELERATION = -10.0f;
 
+	//移動量ラインオフセット
 	static constexpr float MOVE_LINE_Y_OFFSET = Player::RADIUS - 1.0f;
-	//static constexpr float MOVE_LINE_Y_CHECK_VALUE = Player::RADIUS - 1.5f;
 	static constexpr float MOVE_LINE_Y_CHECK_VALUE = Player::RADIUS + 1.5f;
+
+
+	//プレイヤーの目の高さ
+	static constexpr VECTOR EYE_HEIGHT = { 0.0f, 15.0f, 0.0f };
+	//プレイヤーのアイラインの長さ
+	static constexpr VECTOR EYE_RANGE = { 0.0f, 15.0f, 100.0f };
+
 
 	//--------------------------------------
 	//メンバ変数
 	//----------------------------------
-#ifdef DEBUG_ON
-	VECTOR cubeMovePos_;
-	VECTOR cubePos_;
-	CUBE cube_;
-
-	int hitNum_;
-
-#endif // DEBUG_ON
 
 	//プレイヤー
 	PlayerAction& action_;
@@ -218,7 +171,7 @@ private:
 		//当たり判定
 	//---------------------------------------------------
 	//当たっても何もしない(プレイヤー側で何も起きない)
-	inline void CollNone(void);
+	void CollNone(void);
 	//通常床
 	void CollFloor(const std::weak_ptr<Collider> _hitCol);
 	//動く床
@@ -241,7 +194,6 @@ private:
 	//ばねとの当たり判定
 	void ColSpring(const std::weak_ptr<Collider> _hitCol);
 
-
 	//ゴールした時の処理
 	void ColGoal(const std::weak_ptr<Collider> _hitCol);
 
@@ -250,10 +202,5 @@ private:
 
 	//モデルの当たった時の共通処理
 	void HitModelCommon(const std::weak_ptr<Collider> _hitCol);
-
-#ifdef DEBUG_ON
-	void CubeMove(void);
-	bool CollCube(void);
-#endif // DEBUG_ON
 };
 
