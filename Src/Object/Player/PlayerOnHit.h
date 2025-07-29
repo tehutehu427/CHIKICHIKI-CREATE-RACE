@@ -90,9 +90,6 @@ private:
 	//現在の座標と移動後座標を結んだ線のコライダ
 	static constexpr int MOVE_LINE_COL_NO = 2;
 
-	//現在の座標と移動後座標を結んだ線のコライダ
-	static constexpr int EYE_LINE_NO = 3;
-
 	//プレイヤーの手の座標
 	static constexpr int HAND_SPHERE_COL_NO = 4;
 
