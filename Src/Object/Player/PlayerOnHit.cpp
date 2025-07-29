@@ -191,14 +191,6 @@ void PlayerOnHit::ColGoal(const std::weak_ptr<Collider> _hitCol)
 void PlayerOnHit::CollCoin(void)
 {
 	coinNum_++;
-
-	//マルチの時のみ処理を行う
-	if (SceneManager::GetInstance().GetSceneID() == SceneManager::SCENE_ID::MULTI)
-	{
-		//スコアの格納
-		ScoreManager::GetInstance().AddScore(0, ScoreManager::SCORE_TYPE::COIN);
-	}
-
 }
 #ifdef DEBUG_ON
 void PlayerOnHit::DrawDebug(void)
