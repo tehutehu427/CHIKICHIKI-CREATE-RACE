@@ -83,16 +83,6 @@ void PlayerOnHit::Update(void)
 		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
 		moveLine.SetLocalPosPoint2(moveVec);
 	}
-	//地面と当たっているフラグとスライム床の当たりフラグの更新
-
-	for (int i = 0; i < colParam_.size(); i++)
-	{
-		if (colParam_[i].collider_->IsHit())
-		{
-			continue;
-		}
-		//現在座標を起点に移動後座標を決める
-	}
 
 	//移動前の座標を格納する
 	moveDiff_ = trans_.pos;

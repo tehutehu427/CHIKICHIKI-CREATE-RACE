@@ -353,6 +353,11 @@ const bool Player::GetIsSlimeFloor(void)const
 	return onHitCol_->GetIsSlimeHit();
 }
 
+const int Player::GetCoinNum(void) const
+{
+	return onHitCol_->GetCoinNum();
+}
+
 void Player::SetPos(const VECTOR _worldPos)
 {
 	trans_.pos = _worldPos;

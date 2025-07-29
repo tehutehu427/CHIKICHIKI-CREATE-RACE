@@ -9,20 +9,6 @@ class PlayerAction;
 class PlayerOnHit
 {
 public:
-	//スライム床上での移動速度(通常)
-	static constexpr float SLIME_FLOOR_MOVE_SPD = 3.0f;
-
-	//スライム床上での(ダッシュ)
-	static constexpr float SLIME_FLOOR_DASH_SPD = 6.0f;
-
-	//スライム床上でのジャンプ力
-	static constexpr float SLIME_FLOOR_JUMP_POW = 10.0f;
-
-	//スライム床上でのジャンプ力
-	static constexpr float SPRING_JUMP_POW = 30.0f;
-
-
-
 	//コンストラクタ
 	PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>&_colParam,Transform& _trans,Collider::TAG _tag);
 
@@ -117,6 +103,9 @@ private:
 	//プレイヤーの下
 	static constexpr VECTOR LOCAL_DOWN_POS = { 0.0f,-RADIUS - LINE_RANGE,0.0f };
 
+	//スライム床上でのジャンプ力
+	static constexpr float SPRING_JUMP_POW = 30.0f;
+
 
 	//当たり判定のめりこみ防止用
 	static constexpr float POSITION_OFFSET = 1.0f;
@@ -204,7 +193,6 @@ private:
 
 	//ばねとの当たり判定
 	void ColSpring(const std::weak_ptr<Collider> _hitCol);
-
 
 	//ゴールした時の処理
 	void ColGoal(const std::weak_ptr<Collider> _hitCol);

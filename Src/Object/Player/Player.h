@@ -119,10 +119,8 @@ public:
 	//プレイヤー番号
 	inline const int GetPlayerNum(void)const { return playerNum_; }
 
+	//使用するコントローラー
 	inline const KeyConfig::TYPE GetCntl(void)const { return cntl_; }
-
-	//プレイヤー座標
-	inline const VECTOR GetPos(void)const { return trans_.pos; }
 
 	//コントローラー番号
 	inline const KeyConfig::JOYPAD_NO GetPadNum(void)const { return padNum_; }
@@ -149,7 +147,7 @@ public:
 	inline const float GetGoalTime(void)const { return goalTime_; }
 
 	//コイン枚数の取得
-	inline const int GetCoinNum(void)const { return coinNum_; }
+	const int GetCoinNum(void)const;
 
 	//******************************************
 	//セッタ
@@ -289,8 +287,7 @@ private:
 	float finishDelay_;	//ゲーム終了時の待機時間
 
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
-					
-	int coinNum_;		//コイン枚数
+				
 
 	//--------------------------------------------
 	//******************************************

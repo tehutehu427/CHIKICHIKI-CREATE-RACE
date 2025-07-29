@@ -17,8 +17,6 @@ public:
 	//パンチ有効時間
 	static constexpr float PUNCH_TIME_MAX = 0.5f;
 
-	//ジャンプ力
-	static constexpr float POW_JUMP = 20.0f;
 	//****************************************
 
 	enum class ATK_ACT
@@ -180,6 +178,9 @@ private:
 	static constexpr float JUMP_ANIM_START_FRAME = 10.0f;
 	static constexpr float JUMP_ANIM_END_FRAME = 60.0f;
 
+	//ジャンプ力
+	static constexpr float POW_JUMP = 20.0f;
+
 	//----------------------------------
 	//パンチ
 	//----------------------------------
@@ -193,7 +194,6 @@ private:
 	static constexpr float PUNCH_HIT_START_ANIM_STEP = 20.0f;
 	//パンチの当たり判定時間中フラグを終えるアニメーションステップ
 	static constexpr float PUNCH_HIT_END_ANIM_STEP = 40.0f;
-	//static constexpr float PUNCH_HIT_END_ANIM_STEP = 60.0f;
 	//吹き飛び効果時間
 	static constexpr float PUNCHED_TIME = 0.1f;
 
@@ -241,6 +241,7 @@ private:
 	//エフェクト音配列数
 	int effectArrayNum_;
 
+	//ダッシュSEのカウント
 	float dashSeCnt_;
 
 	//移動
@@ -252,8 +253,8 @@ private:
 
 	//回転
 	Quaternion playerRotY_;		//プレイヤーY角度
-	Quaternion goalQuaRot_;
-	float stepRotTime_;
+	Quaternion goalQuaRot_;		//目的の回転
+	float stepRotTime_;			//補完時間
 
 
 

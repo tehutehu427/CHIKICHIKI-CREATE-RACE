@@ -157,7 +157,7 @@ void PlayerAction::NoneUpdate(void)
 
 void PlayerAction::ChangeNone(void)
 {
-	actionUpdate_ = std::bind(&PlayerAction::NoneUpdate, this);
+	actionUpdate_ = [this]() {NoneUpdate(); };
 }
 
 void PlayerAction::ActionInputUpdate(void)
@@ -315,7 +315,7 @@ void PlayerAction::ChangeDashMove(void)
 		SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
 	}
-	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
+	actionUpdate_ = [this]() {MoveUpdate(); };
 }
 
 
