@@ -25,6 +25,7 @@ void BigBomb::SetParam(void)
 	status_.isBreak = true;
 	status_.isGravity = false;
 	status_.effType = EFFECT_TYPE::DESTROYER;
+	status_.rotType = ROTATION_TYPE::HALF_ROTATION;
 
 	//ÉTÉCÉYî{ó¶
 	VECTOR adjustSizePer = AdjustSizePer(MODEL_SIZE);
