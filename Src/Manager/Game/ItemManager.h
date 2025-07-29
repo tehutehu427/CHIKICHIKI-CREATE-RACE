@@ -180,6 +180,9 @@ public:
 	//アイテムの値リセット
 	void ResetItemValue(void);
 
+	//全アイテムのエフェクトを停止
+	void ItemEffectStop(void);
+
 	/// <summary>
 	/// ダミーアイテムのY軸回転を取得
 	/// </summary>

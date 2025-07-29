@@ -63,6 +63,7 @@ public:
 	//Ÿ‚Á‚Ä‚¢‚é‚©‚Ì•`‰æ
 	void DrawIsWinning();
 
+
 private:
 	// ƒ^ƒCƒgƒ‹‰æ‘œ
 	int imgTitle_;

@@ -101,6 +101,12 @@ public:
 	/// </summary>
 	void ResetIsBonusScores();
 
+	/// <summary>
+	/// 引き分けか返す
+	/// </summary>
+	/// <returns>trueの場合引き分け</returns>
+	const bool IsDraw()const;
+
 private:
 
 	//静的インスタンス

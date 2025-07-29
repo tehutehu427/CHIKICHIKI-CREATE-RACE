@@ -40,6 +40,7 @@ void DateBank::Init(void)
 	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::FAN)] = "Fan";
 	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::SLIME_FLOOR)] = "SlimFloor";
 	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::SPRING)] = "Spring";
+	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::COIN)] = "Coin";
 }
 
 void DateBank::Destroy(void)

@@ -176,13 +176,48 @@ const int ScoreManager::GetWinnerPlayerIndex() const
 
 const int ScoreManager::GetNowWinnerPlayerIndex() const
 {
-
 	// 配列が空の場合
 	if (scores_.empty())
 	{
 		return -1;
 	}
 	
+	// 最大スコアとそのインデックス
+	int max = scores_[0];			// 最大値
+	int maxIndex = 0;				// 最大値のインデックス
+
+	// 配列を走査して最大値とその出現回数を調べる
+	for (int i = 1; i < scores_.size(); i++)
+	{
+		if (scores_[i] > max)
+		{
+			max = scores_[i];		// 最大スコア更新
+			maxIndex = i;			// インデックス更新
+		}
+	}
+
+	return maxIndex;
+}
+
+void ScoreManager::ResetIsBonusScores()
+{
+	for (auto& scoreMap : isBonusScoreTypes_)
+	{
+		for (auto& [scoreType, flag] : scoreMap)
+		{
+			flag = false; // 各スコアタイプのフラグを false に設定
+		}
+	}
+}
+
+const bool ScoreManager::IsDraw() const
+{
+	// 配列が空の場合
+	if (scores_.empty())
+	{
+		return false;
+	}
+
 	// 最大スコアとそのインデックス
 	int max = scores_[0];			// 最大値
 	int maxIndex = 0;				// 最大値のインデックス
@@ -203,21 +238,8 @@ const int ScoreManager::GetNowWinnerPlayerIndex() const
 		}
 	}
 
-	return maxIndex;
-
-	// 最大値が複数存在するなら -1、それ以外はインデックスを返す
-	//return (count > 1) ? -1 : maxIndex;
-}
-
-void ScoreManager::ResetIsBonusScores()
-{
-	for (auto& scoreMap : isBonusScoreTypes_)
-	{
-		for (auto& [scoreType, flag] : scoreMap)
-		{
-			flag = false; // 各スコアタイプのフラグを false に設定
-		}
-	}
+	// 最大値が複数存在するなら true、それ以外はfalseを返す
+	return (count > 1) ? true : false;
 }
 
 ScoreManager::ScoreManager()

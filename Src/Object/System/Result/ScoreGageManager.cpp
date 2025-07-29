@@ -159,9 +159,7 @@ void ScoreGageManager::DrawIsWinning()
 	constexpr int TITLE_POS_Y = 50;
 	ScoreManager & score = ScoreManager::GetInstance();
 
-	int index = score.GetNowWinnerPlayerIndex();
-
-	if (index == -1)
+	if (score.IsDraw())
 	{
 		//ˆø‚«•ª‚¯
 		DrawRotaGraph(
@@ -174,7 +172,8 @@ void ScoreGageManager::DrawIsWinning()
 		);
 	}
 	else
-	{
+	{	
+		int index = score.GetNowWinnerPlayerIndex();
 		//ƒvƒŒƒCƒ„[–¼‚Ì•`‰æ
 		DrawRotaGraph(
 			Application::SCREEN_HALF_X - 150,
@@ -195,5 +194,4 @@ void ScoreGageManager::DrawIsWinning()
 			true
 		);
 	}
-	
 }
