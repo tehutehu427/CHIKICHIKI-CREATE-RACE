@@ -183,7 +183,10 @@ public:
 		FAN,				//扇風機
 		COIN,
 		SKY_DOME,			//スカイドーム
-		CHICKEN,			//チキンモデル
+		CHICKEN,			//チキンモデル		
+		
+		//2Dエフェクト
+		SMOKE_EFE_SPR,		//煙エフェクト
 
 		//エフェクト
 		WIND_EFF,			//風エフェクト
@@ -194,8 +197,7 @@ public:
 		PUNCH_HIT_EFF,		//パンチヒットエフェクト
 		COIN_GOAL_EFF,		//コインのゴールエフェクト
 
-		//2Dエフェクト
-		SMOKE_EFE_SPR,		//煙エフェクト
+
 
 	};
 
