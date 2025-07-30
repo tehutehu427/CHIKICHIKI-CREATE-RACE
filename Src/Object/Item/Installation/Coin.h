@@ -22,7 +22,7 @@ public:
 
 	//追従
 	static constexpr VECTOR FOLLOW_LOCAL_POS = { 0.0f,60.0f,-60.0f };	//追従座標
-	static constexpr float COIN_DIS = 50.0f;							//コイン同士の距離
+	static constexpr float COIN_DIS = 80.0f;							//コイン同士の距離
 
 	//コンストラクタ
 	Coin(void);
