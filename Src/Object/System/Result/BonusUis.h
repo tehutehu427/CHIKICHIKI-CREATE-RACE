@@ -55,7 +55,7 @@ public:
 private:
 
 	//Šg‘å—¦Å‘å
-	static constexpr float RATE_MAX = 0.5f;
+	static constexpr float RATE_MAX = 0.4f;
 
 	//Šg‘å—¦Å¬
 	static constexpr float RATE_MIN = 0.0f;

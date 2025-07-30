@@ -151,7 +151,7 @@ void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 {
-	if (action_.GetAct() == PlayerAction::ATK_ACT::KNOCKBACK||colParam_[EYE_LINE_NO].collider_->IsHit())return;
+	if (action_.GetAct() == PlayerAction::ATK_ACT::KNOCKBACK)return;
 	//リソースID
 	auto& res = ResourceManager::GetInstance();
 	//パンチしたプレイヤーの向いてる方向をセットする

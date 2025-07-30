@@ -24,7 +24,7 @@ public:
 		0,	//DEATH
 		1,	//CLEAR
 		1,	//FIRST
-		10,	//COIN
+		1,	//COIN
 		1,	//KILL
 	};
 

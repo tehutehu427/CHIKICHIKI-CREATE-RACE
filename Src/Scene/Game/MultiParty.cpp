@@ -122,6 +122,8 @@ void MultiParty::RoundReset()
 
 	//BGM‚ğƒ‰ƒ“ƒ_ƒ€İ’è
 	RandomBgm();
+
+	ScoreManager::GetInstance().ResetIsBonusScores();
 }
 
 void MultiParty::NormalDraw(void)
@@ -180,7 +182,8 @@ void MultiParty::DrawEdit(void)
 {
 	GameScene::DrawEdit();
 }
-
+
+
 void MultiParty::ChangePhaseClear()
 {
 	GameScene::ChangePhaseClear();	
@@ -263,13 +266,12 @@ void MultiParty::ChangePhaseResult()
 }
 
 void MultiParty::UpdateClear()
-{
-	GameScene::UpdateClear();
-
+{	
 	if (!sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_JINGLE) && !sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_BGM))
 	{
 		sndMng_.Play(SoundManager::SRC::MULTI_CLEAR_BGM, SoundManager::PLAYTYPE::LOOP); //ƒNƒŠƒABGM‚ğÄ¶
 	}
+	GameScene::UpdateClear();
 }
 
 void MultiParty::UpdateRound()

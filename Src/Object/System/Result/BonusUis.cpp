@@ -27,7 +27,7 @@ void BonusUis::Init()
 {
 	constexpr int MARGIN_X = 80;
 	constexpr int MARGIN_Y = 100;
-	constexpr int OFFSET_Y = 40;
+	constexpr int OFFSET_Y = 30;
 
 	for (int i = 0; i < static_cast<int>(TYPE::MAX); i++)
 	{

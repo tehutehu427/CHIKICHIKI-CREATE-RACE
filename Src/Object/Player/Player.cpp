@@ -53,8 +53,6 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	changeStates_.emplace(PLAYER_STATE::ALIVE, [this]() {ChangeAlive();});
 	changeStates_.emplace(PLAYER_STATE::DEATH, [this]() {ChangeDeath(); });
 	changeStates_.emplace(PLAYER_STATE::GOAL, [this]() {ChangeGoal(); });
-
-	//coinNum_ = 0;
 }
 
 Player::~Player(void)
@@ -219,13 +217,14 @@ void Player::DrawDebug(void)
 	VECTOR jumpPow = action_->GetJumpPow();
 	VECTOR movedPos = onHitCol_->GetMovedPos();
 	DrawFormatString(0, 16*(playerNum_*9), 0x000000
-		, "Šp“x(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nisJump(%d)\nisLand(%d)"
+		, "Šp“x(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nisJump(%d)\nisLand(%d)\ncoin(%d)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,action_->GetJumpDecel()
 		,action_->GetStepJump()
 		, jumpPow.x, jumpPow.y, jumpPow.z
 		,action_->GetIsJump()
 		,onHitCol_->GetIsLandHit()
+		,GetCoinNum()
 	);
 
 	action_->DrawDebug();
