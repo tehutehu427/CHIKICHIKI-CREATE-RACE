@@ -284,8 +284,8 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	else
 	{
 		MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
+		itemMIns.DummyItemAddItems(playerNum_);
 	}
-	itemMIns.DummyItemAddItems(playerNum_);
 	itemMIns.CreateDummyItem({}, {}, itemType, playerNum_);
 	IntVector3 mapPos = playerMaxNum_ == 1 ? NearObjectFrontPos({screenSize_.x / 2 , screenSize_.y / 2}) : initMapPos_;
 	Quaternion rot = {};

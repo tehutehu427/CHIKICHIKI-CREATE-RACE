@@ -357,10 +357,11 @@ void GameScene::DrawEdit(void)
 	//アイテム
 	ItemManager::GetInstance().Draw();
 
-
-	//パレット
-	palette_->Draw();
-
+	if (!ItemManager::GetInstance().IsDummyItem(screenIndex))
+	{
+		//パレット
+		palette_->Draw();
+	}
 	editControllers_[screenIndex]->DrawUI();
 }
 

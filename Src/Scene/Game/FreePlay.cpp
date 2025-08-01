@@ -1,5 +1,6 @@
 #include "FreePlay.h"
 #include "../../Manager/System/SoundManager.h"
+#include "../../Manager/Game/ItemManager.h"
 #include "../../Object/Editor/MapDataIO.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
@@ -95,7 +96,7 @@ void FreePlay::UpdateEdit(void)
 	if (palette_->GetState() == EditorPaletteBase::STATE::WAIT && editEscape_->IsEdit()) { mapIO_->Update(); }
 
 	//ƒpƒŒƒbƒg
-	if (mapIO_->IsEdit() && editEscape_->IsEdit()) { palette_->Update(); }
+	if (mapIO_->IsEdit() && editEscape_->IsEdit() && !ItemManager::GetInstance().IsDummyItem(0)) { palette_->Update(); }
 
 
 	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
