@@ -42,7 +42,7 @@ void CannonShot::SetParam(void)
 	trans_.scl = VScale(trans_.scl,SCALE);
 
 	//‘å‚«‚³
-	trans_.localPos = LOCAL_POS;
+	trans_.localPos = trans_.quaRot.PosAxis(LOCAL_POS);
 
 	//ˆÚ“®—Ê
 	movePow_ = VScale(trans_.quaRot.GetForward(), SPEED);
@@ -138,6 +138,7 @@ void CannonShot::DrawAlive(void)
 	//ƒ‚ƒfƒ‹•`‰æ
 	//MV1DrawModel(trans_.modelId);
 	toonStyle_->Draw();
+	colParam_[0].geometry_->Draw();
 }
 
 void CannonShot::DrawBlast(void)

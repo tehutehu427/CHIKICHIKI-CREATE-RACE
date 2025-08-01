@@ -14,7 +14,7 @@ public:
 	//ステータス
 	static constexpr float ALIVE_TIME = 3.0f;	//生存時間	
 	static constexpr float BLAST_TIME = 0.5f;	//爆発残存時間	
-	static constexpr float SPEED = 5.0f;		//弾の速度
+	static constexpr float SPEED = 10.0f;		//弾の速度
 	static constexpr float SCALE = 0.3f;		//弾の大きさ
 	static constexpr float BLAST_SCALE = 30.0f;						//爆発の大きさ
 	static constexpr float BLAST_COL_SCALE = BLAST_SCALE * 10.0f;	//爆発の当たり判定の大きさ
@@ -22,7 +22,7 @@ public:
 
 	static constexpr float SHOT_RADIUS = 50.0f;						//弾の半径
 	static constexpr VECTOR LOCAL_POS = { 0.0f,0.0f,-60.0f };		//中心値用の相対座標
-	static constexpr VECTOR LOCAL_POS_TOP = { 0.0f,0.0f,30.0f };	//カプセル用の上相対座標
+	static constexpr VECTOR LOCAL_POS_TOP = { 0.0f,0.0f,20.0f };	//カプセル用の上相対座標
 	static constexpr VECTOR LOCAL_POS_DOWN = { 0.0f,0.0f,-40.0f };	//カプセル用の下相対座標
 
 	/// <summary>
