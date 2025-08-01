@@ -1,6 +1,6 @@
 #pragma once
-#include<DxLib.h>
-#include<functional>
+#include <DxLib.h>
+#include <functional>
 #include "../../Common/Vector2.h"
 #include "../../Common/IntVector3.h"
 #include "../../Object/Item/ItemBase.h"
@@ -11,10 +11,12 @@ class EditItemReady;
 
 class EditController
 {
+
 public:
+
 	static constexpr float PAD_STICK_RATE = 0.0125f;	//パッドスティックの感度
 	static constexpr float PAD_STICK_RATE_UP = 2.0f;	//パッドスティックの感度倍率
-	static constexpr int ERROR_PAD_VIBE_POW = 400.0f;		//エラー時のパッドバイブの強さ
+	static constexpr int ERROR_PAD_VIBE_POW = 400;		//エラー時のパッドバイブの強さ
 	static constexpr float MOVE_ARROW_LENGTH = 75.0f;	//移動矢印の長さ
 	static constexpr float MOVE_ARROW_RADIUS = 15.0f;		//移動矢印の先端の半径
 	static constexpr float MOVE_ARROW_SIZE = 60.0f;		//移動矢印の先端の長さ
@@ -36,7 +38,7 @@ public:
 	static constexpr IntVector3 PLAYER4_INIT_EDIT_POS = { 20,0,0 };	//プレイヤー4のエディター初期座標
 
 	static constexpr VECTOR UP_CAMERA_TARGET_POS = { 0.0f,-5000.0f,0.0f };	//上固定カメラの位置
-	static constexpr VECTOR UP_CAMERA_POS = { MapEditer::MAP_SIZE.x / 2 * MapEditer::GRID_SIZE,3500,MapEditer::MAP_SIZE.z / 2 * MapEditer::GRID_SIZE };	//上固定カメラの位置
+	static constexpr VECTOR UP_CAMERA_POS = { MapEditer::MAP_SIZE.x / 2.0f * MapEditer::GRID_SIZE,3500.0f,MapEditer::MAP_SIZE.z / 2.0f * MapEditer::GRID_SIZE };	//上固定カメラの位置
 
 	static constexpr float GO_DUMMY_DISTANCE = 700.0f;
 
@@ -109,9 +111,10 @@ public:
 
 	void UpdateError(void);	//エラー関係の更新
 
-	int IsError(void);	//エラーかどうか
+	int IsError(void) const;	//エラーかどうか
 
 	void SetError(int errorType);	//エラーの種類を設定
+
 protected:
 
 private:
@@ -172,13 +175,13 @@ private:
 
 	MOVE_DIR GetMoveDirTwo(void);	//カメラの方向をもとに算出
 
-	int IsChangeMoveDir(void);	//移動方向を変えていいか -1 :NONE　0: 元のまま 1:変える
+	int IsChangeMoveDir(void) const;	//移動方向を変えていいか -1 :NONE　0: 元のまま 1:変える
 	void DebugUpdate(void);	//デバッグ用更新
-	void DebugDraw(void);	//デバッグ用描画
+	void DebugDraw(void) const;	//デバッグ用描画
 
 	void RotateObject(void) const;	//オブジェクト回転
 
-	void DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY);	//範囲内のアイテムを削除
+	void DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY) const;	//範囲内のアイテムを削除
 
 	bool IsChangeVecDir(const VECTOR vec1, const VECTOR vec2) const;	//ベクトルの方向が変わったか　変わったら　true
 
@@ -186,7 +189,7 @@ private:
 	void DrawYArrow(VECTOR worldPos, bool isBig);	//Y方向の矢印を描画
 	void DrawZArrow(VECTOR worldPos, bool isBig);	//Z方向の矢印を描画
 
-	void SetCameraPosToDummyObject(void);	//ダミーオブジェクトにカメラを近づける
+	void SetCameraPosToDummyObject(void) const;	//ダミーオブジェクトにカメラを近づける
 
 	void ChangeCameraMode(void);	//カメラのモードを変える
 	void ChangeCameraMode(CAMERA_MODE mode);	//カメラのモードを変える

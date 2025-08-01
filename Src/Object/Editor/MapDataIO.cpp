@@ -261,7 +261,7 @@ void MapDataIO::ImportJsonFile()
             //Ši”[
             itemMng.AddItem(mapPos, items[type].quaternions[i], type, Utility::Rad2DegF(items[type].rotations[i].y));
 			MapEditer::GetInstance().AddItem(
-				{ mapPos, items[type].quaternions[i], type},
+				{ mapPos, type},
                 itemMng.GetItemSize(type),
                 itemMng.GetItemHitSize(type), 
                 Utility::Rad2DegF(items[type].rotations[i].y));

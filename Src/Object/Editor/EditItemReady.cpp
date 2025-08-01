@@ -121,7 +121,7 @@ void EditItemReady::UpdateReady(void)
 
 }
 
-void EditItemReady::DrawNotReady(void)
+void EditItemReady::DrawNotReady(void) const
 {
 	//DrawBox(MARGIN, MARGIN, MARGIN + hitSize_.x, MARGIN + hitSize_.y, 0x000000, true);
 	DrawModiGraph(MARGIN, MARGIN + hitSize_.y, MARGIN, MARGIN, MARGIN + hitSize_.x, MARGIN, MARGIN + hitSize_.x, MARGIN + hitSize_.y, readyImg_, true);

@@ -50,7 +50,7 @@ private:
 	void UpdateReady(void);
 
 	//フェーズごとの描画処理
-	void DrawNotReady(void);
+	void DrawNotReady(void) const;
 	void DrawCheck(void);
 	void DrawReady(void);
 
