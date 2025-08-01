@@ -56,7 +56,7 @@ void MoveHoriFloor::SetParam(void)
 
 	//コライダの作成
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.overAllPos, trans_.quaRot, trans_.modelId);
-	MakeCollider({ Collider::TAG::MOVE_HORI_FLOOR }, std::move(geo));
+	MakeCollider({ Collider::TAG::MOVE_HORI_FLOOR }, std::move(geo), { Collider::TAG::PUNCH });
 
 	//ルート設定
 	InitRoute();

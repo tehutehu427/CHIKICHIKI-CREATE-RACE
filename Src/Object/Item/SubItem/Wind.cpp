@@ -47,7 +47,7 @@ void Wind::SetParam(void)
 
 	//ƒRƒ‰ƒCƒ_‚Ìì¬
 	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.pos,radius_);
-	MakeCollider({ Collider::TAG::WIND }, std::move(geo));
+	MakeCollider({ Collider::TAG::WIND }, std::move(geo), { Collider::TAG::PUNCH });
 }
 
 void Wind::Update(void)

@@ -136,8 +136,11 @@ void PlayerOnHit::CollKillerItemSpecific(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::CollKillerItemAll(void)
 {
-	//“–‚½‚Á‚½‚çŽ€‚Ê
-	isDeath_ = true;
+	if (action_.GetAct() != PlayerAction::ATK_ACT::PUNCH)
+	{
+		//“–‚½‚Á‚½‚çŽ€‚Ê
+		isDeath_ = true;
+	}
 }
 
 void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
