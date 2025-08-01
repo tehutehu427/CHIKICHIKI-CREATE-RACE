@@ -114,7 +114,7 @@ void EditController::DrawUI(void)
 		DrawBox(screenSize_.x / 2 - CENTER_BOX_SIZE, screenSize_.y / 2 - CENTER_BOX_SIZE,screenSize_.x / 2 + CENTER_BOX_SIZE,screenSize_.y / 2 + CENTER_BOX_SIZE,Utility::BLACK, true);	//中央のボックス描画
 	}
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(errorStringTime_ * 255));
-	float rate = 1.0 / (playerMaxNum_ == 1 ? 2 : 4);
+	float rate = 1.0f / (playerMaxNum_ == 1 ? 2 : 4);
 	switch (errorType_)
 	{
 	case EditController::ERROR_TYPE::NONE:
@@ -207,7 +207,6 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	//ダミーアイテムを変更する
 	MapEditer::STATUS status;
 	status.mapPos = mapPos_;
-	status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
 	status.type = itemType_;
 
 	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
@@ -246,7 +245,6 @@ void EditController::SetReady(void)
 	auto& itemMIns = ItemManager::GetInstance();
 	MapEditer::STATUS status;
 	status.mapPos = mapPos_;
-	status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
 	status.type = itemType_;
 
 	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
@@ -309,7 +307,7 @@ void EditController::UpdateError(void)
 	}
 }
 
-int EditController::IsError(void)
+int EditController::IsError(void) const
 {
 	ItemManager& itemMIns = ItemManager::GetInstance();
 	int errorType = MapEditer::GetInstance().IsObjectAtMapPos(mapPos_, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
@@ -424,9 +422,9 @@ void EditController::MoveRotateObjectDraw(void)
 		VECTOR y = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)));
 		VECTOR z = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)));
 		MOVE_DIR moveDir = MOVE_DIR::NONE;
-		float xDistance = Utility::Distance({ static_cast<int>(x.x), static_cast<int>(x.y) }, cursorPos_);
-		float yDistance = Utility::Distance({ static_cast<int>(y.x), static_cast<int>(y.y) }, cursorPos_);
-		float zDistance = Utility::Distance({ static_cast<int>(z.x), static_cast<int>(z.y) }, cursorPos_);
+		float xDistance = static_cast<float>(Utility::Distance({ static_cast<int>(x.x), static_cast<int>(x.y) }, cursorPos_));
+		float yDistance = static_cast<float>(Utility::Distance({ static_cast<int>(y.x), static_cast<int>(y.y) }, cursorPos_));
+		float zDistance = static_cast<float>(Utility::Distance({ static_cast<int>(z.x), static_cast<int>(z.y) }, cursorPos_));
 		float min = std::min(xDistance, std::min(yDistance, zDistance));
 		if (min < distance)
 		{
@@ -470,15 +468,15 @@ void EditController::MoveRotateObjectDraw(void)
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); //半透明にする
 		if (x.z > 0.0f && x.z < 1.0f)
 		{
-			DrawCircle(x.x, x.y, distance, Utility::RED, moveDir == MOVE_DIR::X || moveDir == MOVE_DIR::XY || moveDir == MOVE_DIR::XZ);
+			DrawCircle(static_cast<int>(x.x),static_cast<int>( x.y), static_cast<int>(distance), Utility::RED, moveDir == MOVE_DIR::X || moveDir == MOVE_DIR::XY || moveDir == MOVE_DIR::XZ);
 		}
 		if (y.z > 0.0f && y.z < 1.0f)
 		{
-			DrawCircle(y.x, y.y, distance, Utility::GREEN, moveDir == MOVE_DIR::Y || moveDir == MOVE_DIR::XY || moveDir == MOVE_DIR::YZ);
+			DrawCircle(static_cast<int>(y.x), static_cast<int>(y.y), static_cast<int>(distance), Utility::GREEN, moveDir == MOVE_DIR::Y || moveDir == MOVE_DIR::XY || moveDir == MOVE_DIR::YZ);
 		}
 		if (z.z > 0.0f && z.z < 1.0f)
 		{
-			DrawCircle(z.x, z.y, distance, Utility::BLUE, moveDir == MOVE_DIR::Z || moveDir == MOVE_DIR::XZ || moveDir == MOVE_DIR::YZ);
+			DrawCircle(static_cast<int>(z.x), static_cast<int>(z.y), static_cast<int>(distance), Utility::BLUE, moveDir == MOVE_DIR::Z || moveDir == MOVE_DIR::XZ || moveDir == MOVE_DIR::YZ);
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255); //半透明にする
 	}
@@ -508,7 +506,6 @@ void EditController::ItemNotSelect(void)
 			{
 				MapEditer::STATUS status;
 				status.mapPos = mapPos_;
-				status.rotate = itemMIns.GetDummyItemTransform(playerNum_).quaRot;
 				status.type = itemType_;
 				MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
 				itemMIns.DummyItemAddItems(playerNum_);
@@ -858,7 +855,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 		if (Utility::Distance(mousePos_, x2D) < distance)
 		{
 			moveDir = MOVE_DIR::X;
-			distance = Utility::Distance(mousePos_, x2D);
+			distance = static_cast<float>(Utility::Distance(mousePos_, x2D));
 			SoundManager::GetInstance().Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		}
 	}
@@ -869,7 +866,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 		if (Utility::Distance(mousePos_, y2D) < distance)
 		{
 			moveDir = MOVE_DIR::Y;
-			distance = Utility::Distance(mousePos_, y2D);
+			distance =static_cast<float>( Utility::Distance(mousePos_, y2D));
 			SoundManager::GetInstance().Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		}
 	}
@@ -880,7 +877,7 @@ EditController::MOVE_DIR EditController::GetMoveDir(void)
 		if (Utility::Distance(mousePos_, z2D) < distance)
 		{
 			moveDir = MOVE_DIR::Z;
-			distance = Utility::Distance(mousePos_, z2D);
+			distance = static_cast<float>(Utility::Distance(mousePos_, z2D));
 			SoundManager::GetInstance().Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK);
 		}
 	}
@@ -937,7 +934,7 @@ EditController::MOVE_DIR EditController::GetMoveDirTwo(void)
 	return moveDir;
 }
 
-int EditController::IsChangeMoveDir(void)
+int EditController::IsChangeMoveDir(void) const
 {
 	KeyConfig& ins = KeyConfig::GetInstance();
 	auto type = playerMaxNum_ == 1 ? KeyConfig::TYPE::ALL : KeyConfig::TYPE::PAD;
@@ -981,7 +978,7 @@ void EditController::DebugUpdate(void)
 	//}
 }
 
-void EditController::DebugDraw(void)
+void EditController::DebugDraw(void) const
 {
 	DrawFormatString(0, 0, 0x000000, "%d", static_cast<int>(mode_));
 	DrawFormatString(0, 20, 0x000000, "%d", static_cast<int>(itemType_));
@@ -1020,7 +1017,7 @@ void EditController::RotateObject(void) const
 	}
 }
 
-void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY)
+void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY) const
 {
 	SoundManager::GetInstance().Play(SoundManager::SRC::BOMB_SE, SoundManager::PLAYTYPE::BACK);
 	MapEditer& editer = MapEditer::GetInstance();
@@ -1091,7 +1088,7 @@ void EditController::DrawZArrow(VECTOR worldPos, bool isBig)
 	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_F, (isBig ? MOVED_ARROW_SIZE : MOVE_ARROW_SIZE) + (isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH))), VAdd(worldPos, VScale(Utility::DIR_F, isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), isBig ? MOVED_ARROW_RADIUS : MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::BLUE, Utility::BLUE, true);	//Z軸の先端
 }
 
-void EditController::SetCameraPosToDummyObject(void)
+void EditController::SetCameraPosToDummyObject(void) const
 {
 	auto& itemM = ItemManager::GetInstance();
 	if (!itemM.IsDummyItem(playerNum_))

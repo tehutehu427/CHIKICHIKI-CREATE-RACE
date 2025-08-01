@@ -6,10 +6,10 @@
 #include "../../Common/Quaternion.h"
 #include "../../Common/IntVector3.h"
 #include "../../Object/Item/ItemBase.h"
+
 class ItemManager
 {
 public:
-
 	static constexpr float DUMMY_ITEM_OPACITY_RATE = 0.3f;	//ダミーアイテムの半透明度
 	static constexpr float DEFAULT_OPACITY_RATE = 1.0f;		//デフォルトの半透明度
 	static constexpr COLOR_F DUMMY_OVERLAP_COLOR = { 1.0f,0.1f,0.1f,DUMMY_ITEM_OPACITY_RATE };	//ダミーの重なっているときの色
@@ -22,7 +22,9 @@ public:
 	void Update(void);
 	//描画
 	void Draw(void);
+	//インスタンスの削除
 	void Destroy(void);
+
 	/// <summary>
 	/// アイテム追加
 	/// </summary>
@@ -32,7 +34,7 @@ public:
 	void AddItem(IntVector3 _mapPos,Quaternion _rot,ItemBase::ITEM_TYPE _type,float _rotY);
 
 	/// <summary>
-	/// アイテム消去
+	/// マップ座標を参照してアイテム消去
 	/// </summary>
 	/// <param name="_mapPos">マップ座標</param>
 	/// <param name="_type">アイテムの種類</param>
@@ -57,37 +59,34 @@ public:
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのステータス</returns>
 	ItemBase::Status GetDummyItemStatus(int playerNum);
+
 	/// <summary>
 	/// ダミーアイテムのマップ座標を取得
 	/// </summary>
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのマップ座標</returns>
 	IntVector3 GetDummyItemMapPos(int playerNum);
+
 	/// <summary>
 	/// ダミーアイテムの当たり判定サイズを取得
 	/// </summary>
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのサイズ</returns>
 	IntVector3 GetDummyItemHitSize(int playerNum);
+
 	/// <summary>
 	/// ダミーアイテムのサイズを取得
 	/// </summary>
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのサイズ</returns>
 	IntVector3 GetDummyItemSize(int playerNum);
+
 	/// <summary>
 	/// ダミーアイテムのTransformを取得
 	/// </summary>
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>ダミーアイテムのTransform</returns>
 	const Transform& GetDummyItemTransform(int playerNum);
-	/// <summary>
-	/// ダミーアイテムを置き換える
-	/// </summary>
-	/// <param name="playerNum">プレイヤー番号</param>
-	/// <param name="type">アイテムの種類</param>
-	/// <param name="mapPos">マップ座標</param>
-	//void ResetDummyItem(int playerNum,ItemBase::ITEM_TYPE type,IntVector3 mapPos);
 
 	/// <summary>
 	/// ダミーアイテムの座標設定
@@ -95,12 +94,14 @@ public:
 	/// <param name="mapPos">マップ座標</param>
 	/// <param name="playerNum">プレイヤー番号</param>
 	void DummyItemSetMapPos(IntVector3 mapPos, int playerNum);
+
 	/// <summary>
 	/// ダミーアイテムの回転を設定
 	/// </summary>
 	/// <param name="rot">回転量</param>
 	/// <param name="playerNum">プレイヤー番号</param>
 	void DummyItemSetRotate(Quaternion rot, int playerNum);
+
 	/// <summary>
 	/// ダミーアイテムをアイテムに追加
 	/// </summary>
@@ -129,17 +130,20 @@ public:
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>成功ならtrue 失敗ならfalse</returns>
 	bool ItemsAddDummyItems(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos , int playerNum);
+
 	/// <summary>
 	/// 特定のプレイヤーのダミーアイテムを削除
 	/// </summary>
 	/// <param name="playerNum">プレイヤー番号</param>
 	void DeleteDummyItem(int playerNum);
+
 	/// <summary>
 	/// ダミーアイテムが存在するか
 	/// </summary>
 	/// <param name="playerNum">プレイヤー番号</param>
 	/// <returns>存在するtrue 存在しないfalse</returns>
 	bool IsDummyItem(int playerNum);
+
 	/// <summary>
 	/// アイテムのtransformを取得
 	/// </summary>
@@ -147,12 +151,14 @@ public:
 	/// <param name="_type">アイテムの種類</param>
 	/// <returns></returns>
 	const Transform& GetItemTransform(IntVector3 _mapPos , ItemBase::ITEM_TYPE _type) const;
+
 	/// <summary>
 	/// アイテムの当たり判定大きさを取得
 	/// </summary>
 	/// <param name="_type">アイテムの種類</param>
 	/// <returns></returns>
 	IntVector3 GetItemHitSize(ItemBase::ITEM_TYPE _type) const;
+
 	/// <summary>
 	/// アイテムの大きさを取得
 	/// </summary>
@@ -160,14 +166,27 @@ public:
 	/// <returns></returns>
 	IntVector3 GetItemSize(ItemBase::ITEM_TYPE _type) const;
 
+	/// <summary>
+	/// アイテムのステータスを取得
+	/// </summary>
+	/// <param name="_mapPos">マップ座標</param>
+	/// <param name="_type">アイテムの種類</param>
+	/// <returns>ステータス</returns>
 	ItemBase::Status GetItemStatus(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type) const;
 
+	/// <summary>
+	/// アイテムのY軸回転を取得
+	/// </summary>
+	/// <param name="_type">アイテムの種類</param>
+	/// <param name="_mapPos">マップ座標</param>
+	/// <returns>Y軸回転</returns>
 	float GetItemRotY(ItemBase::ITEM_TYPE _type, IntVector3 _mapPos);
+
 	/// <summary>
 	/// スタートのワールド座標を返す
 	/// </summary>
 	/// <param name=""></param>
-	/// <returns></returns>
+	/// <returns>スタートの座標</returns>
 	VECTOR GetStartWorldPos(void) const;
 
 	/// <summary>
