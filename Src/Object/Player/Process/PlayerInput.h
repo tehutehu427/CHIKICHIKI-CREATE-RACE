@@ -73,11 +73,22 @@ private:
     static constexpr KeyConfig::JOYPAD_BTN JUMP_BTN = KeyConfig::JOYPAD_BTN::RIGHTBUTTON_RIGHT;
 
     //角度関連
+    //前
     static constexpr float FLONT_DEG = 0.0f;
-    static constexpr float LEFT_DEG = 270.0f;
-    static constexpr float BACK_DEG = 180.0f;
+    //右斜め前
+    static constexpr float FLONTRIGHT_DEG = 45.0f;
+    //右
     static constexpr float RIGHT_DEG = 90.0f;
-
+    //右斜め後ろ
+    static constexpr float BACKRIGHT_DEG = 135.0f;
+    //後ろ
+    static constexpr float BACK_DEG = 180.0f;
+    //左斜め後ろ
+    static constexpr float BACKLEFT_DEG = 225.0f;
+    //左
+    static constexpr float LEFT_DEG = 270.0f;
+    //左斜め前
+    static constexpr float FLONTLEFT_DEG = 315.0f;
     //デルタタイム
     static constexpr float DELTA_TIME = 1.0f / 60.0f;
 
