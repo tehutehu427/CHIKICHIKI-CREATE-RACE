@@ -55,6 +55,7 @@ public:
 
 	//地面との当たり判定の取得
 	inline const bool GetIsLandHit(void)const { return isLandHit_; }
+	inline const bool GetIsOverHead(void)const { return isHitOverHead_; }
 
 	//スライム床と当たっているか
 	inline const bool GetIsSlimeHit(void)const { return isHitSlimeFloor_; }
@@ -67,6 +68,9 @@ public:
 
 	//コイン枚数
 	inline void SetCoinNum(const int _num) { coinNum_ = _num; }
+	
+	//地面と離れるときのセッタ
+	inline void SetIsLandHit(const bool _hit) { isLandHit_ = _hit; };
 
 private:
 	//--------------------------------------
@@ -153,6 +157,9 @@ private:
 
 	//地面と当たっているか
 	bool isLandHit_;
+
+	//プレイヤーの頭上が当たっているか
+	bool isHitOverHead_;
 
 	//スライム床と当たっているか
 	bool isHitSlimeFloor_;

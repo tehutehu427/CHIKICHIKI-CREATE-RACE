@@ -6,7 +6,7 @@
 #include"./PlayerAction.h"
 #include "../ObjectBase.h"
 
-//#define DEBUG_ON
+#define DEBUG_ON
 class AnimationController;
 class Camera;
 class PlayerAction;
@@ -158,7 +158,8 @@ public:
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos);
 
-
+	//地面との当たり判定
+	void SetIsLandHit(const bool _hit);
 	//*****************************************
 	//モデル色を変更
 	void ChangeModelColor(const COLOR_F _colorScale)override;

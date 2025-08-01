@@ -216,15 +216,16 @@ void Player::DrawDebug(void)
 	VECTOR pow = action_->GetMovePow();
 	VECTOR jumpPow = action_->GetJumpPow();
 	VECTOR movedPos = onHitCol_->GetMovedPos();
+	bool isOver = onHitCol_->GetIsOverHead();
 	DrawFormatString(0, 16*(playerNum_*9), 0x000000
-		, "Šp“x(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nisJump(%d)\nisLand(%d)\ncoin(%d)"
+		, "Šp“x(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nisJump(%d)\nisLand(%d)\nOverHead(%d)"
 		, trans_.rot.x, trans_.rot.y, trans_.rot.z
 		,action_->GetJumpDecel()
 		,action_->GetStepJump()
 		, jumpPow.x, jumpPow.y, jumpPow.z
 		,action_->GetIsJump()
 		,onHitCol_->GetIsLandHit()
-		,GetCoinNum()
+		, isOver
 	);
 
 	action_->DrawDebug();
@@ -361,6 +362,11 @@ void Player::SetPos(const VECTOR _worldPos)
 {
 	trans_.pos = _worldPos;
 	trans_.Update();
+}
+
+void Player::SetIsLandHit(const bool _hit)
+{
+	onHitCol_->SetIsLandHit(_hit);
 }
 
 void Player::ChangeModelColor(const COLOR_F _colorScale)

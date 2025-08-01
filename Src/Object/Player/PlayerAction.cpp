@@ -382,7 +382,6 @@ void PlayerAction::Jump(void)
 		//Œ¸Š—Ê‚ÌŒvZ
 		float deceralation = stepJump_ * TIME_JUMP_SCALE;
 		jumpDeceralation_ -= deceralation;
-
 		//ƒWƒƒƒ“ƒv—Ê‚ÉŠ|‚¯‚é
 		jumpPow_ = VScale(player_.GetTransform().GetUp(), jumpDeceralation_);
 	}
