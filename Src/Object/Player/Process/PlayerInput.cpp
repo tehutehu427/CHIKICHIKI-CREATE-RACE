@@ -87,45 +87,45 @@ void PlayerInput::KeyMove(void)
 	moveDir_ = Utility::VECTOR_ZERO;
 	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_FRONT, padNum_, KeyConfig::TYPE::KEYBORD_MOUSE))
 	{
-		actCntl_ = ACT_CNTL::MOVE;
-		moveDeg_ = FLONT_DEG;
 		moveDir_ = VAdd(moveDir_, Utility::DIR_F);
 	}
 	//ç∂
 	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_LEFT, padNum_, KeyConfig::TYPE::KEYBORD_MOUSE))
 	{
-		actCntl_ = ACT_CNTL::MOVE;
-		moveDeg_ = LEFT_DEG;
 		moveDir_ = VAdd(moveDir_, Utility::DIR_L);
 	}
 	//å„
 	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_BACK, padNum_, KeyConfig::TYPE::KEYBORD_MOUSE))
 	{
-		actCntl_ = ACT_CNTL::MOVE;
-		moveDeg_ = BACK_DEG;
 		moveDir_ = VAdd(moveDir_, Utility::DIR_B);
 	}
 	//âE
 	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_RIGHT, padNum_, KeyConfig::TYPE::KEYBORD_MOUSE))
 	{
-		actCntl_ = ACT_CNTL::MOVE;
-		moveDeg_ = RIGHT_DEG;
 		moveDir_ = VAdd(moveDir_, Utility::DIR_R);
 	}
 	//éŒÇﬂì¸óÕ
-	if (std::abs(moveDir_.x) > 0.0f && std::abs(moveDir_.z) > 0.0f)
+	if (std::abs(moveDir_.x) > 0.0f || std::abs(moveDir_.z) > 0.0f)
 	{
-		if (Utility::GetSign(moveDir_.x) == 1)
+		int signX = Utility::GetSign(moveDir_.x);
+		int signZ = Utility::GetSign(moveDir_.z);
+		if (signX==1)
 		{
-			Utility::GetSign(moveDir_.z)==1? moveDeg_ = FLONTRIGHT_DEG: moveDeg_ = BACKRIGHT_DEG;
+			moveDeg_ = signZ == 1 ? FLONTRIGHT_DEG : signZ == -1 ? BACKRIGHT_DEG : RIGHT_DEG;
 		}
-		else if (Utility::GetSign(moveDir_.x) == -1)
+		else if (signX == -1)
 		{
-			Utility::GetSign(moveDir_.z)==1 ? moveDeg_ = FLONTLEFT_DEG : moveDeg_ = BACKLEFT_DEG;
+			moveDeg_ = signZ == 1 ? FLONTLEFT_DEG : signZ == -1 ? BACKLEFT_DEG : LEFT_DEG;
 		}
+		else
+		{
+			moveDeg_ = signZ == 1 ? FLONT_DEG : BACK_DEG;
+		}
+		actCntl_ = ACT_CNTL::MOVE;
+		//ê≥ãKâª
+		moveDir_ = VNorm(moveDir_);
 	}
-	//ê≥ãKâª
-	moveDir_ = VNorm(moveDir_);
+
 }
 
 void PlayerInput::PadMove(void)

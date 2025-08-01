@@ -141,7 +141,8 @@ void PlayerAction::Update(void)
 
 void PlayerAction::DrawDebug(void)
 {
-
+	VECTOR dir = input_->GetDir();
+	DrawFormatString(0, 300, 0x000000, "dir(%f,%f,%f)", dir.x, dir.y, dir.z);
 }
 
 void PlayerAction::NoneUpdate(void)

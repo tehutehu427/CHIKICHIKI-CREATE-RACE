@@ -293,6 +293,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		auto& hitInfo = hitModel.GetHitInfo();
 		for (int i = 0; i < hitInfo.HitNum; i++)
 		{
+			isSide_ = true;
 			auto hit = hitInfo.Dim[i];
 			VECTOR hitPos = hit.HitPosition;
 			for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
@@ -301,7 +302,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 					, hit.Position[0], hit.Position[1], hit.Position[2]);
 				if (pHit)
 				{
-					isSide_ = true;
 					VECTOR normal = hit.Normal;
 					//yÀ•W‚ğ”²‚¢‚Ä‰Ÿ‚µ‚¾‚·
 					normal.y = 0.0f;

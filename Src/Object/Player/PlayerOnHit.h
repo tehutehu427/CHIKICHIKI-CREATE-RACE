@@ -164,7 +164,7 @@ private:
 	//スライム床と当たっているか
 	bool isHitSlimeFloor_;
 
-	//プレイヤーのサイドが当たっている
+	//プレイヤーの横がわが当たっている
 	bool isSide_;
 
 	//コインの枚数
