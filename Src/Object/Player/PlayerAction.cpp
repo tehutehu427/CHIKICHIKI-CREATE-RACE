@@ -141,8 +141,7 @@ void PlayerAction::Update(void)
 
 void PlayerAction::DrawDebug(void)
 {
-	int dashSeCnt = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
-	DrawFormatString(0, 300, 0x000000, "act(%d)\ndashSESize(%d)", (int)input_->GetAct(), dashSeCnt);
+
 }
 
 void PlayerAction::NoneUpdate(void)
@@ -500,14 +499,13 @@ void PlayerAction::KnockBack(void)
 
 void PlayerAction::ChangeKnockBack(void)
 {
-	//ダメージアニメーション
-	//animationController_->Play((int)ANIM_TYPE::DAMAGE,true,)
 	speed_ = FLY_AWAY_SPEED;
 	//エフェクト
 	Transform trans = player_.GetTransform();
 	const float EFF_SCL = 15.0f;
 	effect_->Play(EffectController::EFF_TYPE::PUNCH_HIT, trans.pos, trans.quaRot, { EFF_SCL,EFF_SCL, EFF_SCL });
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::PUNCH_HIT], SoundManager::PLAYTYPE::BACK);
+
 	//パンチの当たり判定を消す
 	isPunchHitTime_ = false;
 	player_.KillPunchCol();
