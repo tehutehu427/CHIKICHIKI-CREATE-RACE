@@ -93,23 +93,16 @@ private:
     static constexpr float DELTA_TIME = 1.0f / 60.0f;
 
     //メンバ関数
-    //キーボードのみ
-    void InputKeyBoard(void);
-    //パッドとキーボードのｎ入力を受け付ける
+    //パッドとキーボードの入力を受け付ける
     void InputAll(void);
     //パッドのみ
     void InputPad(void);
     
-    //キーボード入力関連
-    //移動
+    //キーボードの移動入力
     void KeyMove(void);
-    //ダッシュ
-    void KeyDash(void);
-    //パンチ
-    void KeyPanch(void);
-    //ジャンプ
-    void KeyJump(void);
 
+    //パッドの移動入力
+    void PadMove(void);
 
     //移動入力にDash入力があったかどうかを返す
     const bool IsDashInputDuringMove(void);
