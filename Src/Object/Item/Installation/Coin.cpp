@@ -45,7 +45,7 @@ void Coin::SetParam(void)
 
 	//コライダの作成
 	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.overAllPos, RADIUS);
-	MakeCollider({ Collider::TAG::COIN }, std::move(geo));
+	MakeCollider({ Collider::TAG::COIN }, std::move(geo), { Collider::TAG::PUNCH });
 
 	//マップサイズ
 	mapSize_ = MAP_SIZE;
@@ -87,7 +87,7 @@ void Coin::Update(void)
 		{
 			//コライダの作成
 			std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.overAllPos, RADIUS);
-			MakeCollider({ Collider::TAG::COIN }, std::move(geo));
+			MakeCollider({ Collider::TAG::COIN }, std::move(geo), { Collider::TAG::PUNCH });
 		}
 
 		//削除

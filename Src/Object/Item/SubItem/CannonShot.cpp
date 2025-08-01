@@ -3,7 +3,7 @@
 #include "../Manager/System/Resource.h"
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/SoundManager.h"
-#include"../../Common/Geometry/Model.h"
+#include"../../Common/Geometry/Capsule.h"
 #include"../../Common/Geometry/Sphere.h"
 #include"../../Common/EffectController.h"
 #include"../../Common/ToonStyle.h"
@@ -18,6 +18,7 @@ CannonShot::CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR
 	state_ = STATE::ALIVE;
 	isAlive_ = false;
 	cnt_ = 0.0f;
+	invincible_ = 0.0f;
 }
 
 CannonShot::~CannonShot()
@@ -40,6 +41,9 @@ void CannonShot::SetParam(void)
 	//大きさ
 	trans_.scl = VScale(trans_.scl,SCALE);
 
+	//大きさ
+	trans_.localPos = LOCAL_POS;
+
 	//移動量
 	movePow_ = VScale(trans_.quaRot.GetForward(), SPEED);
 
@@ -58,7 +62,7 @@ void CannonShot::SetParam(void)
 	isAlive_ = true;
 
 	//コライダの作成
-	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.overAllPos, trans_.quaRot, trans_.modelId);
+	std::unique_ptr<Capsule> geo = std::make_unique<Capsule>(trans_.overAllPos, trans_.quaRot, LOCAL_POS_TOP, LOCAL_POS_DOWN, SHOT_RADIUS);
 	MakeCollider({ Collider::TAG::KILLER_ALL }, std::move(geo));
 }
 
@@ -69,6 +73,7 @@ void CannonShot::Update(void)
 
 	//カウンタアップ
 	cnt_ += SceneManager::GetInstance().GetDeltaTime();
+	if(invincible_ <= PUNCH_INVINCIBLE)invincible_ += SceneManager::GetInstance().GetDeltaTime();
 
 	//更新
 	update_[state_]();
@@ -85,12 +90,18 @@ void CannonShot::Draw(void)
 
 void CannonShot::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	//生存判定
-	if (state_ == STATE::ALIVE)
+	//タグがパンチなら別処理
+	auto tags = _hitCol.lock()->GetTags();
+	if (std::find(tags.begin(), tags.end(), Collider::TAG::PUNCH) != tags.end())
 	{
-		//爆発
-		Blast();
+		//パンチと当たった
+		HitPunch(_hitCol.lock()->GetParent().GetTransform().pos);
+		
+		return;
 	}
+
+	//プレイヤーと当たった
+	HitPlayer();
 }
 
 void CannonShot::UpdateAlive(void)
@@ -100,6 +111,7 @@ void CannonShot::UpdateAlive(void)
 	{
 		//爆発
 		Blast();
+		return;
 	}
 
 	//移動
@@ -176,4 +188,29 @@ void CannonShot::InitShader()
 	toonStyle_ = std::make_unique<ToonStyle>();
 	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::NO_TEXTURE);
 	toonStyle_->Init();
+}
+
+void CannonShot::HitPlayer(void)
+{
+	//生存判定
+	if (state_ == STATE::ALIVE)
+	{
+		//爆発
+		Blast();
+	}
+}
+
+void CannonShot::HitPunch(const VECTOR _colliderPos)
+{
+	//パンチに連続で当たらないように無敵時間を設ける
+	if (invincible_ <= PUNCH_INVINCIBLE)return;
+
+	//移動方向
+	VECTOR moveVec;
+
+	//対象から自分までのベクトル
+	movePow_ = Utility::GetMoveVec(_colliderPos, trans_.pos, SPEED);
+	
+	//モデル回転を変える
+	trans_.quaRot = trans_.quaRot.LookRotation(movePow_);
 }

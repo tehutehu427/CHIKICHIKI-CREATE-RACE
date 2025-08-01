@@ -4,23 +4,16 @@
 #include "../Common/EffectController.h"
 #include "ItemBase.h"
 
-ItemBase::ItemBase()
+ItemBase::ItemBase(void)
+	: status_({false,false,ITEM_TYPE::NONE,EFFECT_TYPE::FIXED,ROTATION_TYPE::HALF_ROTATION})
+	, initMapPos_(INT_VECTOR_ZERO)
+	, rotY_(0.0f)
+	, movePow_(Utility::VECTOR_ZERO)
+	, toonStyle_(nullptr)
 {
-	status_.isBreak = false;
-	status_.isGravity = false;
-	status_.itemType = ITEM_TYPE::NONE;
-	status_.effType = EFFECT_TYPE::FIXED;
-
-	initMapPos_ = INT_VECTOR_ZERO;
-
-	rotY_ = 0.0f;
-
-	movePow_ = Utility::VECTOR_ZERO;
-
-	toonStyle_ = nullptr;
 }
 
-ItemBase::~ItemBase()
+ItemBase::~ItemBase(void)
 {
 	for (auto model : models_)
 	{
@@ -29,7 +22,7 @@ ItemBase::~ItemBase()
 	models_.clear();
 }
 
-void ItemBase::Load()
+void ItemBase::Load(void)
 {
 }
 
@@ -57,7 +50,7 @@ void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot, ITEM_TYPE _itemType)
 	Init();
 }
 
-void ItemBase::Init()
+void ItemBase::Init(void)
 {
 	//個々の設定
 	SetParam();
@@ -142,14 +135,14 @@ const VECTOR ItemBase::AdjustSizePer(const VECTOR _modelSize)const
 	return ret;
 }
 
-void ItemBase::InitShader()
+void ItemBase::InitShader(void)
 {
 	toonStyle_ = std::make_unique<ToonStyle>();
 	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::MESH);
 	toonStyle_->Init();
 }
 
-bool ItemBase::IsInCameraView()
+const bool ItemBase::IsInCameraView(void)
 {
 	//座標１
 	VECTOR boxPos1 = trans_.pos;
@@ -160,10 +153,13 @@ bool ItemBase::IsInCameraView()
 	MapEditer::GetInstance().ApplyRotation(initPos, size_, hitSize, rotY_);
 	VECTOR boxPos2 = MapEditer::GetInstance().MapToWorldPos(initPos + hitSize);
 
+	//カメラ内か
 	if (CheckCameraViewClip_Box(boxPos1, boxPos2))
 	{
+		//カメラ内だった
 		return true;
 	}
 
+	//カメラ外だった
 	return false;
 }
