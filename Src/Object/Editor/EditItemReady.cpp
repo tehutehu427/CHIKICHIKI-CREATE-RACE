@@ -76,6 +76,7 @@ void EditItemReady::UpdateNotReady(void)
 		int errorType = parent_.IsError();
 		if (errorType < 0)
 		{
+			//エラーがあった場合はエラー音を鳴らしてエラー状態にする
 			SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
 			parent_.SetError(errorType);
 			return;
@@ -90,6 +91,7 @@ void EditItemReady::UpdateCheck(void)
 	int errorType = parent_.IsError();
 	if (errorType < 0)
 	{
+		//エラーがあった場合はエラー音を鳴らしてエラー状態にする
 		SoundManager::GetInstance().Play(SoundManager::SRC::ERROR_SE, SoundManager::PLAYTYPE::BACK);
 		parent_.SetError(errorType);
 		ChangeReady(READY_PHASE::NOT_READY);
@@ -98,12 +100,14 @@ void EditItemReady::UpdateCheck(void)
 	KeyConfig& ins = KeyConfig::GetInstance();
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::CANCEL, parent_.GetPadNum(), KeyConfig::TYPE::PAD))
 	{
+		//キャンセルを押されたら戻る
 		SoundManager::GetInstance().Play(SoundManager::SRC::CANCEL, SoundManager::PLAYTYPE::BACK);
 		ChangeReady(READY_PHASE::NOT_READY);
 		return;
 	}
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, parent_.GetPadNum(), KeyConfig::TYPE::PAD))
 	{
+		//OKを押されたら準備完了
 		SoundManager::GetInstance().Play(SoundManager::SRC::OK, SoundManager::PLAYTYPE::BACK);
 		ChangeReady(READY_PHASE::READY);
 		return;
@@ -130,24 +134,24 @@ void EditItemReady::DrawNotReady(void) const
 void EditItemReady::DrawCheck(void)
 {
 	auto screenSize = parent_.GetScreenSize();
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); //半透明にする
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, ALPHA_RATE); //半透明にする
 	//これでいいかの確認画面
-	DrawBox(0, 0, screenSize.x, screenSize.y, 0x000000, true);
+	DrawBox(0, 0, screenSize.x, screenSize.y, Utility::BLACK, true);
 
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255); //不透明にする
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, ALPHA_RATE_MAX); //不透明にする
 
-	Utility::DrawStringPlace("OK Bボタン :CANCEL Aボタン", screenSize.x / 2, screenSize.y / 2, 0xffffff, Utility::STRING_PLACE::CENTER);
+	Utility::DrawStringPlace("OK Bボタン :CANCEL Aボタン", screenSize.x / 2, screenSize.y / 2, Utility::WHITE, Utility::STRING_PLACE::CENTER);
 }
 
 void EditItemReady::DrawReady(void)
 {
 	//準備完了時の描画処理
 	auto screenSize = parent_.GetScreenSize();
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); //半透明にする
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, ALPHA_RATE); //半透明にする
 	//これでいいかの確認画面
-	DrawBox(0, 0, screenSize.x, screenSize.y, 0x000000, true);
+	DrawBox(0, 0, screenSize.x, screenSize.y, Utility::BLACK, true);
 
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255); //不透明にする
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, ALPHA_RATE_MAX); //不透明にする
 	DrawRotaGraph(screenSize.x / 2, screenSize.y / 2, 1.0f, 0.0f, ResourceManager::GetInstance().Load(ResourceManager::SRC::OK).handleId_, true); //中央に準備完了の画像を表示
 
 }

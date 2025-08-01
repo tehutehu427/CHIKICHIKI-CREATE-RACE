@@ -25,10 +25,13 @@ public:
 	void ChangeReady(const READY_PHASE _ready);
 	inline READY_PHASE GetReady(void)const { return ready_; }
 private:
+
 	static constexpr int HIT_WIDTH = 128;	//当たり判定の幅
 	static constexpr int HIT_HEIGHT = 64;	//当たり判定の高さ
 	static constexpr int MARGIN = 10;		//描画時の余白
 	static constexpr int CHIKEN_VOICE_RATE = 10;	//にわとりが出る確率
+	static constexpr int ALPHA_RATE = 128;	//半透明のアルファ値
+	static constexpr int ALPHA_RATE_MAX = 255;	//完全不透明のアルファ値
 	//フェーズ管理
 	READY_PHASE ready_;
 

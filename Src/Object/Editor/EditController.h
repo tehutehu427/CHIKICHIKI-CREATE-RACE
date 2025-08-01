@@ -11,7 +11,6 @@ class EditItemReady;
 
 class EditController
 {
-
 public:
 
 	static constexpr float PAD_STICK_RATE = 0.0125f;	//パッドスティックの感度
