@@ -202,12 +202,12 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 			}
 		}
 	}
-	itemType_ = itemType;
 	//アイテムを追加
 	//ダミーアイテムを変更する
 	MapEditer::STATUS status;
 	status.mapPos = mapPos_;
 	status.type = itemType_;
+	itemType_ = itemType;
 
 	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
 	{
