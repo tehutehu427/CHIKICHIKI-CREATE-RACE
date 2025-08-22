@@ -144,7 +144,7 @@ void PlayerOnHit::CollKillerItemSpecific(const std::weak_ptr<Collider> _hitCol)
 {
 	HitModelCommon(_hitCol);
 	//’n–Ê‚É—§‚Á‚Ä‚¢‚½‚ç
-	if (isLandHit_)
+	if (isLandHit_&&!isSide_)
 	{
 		isDeath_ = true;
 	}
@@ -243,7 +243,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
 
 	//
-	bool isLandHit = false;
+	//isLandHit_ = false;
 	isHitSlimeFloor_ = false;
 
 	if (moveLineCol->IsHit())
@@ -316,7 +316,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 			}
 			
 		}
-		if(isSide_&&_hitCol.lock()->GetTags()[0]!=Collider::TAG::KILLER_SPECIFIC)
+	if(isSide_&&_hitCol.lock()->GetTags()[0]!=Collider::TAG::KILLER_SPECIFIC)
 		{
 			int modelId = _hitCol.lock()->GetParent().GetTransform().modelId;
 			VECTOR pos1 = movedPos_;
