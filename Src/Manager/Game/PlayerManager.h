@@ -100,6 +100,8 @@ public:
 	/// <returns>I‚¦‚Ä‚½‚çtrue,‚È‚¯‚ê‚Îfalse</returns>
 	bool IsPlayersEnd();
 
+	void RespawnPlayer(void);	
+
 
 
 private:
