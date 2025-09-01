@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Common\Fader.cpp" />
     <ClCompile Include="Src\Object\System\Result\BonusUis.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\CoinFollower.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\Coin.cpp" />
@@ -98,7 +99,6 @@
     <ClCompile Include="Src\Manager\Game\GravityManager.cpp" />
     <ClCompile Include="Src\Object\ObjectBase.cpp" />
     <ClCompile Include="Src\Application.cpp" />
-    <ClCompile Include="Src\Common\Fader.cpp" />
     <ClCompile Include="Src\Common\Quaternion.cpp" />
     <ClCompile Include="Src\Common\Vector2.cpp" />
     <ClCompile Include="Src\main.cpp" />
@@ -124,6 +124,7 @@
     <ClCompile Include="Src\Object\System\Select\SystemSetting.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Common\Fader.h" />
     <ClInclude Include="Src\Object\System\Result\BonusUis.h" />
     <ClInclude Include="Src\Object\Item\Installation\CoinFollower.h" />
     <ClInclude Include="Src\Object\Item\Installation\Coin.h" />
@@ -252,7 +253,6 @@
     <ClInclude Include="Src\Manager\Game\GravityManager.h" />
     <ClInclude Include="Src\Object\ObjectBase.h" />
     <ClInclude Include="Src\Application.h" />
-    <ClInclude Include="Src\Common\Fader.h" />
     <ClInclude Include="Src\Common\Quaternion.h" />
     <ClInclude Include="Src\Common\Vector2.h" />
     <ClInclude Include="Src\main.h" />
