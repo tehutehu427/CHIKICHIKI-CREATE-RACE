@@ -196,7 +196,10 @@ void MultiParty::ChangePhaseClear()
 
 	auto camera = SceneManager::GetInstance().GetCamera(0).lock();
 	camera->ChangeMode(Camera::MODE::FOLLOW_ROTATION);
-	camera->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(ScoreManager::GetInstance().GetWinnerPlayerIndex()));
+
+	int index = ScoreManager::GetInstance().GetNowWinnerPlayerIndex();
+	if (index == -1) { index = 0; }
+	camera->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(index));
 }
 void MultiParty::ChangePhaseEdit()
 {

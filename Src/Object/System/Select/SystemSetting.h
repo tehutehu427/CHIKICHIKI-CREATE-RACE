@@ -15,7 +15,8 @@ public:
 		SKIP,			//スキップ設定
 		BGM_VOLUME,		//BGMボリューム設定
 		SE_VOLUME,		//SEボリューム設定
-		FULL_SCREEN,	//フルスクリーン		
+		FULL_SCREEN,	//フルスクリーン
+		ROUND,			//ラウンド制限
 		APPLY,			//設定適用
 		MAX				//最大値
 	};
@@ -30,13 +31,22 @@ public:
 	static constexpr int STATE_MAX = static_cast<int>(STATE::MAX);	
 	
 	//クリアスコアの最大値
-	static constexpr int CLEAR_SCORE_MAX = 15;	
+	static constexpr int CLEAR_SCORE_MAX = 30;	
 
 	//クリアスコアの最小値
-	static constexpr int CLEAR_SCORE_MIN = 1;
+	static constexpr int CLEAR_SCORE_MIN = 3;
 
 	//クリアスコアの範囲
 	static constexpr int CLEAR_SCORE_RANGE = CLEAR_SCORE_MAX - CLEAR_SCORE_MIN + 1;
+
+	//ラウンド数の最小値
+	static constexpr int ROUND_MIN = 0;
+
+	//ラウンドの最大値
+	static constexpr int ROUND_MAX = 30;
+
+	//ラウンドの範囲
+	static constexpr int ROUND_RANGE = ROUND_MAX - ROUND_MIN + 1;
 
 	//サウンドボリュームの最大値
 	static constexpr int SOUND_VOLUME_MAX = 100;
@@ -93,6 +103,9 @@ private:
 	//クリアスコア
 	int clearScore_;	
 
+	//ラウンド数
+	int roundCnt_;
+
 	//サウンドボリューム
 	int soundVolume_[SoundManager::TYPE_MAX];
 	
@@ -143,6 +156,7 @@ private:
 	void DrawClearScore();
 	void DrawSwitch(const STATE _state, const bool _flag);
 	void DrawSoundVolume(const STATE _state, const int _type);
+	void DrawRound();
 
 	//適用時のメッセージ描画
 	void DrawApplyMessage();

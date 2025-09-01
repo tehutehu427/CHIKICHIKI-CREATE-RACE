@@ -144,6 +144,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Clear + "Win.png");
 	resourcesMap_.emplace(SRC::WIN, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Clear + "Draw.png");
+	resourcesMap_.emplace(SRC::DRAW, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Clear + "ClearSelectMenus.png", CLEAR_MENUS_DIV_X, CLEAR_MENUS_DIV_Y, CLEAR_MENUS_SIZE_X, CLEAR_MENUS_SIZE_Y);;
 	resourcesMap_.emplace(SRC::CLEAR_MENUS, std::move(res));
 

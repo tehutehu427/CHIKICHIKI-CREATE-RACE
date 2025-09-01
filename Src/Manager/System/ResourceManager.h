@@ -74,7 +74,7 @@ public:
 	static constexpr int SYSTEM_MESSAGES_SIZE_Y = 64; //システムメッセージ各画像サイズY
 
 	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_X = 1;	//システム設定メッセージ分割数X
-	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_Y = 5;	//システム設定メッセージ分割数Y
+	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_Y = 6;	//システム設定メッセージ分割数Y
 	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_X = 544; //システム設定メッセージ各画像サイズX
 	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_Y = 48; //システム設定メッセージ各画像サイズY
 
@@ -118,7 +118,8 @@ public:
 		CLEAR,
 		CLEAR_MENUS,
 		PLAYER_PLATES,
-		WIN,
+		WIN,	
+		DRAW,
 
 		//ゲームオーバー
 		GAMEOVER,
@@ -157,14 +158,13 @@ public:
 		RESULT_GOAL,
 		RESULT_NO1,
 		RESULT_COIN,
-
+	
 		//マニュアル
 		FREE_MANUAL,
 		FREE_MANUAL_2,
 		FREE_MANUAL_3,
 		SELECT_MANUAL_KEY,
 		SELECT_MANUAL_PAD,
-
 
 		//アイテムモデル
 		FLOOR,				//足場
