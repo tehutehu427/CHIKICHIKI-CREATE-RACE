@@ -53,6 +53,8 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	changeStates_.emplace(PLAYER_STATE::ALIVE, [this]() {ChangeAlive();});
 	changeStates_.emplace(PLAYER_STATE::DEATH, [this]() {ChangeDeath(); });
 	changeStates_.emplace(PLAYER_STATE::GOAL, [this]() {ChangeGoal(); });
+
+	respawnPos_ = Utility::VECTOR_ZERO;
 }
 
 Player::~Player(void)
@@ -423,4 +425,10 @@ void Player::KillPunchCol(void)
 			}
 		}
 	}
+}
+
+void Player::Respawn(void)
+{
+	Init();
+	SetPos(respawnPos_);
 }

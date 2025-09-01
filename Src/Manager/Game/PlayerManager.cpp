@@ -159,7 +159,8 @@ void PlayerManager::SetInitPos(VECTOR _worldPos)
 	{
 		float posX = i % 2 == 0 ? START_POS : -START_POS;
 		float posZ = i < 2 ? START_POS : -START_POS;
-		players_[i]->SetPos({ posX+_worldPos.x, _worldPos.y, posZ+_worldPos.z }) ;
+		players_[i]->SetPos({ posX + _worldPos.x, _worldPos.y, posZ + _worldPos.z });
+		players_[i]->SetRespawnPos({ posX + _worldPos.x, _worldPos.y, posZ + _worldPos.z });
 	}
 }
 
@@ -176,6 +177,19 @@ bool PlayerManager::IsPlayersEnd(void)
 	}
 	//終了
 	return true;
+}
+
+void PlayerManager::RespawnPlayer(void)
+{
+	//プレイヤー全員を調べる
+	for (auto& player : players_)
+	{
+		//ゴールしていない、かつ倒れていない時
+	if (player->IsDeath())
+		{
+			player->Respawn();
+		}
+	}
 }
 
 
