@@ -11,8 +11,9 @@ public:
 	enum class READY_PHASE
 	{
 		NOT_READY,
-		CHECK,
-		READY,
+		PAD_EXPLAIN,	//パッド操作の説明の表示
+		CHECK,			//レディするかの確認
+		READY,			//レディする
 	};
 
 	EditItemReady(EditController& parent);
@@ -40,17 +41,20 @@ private:
 	std::function<void(void)> phaseDraw_;
 
 	//フェーズ遷移時の処理
-	void ChangePhaseNotRedy(void);
+	void ChangePhaseNotReady(void);
+	void ChangePhasePadExplain(void);
 	void ChangePhaseCheck(void);
 	void ChangePhaseReady(void);
 
 	//フェーズごとの更新処理
 	void UpdateNotReady(void);
+	void UpdatePadExplain(void);
 	void UpdateCheck(void);
 	void UpdateReady(void);
 
 	//フェーズごとの描画処理
 	void DrawNotReady(void);
+	void DrawPadExplain(void);
 	void DrawCheck(void);
 	void DrawReady(void);
 
