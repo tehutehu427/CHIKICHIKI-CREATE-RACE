@@ -11,6 +11,7 @@ PlayerInput::PlayerInput(KeyConfig::JOYPAD_NO _padNum, KeyConfig::TYPE _cntl):pa
 	moveDeg_ = 0.0f;
 	moveDir_ = Utility::VECTOR_ZERO;
 
+	//各入力処理の代入
 	inputUpdates_[KeyConfig::TYPE::ALL] = [this]() {InputAll(); };
 	inputUpdates_[KeyConfig::TYPE::PAD] = [this]() {InputPad(); };
 }
@@ -28,137 +29,32 @@ void PlayerInput::Init(void)
 void PlayerInput::Update(void)
 {
 	inputUpdates_[cntl_]();
-	//InputKeyBoard();
-	//InputPad();
-	//switch (cntl_)
-	//{
-	//case DateBank::TYPE::ERORE:
-	//	break;
-	//case DateBank::TYPE::ALL:
-	//	InputKeyBoard();
-	//	break;
-	//case DateBank::TYPE::CONTROLLER:
-	//	InputPad();
-	//	break;
-	//default:
-	//	break;
-	//}
 }
 
-void PlayerInput::InputKeyBoard(void)
-{
-	auto& ins = KeyConfig::GetInstance();
-	using ATK_ACT = Player::ATK_ACT;
-	actCntl_ = ACT_CNTL::NONE;
 
-#ifdef _DEBUG
-	//if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHANGE_INPUT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::PAD))
-	//{
-	//	ChangeInput(KeyConfig::TYPE::PAD);
-	//}
-#endif // _DEBUG
-	
-	//移動角度を決める
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_FRONT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
-	{ 
-		actCntl_ = ACT_CNTL::MOVE;
-		moveDeg_ = FLONT_DEG;
-		moveDir_ = Utility::DIR_F;
-	}
-	else if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_LEFT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
-	{ 
-		actCntl_ = ACT_CNTL::MOVE;
-		moveDeg_ = LEFT_DEG; 
-		moveDir_ = Utility::DIR_L;
-	} 
-	else if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_BACK, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
-	{ 
-		actCntl_ = ACT_CNTL::MOVE;
-		moveDeg_ = BACK_DEG; 
-		moveDir_ = Utility::DIR_B;
-	}
-	else if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_RIGHT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
-	{
-		actCntl_ = ACT_CNTL::MOVE;
-		moveDeg_ = RIGHT_DEG; 
-		moveDir_ = Utility::DIR_R;
-	}
-	if (actCntl_==ACT_CNTL::MOVE&&ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_DASH, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
-	{
-		actCntl_ = ACT_CNTL::DASHMOVE;
-	}
-
-	//通常攻撃
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PLAYER_PUNCH, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE)) { actCntl_ = ACT_CNTL::PUNCH; }
-
-	//ジャンプキー
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PLAYER_JUMP, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE)) { actCntl_ = ACT_CNTL::JUMP; }
-}
 
 void PlayerInput::InputAll(void)
 {
 	auto& ins = KeyConfig::GetInstance();
 	using ATK_ACT = Player::ATK_ACT;
 	actCntl_ = ACT_CNTL::NONE;
+	//移動入力処理
+	//キーボード
+	KeyMove();
+	//パッド
+	PadMove();
 
-
-	//移動角度を決める
-	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_FRONT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
-	{
-		actCntl_ = ACT_CNTL::MOVE;
-		moveDeg_ = FLONT_DEG;
-		moveDir_ = Utility::DIR_F;
-	}
-	else if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_LEFT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
-	{
-		actCntl_ = ACT_CNTL::MOVE;
-		moveDeg_ = LEFT_DEG;
-		moveDir_ = Utility::DIR_L;
-	}
-	else if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_BACK, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
-	{
-		actCntl_ = ACT_CNTL::MOVE;
-		moveDeg_ = BACK_DEG;
-		moveDir_ = Utility::DIR_B;
-	}
-	else if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_RIGHT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
-	{
-		actCntl_ = ACT_CNTL::MOVE;
-		moveDeg_ = RIGHT_DEG;
-		moveDir_ = Utility::DIR_R;
-	}
-
-
-	LStickAngleSize_ = ins.GetKnockLStickSize(padNum_);
-
-	//スティックの倒れ値が200以上だったら
-	if (LStickAngleSize_.x <= -STICK_MOVE_SIZE_MIN || LStickAngleSize_.x >= STICK_MOVE_SIZE_MIN
-		|| LStickAngleSize_.y <= -STICK_MOVE_SIZE_MIN || LStickAngleSize_.y >= STICK_MOVE_SIZE_MIN)
-	{
-		actCntl_ = ACT_CNTL::MOVE;
-		if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_DASH, padNum_, KeyConfig::TYPE::PAD))
-		{
-			actCntl_ = ACT_CNTL::DASHMOVE;
-		}
-		//スティックの角度を求める
-		stickDeg_ = ins.GetLStickDeg(padNum_);
-		//スティックの角度によって移動方向を決める
-		moveDeg_ = stickDeg_;
-		VECTOR stickDir = { LStickAngleSize_.x ,0.0f,-LStickAngleSize_.y };
-		//moveDir_ = { leftStickX_ ,0.0f,leftStickX_ };
-		moveDir_ = VNorm(stickDir);
-	}
-
-
-
-	if (actCntl_== ACT_CNTL::MOVE&&ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_DASH, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE))
+	//ダッシュ
+	if (IsDashInputDuringMove())
 	{
 		actCntl_ = ACT_CNTL::DASHMOVE;
 	}
+	//パンチ
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PLAYER_PUNCH, padNum_))
 	{
 		actCntl_ = ACT_CNTL::PUNCH;
 	}
+	//ジャンプ
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PLAYER_JUMP, padNum_))
 	{
 		actCntl_ = ACT_CNTL::JUMP;
@@ -172,50 +68,9 @@ void PlayerInput::InputPad(void)
 	auto& ins = KeyConfig::GetInstance();
 	using ATK_ACT = Player::ATK_ACT;
 	actCntl_ = ACT_CNTL::NONE;
-
-#ifdef _DEBUG
-	//if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEBUG_CHANGE_INPUT, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::PAD))
-	//{
-	//	ChangeInput(KeyConfig::TYPE::ALL);
-	//}
-#endif // _DEBUG
-
-
-
-
-	// 左スティックの横軸
-	//leftStickX_ = ins.GetJPadInputState(padNum_).AKeyLX;
-	//縦軸
-	//leftStickY_ = ins.GetJPadInputState(padNum_).AKeyLY;
-	//auto stickRad = static_cast<float>(atan2(static_cast<double>(leftStickY_), static_cast<double>(leftStickX_)));
-
-	int LstickUpSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_UP);
-	int LstickLeftSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_LEFT);
-	int LstickDownSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_DOWN);
-	int LstickRightSize = ins.PadStickOverSize(padNum_, KeyConfig::JOYPAD_STICK::L_STICK_RIGHT);
-
-	LStickAngleSize_ = ins.GetKnockLStickSize(padNum_);
-
-	//スティックの倒れ値が200以上だったら
-	if (LStickAngleSize_.x<=-STICK_MOVE_SIZE_MIN|| LStickAngleSize_.x >= STICK_MOVE_SIZE_MIN
-		|| LStickAngleSize_.y <= -STICK_MOVE_SIZE_MIN || LStickAngleSize_.y >= STICK_MOVE_SIZE_MIN)
-	{ 
-		actCntl_ = ACT_CNTL::MOVE;
-		if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_DASH, padNum_, KeyConfig::TYPE::PAD))
-		{
-			actCntl_ = ACT_CNTL::DASHMOVE;
-		}
-		//スティックの角度を求める
-		stickDeg_ = ins.GetLStickDeg(padNum_);
-	}
-
-	//スティックの角度によって移動方向を決める
-	moveDeg_ = stickDeg_;
-	VECTOR stickDir = { LStickAngleSize_.x ,0.0f,-LStickAngleSize_.y };
-	//moveDir_ = { leftStickX_ ,0.0f,leftStickX_ };
-	moveDir_ = VNorm(stickDir);
-
-	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PLAYER_PUNCH,padNum_,KeyConfig::TYPE::PAD) )
+	//パッドの移動入力処理
+	PadMove();
+	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::PLAYER_PUNCH,padNum_,KeyConfig::TYPE::PAD))
 	{ 
 		actCntl_ = ACT_CNTL::PUNCH; 
 	}
@@ -225,10 +80,89 @@ void PlayerInput::InputPad(void)
 	}
 }
 
-void PlayerInput::KeyBoard(void)
+void PlayerInput::KeyMove(void)
 {
+	auto& ins = KeyConfig::GetInstance();
+	moveDeg_ = 0.0f;
+	moveDir_ = Utility::VECTOR_ZERO;
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_FRONT, padNum_, KeyConfig::TYPE::KEYBORD_MOUSE))
+	{
+		moveDir_ = VAdd(moveDir_, Utility::DIR_F);
+	}
+	//左
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_LEFT, padNum_, KeyConfig::TYPE::KEYBORD_MOUSE))
+	{
+		moveDir_ = VAdd(moveDir_, Utility::DIR_L);
+	}
+	//後
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_BACK, padNum_, KeyConfig::TYPE::KEYBORD_MOUSE))
+	{
+		moveDir_ = VAdd(moveDir_, Utility::DIR_B);
+	}
+	//右
+	if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_MOVE_RIGHT, padNum_, KeyConfig::TYPE::KEYBORD_MOUSE))
+	{
+		moveDir_ = VAdd(moveDir_, Utility::DIR_R);
+	}
+	//斜め入力
+	if (std::abs(moveDir_.x) > 0.0f || std::abs(moveDir_.z) > 0.0f)
+	{
+		int signX = Utility::GetSign(moveDir_.x);
+		int signZ = Utility::GetSign(moveDir_.z);
+		if (signX==1)
+		{
+			moveDeg_ = signZ == 1 ? FLONTRIGHT_DEG : signZ == -1 ? BACKRIGHT_DEG : RIGHT_DEG;
+		}
+		else if (signX == -1)
+		{
+			moveDeg_ = signZ == 1 ? FLONTLEFT_DEG : signZ == -1 ? BACKLEFT_DEG : LEFT_DEG;
+		}
+		else
+		{
+			moveDeg_ = signZ == 1 ? FLONT_DEG : BACK_DEG;
+		}
+		actCntl_ = ACT_CNTL::MOVE;
+		//正規化
+		moveDir_ = VNorm(moveDir_);
+	}
+
 }
 
-void PlayerInput::Pad(void)
+void PlayerInput::PadMove(void)
 {
+	auto& ins = KeyConfig::GetInstance();
+	//スティックの倒れ値が200以上だったら
+	if (IsStickMoved())
+	{
+		actCntl_ = ACT_CNTL::MOVE;
+		if (ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_DASH, padNum_, KeyConfig::TYPE::PAD))
+		{
+			actCntl_ = ACT_CNTL::DASHMOVE;
+		}
+		//スティックの角度を求める
+		stickDeg_ = ins.GetLStickDeg(padNum_);
+		//スティックの角度によって移動方向を決める
+		moveDeg_ = stickDeg_;
+		VECTOR stickDir = { LStickAngleSize_.x ,0.0f,-LStickAngleSize_.y };
+		moveDir_ = VNorm(stickDir);
+	}
 }
+
+const bool PlayerInput::IsDashInputDuringMove(void)
+{
+	auto& ins = KeyConfig::GetInstance();
+	return actCntl_ == ACT_CNTL::MOVE
+		&& ins.IsNew(KeyConfig::CONTROL_TYPE::PLAYER_DASH
+			, KeyConfig::JOYPAD_NO::PAD1, KeyConfig::TYPE::KEYBORD_MOUSE);
+}
+
+const bool PlayerInput::IsStickMoved(void)
+{
+	auto& ins = KeyConfig::GetInstance();
+	//スティックの倒れた大きさの取得
+	 LStickAngleSize_ = ins.GetKnockLStickSize(padNum_);
+
+	return LStickAngleSize_.x <= -STICK_MOVE_SIZE_MIN || LStickAngleSize_.x >= STICK_MOVE_SIZE_MIN
+		|| LStickAngleSize_.y <= -STICK_MOVE_SIZE_MIN || LStickAngleSize_.y >= STICK_MOVE_SIZE_MIN;
+}
+

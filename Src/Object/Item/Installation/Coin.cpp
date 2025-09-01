@@ -45,7 +45,7 @@ void Coin::SetParam(void)
 
 	//コライダの作成
 	std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.overAllPos, RADIUS);
-	MakeCollider({ Collider::TAG::COIN }, std::move(geo));
+	MakeCollider({ Collider::TAG::COIN }, std::move(geo), { Collider::TAG::PUNCH });
 
 	//マップサイズ
 	mapSize_ = MAP_SIZE;
@@ -87,7 +87,7 @@ void Coin::Update(void)
 		{
 			//コライダの作成
 			std::unique_ptr<Sphere> geo = std::make_unique<Sphere>(trans_.overAllPos, RADIUS);
-			MakeCollider({ Collider::TAG::COIN }, std::move(geo));
+			MakeCollider({ Collider::TAG::COIN }, std::move(geo), { Collider::TAG::PUNCH });
 		}
 
 		//削除
@@ -121,7 +121,7 @@ void Coin::OnHit(const std::weak_ptr<Collider> _hitCol)
 	//フォロワー設定
 	const Player& player = dynamic_cast<const Player&>(followCol_.lock()->GetParent());
 	follower_ = std::make_unique<CoinFollower>(*this, player);
-	followPos_ = VGet(FOLLOW_LOCAL_POS.x, FOLLOW_LOCAL_POS.y, FOLLOW_LOCAL_POS.z + COIN_DIS * player.GetCoinNum());
+	followPos_ = VGet(FOLLOW_LOCAL_POS.x, FOLLOW_LOCAL_POS.y, FOLLOW_LOCAL_POS.z - COIN_DIS * player.GetCoinNum());
 
 	//コライダの消去
 	colParam_[0].collider_->Kill();

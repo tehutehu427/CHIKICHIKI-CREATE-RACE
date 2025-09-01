@@ -64,7 +64,10 @@ public:
 
 
 
-	//状態遷移
+	/// <summary>
+	/// 状態遷移
+	/// </summary>
+	/// <param name="_act">遷移したい状態</param>
 	void ChangeAction(ATK_ACT _act);
 
 	/// <summary>
@@ -141,22 +144,18 @@ private:
 	//----------------------------------
 	//移動スピード
 	static constexpr float MOVE_SPEED = 6.0f;
-
-	//スライム床上での移動速度(通常)
-	static constexpr float SLIME_FLOOR_MOVE_SPD = 3.0f;
-
 	//ダッシュスピード
 	static constexpr float DASH_SPEED = 11.0f;
 	//ぶっ飛ぶスピード
 	static constexpr float FLY_AWAY_SPEED = 12.0f;
 	//落ちているときの重力制限(jumpPowに加算しているのでjumpPowに適用)
 	static constexpr float LIMIT_GRAVITY = -20.0f;
-
 	//ダッシュアニメーションスピード
 	static constexpr float DASH_ANIM_SPEED = 200.0f;
-
 	//ダッシュSE間隔
 	static constexpr float DASH_SE_TIME = 0.2f;
+	//スライム床上での移動速度(通常)
+	static constexpr float SLIME_FLOOR_MOVE_SPD = 3.0f;
 
 	//----------------------------------
 	//ジャンプ
@@ -166,18 +165,15 @@ private:
 	static constexpr float TIME_JUMP_SCALE = 1.0f;
 	//スライム床上でのジャンプ力
 	static constexpr float SLIME_FLOOR_JUMP_POW = 10.0f;
-
 	//ジャンプアニメーションループ開始
 	static constexpr float JUMP_ANIM_LOOP_START_FRAME = 23.0f;
 	//ジャンプアニメーションループ完了
 	static constexpr float JUMP_ANIM_LOOP_END_FRAME = 25.0f;
 	//ジャンプアニメーションループ中のスピード
 	static constexpr float JUMP_ANIM_ATTACK_BLEND_TIME = 5.0f;
-
 	//ジャンプ開始アニメステップ
 	static constexpr float JUMP_ANIM_START_FRAME = 10.0f;
 	static constexpr float JUMP_ANIM_END_FRAME = 60.0f;
-
 	//ジャンプ力
 	static constexpr float POW_JUMP = 20.0f;
 
@@ -196,11 +192,8 @@ private:
 	static constexpr float PUNCH_HIT_END_ANIM_STEP = 40.0f;
 	//吹き飛び効果時間
 	static constexpr float PUNCHED_TIME = 0.1f;
-
-
 	//ノックバックのパッド振動時間
 	static constexpr int KNOCKBACK_PAD_VIBRATIION_TIME = 300;
-
 	//ノックバックのパッド振動の強さ
 	static constexpr int KNOCKBACK_PAD_VIBRATIION_POW = 300;
 

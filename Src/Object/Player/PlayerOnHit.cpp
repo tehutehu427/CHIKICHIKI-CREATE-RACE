@@ -44,7 +44,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	isGoal_ = false;
 	isDeath_ = false;
 	isLandHit_ = false;
-
+	isHitOverHead_ = false;
 	isHitSlimeFloor_ = false;
 	moveDiff_ = Utility::VECTOR_ZERO;
 	movedPos_ = Utility::VECTOR_ZERO;
@@ -67,6 +67,9 @@ void PlayerOnHit::Init(void)
 	isGoal_ = false;
 	isDeath_ = false;
 	coinNum_ = 0;
+	isLandHit_ = false;
+	isHitOverHead_ = false;
+	isHitSlimeFloor_ = false;
 }
 
 void PlayerOnHit::Update(void)
@@ -83,12 +86,25 @@ void PlayerOnHit::Update(void)
 		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
 		moveLine.SetLocalPosPoint2(moveVec);
 	}
+	
+	//2つのオブジェクトに挟まった時(上と下)
+	if (isLandHit_ && isHitOverHead_&&moveVec.y<0.0f)
+	{
+		isDeath_ = true;
+	}
 
 	//移動前の座標を格納する
 	moveDiff_ = trans_.pos;
 	//移動
 	trans_.pos = movedPos_;
-
+	
+	Line& upDownLine = dynamic_cast<Line&>(colParam_[UP_AND_DOWN_LINE_COL_NO].collider_->GetGeometry());
+	//アクションに渡すフラグの初期化
+	if (!colParam_[UP_AND_DOWN_LINE_COL_NO].collider_->IsHit())
+	{
+		isHitOverHead_ = false;
+		isLandHit_ = false;
+	}
 
 }
 
@@ -136,8 +152,11 @@ void PlayerOnHit::CollKillerItemSpecific(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::CollKillerItemAll(void)
 {
-	//当たったら死ぬ
-	isDeath_ = true;
+	if (action_.GetAct() != PlayerAction::ATK_ACT::PUNCH)
+	{
+		//当たったら死ぬ
+		isDeath_ = true;
+	}
 }
 
 void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
@@ -223,11 +242,9 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	//球の当たり判定(プレイヤーの周囲)
 	auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
 
-
-	//アクションに渡すフラグの初期化
-	isLandHit_ = false;
+	//
+	bool isLandHit = false;
 	isHitSlimeFloor_ = false;
-
 
 	if (moveLineCol->IsHit())
 	{
@@ -253,9 +270,10 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 			isLandHit_ = true;
 			action_.SetJumpPow(Utility::VECTOR_ZERO);
 		}
-		else
+		if(movedPos_.y < hitLinePos.y)
 		{
 			movedPos_.y = hitLinePos.y - Player::RADIUS - POSITION_OFFSET;
+			isHitOverHead_ = true;
 			if (action_.GetJumpDecel() > 0.0f)
 			{
 				//オブジェクトの下に当たったら跳ね返るようにする
@@ -275,6 +293,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		auto& hitInfo = hitModel.GetHitInfo();
 		for (int i = 0; i < hitInfo.HitNum; i++)
 		{
+			isSide_ = true;
 			auto hit = hitInfo.Dim[i];
 			VECTOR hitPos = hit.HitPosition;
 			for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
@@ -283,7 +302,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 					, hit.Position[0], hit.Position[1], hit.Position[2]);
 				if (pHit)
 				{
-					isSide_ = true;
 					VECTOR normal = hit.Normal;
 					//y座標を抜いて押しだす
 					normal.y = 0.0f;
@@ -314,6 +332,8 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 			}
 		}
 	}
+
+
 
 	////移動前の座標を格納する
 	moveDiff_ = trans_.pos;

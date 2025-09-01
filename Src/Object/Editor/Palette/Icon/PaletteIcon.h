@@ -30,7 +30,7 @@ public:
 
 	//ネームフォント
 	static constexpr int NAME_FONT_SIZE = 18;	//サイズ
-	static constexpr int NAME_FONT_THICK = 0.0f;	//太さ
+	static constexpr int NAME_FONT_THICK = 0;	//太さ
 
 	//パレットアイコン移動量
 	static constexpr int ICONS_MOVE = 10;

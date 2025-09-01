@@ -115,7 +115,7 @@ const bool CollisionManager::IsPlayer(const Collider::TAG _tag)const
 const bool CollisionManager::IsItem(const Collider::TAG _tag) const
 {
 	//今のところはプレイヤー以外がアイテム
-	return !IsPlayer(_tag);
+	return !IsPlayer(_tag) && _tag != Collider::TAG::PUNCH;
 }
 
 CollisionManager::CollisionManager(void)
