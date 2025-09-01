@@ -43,6 +43,8 @@ public:
 	static constexpr float ERROR_STRING_TIME = 1.0f;	//エラー文字列の表示時間
 
 	static constexpr int CENTER_BOX_SIZE = 3;	//中央のボックスのサイズ
+	static constexpr int CENTER_CROSS_THICKNESS = 3;
+	static constexpr int CENTER_CROSS_OFFSET = 10;
 
 	enum class MODE
 	{

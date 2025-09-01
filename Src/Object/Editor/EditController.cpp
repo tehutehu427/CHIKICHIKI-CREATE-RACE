@@ -111,7 +111,23 @@ void EditController::DrawUI(void)
 	}
 	else
 	{
-		DrawBox(screenSize_.x / 2 - CENTER_BOX_SIZE, screenSize_.y / 2 - CENTER_BOX_SIZE,screenSize_.x / 2 + CENTER_BOX_SIZE,screenSize_.y / 2 + CENTER_BOX_SIZE,Utility::BLACK, true);	//中央のボックス描画
+		//DrawBox(screenSize_.x / 2 - CENTER_BOX_SIZE, screenSize_.y / 2 - CENTER_BOX_SIZE,screenSize_.x / 2 + CENTER_BOX_SIZE,screenSize_.y / 2 + CENTER_BOX_SIZE,Utility::BLACK, true);	//中央のボックス描画
+		DrawLine(
+			screenSize_.x / 2,
+			screenSize_.y / 2 - CENTER_CROSS_OFFSET,
+			screenSize_.x / 2,
+			screenSize_.y / 2 + CENTER_CROSS_OFFSET,
+			Utility::BLACK,
+			CENTER_CROSS_THICKNESS);
+
+		DrawLine(
+			screenSize_.x / 2 - CENTER_CROSS_OFFSET,
+			screenSize_.y / 2,
+			screenSize_.x / 2 + CENTER_CROSS_OFFSET,
+			screenSize_.y / 2,
+			Utility::BLACK,
+			CENTER_CROSS_THICKNESS);
+
 	}
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(errorStringTime_ * 255));
 	float rate = 1.0 / (playerMaxNum_ == 1 ? 2 : 4);
