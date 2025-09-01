@@ -3,6 +3,9 @@
 #include <cmath>
 #include "../../Application.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/Game/ItemManager.h"
+#include "../../Manager/System/SceneManager.h"
+#include "../../Manager/System/Camera.h"
 #include "../../Utility/Utility.h"
 
 RoundDisplay::RoundDisplay()
@@ -12,6 +15,8 @@ RoundDisplay::RoundDisplay()
 	imgRound_ = -1;
 	numberIndex_ = -1;
 	numberDigit_ = -1;
+	cameraPos_ = Utility::VECTOR_ZERO;
+	cnt_ = 0.0f;
 }
 
 RoundDisplay::~RoundDisplay()
@@ -31,15 +36,30 @@ void RoundDisplay::Init()
 	//初期値
 	numberIndex_ = 0;
 	numberDigit_ = 0;
+	cameraPos_ = CAMERA_OVERLOOKING_POS;
+	cnt_ = 0.0f;
+	//カメラ
+	auto camera = SceneManager::GetInstance().GetCamera(0).lock();
+	//カメラ固定
+	camera->ChangeMode(Camera::MODE::FIXED_POINT);
 }
 
 void RoundDisplay::Update()
 {
 	//アルファ値を変更しつつ表示する
+		
+	//ステージの更新
+	ItemManager::GetInstance().Update();
+
+	//カメラの俯瞰位置を変える
+	CameraOverLooking();
 }
 
 void RoundDisplay::Draw()
 {
+	//ステージの描画
+	ItemManager::GetInstance().Draw();
+
 	//縦座標を固定
 	constexpr int ROUND_POS_X = Application::SCREEN_HALF_X - 100;
 	constexpr int NUMBER_POS_X = Application::SCREEN_HALF_X + 230;
@@ -81,4 +101,43 @@ void RoundDisplay::AddNumberIndex(const int _addIndex)
 
 	//桁数
 	numberDigit_ = Utility::GetDigitCount(numberIndex_);
+}
+
+void RoundDisplay::CameraOverLooking(void)
+{
+	//カウンタ
+	cnt_ = SceneManager::GetInstance().GetDeltaTime();
+
+	//アイテムマネージャ
+	auto& itemMng = ItemManager::GetInstance();
+	
+	//カメラ
+	auto camera = SceneManager::GetInstance().GetCamera(0).lock();
+
+	//スタート地点の座標
+	VECTOR startPos = itemMng.GetStartObjectPos();
+	
+	//ゴール地点の座標
+	VECTOR goalPos = itemMng.GetGoalObjectPos();
+	
+	//中心座標
+	VECTOR centerPos = VScale(VAdd(startPos, goalPos), 0.5f);
+
+	//カメラのターゲットを中心座標に
+	camera->SetTargetPos(centerPos);
+
+	float distance = Utility::Distance(VGet(cameraPos_.x, 0.0f, cameraPos_.z), VGet(centerPos.x, 0.0f, centerPos.z));
+
+	//位置回転
+	cameraPos_.x = centerPos.x + (distance * sinf(cnt_));
+	cameraPos_.z = centerPos.z + (distance * cosf(cnt_));
+
+	//カメラの位置設定
+	camera->SetPos(cameraPos_);
+
+	//カメラの俯瞰位置からベクトルを作る
+	VECTOR angle = Utility::GetMoveVec(cameraPos_, centerPos);
+
+	//カメラの角度決定
+	camera->SetAngles(angle);
 }
