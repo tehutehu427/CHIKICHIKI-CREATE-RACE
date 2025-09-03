@@ -512,4 +512,7 @@ void SceneManager::DrawMultiScreen()
 		//•ªŠ„‚µ‚½ƒXƒNƒŠ[ƒ“‚ð•`‰æ
 		DrawGraph(screenPos[i].x, screenPos[i].y, splitScreens_[i], true);
 	}
+
+	//‹¤’Ê•”•ª‚Ì•`‰æ
+	scene_->CommonDraw();
 }

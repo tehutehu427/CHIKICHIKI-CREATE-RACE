@@ -4,6 +4,7 @@
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/Game/ScoreManager.h"
 #include "../../Manager/Game/PlayerManager.h"
+#include "../../Manager/Game/EventManager.h"
 #include "../../Manager/Game/MapEditer.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Editor/EditController.h"
@@ -50,7 +51,10 @@ void MultiParty::Load(void)
 	round_->Load();
 
 	//スコアマネージャーを生成
-	ScoreManager::GetInstance().CreateInstance();
+	ScoreManager::CreateInstance();
+
+	//イベントマネージャー生成
+	EventManager::CreateInstance();
 
 	//ランダムBGMを取得
 	RandomBgm();
@@ -101,6 +105,10 @@ void MultiParty::Reset()
 
 	//スコア初期化
 	ScoreManager::GetInstance().Init();
+}
+
+void MultiParty::CommonDraw(void)
+{
 }
 
 void MultiParty::RoundReset()
@@ -182,7 +190,6 @@ void MultiParty::DrawEdit(void)
 {
 	GameScene::DrawEdit();
 }
-
 
 void MultiParty::ChangePhaseClear()
 {

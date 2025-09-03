@@ -104,6 +104,8 @@ private:
 	//マスク用画像
 	int imgMask_;
 
+	float rate_;
+
 	//円が他のくりぬき処理
 	void SpriteMask();
 

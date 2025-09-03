@@ -20,6 +20,7 @@
     <FxCompile Include="Src\Shader\Model\ChickenPS.hlsl" />
     <FxCompile Include="Src\Shader\Model\CannonBaseToonPS.hlsl" />
     <FxCompile Include="Src\Shader\Model\ToonNoTexturePS.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\Wiggle.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Object\System\Select\SelectStage.cpp" />
@@ -125,6 +126,8 @@
     <ClCompile Include="Src\Object\Item\Installation\Coin.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\CoinFollower.cpp" />
     <ClCompile Include="Src\Object\System\Result\BonusUis.cpp" />
+    <ClCompile Include="Src\Manager\Game\EventManager.cpp" />
+    <ClCompile Include="Src\Object\PostEffect\WiggleEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -279,6 +282,8 @@
     <ClInclude Include="Src\Object\Item\Installation\Coin.h" />
     <ClInclude Include="Src\Object\System\Result\BonusUis.h" />
     <ClInclude Include="Src\Object\Item\Installation\CoinFollower.h" />
+    <ClInclude Include="Src\Manager\Game\EventManager.h" />
+    <ClInclude Include="Src\Object\PostEffect\WiggleEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

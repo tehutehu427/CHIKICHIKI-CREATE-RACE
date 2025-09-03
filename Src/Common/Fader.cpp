@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "../Application.h"
 #include "../Utility/Utility.h"
+#include "../Manager/System/SceneManager.h"
 #include "Fader.h"
 
 Fader::Fader()
@@ -27,6 +28,7 @@ void Fader::Init(void)
 	alpha_ = 255;
 	isPreEnd_ = true;
 	isEnd_ = true;
+	rate_ = 2.0f;
 
 	//リソースを読み込み
 	imgMask_ = LoadGraph((Application::PATH_IMAGE + "Fader/Fade.png").c_str());
@@ -40,6 +42,8 @@ void Fader::Init(void)
 
 void Fader::Update(void)
 {
+	constexpr float RATE = 0.05f;
+	constexpr float RATE_MAX = 2.0f;
 
 	if (isEnd_)
 	{
@@ -53,10 +57,13 @@ void Fader::Update(void)
 
 	case STATE::FADE_OUT:
 		alpha_ += SPEED_ALPHA;
-		if (alpha_ > 255)
+		rate_ -= RATE;
+		//if (rate_ <= 0.0f)
+		if (alpha_ >= 255)
 		{
 			// フェード終了
 			alpha_ = 255;
+			rate_ = 0.0f;
 			if (isPreEnd_)
 			{
 				// 1フレーム後(Draw後)に終了とする
@@ -69,10 +76,13 @@ void Fader::Update(void)
 
 	case STATE::FADE_IN:
 		alpha_ -= SPEED_ALPHA;
+		rate_ += RATE;
+		//if (rate_ >= RATE_MAX)
 		if (alpha_ < 0)
 		{
 			// フェード終了
 			alpha_ = 0;
+			rate_ = RATE_MAX;
 			if (isPreEnd_)
 			{
 				// 1フレーム後(Draw後)に終了とする
@@ -137,18 +147,25 @@ void Fader::SpriteMask()
 		true);
 
 	//拡大率
-	float rate = (ALPHA_MAX - alpha_) / ALPHA_MAX * ALPHA_SPEED;
-	rate = std::clamp(rate, 0.0f, 1.0f);
+	//float rate = (ALPHA_MAX - alpha_) / ALPHA_MAX * ALPHA_SPEED;
+	//rate = std::clamp(rate, 0.0f, 1.0f);
 
 	//白色の円を描画する
 	//alpha値を利用して大きさを制御
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
-	DrawRotaGraph(
-		Application::SCREEN_HALF_X,
-		Application::SCREEN_HALF_Y,
-		rate,
-		0.0f,
-		imgMask_,
+	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+	//DrawRotaGraph(
+	//	Application::SCREEN_HALF_X,
+	//	Application::SCREEN_HALF_Y,
+	//	rate_,
+	//	0.0f,
+	//	imgMask_,
+	//	true);
+
+	DrawCircle(
+		Application::SCREEN_SIZE_X / 2,
+		Application::SCREEN_SIZE_Y / 2,
+		(ALPHA_MAX - alpha_) * ALPHA_SPEED,
+		Utility::WHITE,
 		true);
 
 	//描画領域を元に戻す
