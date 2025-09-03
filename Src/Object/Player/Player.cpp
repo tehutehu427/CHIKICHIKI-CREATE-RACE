@@ -366,9 +366,10 @@ void Player::SetPos(const VECTOR _worldPos)
 	trans_.Update();
 }
 
-void Player::SetIsLandHit(const bool _hit)
+
+void Player::SetJumpPow(const float _jumpPow)
 {
-	onHitCol_->SetIsLandHit(_hit);
+	//action_->SetJumpPow(_jumpPow)
 }
 
 void Player::ChangeModelColor(const COLOR_F _colorScale)

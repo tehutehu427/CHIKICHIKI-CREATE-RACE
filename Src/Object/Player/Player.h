@@ -160,8 +160,13 @@ public:
 	/// <param name="_worldPos">ワールド座標</param>
 	void SetPos(const VECTOR _worldPos);
 
-	//地面との当たり判定
-	void SetIsLandHit(const bool _hit);
+	/// <summary>
+	/// 残機セッタ
+	/// </summary>
+	/// <param name="_liveCnt"></param>
+	void SetLiveCnt(const int _liveCnt) { liveCnt_ = _liveCnt; }
+
+	void SetJumpPow(const float _jumpPow);
 	//*****************************************
 	//モデル色を変更
 	void ChangeModelColor(const COLOR_F _colorScale)override;
@@ -271,14 +276,14 @@ private:
 	//プレイヤー単体が持っているもの
 	int playerNum_;			//プレイヤー番号
 
-	//当たっているアイテムタイプ
-	ItemBase::ITEM_TYPE hitItemType_;	
-
 	//計測用
 	float time_;
 
 	//ゴール時間格納
 	float goalTime_;
+
+	//残機
+	int liveCnt_;
 
 	//プレイヤー状態
 	PLAYER_STATE state_;	//プレイヤーの状態(生存状態)
