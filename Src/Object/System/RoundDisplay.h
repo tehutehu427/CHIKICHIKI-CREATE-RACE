@@ -7,7 +7,8 @@ class RoundDisplay
 public:
 
 	//カメラの俯瞰位置
-	static constexpr VECTOR CAMERA_OVERLOOKING_POS = { 0.0f,2500.0f,2000.0f };
+	static constexpr VECTOR CAMERA_OVERLOOKING_POS = { 0.0f,2000.0f,3500.0f };
+	static constexpr float SPEED = 10.0f;
 
 	/// <summary>
 	/// コンストラクタ
@@ -47,6 +48,9 @@ public:
 
 	//カメラ俯瞰の処理
 	void CameraOverLooking(void);
+
+	//カウンタ初期化
+	void CountReset(void) { cnt_ = 0.0f; }
 
 private:
 

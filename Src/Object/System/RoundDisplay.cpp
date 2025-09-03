@@ -106,7 +106,7 @@ void RoundDisplay::AddNumberIndex(const int _addIndex)
 void RoundDisplay::CameraOverLooking(void)
 {
 	//カウンタ
-	cnt_ = SceneManager::GetInstance().GetDeltaTime();
+	cnt_ += SceneManager::GetInstance().GetDeltaTime();
 
 	//アイテムマネージャ
 	auto& itemMng = ItemManager::GetInstance();
@@ -126,11 +126,12 @@ void RoundDisplay::CameraOverLooking(void)
 	//カメラのターゲットを中心座標に
 	camera->SetTargetPos(centerPos);
 
-	float distance = Utility::Distance(VGet(cameraPos_.x, 0.0f, cameraPos_.z), VGet(centerPos.x, 0.0f, centerPos.z));
+	Quaternion quaRot = Quaternion::AngleAxis(Utility::Deg2RadF(cnt_ * SPEED), Utility::AXIS_Y);
+	VECTOR relative = VSub(CAMERA_OVERLOOKING_POS,centerPos);
+	VECTOR rotated = quaRot.PosAxis(relative);
 
 	//位置回転
-	cameraPos_.x = centerPos.x + (distance * sinf(cnt_));
-	cameraPos_.z = centerPos.z + (distance * cosf(cnt_));
+	cameraPos_ = rotated;
 
 	//カメラの位置設定
 	camera->SetPos(cameraPos_);
