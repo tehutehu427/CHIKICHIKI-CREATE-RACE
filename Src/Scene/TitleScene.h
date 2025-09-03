@@ -41,6 +41,20 @@ private:
 	static constexpr float DEMO_MES_POS_X = 600.0f;		//デモメッセージのX座標
 	static constexpr float DEMO_MES_POS_Y = 750.0f;		//デモメッセージのY座標
 
+	//風船
+	static constexpr int BALLOON_NUM = 20;				//風船を描画する最大数
+	static constexpr int BALLOON_TYPE = 8;				//風船の種類
+	static constexpr int BALLOON_SIZE_ONE_X = 160;				//風船1つのサイズX
+	static constexpr int BALLOON_SIZE_ONE_HALF_X = 80;				//風船1つのサイズX
+	static constexpr int BALLOON_SIZE_ONE_Y = 240;				//風船1つのサイズY
+	static constexpr int BALLOON_SIZE_ONE_HALF_Y = 120;				//風船1つのサイズY
+	static constexpr int BALLOON_NUM_X = 4;			//風船のXの個数
+	static constexpr int BALLOON_NUM_Y = 2;			//風船のYの個数
+	static constexpr int BALLOON_POS_MAX_Y = -BALLOON_SIZE_ONE_Y;
+	static constexpr float BALLOON_STEP_MAX = 1.0f;//風船の出現間隔
+	static constexpr int SPEED_MIN = 2;//風船の出現間隔
+	static constexpr int SPEED_MAX = 5;//風船の出現間隔
+
 	//タイトル画像
 	int imgTitleLogo_;
 
@@ -55,6 +69,14 @@ private:
 
 	//BGM
 	int bgm_;
+
+	//風船画像
+	int* imgBalloons_;					//風船の複数画像
+	int balloonType_[BALLOON_NUM];		//風船の種類
+	bool isBalloonAlive_[BALLOON_NUM];	//風船の生存判定
+	float balloonStep_;					//風船の間隔カウント
+	Vector2 balloonPos_[BALLOON_NUM];	//風船座標
+	int speed_[BALLOON_NUM];
 
 	//ステップの更新
 	float step_;
@@ -106,4 +128,10 @@ private:
 	void UpdateWait();
 	void UpdatePlaySe();
 	void UpdateNone();
+
+	//風船の更新
+	void BalloonUpdate(void);
+
+	//風船描画
+	void DrawBalloon(void);
 };

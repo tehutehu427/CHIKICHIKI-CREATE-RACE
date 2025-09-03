@@ -107,6 +107,18 @@ public:
 	/// <returns>trueの場合引き分け</returns>
 	const bool IsDraw()const;
 
+	/// <summary>
+	/// ラウンド数を返す
+	/// </summary>
+	/// <returns>ラウンド数を返す</returns>
+	const int GetNowRound()const {return round_;}
+
+	/// <summary>
+	/// ラウンド数を設定
+	/// </summary>
+	/// <param name="_round">ラウンド数</param>
+	void SetRound(const int _round) { round_ = _round; }
+
 private:
 
 	//静的インスタンス
@@ -126,6 +138,9 @@ private:
 
 	//スコア
 	std::vector<int> scores_;
+
+	//ラウンド数
+	int round_;
 
 	//ボーナスフラッグ
 	std::vector<std::unordered_map<SCORE_TYPE, bool>> isBonusScoreTypes_;

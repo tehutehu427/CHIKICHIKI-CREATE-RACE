@@ -33,6 +33,7 @@ void ScoreManager::Init()
 	//初期化
 	scores_.clear();			// 既存のスコアをクリア
 	isBonusScoreTypes_.clear();
+	round_ = 0;
 
 	// 各プレイヤーのスコアを0で初期化
 	scores_.resize(playerNum, 0); 

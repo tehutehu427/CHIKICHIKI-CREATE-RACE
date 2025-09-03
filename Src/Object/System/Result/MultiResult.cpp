@@ -185,9 +185,12 @@ void MultiResult::UpdateStateResult(MultiParty& _parent)
 
 	if (waitStep_ <= 0)
 	{		
+		auto& score = ScoreManager::GetInstance();
+
 		//状態遷移するか確認
 		//勝者がいる場合クリアフェーズへ移る
-		if (ScoreManager::GetInstance().GetWinnerPlayerIndex() != -1)
+		if (DateBank::GetInstance().GetRoundLimit() == score.GetNowRound() ||
+			score.GetWinnerPlayerIndex() != -1)
 		{
 			_parent.ChangePhase(MultiParty::PHASE::CLEAR_PHASE);
 			return;

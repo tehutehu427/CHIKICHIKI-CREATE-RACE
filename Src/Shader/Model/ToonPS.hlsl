@@ -7,6 +7,21 @@
 //PS
 #include "../Common/Pixel/PixelShader3DHeader.hlsli"
 
+// トゥーンの明るさ（高）
+static const float TOON_HIGH = 0.66f;
+
+// トゥーンの明るさ（中）
+static const float TOON_MID = 0.33f;
+
+// トゥーンシェード（明るい）
+static const float SHADE_HIGH = 1.0f;
+
+// トゥーンシェード（中間）
+static const float SHADE_MID = 0.6f;
+
+// トゥーンシェード（暗い）
+static const float SHADE_LOW = 0.3f;
+
 // 定数バッファ（例）
 cbuffer cbParam : register(b4)
 {
@@ -46,19 +61,19 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
     float shade;
 
     // 3段階のトゥーン
-    if (diff > 0.66f)
+    if (diff > TOON_HIGH)
     {
-        shade = 1.0f;
+        shade = SHADE_HIGH;
     }
     else
     {
-        if (diff > 0.33f)
+        if (diff > TOON_MID)
         {
-            shade = 0.6f;
+            shade = SHADE_MID;
         }
         else
         {
-            shade = 0.3f;
+            shade = SHADE_LOW;
         }
     }
     float3 color = lerp(g_shadow_color.rgb, g_light_color.rgb, shade) * texColor.rgb * g_color.rgb + g_ambient_color.rgb;

@@ -85,6 +85,7 @@ void GameClear::Load()
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgPlayerPlates_ = res.Load(ResourceManager::SRC::PLAYER_PLATES).handleIds_;
 	imgSelectMenu_ = res.Load(ResourceManager::SRC::CLEAR_MENUS).handleIds_;
+	imgDraw_ = res.Load(ResourceManager::SRC::DRAW).handleId_;
 	imgWin_ = res.Load(ResourceManager::SRC::WIN).handleId_;
 	imgClear_ = res.Load(ResourceManager::SRC::CLEAR).handleId_;
 	imgOver_ = res.Load(ResourceManager::SRC::GAMEOVER).handleId_;
@@ -252,32 +253,51 @@ void GameClear::DrawWaiting()
 
 void GameClear::DrawDisplay()
 {
-	const int index = ScoreManager::GetInstance().GetWinnerPlayerIndex();	//UI用インデックス
+	auto & score =  ScoreManager::GetInstance();	//UI用インデックス
 	constexpr int POS_X = Application::SCREEN_HALF_X;	//X座標共通
 	constexpr int WINNER_POS_Y = 250;	//勝者UIのY座標
 	constexpr int WIN_POS_Y = 400;		//WINのY座標
 
-	//勝者の描画
-	DrawRotaGraph(
-		POS_X,
-		WINNER_POS_Y,
-		1.0f,
-		0.0f,
-		imgPlayerPlates_[index],
-		true,
-		false
-	);
 
-	//winの描画
-	DrawRotaGraph(
-		POS_X,
-		WIN_POS_Y,
-		DEFAULT_UI_RATE,
-		0.0f,
-		imgWin_,
-		true,
-		false
-	);
+	if (score.IsDraw())
+	{
+		//引き分けの描画
+		DrawRotaGraph(
+			POS_X,
+			Application::SCREEN_HALF_Y,
+			1.0f,
+			0.0f,
+			imgDraw_,
+			true,
+			false
+		);
+	}
+	else
+	{
+		const int index = score.GetNowWinnerPlayerIndex();
+
+		//勝者の描画
+		DrawRotaGraph(
+			POS_X,
+			WINNER_POS_Y,
+			1.0f,
+			0.0f,
+			imgPlayerPlates_[index],
+			true,
+			false
+		);
+
+		//winの描画
+		DrawRotaGraph(
+			POS_X,
+			WIN_POS_Y,
+			DEFAULT_UI_RATE,
+			0.0f,
+			imgWin_,
+			true,
+			false
+		);
+	}
 }
 
 void GameClear::DrawMenu()

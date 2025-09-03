@@ -36,12 +36,18 @@ public:
 	/// <summary>
 	/// リセット
 	/// </summary>
-	void Reset() override;
+	void Reset(void) override;
+
+	/// <summary>
+	/// 共通部分の描画
+	/// </summary>
+	/// <param name=""></param>
+	void CommonDraw(void) override;
 
 	/// <summary>
 	/// ラウンドリセット
 	/// </summary>
-	void RoundReset();
+	void RoundReset(void);
 
 private:
 

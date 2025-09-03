@@ -146,6 +146,8 @@ public:
 	//ゴールタイムの取得
 	inline const float GetGoalTime(void)const { return goalTime_; }
 
+	void SetRespawnPos(const VECTOR _pos) { respawnPos_ = _pos; }
+
 	//コイン枚数の取得
 	const int GetCoinNum(void)const;
 
@@ -170,6 +172,8 @@ public:
 	//パンチの当たり判定を消す
 	void KillPunchCol(void);
 
+	//リスポーン処理
+	void Respawn(void);
 
 
 private:
@@ -288,6 +292,8 @@ private:
 	float finishDelay_;	//ゲーム終了時の待機時間
 
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
+
+	VECTOR respawnPos_;	//リスポーン位置
 				
 
 	//--------------------------------------------

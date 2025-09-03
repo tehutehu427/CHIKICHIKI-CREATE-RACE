@@ -49,6 +49,9 @@ public:
 	// •`‰æˆ—
 	virtual void Draw(void);
 
+	// ‹¤’Ê‚Ì•`‰æˆ—
+	virtual void CommonDraw(void) {};
+
 protected:
 
 	// ƒŠƒ\[ƒXŠÇ—
