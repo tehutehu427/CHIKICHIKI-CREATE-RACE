@@ -248,7 +248,7 @@ void SceneManager::StartFadeIn(void)
 	fader_->SetFade(Fader::STATE::FADE_IN);
 
 	//シーンチェンジ
-	isSceneChanging_ = false;
+	isSceneChanging_ = true;
 }
 
 std::weak_ptr<Camera> SceneManager::GetCamera(const int _playerIndex) const

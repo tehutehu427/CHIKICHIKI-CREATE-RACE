@@ -38,6 +38,7 @@ void ResourceManager::Init(void)
 	std::string path_Game = Application::PATH_IMAGE + "Game/";
 	std::string path_Effect = Application::PATH_IMAGE + "Effect/";
 	std::string path_Manual = Application::PATH_IMAGE + "Manual/";
+	std::string path_Loading = Application::PATH_IMAGE + "Loading/";
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "ScrollArrowIcon.png");
 	resourcesMap_.emplace(SRC::SCROLL_ARROW_ICON, std::move(res));
@@ -212,6 +213,21 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMGS, path_Effect + "SmokeSprites.png", SMOKE_EFE_DIV_X, SMOKE_EFE_DIV_Y, SMOKE_EFE_SIZE, SMOKE_EFE_SIZE);
 	resourcesMap_.emplace(SRC::SMOKE_EFE_SPR, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Loading + "LoadingMessAbyss.png");
+	resourcesMap_.emplace(SRC::LOADING_MESS_ABYSS, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Loading + "LoadingMessBomb.png");
+	resourcesMap_.emplace(SRC::LOADING_MESS_BOMB, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Loading + "LoadingMessCannon.png");
+	resourcesMap_.emplace(SRC::LOADING_MESS_CANNON, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Loading + "LoadingMessCoin.png");
+	resourcesMap_.emplace(SRC::LOADING_MESS_COIN, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Loading + "LoadingMessStick.png");
+	resourcesMap_.emplace(SRC::LOADING_MESS_STICK, std::move(res));
 #pragma endregion 
 
 #pragma region ƒ}ƒXƒN‰æ‘œ

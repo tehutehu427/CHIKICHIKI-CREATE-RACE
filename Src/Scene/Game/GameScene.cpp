@@ -59,6 +59,9 @@ void GameScene::Load(void)
 	//フォントの生成
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
+	//ローディング中のリソースを取得
+	LoadRandomLoadingMessage();
+
 	//プレイヤー管理クラス
 	PlayerManager::CreateInstance();
 	PlayerManager::GetInstance().Load();

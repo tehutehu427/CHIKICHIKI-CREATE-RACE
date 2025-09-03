@@ -151,7 +151,6 @@ public:
 		SETTING_FINISH,
 		IS_WINNING_MES,
 
-
 		//ゲームシーン用画像
 		NUMBERS,
 		OK,
@@ -172,6 +171,13 @@ public:
 		FREE_MANUAL_3,
 		SELECT_MANUAL_KEY,
 		SELECT_MANUAL_PAD,
+
+		//ローディング
+		LOADING_MESS_ABYSS,
+		LOADING_MESS_STICK,
+		LOADING_MESS_BOMB,
+		LOADING_MESS_COIN,
+		LOADING_MESS_CANNON,
 
 		//アイテムモデル
 		FLOOR,				//足場
@@ -203,9 +209,6 @@ public:
 		LANDING_EFF,		//着地エフェクト
 		PUNCH_HIT_EFF,		//パンチヒットエフェクト
 		COIN_GOAL_EFF,		//コインのゴールエフェクト
-
-
-
 	};
 
 	// 明示的にインステンスを生成する

@@ -1,12 +1,11 @@
 #pragma once
+#include <functional>
+#include <unordered_map>
 
 class Fader
 {
 
 public:
-
-	// フェードが進む速さ
-	static constexpr float SPEED_ALPHA = 5.0f;
 
 	// 状態
 	enum class STATE
@@ -47,8 +46,8 @@ public:
 	/// <summary>
 	/// 指定フェードを開始する
 	/// </summary>
-	/// <param name="state">フェード状態</param>
-	void SetFade(STATE state);
+	/// <param name="_state">フェード状態</param>
+	void SetFade(const STATE _state);
 	
 	/// <summary>
 	/// 状態の取得
@@ -66,30 +65,17 @@ public:
 
 private:
 
-	//透過最大値
-	static constexpr int ALPHA_MAX = 255;
+	//フェード時間
+	static constexpr float TOTAL_TIME = 1.0f;
 
-	// 画面を少し暗くするようのアルファ値
-	static constexpr int LITTLE_ALPHA = 150;
-
-	// 画面を少し暗くする時のスピード
-	static constexpr float LITTLE_FADE_OUT_SPEED = 2.0f;
-
-	// フェードが進む速さ
-	static constexpr float SPEED_SCENE = 5.0f;	//シーン遷移
-	static constexpr float SPEED_PHASE = 2.0f;	//フェーズ遷移
+	//最大拡大率
+	static constexpr float RATE_MAX = 3.0f;
 
 	// 状態
 	STATE state_;
 
-	// 透明度
-	float alpha_;
-
-	//フェード速度
-	float speed_;
-
-	// 透明度の指定値用
-	float alphaMax_;
+	//時間計測用
+	float time_;
 
 	// 状態(STATE)を保ったまま終了判定を行うため、
 	// Update->Draw->Updateの1フレーム判定用
@@ -104,7 +90,19 @@ private:
 	//マスク用画像
 	int imgMask_;
 
+	//画像の拡大率
 	float rate_;
+
+	//状態別更新処理の管理
+	std::unordered_map<STATE, std::function<void(void)>> stateUpdateMap_;
+
+	//処理の登録
+	void RegisterStateUpdate(const STATE _state, const std::function<void(void)> _func);
+
+	//状態別更新処理
+	void UpdateFadeIn();
+	void UpdateFadeOut();
+	void UpdateNone() {};
 
 	//円が他のくりぬき処理
 	void SpriteMask();

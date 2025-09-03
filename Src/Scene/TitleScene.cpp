@@ -49,7 +49,13 @@ TitleScene::~TitleScene(void)
 
 void TitleScene::Load(void)
 {
-	ResourceManager& res = ResourceManager::GetInstance();
+	ResourceManager& res = ResourceManager::GetInstance();	
+	
+	//フォントの登録
+	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
+
+	//ローディング中のリソースを取得
+	LoadRandomLoadingMessage();
 
 	//リソースの読み込み
 	imgTitleLogo_ = res.Load(ResourceManager::SRC::TITLE_LOGO).handleId_;
@@ -62,8 +68,7 @@ void TitleScene::Load(void)
 
 	sndMng_.SetLoadedSoundsVolume();
 
-	//フォントの登録
-	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
+
 
 	//スカイドーム
 	skyDome_ = std::make_unique<SkyDome>();

@@ -1,6 +1,5 @@
 #include <DxLib.h>
 #include <string>
-#include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/KeyConfig.h"
 #include "../Manager/System/SoundManager.h"
@@ -59,6 +58,18 @@ void SceneBase::LoadingDraw(void)
 {
 	//NowLoadingの描画
 	DrawNowLoading();
+
+	//メッセージの描画
+	DrawLoadingMessage();
+}
+
+void SceneBase::LoadRandomLoadingMessage(void)
+{
+	//ランダムで値を取得
+	int index = GetRand(LOADING_RESOURCES - 1);
+
+	//メッセージを読み込む
+	imgLoadingMessage_ = resMng_.Load(LOADING_RESOURCE_TYPE[index]).handleId_;
 }
 
 void SceneBase::DrawNowLoading(void)
@@ -75,6 +86,22 @@ void SceneBase::DrawNowLoading(void)
 	{
 		loadStr += dotStr;
 	}
-	DrawStringToHandle(LOADING_STRING_POS_X, LOADING_STRING_POS_Y, loadStr.c_str(), Utility::WHITE, buttnFontHandle_);
+	DrawStringToHandle(
+		LOADING_STRING_POS_X, 
+		LOADING_STRING_POS_Y, 
+		loadStr.c_str(), 
+		Utility::WHITE, 
+		buttnFontHandle_);
 
+}
+
+void SceneBase::DrawLoadingMessage(void)
+{
+	DrawRotaGraph(
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y,
+		RATE,
+		0.0f,
+		imgLoadingMessage_,
+		true);
 }
