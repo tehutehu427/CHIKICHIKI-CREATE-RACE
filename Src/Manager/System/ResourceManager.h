@@ -88,6 +88,12 @@ public:
 	static constexpr int PLAYER_GAGES_SIZE_X = 600; //プレイヤーゲージの各画像サイズX
 	static constexpr int PLAYER_GAGES_SIZE_Y = 50; //プレイヤーゲージの各画像サイズY
 
+
+	static constexpr int BALLOON_DIV_X = 4;				//風船を描画する最大数
+	static constexpr int BALLOON_DIV_Y = 2;				//風船の種類
+	static constexpr int BALLOON_SIZE_ONE_X = 160;				//風船1つのサイズX
+	static constexpr int BALLOON_SIZE_ONE_Y = 240;				//風船1つのサイズY
+
 	// リソース名
 	enum class SRC
 	{
@@ -128,6 +134,7 @@ public:
 		TITLE_LOGO,
 		PUSHSPACE,
 		PUSH_DEMO,
+		BALLOON,
 
 		//セレクトシーン用画像
 		ARC,

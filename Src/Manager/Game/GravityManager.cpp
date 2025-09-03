@@ -7,9 +7,6 @@ GravityManager::GravityManager(void)
 {
 }
 
-GravityManager::~GravityManager(void)
-{
-}
 
 void GravityManager::CreateInstance(void)
 {
