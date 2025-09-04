@@ -179,6 +179,13 @@ public:
 		LOADING_MESS_COIN,
 		LOADING_MESS_CANNON,
 
+		//イベント
+		EVENT_FISH_EYE,
+		EVENT_STATE_UP,
+		EVENT_RESPAWN,
+		EVENT_WIGGLE,
+		EVENT_SAND_STORM,
+
 		//アイテムモデル
 		FLOOR,				//足場
 		MOVE_FLOOR,			//動く足場

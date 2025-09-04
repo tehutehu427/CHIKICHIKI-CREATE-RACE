@@ -17,7 +17,6 @@ public:
 		RESPAWN,	//一度だけ復活
 		WIGGLE,		//画面をくねくねさせる
 		FISH_EYE,	//魚眼
-		THREE_POINT,//ポイントアップ
 		SAND_STORM,	//砂嵐
 		MAX
 	};
@@ -40,6 +39,12 @@ public:
 	/// </summary>
 	/// <param name=""></param>
 	void Destroy(void);
+
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	/// <param name=""></param>
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
@@ -65,8 +70,7 @@ public:
 	/// <summary>
 	/// ランダムでイベントを設定
 	/// </summary>
-	/// <param name="_round"></param>
-	void SetRandomEventByRound();
+	void SetRandomEvent();
 
 	/// <summary>
 	/// リセット
@@ -77,6 +81,9 @@ private:
 
 	//イベント確率
 	static constexpr int EVENT_PER = 2;
+
+	//画像
+	int imgEvents_[static_cast<int>(EventManager::EVENT_TYPE::MAX)];
 
 	//イベント状態
 	EVENT_TYPE eventType_;
@@ -101,9 +108,6 @@ private:
 
 	//イベント種類別初期設定
 	void SetNone(void) {}
-	void SetRespawn(void);
-	void SetThreePoint(void);
-	void SetStateUp(void);
 	void SetSandstorm(void);
 	void SetWiggle(void);
 	void SetFishEye(void);
@@ -111,6 +115,7 @@ private:
 	//更新処理
 	void UpdateStateUp(void);
 	void UpdateSandstorm(void);
+	void UpdateRespawn(void);
 	void UpdateNone(void) {};
 
 	//コンストラクタ

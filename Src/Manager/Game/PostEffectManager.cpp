@@ -56,7 +56,7 @@ void PostEffectManager::Init(void)
 		post->Init();
 	}
 
-	type_ = TYPE::SANDSTORM;
+	type_ = TYPE::NONE;
 }
 
 void PostEffectManager::Draw(void)

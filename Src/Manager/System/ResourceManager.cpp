@@ -39,6 +39,7 @@ void ResourceManager::Init(void)
 	std::string path_Effect = Application::PATH_IMAGE + "Effect/";
 	std::string path_Manual = Application::PATH_IMAGE + "Manual/";
 	std::string path_Loading = Application::PATH_IMAGE + "Loading/";
+	std::string path_Event = Application::PATH_IMAGE + "Event/";
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_EditUi + "ScrollArrowIcon.png");
 	resourcesMap_.emplace(SRC::SCROLL_ARROW_ICON, std::move(res));
@@ -228,6 +229,21 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Loading + "LoadingMessStick.png");
 	resourcesMap_.emplace(SRC::LOADING_MESS_STICK, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Event + "EventFishEye.png");
+	resourcesMap_.emplace(SRC::EVENT_FISH_EYE, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Event + "EventRespawn.png");
+	resourcesMap_.emplace(SRC::EVENT_RESPAWN, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Event + "EventSandStorm.png");
+	resourcesMap_.emplace(SRC::EVENT_SAND_STORM, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Event + "EventStateUp.png");
+	resourcesMap_.emplace(SRC::EVENT_STATE_UP, std::move(res));
+
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Event + "EventWiggle.png");
+	resourcesMap_.emplace(SRC::EVENT_WIGGLE, std::move(res));
 #pragma endregion 
 
 #pragma region ƒ}ƒXƒN‰æ‘œ

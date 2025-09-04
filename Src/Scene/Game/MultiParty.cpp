@@ -83,6 +83,10 @@ void MultiParty::Init(void)
 	//ラウンドを初期化
 	round_->Init();
 
+	//イベントを初期化
+	EventManager::GetInstance().Init();
+
+	//ポストエフェクトを初期化
 	PostEffectManager::GetInstance().Init();
 
 	//フェーズ遷移
@@ -136,9 +140,6 @@ void MultiParty::RoundReset()
 	//リザルトのリセット
 	result_->Reset();
 
-	//フェーズを遷移
-	ChangePhase(PHASE::ROUND_PHASE);
-
 	//BGMを停止
 	sndMng_.Stop(playBgmSrc_);
 
@@ -148,7 +149,11 @@ void MultiParty::RoundReset()
 	//イベントリセット
 	EventManager::GetInstance().Reset();
 
-	ScoreManager::GetInstance().ResetIsBonusScores();
+	//ボーナス関係のリセット
+	ScoreManager::GetInstance().ResetIsBonusScores();	
+	
+	//フェーズを遷移
+	ChangePhase(PHASE::ROUND_PHASE);
 }
 
 void MultiParty::NormalDraw(void)
@@ -161,6 +166,12 @@ void MultiParty::UpdateAction(void)
 {
 	//親クラスのアクション時の更新処理を呼ぶ
 	GameScene::UpdateAction();
+
+	//イベント処理の更新処理
+	if (actionStartTime_ <= 0.0f)
+	{
+		EventManager::GetInstance().Update();
+	}
 }
 
 void MultiParty::UpdateEdit(void)
@@ -267,9 +278,10 @@ void MultiParty::ChangePhaseRound()
 	sndMng_.Play(SoundManager::SRC::ROUND_JINGLE, SoundManager::PLAYTYPE::BACK);
 
 	//イベントの設定(最初のラウンドは行わない)
+	EventManager::GetInstance().SetRandomEvent();
 	if (round_->GetNumberIndex() != 1)
 	{
-		EventManager::GetInstance().SetRandomEventByRound();
+		EventManager::GetInstance().SetRandomEvent();
 	}
 }
 

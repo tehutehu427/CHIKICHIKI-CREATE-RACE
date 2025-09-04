@@ -26,15 +26,16 @@ float4 main(PS_INPUT PSInput) : SV_TARGET
     // 元の色
     float4 col = tex.Sample(texSampler, uv);
 
-    // ノイズ生成（砂嵐）
-    float noise = hash21(uv * 600.0 + g_time * float2(1.5, 0.3));
+    // ノイズ生成（時間をシードに入れて毎フレーム変化させる）
+    float2 noiseUV = uv * 600.0 + float2(g_time * 50.0, g_time * 123.0);
+    float noise = hash21(noiseUV);
 
     // ノイズを適用（強度を小さく）
-    col.rgb += (noise - 0.5) * 0.05;
+    col.rgb += (noise - 0.5) * 0.2;
 
     // ほんのりオレンジを混ぜる
     float3 orangeTint = float3(1.0, 0.6, 0.3);
-    col.rgb = lerp(col.rgb, orangeTint, 0.05); // 0.05で控えめに
+    col.rgb = lerp(col.rgb, orangeTint, 0.1);
 
     return col;
 }
