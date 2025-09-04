@@ -44,6 +44,7 @@ public:
 		DELON,					//デロンSE
 		SPRING_SE,				//スプリングSE
 		SLIME_SE,				//スライムSE
+		COIN_GET_SE,			//コインゲットSE
 
 		//エディット効果音
 		CLICK_OBJECT_SE,		//クリックオブジェクトSE

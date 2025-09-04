@@ -32,6 +32,9 @@ void CannonShot::SetParam(void)
 	//エフェクト追加
 	effect_->Add(ResourceManager::GetInstance().Load(ResourceManager::SRC::BLAST_EFF).handleId_, EffectController::EFF_TYPE::BLAST);
 
+	//SE
+	SoundManager::GetInstance().LoadResource(SoundManager::SRC::BOMB_SE);
+
 	//弾モデル
 	trans_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::CANNON_SHOT));
 
@@ -138,7 +141,6 @@ void CannonShot::DrawAlive(void)
 	//モデル描画
 	//MV1DrawModel(trans_.modelId);
 	toonStyle_->Draw();
-	colParam_[0].geometry_->Draw();
 }
 
 void CannonShot::DrawBlast(void)

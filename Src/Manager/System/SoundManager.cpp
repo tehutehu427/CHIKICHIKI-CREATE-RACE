@@ -109,6 +109,9 @@ void SoundManager::Init()
     res.path = path_Se + "SlimeFloor.mp3";
     resourcesMap_.emplace(SRC::SLIME_SE, res);
 
+    res.path = path_Se + "CoinGet.mp3";
+    resourcesMap_.emplace(SRC::COIN_GET_SE, res);
+
     res.path = path_Se + "ClickItem.ogg";
     resourcesMap_.emplace(SRC::CLICK_OBJECT_SE, res);
 
