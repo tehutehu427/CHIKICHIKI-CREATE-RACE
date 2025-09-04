@@ -44,6 +44,24 @@ void EventManager::SetEventType(const EVENT_TYPE _type)
 	eventFunc_[eventType_]();
 }
 
+void EventManager::SetRandomEventByRound()
+{
+	//ランダムで値取得
+	int index = GetRand(EVENT_PER);
+
+	//特定値以外はイベントを実行しない
+	if (index != 0)
+	{
+		return;
+	}
+
+	//ランダムで値取得
+	index = GetRand(static_cast<int>(EVENT_TYPE::MAX) - 1);
+
+	//設定
+	SetEventType(static_cast<EVENT_TYPE>(index));
+}
+
 void EventManager::Reset()
 {
 	if (eventType_ == EVENT_TYPE::NONE)
@@ -52,7 +70,13 @@ void EventManager::Reset()
 	}
 
 	//プレイヤーのステータスを戻す
+	auto& players = PlayerManager::GetInstance().GetPlayers();
 
+	//プレイヤー全て強化させる
+	for (auto& player : players)
+	{
+		player->Init();
+	}
 
 	//ポストエフェクトを戻す
 	PostEffectManager::GetInstance().ChangeEffectType(PostEffectManager::TYPE::NONE);
@@ -77,6 +101,16 @@ void EventManager::SetThreePoint(void)
 
 void EventManager::SetStateUp(void)
 {
+	auto& players = PlayerManager::GetInstance().GetPlayers();
+
+	//プレイヤー全て強化させる
+	for (auto& player : players)
+	{
+		player->SetPunchPow(Player::BUFF_KNOCKBACK_CNT_MAX, Player::BUFF_KNOCKBACK_SPEED_MAX);
+		player->SetJumpDecelMax(Player::BUFF_JUMP_POW_MAX);
+		player->SetSpeed(Player::BUFF_MOVE_SPEED, Player::BUFF_DASH_SPEED);
+	}
+
 }
 
 void EventManager::SetSandstorm(void)

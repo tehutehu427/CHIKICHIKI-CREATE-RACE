@@ -63,10 +63,10 @@ public:
 	const EVENT_TYPE GetEventType()const { return eventType_; }
 
 	/// <summary>
-	/// イベントの設定
+	/// ランダムでイベントを設定
 	/// </summary>
-	/// <param name="type"></param>
-	void SetEventType(const EVENT_TYPE _type);
+	/// <param name="_round"></param>
+	void SetRandomEventByRound();
 
 	/// <summary>
 	/// リセット
@@ -74,6 +74,9 @@ public:
 	void Reset();
 
 private:
+
+	//イベント確率
+	static constexpr int EVENT_PER = 2;
 
 	//イベント状態
 	EVENT_TYPE eventType_;
@@ -86,6 +89,9 @@ private:
 
 	//イベント別設定処理登録
 	void RegisterSet(const EVENT_TYPE _type, std::function<void(void)> _func);
+	
+	//イベントの設定
+	void SetEventType(const EVENT_TYPE _type);
 
 	//イベント種類別初期設定
 	void SetNone(void) {}

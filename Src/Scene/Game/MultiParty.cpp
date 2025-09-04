@@ -53,10 +53,6 @@ void MultiParty::Load(void)
 	round_ = std::make_unique<RoundDisplay>();
 	round_->Load();
 
-	//ポストエフェクト
-	wiggle_ = std::make_unique<WiggleEffect>();
-	wiggle_->Load();
-
 	//スコアマネージャーを生成
 	ScoreManager::CreateInstance();
 
@@ -117,6 +113,8 @@ void MultiParty::Reset()
 
 	//スコア初期化
 	ScoreManager::GetInstance().Init();
+
+
 }
 
 void MultiParty::CommonDraw(void)
@@ -145,7 +143,10 @@ void MultiParty::RoundReset()
 	sndMng_.Stop(playBgmSrc_);
 
 	//BGMをランダム設定
-	RandomBgm();
+	RandomBgm();	
+	
+	//イベントリセット
+	EventManager::GetInstance().Reset();
 
 	ScoreManager::GetInstance().ResetIsBonusScores();
 }
@@ -264,6 +265,12 @@ void MultiParty::ChangePhaseRound()
 	round_->AddNumberIndex(1);
 	//BGMを再生
 	sndMng_.Play(SoundManager::SRC::ROUND_JINGLE, SoundManager::PLAYTYPE::BACK);
+
+	//イベントの設定(最初のラウンドは行わない)
+	if (round_->GetNumberIndex() != 1)
+	{
+		EventManager::GetInstance().SetRandomEventByRound();
+	}
 }
 
 void MultiParty::ChangePhaseSelect()

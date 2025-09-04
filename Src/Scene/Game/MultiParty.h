@@ -123,8 +123,5 @@ private:
 	std::unique_ptr<MultiResult> result_;
 	std::unique_ptr<RoundDisplay> round_;
 	std::map<int, std::function<std::vector<std::shared_ptr<Camera>>(void)>>createCamera_;
-
-	//ポストエフェクト
-	std::unique_ptr<WiggleEffect> wiggle_;
 };
 

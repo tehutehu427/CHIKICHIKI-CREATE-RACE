@@ -46,6 +46,12 @@ public:
 	/// <param name="_addIndex">追加値</param>
 	void AddNumberIndex(const int _addIndex);
 
+	/// <summary>
+	/// ナンバーを返す
+	/// </summary>
+	/// <returns>ナンバーを返す</returns>
+	const int GetNumberIndex()const { return numberIndex_; }
+
 	//カメラ俯瞰の処理
 	void CameraOverLooking(void);
 
