@@ -83,56 +83,73 @@ public:
 	//ゲッタ
 	//*****************************************
 	//移動量
-	const VECTOR GetMovePow(void) { return movePow_; }
+	inline const VECTOR GetMovePow(void) { return movePow_; }
 
 	//ジャンプ力
-	const VECTOR GetJumpPow(void) { return jumpPow_; }
+	inline const VECTOR GetJumpPow(void) { return jumpPow_; }
 
 	//プレイヤーの角度Y
-	const Quaternion GetPlayerRotY(void) { return playerRotY_; }
+	inline const Quaternion GetPlayerRotY(void) { return playerRotY_; }
 
 	//パンチ座標
-	const VECTOR& GetPunchPos(void) { return punchPos_; }
+	inline const VECTOR& GetPunchPos(void) { return punchPos_; }
 
 	//パンチ中か
-	bool GetIsHitPunch(void) { return isPunchHitTime_; }
+	inline bool GetIsHitPunch(void) { return isPunchHitTime_; }
 
 	//ジャンプ中
-	const bool GetIsJump(void) { return isJump_; }
+	inline const bool GetIsJump(void) { return isJump_; }
 
 	//状態
-	const ATK_ACT GetAct(void)const { return act_; }
+	inline const ATK_ACT GetAct(void)const { return act_; }
+
+	//ジャンプ減衰量の取得
+	inline float GetJumpDecel(void) { return jumpDeceralation_; }
 
 	//*****************************************
 	//セッタ
 	//*****************************************
 	//ジャンプ力
-	void SetJumpPow(const VECTOR _jumpPow) { jumpPow_ = _jumpPow; };
+	inline void SetJumpPow(const VECTOR _jumpPow) { jumpPow_ = _jumpPow; };
 
 	//移動量
-	void SetMovePow(const VECTOR _movePow) { movePow_ = _movePow; }
+	inline void SetMovePow(const VECTOR _movePow) { movePow_ = _movePow; }
 
-	//スピード
-	void SetSpeed(const float _spd) { speed_ = _spd; }
+	/// <summary>
+	/// 移動スピードとダッシュスピードの設定
+	/// </summary>
+	/// <param name="_moveSpd">通常移動スピード</param>
+	/// <param name="_dashSpd"></param>
+	void SetSpeed(const float _moveSpd, const float _dashSpd);
 
 	//空中かどうか
-	void SetIsJump(const bool _isJump) { isJump_ = _isJump; }
+	inline void SetIsJump(const bool _isJump) { isJump_ = _isJump; }
 
 	//ジャンプ減速
-	void SetJumpDecel(const float _decel) { jumpDeceralation_ = _decel; }
+	inline void SetJumpDecel(const float _decel) { jumpDeceralation_ = _decel; }
+
+	//ジャンプ減速量最大値
+	inline void SetJumpDecelMax(const float _decelMax) { jumpDecelMax_ = _decelMax; }
 
 	//ジャンプ時間
-	void SetStepJump(const float _step) { stepJump_ = _step; }
+	inline void SetStepJump(const float _step) { stepJump_ = _step; }
 
 	//方向
-	void SetDir(const VECTOR _dir) { dir_ = _dir; }
+	inline void SetDir(const VECTOR _dir) { dir_ = _dir; }
+
+	//パンチ吹っ飛び力
+	inline void SetKnockbackCnt(const float _punchedCnt) { punchedCnt_ = _punchedCnt; }
+
+	//ノックバック速度
+	inline void SetKnockBackSpd(const float _KnockSpd) { knockBackSpd_ = _KnockSpd; }
 
 	//再生しているリソースをすべて止める
 	void StopResource(void);
 
-	//デバッグ
-	float GetJumpDecel(void) { return jumpDeceralation_; }
-	float GetStepJump(void) { return stepJump_; }
+
+	
+
+
 
 private:
 	//*******************************************
@@ -243,6 +260,8 @@ private:
 	VECTOR moveDir_;		// 移動方向
 	VECTOR movePow_;		// 移動量
 	VECTOR dir_;			//方向
+	float moveSpd_;			//通常移動量
+	float dashSpd_;			//ダッシュ移動量
 
 	//回転
 	Quaternion playerRotY_;		//プレイヤーY角度
@@ -257,6 +276,7 @@ private:
 	float stepJump_;		// ジャンプの入力受付時間
 	VECTOR jumpPow_;		// ジャンプ量
 	float jumpDeceralation_;	//ジャンプ減衰量
+	float jumpDecelMax_;		//ジャンプ減衰量最大値
 
 	//パンチ
 	//-----------------------
@@ -266,6 +286,8 @@ private:
 	VECTOR punchPos_;			//攻撃座標
 	float punchedCnt_;			//パンチ効果時間カウント
 
+	VECTOR punchedPos_;			//パンチされた場所の記憶する
+	float knockBackSpd_;		//ノックバック速度
 	int cameraNo_;				//カメラ番号
 	//-------------------------------------------------
 	//メンバ関数

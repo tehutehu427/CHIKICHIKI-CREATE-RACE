@@ -68,9 +68,8 @@ public:
 
 	//コイン枚数
 	inline void SetCoinNum(const int _num) { coinNum_ = _num; }
-	
-	//地面と離れるときのセッタ
-	inline void SetIsLandHit(const bool _hit) { isLandHit_ = _hit; };
+
+
 
 private:
 	//--------------------------------------

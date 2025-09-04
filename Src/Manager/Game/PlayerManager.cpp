@@ -184,8 +184,8 @@ void PlayerManager::RespawnPlayer(void)
 	//プレイヤー全員を調べる
 	for (auto& player : players_)
 	{
-		//ゴールしていない、かつ倒れていない時
-	if (player->IsDeath())
+		//ゴールしていない、かつ倒れていない時,残機があるとき
+		if (player->IsDeath() && player->GetLiveCnt() > 0)
 		{
 			player->Respawn();
 		}
