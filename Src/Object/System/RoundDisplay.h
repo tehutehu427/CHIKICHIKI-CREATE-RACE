@@ -1,7 +1,14 @@
 #pragma once
+#include<DxLib.h>
+#include"../Common/Transform.h"
+
 class RoundDisplay
 {
 public:
+
+	//カメラの俯瞰位置
+	static constexpr VECTOR CAMERA_OVERLOOKING_POS = { 0.0f,2000.0f,3500.0f };
+	static constexpr float SPEED = 10.0f;
 
 	/// <summary>
 	/// コンストラクタ
@@ -39,6 +46,12 @@ public:
 	/// <param name="_addIndex">追加値</param>
 	void AddNumberIndex(const int _addIndex);
 
+	//カメラ俯瞰の処理
+	void CameraOverLooking(void);
+
+	//カウンタ初期化
+	void CountReset(void) { cnt_ = 0.0f; }
+
 private:
 
 	//ラウンド画像
@@ -53,5 +66,10 @@ private:
 	//ナンバーの描画桁数
 	int numberDigit_;
 
+	//カメラ位置
+	VECTOR cameraPos_;
+
+	//カウンタ
+	float cnt_;
 };
 

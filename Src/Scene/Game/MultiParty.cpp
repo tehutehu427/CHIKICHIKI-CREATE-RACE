@@ -313,6 +313,7 @@ void MultiParty::UpdateRound()
 	{
 		//‰Šú‰»
 		phaseChangeTimer_ = 0.0f;
+		round_->CountReset();
 
 		//ƒZƒŒƒNƒg‚Ö‘JˆÚ
 		ChangePhase(PHASE::SELECT_PHASE);

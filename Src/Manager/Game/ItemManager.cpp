@@ -625,6 +625,32 @@ void ItemManager::SetDummyItemRotY(int playerNum , float rotY)
 	return;
 }
 
+const VECTOR ItemManager::GetStartObjectPos(void)
+{
+	//スタートが見つからなかった
+	if (items_.find(ItemBase::ITEM_TYPE::START) == items_.end())
+	{
+		//デフォルトを返す
+		return VECTOR();
+	}
+
+	//見つかったので位置返す
+	return items_[ItemBase::ITEM_TYPE::START][0]->GetTransform().pos;
+}
+
+const VECTOR ItemManager::GetGoalObjectPos(void)
+{
+	//ゴールが見つからなかった
+	if (items_.find(ItemBase::ITEM_TYPE::GOAL) == items_.end())
+	{
+		//デフォルトを返す
+		return VECTOR();
+	}
+
+	//見つかったので位置返す
+	return items_[ItemBase::ITEM_TYPE::GOAL][0]->GetTransform().pos;
+}
+
 ItemManager::ItemManager(void)
 {
 
