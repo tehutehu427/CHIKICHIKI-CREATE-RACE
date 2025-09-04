@@ -203,12 +203,14 @@ void GameScene::ChangePhaseEdit(void)
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = 0; i < playerNum; i++)
 	{
-		SceneManager::GetInstance().GetCamera(i).lock()->ChangeMode(Camera::MODE::FREE_CONTROLL);
+		auto camera = SceneManager::GetInstance().GetCamera(i).lock();
+		camera->ChangeMode(Camera::MODE::FREE_CONTROLL);
 		VECTOR pos;
 		IntVector3 mPos = MapEditer::MAP_SIZE;
 		//pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
 		pos = { 0.0f,400.0f,-700.0f };
-		SceneManager::GetInstance().GetCamera(i).lock()->SetPos(pos);
+		camera->SetPos(pos);
+
 		if (playerNum == 1)
 		{
 			editControllers_[i]->Reset();
@@ -236,10 +238,19 @@ void GameScene::ChangePhaseAction(void)
 
 	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
 	{
+		//カメラ
+		auto camera = SceneManager::GetInstance().GetCamera(i).lock();
 		//カメラをフォローモードにチェンジ
-		SceneManager::GetInstance().GetCamera(i).lock()->ChangeMode(Camera::MODE::FOLLOW);
+		camera->ChangeMode(Camera::MODE::FOLLOW);
 		//カメラの追従対象をプレイヤーに設定
-		SceneManager::GetInstance().GetCamera(i).lock()->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(i));
+		camera->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(i));
+
+		//ゴール座標
+		VECTOR goalPos = ItemManager::GetInstance().GetGoalObjectPos();
+		//ゴールまでのベクトル
+		VECTOR vec = Utility::GetMoveVec(camera->GetPos(), goalPos);
+		//ベクトルをアングルに変換
+		camera->SetAngles(Quaternion::AngleAxis(atan2(vec.x, vec.z), Utility::AXIS_Y).ToEuler());
 	}
 
 	//アイテムの値リセット
