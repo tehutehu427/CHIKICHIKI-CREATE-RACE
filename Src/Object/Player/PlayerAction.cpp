@@ -67,18 +67,22 @@ void PlayerAction::Init(void)
 	input_ = std::make_unique<PlayerInput>(num, cntl);
 	input_->Init();
 
+
+	moveSpd_ = MOVE_SPEED;
+	dashSpd_ = DASH_SPEED;
+	knockBackSpd_ = FLY_AWAY_SPEED;
+	jumpDecelMax_ = POW_JUMP;
+
+
 	//ジャンプ関係
 	isJump_ = false;
 	stepJump_ = 0.0f;
 	jumpPow_ = Utility::VECTOR_ZERO;
-	jumpDecelMax_ = POW_JUMP;
 	jumpDeceralation_ = jumpDecelMax_;
   	movePow_ = Utility::VECTOR_ZERO;
 
 	//移動スピード関連
 	speed_ = 0.0f;
-	moveSpd_ = MOVE_SPEED;
-	dashSpd_ = DASH_SPEED;
 	dashSeCnt_ = 0.0f;
 
 	isPunchHitTime_ = false;
@@ -89,9 +93,10 @@ void PlayerAction::Init(void)
 	punchPos_ = Utility::VECTOR_ZERO;
 	punchedCnt_ = PUNCHED_TIME;
 
-	knockBackSpd_ = FLY_AWAY_SPEED;
 
 	effectArrayNum_ = 0.0f;
+
+
 
 	//エフェクトの追加(タイトルシーンで生き返るため初期処理でかく)
 	auto& res = ResourceManager::GetInstance();
@@ -112,51 +117,6 @@ void PlayerAction::Init(void)
 	ChangeAction(ATK_ACT::NONE);
 }
 
-void PlayerAction::ResetNonBuffStatus(void)
-{
-	auto num = player_.GetPadNum();
-	auto cntl = player_.GetCntl();
-	//入力
-	input_ = std::make_unique<PlayerInput>(num, cntl);
-	input_->Init();
-
-	//ジャンプ関係
-	isJump_ = false;
-	stepJump_ = 0.0f;
-	jumpPow_ = Utility::VECTOR_ZERO;
-	movePow_ = Utility::VECTOR_ZERO;
-
-	//移動スピード関連
-	speed_ = 0.0f;
-	dashSeCnt_ = 0.0f;
-
-	isPunchHitTime_ = false;
-
-	//パンチ関係の初期化
-	punchCnt_ = 0.0f;
-	punchCoolCnt_ = 0.0f;
-	punchPos_ = Utility::VECTOR_ZERO;
-
-	effectArrayNum_ = 0.0f;
-
-	//エフェクトの追加(タイトルシーンで生き返るため初期処理でかく)
-	auto& res = ResourceManager::GetInstance();
-	effect_->Add(res.Load(ResourceManager::SRC::DASH_EFF).handleId_, EffectController::EFF_TYPE::DASH);
-	effect_->Add(res.Load(ResourceManager::SRC::JUMP_EFF).handleId_, EffectController::EFF_TYPE::JUMP);
-	effect_->Add(res.Load(ResourceManager::SRC::LANDING_EFF).handleId_, EffectController::EFF_TYPE::LANDING);
-	effect_->Add(res.Load(ResourceManager::SRC::PUNCH_HIT_EFF).handleId_, EffectController::EFF_TYPE::PUNCH_HIT);
-
-	if (scnMng_.GetInstance().GetSceneID() == SceneManager::SCENE_ID::TITLE)
-	{
-		cameraNo_ = 0;
-	}
-	else
-	{
-		cameraNo_ = player_.GetPlayerNum();
-	}
-	act_ = ATK_ACT::INPUT;
-	ChangeAction(ATK_ACT::NONE);
-}
 
 void PlayerAction::Load(void)
 {

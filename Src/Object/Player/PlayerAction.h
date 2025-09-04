@@ -48,9 +48,6 @@ public:
 	/// <param name=""></param>
 	void Init(void);
 
-	//‹­‰»—v‘fˆÈŠO‚Ì‰Šú‰»
-	void ResetNonBuffStatus(void);
-
 	/// <summary>
 	/// “Ç‚İ‚İ
 	/// </summary>
