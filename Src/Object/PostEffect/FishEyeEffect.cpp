@@ -8,6 +8,8 @@
 
 FishEyeEffect::FishEyeEffect()
 {
+	screenDivX_ = 0.0f;
+	screenDivY_ = 0.0f;
 }
 
 FishEyeEffect::~FishEyeEffect()

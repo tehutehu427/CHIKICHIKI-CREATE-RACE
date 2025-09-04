@@ -260,22 +260,6 @@ void GameScene::ChangePhaseAction(void)
 
 	//ƒNƒŠƒA‚Ì‰Šú‰»
 	gameClear_->Init();
-	//VECTOR pos;
-	//IntVector3 mPos = MapEditer::MAP_SIZE;
-	//pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) * 8.5f,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
-	//SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
-	//VECTOR angles = {};
-	//angles.x = Utility::Deg2RadF(90.0);
-	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
-
-	//VECTOR pos = ACTION_CAMERA_POS;
-	//SceneManager::GetInstance().GetCamera().lock()->SetPos(pos);
-	//VECTOR angles = {};
-	//angles = Quaternion::FromToRotation(pos, Camera::FIXED_DIAGONAL_TARGET_POS).ToEuler();
-
-	//angles.x = Utility::Deg2RadF(90.0);
-	//SceneManager::GetInstance().GetCamera().lock()->SetAngles(angles);
-	//SceneManager::GetInstance().GetCamera().lock()->SetTargetPos({ static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2, 0.0f, static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 });
 }
 
 void GameScene::ChangePhaseClear(void)

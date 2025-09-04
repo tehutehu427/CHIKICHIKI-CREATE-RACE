@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\PostEffect\SandStormEffect.cpp" />
     <ClCompile Include="Src\Object\PostEffect\FishEyeEffect.cpp" />
     <ClCompile Include="Src\Manager\Game\PostEffectManager.cpp" />
     <ClCompile Include="Src\Object\PostEffect\PostEffectBase.cpp" />
@@ -129,6 +130,7 @@
     <ClCompile Include="Src\Object\PostEffect\WiggleEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\PostEffect\SandStormEffect.h" />
     <ClInclude Include="Src\Object\PostEffect\FishEyeEffect.h" />
     <ClInclude Include="Src\Manager\Game\PostEffectManager.h" />
     <ClInclude Include="Src\Object\PostEffect\PostEffectBase.h" />

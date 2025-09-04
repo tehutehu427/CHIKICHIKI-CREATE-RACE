@@ -1,19 +1,19 @@
 #pragma once
 #include "PostEffectBase.h"
 
-class FishEyeEffect : public PostEffectBase
+class SandStormEffect : public PostEffectBase
 {
 public:
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	FishEyeEffect();
+	SandStormEffect();
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~FishEyeEffect() override;
+	~SandStormEffect() override;
 
 	/// <summary>
 	/// 読み込み処理
@@ -35,9 +35,9 @@ private:
 	//バッファーサイズ
 	static constexpr int BUFFER_SIZE = 1;
 
-	//画面分割
-	float screenDivX_;
-	float screenDivY_;
+	//タイマー
+	float timer_;
 
 };
+
 

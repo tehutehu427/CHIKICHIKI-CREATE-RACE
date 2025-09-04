@@ -1,4 +1,4 @@
-#include "WiggleEffect.h"
+#include "SandStormEffect.h"
 #include "../Renderer/PixelRenderer.h"
 #include "../Renderer/PixelMaterial.h"
 #include "../Manager/Game/PlayerManager.h"
@@ -6,28 +6,28 @@
 #include "../Common/Vector2.h"
 #include "../Application.h"
 
-WiggleEffect::WiggleEffect()
+SandStormEffect::SandStormEffect()
 {
 	renderer_ = nullptr;
 	material_ = nullptr;
 	timer_ = 0.0f;
 }
 
-WiggleEffect::~WiggleEffect()
+SandStormEffect::~SandStormEffect()
 {
 }
 
-void WiggleEffect::Load()
+void SandStormEffect::Load()
 {
-	material_ = std::make_unique<PixelMaterial>("Wiggle.cso", BUFFER_SIZE);
+	material_ = std::make_unique<PixelMaterial>("SandStorm.cso", BUFFER_SIZE);
 	renderer_ = std::make_unique<PixelRenderer>(*material_);
 }
 
-void WiggleEffect::Init()
+void SandStormEffect::Init()
 {
 	//バッファー追加
 	material_->AddConstBuf(FLOAT4{ 1.0f,0.0f,0.0f,0.0f });
-	
+
 	//テクスチャ設定
 	material_->AddTextureBuf(SceneManager::GetInstance().GetMainScreen());
 
@@ -40,7 +40,7 @@ void WiggleEffect::Init()
 
 }
 
-void WiggleEffect::Draw()
+void SandStormEffect::Draw()
 {
 	auto& scn = SceneManager::GetInstance();
 

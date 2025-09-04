@@ -84,11 +84,17 @@ private:
 	//静的インスタンス
 	static EventManager* instance_;
 
+	//ステータスの反映判定
+	bool isStateUp_;
+
 	//イベント別設定処理
-	std::unordered_map<EVENT_TYPE, std::function<void(void)>> eventFunc_;
+	std::unordered_map<EVENT_TYPE, std::function<void(void)>> eventSetterMap_;
+
+	//イベント別更新処理
+	std::unordered_map<EVENT_TYPE, std::function<void(void)>> eventUpdateMap_;
 
 	//イベント別設定処理登録
-	void RegisterSet(const EVENT_TYPE _type, std::function<void(void)> _func);
+	void RegisterSet(const EVENT_TYPE _type, std::function<void(void)> _setter, std::function<void(void)> _update);
 	
 	//イベントの設定
 	void SetEventType(const EVENT_TYPE _type);
@@ -101,6 +107,11 @@ private:
 	void SetSandstorm(void);
 	void SetWiggle(void);
 	void SetFishEye(void);
+
+	//更新処理
+	void UpdateStateUp(void);
+	void UpdateSandstorm(void);
+	void UpdateNone(void) {};
 
 	//コンストラクタ
 	EventManager(void);

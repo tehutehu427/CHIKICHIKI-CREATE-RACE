@@ -5,6 +5,7 @@
 #include "../Object/PostEffect/PostEffectBase.h"
 #include "../Object/PostEffect/WiggleEffect.h"
 #include "../Object/PostEffect/FishEyeEffect.h"
+#include "../Object/PostEffect/SandStormEffect.h"
 
 PostEffectManager* PostEffectManager::instance_ = nullptr;
 
@@ -35,6 +36,7 @@ void PostEffectManager::Load(void)
 	//各種エフェクト実装
 	postMap_[TYPE::WIGGLE] = std::make_unique<WiggleEffect>();
 	postMap_[TYPE::FISH_EYE] = std::make_unique<FishEyeEffect>();
+	postMap_[TYPE::SANDSTORM] = std::make_unique<SandStormEffect>();
 
 	//各アイテムの描画
 	for (auto& [type, post] : postMap_)
@@ -54,7 +56,7 @@ void PostEffectManager::Init(void)
 		post->Init();
 	}
 
-	type_ = TYPE::WIGGLE;
+	type_ = TYPE::SANDSTORM;
 }
 
 void PostEffectManager::Draw(void)

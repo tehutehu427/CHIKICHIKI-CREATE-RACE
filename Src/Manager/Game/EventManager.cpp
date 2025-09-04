@@ -28,20 +28,34 @@ void EventManager::Destroy(void)
 void EventManager::Init()
 {
 	SetEventType(EVENT_TYPE::NONE);
+	isStateUp_ = false;
 }
 
 void EventManager::Update()
 {
+	eventUpdateMap_[eventType_]();
 }
 
 void EventManager::Draw()
 {
+	if (eventType_ == EVENT_TYPE::NONE)
+	{
+		return;
+	}
+
+	DrawString(20, 20, "イベント発生！！", 0xff0000);
+}
+
+void EventManager::RegisterSet(const EVENT_TYPE _type, std::function<void(void)> _setter, std::function<void(void)> _update)
+{
+	eventSetterMap_[_type] = _setter;
+	eventUpdateMap_[_type] = _update;
 }
 
 void EventManager::SetEventType(const EVENT_TYPE _type)
 {
 	eventType_ = _type;
-	eventFunc_[eventType_]();
+	eventSetterMap_[eventType_]();
 }
 
 void EventManager::SetRandomEventByRound()
@@ -72,11 +86,14 @@ void EventManager::Reset()
 	//プレイヤーのステータスを戻す
 	auto& players = PlayerManager::GetInstance().GetPlayers();
 
-	//プレイヤー全て強化させる
+	//プレイヤー戻す
 	for (auto& player : players)
 	{
-		player->Init();
+		player->SetRespawnCnt(0);
 	}
+
+	//教科用判定を戻す
+	isStateUp_ = false;
 
 	//ポストエフェクトを戻す
 	PostEffectManager::GetInstance().ChangeEffectType(PostEffectManager::TYPE::NONE);
@@ -85,14 +102,15 @@ void EventManager::Reset()
 	SetEventType(EVENT_TYPE::NONE);
 }
 
-void EventManager::RegisterSet(const EVENT_TYPE _type, std::function<void(void)> _func)
-{
-	eventFunc_[_type] = _func;
-}
-
 void EventManager::SetRespawn(void)
 {
+	auto& players = PlayerManager::GetInstance().GetPlayers();
 
+	//リスポーン値を設定する
+	for (auto& player : players)
+	{
+		player->SetRespawnCnt(Player::RESPAWN_CNT);
+	}
 }
 
 void EventManager::SetThreePoint(void)
@@ -128,18 +146,40 @@ void EventManager::SetFishEye(void)
 	PostEffectManager::GetInstance().ChangeEffectType(PostEffectManager::TYPE::FISH_EYE);
 }
 
+void EventManager::UpdateStateUp(void)
+{
+	if (!isStateUp_)
+	{
+		auto& players = PlayerManager::GetInstance().GetPlayers();
+
+		//プレイヤー全て強化させる
+		for (auto& player : players)
+		{
+			player->SetPunchPow(Player::BUFF_KNOCKBACK_CNT_MAX, Player::BUFF_KNOCKBACK_SPEED_MAX);
+			player->SetJumpDecelMax(Player::BUFF_JUMP_POW_MAX);
+			player->SetSpeed(Player::BUFF_MOVE_SPEED, Player::BUFF_DASH_SPEED);
+		}
+
+		isStateUp_ = true;
+	}
+}
+
+void EventManager::UpdateSandstorm(void)
+{
+}
+
 EventManager::EventManager(void)
 {
 	eventType_ = EVENT_TYPE::NONE;
 
 	//処理の登録
-	RegisterSet(EVENT_TYPE::NONE, [&]() { SetNone(); });
-	RegisterSet(EVENT_TYPE::RESPAWN, [&]() { SetRespawn(); });
-	RegisterSet(EVENT_TYPE::WIGGLE, [&]() { SetWiggle(); });
-	RegisterSet(EVENT_TYPE::STATE_UP, [&]() { SetStateUp(); });
-	RegisterSet(EVENT_TYPE::THREE_POINT, [&]() { SetThreePoint(); });
-	RegisterSet(EVENT_TYPE::FISH_EYE, [&]() { SetFishEye(); });
-	RegisterSet(EVENT_TYPE::SAND_STORM, [&]() { SetSandstorm(); });
+	RegisterSet(EVENT_TYPE::NONE, [&]() { SetNone(); }, [&]() { UpdateNone(); });
+	RegisterSet(EVENT_TYPE::RESPAWN, [&]() { SetRespawn(); }, [&]() { UpdateNone(); });
+	RegisterSet(EVENT_TYPE::WIGGLE, [&]() { SetWiggle(); }, [&]() { UpdateNone(); });
+	RegisterSet(EVENT_TYPE::STATE_UP, [&]() { SetStateUp(); }, [&]() { UpdateStateUp(); });
+	RegisterSet(EVENT_TYPE::THREE_POINT, [&]() { SetThreePoint(); }, [&]() { UpdateNone(); });
+	RegisterSet(EVENT_TYPE::FISH_EYE, [&]() { SetFishEye(); }, [&]() { UpdateNone(); });
+	RegisterSet(EVENT_TYPE::SAND_STORM, [&]() { SetSandstorm(); }, [&]() { UpdateSandstorm(); });
 }
 
 EventManager::~EventManager(void)

@@ -346,6 +346,8 @@ void MultiParty::UpdateResult()
 void MultiParty::DrawRound()
 {
 	round_->Draw();
+
+	EventManager::GetInstance().Draw();
 }
 
 void MultiParty::DrawSelect()
