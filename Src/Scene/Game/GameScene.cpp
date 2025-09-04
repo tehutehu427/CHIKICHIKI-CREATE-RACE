@@ -236,6 +236,9 @@ void GameScene::ChangePhaseAction(void)
 	//プレイヤーにスタートオブジェクトにする
 	PlayerManager::GetInstance().SetInitPos(ItemManager::GetInstance().GetStartWorldPos());
 
+	//アイテムの値リセット
+	ItemManager::GetInstance().ResetItemValue();
+
 	for (int i = 0; i < DateBank::GetInstance().GetPlayerNum(); i++)
 	{
 		//カメラ
@@ -248,13 +251,10 @@ void GameScene::ChangePhaseAction(void)
 		//ゴール座標
 		VECTOR goalPos = ItemManager::GetInstance().GetGoalObjectPos();
 		//ゴールまでのベクトル
-		VECTOR vec = Utility::GetMoveVec(camera->GetPos(), goalPos);
+		VECTOR vec = Utility::GetMoveVec(PlayerManager::GetInstance().GetPlayerTransform(i).pos, goalPos);
 		//ベクトルをアングルに変換
 		camera->SetAngles(Quaternion::AngleAxis(atan2(vec.x, vec.z), Utility::AXIS_Y).ToEuler());
 	}
-
-	//アイテムの値リセット
-	ItemManager::GetInstance().ResetItemValue();
 	
 	actionStartTime_ = ACTION_START_TIME;
 
