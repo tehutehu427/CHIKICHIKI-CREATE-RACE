@@ -112,6 +112,9 @@ public:
 	/// <param name=""></param>
 	void Init(void)override;
 
+	//リセット
+	void Reset(void);
+
 	/// <summary>
 	/// 更新
 	/// </summary>
