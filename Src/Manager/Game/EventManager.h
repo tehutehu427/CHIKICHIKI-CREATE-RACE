@@ -16,7 +16,9 @@ public:
 		STATE_UP,	//強化
 		RESPAWN,	//一度だけ復活
 		WIGGLE,		//画面をくねくねさせる
+		FISH_EYE,	//魚眼
 		THREE_POINT,//ポイントアップ
+		SAND_STORM,	//砂嵐
 		MAX
 	};
 
@@ -55,10 +57,21 @@ public:
 	void Draw(void);
 
 	/// <summary>
+	/// イベント種類を返す
+	/// </summary>
+	/// <returns>イベント種類</returns>
+	const EVENT_TYPE GetEventType()const { return eventType_; }
+
+	/// <summary>
 	/// イベントの設定
 	/// </summary>
 	/// <param name="type"></param>
 	void SetEventType(const EVENT_TYPE _type);
+
+	/// <summary>
+	/// リセット
+	/// </summary>
+	void Reset();
 
 private:
 
@@ -75,10 +88,13 @@ private:
 	void RegisterSet(const EVENT_TYPE _type, std::function<void(void)> _func);
 
 	//イベント種類別初期設定
-	void SetNone(void);
+	void SetNone(void) {}
 	void SetRespawn(void);
 	void SetThreePoint(void);
 	void SetStateUp(void);
+	void SetSandstorm(void);
+	void SetWiggle(void);
+	void SetFishEye(void);
 
 	//コンストラクタ
 	EventManager(void);

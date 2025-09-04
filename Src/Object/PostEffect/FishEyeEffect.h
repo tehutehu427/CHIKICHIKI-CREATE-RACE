@@ -1,19 +1,19 @@
 #pragma once
-#include "../PostEffect/PostEffectBase.h"
+#include "PostEffectBase.h"
 
-class WiggleEffect : public PostEffectBase
+class FishEyeEffect : public PostEffectBase
 {
 public:
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	WiggleEffect();
+	FishEyeEffect();
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~WiggleEffect() override;
+	~FishEyeEffect() override;
 
 	/// <summary>
 	/// 読み込み処理
@@ -37,6 +37,10 @@ private:
 
 	//タイマー
 	float timer_;
+
+	//画面分割
+	float screenDivX_;
+	float screenDivY_;
 
 };
 

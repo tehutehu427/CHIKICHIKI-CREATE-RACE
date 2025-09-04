@@ -6,12 +6,14 @@
 #include "../../Manager/Game/PlayerManager.h"
 #include "../../Manager/Game/EventManager.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "../../Manager/Game/PostEffectManager.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Object/Editor/MapDataIO.h"
 #include "../../Object/Editor/Palette/MultiPalette.h"
 #include "../../Object/System/Result/MultiResult.h"
 #include "../../Object/System/RoundDisplay.h"
+#include "../../Object/PostEffect/WiggleEffect.h"
 
 MultiParty::MultiParty(void)
 {
@@ -29,8 +31,9 @@ MultiParty::MultiParty(void)
 
 MultiParty::~MultiParty(void)
 {
-	//スコアマネージャーのインスタンスを削除
+	EventManager::GetInstance().Destroy();
 	ScoreManager::GetInstance().Destroy();
+	PostEffectManager::GetInstance().Destroy();
 }
 
 void MultiParty::Load(void)
@@ -50,11 +53,18 @@ void MultiParty::Load(void)
 	round_ = std::make_unique<RoundDisplay>();
 	round_->Load();
 
+	//ポストエフェクト
+	wiggle_ = std::make_unique<WiggleEffect>();
+	wiggle_->Load();
+
 	//スコアマネージャーを生成
 	ScoreManager::CreateInstance();
 
 	//イベントマネージャー生成
 	EventManager::CreateInstance();
+
+	//ポストエフェクト管理クラス生成
+	PostEffectManager::CreateInstance();
 
 	//ランダムBGMを取得
 	RandomBgm();
@@ -76,6 +86,8 @@ void MultiParty::Init(void)
 
 	//ラウンドを初期化
 	round_->Init();
+
+	PostEffectManager::GetInstance().Init();
 
 	//フェーズ遷移
 	ChangePhase(PHASE::ROUND_PHASE);
@@ -109,6 +121,10 @@ void MultiParty::Reset()
 
 void MultiParty::CommonDraw(void)
 {
+	if (phase_ == PHASE::ACTION_PHASE)
+	{
+		PostEffectManager::GetInstance().Draw();
+	}
 }
 
 void MultiParty::RoundReset()
