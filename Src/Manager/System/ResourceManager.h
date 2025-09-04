@@ -74,7 +74,7 @@ public:
 	static constexpr int SYSTEM_MESSAGES_SIZE_Y = 64; //システムメッセージ各画像サイズY
 
 	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_X = 1;	//システム設定メッセージ分割数X
-	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_Y = 5;	//システム設定メッセージ分割数Y
+	static constexpr int SYSTEM_SETTING_MESSAGES_DIV_Y = 6;	//システム設定メッセージ分割数Y
 	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_X = 544; //システム設定メッセージ各画像サイズX
 	static constexpr int SYSTEM_SETTING_MESSAGES_SIZE_Y = 48; //システム設定メッセージ各画像サイズY
 
@@ -87,6 +87,12 @@ public:
 	static constexpr int PLAYER_GAGES_DIV_Y = 4; //プレイヤーゲージの分割数Y
 	static constexpr int PLAYER_GAGES_SIZE_X = 600; //プレイヤーゲージの各画像サイズX
 	static constexpr int PLAYER_GAGES_SIZE_Y = 50; //プレイヤーゲージの各画像サイズY
+
+
+	static constexpr int BALLOON_DIV_X = 4;				//風船を描画する最大数
+	static constexpr int BALLOON_DIV_Y = 2;				//風船の種類
+	static constexpr int BALLOON_SIZE_ONE_X = 160;				//風船1つのサイズX
+	static constexpr int BALLOON_SIZE_ONE_Y = 240;				//風船1つのサイズY
 
 	// リソース名
 	enum class SRC
@@ -118,7 +124,8 @@ public:
 		CLEAR,
 		CLEAR_MENUS,
 		PLAYER_PLATES,
-		WIN,
+		WIN,	
+		DRAW,
 
 		//ゲームオーバー
 		GAMEOVER,
@@ -127,6 +134,7 @@ public:
 		TITLE_LOGO,
 		PUSHSPACE,
 		PUSH_DEMO,
+		BALLOON,
 
 		//セレクトシーン用画像
 		ARC,
@@ -143,7 +151,6 @@ public:
 		SETTING_FINISH,
 		IS_WINNING_MES,
 
-
 		//ゲームシーン用画像
 		NUMBERS,
 		OK,
@@ -157,7 +164,7 @@ public:
 		RESULT_GOAL,
 		RESULT_NO1,
 		RESULT_COIN,
-
+	
 		//マニュアル
 		FREE_MANUAL,
 		FREE_MANUAL_2,
@@ -165,6 +172,12 @@ public:
 		SELECT_MANUAL_KEY,
 		SELECT_MANUAL_PAD,
 
+		//ローディング
+		LOADING_MESS_ABYSS,
+		LOADING_MESS_STICK,
+		LOADING_MESS_BOMB,
+		LOADING_MESS_COIN,
+		LOADING_MESS_CANNON,
 
 		//アイテムモデル
 		FLOOR,				//足場
@@ -196,9 +209,6 @@ public:
 		LANDING_EFF,		//着地エフェクト
 		PUNCH_HIT_EFF,		//パンチヒットエフェクト
 		COIN_GOAL_EFF,		//コインのゴールエフェクト
-
-
-
 	};
 
 	// 明示的にインステンスを生成する

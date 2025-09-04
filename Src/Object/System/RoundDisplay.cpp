@@ -4,6 +4,7 @@
 #include "../../Application.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/Game/ItemManager.h"
+#include "../../Manager/Game/ScoreManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/Camera.h"
 #include "../../Utility/Utility.h"
@@ -98,6 +99,9 @@ void RoundDisplay::AddNumberIndex(const int _addIndex)
 {
 	//ナンバーインデックスを追加
 	numberIndex_ += _addIndex;
+
+	//ラウンド追加
+	ScoreManager::GetInstance().SetRound(numberIndex_);
 
 	//桁数
 	numberDigit_ = Utility::GetDigitCount(numberIndex_);

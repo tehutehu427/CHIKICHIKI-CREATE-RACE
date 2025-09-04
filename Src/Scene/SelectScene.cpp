@@ -81,6 +81,9 @@ void SelectScene::Load()
 	//フォントの登録
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
 
+	//ローディング中のリソースを取得
+	LoadRandomLoadingMessage();
+
 	modeSelect_ = std::make_unique<ModeSelect>();
 	modeSelect_->Load();
 

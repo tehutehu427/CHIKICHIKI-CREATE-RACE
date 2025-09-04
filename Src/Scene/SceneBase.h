@@ -1,6 +1,7 @@
 #pragma once
 #include<functional>
 #include "../Application.h"
+#include "../Manager/System/ResourceManager.h"
 
 class SceneManager;
 class ResourceManager;
@@ -49,6 +50,9 @@ public:
 	// 描画処理
 	virtual void Draw(void);
 
+	// 共通の描画処理
+	virtual void CommonDraw(void) {};
+
 protected:
 
 	// リソース管理
@@ -67,17 +71,43 @@ protected:
 	int buttnFontHandle_;
 
 	//更新関数
-	virtual void LoadingUpdate();
-	virtual void NormalUpdate() = 0;
+	virtual void LoadingUpdate(void);
+	virtual void NormalUpdate(void) = 0;
 
 	//描画関数
-	virtual void LoadingDraw();
-	virtual void NormalDraw() = 0;
+	virtual void LoadingDraw(void);
+	virtual void NormalDraw(void) = 0;
 
 	//ローディング処理から通常処理へ
-	virtual void ChangeNormal() = 0;
+	virtual void ChangeNormal(void) = 0;
+
+	//ランダムでローディングメッセージを読み込む
+	void LoadRandomLoadingMessage(void);
+	
+private:
+
+	//リソース種類数
+	static constexpr int LOADING_RESOURCES = 5;
+
+	//拡大率
+	static constexpr float RATE = 1.3f;
+
+	//ローディング用リソース
+	static constexpr ResourceManager::SRC LOADING_RESOURCE_TYPE[LOADING_RESOURCES] =
+	{
+		ResourceManager::SRC::LOADING_MESS_ABYSS,
+		ResourceManager::SRC::LOADING_MESS_BOMB,
+		ResourceManager::SRC::LOADING_MESS_CANNON,
+		ResourceManager::SRC::LOADING_MESS_COIN,
+		ResourceManager::SRC::LOADING_MESS_STICK
+	};	
+
+	//ローディング中の画像描画
+	int imgLoadingMessage_;
 	
 	//「now loading......」の描画
-	void DrawNowLoading();
+	void DrawNowLoading(void);
 
+	//メッセージの描画
+	void DrawLoadingMessage(void);
 };

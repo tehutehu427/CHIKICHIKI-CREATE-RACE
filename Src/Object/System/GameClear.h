@@ -130,6 +130,7 @@ private:
 	int imgClear_;			//クリアUI
 	int imgOver_;			//ゲームオーバーUI
 	int imgWaitDrawUi_;		//待機
+	int imgDraw_;			//引き分け
 	int imgWin_;			//勝利UI
 	int* imgPlayerPlates_;	//プレイヤープレート
 	int* imgSelectMenu_;	//セレクトメニュー項目

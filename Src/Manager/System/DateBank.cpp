@@ -24,6 +24,8 @@ void DateBank::Init(void)
 	stageNo_ = 0;
 	multiClearScore_ = DEFAULT_SCORE;
 	isItemSetSkip_ = true;
+	roundLimit_ = ROUND_LIMIT;
+	isFullScreen_ = false;
 
 	//–¼‘O‚ÌŠi”[
 	itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::NONE)] = "";
@@ -84,6 +86,12 @@ DateBank::TYPE DateBank::GetType(void)
 		type = TYPE::CONTROLLER;
 	}
 	return type;
+}
+
+void DateBank::SetFullScreen(const bool _isFullScreen)
+{
+	isFullScreen_ = _isFullScreen;
+	ChangeWindowMode(!isFullScreen_);
 }
 
 DateBank::DateBank(void)

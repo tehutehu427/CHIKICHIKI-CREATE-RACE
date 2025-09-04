@@ -11,6 +11,13 @@
 
 #define L_W_MAT g_localWorldMatrix.lwMatrix
 
+// アウトラインの太さを定義するグローバル変数
+// ピクセルシェーダーにも渡す必要があれば適宜追加してください
+cbuffer OutlineBuffer : register(b4)
+{
+    float OutlineWidth;
+};
+
 VS_OUTPUT main(VS_INPUT VSInput)
 {
     VS_OUTPUT ret;
@@ -60,7 +67,7 @@ VS_OUTPUT main(VS_INPUT VSInput)
     float3 lWorldNormal;
     float3 localNormal = VSInput.norm;
     
-    // float3 → float4
+    // float3 -> float4
     lLocalPosition.xyz = VSInput.pos;
     lLocalPosition.w = 1.0f;
     
@@ -70,12 +77,20 @@ VS_OUTPUT main(VS_INPUT VSInput)
     lWorldPosition.y = dot(lLocalPosition, lL_W_Mat[1]);
     lWorldPosition.z = dot(lLocalPosition, lL_W_Mat[2]);
     
-    // 法線スキニング
-    lWorldNormal.x = dot(float4(localNormal, 0.0f), lL_W_Mat[0]);
-    lWorldNormal.y = dot(float4(localNormal, 0.0f), lL_W_Mat[1]);
-    lWorldNormal.z = dot(float4(localNormal, 0.0f), lL_W_Mat[2]);
+    // 法線スキニング (修正済み)
+    // 法線ベクトルは平行移動しないため、W成分を0にしてdot productを行う
+    float4 localNormal4 = float4(localNormal, 0.0f);
+    lWorldNormal.x = dot(localNormal4, lL_W_Mat[0]);
+    lWorldNormal.y = dot(localNormal4, lL_W_Mat[1]);
+    lWorldNormal.z = dot(localNormal4, lL_W_Mat[2]);
     lWorldNormal = normalize(lWorldNormal);
+
+    // ここからがアウトラインのための新しいロジック
     
+    // 頂点位置を法線方向に少しずらす (アウトライン生成の基本)
+    float3 offset = lWorldNormal * OutlineWidth;
+    lWorldPosition.xyz += offset;
+
     // ワールド座標をビュー座標に変換
     lViewPosition.w = 1.0f;
     lViewPosition.xyz = mul(lWorldPosition, g_base.viewMatrix);
@@ -88,13 +103,16 @@ VS_OUTPUT main(VS_INPUT VSInput)
     // UV座標
     ret.uv.x = VSInput.uv0.x;
     ret.uv.y = VSInput.uv0.y;
-    // 法線
-    ret.normal = normalize(
-        mul(VSInput.norm, (float3x3) g_base.localWorldMatrix));
+    
+    // 法線 (修正済み: スキニングされた法線を代入)
+    ret.normal = lWorldNormal;
+    
     // ディフューズカラー
     ret.diffuse = VSInput.diffuse;
+    
     // ライト方向(ローカル)
     ret.lightDir = float3(0.0f, 0.0f, 0.0f);
+    
     // ライトから見た座標
     ret.lightAtPos = float3(0.0f, 0.0f, 0.0f);
     // その他、ピクセルシェーダへ引継&初期化 ++++++++++++( 終了 )
