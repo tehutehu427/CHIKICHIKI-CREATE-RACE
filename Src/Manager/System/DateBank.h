@@ -17,7 +17,10 @@ public:
 	};	
 	
 	//通常のスコア量
-	static constexpr  int DEFAULT_SCORE = 5;
+	static constexpr  int DEFAULT_SCORE = 8;
+
+	//通常のラウンド制限数
+	static constexpr int ROUND_LIMIT = 5;
 
 
 	/// <summary>
@@ -110,6 +113,30 @@ public:
 	/// <param name="_isSkip">スキップの有無</param>
 	void SetItemSetSkip(const bool _isSkip) { isItemSetSkip_ = _isSkip; }
 
+	/// <summary>
+	/// ラウンド制限を返す
+	/// </summary>
+	/// <returns>ラウンド制限</returns>
+	const int GetRoundLimit()const { return roundLimit_; }
+
+	/// <summary>
+	/// ラウンド制限を設定
+	/// </summary>
+	/// <param name="_round">ラウンド数</param>
+	void SetRoundLimit(const int _round) { roundLimit_ = _round; }
+
+	/// <summary>
+	/// フルスクリーンにするか返す
+	/// </summary>
+	/// <returns>フルスクリーン判定</returns>
+	const bool IsFullScreen()const { return isFullScreen_; }
+
+	/// <summary>
+	/// フルスクリーンの設定
+	/// </summary>
+	/// <param name="_isFullScreen"></param>
+	void SetFullScreen(const bool _isFullScreen);
+
 private:
 
 
@@ -117,11 +144,13 @@ private:
 	DateBank(void);
 	DateBank(const DateBank& instance_) = default;
 	~DateBank(void);
-	int playerNum_;		//プレイヤーの人数
-	int maxPlayerNum_;	//コントローラー数よりプレイヤー人数が多くならないようにする
-	int stageNo_;		//ステージ番号
+	int playerNum_;			//プレイヤーの人数
+	int maxPlayerNum_;		//コントローラー数よりプレイヤー人数が多くならないようにする
+	int stageNo_;			//ステージ番号
 	int multiClearScore_;	//マルチでのクリアとなるスコア量
+	int roundLimit_;		//ラウンド制限
 	bool isItemSetSkip_;	//アイテムセットスキップの有無
+	bool isFullScreen_;		//フルスクリーンの判定
 
 	//種類ごとの名前
 	std::string itemNames_[static_cast<int>(ItemBase::ITEM_TYPE::MAX)];

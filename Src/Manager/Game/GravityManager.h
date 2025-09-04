@@ -4,10 +4,9 @@
 class GravityManager
 {
 public:
-	GravityManager(void);
-	~GravityManager(void);
 	//重力
 	static constexpr float GRAVITY_POW = 3.0f;
+
 
 	//静的にインスタンス生成
 	static void CreateInstance(void);
@@ -15,7 +14,7 @@ public:
 	//静的にインスタンスを取得する
 	static GravityManager& GetInstance(void);
 
-	static void Destroy(void);
+	void Destroy(void);
 
 	void Init(void);
 
@@ -33,6 +32,11 @@ public:
 
 private:
 	static GravityManager* instance_;
+
+	GravityManager(void);
+	~GravityManager(void)=default;
+	GravityManager& operator=(const GravityManager& _copy) = default;
+	GravityManager(const GravityManager& _copy) = delete;
 
 	//回転用
 	Transform trans_;

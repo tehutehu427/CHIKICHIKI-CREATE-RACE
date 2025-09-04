@@ -20,6 +20,7 @@ SystemSetting::SystemSetting()
 	//初期化
 	stateIndex_ = -1;
 	clearScore_ = -1;
+	roundCnt_ = -1;
 	for (int i = 0; i < SoundManager::TYPE_MAX; i++) { soundVolume_[i] = -1; }
 	isSkip_ = false;
 	isFullScreen_ = false;
@@ -69,7 +70,12 @@ SystemSetting::SystemSetting()
 		{STATE::FULL_SCREEN,[this]()
 		{
 			isFullScreen_ = !isFullScreen_;
-		}}
+		}},
+		{STATE::ROUND,[this]()
+		{
+			//右キーで選択をひとつ進める（範囲内でループ）
+			roundCnt_ = (roundCnt_ - ROUND_MIN + 1) % ROUND_RANGE + ROUND_MIN;
+		}},
 	};
 
 	//ルール項目別左の処理の登録
@@ -105,6 +111,11 @@ SystemSetting::SystemSetting()
 		{STATE::FULL_SCREEN,[this]()
 		{
 			isFullScreen_ = !isFullScreen_;
+		}},
+		{STATE::ROUND,[this]()
+		{
+			//左キーで選択をひとつ戻す（範囲内でループ）
+			roundCnt_ = (roundCnt_ - ROUND_MIN - 1 + ROUND_RANGE) % ROUND_RANGE + ROUND_MIN;
 		}}
 	};
 
@@ -130,6 +141,10 @@ SystemSetting::SystemSetting()
 		{STATE::FULL_SCREEN,[this]()
 		{
 			DrawSwitch(STATE::FULL_SCREEN, isFullScreen_);
+		}},
+		{STATE::ROUND,[this]()
+		{
+			DrawRound();
 		}},
 	};
 
@@ -174,6 +189,8 @@ void SystemSetting::Init()
 	stateIndex_ = 0;
 	clearScore_ = data.GetMultiClearScore();
 	isSkip_ = data.IsItemSetSkip(); 
+	isFullScreen_ = data.IsFullScreen();
+	roundCnt_ = data.GetRoundLimit();
 	for (int i = 0; i < SoundManager::TYPE_MAX; i++) { soundVolume_[i] = sound.GetSoundTypeVolume(i); }
 }
 
@@ -340,7 +357,10 @@ void SystemSetting::ApplyData()
 	for (int i = 0; i < SoundManager::TYPE_MAX; i++) { sound.SetSystemVolume(soundVolume_[i], i); }
 
 	//スクリーン設定
-	ChangeWindowMode(!isFullScreen_);
+	data.SetFullScreen(isFullScreen_);
+
+	//ラウンド数設定
+	data.SetRoundLimit(roundCnt_);
 }
 
 void SystemSetting::DrawCursor()
@@ -464,6 +484,46 @@ void SystemSetting::DrawSoundVolume(const STATE _state, const int _type)
 			false
 		);
 	};
+}
+
+void SystemSetting::DrawRound()
+{
+	constexpr int POS_X = 900; //X座標
+	constexpr int MARGIN_X = 64; //数字の間隔	
+	constexpr int OFFSET_X = 90; //数字の位置を調整
+	const int posY = START_POS_Y + static_cast<int>(STATE::ROUND) * HEIGHT_MARGIN; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
+	const int numberDigit = Utility::GetDigitCount(roundCnt_); //数字の桁数
+
+	if (roundCnt_ == 0)
+	{
+		DrawRotaGraph(
+			850,
+			posY,
+			1.0f,
+			0.0f,
+			imgOnOff_[1],
+			true,
+			false
+		);
+	}
+	else
+	{
+		//数字の描画
+		for (int i = 0; i < numberDigit; i++)
+		{
+			int index = Utility::GetDigit(roundCnt_, numberDigit - 1 - i);
+
+			DrawRotaGraph(
+				POS_X + i * MARGIN_X - OFFSET_X,
+				posY,
+				0.7f,
+				0.0f,
+				imgNumbers_[index],
+				true,
+				false
+			);
+		};
+	}
 }
 
 void SystemSetting::DrawApplyMessage()

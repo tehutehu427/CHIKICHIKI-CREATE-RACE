@@ -111,7 +111,23 @@ void EditController::DrawUI(void)
 	}
 	else
 	{
-		DrawBox(screenSize_.x / 2 - CENTER_BOX_SIZE, screenSize_.y / 2 - CENTER_BOX_SIZE,screenSize_.x / 2 + CENTER_BOX_SIZE,screenSize_.y / 2 + CENTER_BOX_SIZE,Utility::BLACK, true);	//中央のボックス描画
+		//DrawBox(screenSize_.x / 2 - CENTER_BOX_SIZE, screenSize_.y / 2 - CENTER_BOX_SIZE,screenSize_.x / 2 + CENTER_BOX_SIZE,screenSize_.y / 2 + CENTER_BOX_SIZE,Utility::BLACK, true);	//中央のボックス描画
+		DrawLine(
+			screenSize_.x / 2,
+			screenSize_.y / 2 - CENTER_CROSS_OFFSET,
+			screenSize_.x / 2,
+			screenSize_.y / 2 + CENTER_CROSS_OFFSET,
+			Utility::BLACK,
+			CENTER_CROSS_THICKNESS);
+
+		DrawLine(
+			screenSize_.x / 2 - CENTER_CROSS_OFFSET,
+			screenSize_.y / 2,
+			screenSize_.x / 2 + CENTER_CROSS_OFFSET,
+			screenSize_.y / 2,
+			Utility::BLACK,
+			CENTER_CROSS_THICKNESS);
+
 	}
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(errorStringTime_ * 255));
 	float rate = 1.0f / (playerMaxNum_ == 1 ? 2 : 4);
@@ -134,6 +150,74 @@ void EditController::DrawUI(void)
 		break;
 	}
 
+
+
+	if (moveDir_ == MOVE_DIR::NONE && mapPos_ != ERROR_POS && mode_ == EditController::MODE::MOVE_ROTATE)
+	{
+		VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
+		float distance = DELAY_MOVE_ARROW;
+		worldPos = VAdd(worldPos, { MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
+		VECTOR x = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)));
+		VECTOR y = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)));
+		VECTOR z = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)));
+		MOVE_DIR moveDir = MOVE_DIR::NONE;
+		float xDistance = static_cast<float>(Utility::Distance({ static_cast<int>(x.x), static_cast<int>(x.y) }, cursorPos_));
+		float yDistance = static_cast<float>(Utility::Distance({ static_cast<int>(y.x), static_cast<int>(y.y) }, cursorPos_));
+		float zDistance = static_cast<float>(Utility::Distance({ static_cast<int>(z.x), static_cast<int>(z.y) }, cursorPos_));
+		float min = std::min(xDistance, std::min(yDistance, zDistance));
+		if (min < distance)
+		{
+			moveDir = min == xDistance ? MOVE_DIR::X :
+				min == yDistance ? MOVE_DIR::Y : MOVE_DIR::Z;
+		}
+		else
+		{
+			VECTOR mousePosNear3D = { static_cast<float>(mousePos_.x),static_cast<float>(mousePos_.y), 0.0f };
+			VECTOR nearWorldPos = ConvScreenPosToWorldPos(mousePosNear3D);	//近いほうのワールド座標
+			VECTOR mousePosFar3D = { static_cast<float>(mousePos_.x),static_cast<float>(mousePos_.y), 1.0f };
+			VECTOR farWorldPos = ConvScreenPosToWorldPos(mousePosFar3D);	//遠いほうのワールド座標
+			VECTOR normalmousePos3D = VNorm(VSub(farWorldPos, nearWorldPos));
+			int modelId = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).modelId;
+			if (modelId > 0)
+			{
+				auto hit = MV1CollCheck_Line(modelId, -1, nearWorldPos, farWorldPos);
+				if (hit.HitFlag > 0)
+				{
+					VECTOR cForward = VNorm(SceneManager::GetInstance().GetCamera(playerNum_).lock()->GetForward());
+					//0.0～1.0の数字となり、視線方向と一致か、もしくは逆方向だったら 1.0 、直交だったら 0.0 という数字の意味合いになります。
+					float x = abs(VDot(cForward, Utility::DIR_R));	//カメラとX軸
+					float y = abs(VDot(cForward, Utility::DIR_U));	//カメラとY軸
+					float z = abs(VDot(cForward, Utility::DIR_F));	//カメラとZ軸
+					float max = std::max(x, std::max(y, z));	//最大値を取得
+					if (max == x)
+					{
+						moveDir = MOVE_DIR::YZ;	//Y軸とZ軸の移動
+					}
+					else if (max == y)
+					{
+						moveDir = MOVE_DIR::XZ;	//X軸とZ軸の移動
+					}
+					else
+					{
+						moveDir = MOVE_DIR::XY;	//X軸とY軸の移動
+					}
+				}
+			}
+		}
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); //半透明にする
+		if (x.z > 0.0f && x.z < 1.0f)
+		{
+			DrawCircle(static_cast<int>(x.x), static_cast<int>(x.y), static_cast<int>(distance), Utility::RED, moveDir == MOVE_DIR::X || moveDir == MOVE_DIR::XY || moveDir == MOVE_DIR::XZ);
+		}
+		if (y.z > 0.0f && y.z < 1.0f)
+		{
+			DrawCircle(static_cast<int>(y.x), static_cast<int>(y.y), static_cast<int>(distance), Utility::GREEN, moveDir == MOVE_DIR::Y || moveDir == MOVE_DIR::XY || moveDir == MOVE_DIR::YZ);
+		}
+		if (z.z > 0.0f && z.z < 1.0f)
+		{
+			DrawCircle(static_cast<int>(z.x), static_cast<int>(z.y), static_cast<int>(distance), Utility::BLUE, moveDir == MOVE_DIR::Z || moveDir == MOVE_DIR::XZ || moveDir == MOVE_DIR::YZ);
+		}
+	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	int sizeX;
 	int sizeY;
@@ -202,12 +286,12 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 			}
 		}
 	}
-	itemType_ = itemType;
 	//アイテムを追加
 	//ダミーアイテムを変更する
 	MapEditer::STATUS status;
 	status.mapPos = mapPos_;
 	status.type = itemType_;
+	itemType_ = itemType;
 
 	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
 	{
@@ -375,110 +459,40 @@ void EditController::MoveRotateObjectDraw(void)
 	if (mapPos_ != ERROR_POS)
 	{
 		VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
-		worldPos = VAdd(worldPos,{MapEditer::GRID_SIZE /2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
+		worldPos = VAdd(worldPos, { MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
 		DrawLine3D(worldPos, VAdd(worldPos, { 0.0f,1000.0f,0.0f }), playerNum_ == 0 ? Utility::BLUE : playerNum_ == 1 ? Utility::RED : playerNum_ == 2 ? Utility::GREEN : Utility::YELLOW);
 		switch (moveDir_)
 		{
 		case EditController::MOVE_DIR::NONE:
-			DrawXArrow(worldPos,false);
-			DrawYArrow(worldPos,false);
-			DrawZArrow(worldPos,false);
+			DrawXArrow(worldPos, false);
+			DrawYArrow(worldPos, false);
+			DrawZArrow(worldPos, false);
 			break;
 		case EditController::MOVE_DIR::X:
-			DrawXArrow(worldPos,true);
+			DrawXArrow(worldPos, true);
 			break;
 		case EditController::MOVE_DIR::Y:
-			DrawYArrow(worldPos,true);
+			DrawYArrow(worldPos, true);
 			break;
 		case EditController::MOVE_DIR::Z:
-			DrawZArrow(worldPos,true);
+			DrawZArrow(worldPos, true);
 			break;
 		case EditController::MOVE_DIR::XY:
-			DrawXArrow(worldPos,true);
-			DrawYArrow(worldPos,true);
+			DrawXArrow(worldPos, true);
+			DrawYArrow(worldPos, true);
 			break;
 		case EditController::MOVE_DIR::XZ:
-			DrawXArrow(worldPos,true);
-			DrawZArrow(worldPos,true);
+			DrawXArrow(worldPos, true);
+			DrawZArrow(worldPos, true);
 			break;
 		case EditController::MOVE_DIR::YZ:
-			DrawYArrow(worldPos,true);
-			DrawZArrow(worldPos,true);
+			DrawYArrow(worldPos, true);
+			DrawZArrow(worldPos, true);
 			break;
 		default:
 			break;
 		}
 
-
-
-		if (moveDir_ != MOVE_DIR::NONE)
-		{
-			return;
-		}
-		//VECTOR worldPos = MapEditer::GetInstance().MapToWorldPos(mapPos_);
-		float distance = DELAY_MOVE_ARROW;
-		//worldPos = VAdd(worldPos, { MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 ,MapEditer::GRID_SIZE / 2 });
-		VECTOR x = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)));
-		VECTOR y = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)));
-		VECTOR z = ConvWorldPosToScreenPos(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)));
-		MOVE_DIR moveDir = MOVE_DIR::NONE;
-		float xDistance = static_cast<float>(Utility::Distance({ static_cast<int>(x.x), static_cast<int>(x.y) }, cursorPos_));
-		float yDistance = static_cast<float>(Utility::Distance({ static_cast<int>(y.x), static_cast<int>(y.y) }, cursorPos_));
-		float zDistance = static_cast<float>(Utility::Distance({ static_cast<int>(z.x), static_cast<int>(z.y) }, cursorPos_));
-		float min = std::min(xDistance, std::min(yDistance, zDistance));
-		if (min < distance)
-		{
-			moveDir = min == xDistance ? MOVE_DIR::X :
-				min == yDistance ? MOVE_DIR::Y : MOVE_DIR::Z;
-		}
-		else
-		{
-			VECTOR mousePosNear3D = { static_cast<float>(mousePos_.x),static_cast<float>(mousePos_.y), 0.0f };
-			VECTOR nearWorldPos = ConvScreenPosToWorldPos(mousePosNear3D);	//近いほうのワールド座標
-			VECTOR mousePosFar3D = { static_cast<float>(mousePos_.x),static_cast<float>(mousePos_.y), 1.0f };
-			VECTOR farWorldPos = ConvScreenPosToWorldPos(mousePosFar3D);	//遠いほうのワールド座標
-			VECTOR normalmousePos3D = VNorm(VSub(farWorldPos, nearWorldPos));
-			int modelId = ItemManager::GetInstance().GetDummyItemTransform(playerNum_).modelId;
-			if (modelId > 0)
-			{
-				auto hit = MV1CollCheck_Line(modelId, -1, nearWorldPos, farWorldPos);
-				if (hit.HitFlag > 0)
-				{
-					VECTOR cForward = VNorm(SceneManager::GetInstance().GetCamera(playerNum_).lock()->GetForward());
-					//0.0～1.0の数字となり、視線方向と一致か、もしくは逆方向だったら 1.0 、直交だったら 0.0 という数字の意味合いになります。
-					float x = abs(VDot(cForward, Utility::DIR_R));	//カメラとX軸
-					float y = abs(VDot(cForward, Utility::DIR_U));	//カメラとY軸
-					float z = abs(VDot(cForward, Utility::DIR_F));	//カメラとZ軸
-					float max = std::max(x, std::max(y, z));	//最大値を取得
-					if (max == x)
-					{
-						moveDir = MOVE_DIR::YZ;	//Y軸とZ軸の移動
-					}
-					else if (max == y)
-					{
-						moveDir = MOVE_DIR::XZ;	//X軸とZ軸の移動
-					}
-					else
-					{
-						moveDir = MOVE_DIR::XY;	//X軸とY軸の移動
-					}
-				}
-			}
-		}
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); //半透明にする
-		if (x.z > 0.0f && x.z < 1.0f)
-		{
-			DrawCircle(static_cast<int>(x.x),static_cast<int>( x.y), static_cast<int>(distance), Utility::RED, moveDir == MOVE_DIR::X || moveDir == MOVE_DIR::XY || moveDir == MOVE_DIR::XZ);
-		}
-		if (y.z > 0.0f && y.z < 1.0f)
-		{
-			DrawCircle(static_cast<int>(y.x), static_cast<int>(y.y), static_cast<int>(distance), Utility::GREEN, moveDir == MOVE_DIR::Y || moveDir == MOVE_DIR::XY || moveDir == MOVE_DIR::YZ);
-		}
-		if (z.z > 0.0f && z.z < 1.0f)
-		{
-			DrawCircle(static_cast<int>(z.x), static_cast<int>(z.y), static_cast<int>(distance), Utility::BLUE, moveDir == MOVE_DIR::Z || moveDir == MOVE_DIR::XZ || moveDir == MOVE_DIR::YZ);
-		}
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255); //半透明にする
 	}
 }
 

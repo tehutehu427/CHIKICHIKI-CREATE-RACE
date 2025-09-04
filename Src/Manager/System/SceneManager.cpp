@@ -248,7 +248,7 @@ void SceneManager::StartFadeIn(void)
 	fader_->SetFade(Fader::STATE::FADE_IN);
 
 	//シーンチェンジ
-	isSceneChanging_ = false;
+	isSceneChanging_ = true;
 }
 
 std::weak_ptr<Camera> SceneManager::GetCamera(const int _playerIndex) const
@@ -512,4 +512,7 @@ void SceneManager::DrawMultiScreen()
 		//分割したスクリーンを描画
 		DrawGraph(screenPos[i].x, screenPos[i].y, splitScreens_[i], true);
 	}
+
+	//共通部分の描画
+	scene_->CommonDraw();
 }

@@ -3,6 +3,7 @@
 #include <cmath>
 #include "../../Application.h"
 #include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/Game/ScoreManager.h"
 #include "../../Utility/Utility.h"
 
 RoundDisplay::RoundDisplay()
@@ -78,6 +79,9 @@ void RoundDisplay::AddNumberIndex(const int _addIndex)
 {
 	//ナンバーインデックスを追加
 	numberIndex_ += _addIndex;
+
+	//ラウンド追加
+	ScoreManager::GetInstance().SetRound(numberIndex_);
 
 	//桁数
 	numberDigit_ = Utility::GetDigitCount(numberIndex_);
