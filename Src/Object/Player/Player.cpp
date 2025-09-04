@@ -93,6 +93,9 @@ void Player::Load(void)
 	material_ = std::make_unique<ModelMaterial>("ChickenOutlineVS.cso", 1, "OutlinePS.cso", 1);
 	renderer_ = std::make_unique<ModelRenderer>(trans_.modelId, *material_);
 
+	//最初だけリスポーン回数を０に初期化
+	respawnCnt_ = 0;
+
 }
 
 void Player::Init(void)
@@ -360,6 +363,7 @@ const int Player::GetCoinNum(void) const
 	return onHitCol_->GetCoinNum();
 }
 
+
 void Player::SetPos(const VECTOR _worldPos)
 {
 	trans_.pos = _worldPos;
@@ -367,9 +371,22 @@ void Player::SetPos(const VECTOR _worldPos)
 }
 
 
-void Player::SetJumpPow(const float _jumpPow)
+void Player::SetJumpDecelMax(const float _jumpDecel)
 {
-	//action_->SetJumpPow(_jumpPow)
+	action_->SetJumpDecelMax(_jumpDecel);
+}
+
+void Player::SetPunchPow(const float _knockBackCnt, const float _knockBackSpd)
+{
+	action_->SetKnockbackCnt(_knockBackCnt);
+	action_->SetKnockBackSpd(_knockBackSpd);
+}
+
+
+
+void Player::SetSpeed(const float _moveSpd, const float _dashSpd)
+{
+	action_->SetSpeed(_moveSpd, _dashSpd);
 }
 
 void Player::ChangeModelColor(const COLOR_F _colorScale)
@@ -432,4 +449,7 @@ void Player::Respawn(void)
 {
 	Init();
 	SetPos(respawnPos_);
+
+	//リスポーンカウントを１減らす
+	respawnCnt_--;
 }

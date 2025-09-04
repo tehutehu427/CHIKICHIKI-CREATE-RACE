@@ -34,12 +34,17 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	stepJump_ = 0.0f;
 	jumpPow_ = Utility::VECTOR_ZERO;
 	jumpDeceralation_ = POW_JUMP;
+	jumpDecelMax_ = POW_JUMP;
 
 	//パンチ関係の初期化
 	punchCnt_ = 0.0f;
 	punchCoolCnt_ = 0.0f;
 	punchPos_ = Utility::VECTOR_ZERO;
 	punchedCnt_ = PUNCHED_TIME;
+
+	//移動関連
+	moveSpd_ = MOVE_SPEED;
+	dashSpd_ = DASH_SPEED;
 
 	effectArrayNum_ = 0.0f;
 
@@ -66,12 +71,14 @@ void PlayerAction::Init(void)
 	isJump_ = false;
 	stepJump_ = 0.0f;
 	jumpPow_ = Utility::VECTOR_ZERO;
-	jumpDeceralation_ = POW_JUMP;
+	jumpDecelMax_ = POW_JUMP;
+	jumpDeceralation_ = jumpDecelMax_;
   	movePow_ = Utility::VECTOR_ZERO;
 
-	//スピード
+	//移動スピード関連
 	speed_ = 0.0f;
-
+	moveSpd_ = MOVE_SPEED;
+	dashSpd_ = DASH_SPEED;
 	dashSeCnt_ = 0.0f;
 
 	isPunchHitTime_ = false;
@@ -81,6 +88,8 @@ void PlayerAction::Init(void)
 	punchCoolCnt_ = 0.0f;
 	punchPos_ = Utility::VECTOR_ZERO;
 	punchedCnt_ = PUNCHED_TIME;
+
+	knockBackSpd_ = FLY_AWAY_SPEED;
 
 	effectArrayNum_ = 0.0f;
 
@@ -244,7 +253,7 @@ void PlayerAction::MoveUpdate(void)
 	effect_->SetPos(EffectController::EFF_TYPE::DASH, 0, player_.GetTransform().pos);
 	effect_->SetQuaRot(EffectController::EFF_TYPE::DASH, 0, player_.GetTransform().quaRot);
 
-	float animationSpeed = Player::DEFAULT_ANIM_SPD * (speed_ / MOVE_SPEED)*3.0f;
+	float animationSpeed = Player::DEFAULT_ANIM_SPD * (speed_ / moveSpd_)*3.0f;
 	animationController_.SetAnimSpeed(animationSpeed);
 
 	//ダッシュカウント
@@ -284,7 +293,7 @@ void PlayerAction::MoveDirFronInput(void)
 
 void PlayerAction::ChangeMove(void)
 {
-	speed_ = MOVE_SPEED;
+	speed_ = moveSpd_;
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
 	if (player_.GetIsSlimeFloor())
 	{
@@ -332,11 +341,11 @@ void PlayerAction::Speed(void)
 {
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
 	{
-		speed_ = MOVE_SPEED;
+		speed_ = moveSpd_;
 	}
 	else if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
 	{
-		speed_ = DASH_SPEED;
+		speed_ = dashSpd_;
 	}
 	else
 	{
@@ -390,7 +399,7 @@ void PlayerAction::Jump(void)
 	//地面に着いたらジャンプ関係の変数リセット
 	if (!isJump_)
 	{
-		jumpDeceralation_ = POW_JUMP;
+		jumpDeceralation_ = jumpDecelMax_;
 		jumpPow_ = Utility::VECTOR_ZERO;
 		stepJump_ = 0.0f;
 
@@ -411,7 +420,7 @@ void PlayerAction::ChangeJump(void)
 	//ジャンプ関係
   	isJump_ = true;
 	stepJump_ = 0.0f;
-
+	jumpDeceralation_ = jumpDecelMax_;
 	//プレイヤーの情報
 	Transform trans = player_.GetTransform();
 	//エフェクトのスケール
@@ -489,6 +498,7 @@ void PlayerAction::KnockBack(void)
 	//パッド振動
 	KeyConfig::GetInstance().PadVibration(player_.GetPadNum()
 		, KNOCKBACK_PAD_VIBRATIION_TIME, KNOCKBACK_PAD_VIBRATIION_POW);
+
 	if (punchedCnt_ < 0.0f)
 	{
 		punchedCnt_ = PUNCHED_TIME;
@@ -499,7 +509,7 @@ void PlayerAction::KnockBack(void)
 
 void PlayerAction::ChangeKnockBack(void)
 {
-	speed_ = FLY_AWAY_SPEED;
+	speed_ = knockBackSpd_;
 	//エフェクト
 	Transform trans = player_.GetTransform();
 	const float EFF_SCL = 15.0f;
@@ -510,10 +520,11 @@ void PlayerAction::ChangeKnockBack(void)
 	isPunchHitTime_ = false;
 	player_.KillPunchCol();
 	stepJump_ = 0.0f;
-	jumpDeceralation_ = POW_JUMP;
+	jumpDeceralation_ = jumpDecelMax_;
 	actionUpdate_ = [this]() {KnockBack(); };
-	
 }
+
+
 
 
 
@@ -562,6 +573,12 @@ void PlayerAction::SetGoalRotate(double _deg)
 		stepRotTime_ = TIME_ROT;
 	}
 	goalQuaRot_ = axis;
+}
+
+void PlayerAction::SetSpeed(const float _moveSpd, const float _dashSpd)
+{
+	moveSpd_ = _moveSpd;
+	dashSpd_ = _dashSpd;
 }
 
 void PlayerAction::StopResource(void)

@@ -29,6 +29,22 @@ public:
 	static constexpr float RADIUS = 25.0f;
 	//デフォルトのアニメーションスピード
 	static constexpr float DEFAULT_ANIM_SPD = 60.0f;
+	//強化後のパンチされた時のノックバックカウント
+	static constexpr float BUFF_KNOCKBACK_CNT_MAX = 0.3f;
+	//強化後のパンチ吹っ飛びスピード
+	static constexpr float BUFF_KNOCKBACK_SPEED_MAX = 20.0f;
+	//強化後のジャンプ力
+	static constexpr float BUFF_JUMP_POW_MAX = 40.0f;
+	//強化後の移動スピード
+	static constexpr float BUFF_MOVE_SPEED = 20.0f;
+	//強化後のダッシュスピード
+	static constexpr float BUFF_DASH_SPEED = 30.0f;
+
+	//残機
+	static constexpr float RESPAWN_CNT = 1;
+
+
+
 	//******************************************
 
 
@@ -151,6 +167,10 @@ public:
 	//コイン枚数の取得
 	const int GetCoinNum(void)const;
 
+	//プレイヤー残機の取得
+	inline const int GetLiveCnt(void)const { return respawnCnt_; }
+
+
 	//******************************************
 	//セッタ
 	//******************************************
@@ -163,10 +183,28 @@ public:
 	/// <summary>
 	/// 残機セッタ
 	/// </summary>
-	/// <param name="_liveCnt"></param>
-	void SetLiveCnt(const int _liveCnt) { liveCnt_ = _liveCnt; }
+	/// <param name="_respawnCnt"></param>
+	void SetRespawnCnt(const int _respawnCnt) { respawnCnt_ = _respawnCnt; }
 
-	void SetJumpPow(const float _jumpPow);
+	/// <summary>
+	/// //ジャンプ減衰量(ジャンプ力の設定)
+	/// </summary>
+	/// <param name="_jumpDecel">ジャンプ力</param>
+	void SetJumpDecelMax(const float _jumpDecel=20.0f);
+
+	/// <summary>
+	/// パンチで吹っ飛ぶ時間
+	/// </summary>
+	/// <param name="_punchCnt">吹っ飛び力</param>
+	void SetPunchPow(const float _knockBackCnt=0.1f, const float _knockBackSpd= 12.0f);
+
+
+	/// <summary>
+	/// 移動スピード
+	/// </summary>
+	/// <param name="_spd">スピード</param>
+	void SetSpeed(const float _moveSpd= 6.0f,const float _dashSpd= 6.0f);
+
 	//*****************************************
 	//モデル色を変更
 	void ChangeModelColor(const COLOR_F _colorScale)override;
@@ -283,7 +321,7 @@ private:
 	float goalTime_;
 
 	//残機
-	int liveCnt_;
+	int respawnCnt_;
 
 	//プレイヤー状態
 	PLAYER_STATE state_;	//プレイヤーの状態(生存状態)

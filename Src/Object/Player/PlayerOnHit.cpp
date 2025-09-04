@@ -176,7 +176,7 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 	//パンチしたプレイヤーの向いてる方向をセットする
  	VECTOR punchedPlayerPos = _hitCol.lock()->GetParent().GetTransform().pos;
 
-	//パンチしたプレイヤーの位置と自分の位置を比較して、
+	//パンチしたプレイヤーの位置と自分の位置を比較
 	action_.SetDir(Utility::GetMoveVec(punchedPlayerPos, trans_.pos));
 
 	//ノックバック状態遷移
@@ -316,7 +316,7 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 			}
 			
 		}
-	if(isSide_&&_hitCol.lock()->GetTags()[0]!=Collider::TAG::KILLER_SPECIFIC)
+		if(isSide_&&_hitCol.lock()->GetTags()[0]!=Collider::TAG::KILLER_SPECIFIC)
 		{
 			int modelId = _hitCol.lock()->GetParent().GetTransform().modelId;
 			VECTOR pos1 = movedPos_;
@@ -328,7 +328,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 				{
 					movedPos_.y +=EYE_HEIGHT.y;
 				}
-				
 			}
 		}
 	}

@@ -68,7 +68,8 @@ public:
 
 	//ƒRƒCƒ“–‡”
 	inline void SetCoinNum(const int _num) { coinNum_ = _num; }
-	
+
+
 
 private:
 	//--------------------------------------
