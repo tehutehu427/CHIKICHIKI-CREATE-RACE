@@ -392,9 +392,11 @@ std::string MapDataIO::GetSoloFileName()
     //îzóÒÇê∂ê¨
     const std::string stages[static_cast<int>(SelectStage::STAGE_TYPE::MAX)] =
     {
-        "BeginnerStage.json",
-        "IntermediateStage.json",
-        "AdvancedStage.json",
+        "EasyStage.json",
+        "NormalStage.json",
+        "AdvanceStage.json",
+        "HardStage.json",
+        "OblivionStage.json",
         "AbyssStage.json"
     };
 

@@ -73,6 +73,12 @@ public:
 	void SetRandomEvent();
 
 	/// <summary>
+	/// イベントを設定
+	/// </summary>
+	/// <param name="_type"></param>
+	void SetEventType(const EVENT_TYPE _type);
+
+	/// <summary>
 	/// リセット
 	/// </summary>
 	void Reset();
@@ -102,9 +108,6 @@ private:
 
 	//イベント別設定処理登録
 	void RegisterSet(const EVENT_TYPE _type, std::function<void(void)> _setter, std::function<void(void)> _update);
-	
-	//イベントの設定
-	void SetEventType(const EVENT_TYPE _type);
 
 	//イベント種類別初期設定
 	void SetNone(void) {}

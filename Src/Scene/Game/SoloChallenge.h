@@ -25,7 +25,13 @@ private:
 	//アクション時の更新処理
 	void UpdateAction(void) override;
 
+	//アクション時の描画処理
+	void DrawAction(void) override;
+
 	//サウンド読み込み
 	void LoadSound(void) override;
+
+	//ステージ別イベント処理
+	void SetEventByStage();
 };
 

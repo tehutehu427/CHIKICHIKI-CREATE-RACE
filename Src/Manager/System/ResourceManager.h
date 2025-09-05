@@ -54,7 +54,7 @@ public:
 	static constexpr int SMOKE_EFE_SIZE = 64;	//煙エフェクトサイズ
 
 	static constexpr int LEVEL_SLE_DIV_X = 2;		//レベル分割数X
-	static constexpr int LEVEL_SLE_DIV_Y = 2;		//レベル分割数Y
+	static constexpr int LEVEL_SLE_DIV_Y = 3;		//レベル分割数Y
 	static constexpr int LEVEL_SLE_SIZE_X = 400;	//レベルサイズ
 	static constexpr int LEVEL_SLE_SIZE_Y = 300;	//レベルサイズ
 

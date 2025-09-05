@@ -11,9 +11,11 @@ public:
 	/// </summary>
 	enum class STAGE_TYPE
 	{
-		BEGINNER,		//初級
-		INTERMEDIATE,	//中級
-		ADVANCED,		//上級
+		EASY,			//初級
+		NORMAL,			//中級
+		ADVANCE,		//アドバンス
+		HARD,			//上級
+		OBLIVION,		//オヴィリオン
 		ABYSS,			//アビス
 		MAX
 	};
