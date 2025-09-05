@@ -1,4 +1,4 @@
- #include <chrono>
+#include <chrono>
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "../../Scene/TitleScene.h"

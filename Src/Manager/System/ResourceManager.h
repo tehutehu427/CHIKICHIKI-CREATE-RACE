@@ -159,6 +159,7 @@ public:
 		SELECT_ITEM,
 		PLAYER_GAGES,
 		PLAYER_GAGE_OUTLINE,
+		PLAYER_RESPAWN_HEART,
 		SELECT_SKIP,
 		DRAW_MES,
 		RESULT_GOAL,
@@ -216,6 +217,7 @@ public:
 		LANDING_EFF,		//着地エフェクト
 		PUNCH_HIT_EFF,		//パンチヒットエフェクト
 		COIN_GOAL_EFF,		//コインのゴールエフェクト
+		RESPAWN_EFF,		//リスポーンエフェクト
 	};
 
 	// 明示的にインステンスを生成する

@@ -1,5 +1,4 @@
 #include "../../Utility/Utility.h"
-#include "../Application.h"
 
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/Game/MapEditer.h"
@@ -76,6 +75,11 @@ void Player::Load(void)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::GOAL), DEFAULT_ANIM_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_ANIM_SPD / PlayerAction::PUNCH_TIME_MAX);
 
+	//エフェクト
+	effect_ = std::make_unique<EffectController>();
+	auto& res = ResourceManager::GetInstance();
+	effect_->Add(res.Load(ResourceManager::SRC::RESPAWN_EFF).handleId_, EffectController::EFF_TYPE::RESPAWN);
+
 	//アクション
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
 	action_->Load();
@@ -96,6 +100,10 @@ void Player::Load(void)
 	//最初だけリスポーン回数を０に初期化
 	respawnCnt_ = 0;
 
+	//リスポーン音読み込み
+	SoundManager::GetInstance().LoadResource(SoundManager::SRC::RESPAWN_SE);
+
+
 }
 
 void Player::Init(void)
@@ -107,7 +115,6 @@ void Player::Init(void)
 	}
 	colParam_.clear();
 
-	//本来コライダを作りたい場所
 	//コライダ作成
 	//*****************************************************
 	//接地しているときのライン(床上にとどまっているとき)
@@ -124,7 +131,6 @@ void Player::Init(void)
 	MakeCollider({ tag_ }, std::move(moveLineGeo));
 	//*****************************************************
 
-
 	//Transformの設定
 	trans_.quaRot = Quaternion();
 	trans_.scl = MODEL_SCL;
@@ -134,6 +140,8 @@ void Player::Init(void)
 	float posX = PLAYER_ONE_POS_X + DISTANCE_POS * playerNum_;
 	trans_.pos={ posX,0.0f,0.0f };
 	trans_.localPos = { 0.0f,-Player::RADIUS,0.0f };
+
+
 
 
 	//生存状態
@@ -259,12 +267,6 @@ void Player::AliveUpdate(void)
 	//奈落に落ちたら死に状態へ遷移
 	if (trans_.pos.y <= DEATH_POS_Y || onHitCol_->GetIsDeath())
 	{
-		//残機があればリスポーン
-		if (respawnCnt_ > 0)
-		{
-			Respawn();
-			return;
-		}
 		ChangeState(PLAYER_STATE::DEATH);
 		return;
 	}
@@ -293,6 +295,17 @@ void Player::ChangeDeath(void)
 	colParam_.clear();
 	action_->StopResource();
 
+	if (respawnCnt_ > 0)
+	{
+		float SCL = 50.0f;
+		const VECTOR EFF_SCL = { SCL,SCL,SCL };
+		//リスポーンエフェクト再生
+		effect_->Play(EffectController::EFF_TYPE::RESPAWN, trans_.pos, trans_.quaRot, EFF_SCL, false, 1.0f);
+
+		//リスポーン音再生
+		SoundManager::GetInstance().Play(SoundManager::SRC::RESPAWN_SE, SoundManager::PLAYTYPE::BACK);
+	}
+
 	//死んだらコインを落とす
 	onHitCol_->SetCoinNum(0);
 	//パッド振動
@@ -305,14 +318,26 @@ void Player::DeathUpdate(void)
 	//死んだ時の処理
 	//終了からの遅延時間を計測
 	finishDelay_ += scnMng_.GetInstance().GetDeltaTime();
+	//アニメーションループ
 	//落ちているアニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
-
-	//アニメーションループ
 	if (animationController_->GetAnimStep() >= FALL_ANIM_START)
 	{
 		animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_ANIM_SPD);
 	}
+	//残機があればリスポーン
+	if (respawnCnt_ > 0)
+	{
+		if (finishDelay_ > DEATH_DELAY)
+		{
+			Respawn();
+			ChangeState(PLAYER_STATE::ALIVE);
+		}
+		return;
+	}
+	
+
+
 }
 void Player::ChangeGoal(void)
 {

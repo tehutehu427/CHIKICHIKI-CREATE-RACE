@@ -100,16 +100,16 @@ public:
 	/// <returns>終えてたらtrue,なければfalse</returns>
 	bool IsPlayersEnd();
 
-	//死んでいるプレイヤーをリスポーンさせる
-	void RespawnPlayer(void);	
-
 
 
 private:
 	//プレイヤーの大きさ
 	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
 
-
+	//ハート画像サイズ
+	static constexpr float HEART_IMG_SCL = 0.05f;
+	static constexpr int HEART_IMG_SIZE_X = 640 * HEART_IMG_SCL;
+	static constexpr int HEART_IMG_SIZE_Y = 640 * HEART_IMG_SCL;
 
 	//初期座標
 	static constexpr float START_POS = 50.0f;
@@ -131,6 +131,8 @@ private:
 
 	//プレイヤー人数
 	int playerNum_;
+
+	int imgRespawnHeart_; //リスポーンハートの画像番号
 
 	//*****************************************
 	//メンバ関数

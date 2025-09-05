@@ -1,4 +1,5 @@
 #include<cmath>
+#include"../../Application.h"
 #include"../../Utility/Utility.h"
 #include"../../Manager/System/ResourceManager.h"
 #include"../../Manager/System/Camera.h"
@@ -80,6 +81,8 @@ void PlayerManager::Load(void)
 		sndMng.LoadResource(SoundManager::SRC::SLIME_SE);
 		sndMng.LoadResource(SoundManager::SRC::SPRING_SE);
 	}
+
+	imgRespawnHeart_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::PLAYER_RESPAWN_HEART).handleId_;
 }
 
 void PlayerManager::Init(void)
@@ -88,6 +91,8 @@ void PlayerManager::Init(void)
 	{
 		player->Init();
 	}
+
+	
 
 	//色を設定する
 	InitPlayerColor();
@@ -137,9 +142,29 @@ void PlayerManager::Update(void)
 
 void PlayerManager::Draw(void)
 {
+	//残機描画用にスクリーンの左上座標を配列で用意
+	const Vector2 screenPos[PLAYER_NUM_MAX] =
+	{
+		{ 0, 0 },													// 1P
+		{ Application::SCREEN_HALF_X, 0 },							// 2P
+		{ 0, Application::SCREEN_HALF_Y },							// 3P
+		{ Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y }	// 4P
+	};
+
+	const int HEART_OFFSET_X = 10;	//ハートのX座標オフセット
 	for (auto& p : players_)
 	{
 		p->Draw();
+		p->GetLiveCnt();
+		for(int i = 0; i < p->GetLiveCnt(); i++)
+		{
+			//プレイヤー番号を取得
+			const int P_NUM = p->GetPlayerNum();
+
+			DrawRotaGraphF(static_cast<float>(screenPos[P_NUM].x + HEART_IMG_SIZE_X / 2 + HEART_OFFSET_X + i * (HEART_IMG_SIZE_X + HEART_OFFSET_X))
+				, static_cast<float>(screenPos[P_NUM].y+HEART_IMG_SIZE_Y/2+HEART_OFFSET_X)
+				, HEART_IMG_SCL, 0.0f, imgRespawnHeart_, true);
+		}
 	}
 }
 
@@ -178,18 +203,6 @@ bool PlayerManager::IsPlayersEnd(void)
 	return true;
 }
 
-void PlayerManager::RespawnPlayer(void)
-{
-	//プレイヤー全員を調べる
-	for (auto& player : players_)
-	{
-		//ゴールしていない、かつ倒れていない時,残機があるとき
-		if (player->IsDeath() && player->GetLiveCnt() > 0)
-		{
-			player->Respawn();
-		}
-	}
-}
 
 
 Transform PlayerManager::FixTrans(int _playerNum)
