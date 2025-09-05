@@ -197,6 +197,9 @@ void ResourceManager::Init(void)
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "DrawMes.png");
 	resourcesMap_.emplace(SRC::DRAW_MES, std::move(res));
 
+	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Game + "RespawnHeart.png");
+	resourcesMap_.emplace(SRC::PLAYER_RESPAWN_HEART, std::move(res));
+
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Manual + "FreeManual.png");
 	resourcesMap_.emplace(SRC::FREE_MANUAL, std::move(res));
 
@@ -244,7 +247,7 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Event + "EventWiggle.png");
 	resourcesMap_.emplace(SRC::EVENT_WIGGLE, std::move(res));
-
+	                               
 #pragma endregion 
 
 #pragma region ƒ}ƒXƒN‰æ‘œ

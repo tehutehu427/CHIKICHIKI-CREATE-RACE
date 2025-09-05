@@ -1,5 +1,4 @@
 #include "../../Utility/Utility.h"
-#include "../Application.h"
 
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/Game/MapEditer.h"
@@ -103,6 +102,7 @@ void Player::Load(void)
 
 	//ƒŠƒXƒ|[ƒ“‰¹“Ç‚İ‚İ
 	SoundManager::GetInstance().LoadResource(SoundManager::SRC::RESPAWN_SE);
+
 
 }
 
