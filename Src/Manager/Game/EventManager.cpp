@@ -83,18 +83,18 @@ void EventManager::SetEventType(const EVENT_TYPE _type)
 void EventManager::SetRandomEvent()
 {
 	//ランダムで値取得
-	int index = GetRand(EVENT_PER);
+	//int index = GetRand(EVENT_PER);
 
-	//特定値以外はイベントを実行しない
-	if (index != 0)
-	{
-		return;
-	}
+	////特定値以外はイベントを実行しない
+	//if (index != 0)
+	//{
+	//	return;
+	//}
 
-	//ランダムで値取得
-	index = 1 + GetRand(static_cast<int>(EVENT_TYPE::MAX) - 2);
+	////ランダムで値取得
+	//index = 1 + GetRand(static_cast<int>(EVENT_TYPE::MAX) - 2);
 
-	//int index = 2;
+	int index = 2;
 
 	//設定
 	SetEventType(static_cast<EVENT_TYPE>(index));

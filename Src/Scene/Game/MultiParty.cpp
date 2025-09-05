@@ -117,8 +117,6 @@ void MultiParty::Reset()
 
 	//ƒXƒRƒA‰Šú‰»
 	ScoreManager::GetInstance().Init();
-
-
 }
 
 void MultiParty::CommonDraw(void)
@@ -211,7 +209,11 @@ void MultiParty::UpdateEdit(void)
 
 void MultiParty::DrawAction(void)
 {
+	//•`‰æ
 	GameScene::DrawAction();
+
+	//UI‚Ì•`‰æ
+	PlayerManager::GetInstance().DrawUI(SceneManager::GetInstance().GetScreenIndex());
 }
 
 void MultiParty::DrawEdit(void)

@@ -142,29 +142,9 @@ void PlayerManager::Update(void)
 
 void PlayerManager::Draw(void)
 {
-	//残機描画用にスクリーンの左上座標を配列で用意
-	const Vector2 screenPos[PLAYER_NUM_MAX] =
-	{
-		{ 0, 0 },													// 1P
-		{ Application::SCREEN_HALF_X, 0 },							// 2P
-		{ 0, Application::SCREEN_HALF_Y },							// 3P
-		{ Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y }	// 4P
-	};
-
-	const int HEART_OFFSET_X = 10;	//ハートのX座標オフセット
 	for (auto& p : players_)
 	{
 		p->Draw();
-		p->GetLiveCnt();
-		for(int i = 0; i < p->GetLiveCnt(); i++)
-		{
-			//プレイヤー番号を取得
-			const int P_NUM = p->GetPlayerNum();
-
-			DrawRotaGraphF(static_cast<float>(screenPos[P_NUM].x + HEART_IMG_SIZE_X / 2 + HEART_OFFSET_X + i * (HEART_IMG_SIZE_X + HEART_OFFSET_X))
-				, static_cast<float>(screenPos[P_NUM].y+HEART_IMG_SIZE_Y/2+HEART_OFFSET_X)
-				, HEART_IMG_SCL, 0.0f, imgRespawnHeart_, true);
-		}
 	}
 }
 
@@ -203,7 +183,22 @@ bool PlayerManager::IsPlayersEnd(void)
 	return true;
 }
 
+void PlayerManager::DrawUI(const int _playerIndex)
+{
+	//ハートのX座標オフセット
+	const int HEART_OFFSET_X = 10;	
 
+	for (int i = 0; i < players_[_playerIndex]->GetLiveCnt(); i++)
+	{
+		DrawRotaGraph(
+			HEART_IMG_SIZE_X / 2 + HEART_OFFSET_X + i * (HEART_IMG_SIZE_X + HEART_OFFSET_X),
+			HEART_IMG_SIZE_Y / 2 + HEART_OFFSET_X,
+			HEART_IMG_SCL,
+			0.0f,
+			imgRespawnHeart_,
+			true);
+	}
+}
 
 Transform PlayerManager::FixTrans(int _playerNum)
 {

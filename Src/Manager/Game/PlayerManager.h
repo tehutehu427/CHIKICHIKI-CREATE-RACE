@@ -100,7 +100,11 @@ public:
 	/// <returns>終えてたらtrue,なければfalse</returns>
 	bool IsPlayersEnd();
 
-
+	/// <summary>
+	/// 各プレイヤーごとのUIを描画
+	/// </summary>
+	/// <param name="_playerIndex">プレイヤーインデックス</param>
+	void DrawUI(const int _playerIndex);
 
 private:
 	//プレイヤーの大きさ
