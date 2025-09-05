@@ -259,6 +259,12 @@ void Player::AliveUpdate(void)
 	//奈落に落ちたら死に状態へ遷移
 	if (trans_.pos.y <= DEATH_POS_Y || onHitCol_->GetIsDeath())
 	{
+		//残機があればリスポーン
+		if (respawnCnt_ > 0)
+		{
+			Respawn();
+			return;
+		}
 		ChangeState(PLAYER_STATE::DEATH);
 		return;
 	}
@@ -447,6 +453,7 @@ void Player::KillPunchCol(void)
 
 void Player::Respawn(void)
 {
+	//リスポーン位置に移動
 	Init();
 	SetPos(respawnPos_);
 
