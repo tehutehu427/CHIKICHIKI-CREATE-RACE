@@ -1,19 +1,19 @@
 #pragma once
-#include "../PostEffect/PostEffectBase.h"
+#include "PostEffectBase.h"
 
-class WiggleEffect : public PostEffectBase
+class SandStormEffect : public PostEffectBase
 {
 public:
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	WiggleEffect();
+	SandStormEffect();
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~WiggleEffect() override;
+	~SandStormEffect() override;
 
 	/// <summary>
 	/// 読み込み処理
@@ -39,4 +39,5 @@ private:
 	float timer_;
 
 };
+
 

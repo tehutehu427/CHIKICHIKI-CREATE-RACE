@@ -215,6 +215,12 @@ public:
 	/// <param name="rotY">設定する値</param>
 	void SetDummyItemRotY(int playerNum , float rotY);
 
+	//スタートオブジェクトの位置
+	const VECTOR GetStartObjectPos(void);
+
+	//ゴールオブジェクトの位置
+	const VECTOR GetGoalObjectPos(void);
+
 protected:
 
 private:

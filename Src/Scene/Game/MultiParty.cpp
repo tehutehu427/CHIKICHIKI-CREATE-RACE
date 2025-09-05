@@ -6,12 +6,14 @@
 #include "../../Manager/Game/PlayerManager.h"
 #include "../../Manager/Game/EventManager.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "../../Manager/Game/PostEffectManager.h"
 #include "../../Object/Editor/Palette/EditorPaletteBase.h"
 #include "../../Object/Editor/EditController.h"
 #include "../../Object/Editor/MapDataIO.h"
 #include "../../Object/Editor/Palette/MultiPalette.h"
 #include "../../Object/System/Result/MultiResult.h"
 #include "../../Object/System/RoundDisplay.h"
+#include "../../Object/PostEffect/WiggleEffect.h"
 
 MultiParty::MultiParty(void)
 {
@@ -29,8 +31,9 @@ MultiParty::MultiParty(void)
 
 MultiParty::~MultiParty(void)
 {
-	//スコアマネージャーのインスタンスを削除
+	EventManager::GetInstance().Destroy();
 	ScoreManager::GetInstance().Destroy();
+	PostEffectManager::GetInstance().Destroy();
 }
 
 void MultiParty::Load(void)
@@ -56,6 +59,9 @@ void MultiParty::Load(void)
 	//イベントマネージャー生成
 	EventManager::CreateInstance();
 
+	//ポストエフェクト管理クラス生成
+	PostEffectManager::CreateInstance();
+
 	//ランダムBGMを取得
 	RandomBgm();
 
@@ -76,6 +82,12 @@ void MultiParty::Init(void)
 
 	//ラウンドを初期化
 	round_->Init();
+
+	//イベントを初期化
+	EventManager::GetInstance().Init();
+
+	//ポストエフェクトを初期化
+	PostEffectManager::GetInstance().Init();
 
 	//フェーズ遷移
 	ChangePhase(PHASE::ROUND_PHASE);
@@ -105,10 +117,16 @@ void MultiParty::Reset()
 
 	//スコア初期化
 	ScoreManager::GetInstance().Init();
+
+
 }
 
 void MultiParty::CommonDraw(void)
 {
+	if (phase_ == PHASE::ACTION_PHASE)
+	{
+		PostEffectManager::GetInstance().Draw();
+	}
 }
 
 void MultiParty::RoundReset()
@@ -122,16 +140,20 @@ void MultiParty::RoundReset()
 	//リザルトのリセット
 	result_->Reset();
 
-	//フェーズを遷移
-	ChangePhase(PHASE::ROUND_PHASE);
-
 	//BGMを停止
 	sndMng_.Stop(playBgmSrc_);
 
 	//BGMをランダム設定
-	RandomBgm();
+	RandomBgm();	
+	
+	//イベントリセット
+	EventManager::GetInstance().Reset();
 
-	ScoreManager::GetInstance().ResetIsBonusScores();
+	//ボーナス関係のリセット
+	ScoreManager::GetInstance().ResetIsBonusScores();	
+	
+	//フェーズを遷移
+	ChangePhase(PHASE::ROUND_PHASE);
 }
 
 void MultiParty::NormalDraw(void)
@@ -144,6 +166,12 @@ void MultiParty::UpdateAction(void)
 {
 	//親クラスのアクション時の更新処理を呼ぶ
 	GameScene::UpdateAction();
+
+	//イベント処理の更新処理
+	if (actionStartTime_ <= 0.0f)
+	{
+		EventManager::GetInstance().Update();
+	}
 }
 
 void MultiParty::UpdateEdit(void)
@@ -248,6 +276,13 @@ void MultiParty::ChangePhaseRound()
 	round_->AddNumberIndex(1);
 	//BGMを再生
 	sndMng_.Play(SoundManager::SRC::ROUND_JINGLE, SoundManager::PLAYTYPE::BACK);
+
+	//イベントの設定(最初のラウンドは行わない)
+	EventManager::GetInstance().SetRandomEvent();
+	if (round_->GetNumberIndex() != 1)
+	{
+		EventManager::GetInstance().SetRandomEvent();
+	}
 }
 
 void MultiParty::ChangePhaseSelect()
@@ -297,6 +332,7 @@ void MultiParty::UpdateRound()
 	{
 		//初期化
 		phaseChangeTimer_ = 0.0f;
+		round_->CountReset();
 
 		//セレクトへ遷移
 		ChangePhase(PHASE::SELECT_PHASE);
@@ -322,6 +358,8 @@ void MultiParty::UpdateResult()
 void MultiParty::DrawRound()
 {
 	round_->Draw();
+
+	EventManager::GetInstance().Draw();
 }
 
 void MultiParty::DrawSelect()

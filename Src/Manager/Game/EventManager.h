@@ -16,7 +16,8 @@ public:
 		STATE_UP,	//強化
 		RESPAWN,	//一度だけ復活
 		WIGGLE,		//画面をくねくねさせる
-		THREE_POINT,//ポイントアップ
+		FISH_EYE,	//魚眼
+		SAND_STORM,	//砂嵐
 		MAX
 	};
 
@@ -40,6 +41,12 @@ public:
 	void Destroy(void);
 
 	/// <summary>
+	/// 読み込み
+	/// </summary>
+	/// <param name=""></param>
+	void Load(void);
+
+	/// <summary>
 	/// 初期化
 	/// </summary>
 	void Init(void);
@@ -55,12 +62,28 @@ public:
 	void Draw(void);
 
 	/// <summary>
-	/// イベントの設定
+	/// イベント種類を返す
 	/// </summary>
-	/// <param name="type"></param>
-	void SetEventType(const EVENT_TYPE _type);
+	/// <returns>イベント種類</returns>
+	const EVENT_TYPE GetEventType()const { return eventType_; }
+
+	/// <summary>
+	/// ランダムでイベントを設定
+	/// </summary>
+	void SetRandomEvent();
+
+	/// <summary>
+	/// リセット
+	/// </summary>
+	void Reset();
 
 private:
+
+	//イベント確率
+	static constexpr int EVENT_PER = 2;
+
+	//画像
+	int imgEvents_[static_cast<int>(EventManager::EVENT_TYPE::MAX)];
 
 	//イベント状態
 	EVENT_TYPE eventType_;
@@ -68,17 +91,32 @@ private:
 	//静的インスタンス
 	static EventManager* instance_;
 
+	//ステータスの反映判定
+	bool isStateUp_;
+
 	//イベント別設定処理
-	std::unordered_map<EVENT_TYPE, std::function<void(void)>> eventFunc_;
+	std::unordered_map<EVENT_TYPE, std::function<void(void)>> eventSetterMap_;
+
+	//イベント別更新処理
+	std::unordered_map<EVENT_TYPE, std::function<void(void)>> eventUpdateMap_;
 
 	//イベント別設定処理登録
-	void RegisterSet(const EVENT_TYPE _type, std::function<void(void)> _func);
+	void RegisterSet(const EVENT_TYPE _type, std::function<void(void)> _setter, std::function<void(void)> _update);
+	
+	//イベントの設定
+	void SetEventType(const EVENT_TYPE _type);
 
 	//イベント種類別初期設定
-	void SetNone(void);
-	void SetRespawn(void);
-	void SetThreePoint(void);
-	void SetStateUp(void);
+	void SetNone(void) {}
+	void SetSandstorm(void);
+	void SetWiggle(void);
+	void SetFishEye(void);
+
+	//更新処理
+	void UpdateStateUp(void);
+	void UpdateSandstorm(void);
+	void UpdateRespawn(void);
+	void UpdateNone(void) {};
 
 	//コンストラクタ
 	EventManager(void);

@@ -4,6 +4,7 @@
 
 class MultiResult;
 class RoundDisplay;
+class WiggleEffect;
 
 class MultiParty : public GameScene
 {

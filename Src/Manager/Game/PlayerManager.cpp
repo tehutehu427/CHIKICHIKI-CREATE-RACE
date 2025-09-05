@@ -100,6 +100,7 @@ void PlayerManager::Update(void)
 	{
 		p->Update();
 	}
+
 	if (SceneManager::GetInstance().GetSceneID() == SceneManager::SCENE_ID::TITLE)
 	{
 		return;
@@ -124,7 +125,6 @@ void PlayerManager::Update(void)
 	}
 	//PlayersCollision();
 
-	
 	//for (int i = 0; i < playerNum_; i++)
 	//{
 	//	if (goalTime_[i] >= 0.0f)
@@ -142,7 +142,6 @@ void PlayerManager::Draw(void)
 		p->Draw();
 	}
 }
-
 
 const std::vector<float> PlayerManager::GetGoalTime(void) 
 {

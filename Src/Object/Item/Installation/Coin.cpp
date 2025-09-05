@@ -1,5 +1,6 @@
 #include<algorithm>
 #include"../Manager/System/ResourceManager.h"
+#include"../Manager/System/SoundManager.h"
 #include"../Manager/Game/ItemManager.h"
 #include"../Manager/Game/MapEditer.h"
 #include"../Utility/Utility.h"
@@ -55,6 +56,9 @@ void Coin::SetParam(void)
 
 	//エフェクト
 	effect_->Add(ResourceManager::GetInstance().Load(ResourceManager::SRC::COIN_GOAL_EFF).handleId_, EffectController::EFF_TYPE::COIN_GOAL);
+
+	//SE
+	SoundManager::GetInstance().LoadResource(SoundManager::SRC::COIN_GET_SE);
 }
 
 void Coin::Update(void)
@@ -122,6 +126,9 @@ void Coin::OnHit(const std::weak_ptr<Collider> _hitCol)
 	const Player& player = dynamic_cast<const Player&>(followCol_.lock()->GetParent());
 	follower_ = std::make_unique<CoinFollower>(*this, player);
 	followPos_ = VGet(FOLLOW_LOCAL_POS.x, FOLLOW_LOCAL_POS.y, FOLLOW_LOCAL_POS.z - COIN_DIS * player.GetCoinNum());
+
+	//ゲットSE
+	SoundManager::GetInstance().Play(SoundManager::SRC::COIN_GET_SE, SoundManager::PLAYTYPE::BACK);
 
 	//コライダの消去
 	colParam_[0].collider_->Kill();

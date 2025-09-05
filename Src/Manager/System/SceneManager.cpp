@@ -300,8 +300,8 @@ void SceneManager::CreateSplitScreen(const int _playerNum)
 		splitScreens_.clear();
 	}
 
-	//•ªŠ„‚ğs‚¤
-	isSplitMode_ = true;
+	//ƒ[ƒh‰æ–Ê‚Å‚Í•ªŠ„‚µ‚È‚¢
+	isSplitMode_ = false;
 
 	int createNum = _playerNum;	//¶¬”
 	int divY = 1;				//Y‚Ì•ªŠ„”
