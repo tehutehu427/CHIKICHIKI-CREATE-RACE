@@ -19,6 +19,7 @@ public:
 		LANDING,	//着地
 		PUNCH_HIT,	//パンチヒット
 		COIN_GOAL,	//コインのゴール
+		RESPAWN,	//リスポーン
 	};
 
 	//コンストラクタ

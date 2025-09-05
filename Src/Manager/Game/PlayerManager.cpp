@@ -178,18 +178,6 @@ bool PlayerManager::IsPlayersEnd(void)
 	return true;
 }
 
-void PlayerManager::RespawnPlayer(void)
-{
-	//プレイヤー全員を調べる
-	for (auto& player : players_)
-	{
-		//ゴールしていない、かつ倒れていない時,残機があるとき
-		if (player->IsDeath() && player->GetLiveCnt() > 0)
-		{
-			player->Respawn();
-		}
-	}
-}
 
 
 Transform PlayerManager::FixTrans(int _playerNum)

@@ -100,9 +100,6 @@ public:
 	/// <returns>終えてたらtrue,なければfalse</returns>
 	bool IsPlayersEnd();
 
-	//死んでいるプレイヤーをリスポーンさせる
-	void RespawnPlayer(void);	
-
 
 
 private:

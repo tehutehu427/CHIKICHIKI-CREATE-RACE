@@ -57,6 +57,7 @@ public:
 		CHANGE_PHASE_ICON_CLICK,	//フェーズアイコンクリック
 		BOMB_SE,	//爆発音
 		COUNTDOWN_SE,	//笛の音
+		RESPAWN_SE,	//リスポーン音
 
 		//プレイモード効果音
 		GAME_OVER,			//ゲームオーバー

@@ -6,6 +6,8 @@
 #include"./PlayerAction.h"
 #include "../ObjectBase.h"
 
+#include"../../Common/Vector2.h"
+
 //#define DEBUG_ON
 class AnimationController;
 class Camera;
@@ -215,8 +217,6 @@ public:
 	//パンチの当たり判定を消す
 	void KillPunchCol(void);
 
-	//リスポーン処理
-	void Respawn(void);
 
 
 private:
@@ -313,15 +313,12 @@ private:
 	//--------------------------------------------
 	//プレイヤー単体が持っているもの
 	int playerNum_;			//プレイヤー番号
+	
+	float time_;			//計測用
 
-	//計測用
-	float time_;
+	float goalTime_;		//ゴール時間格納
 
-	//ゴール時間格納
-	float goalTime_;
-
-	//残機
-	int respawnCnt_;
+	int respawnCnt_;		//残機
 
 	//プレイヤー状態
 	PLAYER_STATE state_;	//プレイヤーの状態(生存状態)
@@ -336,8 +333,7 @@ private:
 
 	Collider::TAG tag_;	//プレイヤーの当たり判定タグ
 
-	VECTOR respawnPos_;	//リスポーン位置
-				
+	VECTOR respawnPos_;	//リスポーン位置	
 
 	//--------------------------------------------
 	//******************************************
@@ -373,5 +369,7 @@ private:
 	void TimeUpdate(void);
 
 
+	//リスポーン処理
+	void Respawn(void);
 };
 

@@ -244,6 +244,7 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::IMG, path_Event + "EventWiggle.png");
 	resourcesMap_.emplace(SRC::EVENT_WIGGLE, std::move(res));
+
 #pragma endregion 
 
 #pragma region ƒ}ƒXƒN‰æ‘œ
@@ -329,7 +330,9 @@ void ResourceManager::Init(void)
 
 	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "CoinGoal.efkefc");
 	resourcesMap_.emplace(SRC::COIN_GOAL_EFF, std::move(res));
-
+	
+	res = std::make_unique<Resource>(Resource::TYPE::EFFEKSEER, PATH_EFF + "Respawn.efkefc");
+	resourcesMap_.emplace(SRC::RESPAWN_EFF, std::move(res));
 
 #pragma endregion
 
