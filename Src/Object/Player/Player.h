@@ -361,6 +361,7 @@ private:
 	//ゴールした時
 	void ChangeGoal(void);
 	void GoalUpdate(void);
+
 	
 	//アクション関係
 	void Action(void);

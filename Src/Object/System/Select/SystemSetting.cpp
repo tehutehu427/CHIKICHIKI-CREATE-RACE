@@ -303,14 +303,14 @@ void SystemSetting::UpdateSelect(SelectScene& _parent)
 		return;
 	}
 	//右
-	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1) && stateIndex_ != static_cast<int>(STATE::APPLY))
 	{
 		rightStateMap_[static_cast<STATE>(stateIndex_)](); //右の処理を実行
 		sound.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK); //クリック音を再生
 		return;
 	}
 	//左
-	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1))
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1) && stateIndex_ != static_cast<int>(STATE::APPLY))
 	{
 		leftStateMap_[static_cast<STATE>(stateIndex_)](); //左の処理を実行
 		sound.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK); //クリック音を再生

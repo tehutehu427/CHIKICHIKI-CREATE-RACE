@@ -70,6 +70,7 @@ void PlayerOnHit::Init(void)
 	isLandHit_ = false;
 	isHitOverHead_ = false;
 	isHitSlimeFloor_ = false;
+	movedPos_ = Utility::VECTOR_ZERO;
 }
 
 void PlayerOnHit::Update(void)

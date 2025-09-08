@@ -136,9 +136,6 @@ void Player::Init(void)
 	trans_.scl = MODEL_SCL;
 	trans_.quaRotLocal = 
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(MODEL_LOCAL_DEG), 0.0f });
-
-	float posX = PLAYER_ONE_POS_X + DISTANCE_POS * playerNum_;
-	trans_.pos={ posX,0.0f,0.0f };
 	trans_.localPos = { 0.0f,-Player::RADIUS,0.0f };
 
 
@@ -225,30 +222,32 @@ void Player::DrawDebug(void)
 	const int WIDTH = 200;
 	//onHitCol_->DrawDebug();
 
+	DrawFormatString(30, 30 + playerNum_ * 50, 0x000000, "座標(%f,%f,%f)", trans_.pos.x, trans_.pos.y, trans_.pos.z);
+	DrawFormatString(30, 15 + playerNum_ * 20, 0x000000, "座標(%f,%f,%f)", respawnPos_.x, respawnPos_.y, respawnPos_.z);
 
-	VECTOR pow = action_->GetMovePow();
-	VECTOR jumpPow = action_->GetJumpPow();
-	VECTOR movedPos = onHitCol_->GetMovedPos();
-	bool isOver = onHitCol_->GetIsOverHead();
-	DrawFormatString(0, 16*(playerNum_*9), 0x000000
-		, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nisJump(%d)\nisLand(%d)\nOverHead(%d)"
-		, trans_.rot.x, trans_.rot.y, trans_.rot.z
-		,action_->GetJumpDecel()
-		,action_->GetStepJump()
-		, jumpPow.x, jumpPow.y, jumpPow.z
-		,action_->GetIsJump()
-		,onHitCol_->GetIsLandHit()
-		, isOver
-	);
+	//VECTOR pow = action_->GetMovePow();
+	//VECTOR jumpPow = action_->GetJumpPow();
+	//VECTOR movedPos = onHitCol_->GetMovedPos();
+	//bool isOver = onHitCol_->GetIsOverHead();
+	//DrawFormatString(0, 16*(playerNum_*9), 0x000000
+	//	, "角度(%.2f,%.2f,%.2f)\njumpDecel(%f)\nstepJump_(%f)\njumpPow(%f,%f,%f)\nisJump(%d)\nisLand(%d)\nOverHead(%d)"
+	//	, trans_.rot.x, trans_.rot.y, trans_.rot.z
+	//	,action_->GetJumpDecel()
+	//	,action_->GetStepJump()
+	//	, jumpPow.x, jumpPow.y, jumpPow.z
+	//	,action_->GetIsJump()
+	//	,onHitCol_->GetIsLandHit()
+	//	, isOver
+	//);
 
-	action_->DrawDebug();
+	//action_->DrawDebug();
 
-	if (IsDeath())
-	{
-		static int OFFSET = 32;
-		//リトライするかEditシーンに戻るか選べるようにする。
-		DrawFormatString(Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y+ OFFSET *playerNum_, 0xff0000, "(%d)GameOver", playerNum_);
-	}
+	//if (IsDeath())
+	//{
+	//	static int OFFSET = 32;
+	//	//リトライするかEditシーンに戻るか選べるようにする。
+	//	DrawFormatString(Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y+ OFFSET *playerNum_, 0xff0000, "(%d)GameOver", playerNum_);
+	//}
 }
 
 #endif // DEBUG_ON
@@ -260,7 +259,7 @@ void Player::ChangeState(PLAYER_STATE _state)
 }
 void Player::ChangeAlive(void)
 {
-	stateUpdate_ = std::bind(&Player::AliveUpdate, this);
+	stateUpdate_ = [this]() {AliveUpdate(); };
 }
 void Player::AliveUpdate(void)
 {
@@ -311,7 +310,7 @@ void Player::ChangeDeath(void)
 	//パッド振動
 	KeyConfig::GetInstance().PadVibration(padNum_, DEATH_PAD_VIBRATION_TIME, DEATH_PAD_VIBRATION_POW);
 
-	stateUpdate_ = std::bind(&Player::DeathUpdate, this);
+	stateUpdate_ = [this]() {DeathUpdate(); };
 }
 void Player::DeathUpdate(void)
 {
@@ -349,7 +348,7 @@ void Player::ChangeGoal(void)
 	}
 	colParam_.clear();
 	action_->StopResource();
-	stateUpdate_ = std::bind(&Player::GoalUpdate, this);
+	stateUpdate_ = [this]() {GoalUpdate(); };
 
 }
 void Player::GoalUpdate(void)
@@ -480,8 +479,9 @@ void Player::Respawn(void)
 {
 	//リスポーン位置に移動
 	Init();
+	//リスポーン処理
 	SetPos(respawnPos_);
-
+	onHitCol_->SetMovedPos(respawnPos_);
 	//リスポーンカウントを１減らす
 	respawnCnt_--;
 }
