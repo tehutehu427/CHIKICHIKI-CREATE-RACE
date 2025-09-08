@@ -4,7 +4,7 @@
 class Shadow :public ObjectBase
 {
 public:
-	static constexpr int LINE_RANGE = 500;			//“–‚½‚è”»’è‚Ì’·‚³
+	static constexpr int LINE_RANGE = 1000;			//“–‚½‚è”»’è‚Ì’·‚³
 	static constexpr int RADIUS = 15;				//‰e‚Ì”¼Œa
 	static constexpr int RADIUS_MAX = 50;			//‰e‚ÌÅ‘å”¼Œa
 	static constexpr int VERTEX_NUM = 36;			//‰e‚Ì’¸“_”
