@@ -19,12 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\Object\PostEffect\SandStormEffect.cpp" />
-    <ClCompile Include="Src\Object\PostEffect\FishEyeEffect.cpp" />
-    <ClCompile Include="Src\Manager\Game\PostEffectManager.cpp" />
-    <ClCompile Include="Src\Object\PostEffect\PostEffectBase.cpp" />
     <ClCompile Include="Src\Manager\Game\EventManager.cpp" />
-    <ClCompile Include="Src\Common\Fader.cpp" />
+    <ClCompile Include="Src\Manager\Game\PostEffectManager.cpp" />
+    <ClCompile Include="Src\Object\PostEffect\FishEyeEffect.cpp" />
+    <ClCompile Include="Src\Object\PostEffect\PostEffectBase.cpp" />
+    <ClCompile Include="Src\Object\PostEffect\SandStormEffect.cpp" />
+    <ClCompile Include="Src\Object\PostEffect\WiggleEffect.cpp" />
     <ClCompile Include="Src\Object\System\Result\BonusUis.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\CoinFollower.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\Coin.cpp" />
@@ -104,6 +104,7 @@
     <ClCompile Include="Src\Manager\Game\GravityManager.cpp" />
     <ClCompile Include="Src\Object\ObjectBase.cpp" />
     <ClCompile Include="Src\Application.cpp" />
+    <ClCompile Include="Src\Common\Fader.cpp" />
     <ClCompile Include="Src\Common\Quaternion.cpp" />
     <ClCompile Include="Src\Common\Vector2.cpp" />
     <ClCompile Include="Src\main.cpp" />
@@ -127,15 +128,25 @@
     <ClCompile Include="Src\Object\Item\SubItem\Wind.cpp" />
     <ClCompile Include="Src\Object\Common\ToonStyle.cpp" />
     <ClCompile Include="Src\Object\System\Select\SystemSetting.cpp" />
-    <ClCompile Include="Src\Object\PostEffect\WiggleEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Object\PostEffect\SandStormEffect.h" />
-    <ClInclude Include="Src\Object\PostEffect\FishEyeEffect.h" />
-    <ClInclude Include="Src\Manager\Game\PostEffectManager.h" />
-    <ClInclude Include="Src\Object\PostEffect\PostEffectBase.h" />
+    <ClInclude Include="Src\Lib\DxLib\DxCompileConfig.h" />
+    <ClInclude Include="Src\Lib\DxLib\DxDataType.h" />
+    <ClInclude Include="Src\Lib\DxLib\DxDataTypeWin.h" />
+    <ClInclude Include="Src\Lib\DxLib\DxFunctionWin.h" />
+    <ClInclude Include="Src\Lib\DxLib\DxLib.h" />
+    <ClInclude Include="Src\Lib\DxLib\Effekseer.h" />
+    <ClInclude Include="Src\Lib\DxLib\Effekseer.Modules.h" />
+    <ClInclude Include="Src\Lib\DxLib\Effekseer.SIMD.h" />
+    <ClInclude Include="Src\Lib\DxLib\EffekseerForDXLib.h" />
+    <ClInclude Include="Src\Lib\DxLib\EffekseerRendererDX11.h" />
+    <ClInclude Include="Src\Lib\DxLib\EffekseerRendererDX9.h" />
     <ClInclude Include="Src\Manager\Game\EventManager.h" />
-    <ClInclude Include="Src\Common\Fader.h" />
+    <ClInclude Include="Src\Manager\Game\PostEffectManager.h" />
+    <ClInclude Include="Src\Object\PostEffect\FishEyeEffect.h" />
+    <ClInclude Include="Src\Object\PostEffect\PostEffectBase.h" />
+    <ClInclude Include="Src\Object\PostEffect\SandStormEffect.h" />
+    <ClInclude Include="Src\Object\PostEffect\WiggleEffect.h" />
     <ClInclude Include="Src\Object\System\Result\BonusUis.h" />
     <ClInclude Include="Src\Object\Item\Installation\CoinFollower.h" />
     <ClInclude Include="Src\Object\Item\Installation\Coin.h" />
@@ -264,6 +275,7 @@
     <ClInclude Include="Src\Manager\Game\GravityManager.h" />
     <ClInclude Include="Src\Object\ObjectBase.h" />
     <ClInclude Include="Src\Application.h" />
+    <ClInclude Include="Src\Common\Fader.h" />
     <ClInclude Include="Src\Common\Quaternion.h" />
     <ClInclude Include="Src\Common\Vector2.h" />
     <ClInclude Include="Src\main.h" />
@@ -287,7 +299,6 @@
     <ClInclude Include="Src\Object\System\YesNoResponder.h" />
     <ClInclude Include="Src\Object\Common\ToonStyle.h" />
     <ClInclude Include="Src\Object\System\Select\SystemSetting.h" />
-    <ClInclude Include="Src\Object\PostEffect\WiggleEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
@@ -299,12 +310,6 @@
     <None Include="Src\Shader\Common\Vertex\VertexShader3DHeader.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Src\Shader\PostEffect\FishEye.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
     <FxCompile Include="Src\Shader\Image\DarklyRotateSprites.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -424,18 +429,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Src\Shader\PostEffect\SandStorm.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Src\Shader\PostEffect\Wiggle.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">

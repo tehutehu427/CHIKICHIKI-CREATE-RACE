@@ -20,9 +20,6 @@
     <FxCompile Include="Src\Shader\Model\ChickenPS.hlsl" />
     <FxCompile Include="Src\Shader\Model\CannonBaseToonPS.hlsl" />
     <FxCompile Include="Src\Shader\Model\ToonNoTexturePS.hlsl" />
-    <FxCompile Include="Src\Shader\PostEffect\Wiggle.hlsl" />
-    <FxCompile Include="Src\Shader\PostEffect\FishEye.hlsl" />
-    <FxCompile Include="Src\Shader\PostEffect\SandStorm.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Object\System\Select\SelectStage.cpp" />
@@ -129,10 +126,11 @@
     <ClCompile Include="Src\Object\Item\Installation\CoinFollower.cpp" />
     <ClCompile Include="Src\Object\System\Result\BonusUis.cpp" />
     <ClCompile Include="Src\Manager\Game\EventManager.cpp" />
-    <ClCompile Include="Src\Object\PostEffect\WiggleEffect.cpp" />
-    <ClCompile Include="Src\Object\PostEffect\PostEffectBase.cpp" />
     <ClCompile Include="Src\Manager\Game\PostEffectManager.cpp" />
     <ClCompile Include="Src\Object\PostEffect\FishEyeEffect.cpp" />
+    <ClCompile Include="Src\Object\PostEffect\PostEffectBase.cpp" />
+    <ClCompile Include="Src\Object\PostEffect\SandStormEffect.cpp" />
+    <ClCompile Include="Src\Object\PostEffect\WiggleEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -288,10 +286,22 @@
     <ClInclude Include="Src\Object\System\Result\BonusUis.h" />
     <ClInclude Include="Src\Object\Item\Installation\CoinFollower.h" />
     <ClInclude Include="Src\Manager\Game\EventManager.h" />
-    <ClInclude Include="Src\Object\PostEffect\WiggleEffect.h" />
-    <ClInclude Include="Src\Object\PostEffect\PostEffectBase.h" />
     <ClInclude Include="Src\Manager\Game\PostEffectManager.h" />
+    <ClInclude Include="Src\Lib\DxLib\DxCompileConfig.h" />
+    <ClInclude Include="Src\Lib\DxLib\DxDataType.h" />
+    <ClInclude Include="Src\Lib\DxLib\DxDataTypeWin.h" />
+    <ClInclude Include="Src\Lib\DxLib\DxFunctionWin.h" />
+    <ClInclude Include="Src\Lib\DxLib\DxLib.h" />
+    <ClInclude Include="Src\Lib\DxLib\Effekseer.h" />
+    <ClInclude Include="Src\Lib\DxLib\Effekseer.Modules.h" />
+    <ClInclude Include="Src\Lib\DxLib\Effekseer.SIMD.h" />
+    <ClInclude Include="Src\Lib\DxLib\EffekseerForDXLib.h" />
+    <ClInclude Include="Src\Lib\DxLib\EffekseerRendererDX9.h" />
+    <ClInclude Include="Src\Lib\DxLib\EffekseerRendererDX11.h" />
     <ClInclude Include="Src\Object\PostEffect\FishEyeEffect.h" />
+    <ClInclude Include="Src\Object\PostEffect\PostEffectBase.h" />
+    <ClInclude Include="Src\Object\PostEffect\SandStormEffect.h" />
+    <ClInclude Include="Src\Object\PostEffect\WiggleEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
