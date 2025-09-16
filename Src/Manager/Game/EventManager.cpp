@@ -46,18 +46,18 @@ void EventManager::Load(void)
 	}
 }
 
-void EventManager::Init()
+void EventManager::Init(void)
 {
 	SetEventType(EVENT_TYPE::NONE);
 	isStateUp_ = false;
 }
 
-void EventManager::Update()
+void EventManager::Update(void)
 {
 	eventUpdateMap_[eventType_]();
 }
 
-void EventManager::Draw()
+void EventManager::Draw(void)
 {
 	if (eventType_ == EVENT_TYPE::NONE)
 	{
@@ -80,7 +80,7 @@ void EventManager::SetEventType(const EVENT_TYPE _type)
 	eventSetterMap_[eventType_]();
 }
 
-void EventManager::SetRandomEvent()
+void EventManager::SetRandomEvent(void)
 {
 	//ランダムで値取得
 	int index = GetRand(EVENT_PER);
@@ -94,13 +94,11 @@ void EventManager::SetRandomEvent()
 	//ランダムで値取得
 	index = 1 + GetRand(static_cast<int>(EVENT_TYPE::MAX) - 2);
 
-	//int index = 2;
-
 	//設定
 	SetEventType(static_cast<EVENT_TYPE>(index));
 }
 
-void EventManager::Reset()
+void EventManager::Reset(void)
 {
 	if (eventType_ == EVENT_TYPE::NONE)
 	{

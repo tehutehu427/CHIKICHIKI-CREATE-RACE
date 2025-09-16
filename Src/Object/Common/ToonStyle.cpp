@@ -2,8 +2,7 @@
 #include "../../Renderer/ModelMaterial.h"
 #include "../../Renderer/ModelRenderer.h"
 
-
-ToonStyle::ToonStyle()
+ToonStyle::ToonStyle(void)
 {
 	model_ = -1;
 	drawFunc_ = std::bind(&ToonStyle::ToonDrawModel, this);
@@ -11,10 +10,6 @@ ToonStyle::ToonStyle()
 	outlineRenderer_ = nullptr;
 	toonMaterial_ = nullptr;
 	toonRenderer_ = nullptr;
-}
-
-ToonStyle::~ToonStyle()
-{
 }
 
 void ToonStyle::Load(int _modelId, const MESH_TYPE _type)
@@ -55,7 +50,7 @@ void ToonStyle::Load(int _modelId, const MESH_TYPE _type)
 	toonRenderer_ = std::make_unique<ModelRenderer>(model_, *toonMaterial_);
 }
 
-void ToonStyle::Init()
+void ToonStyle::Init(void)
 {
 	//アウトライン定数バッファの設定
 	outlineMaterial_->AddConstBufVS(FLOAT4{ 5.0f,0.0f,0.0f,0.0f });	//輪郭線の太さ
@@ -74,7 +69,7 @@ void ToonStyle::Init()
 	toonMaterial_->AddConstBufPS(FLOAT4{ GetLightDirection().x,GetLightDirection().y, GetLightDirection().z, 0.0f });//ライト方向
 }
 
-void ToonStyle::Draw()
+void ToonStyle::Draw(void)
 {
 	//モデル描画のZBufferを無効にする
 	MV1SetWriteZBuffer(model_, false);
@@ -108,13 +103,13 @@ void ToonStyle::SetOutlineColor(const float _r, const float _g, const float _b, 
 	outlineMaterial_->SetConstBufPS(0, FLOAT4{ _r,_g,_b,_a });
 }
 
-void ToonStyle::NormalDrawModel()
+void ToonStyle::NormalDrawModel(void)
 {
 	//通常描画
 	MV1DrawModel(model_);
 }
 
-void ToonStyle::ToonDrawModel()
+void ToonStyle::ToonDrawModel(void)
 {
 	//描画
 	toonRenderer_->Draw();

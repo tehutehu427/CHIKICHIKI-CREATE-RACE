@@ -32,12 +32,12 @@ EditEscape::EditEscape(const Vector2& _padCursorPos):
 	RegisterStateFunction(STATE::CHECK, SceneBase::ProcessFunction{ [&]() { UpdateCheck(); },  [&]() { DrawCheck(); } });
 }
 
-EditEscape::~EditEscape()
+EditEscape::~EditEscape(void)
 {
 	DeleteFontToHandle(font_);
 }
 
-void EditEscape::Load()
+void EditEscape::Load(void)
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgIcon_ = res.Load(ResourceManager::SRC::CANCEL_ICON).handleId_;
@@ -51,7 +51,7 @@ void EditEscape::Load()
 	SoundManager::GetInstance().LoadResource(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK);
 }
 
-void EditEscape::Init()
+void EditEscape::Init(void)
 {
 	//À•WÝ’è
 	pos_ = iconHalfSize;
@@ -59,13 +59,13 @@ void EditEscape::Init()
 	responder_->Init();
 }
 
-void EditEscape::Update()
+void EditEscape::Update(void)
 {
 	//XV
 	stateFunc_[state_].updataFunc_();
 }
 
-void EditEscape::Draw()
+void EditEscape::Draw(void)
 {
 	//•`‰æ
 	stateFunc_[state_].drawFunc_();
@@ -82,7 +82,7 @@ void EditEscape::RegisterStateFunction(const STATE _state, SceneBase::ProcessFun
 	stateFunc_[_state] = _func;
 }
 
-void EditEscape::UpdateWait()
+void EditEscape::UpdateWait(void)
 {
 	//À•WÝ’è
 	Vector2 leftTop = Vector2::SubVector2(pos_, iconHalfSize);
@@ -104,7 +104,7 @@ void EditEscape::UpdateWait()
 	}
 }
 
-void EditEscape::UpdateCheck()
+void EditEscape::UpdateCheck(void)
 {
 	YesNoResponder::RESPON res = responder_->GetRespon();
 
@@ -129,7 +129,7 @@ void EditEscape::UpdateCheck()
 
 }
 
-void EditEscape::DrawWait()
+void EditEscape::DrawWait(void)
 {
 	DrawRotaGraph(
 		pos_.x,
@@ -142,7 +142,7 @@ void EditEscape::DrawWait()
 	);
 }
 
-void EditEscape::DrawCheck()
+void EditEscape::DrawCheck(void)
 {
 	//”wŒiŠÜ‚ß‰ñ“šƒ{ƒbƒNƒX‚Ì•`‰æ
 	responder_->Draw();

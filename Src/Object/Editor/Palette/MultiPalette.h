@@ -3,9 +3,8 @@
 
 class MultiPalette : public EditorPaletteBase
 {
-public:
 
-	static constexpr float RATE_SPEED = 0.05f;
+public:
 
 	/// <summary>
 	/// コンストラクタ
@@ -46,6 +45,6 @@ private:
 	int imgSkip_;
 
 	//状態別更新
-	void UpdateSelect()override;		//選ぶ
+	void UpdateSelect(void) override;		//選ぶ
 };
 

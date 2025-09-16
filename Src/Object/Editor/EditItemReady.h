@@ -6,6 +6,7 @@ class EditController;
 
 class EditItemReady
 {
+
 public:
 
 	enum class READY_PHASE
@@ -17,11 +18,11 @@ public:
 	};
 
 	EditItemReady(EditController& parent);
-	~EditItemReady();
+	~EditItemReady(void);
 
-	void Init();
-	void Update();
-	void Draw();
+	void Init(void);
+	void Update(void);
+	void Draw(void);
 
 	void ChangeReady(const READY_PHASE _ready);
 	inline READY_PHASE GetReady(void)const { return ready_; }

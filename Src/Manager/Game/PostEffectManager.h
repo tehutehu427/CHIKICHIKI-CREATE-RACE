@@ -6,6 +6,7 @@ class PostEffectBase;
 
 class PostEffectManager
 {
+
 public:
 
 	//Ží—Þ

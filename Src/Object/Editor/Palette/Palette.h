@@ -5,29 +5,27 @@
 
 class Palette
 {
+
 public:
 
+	/// <summary>
+	/// 状態
+	/// </summary>
 	enum class STATE
 	{
-		NONE,		//非表示
-		EXPANSION,	//拡大
-		REDUCTION,	//縮小
-		ADMISSION,	//入場
+		NONE,			//非表示
+		EXPANSION,		//拡大
+		REDUCTION,		//縮小
+		ADMISSION,		//入場
 		ADMISSION_EDGE,	//画面端手前から入場
-		EXIT,		//退場
-		EXIT_EDGE,	//画面端手前へ退場
-		CENTER,		//中央表示
-		EDGE,		//端表示
-	};
+		EXIT,			//退場
+		EXIT_EDGE,		//画面端手前へ退場
+		CENTER,			//中央表示
+		EDGE,			//端表示
+	};	
 
 	//拡大率
 	static constexpr float RATE_MAX = 1.8f;
-
-	//拡大速度
-	static constexpr float RATE_SPEED = 0.03f;
-
-	//移動速度
-	static constexpr float MOVE_SPEED = 800.0f;
 
 	//画面端用オフセット
 	static constexpr int EDGE_OFFSET = 250;
@@ -39,32 +37,32 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Palette();
+	Palette(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~Palette();
+	~Palette(void) = default;
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// 状態変更
@@ -83,9 +81,15 @@ public:
 	/// 状態を返す
 	/// </summary>
 	/// <returns>状態</returns>
-	const STATE GetState()const { return state_; }
+	const STATE GetState(void)const { return state_; }
 
-private:
+private:	
+
+	//拡大速度
+	static constexpr float RATE_SPEED = 0.03f;
+
+	//移動速度
+	static constexpr float MOVE_SPEED = 800.0f;	
 
 	//状態
 	STATE state_;
@@ -118,25 +122,23 @@ private:
 	std::unordered_map < STATE, std::function<void()>> stateChanges_;
 
 	//状態別変更処理
-	void ChangeStateNone();
-	void ChangeStateExpansion();
-	void ChangeStateReduction();
-	void ChangeStateAdmission();
-	void ChangeStateAdmissionEdge();
-	void ChangeStateExit();
-	void ChangeStateExitEdge();
-	void ChangeStateCenter();
-	void ChangeStateEdge();
+	void ChangeStateNone(void);
+	void ChangeStateExpansion(void);
+	void ChangeStateReduction(void);
+	void ChangeStateAdmission(void);
+	void ChangeStateAdmissionEdge(void);
+	void ChangeStateExit(void);
+	void ChangeStateExitEdge(void);
+	void ChangeStateCenter(void);
+	void ChangeStateEdge(void);
 
 	//状態別更新処理
-	void UpdateStateNone();
-	void UpdateStateExpansion();
-	void UpdateStateReduction();
-	void UpdateStateAdmission();
-	void UpdateStateExit();
+	void UpdateStateNone(void);
+	void UpdateStateExpansion(void);
+	void UpdateStateReduction(void);
+	void UpdateStateAdmission(void);
+	void UpdateStateExit(void);
 
 	//移動処理
-	void Move();
-
+	void Move(void);
 };
-

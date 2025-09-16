@@ -13,18 +13,18 @@
 static std::random_device rd;
 static std::mt19937 gen(rd());
 
-MultiPaletteIcon::MultiPaletteIcon()
+MultiPaletteIcon::MultiPaletteIcon(void)
 {
 	imgCursors_ = nullptr;
 	isSkips_.clear();
 	cursors_.clear();
 }
 
-MultiPaletteIcon::~MultiPaletteIcon()
+MultiPaletteIcon::~MultiPaletteIcon(void)
 {
 }
 
-void MultiPaletteIcon::Load()
+void MultiPaletteIcon::Load(void)
 {
 	//通常の読み込み
 	PaletteIcon::Load();
@@ -44,7 +44,7 @@ void MultiPaletteIcon::Load()
 	}
 }
 
-void MultiPaletteIcon::Init()
+void MultiPaletteIcon::Init(void)
 {		
 	
 	//状態変更
@@ -101,7 +101,7 @@ void MultiPaletteIcon::Init()
 	}
 }
 
-void MultiPaletteIcon::Draw()
+void MultiPaletteIcon::Draw(void)
 {
 	//通常の描画
 	PaletteIcon::Draw();
@@ -113,7 +113,7 @@ void MultiPaletteIcon::Draw()
 	}
 }
 
-void MultiPaletteIcon::SetExcludingItemTypeArray()
+void MultiPaletteIcon::SetExcludingItemTypeArray(void)
 {
 
 	const std::unordered_map<ItemBase::ITEM_TYPE, int> ITEM_WEIGHTS =
@@ -154,7 +154,7 @@ void MultiPaletteIcon::SetExcludingItemTypeArray()
 	}
 }
 
-int MultiPaletteIcon::GetRandTypeExcluding()
+int MultiPaletteIcon::GetRandTypeExcluding(void)
 {
 	// 候補がない場合はエラー（-1 を返す）
 	if (candidates_.empty())
@@ -168,7 +168,7 @@ int MultiPaletteIcon::GetRandTypeExcluding()
 	return candidates_[dist(gen)];
 }
 
-void MultiPaletteIcon::UpdateSelect()
+void MultiPaletteIcon::UpdateSelect(void)
 {		
 	//カーソル更新処理
 	for (auto& cursor : cursors_)
@@ -180,7 +180,7 @@ void MultiPaletteIcon::UpdateSelect()
 	bool isAllFinish = true;
 	
 	//カーソル分回す
-	for (int i = 0; i < cursors_.size(); i++)
+	for (int i = 0; i < static_cast<int>(cursors_.size()); i++)
 	{
 		//選択済みのプレイヤーは処理を飛ばす
 		if (selectTypes_[i] != ItemBase::ITEM_TYPE::NONE || isSkips_[i])
@@ -235,7 +235,7 @@ bool MultiPaletteIcon::CheckItemIcon(const Vector2 _cPos, const int _playerIndex
 	//選択タイプのパックアップ
 
 	//アイテムの種類の確認
-	for (int i = 0; i < icons_.size(); i++)
+	for (int i = 0; i < static_cast<int>(icons_.size()); i++)
 	{
 		EditorPaletteBase::ImgInfo& ic = icons_[i];
 		leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };
@@ -266,7 +266,7 @@ bool MultiPaletteIcon::IsChosenByOtherPlayer(const int _iconIndex, const int _pl
 	return false;
 }
 
-void MultiPaletteIcon::DrawItemIcon()
+void MultiPaletteIcon::DrawItemIcon(void)
 {
 	//アイコンの描画のみマスク処理
 	SetUseMaskScreenFlag(true);

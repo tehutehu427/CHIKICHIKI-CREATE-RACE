@@ -90,7 +90,7 @@ void MultiPalette::Draw(void)
 	}
 }
 
-void MultiPalette::UpdateSelect()
+void MultiPalette::UpdateSelect(void)
 {
 	//パレットアイコンに関する処理
 	palIcon_->Update();
