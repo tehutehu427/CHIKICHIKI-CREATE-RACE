@@ -50,6 +50,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	movedPos_ = Utility::VECTOR_ZERO;
 	isSide_ = false;
 	coinNum_ = 0;
+	springJumpPow_ = 0.0f;
 }
 
 PlayerOnHit::~PlayerOnHit(void)
@@ -77,6 +78,9 @@ void PlayerOnHit::Update(void)
 {
 	movedPos_ = VAdd(trans_.pos, action_.GetMovePow());
 	movedPos_ = VAdd(movedPos_, action_.GetJumpPow());
+
+	//バネジャンプ力の初期化
+	springJumpPow_ = 0.0f;
 
 	//移動量ラインの更新
 	VECTOR moveVec = VSub(movedPos_, trans_.pos);
@@ -195,7 +199,7 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 		//バネジャンプ音再生
 		action_.SetStepJump(0.0f);
 		SoundManager::GetInstance().Play(SoundManager::SRC::SPRING_SE, SoundManager::PLAYTYPE::BACK);
-		action_.SetJumpDecel(SPRING_JUMP_POW);
+		springJumpPow_ = ADD_SPRING_JUMP_POW;
 		action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
 	}
 }

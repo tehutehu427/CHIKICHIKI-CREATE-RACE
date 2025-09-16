@@ -393,6 +393,11 @@ const int Player::GetCoinNum(void) const
 	return onHitCol_->GetCoinNum();
 }
 
+const float Player::GetSpringJumpPow(void)
+{
+	return onHitCol_->GetSpringJumpPow();
+}
+
 
 void Player::SetPos(const VECTOR _worldPos)
 {

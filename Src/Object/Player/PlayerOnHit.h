@@ -63,6 +63,9 @@ public:
 	//コインの枚数
 	inline const int GetCoinNum(void)const { return coinNum_; }
 
+	//バネジャンプ力
+	inline const float GetSpringJumpPow(void) { return springJumpPow_; }
+
 	//セッタ
 	void SetMovedPos(const VECTOR& _movedPos) { movedPos_ = _movedPos; }
 
@@ -77,22 +80,16 @@ private:
 	//--------------------------------------
 	//プレイヤーの大きさ
 	static constexpr float RADIUS = 25.0f;
-
 	//当たり判定の押し出し回数
 	static constexpr int COL_TRY_CNT_MAX = 10;
-
 	//ヒットした法線方向へのオフセット
 	static constexpr float HIT_NORMAL_OFFSET = 3.0f;
-
 	//接地しているときのラインのコライダ
 	static constexpr int UP_AND_DOWN_LINE_COL_NO = 0;
-
 	//プレイヤーの体の球
 	static constexpr int BODY_SPHERE_COL_NO = 1;
-
 	//現在の座標と移動後座標を結んだ線のコライダ
 	static constexpr int MOVE_LINE_COL_NO = 2;
-
 	//プレイヤーの手の座標
 	static constexpr int HAND_SPHERE_COL_NO = 4;
 
@@ -123,6 +120,8 @@ private:
 	//プレイヤーのアイラインの長さ
 	static constexpr VECTOR EYE_RANGE = { 0.0f, 15.0f, 100.0f };
 
+	//バネジャンプによる増加ジャンプ力
+	static constexpr float ADD_SPRING_JUMP_POW = 10;
 
 	//--------------------------------------
 	//メンバ変数
@@ -168,6 +167,9 @@ private:
 
 	//コインの枚数
 	int coinNum_;
+
+	//バネジャンプ力
+	float springJumpPow_;
 
 	//メンバ関数
 	//----------------------------------

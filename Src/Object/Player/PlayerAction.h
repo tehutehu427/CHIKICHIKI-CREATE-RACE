@@ -13,11 +13,10 @@ class PlayerAction
 {
 public:
 	//定数
-	//****************************************
+	//----------------------------------------
 	//パンチ有効時間
 	static constexpr float PUNCH_TIME_MAX = 0.5f;
-
-	//****************************************
+	//----------------------------------------
 
 	enum class ATK_ACT
 	{
@@ -79,70 +78,53 @@ public:
 	VECTOR AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _localPos);
 
 
-	//*****************************************
+	//----------------------------------------
 	//ゲッタ
-	//*****************************************
+	//----------------------------------------
 	//移動量
 	inline const VECTOR GetMovePow(void) { return movePow_; }
-
 	//ジャンプ力
 	inline const VECTOR GetJumpPow(void) { return jumpPow_; }
-
 	//プレイヤーの角度Y
 	inline const Quaternion GetPlayerRotY(void) { return playerRotY_; }
-
 	//パンチ座標
 	inline const VECTOR& GetPunchPos(void) { return punchPos_; }
-
 	//パンチ中か
 	inline bool GetIsHitPunch(void) { return isPunchHitTime_; }
-
 	//ジャンプ中
 	inline const bool GetIsJump(void) { return isJump_; }
-
 	//状態
 	inline const ATK_ACT GetAct(void)const { return act_; }
-
 	//ジャンプ減衰量の取得
 	inline float GetJumpDecel(void) { return jumpDeceralation_; }
 
-	//*****************************************
+	//----------------------------------------
 	//セッタ
-	//*****************************************
-	//ジャンプ力
-	inline void SetJumpPow(const VECTOR _jumpPow) { jumpPow_ = _jumpPow; };
-
-	//移動量
-	inline void SetMovePow(const VECTOR _movePow) { movePow_ = _movePow; }
-
+	//----------------------------------------
 	/// <summary>
 	/// 移動スピードとダッシュスピードの設定
 	/// </summary>
 	/// <param name="_moveSpd">通常移動スピード</param>
 	/// <param name="_dashSpd"></param>
 	void SetSpeed(const float _moveSpd, const float _dashSpd);
-
+	//ジャンプ力
+	inline void SetJumpPow(const VECTOR _jumpPow) { jumpPow_ = _jumpPow; };
+	//移動量
+	inline void SetMovePow(const VECTOR _movePow) { movePow_ = _movePow; }
 	//空中かどうか
 	inline void SetIsJump(const bool _isJump) { isJump_ = _isJump; }
-
 	//ジャンプ減速
 	inline void SetJumpDecel(const float _decel) { jumpDeceralation_ = _decel; }
-
 	//ジャンプ減速量最大値
 	inline void SetJumpDecelMax(const float _decelMax) { jumpDecelMax_ = _decelMax; }
-
 	//ジャンプ時間
 	inline void SetStepJump(const float _step) { stepJump_ = _step; }
-
 	//方向
 	inline void SetDir(const VECTOR _dir) { dir_ = _dir; }
-
 	//パンチ吹っ飛び力
 	inline void SetKnockbackCnt(const float _punchedCnt) { punchedCnt_ = _punchedCnt; }
-
 	//ノックバック速度
 	inline void SetKnockBackSpd(const float _KnockSpd) { knockBackSpd_ = _KnockSpd; }
-
 	//再生しているリソースをすべて止める
 	void StopResource(void);
 
@@ -219,38 +201,28 @@ private:
 	//-------------------------------------------------
 	// シーンマネージャ参照
 	SceneManager& scnMng_;
-
 	//プレイヤー
 	Player& player_;
-
 	//アニメーションコントローラー
 	AnimationController& animationController_;
-
 	//状態遷移
 	std::map<ATK_ACT, std::function<void(void)>>changeAction_;
-
 	//状態更新
 	std::function<void(void)>actionUpdate_;
-
 	//操作入力
 	std::unique_ptr<PlayerInput> input_;
-
 	//エフェクト
 	std::unique_ptr<EffectController> effect_;
-
 	//状態
 	ATK_ACT act_;
-
 	//素材関連
-	//------------------------
+	//-------------------------------------------------
 	std::map<ACT_SE, SoundManager::SRC>actSE_;
 
 	//スライムSEの間隔カウント
 	float slimeSEcnt_;
-
 	//エフェクト音配列数
 	int effectArrayNum_;
-
 	//ダッシュSEのカウント
 	float dashSeCnt_;
 
@@ -267,8 +239,6 @@ private:
 	Quaternion playerRotY_;		//プレイヤーY角度
 	Quaternion goalQuaRot_;		//目的の回転
 	float stepRotTime_;			//補完時間
-
-
 
 	//ジャンプ
 	//-----------------------
@@ -318,8 +288,8 @@ private:
 	void Speed(void);
 
 	//ジャンプ
-	void JumpUpdate(void);
-	void Jump(void);
+	void JumpUpdate(void);	//更新
+	void Jump(void);		
 	void ChangeJump(void);
 
 	//ジャンプができる条件
@@ -332,8 +302,6 @@ private:
 	//ノックバック
 	void KnockBack(void);
 	void ChangeKnockBack(void);
-
-
 
 	/// <summary>
 	/// 再生させたいSE以外すべて止める

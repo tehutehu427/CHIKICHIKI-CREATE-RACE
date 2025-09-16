@@ -172,6 +172,7 @@ public:
 	//プレイヤー残機の取得
 	inline const int GetLiveCnt(void)const { return respawnCnt_; }
 
+	const float GetSpringJumpPow(void);
 
 	//******************************************
 	//セッタ

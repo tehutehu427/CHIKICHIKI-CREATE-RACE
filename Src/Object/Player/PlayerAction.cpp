@@ -426,7 +426,7 @@ void PlayerAction::ChangeJump(void)
 	//ジャンプ関係
   	isJump_ = true;
 	stepJump_ = 0.0f;
-	jumpDeceralation_ = jumpDecelMax_;
+	jumpDeceralation_ = jumpDecelMax_ + player_.GetSpringJumpPow();
 	//プレイヤーの情報
 	Transform trans = player_.GetTransform();
 	//エフェクトのスケール
