@@ -72,7 +72,7 @@ void Player::Load(void)
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL), DEFAULT_ANIM_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP), DEFAULT_ANIM_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::LAND), DEFAULT_ANIM_SPD);
-	animationController_->Add(static_cast<int>(ANIM_TYPE::GOAL), DEFAULT_ANIM_SPD);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::HAND_WAVE), DEFAULT_ANIM_SPD);
 	animationController_->Add(static_cast<int>(ANIM_TYPE::PUNCH), DEFAULT_ANIM_SPD / PlayerAction::PUNCH_TIME_MAX);
 
 	//エフェクト
@@ -356,7 +356,7 @@ void Player::GoalUpdate(void)
 	//終了からの遅延時間を計測
 	finishDelay_ += scnMng_.GetInstance().GetDeltaTime();
 	//落ちているアニメーション再生
-	animationController_->Play(static_cast<int>(ANIM_TYPE::GOAL), true);
+	animationController_->Play(static_cast<int>(ANIM_TYPE::HAND_WAVE), true);
 }
 
 void Player::Action(void)
