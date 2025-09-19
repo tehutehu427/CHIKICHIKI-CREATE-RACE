@@ -186,15 +186,16 @@ void ManualTab::UpdateSelectScene(void)
 
 void ManualTab::UpdateFreeMode(void)
 {	
+	int size = static_cast<int>(imgs_.size());
 
 	if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1))
 	{
-		index_ = (index_ - 1 + imgs_.size()) % imgs_.size();
+		index_ = (index_ - 1 + size) % size;
 		return;
 	}
 	else if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
 	{
-		index_ = (index_ + 1) % imgs_.size();
+		index_ = (index_ + 1) % size;
 		return;
 	}
 

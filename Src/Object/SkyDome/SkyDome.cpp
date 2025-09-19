@@ -29,9 +29,9 @@ void SkyDome::Init(void)
 
 	//座標位置をずらす
 	transform_.pos = { 
-		MapEditer::GRID_SIZE * MapEditer::MAP_SIZE.x / 2, 
+		static_cast<float>(MapEditer::GRID_SIZE * MapEditer::MAP_SIZE.x / 2), 
 		0.0f, 
-		MapEditer::GRID_SIZE* MapEditer::MAP_SIZE.z / 2 };
+		static_cast<float>(MapEditer::GRID_SIZE* MapEditer::MAP_SIZE.z / 2) };
 	transform_.Update();
 
 	//Zバッファを無効
