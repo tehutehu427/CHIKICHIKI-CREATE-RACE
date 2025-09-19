@@ -478,7 +478,7 @@ float KeyConfig::GetLStickDeg(KeyConfig::JOYPAD_NO _no) const
 	{
 		return deg;
 	}
-	auto rad = std::atan2(knockSize.y, knockSize.x);
+	float rad = static_cast<float>(std::atan2(knockSize.y, knockSize.x));
 	deg = rad * (180.0f / DX_PI_F);
 	deg += 90.0f;
 	deg = deg < 0 ? deg + 360 : deg;
@@ -493,7 +493,7 @@ float KeyConfig::GetRStickDeg(KeyConfig::JOYPAD_NO _no) const
 	{
 		return deg;
 	}
-	auto rad = std::atan2(knockSize.y, knockSize.x);
+	float rad = static_cast<float>(std::atan2(knockSize.y, knockSize.x));
 	deg = rad * (180.0f / DX_PI_F);
 	deg += 90.0f;
 	deg = deg < 0 ? deg + 360 : deg;

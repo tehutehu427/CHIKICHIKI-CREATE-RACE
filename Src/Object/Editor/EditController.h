@@ -265,25 +265,27 @@ private:
 
 	//移動方向を取得
 	MOVE_DIR GetMoveDir(void) ;		//クリックした方向の円錐をもとに算出
-
 	MOVE_DIR GetMoveDirTwo(void);	//カメラの方向をもとに算出
+	//移動方向を変えていいか -1 :NONE　0: 元のまま 1:変える
+	int IsChangeMoveDir(void) const;
 
-	int IsChangeMoveDir(void) const;	//移動方向を変えていいか -1 :NONE　0: 元のまま 1:変える
+	//デバッグ関係
 	void DebugUpdate(void);	//デバッグ用更新
 	void DebugDraw(void) const;	//デバッグ用描画
+	//オブジェクト回転
+	void RotateObject(void) const;
+	//範囲内のアイテムを削除
+	void DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY) const;	
+	//ベクトルの方向が変わったか　変わったら　true
+	bool IsChangeVecDir(const VECTOR _vec1, const VECTOR _vec2) const;
 
-	void RotateObject(void) const;	//オブジェクト回転
-
-	void DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY) const;	//範囲内のアイテムを削除
-
-	bool IsChangeVecDir(const VECTOR _vec1, const VECTOR _vec2) const;	//ベクトルの方向が変わったか　変わったら　true
-
+	//矢印関係
 	void DrawXArrow(VECTOR _worldPos, bool _isBig);	//X方向の矢印を描画
 	void DrawYArrow(VECTOR _worldPos, bool _isBig);	//Y方向の矢印を描画
 	void DrawZArrow(VECTOR _worldPos, bool _isBig);	//Z方向の矢印を描画
 
+	//カメラ関係
 	void SetCameraPosToDummyObject(void) const;	//ダミーオブジェクトにカメラを近づける
-
 	void ChangeCameraMode(void);	//カメラのモードを変える
 	void ChangeCameraMode(CAMERA_MODE _mode);	//カメラのモードを変える
 };
