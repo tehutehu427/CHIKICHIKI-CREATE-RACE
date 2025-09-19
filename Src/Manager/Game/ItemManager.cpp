@@ -148,7 +148,7 @@ void ItemManager::DeleteItem(IntVector3 _mapPos, ItemBase::ITEM_TYPE _type)
 
 }
 
-void ItemManager::AllDeleteItem()
+void ItemManager::AllDeleteItem(void)
 {
 	//アイテム全削除
 	items_.clear();

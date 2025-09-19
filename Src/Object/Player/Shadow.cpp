@@ -5,7 +5,7 @@
 #include "../Common/Geometry/Model.h"
 #include "Shadow.h"
 
-Shadow::Shadow(Transform& trans) : parentTrans_(trans)
+Shadow::Shadow(Transform& _trans) : parentTrans_(_trans)
 {
 	alpha_ = 1.0f;
 

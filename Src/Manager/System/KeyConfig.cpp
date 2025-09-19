@@ -1,6 +1,7 @@
 #include <cmath>
 #include "KeyConfig.h"
 #include "InputManager.h"
+
 KeyConfig* KeyConfig::instance_ = nullptr;
 
 void KeyConfig::CreateInstance(void)
@@ -178,13 +179,13 @@ void KeyConfig::Update(void)
 	inputManager_->Update();
 }
 
-bool KeyConfig::IsNew(CONTROL_TYPE cType, JOYPAD_NO no,TYPE type)
+bool KeyConfig::IsNew(CONTROL_TYPE _cType, JOYPAD_NO no,TYPE _type)
 {
-	if (type == TYPE::KEYBORD_MOUSE || type == TYPE::ALL)
+	if (_type == TYPE::KEYBORD_MOUSE || _type == TYPE::ALL)
 	{
 		for (auto& key : keyInput_)
 		{
-			if (key.first != cType)
+			if (key.first != _cType)
 			{
 				continue;
 			}
@@ -198,7 +199,7 @@ bool KeyConfig::IsNew(CONTROL_TYPE cType, JOYPAD_NO no,TYPE type)
 		}
 		for (auto& mouse : mouseInput_)
 		{
-			if (mouse.first != cType)
+			if (mouse.first != _cType)
 			{
 				continue;
 			}
@@ -211,11 +212,11 @@ bool KeyConfig::IsNew(CONTROL_TYPE cType, JOYPAD_NO no,TYPE type)
 			}
 		}
 	}
-	if (type == TYPE::PAD || type == TYPE::ALL)
+	if (_type == TYPE::PAD || _type == TYPE::ALL)
 	{
 		for (auto& con : conInput_)
 		{
-			if (con.first != cType)
+			if (con.first != _cType)
 			{
 				continue;
 			}
@@ -229,7 +230,7 @@ bool KeyConfig::IsNew(CONTROL_TYPE cType, JOYPAD_NO no,TYPE type)
 		}
 		for (auto& stick : stickInput_)
 		{
-			if (stick.first != cType)
+			if (stick.first != _cType)
 			{
 				continue;
 			}
@@ -245,14 +246,14 @@ bool KeyConfig::IsNew(CONTROL_TYPE cType, JOYPAD_NO no,TYPE type)
 	return false;
 }
 
-bool KeyConfig::IsTrgDown(CONTROL_TYPE cType, JOYPAD_NO no ,TYPE type)
+bool KeyConfig::IsTrgDown(CONTROL_TYPE _cType, JOYPAD_NO _no ,TYPE _type)
 {
 
-	if (type == TYPE::KEYBORD_MOUSE || type == TYPE::ALL)
+	if (_type == TYPE::KEYBORD_MOUSE || _type == TYPE::ALL)
 	{
 		for (auto& key : keyInput_)
 		{
-			if (key.first != cType)
+			if (key.first != _cType)
 			{
 				continue;
 			}
@@ -266,7 +267,7 @@ bool KeyConfig::IsTrgDown(CONTROL_TYPE cType, JOYPAD_NO no ,TYPE type)
 		}
 		for (auto& mouse : mouseInput_)
 		{
-			if (mouse.first != cType)
+			if (mouse.first != _cType)
 			{
 				continue;
 			}
@@ -279,17 +280,17 @@ bool KeyConfig::IsTrgDown(CONTROL_TYPE cType, JOYPAD_NO no ,TYPE type)
 			}
 		}
 	}
-	if (type == TYPE::PAD || type == TYPE::ALL)
+	if (_type == TYPE::PAD || _type == TYPE::ALL)
 	{
 		for (auto& con : conInput_)
 		{
-			if (con.first != cType)
+			if (con.first != _cType)
 			{
 				continue;
 			}
 			for (auto conI : con.second)
 			{
-				if (inputManager_->IsPadBtnTrgDown(no, conI))
+				if (inputManager_->IsPadBtnTrgDown(_no, conI))
 				{
 					return true;
 				}
@@ -297,13 +298,13 @@ bool KeyConfig::IsTrgDown(CONTROL_TYPE cType, JOYPAD_NO no ,TYPE type)
 		}
 		for (auto& stick : stickInput_)
 		{
-			if (stick.first != cType)
+			if (stick.first != _cType)
 			{
 				continue;
 			}
 			for (auto stickI : stick.second)
 			{
-				if (inputManager_->IsStickDown(no, stickI))
+				if (inputManager_->IsStickDown(_no, stickI))
 				{
 					return true;
 				}
@@ -313,13 +314,13 @@ bool KeyConfig::IsTrgDown(CONTROL_TYPE cType, JOYPAD_NO no ,TYPE type)
 	return false;
 }
 
-bool KeyConfig::IsTrgUp(CONTROL_TYPE cType, JOYPAD_NO no, TYPE type)
+bool KeyConfig::IsTrgUp(CONTROL_TYPE _cType, JOYPAD_NO _no, TYPE _type)
 {
-	if (type == TYPE::KEYBORD_MOUSE || type == TYPE::ALL)
+	if (_type == TYPE::KEYBORD_MOUSE || _type == TYPE::ALL)
 	{
 		for (auto& key : keyInput_)
 		{
-			if (key.first != cType)
+			if (key.first != _cType)
 			{
 				continue;
 			}
@@ -333,7 +334,7 @@ bool KeyConfig::IsTrgUp(CONTROL_TYPE cType, JOYPAD_NO no, TYPE type)
 		}
 		for (auto& mouse : mouseInput_)
 		{
-			if (mouse.first != cType)
+			if (mouse.first != _cType)
 			{
 				continue;
 			}
@@ -346,17 +347,17 @@ bool KeyConfig::IsTrgUp(CONTROL_TYPE cType, JOYPAD_NO no, TYPE type)
 			}
 		}
 	}
-	if (type == TYPE::PAD || type == TYPE::ALL)
+	if (_type == TYPE::PAD || _type == TYPE::ALL)
 	{
 		for (auto& con : conInput_)
 		{
-			if (con.first != cType)
+			if (con.first != _cType)
 			{
 				continue;
 			}
 			for (auto conI : con.second)
 			{
-				if (inputManager_->IsPadBtnTrgUp(no, conI))
+				if (inputManager_->IsPadBtnTrgUp(_no, conI))
 				{
 					return true;
 				}
@@ -364,13 +365,13 @@ bool KeyConfig::IsTrgUp(CONTROL_TYPE cType, JOYPAD_NO no, TYPE type)
 		}
 		for (auto& stick : stickInput_)
 		{
-			if (stick.first != cType)
+			if (stick.first != _cType)
 			{
 				continue;
 			}
 			for (auto stickI : stick.second)
 			{
-				if (inputManager_->IsStickUp(no, stickI))
+				if (inputManager_->IsStickUp(_no, stickI))
 				{
 					return true;
 				}
@@ -380,72 +381,72 @@ bool KeyConfig::IsTrgUp(CONTROL_TYPE cType, JOYPAD_NO no, TYPE type)
 	return false;
 }
 
-void KeyConfig::Add(CONTROL_TYPE type,int key )
+void KeyConfig::Add(CONTROL_TYPE _type,int _key )
 {
 	for (auto &keys : keyInput_)
 	{
-		if (keys.first != type)
+		if (keys.first != _type)
 		{
 			continue;
 		}
-		keys.second.emplace_back(key);
+		keys.second.emplace_back(_key);
 		return;
 	}
 
 	std::vector<int> keys;
-	keys.emplace_back(key);
-	keyInput_.emplace(type, keys);
+	keys.emplace_back(_key);
+	keyInput_.emplace(_type, keys);
 }
 
-void KeyConfig::Add(CONTROL_TYPE type,JOYPAD_BTN key)
+void KeyConfig::Add(CONTROL_TYPE _type,JOYPAD_BTN _key)
 {
 	for (auto& con : conInput_)
 	{
-		if (con.first != type)
+		if (con.first != _type)
 		{
 			continue;
 		}
-		con.second.emplace_back(key);
+		con.second.emplace_back(_key);
 		return;
 	}
 
 	std::vector<JOYPAD_BTN> cons;
-	cons.emplace_back(key);
-	conInput_.emplace(type, cons);
+	cons.emplace_back(_key);
+	conInput_.emplace(_type, cons);
 }
 
-void KeyConfig::Add(CONTROL_TYPE type,JOYPAD_STICK key)
+void KeyConfig::Add(CONTROL_TYPE _type,JOYPAD_STICK _key)
 {
 	for (auto& stick : stickInput_)
 	{
-		if (stick.first != type)
+		if (stick.first != _type)
 		{
 			continue;
 		}
-		stick.second.emplace_back(key);
+		stick.second.emplace_back(_key);
 		return;
 	}
 
 	std::vector<JOYPAD_STICK> sticks;
-	sticks.emplace_back(key);
-	stickInput_.emplace(type, sticks);
+	sticks.emplace_back(_key);
+	stickInput_.emplace(_type, sticks);
 }
 
-void KeyConfig::Add(CONTROL_TYPE type, MOUSE key)
+void KeyConfig::Add(CONTROL_TYPE _type, MOUSE _key)
 {
 	for (auto& mouse : mouseInput_)
 	{
-		if (mouse.first != type)
+		if (mouse.first != _type)
 		{
 			continue;
 		}
-		mouse.second.emplace_back(key);
+		mouse.second.emplace_back(_key);
 		return;
 	}
 
 	std::vector<MOUSE> mouse;
-	mouse.emplace_back(key);
-	mouseInput_.emplace(type, mouse);
+	mouse.emplace_back(_key);
+	mouseInput_.emplace(_type, mouse);
 }
 
 
@@ -464,15 +465,15 @@ void KeyConfig::SetMousePosScreen(void)
 	//inputManager_->SetMousePosScreen();
 }
 
-void KeyConfig::SetMousePos(const Vector2& pos)
+void KeyConfig::SetMousePos(const Vector2& _pos)
 {
-	inputManager_->SetMousePos(pos);
+	inputManager_->SetMousePos(_pos);
 }
 
-float KeyConfig::GetLStickDeg(KeyConfig::JOYPAD_NO no) const
+float KeyConfig::GetLStickDeg(KeyConfig::JOYPAD_NO _no) const
 {
 	float deg = 0.0f;
-	Vector2 knockSize = GetKnockLStickSize(no);
+	Vector2 knockSize = GetKnockLStickSize(_no);
 	if (knockSize.x == 0.0f && knockSize.y == 0.0f)
 	{
 		return deg;
@@ -484,10 +485,10 @@ float KeyConfig::GetLStickDeg(KeyConfig::JOYPAD_NO no) const
 	return deg;
 }
 
-float KeyConfig::GetRStickDeg(KeyConfig::JOYPAD_NO no) const
+float KeyConfig::GetRStickDeg(KeyConfig::JOYPAD_NO _no) const
 {
 	float deg = 0.0f;
-	Vector2 knockSize = GetKnockRStickSize(no);
+	Vector2 knockSize = GetKnockRStickSize(_no);
 	if (knockSize.x == 0.0f && knockSize.y == 0.0f)
 	{
 		return deg;
@@ -499,24 +500,24 @@ float KeyConfig::GetRStickDeg(KeyConfig::JOYPAD_NO no) const
 	return deg;
 }
 
-Vector2 KeyConfig::GetKnockLStickSize(KeyConfig::JOYPAD_NO no) const
+Vector2 KeyConfig::GetKnockLStickSize(KeyConfig::JOYPAD_NO _no) const
 {
-	//auto padInfo = padInfos_[static_cast<int>(no)];
-	auto padInfo = inputManager_->GetJPadInputState(no);
+	//auto padInfo = padInfos_[static_cast<int>(_no)];
+	auto padInfo = inputManager_->GetJPadInputState(_no);
 	return Vector2(padInfo.AKeyLX, padInfo.AKeyLY);
 }
 
-Vector2 KeyConfig::GetKnockRStickSize(KeyConfig::JOYPAD_NO no) const
+Vector2 KeyConfig::GetKnockRStickSize(KeyConfig::JOYPAD_NO _no) const
 {
-	//auto padInfo = padInfos_[static_cast<int>(no)];
-	auto padInfo = inputManager_->GetJPadInputState(no);
+	//auto padInfo = padInfos_[static_cast<int>(_no)];
+	auto padInfo = inputManager_->GetJPadInputState(_no);
 	return Vector2(padInfo.AKeyRX, padInfo.AKeyRY);
 }
-int KeyConfig::PadStickOverSize(KeyConfig::JOYPAD_NO no, KeyConfig::JOYPAD_STICK stick) const
+int KeyConfig::PadStickOverSize(KeyConfig::JOYPAD_NO _no, KeyConfig::JOYPAD_STICK _stick) const
 {
 	int ret = 0;
-	auto padInfo = inputManager_->GetJPadInputState(no);
-	switch (stick)
+	auto padInfo = inputManager_->GetJPadInputState(_no);
+	switch (_stick)
 	{
 	case KeyConfig::JOYPAD_STICK::L_STICK_UP:
 		ret = padInfo.AKeyLY < 0 ? padInfo.AKeyLY : 0;
@@ -581,6 +582,6 @@ KeyConfig::KeyConfig(void)
 {
 }
 
-KeyConfig::KeyConfig(const KeyConfig& manager)
+KeyConfig::KeyConfig(const KeyConfig& _manager)
 {
 }

@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include "../../Common/Quaternion.h"
 #include "KeyConfig.h"
+
 class Transform;
 
 class Camera
@@ -10,9 +11,9 @@ class Camera
 public:
 
 	// カメラスピード(度)
-	static constexpr float SPEED = 1.0f;
-	static constexpr float SPEED_PAD = 0.0015f;
-	static constexpr float SPEED_MOUSE = 0.05f;
+	static constexpr float SPEED = 1.0f;		//カメラのスピード倍率
+	static constexpr float SPEED_PAD = 0.0015f;	//カメラのスピードパッド時
+	static constexpr float SPEED_MOUSE = 0.05f;	//カメラのスピードマウス時
 
 	//カメラズームスピード
 	static constexpr float ZOOM_SPEED = 5.0f;
@@ -64,57 +65,131 @@ public:
 		FOLLOW,
 		FOLLOW_ROTATION,	//ついじゅうしながら自動回転操作不能
 		SELF_SHOT,
-		FPS,
+		//FPS,
 		FREE_CONTROLL,
 		FIXED_UP,
 		FIXED_DIAGONAL,	//斜め固定
 	};
 
 
-
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_playerNum">プレイヤー番号</param>
 	Camera(int _playerNum);
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	~Camera(void);
 
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name=""></param>
 	void Init(void);
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void);
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
+	/// <param name=""></param>
 	void SetBeforeDraw(void);
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void);
 
-	// カメラ位置
+	/// <summary>
+	/// カメラ位置の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>カメラ座標</returns>
 	VECTOR GetPos(void) const;
-	// カメラの操作角度
+	/// <summary>
+	/// カメラの操作角度の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>角度</returns>
 	VECTOR GetAngles(void) const;
-	// カメラの注視点
+	/// <summary>
+	/// カメラの注視点を取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>カメラの注視点</returns>
 	VECTOR GetTargetPos(void) const;
 
-	// カメラ角度
+	/// <summary>
+	/// カメラの角度を取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>カメラ角度</returns>
 	Quaternion GetQuaRot(void) const;
-	// X回転を抜いたカメラ角度
+	/// <summary>
+	/// X回転を抜いたカメラ角度
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>X回転を抜いたカメラ角度</returns>
 	Quaternion GetQuaRotOutX(void) const;
-	// カメラの前方方向
+	/// <summary>
+	///  カメラの前方方向
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>前方方向</returns>
 	VECTOR GetForward(void) const;
 
-	//カメラの設定
+	/// <summary>
+	///  カメラの設定
+	/// </summary>
+	/// <param name=""></param>
 	void CameraSetting(void);
 
-	// カメラモードの変更
-	void ChangeMode(MODE mode);
+	/// <summary>
+	/// カメラモードの変更
+	/// </summary>
+	/// <param name="_mode">変更するモード</param>
+	void ChangeMode(MODE _mode);
 
-	MODE GetMode(void) { return mode_; }
+	/// <summary>
+	/// カメラのモードを取得する
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>カメラのモード</returns>
+	MODE GetMode(void) const { return mode_; }
 
-	// 追従対象の設定
-	void SetFollow(const Transform* follow);
+	/// <summary>
+	/// 追従対象の設定
+	/// </summary>
+	/// <param name="_follow">追従対象</param>
+	void SetFollow(const Transform* _follow);
 
-	void SetPos(VECTOR pos) { pos_ = pos; }
-	void SetAngles(VECTOR angles) { angles_ = angles; }
-	void SetTargetPos(VECTOR pos) { targetPos_ = pos; }
+	/// <summary>
+	/// 座標を設定
+	/// </summary>
+	/// <param name="_pos">座標</param>
+	void SetPos(VECTOR _pos) { pos_ = _pos; }
+	/// <summary>
+	/// 回転を設定
+	/// </summary>
+	/// <param name="_angles">回転</param>
+	void SetAngles(VECTOR _angles) { angles_ = _angles; }
+	/// <summary>
+	/// 注視点を設定
+	/// </summary>
+	/// <param name="_pos"></param>
+	void SetTargetPos(VECTOR _pos) { targetPos_ = _pos; }
 private:
-
-	// カメラのローカル座標
-	VECTOR localPos_;
 
 	// カメラが追従対象とするTransform
 	const Transform* followTransform_;
+
+	// カメラのローカル座標
+	VECTOR localPos_;
 
 	//PADの番号
 	KeyConfig::JOYPAD_NO padNo_;
@@ -153,13 +228,13 @@ private:
 	void ProcessRot(void);
 	void ProcessZoom(void);
 	//マウスでのカメラ操作
-	void ProcessRotMause(float* x_m, float* y_m, const float fov_per = 1.0f);
+	//void ProcessRotMause(float* x_m, float* y_m, const float fov_per = 1.0f);
 	// モード別更新ステップ
 	void SetBeforeDrawFixedPoint(void);
 	void SetBeforeDrawFollow(void);
 	void SetBeforeDrawFollowRotation(void);
 	void SetBeforeDrawSelfShot(void);
-	void SetBeforeDrawFPS(void);
+	//void SetBeforeDrawFPS(void);
 	void SetBeforeDrawFreeControll(void);
 	void SetBeforeDrawFixedUp(void);
 	void SetBeforeDrawFixedDiagonal(void);
