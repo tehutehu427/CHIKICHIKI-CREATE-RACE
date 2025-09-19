@@ -8,6 +8,7 @@ class WiggleEffect;
 
 class MultiParty : public GameScene
 {
+
 public:
 
 	/// <summary>
@@ -54,10 +55,13 @@ private:
 
 	//ラウンド遷移タイム
 	static constexpr float ROUND_CHANGE_TIME = 3.5f;
+
 	//エディットからの遷移時間
 	static constexpr float EDIT_CHANGE_TIME = 2.0f;
+
 	//アクションからの遷移時間
 	static constexpr float ACTION_CHANGE_TIME = 2.0f;
+
 	//描画関数
 	void NormalDraw(void) override;
 
@@ -74,35 +78,32 @@ private:
 	void DrawEdit(void) override;
 
 	//状態遷移
-	void ChangePhaseEdit() override;
-	void ChangePhaseAction() override;
-	void ChangePhaseClear() override;	
-	void ChangePhaseRound();
-	void ChangePhaseSelect();
-	void ChangePhaseResult();
+	void ChangePhaseEdit(void) override;
+	void ChangePhaseAction(void) override;
+	void ChangePhaseClear(void) override;
+	void ChangePhaseRound(void);
+	void ChangePhaseSelect(void);
+	void ChangePhaseResult(void);
 
 	//状態別更新処理
-	void UpdateClear() override;
-	void UpdateRound();
-	void UpdateSelect();
-	void UpdateResult();
+	void UpdateClear(void) override;
+	void UpdateRound(void);
+	void UpdateSelect(void);
+	void UpdateResult(void);
 
 	//状態別描画処理
-	void DrawRound();
-	void DrawSelect();
-	void DrawResult();
+	void DrawRound(void);
+	void DrawSelect(void);
+	void DrawResult(void);
 
 	//プレイヤーらの処理が終えたか調べる
-	void CheckPlayerFinish() override;
+	void CheckPlayerFinish(void) override;
 
 	//サウンド読み込み
-	void LoadSound() override;
+	void LoadSound(void) override;
 
 	//ランダムBGMを取得
-	void RandomBgm();
-
-	//デバッグ処理
-	void DebagUpdate() override;
+	void RandomBgm(void);
 
 	//エディットBGM種類
 	SoundManager::SRC editBgmSrc_;
@@ -124,4 +125,3 @@ private:
 	std::unique_ptr<RoundDisplay> round_;
 	std::map<int, std::function<std::vector<std::shared_ptr<Camera>>(void)>>createCamera_;
 };
-

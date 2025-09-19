@@ -13,6 +13,7 @@ class Palette;
 
 class EditorPaletteBase
 {
+
 public:
 
 	/// <summary>
@@ -25,24 +26,6 @@ public:
 		PALETTE_ANIM,
 		SELECT	//選ぶ処理
 	};
-
-	//パレット移動
-	static constexpr int PALETTE_MOVE = 20;		
-	
-	//大きさ
-	static constexpr int PALETTE_SIZE_X = 399;
-	static constexpr int PALETTE_SIZE_Y = 282;
-	
-	//拡大率
-	static constexpr float PALETTE_RATE = 1.8f;
-
-	//閉じてる時の位置
-	static constexpr int CLOSE_POS_X = Application::SCREEN_SIZE_X + 300;
-	static constexpr int CLOSE_POS_Y = Application::SCREEN_HALF_Y;
-
-	//開いてる時の位置
-	static constexpr int OPEN_POS_X = Application::SCREEN_HALF_X;
-	static constexpr int OPEN_POS_Y = Application::SCREEN_HALF_Y;
 
 	/// <summary>
 	/// 画像に関する情報
@@ -66,32 +49,32 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	virtual ~EditorPaletteBase();
+	virtual ~EditorPaletteBase(void);
 	
 	/// <summary>
 	/// 読みこみ
 	/// </summary>
-	virtual void Load();	
+	virtual void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	virtual void Init();	
+	virtual void Init(void);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	virtual void Update();	
+	virtual void Update(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	virtual void Draw();
+	virtual void Draw(void);
 
 	/// <summary>
 	/// デバッグ描画
 	/// </summary>
-	void DebagDraw();
+	void DebagDraw(void);
 
 	/// <summary>
 	/// 状態変更
@@ -103,7 +86,7 @@ public:
 	/// 状態を返す
 	/// </summary>
 	/// <returns></returns>状態
-	const STATE GetState()const { return state_; }
+	const STATE GetState(void) const { return state_; }
 
 protected:
 
@@ -123,7 +106,7 @@ protected:
 	STATE state_;
 
 	//音源の読み込み
-	void LoadSounds();
+	void LoadSounds(void);
 
 private:
 	
@@ -133,17 +116,15 @@ private:
 	//更新処理管理
 	std::function<void()> stateUpdate_;
 
-
-
 	//状態変更
-	void ChangeStateNone();			//なし
-	void ChangeStateWait();			//クリック待ち
-	void ChangeStateSelect();		//選ぶ
-	void ChangeStatePaletteAnim();	//パレットアニメーション
+	void ChangeStateNone(void);			//なし
+	void ChangeStateWait(void);			//クリック待ち
+	void ChangeStateSelect(void);		//選ぶ
+	void ChangeStatePaletteAnim(void);	//パレットアニメーション
 
 	//更新処理
-	void UpdateNone();					//なし
-	virtual void UpdateWait();			//クリック待ち
-	virtual void UpdateSelect();		//選ぶ
-	virtual void UpdatePaletteAnim();	//パレットアニメーション
+	void UpdateNone(void);					//なし
+	virtual void UpdateWait(void);			//クリック待ち
+	virtual void UpdateSelect(void);		//選ぶ
+	virtual void UpdatePaletteAnim(void);	//パレットアニメーション
 };

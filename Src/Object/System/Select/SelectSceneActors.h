@@ -1,44 +1,45 @@
 #pragma once
-#include "../../Common/Transform.h"
 #include <unordered_map>
 #include <functional>
+#include "../../Common/Transform.h"
 
 class AnimationController;
 class ToonStyle;
 
 class SelectSceneActors
 {
+
 public:
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	SelectSceneActors();
+	SelectSceneActors(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~SelectSceneActors();
+	~SelectSceneActors(void);
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 private:	
 

@@ -7,8 +7,12 @@ class SelectScene;
 
 class SystemSetting
 {
+
 public:
 
+	/// <summary>
+	/// 設定状態
+	/// </summary>
 	enum class STATE
 	{
 		CLEAR_SCORE,	//クリアスコア設定
@@ -21,6 +25,9 @@ public:
 		MAX				//最大値
 	};
 
+	/// <summary>
+	/// 更新種類
+	/// </summary>
 	enum class UPDATE_TYPE
 	{
 		SELECT,
@@ -57,22 +64,22 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	SystemSetting();
+	SystemSetting(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~SystemSetting();
+	~SystemSetting(void) = default;
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
@@ -82,7 +89,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 private:
 
@@ -135,30 +142,30 @@ private:
 	void UpdateApply(SelectScene& _parent);		//適用
 
 	//データを反映
-	void ApplyData();	
+	void ApplyData(void);
 	
 	//タイトルの描画
-	void DrawTitle();
+	void DrawTitle(void);
 
 	//設定完了のメッセージの描画
-	void DrawSettingFinish();
+	void DrawSettingFinish(void);
 
 	//矢印の描画
-	void DrawCursor();
+	void DrawCursor(void);
 
 	//三角の描画
-	void DrawSelectTriangle();
+	void DrawSelectTriangle(void);
 
 	//項目名の描画
 	void DrawSelectStateName(const int _index);
 
 	//状態別の描画
-	void DrawClearScore();
+	void DrawClearScore(void);
 	void DrawSwitch(const STATE _state, const bool _flag);
 	void DrawSoundVolume(const STATE _state, const int _type);
-	void DrawRound();
+	void DrawRound(void);
 
 	//適用時のメッセージ描画
-	void DrawApplyMessage();
+	void DrawApplyMessage(void);
 };
 

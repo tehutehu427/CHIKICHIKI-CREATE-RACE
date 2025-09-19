@@ -8,17 +8,16 @@
 #include "../../Player/Player.h"
 #include "../../Item/Fixed/StartFlag.h"
 
-SelectSceneActors::SelectSceneActors()
+SelectSceneActors::SelectSceneActors(void)
 {
-	//actorInfos_.clear();
 	chickenAnimationController_ = nullptr;
 }
 
-SelectSceneActors::~SelectSceneActors()
+SelectSceneActors::~SelectSceneActors(void)
 {
 }
 
-void SelectSceneActors::Load()
+void SelectSceneActors::Load(void)
 {
 	ResourceManager & res = ResourceManager::GetInstance();
 
@@ -31,7 +30,7 @@ void SelectSceneActors::Load()
 	actorInfos_[type].transform.scl = Utility::VECTOR_ONE;
 	actorInfos_[type].transform.quaRotLocal =
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(0.0f), 0.0f });
-	actorInfos_[type].transform.localPos = { 0.0f,0.0f,0.0f };
+	actorInfos_[type].transform.localPos = Utility::VECTOR_ZERO;
 	actorInfos_[type].transform.Update();
 
 	//トゥーン設定
@@ -50,7 +49,7 @@ void SelectSceneActors::Load()
 	actorInfos_[type].transform.scl = Utility::VECTOR_ONE;
 	actorInfos_[type].transform.quaRotLocal =
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(180.0f), 0.0f });
-	actorInfos_[type].transform.localPos = { 0.0f,0.0f,0.0f };
+	actorInfos_[type].transform.localPos = Utility::VECTOR_ZERO;
 
 	//マップエディタ
 	MapEditer& map = MapEditer::GetInstance();
@@ -80,7 +79,7 @@ void SelectSceneActors::Load()
 
 }
 
-void SelectSceneActors::Init()
+void SelectSceneActors::Init(void)
 {
 	//チキンのアニメーション設定
 	chickenAnimationController_->Add(CHICKEN_ANIM_INDEX_WAVE_HAND, Player::DEFAULT_ANIM_SPD);
@@ -93,7 +92,7 @@ void SelectSceneActors::Init()
 	actorInfos_[ACTOR::START].toonStyle->Init();
 }
 
-void SelectSceneActors::Update()
+void SelectSceneActors::Update(void)
 {
 	//回転処理
 	//チキンの位置をスタートの回転に合わせる
@@ -127,7 +126,7 @@ void SelectSceneActors::Update()
 	chickenAnimationController_->Update();
 }
 
-void SelectSceneActors::Draw()
+void SelectSceneActors::Draw(void)
 {
 	//各アクターの描画
 	for (auto& [type, info] : actorInfos_)

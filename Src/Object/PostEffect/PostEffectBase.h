@@ -6,32 +6,33 @@ class PixelMaterial;
 
 class PostEffectBase
 {
+
 public:
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	PostEffectBase() ;
+	PostEffectBase(void) ;
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	virtual ~PostEffectBase() = default;
+	virtual ~PostEffectBase(void) = default;
 
 	/// <summary>
 	/// 読み込み処理
 	/// </summary>
-	virtual void Load() = 0;
+	virtual void Load(void) = 0;
 
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	virtual void Init() = 0;
+	virtual void Init(void) = 0;
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	virtual void Draw();
+	virtual void Draw(void);
 
 protected:
 
@@ -40,5 +41,4 @@ protected:
 
 	//マテリアル
 	std::unique_ptr<PixelMaterial> material_;
-
 };

@@ -17,8 +17,7 @@
 #include "../Object/System/Select/SystemSetting.h"
 #include "../Object/SkyDome/SkyDome.h"
 
-
-SelectScene::SelectScene()
+SelectScene::SelectScene(void)
 {
 	//更新関数のセット
 	func_.updataFunc_ = std::bind(&SelectScene::LoadingUpdate, this);
@@ -71,12 +70,12 @@ SelectScene::SelectScene()
 	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FIXED_POINT);
 }
 
-SelectScene::~SelectScene()
+SelectScene::~SelectScene(void)
 {
 	DeleteFontToHandle(buttnFontHandle_);
 }
 
-void SelectScene::Load()
+void SelectScene::Load(void)
 {
 	//フォントの登録
 	buttnFontHandle_ = CreateFontToHandle(FontRegistry::DOT.c_str(), FONT_SIZE, 0);
@@ -112,9 +111,9 @@ void SelectScene::Load()
 
 void SelectScene::Init(void)
 {
+	//各種初期化
 	modeSelect_->Init();
 	multiReady_->Init();
-	selectStage_->Init();
 	skyDome_->Init();
 	systemSetting_->Init();
 
@@ -140,7 +139,7 @@ void SelectScene::RegisterProcessFunc(const STATE _state, ProcessFunction _funcs
 	funcTable_[_state] = _funcs;
 }
 
-void SelectScene::NormalUpdate()
+void SelectScene::NormalUpdate(void)
 {
 	//状態別更新処理
 	funcTable_[state_].updataFunc_();
@@ -149,51 +148,48 @@ void SelectScene::NormalUpdate()
 	skyDome_->Update();
 }
 
-void SelectScene::UpdateSelectMenu()
+void SelectScene::UpdateSelectMenu(void)
 {	
 	modeSelect_->Update(*this);
 }
 
-void SelectScene::UpdateSelectStage()
+void SelectScene::UpdateSelectStage(void)
 {
 	selectStage_->Update(*this);
 }
 
-void SelectScene::UpdateCheckPlayer()
+void SelectScene::UpdateCheckPlayer(void)
 {
 	multiReady_->Update(*this);
 }
 
-void SelectScene::UpdateSetting()
+void SelectScene::UpdateSetting(void)
 {
 	systemSetting_->Update(*this);
 }
 
-void SelectScene::DrawSelectMenu()
+void SelectScene::DrawSelectMenu(void)
 {
 	modeSelect_->Draw();
 }
 
-void SelectScene::DrawSelectStage()
+void SelectScene::DrawSelectStage(void)
 {
 	selectStage_->Draw();
 }
 
-void SelectScene::DrawCheckPlayer()
+void SelectScene::DrawCheckPlayer(void)
 {
 	multiReady_->Draw();
 }
 
-void SelectScene::DrawSetting()
+void SelectScene::DrawSetting(void)
 {
 	systemSetting_->Draw();
 }
 
-void SelectScene::NormalDraw()
+void SelectScene::NormalDraw(void)
 {
-#ifdef _DEBUG
-	DebugDraw();
-#endif
 	//スカイドーム
 	skyDome_->Draw();
 
@@ -201,17 +197,9 @@ void SelectScene::NormalDraw()
 	funcTable_[state_].drawFunc_();
 }
 
-void SelectScene::ChangeNormal()
+void SelectScene::ChangeNormal(void)
 {
 	//処理変更
 	func_.updataFunc_ = std::bind(&SelectScene::NormalUpdate, this);
 	func_.drawFunc_ = std::bind(&SelectScene::NormalDraw, this);
-}
-
-void SelectScene::DebugUpdate()
-{
-}
-
-void SelectScene::DebugDraw()
-{
 }

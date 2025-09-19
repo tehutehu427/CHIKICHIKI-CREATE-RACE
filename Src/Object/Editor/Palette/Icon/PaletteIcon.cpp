@@ -10,7 +10,7 @@
 #include "../../../../Common/FontRegistry.h"
 
 
-PaletteIcon::PaletteIcon()
+PaletteIcon::PaletteIcon(void)
 {
 	stateChanges_.emplace(STATE::NONE, std::bind(&PaletteIcon::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::SCR_UP, std::bind(&PaletteIcon::ChangeStateScrollUp, this));
@@ -32,13 +32,13 @@ PaletteIcon::PaletteIcon()
 	for (EditorPaletteBase::ImgInfo& s : scrIcon_) { s = {}; }
 }
 
-PaletteIcon::~PaletteIcon()
+PaletteIcon::~PaletteIcon(void)
 {
 	DeleteFontToHandle(fontHandle_);
 	DeleteMaskScreen();
 }
 
-void PaletteIcon::Load()
+void PaletteIcon::Load(void)
 {
 	//リソースの読みこみ
 	ResourceManager & res = ResourceManager::GetInstance();
@@ -50,7 +50,7 @@ void PaletteIcon::Load()
 	fontHandle_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), NAME_FONT_SIZE, NAME_FONT_THICK);
 }
 
-void PaletteIcon::Init()
+void PaletteIcon::Init(void)
 {	
 	//除外番号を除いたアイテム配列を生成
 	SetExcludingItemTypeArray();
@@ -103,12 +103,12 @@ void PaletteIcon::Init()
 	ChangeState(STATE::NONE);
 }
 
-void PaletteIcon::Update()
+void PaletteIcon::Update(void)
 {
 	stateUpdate_();
 }
 
-void PaletteIcon::Draw()
+void PaletteIcon::Draw(void)
 {
 	//一定の状態の場合描画させない
 	if (state_ == STATE::NONE) { return; }
@@ -123,7 +123,7 @@ void PaletteIcon::Draw()
 	DebagDraw();
 }
 
-void PaletteIcon::DebagDraw()
+void PaletteIcon::DebagDraw(void)
 {
 #ifdef _DEBUG
 	
@@ -142,12 +142,12 @@ void PaletteIcon::ChangeState(const STATE _state)
 	stateChanges_[state_]();
 }
 
-void PaletteIcon::ChangeStateNone()
+void PaletteIcon::ChangeStateNone(void)
 {
 	stateUpdate_ = std::bind(&PaletteIcon::UpdateNone, this);
 
 	//座標を初期位置に指定
-	for (int i = 0; i < icons_.size(); i++) { icons_[i].pos = { ICON_POS_X + (i % COL) * INTERVAL_X,ICON_POS_Y + (i / COL) * INTERVAL_Y }; }
+	for (int i = 0; i < static_cast<int>(icons_.size()); i++) { icons_[i].pos = { ICON_POS_X + (i % COL) * INTERVAL_X,ICON_POS_Y + (i / COL) * INTERVAL_Y }; }
 	for (int i = 0; i < SCROLL_ICON_NUM; i++) { scrIcon_[i].pos = { SCR_ICON_POS_X, SCR_ICON_POS_Y[i] }; }
 	isCreate_ = false;
 	for (auto& s : sleCnt_) { s = -1; }
@@ -156,7 +156,7 @@ void PaletteIcon::ChangeStateNone()
 	scrLimitLine_ = 0;
 }
 
-void PaletteIcon::ChangeStateScrollUp()
+void PaletteIcon::ChangeStateScrollUp(void)
 {
 	stateUpdate_ = std::bind(&PaletteIcon::UpdateScrollUp, this);
 
@@ -164,7 +164,7 @@ void PaletteIcon::ChangeStateScrollUp()
 	prePos_ = icons_[0].pos;
 }
 
-void PaletteIcon::ChangeStateScrollDown()
+void PaletteIcon::ChangeStateScrollDown(void)
 {
 	stateUpdate_ = std::bind(&PaletteIcon::UpdateScrollDown, this);
 
@@ -172,16 +172,12 @@ void PaletteIcon::ChangeStateScrollDown()
 	prePos_ = icons_[0].pos;
 }
 
-void PaletteIcon::ChangeStateSelect()
+void PaletteIcon::ChangeStateSelect(void)
 {
 	stateUpdate_ = std::bind(&PaletteIcon::UpdateSelect, this);
 }
 
-void PaletteIcon::UpdateNone()
-{
-}
-
-void PaletteIcon::UpdateScrollUp()
+void PaletteIcon::UpdateScrollUp(void)
 {
 	for (EditorPaletteBase::ImgInfo& i : icons_)
 	{
@@ -196,7 +192,7 @@ void PaletteIcon::UpdateScrollUp()
 	}
 }
 
-void PaletteIcon::UpdateScrollDown()
+void PaletteIcon::UpdateScrollDown(void)
 {
 	for (EditorPaletteBase::ImgInfo& i : icons_)
 	{
@@ -211,7 +207,7 @@ void PaletteIcon::UpdateScrollDown()
 	}
 }
 
-void PaletteIcon::UpdateSelect()
+void PaletteIcon::UpdateSelect(void)
 {
 	KeyConfig& ins = KeyConfig::GetInstance();
 
@@ -233,7 +229,7 @@ void PaletteIcon::UpdateSelect()
 	}
 }
 
-void PaletteIcon::DrawItemIcon()
+void PaletteIcon::DrawItemIcon(void)
 {
 	//アイコンの描画のみマスク処理
 	SetUseMaskScreenFlag(true);
@@ -277,7 +273,7 @@ void PaletteIcon::DrawItemIcon()
 	SetUseMaskScreenFlag(false);
 }
 
-void PaletteIcon::DrawScrollIcon()
+void PaletteIcon::DrawScrollIcon(void)
 {
 	//スクロール用アイコン
 	for (EditorPaletteBase::ImgInfo& s : scrIcon_)
@@ -293,10 +289,11 @@ void PaletteIcon::DrawScrollIcon()
 	}
 }
 
-void PaletteIcon::SetExcludingItemTypeArray()
+void PaletteIcon::SetExcludingItemTypeArray(void)
 {
 	//除外番号
-	const std::vector<int> EXCLUDED_TYPES = {
+	const std::vector<int> EXCLUDED_TYPES = 
+	{
 		static_cast<int>(ItemBase::ITEM_TYPE::NONE),
 		static_cast<int>(ItemBase::ITEM_TYPE::START),
 		static_cast<int>(ItemBase::ITEM_TYPE::GOAL),
@@ -314,7 +311,7 @@ void PaletteIcon::SetExcludingItemTypeArray()
 	}
 }
 
-void PaletteIcon::InitMaskScreen()
+void PaletteIcon::InitMaskScreen(void)
 {
 	//マスクスクリーンの作成
 	int ret = CreateMaskScreen();
@@ -370,7 +367,7 @@ bool PaletteIcon::CheckItemIcon(const Vector2 _mPos, const int _playerIndex)
 	ItemBase::ITEM_TYPE preType = selectTypes_[_playerIndex];
 
 	//アイテムの種類の確認
-	for (int i = 0; i < icons_.size(); i++)
+	for (int i = 0; i < static_cast<int>(icons_.size()); i++)
 	{
 		EditorPaletteBase::ImgInfo& ic = icons_[i];	//情報の格納
 		leftTop = { ic.pos.x - ic.size.x / 2, ic.pos.y - ic.size.y / 2 };//座標定義

@@ -4,6 +4,7 @@
 
 class PaletteCursor
 {
+
 public:
 
 	/// <summary>
@@ -16,45 +17,45 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~PaletteCursor();
+	~PaletteCursor(void) = default;
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// リセット
 	/// </summary>
-	void Reset();
+	void Reset(void);
 
 	/// <summary>
 	/// 決定の設定
 	/// </summary>
-	/// <param name="_isbool"></param>決定の判定
-	inline const void SetDecide(const bool _isbool) { decide_ = _isbool; }
+	/// <param name="_decide"></param>決定の判定
+	const void SetDecide(const bool _decide) { decide_ = _decide; }
 
 	/// <summary>
 	/// 座標を返す
 	/// </summary>
 	/// <returns></returns>座標
-	inline const Vector2 GetPos() const { return pos_; }
+	const Vector2 GetPos(void) const { return pos_; }
 
 	/// <summary>
 	/// 決定済みか返す
 	/// </summary>
 	/// <returns></returns>結果
-	inline const bool IsDecide() const { return decide_; }
+	const bool IsDecide(void) const { return decide_; }
 
 private:
 

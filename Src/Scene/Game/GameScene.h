@@ -15,9 +15,12 @@ class GameScene : public SceneBase
 {
 
 public:
-
-	static constexpr VECTOR ACTION_CAMERA_POS = { 2000.0f, 1700.0f, -2000.0f };	//アクション時のカメラ位置
-	static constexpr float ACTION_START_TIME = 3.0f;	//アクション開始時のカウント
+	
+	//アクション時のカメラ位置
+	static constexpr VECTOR ACTION_CAMERA_POS = { 2000.0f, 1700.0f, -2000.0f };	
+	
+	//アクション開始時のカウント
+	static constexpr float ACTION_START_TIME = 3.0f;	
 
 	/// <summary>
 	/// フェーズ
@@ -32,7 +35,6 @@ public:
 		CLEAR_PHASE,	//クリア
 		GAME_OVER,		//ゲームオーバー
 	};
-
 
 	/// <summary>
 	/// コンストラクタ
@@ -130,9 +132,9 @@ protected:
 	virtual void UpdateClear(void);		//クリア時の更新処理
 
 	//フェーズ別描画処理
-	virtual void DrawEdit();
-	virtual void DrawAction();
-	void DrawClear();
+	virtual void DrawEdit(void);		//エディット時の描画
+	virtual void DrawAction(void);		//アクション時の描画
+	void DrawClear(void);				//クリア時の描画
 
 	//サウンド読み込み
 	virtual void LoadSound(void);
@@ -144,7 +146,5 @@ protected:
 	virtual void DebagUpdate(void);	
 
 	//デバッグ時の描画処理
-	virtual void DebagDraw(void);	//描画
-
-
+	virtual void DebagDraw(void);
 };

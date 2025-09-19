@@ -4,6 +4,7 @@
 
 class RoundDisplay
 {
+
 public:
 
 	//カメラの俯瞰位置
@@ -13,32 +14,32 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	RoundDisplay();
+	RoundDisplay(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~RoundDisplay();
+	~RoundDisplay(void) = default;
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// ナンバーインデックスに値を追加

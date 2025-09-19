@@ -4,6 +4,7 @@
 
 class ScoreManager
 {
+
 public:
 
 	/// <summary>
@@ -20,7 +21,8 @@ public:
 	};
 
 	//種類ごとに得点
-	static constexpr int SCORE_TYPE_VALUES[static_cast<int>(SCORE_TYPE::MAX)] = {
+	static constexpr int SCORE_TYPE_VALUES[static_cast<int>(SCORE_TYPE::MAX)] =
+	{
 		0,	//DEATH
 		1,	//CLEAR
 		1,	//FIRST
@@ -31,7 +33,7 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~ScoreManager();
+	~ScoreManager(void);
 	 
 	/// <summary>
 	/// 明示的にインスタンス生成する
@@ -49,12 +51,12 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 解放
 	/// </summary>
-	void Destroy();
+	void Destroy(void);
 	 
 	/// <summary>
 	/// スコアの追加
@@ -66,20 +68,20 @@ public:
 	/// <summary>
 	/// プレイヤーらのスコアを設定
 	/// </summary>
-	void SetPlayersScore();
+	void SetPlayersScore(void);
 
 	/// <summary>
 	/// 勝者のプレイヤー番号を取得
 	/// </summary>
 	/// <param name="_clearLine">クリア値</param>
 	/// <returns>プレイヤー番号、もしいなければ-1</returns>
-	const int GetWinnerPlayerIndex() const;
+	const int GetWinnerPlayerIndex(void) const;
 
 	/// <summary>
 	/// 現在のスコアが高いプレイヤー番号を返す
 	/// </summary>
 	/// <returns>勝者のインデックスを返し、引き分けの場合-1を返す</returns>
-	const int GetNowWinnerPlayerIndex() const;
+	const int GetNowWinnerPlayerIndex(void) const;
 
 	/// <summary>
 	/// スコアを返す
@@ -99,19 +101,19 @@ public:
 	/// <summary>
 	/// リセット
 	/// </summary>
-	void ResetIsBonusScores();
+	void ResetIsBonusScores(void);
 
 	/// <summary>
 	/// 引き分けか返す
 	/// </summary>
 	/// <returns>trueの場合引き分け</returns>
-	const bool IsDraw()const;
+	const bool IsDraw(void)const;
 
 	/// <summary>
 	/// ラウンド数を返す
 	/// </summary>
 	/// <returns>ラウンド数を返す</returns>
-	const int GetNowRound()const {return round_;}
+	const int GetNowRound(void)const {return round_;}
 
 	/// <summary>
 	/// ラウンド数を設定
@@ -125,7 +127,7 @@ private:
 	static ScoreManager* instance_;	
 	
 	// コンストラクタ
-	ScoreManager();
+	ScoreManager(void);
 
 	// デフォルトコンストラクタは使用不可
 	ScoreManager(const ScoreManager&) = delete;

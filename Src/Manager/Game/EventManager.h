@@ -65,12 +65,12 @@ public:
 	/// イベント種類を返す
 	/// </summary>
 	/// <returns>イベント種類</returns>
-	const EVENT_TYPE GetEventType()const { return eventType_; }
+	const EVENT_TYPE GetEventType(void)const { return eventType_; }
 
 	/// <summary>
 	/// ランダムでイベントを設定
 	/// </summary>
-	void SetRandomEvent();
+	void SetRandomEvent(void);
 
 	/// <summary>
 	/// イベントを設定
@@ -81,7 +81,7 @@ public:
 	/// <summary>
 	/// リセット
 	/// </summary>
-	void Reset();
+	void Reset(void);
 
 private:
 
