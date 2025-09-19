@@ -106,7 +106,7 @@ void EditEscape::UpdateWait(void)
 
 void EditEscape::UpdateCheck(void)
 {
-	YesNoResponder::RESPON res = responder_->GetRespon();
+	YesNoResponder::RESPON res = responder_->GetRespond();
 
 	if (res == YesNoResponder::RESPON::NONE)
 	{
@@ -126,7 +126,6 @@ void EditEscape::UpdateCheck(void)
 		ChangeState(STATE::WAIT);
 		return;
 	}
-
 }
 
 void EditEscape::DrawWait(void)
@@ -147,13 +146,17 @@ void EditEscape::DrawCheck(void)
 	//背景含め回答ボックスの描画
 	responder_->Draw();
 
-	//メッセージの描画
+	//メッセージのYオフセット
 	constexpr int OFFSET_Y = 120;
 
+	//拡大率
+	constexpr float RATE = 0.7f;	
+
+	//メッセージの描画
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
 		Application::SCREEN_HALF_Y - OFFSET_Y,
-		0.7f,
+		RATE,
 		0.0f,
 		imgSystemMessages_[SYS_MES_INDEX],
 		true,

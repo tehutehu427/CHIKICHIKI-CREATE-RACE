@@ -6,24 +6,20 @@
 #include "../Common/Vector2.h"
 #include "../Application.h"
 
-SandStormEffect::SandStormEffect()
+SandStormEffect::SandStormEffect(void)
 {
 	renderer_ = nullptr;
 	material_ = nullptr;
 	timer_ = 0.0f;
 }
 
-SandStormEffect::~SandStormEffect()
-{
-}
-
-void SandStormEffect::Load()
+void SandStormEffect::Load(void)
 {
 	material_ = std::make_unique<PixelMaterial>("SandStorm.cso", BUFFER_SIZE);
 	renderer_ = std::make_unique<PixelRenderer>(*material_);
 }
 
-void SandStormEffect::Init()
+void SandStormEffect::Init(void)
 {
 	//バッファー追加
 	material_->AddConstBuf(FLOAT4{ 1.0f,0.0f,0.0f,0.0f });
@@ -40,7 +36,7 @@ void SandStormEffect::Init()
 
 }
 
-void SandStormEffect::Draw()
+void SandStormEffect::Draw(void)
 {
 	auto& scn = SceneManager::GetInstance();
 

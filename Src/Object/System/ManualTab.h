@@ -8,6 +8,7 @@ class KeyConfig;
 
 class ManualTab
 {
+
 public:
 
 	/// <summary>
@@ -28,33 +29,33 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~ManualTab();
+	~ManualTab(void) = default;
 	
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// マニュアルが表示中か返す
 	/// </summary>
 	/// <returns>表示中ならtrue,そうでなければfalse</returns>
-	inline const bool IsDisplay()const { return state_ == STATE::DISPLAY; }
+	const bool IsDisplay()const { return state_ == STATE::DISPLAY; }
 
 private:
 
@@ -115,20 +116,20 @@ private:
 	void ChangeState(const STATE _state) { state_ = _state; }
 
 	//更新関数
-	void UpdateWait();
-	void UpdateDisplay();
+	void UpdateWait(void);
+	void UpdateDisplay(void);
 
 	//描画関数
-	void DrawWait();
-	void DrawDisplay();
+	void DrawWait(void);
+	void DrawDisplay(void);
 
 	//シーン別にリソースを読み込み
-	void LoadSelectResource();
-	void LoadFreeResource();
+	void LoadSelectResource(void);
+	void LoadFreeResource(void);
 
 	//シーン別に更新処理
-	void UpdateSelectScene();
-	void UpdateFreeMode();
+	void UpdateSelectScene(void);
+	void UpdateFreeMode(void);
 
 	//クリックしたか調べる
 	bool IsClickTriangle(const int _index);

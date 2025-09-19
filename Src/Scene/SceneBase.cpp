@@ -12,6 +12,7 @@ SceneBase::SceneBase(void) :
 	,keyConfig_(KeyConfig::GetInstance())
 	,sndMng_(SoundManager::GetInstance())
 {
+	imgLoadingMessage_ = -1;
 	buttnFontHandle_ = -1;
 	loadingTime_ = -1;
 }

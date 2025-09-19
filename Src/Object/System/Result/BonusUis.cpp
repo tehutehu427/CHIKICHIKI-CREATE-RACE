@@ -11,11 +11,7 @@ BonusUis::BonusUis(const int _playerIndex) :playerIndex_(_playerIndex)
 	timer_ = 0.0f;
 }
 
-BonusUis::~BonusUis()
-{
-}
-
-void BonusUis::Load()
+void BonusUis::Load(void)
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	uiInfos_[static_cast<int>(TYPE::CLEAR)].image = res.Load(ResourceManager::SRC::RESULT_GOAL).handleId_;
@@ -23,7 +19,7 @@ void BonusUis::Load()
 	uiInfos_[static_cast<int>(TYPE::COIN)].image = res.Load(ResourceManager::SRC::RESULT_COIN).handleId_;
 }
 
-void BonusUis::Init()
+void BonusUis::Init(void)
 {
 	constexpr int MARGIN_X = 80;
 	constexpr int MARGIN_Y = 100;
@@ -49,7 +45,7 @@ void BonusUis::Init()
 	}
 }
 
-void BonusUis::Update()
+void BonusUis::Update(void)
 {
 	constexpr float ANIM_TIME = 1.5f;
 	constexpr float START = 0.5f;
@@ -73,7 +69,7 @@ void BonusUis::Update()
 	}
 }
 
-void BonusUis::UpdateShake()
+void BonusUis::UpdateShake(void)
 {
 	constexpr float SPEED = 2.0f;
 	constexpr float AMPLITUDE = 0.002f;
@@ -88,7 +84,7 @@ void BonusUis::UpdateShake()
 	}
 }
 
-void BonusUis::Draw()
+void BonusUis::Draw(void)
 {
 	for (Info& ui : uiInfos_)
 	{
@@ -103,7 +99,6 @@ void BonusUis::Draw()
 		DrawRotaGraph(
 			ui.pos.x,
 			ui.pos.y,
-			//0.5f,
 			ui.rate,
 			0.0f,
 			ui.image,
@@ -114,7 +109,7 @@ void BonusUis::Draw()
 	}
 }
 
-void BonusUis::SetBonus()
+void BonusUis::SetBonus(void)
 {
 	ScoreManager& score = ScoreManager::GetInstance();
 
@@ -135,7 +130,7 @@ void BonusUis::SetBonus()
 
 }
 
-void BonusUis::Reset()
+void BonusUis::Reset(void)
 {
 	for (int i = 0; i < static_cast<int>(TYPE::MAX); i++)
 	{

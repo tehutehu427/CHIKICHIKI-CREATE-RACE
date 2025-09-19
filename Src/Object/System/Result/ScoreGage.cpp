@@ -26,11 +26,11 @@ ScoreGage::ScoreGage(const int _playerIndex) :
 	stateChanges_.emplace(STATE::AFTER_WAIT, std::bind(&ScoreGage::ChangeStateAfterWait, this));
 }
 
-ScoreGage::~ScoreGage()
+ScoreGage::~ScoreGage(void)
 {
 }
 
-void ScoreGage::Load()
+void ScoreGage::Load(void)
 {
 	//リソースの読み込み
 	ResourceManager& res = ResourceManager::GetInstance();
@@ -45,7 +45,7 @@ void ScoreGage::Load()
 	SetParamToPlayerNo();
 }
 
-void ScoreGage::Init()
+void ScoreGage::Init(void)
 {
 	//初期状態
 	ChangeState(STATE::NONE);
@@ -67,12 +67,12 @@ void ScoreGage::Init()
 	bonus_->Init();
 }
 
-void ScoreGage::Update()
+void ScoreGage::Update(void)
 {
 	stateUpdate_();
 }
 
-void ScoreGage::Draw()
+void ScoreGage::Draw(void)
 {
 	//一定の状態の場合描画させない
 	if (state_ == STATE::NONE) { return; }
@@ -117,17 +117,17 @@ void ScoreGage::SetLengthPerPoint(const int _lengthPerPoint)
 	lengthPerPoint_ = _lengthPerPoint;
 }
 
-void ScoreGage::ChangeStateNone()
+void ScoreGage::ChangeStateNone(void)
 {
 	stateUpdate_ = std::bind(&ScoreGage::UpdateStateNone, this);
 }
 
-void ScoreGage::ChangeStateWait()
+void ScoreGage::ChangeStateWait(void)
 {
 	stateUpdate_ = std::bind(&ScoreGage::UpdateStateNone, this);
 }
 
-void ScoreGage::ChangeStateAnimation()
+void ScoreGage::ChangeStateAnimation(void)
 {
 	ScoreManager& scoreMng = ScoreManager::GetInstance();
 
@@ -150,16 +150,12 @@ void ScoreGage::ChangeStateAnimation()
 	bonus_->SetBonus();
 }
 
-void ScoreGage::ChangeStateAfterWait()
+void ScoreGage::ChangeStateAfterWait(void)
 {
 	stateUpdate_ = std::bind(&ScoreGage::UpdateStateAfterWait, this);
 }
 
-void ScoreGage::UpdateStateNone()
-{
-}
-
-void ScoreGage::UpdateStateAnimation()
+void ScoreGage::UpdateStateAnimation(void)
 {
 	animStep_ += SceneManager::GetInstance().GetDeltaTime();
 
@@ -183,12 +179,12 @@ void ScoreGage::UpdateStateAnimation()
 	}
 }
 
-void ScoreGage::UpdateStateAfterWait()
+void ScoreGage::UpdateStateAfterWait(void)
 {
 	bonus_->UpdateShake();
 }
 
-void ScoreGage::SetParamToPlayerNo()
+void ScoreGage::SetParamToPlayerNo(void)
 {
 	//座標設定
 	pos_ = { GAGE_POS_P1_X, GAGE_POS_P1_Y };

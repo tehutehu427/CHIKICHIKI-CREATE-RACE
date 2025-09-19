@@ -4,8 +4,12 @@
 
 class YesNoResponder
 {
+
 public:
 
+	/// <summary>
+	/// 回答状態
+	/// </summary>
 	enum class RESPON
 	{
 		NONE = -1,
@@ -17,43 +21,43 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	YesNoResponder();
+	YesNoResponder(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~YesNoResponder();
+	~YesNoResponder(void);
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// リセット
 	/// </summary>
-	void Reset();
+	void Reset(void);
 
 	/// <summary>
 	/// 選択結果を返す
 	/// </summary>
 	/// <returns>選択結果</returns>
-	const RESPON GetRespon() const { return respon_; }
+	const RESPON GetRespond(void) const { return respon_; }
 
 private:
 
@@ -74,6 +78,5 @@ private:
 
 	//回答
 	RESPON respon_;
-
 };
 

@@ -8,14 +8,14 @@
 #include "../../Common/ToonStyle.h"
 #include "../../Player/Player.h"
 
-MultiCheckPlayer::MultiCheckPlayer()
+MultiCheckPlayer::MultiCheckPlayer(void)
 {
 	playerIndex_ = -1;
 	RegisterStateUpdate(STATE::SMOKE, [this]() { UpdateSmoke(); });
 	RegisterStateUpdate(STATE::ANIMATION, [this]() { UpdateAnimation(); });
 }
 
-MultiCheckPlayer::~MultiCheckPlayer()
+MultiCheckPlayer::~MultiCheckPlayer(void)
 {
 }
 
@@ -65,21 +65,23 @@ void MultiCheckPlayer::Create(const int _playerIndex, const int _playerNum)
 	effectController_->PlayAnimation();
 }
 
-void MultiCheckPlayer::Update()
+void MultiCheckPlayer::Update(void)
 {
 	stateMap_[state_]();
 }
 
-void MultiCheckPlayer::Draw()
+void MultiCheckPlayer::Draw(void)
 {
 	//プレイヤーの描画
 	toon_->Draw();
+
+	constexpr float RATE = 2.5f;
 
 	//エフェクトの描画
 	DrawRotaGraph(
 		screenPos_.x,
 		screenPos_.y,
-		2.5f,
+		RATE,
 		0.0f,
 		imgSmokes_[effectController_->GetAnimationIndex()],
 		true
@@ -87,18 +89,18 @@ void MultiCheckPlayer::Draw()
 
 }
 
-void MultiCheckPlayer::Reset()
+void MultiCheckPlayer::Reset(void)
 {
 	ChangeState(STATE::SMOKE);
 	effectController_->PlayAnimation();
 }
 
-void MultiCheckPlayer::SetGameStartAnimation()
+void MultiCheckPlayer::SetGameStartAnimation(void)
 {
 	animController_->Play(static_cast<int>(Player::ANIM_TYPE::PUNCH), false, 0.0f, ANIM_STOP_STEP);
 }
 
-bool MultiCheckPlayer::IsFinishGameStartAnimation()
+bool MultiCheckPlayer::IsFinishGameStartAnimation(void)
 {
 	if (animController_->IsEnd())
 	{ 
@@ -112,7 +114,7 @@ void MultiCheckPlayer::RegisterStateUpdate(const STATE _state, std::function<voi
 	stateMap_[_state] = _update;
 }
 
-void MultiCheckPlayer::UpdateSmoke()
+void MultiCheckPlayer::UpdateSmoke(void)
 {
 	effectController_->Update();
 
@@ -123,14 +125,14 @@ void MultiCheckPlayer::UpdateSmoke()
 	}
 }
 
-void MultiCheckPlayer::UpdateAnimation()
+void MultiCheckPlayer::UpdateAnimation(void)
 {
 	trans_.Update();
 
 	animController_->Update();
 }
 
-void MultiCheckPlayer::SetParamByPlayerIndex()
+void MultiCheckPlayer::SetParamByPlayerIndex(void)
 {
 	//スクリーン座標
 	screenPos_ = { Application::SCREEN_SIZE_X / (playerNum_ + 1) * (playerIndex_ + 1), Application::SCREEN_HALF_Y };

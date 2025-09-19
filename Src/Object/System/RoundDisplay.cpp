@@ -9,7 +9,7 @@
 #include "../../Manager/System/Camera.h"
 #include "../../Utility/Utility.h"
 
-RoundDisplay::RoundDisplay()
+RoundDisplay::RoundDisplay(void)
 {
 	int i = -1;
 	imgNumbers_ = &i;
@@ -20,19 +20,14 @@ RoundDisplay::RoundDisplay()
 	cnt_ = 0.0f;
 }
 
-RoundDisplay::~RoundDisplay()
-{
-	
-}
-
-void RoundDisplay::Load()
+void RoundDisplay::Load(void)
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgRound_ = res.Load(ResourceManager::SRC::ROUND).handleId_;
 	imgNumbers_ = res.Load(ResourceManager::SRC::NUMBERS).handleIds_;
 }
 
-void RoundDisplay::Init()
+void RoundDisplay::Init(void)
 {
 	//初期値
 	numberIndex_ = 0;
@@ -45,7 +40,7 @@ void RoundDisplay::Init()
 	camera->ChangeMode(Camera::MODE::FIXED_POINT);
 }
 
-void RoundDisplay::Update()
+void RoundDisplay::Update(void)
 {
 	//アルファ値を変更しつつ表示する
 		
@@ -56,7 +51,7 @@ void RoundDisplay::Update()
 	CameraOverLooking();
 }
 
-void RoundDisplay::Draw()
+void RoundDisplay::Draw(void)
 {
 	//ステージの描画
 	ItemManager::GetInstance().Draw();

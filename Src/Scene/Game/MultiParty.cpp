@@ -100,7 +100,7 @@ void MultiParty::Init(void)
 	}
 }
 
-void MultiParty::Reset()
+void MultiParty::Reset(void)
 {
 	sndMng_.Stop(SoundManager::SRC::MULTI_CLEAR_BGM);
 
@@ -127,7 +127,7 @@ void MultiParty::CommonDraw(void)
 	}
 }
 
-void MultiParty::RoundReset()
+void MultiParty::RoundReset(void)
 {
 	//セレクトのリセット
 	palette_->Init();
@@ -221,7 +221,7 @@ void MultiParty::DrawEdit(void)
 	GameScene::DrawEdit();
 }
 
-void MultiParty::ChangePhaseClear()
+void MultiParty::ChangePhaseClear(void)
 {
 	GameScene::ChangePhaseClear();	
 
@@ -238,7 +238,7 @@ void MultiParty::ChangePhaseClear()
 	if (index == -1) { index = 0; }
 	camera->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(index));
 }
-void MultiParty::ChangePhaseEdit()
+void MultiParty::ChangePhaseEdit(void)
 {
 	//親クラスの処理を呼びだし
 	GameScene::ChangePhaseEdit();
@@ -249,7 +249,7 @@ void MultiParty::ChangePhaseEdit()
 	scnMng_.SetIsSplitMode(true);
 }
 
-void MultiParty::ChangePhaseAction()
+void MultiParty::ChangePhaseAction(void)
 {
 	//親クラスの処理を呼びだし
 	GameScene::ChangePhaseAction();
@@ -267,7 +267,7 @@ void MultiParty::ChangePhaseAction()
 	sndMng_.Play(playBgmSrc_, SoundManager::PLAYTYPE::LOOP);
 }
 
-void MultiParty::ChangePhaseRound()
+void MultiParty::ChangePhaseRound(void)
 {
 	//処理を登録
 	phaseUpdate_ = std::bind(&MultiParty::UpdateRound, this);
@@ -286,7 +286,7 @@ void MultiParty::ChangePhaseRound()
 	}
 }
 
-void MultiParty::ChangePhaseSelect()
+void MultiParty::ChangePhaseSelect(void)
 {
 	phaseUpdate_ = std::bind(&MultiParty::UpdateSelect, this);
 	phaseDraw_ = std::bind(&MultiParty::DrawSelect, this);
@@ -297,7 +297,7 @@ void MultiParty::ChangePhaseSelect()
 	sndMng_.Play(editBgmSrc_, SoundManager::PLAYTYPE::LOOP);
 }
 
-void MultiParty::ChangePhaseResult()
+void MultiParty::ChangePhaseResult(void)
 {
 	phaseUpdate_ = std::bind(&MultiParty::UpdateResult, this);
 	phaseDraw_ = std::bind(&MultiParty::DrawResult, this);
@@ -311,7 +311,7 @@ void MultiParty::ChangePhaseResult()
 	SceneManager::GetInstance().GetCamera(0).lock()->ChangeMode(Camera::MODE::FIXED_POINT);
 }
 
-void MultiParty::UpdateClear()
+void MultiParty::UpdateClear(void)
 {	
 	if (!sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_JINGLE) && !sndMng_.IsPlay(SoundManager::SRC::MULTI_CLEAR_BGM))
 	{
@@ -320,7 +320,7 @@ void MultiParty::UpdateClear()
 	GameScene::UpdateClear();
 }
 
-void MultiParty::UpdateRound()
+void MultiParty::UpdateRound(void)
 {
 	//ラウンドを更新
 	round_->Update();
@@ -340,7 +340,7 @@ void MultiParty::UpdateRound()
 	}
 }
 
-void MultiParty::UpdateSelect()
+void MultiParty::UpdateSelect(void)
 {
 	palette_->Update();
 
@@ -351,29 +351,29 @@ void MultiParty::UpdateSelect()
 	}
 }
 
-void MultiParty::UpdateResult()
+void MultiParty::UpdateResult(void)
 {
 	result_->Update(*this);
 }
 
-void MultiParty::DrawRound()
+void MultiParty::DrawRound(void)
 {
 	round_->Draw();
 
 	EventManager::GetInstance().Draw();
 }
 
-void MultiParty::DrawSelect()
+void MultiParty::DrawSelect(void)
 {
 	palette_->Draw();
 }
 
-void MultiParty::DrawResult()
+void MultiParty::DrawResult(void)
 {
 	result_->Draw();
 }
 
-void MultiParty::CheckPlayerFinish()
+void MultiParty::CheckPlayerFinish(void)
 {
 	//プレイヤーの処理が終わったか確認
 	if (PlayerManager::GetInstance().IsPlayersEnd())
@@ -391,7 +391,7 @@ void MultiParty::CheckPlayerFinish()
 	}
 }
 
-void MultiParty::LoadSound()
+void MultiParty::LoadSound(void)
 {
 	GameScene::LoadSound();
 	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_1);
@@ -403,7 +403,7 @@ void MultiParty::LoadSound()
 	sndMng_.LoadResource(SoundManager::SRC::MULTI_CLEAR_JINGLE);
 }
 
-void MultiParty::RandomBgm()
+void MultiParty::RandomBgm(void)
 {
 	constexpr int EDIT_BGM_NUM = 2;	//エディットBGMの数
 	constexpr int PLAY_BGM_NUM = 2;	//プレイBGMの数
@@ -435,16 +435,4 @@ void MultiParty::RandomBgm()
 		playBgmSrc_ = SoundManager::SRC::PLAY_BGM_1;
 		break;
 	}
-}
-
-void MultiParty::DebagUpdate()
-{
-	//次のフェーズへ状態遷移する
-	//if (keyConfig_.IsTrgDown(KeyConfig::CONTROL_TYPE::DECISION_MOUSE,KeyConfig::JOYPAD_NO::PAD1))
-	//{
-	//	int phase = static_cast<int>(phase_);
-	//	int nextPhase = phase + 1;
-	//	if (nextPhase == static_cast<int>(PHASE::CLEAR_PHASE)) { nextPhase = 0; }
-	//	ChangePhase(static_cast<PHASE>(nextPhase));
-	//}
 }

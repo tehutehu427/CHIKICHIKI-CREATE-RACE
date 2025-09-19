@@ -18,22 +18,22 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	GameClear();
+	GameClear(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~GameClear();
+	~GameClear(void);
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
@@ -43,7 +43,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// ゲーム結果のフェーズを設定
@@ -106,21 +106,15 @@ private:
 	//通常のUI拡大率
 	static constexpr float DEFAULT_UI_RATE = 0.7f;
 
+	//UIの初期位置
+	Vector2 UI_FIRST_POS = { Application::SCREEN_HALF_X, Application::SCREEN_SIZE_Y + 200 };
+
 	// 状態ごとの構造体（更新と描画を分けて保持）
 	struct StateFuncs
 	{
 		std::function<void(GameScene&)> updateFunc;
-		std::function<void()> drawFunc;
+		std::function<void(void)> drawFunc;
 	};
-
-	//状態
-	STATE state_;
-
-	//状態更新管理
-	std::unordered_map<STATE, StateFuncs> stateMap_;
-
-	//メニュー項目別処理
-	std::unordered_map<MENU, std::function<void(GameScene&)>> menuFuncTabe_;
 
 	//フォント
 	int messageFont_;	//メッセージ
@@ -143,6 +137,15 @@ private:
 
 	//画面フェード用アルファ値
 	int alpha_;
+	
+	//状態
+	STATE state_;
+
+	//状態更新管理
+	std::unordered_map<STATE, StateFuncs> stateMap_;
+
+	//メニュー項目別処理
+	std::unordered_map<MENU, std::function<void(GameScene&)>> menuFuncTabe_;
 
 	//メニュー項目
 	std::string menuStrings_[MENU_LIST_NUM];
@@ -171,14 +174,14 @@ private:
 	void UpdateMenu(GameScene& _parent);
 
 	//状態別描画処理
-	void DrawWaiting();
-	void DrawDisplay();
-	void DrawMenu();
+	void DrawWaiting(void);
+	void DrawDisplay(void);
+	void DrawMenu(void);
 
 	//モード別に状態を初期化
-	void InitStateByMode();
+	void InitStateByMode(void);
 
 	//デバッグ用描画
-	void DebugDraw();
+	void DebugDraw(void);
 };
 

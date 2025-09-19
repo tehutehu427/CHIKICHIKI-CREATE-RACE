@@ -7,6 +7,7 @@
 
 class SkyDome : public ObjectBase
 {
+
 public:
 
 	//回転速度
@@ -27,13 +28,13 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	SkyDome();
+	SkyDome(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
 	/// <param name=""></param>
-	~SkyDome(void)override;
+	~SkyDome(void)override = default;
 
 	/// <summary>
 	/// 読み込み
@@ -63,13 +64,7 @@ public:
 	/// 当たり判定後の処理
 	/// </summary>
 	/// <param name="_hitColTag">相手側の当たり判定</param>
-	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
-
-	/// <summary>
-	/// トランスフォームを返す
-	/// </summary>
-	/// <returns></returns>トランスフォーム
-	const Transform& GetTransform() const;
+	void OnHit(const std::weak_ptr<Collider> _hitCol)override {};
 
 private:	
 

@@ -43,19 +43,19 @@ public:
 	/// Œˆ’è‚Ìİ’è
 	/// </summary>
 	/// <param name="_decide"></param>Œˆ’è‚Ì”»’è
-	inline const void SetDecide(const bool _decide) { decide_ = _decide; }
+	const void SetDecide(const bool _decide) { decide_ = _decide; }
 
 	/// <summary>
 	/// À•W‚ğ•Ô‚·
 	/// </summary>
 	/// <returns></returns>À•W
-	inline const Vector2 GetPos(void) const { return pos_; }
+	const Vector2 GetPos(void) const { return pos_; }
 
 	/// <summary>
 	/// Œˆ’èÏ‚İ‚©•Ô‚·
 	/// </summary>
 	/// <returns></returns>Œ‹‰Ê
-	inline const bool IsDecide(void) const { return decide_; }
+	const bool IsDecide(void) const { return decide_; }
 
 private:
 

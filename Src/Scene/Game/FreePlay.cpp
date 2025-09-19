@@ -151,7 +151,7 @@ void FreePlay::ChangePhaseEdit(void)
 	sndMng_.Play(SoundManager::SRC::EDIT_BGM, SoundManager::PLAYTYPE::LOOP);
 }
 
-void FreePlay::NormalUpdate()
+void FreePlay::NormalUpdate(void)
 {	
 	//親クラスの処理を呼び出し
 	GameScene::NormalUpdate();
@@ -176,7 +176,7 @@ void FreePlay::NormalDraw(void)
 	}
 }
 
-void FreePlay::DrawEdit()
+void FreePlay::DrawEdit(void)
 {
 	//親クラスの描画
 	GameScene::DrawEdit();
@@ -192,10 +192,9 @@ void FreePlay::DrawEdit()
 	
 	//マニュアルの描画(最後に描画)
 	manual_->Draw();
-
 }
 
-void FreePlay::LoadSound()
+void FreePlay::LoadSound(void)
 {
 	GameScene::LoadSound();
 	sndMng_.LoadResource(SoundManager::SRC::EDIT_BGM);

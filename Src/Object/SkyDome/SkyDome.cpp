@@ -4,13 +4,9 @@
 #include "../../Utility/Utility.h"
 #include "SkyDome.h"
 
-SkyDome::SkyDome()
+SkyDome::SkyDome(void)
 {
 	state_ = STATE::NONE;
-}
-
-SkyDome::~SkyDome(void)
-{
 }
 
 void SkyDome::Load(void)
@@ -53,13 +49,4 @@ void SkyDome::Update(void)
 void SkyDome::Draw(void)
 {
 	MV1DrawModel(transform_.modelId);
-}
-
-void SkyDome::OnHit(const std::weak_ptr<Collider> _hitCol)
-{
-}
-
-const Transform& SkyDome::GetTransform() const
-{
-	return transform_;
 }

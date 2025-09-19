@@ -10,7 +10,7 @@
 #include "ScoreGage.h"
 #include "ScoreGageManager.h"
 
-MultiResult::MultiResult()
+MultiResult::MultiResult(void)
 {
 	RegisterStateUpdateFunction(STATE::READY, [this](MultiParty& _parent) { UpdateStateReady(_parent); });
 	RegisterStateUpdateFunction(STATE::WAIT, [this](MultiParty& _parent) { UpdateStateWait(_parent); });
@@ -31,11 +31,11 @@ MultiResult::MultiResult()
 	waitStep_ = 0.0f;
 }
 
-MultiResult::~MultiResult()
+MultiResult::~MultiResult(void)
 {
 }
 
-void MultiResult::Load()
+void MultiResult::Load(void)
 {
 	//読み込み
 	palette_ = std::make_unique<Palette>();
@@ -54,7 +54,7 @@ void MultiResult::Load()
 	sndMng.LoadResource(SoundManager::SRC::DRUM_ROLL_END);
 }
 
-void MultiResult::Init()
+void MultiResult::Init(void)
 {
 	//パレット
 	palette_->Init();
@@ -75,7 +75,7 @@ void MultiResult::Update(MultiParty& _parent)
 	stateUpdateMap_[state_](_parent);
 }
 
-void MultiResult::Draw()
+void MultiResult::Draw(void)
 {
 	//パレット
 	palette_->Draw();
@@ -84,7 +84,7 @@ void MultiResult::Draw()
 	stateDrawMap_[state_]();
 }
 
-void MultiResult::Reset()
+void MultiResult::Reset(void)
 {
 	//パレット初期状態
 	palette_->ChangeState(Palette::STATE::ADMISSION);
@@ -220,11 +220,7 @@ void MultiResult::UpdateStateInputCheck(MultiParty& _parent)
 	}
 }
 
-void MultiResult::DrawStateReady()
-{
-}
-
-void MultiResult::DrawStateWait()
+void MultiResult::DrawStateWait(void)
 {
 	//スコアゲージ
 	scoreGages_->Draw();
@@ -233,7 +229,7 @@ void MultiResult::DrawStateWait()
 	scoreGages_->DrawTitle();
 }
 
-void MultiResult::DrawStateScore()
+void MultiResult::DrawStateScore(void)
 {
 	//スコアゲージ
 	scoreGages_->Draw();
@@ -242,7 +238,7 @@ void MultiResult::DrawStateScore()
 	scoreGages_->DrawTitle();
 }
 
-void MultiResult::DrawStateResult()
+void MultiResult::DrawStateResult(void)
 {
 	//スコアゲージ
 	scoreGages_->Draw();
@@ -251,7 +247,7 @@ void MultiResult::DrawStateResult()
 	scoreGages_->DrawIsWinning();
 }
 
-void MultiResult::DrawStateInputCheck()
+void MultiResult::DrawStateInputCheck(void)
 {
 	//スコアゲージ
 	scoreGages_->Draw();

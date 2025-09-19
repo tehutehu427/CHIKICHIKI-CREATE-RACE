@@ -8,6 +8,7 @@ class BonusUis;
 
 class ScoreGage
 {
+
 public:
 
 	enum class STATE
@@ -48,27 +49,27 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~ScoreGage();
+	~ScoreGage(void);
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// 状態別変更処理
@@ -86,7 +87,7 @@ public:
 	/// 状態を返す
 	/// </summary>
 	/// <returns>状態</returns>
-	inline const STATE GetState() const { return state_; }
+	const STATE GetState(void) const { return state_; }
 
 private:
 
@@ -127,29 +128,29 @@ private:
 	std::unordered_map<STATE, std::function<void()>> stateChanges_;
 
 	//状態別に処理
-	std::function<void()> stateUpdate_;
+	std::function<void(void)> stateUpdate_;
 
 	std::unique_ptr<BonusUis> bonus_;
 
 	//状態変更処理
-	void ChangeStateNone();
-	void ChangeStateWait();
-	void ChangeStateAnimation();
-	void ChangeStateAfterWait();
+	void ChangeStateNone(void);
+	void ChangeStateWait(void);
+	void ChangeStateAnimation(void);
+	void ChangeStateAfterWait(void);
 
 	//状態別更新処理
-	void UpdateStateNone();
-	void UpdateStateAnimation();
-	void UpdateStateAfterWait();
+	void UpdateStateNone(void) {};
+	void UpdateStateAnimation(void);
+	void UpdateStateAfterWait(void);
 
 	//プレイヤーの番号ごとにパラメーターを割り当て
-	void SetParamToPlayerNo();
+	void SetParamToPlayerNo(void);
 
 	//ゲージアニメーション
-	void GageAnimation();
+	void GageAnimation(void) {};
 
 	//ボーナスアニメーション
-	void BonusAnimation();
+	void BonusAnimation(void) {};
 
 };
 

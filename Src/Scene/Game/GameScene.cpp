@@ -24,14 +24,22 @@
 
 GameScene::GameScene(void)
 {
-	SetMouseDispFlag(false);	//マウスカーソルを非表示にする
+	//マウスカーソルを非表示にする
+	SetMouseDispFlag(false);	
+
 	//更新関数のセット
 	func_.updataFunc_ = std::bind(&GameScene::LoadingUpdate, this);
+
 	//描画関数のセット
 	func_.drawFunc_ = std::bind(&GameScene::LoadingDraw, this);
 
+	//変数の初期化
+	grid_ = nullptr;
 	sky_ = nullptr;
 	palette_ = nullptr;
+	gameClear_ = nullptr;
+	mapIO_ = nullptr;
+	actionStartTime_ = 0.0f;
 
 	//フェーズの状態遷移処理を登録
 	phaseChanges_.emplace(PHASE::EDIT_PHASE, std::bind(&GameScene::ChangePhaseEdit, this));
@@ -41,7 +49,9 @@ GameScene::GameScene(void)
 
 GameScene::~GameScene(void)
 {
-	SetMouseDispFlag(true);	//マウスカーソルを非表示にする
+	//マウスカーソルを非表示にする
+	SetMouseDispFlag(true);	
+
 	//インスタンスの削除
 	PlayerManager::GetInstance().Destroy();
 	ItemManager::GetInstance().Destroy();
@@ -49,7 +59,6 @@ GameScene::~GameScene(void)
 	GravityManager::GetInstance().Destroy();
 	DeleteFontToHandle(buttnFontHandle_);
 	phaseChanges_.clear();
-
 }
 
 void GameScene::Load(void)
@@ -190,7 +199,7 @@ void GameScene::ChangePhase(const PHASE phase)
 	phaseChanges_[phase_]();
 }
 
-void GameScene::Reset()
+void GameScene::Reset(void)
 {
 	//アクションを最初から遊ぶ
 	ChangePhase(PHASE::ACTION_PHASE);
@@ -207,7 +216,6 @@ void GameScene::ChangePhaseEdit(void)
 		camera->ChangeMode(Camera::MODE::FREE_CONTROLL);
 		VECTOR pos;
 		IntVector3 mPos = MapEditer::MAP_SIZE;
-		//pos = { static_cast<float>(mPos.x * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.y * MapEditer::GRID_SIZE) / 2,static_cast<float>(mPos.z * MapEditer::GRID_SIZE) / 2 };
 		pos = { 0.0f,400.0f,-700.0f };
 		camera->SetPos(pos);
 
@@ -219,9 +227,6 @@ void GameScene::ChangePhaseEdit(void)
 
 	//アイテムの値リセット
 	ItemManager::GetInstance().ResetItemValue();
-
-	//アイテムのエフェクトを停止する
-	//ItemManager::GetInstance().ItemEffectStop();
 }
 
 void GameScene::ChangePhaseAction(void)
@@ -332,9 +337,6 @@ void GameScene::UpdateAction(void)
 
 void GameScene::UpdateClear(void)
 {
-	//プレイヤーにアニメーションをさせたりする
-	//エフェクトなどを表示させる
-
 	gameClear_->Update(*this);
 }
 
@@ -348,17 +350,15 @@ void GameScene::DrawEdit(void)
 		grid_->Draw();
 	}
 	//エディットコントローラー
-	//for (auto& controller : editControllers_) 
-	//{ 
 	editControllers_[screenIndex]->Draw();
-	//}
+
 	//アイテム
 	ItemManager::GetInstance().Draw();
-
 
 	//パレット
 	palette_->Draw();
 
+	//エディットコントローラーUI
 	editControllers_[screenIndex]->DrawUI();
 }
 
@@ -386,10 +386,9 @@ void GameScene::DrawAction(void)
 	int screenY = playerNum > 2 ? Application::SCREEN_HALF_Y : Application::SCREEN_SIZE_Y;
 	int numHandle = ResourceManager::GetInstance().Load(ResourceManager::SRC::NUMBERS).handleIds_[static_cast<int>(actionStartTime_) + 1];
 	DrawRotaGraph(screenX / 2, screenY / 2, 1.0f, 0.0f, numHandle, true);
-	
 }
 
-void GameScene::DrawClear()
+void GameScene::DrawClear(void)
 {
 	//プレイ画面を背景に描画
 	DrawAction();

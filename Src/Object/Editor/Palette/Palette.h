@@ -116,10 +116,10 @@ private:
 	Vector2 finishPos_;
 
 	//更新処理管理
-	std::function<void()> stateUpdate_;
+	std::function<void(void)> stateUpdate_;
 
 	//状態ごとに処理を実行
-	std::unordered_map < STATE, std::function<void()>> stateChanges_;
+	std::unordered_map < STATE, std::function<void(void)>> stateChanges_;
 
 	//状態別変更処理
 	void ChangeStateNone(void);
@@ -133,7 +133,7 @@ private:
 	void ChangeStateEdge(void);
 
 	//状態別更新処理
-	void UpdateStateNone(void);
+	void UpdateStateNone(void) {};
 	void UpdateStateExpansion(void);
 	void UpdateStateReduction(void);
 	void UpdateStateAdmission(void);

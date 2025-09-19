@@ -252,11 +252,6 @@ void Palette::ChangeStateEdge(void)
 	stateUpdate_ = std::bind(&Palette::UpdateStateNone, this);
 }
 
-void Palette::UpdateStateNone(void)
-{
-	//ˆ—‚ÍÀs‚µ‚È‚¢
-}
-
 void Palette::UpdateStateExpansion(void)
 {
 	rate_ += RATE_SPEED;
@@ -319,5 +314,4 @@ void Palette::Move(void)
 
 	//À•WŒvZ
 	pos_.x = Utility::EaseOutQuad (time_, ANIM_TIME, startPos_.x, finishPos_.x);
-
 }

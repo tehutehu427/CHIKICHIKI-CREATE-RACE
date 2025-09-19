@@ -6,24 +6,21 @@
 #include "../Common/Vector2.h"
 #include "../Application.h"
 
-FishEyeEffect::FishEyeEffect()
+FishEyeEffect::FishEyeEffect(void)
 {
 	screenDivX_ = 0.0f;
 	screenDivY_ = 0.0f;
 }
 
-FishEyeEffect::~FishEyeEffect()
-{
-}
-
-void FishEyeEffect::Load()
+void FishEyeEffect::Load(void)
 {
 	material_ = std::make_unique<PixelMaterial>("FishEye.cso", BUFFER_SIZE);
 	renderer_ = std::make_unique<PixelRenderer>(*material_);
 }
 
-void FishEyeEffect::Init()
+void FishEyeEffect::Init(void)
 {
+	//‰æ–Ê•ªŠ„‚Ì’è‹`
 	const Vector2 SCREEN_DIV[PlayerManager::PLAYER_NUM_MAX] =
 	{
 		{1,1},
@@ -49,7 +46,7 @@ void FishEyeEffect::Init()
 		Vector2(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y));
 }
 
-void FishEyeEffect::Draw()
+void FishEyeEffect::Draw(void)
 {
 	renderer_->Draw();
 }

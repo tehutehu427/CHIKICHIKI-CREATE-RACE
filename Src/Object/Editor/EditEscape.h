@@ -108,6 +108,5 @@ private:
 	//ó‘Ô•Ê•`‰æˆ—
 	void DrawWait(void);
 	void DrawCheck(void);
-
 };
 
