@@ -136,9 +136,9 @@ void MoveHoriFloor::InitRoute(void)
 	VECTOR movePos = trans_.quaRot.PosAxis(intPos);
 
 	//(微妙な小数点を消すために四捨五入処理)
-	movePos.x = Utility::Round(movePos.x);
-	movePos.y = Utility::Round(movePos.y);
-	movePos.z = Utility::Round(movePos.z);
+	movePos.x = static_cast<float>(Utility::Round(movePos.x));
+	movePos.y = static_cast<float>(Utility::Round(movePos.y));
+	movePos.z = static_cast<float>(Utility::Round(movePos.z));
 	
 	//目標地点
 	VECTOR goalPos = VAdd(route_[routeNum_], movePos);
@@ -147,7 +147,7 @@ void MoveHoriFloor::InitRoute(void)
 	route_[routeNum_ + 1] = goalPos;
 
 	//距離を取得(微妙な小数点を消すために四捨五入処理)
-	distance_ = static_cast<float>(Utility::Round(Utility::Distance(route_[routeNum_], route_[routeNum_ + 1])));
+	distance_ = static_cast<float>(Utility::Round(static_cast<float>(Utility::Distance(route_[routeNum_], route_[routeNum_ + 1]))));
 
 	//速度設定
 	speed_ = distance_ / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();

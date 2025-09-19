@@ -150,10 +150,10 @@ void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
 			for (auto compPos : compPos_)
 			{
 				//Œ³‚Ì‹——£
-				float preDis = Utility::Distance(genePos, barrelTrans_.pos);
+				float preDis = static_cast<float>(Utility::Distance(genePos, barrelTrans_.pos));
 				
 				//”äŠr‹——£
-				float dis = Utility::Distance(compPos.second, barrelTrans_.pos);
+				float dis = static_cast<float>(Utility::Distance(compPos.second, barrelTrans_.pos));
 
 				//‹ß‚¢‚Ù‚¤‚ð‘_‚¤
 				genePos = dis > preDis ? genePos : compPos.second;

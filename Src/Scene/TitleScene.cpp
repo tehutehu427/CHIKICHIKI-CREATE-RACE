@@ -15,6 +15,12 @@
 
 TitleScene::TitleScene(void)
 {
+	bgm_ = -1;
+	step_ = 0.0f;
+	for (int i = 0;i < BALLOON_NUM;i++)
+	{
+		speed_[i] = 0;
+	}
 	//更新関数のセット
 	func_.updataFunc_ = std::bind(&TitleScene::LoadingUpdate, this);
 	//描画関数のセット
@@ -193,8 +199,8 @@ void TitleScene::DemoDraw(void)
 
 	//タイトルロゴ
 	DrawRotaGraph(
-		std::clamp(Application::SCREEN_HALF_X - demoUIStep_ * moveTimeX, static_cast<float>(LOGO_MIN_POS_X), static_cast<float>(Application::SCREEN_HALF_X)),
-		std::clamp(LOGO_POS_Y - demoUIStep_ * moveTimeY,static_cast<float>(LOGO_MIN_POS_Y), static_cast<float>(LOGO_POS_Y)),
+		static_cast<int>(std::clamp(Application::SCREEN_HALF_X - demoUIStep_ * moveTimeX, static_cast<float>(LOGO_MIN_POS_X), static_cast<float>(Application::SCREEN_HALF_X))),
+		static_cast<int>(std::clamp(LOGO_POS_Y - demoUIStep_ * moveTimeY,static_cast<float>(LOGO_MIN_POS_Y), static_cast<float>(LOGO_POS_Y))),
 		static_cast<double>(logoSize_),
 		0.0,
 		imgTitleLogo_,
@@ -250,7 +256,7 @@ void TitleScene::DrawMessage(void)
 	mesPosY_ = Utility::GetShake(mesPosY_, step_, SHAKE_SPEED, SHAKE_AMPLITUDE);
 
 	//アルファ値を変え
-	mesAlpha_ = Utility::PingPongUpdate(mesAlpha_, ALPHA_STEP, Utility::ALPHA_MAX, Utility::ALPHA_MAX / 2, alphaDir_);
+	mesAlpha_ = static_cast<int>(Utility::PingPongUpdate(static_cast<float>(mesAlpha_), ALPHA_STEP, static_cast<float>(Utility::ALPHA_MAX), static_cast<float>(Utility::ALPHA_MAX / 2), alphaDir_));
 
 	//アルファ値ブレンド
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, mesAlpha_);
@@ -258,9 +264,9 @@ void TitleScene::DrawMessage(void)
 	//メッセージ
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
-		mesPosY_,
+		static_cast<int>(mesPosY_),
 		static_cast<double>(RATE),
-		0.0f,
+		0.0,
 		imgMessage_,
 		true,
 		false
@@ -288,8 +294,8 @@ void TitleScene::DemoMessage(void)
 
 	//デモメッセージ
 	DrawRotaGraph(
-		DEMO_MES_POS_X,
-		mesPosY_,
+		static_cast<int>(DEMO_MES_POS_X),
+		static_cast<int>(mesPosY_),
 		static_cast<double>(RATE),
 		Utility::Deg2RadF(ROTATE_ANGLE),
 		imgDemoMessage_,

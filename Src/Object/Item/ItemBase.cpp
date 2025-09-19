@@ -10,6 +10,7 @@ ItemBase::ItemBase(void)
 	, rotY_(0.0f)
 	, movePow_(Utility::VECTOR_ZERO)
 	, toonStyle_(nullptr)
+	, mapSize_(INT_VECTOR_ZERO)
 {
 }
 
@@ -163,7 +164,7 @@ const bool ItemBase::IsInCameraView(void)
 	//ç¿ïWÇQ
 	IntVector3 initPos = initMapPos_;
 	IntVector3 hitSize = GetHitSize();
-	MapEditer::GetInstance().ApplyRotation(initPos, size_, hitSize, rotY_);
+	MapEditer::GetInstance().ApplyRotation(initPos, size_, hitSize, static_cast<int>(rotY_));
 	VECTOR boxPos2 = MapEditer::GetInstance().MapToWorldPos(initPos + hitSize);
 
 	//ÉJÉÅÉâì‡Ç©
