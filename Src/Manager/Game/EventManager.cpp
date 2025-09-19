@@ -194,7 +194,7 @@ void EventManager::UpdateRespawn(void)
 		//プレイヤー全て強化させる
 		for (auto& player : players)
 		{
-			player->SetRespawnCnt(Player::RESPAWN_CNT);
+			player->SetRespawnCnt(static_cast<int>(Player::RESPAWN_CNT));
 		}
 
 		//強化反映完了

@@ -156,7 +156,7 @@ void GameClear::UpdateWaiting(GameScene& _parent)
 	//UIアニメーション(下から出す)
 	constexpr float END = (float)Application::SCREEN_HALF_Y;
 	waitStep_ += SceneManager::GetInstance().GetDeltaTime();	//アニメーション用ステップ
-	clearPos_.y = Utility::EaseInOutBack(waitStep_, ANIM_TIME, UI_FIRST_POS.y, END);
+	clearPos_.y = static_cast<int>(Utility::EaseInOutBack(waitStep_, ANIM_TIME, static_cast<float>(UI_FIRST_POS.y), END));
 
 	//スキップ
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))

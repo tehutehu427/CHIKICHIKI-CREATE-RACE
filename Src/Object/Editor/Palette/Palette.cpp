@@ -304,7 +304,7 @@ void Palette::Move(void)
 	constexpr float ANIM_TIME = 1.5f;
 
 	// 目的地との距離
-	float distance = fabs(finishPos_.x - startPos_.x);
+	float distance = static_cast<float>(fabs(finishPos_.x - startPos_.x));
 
 	//アニメーション総時間
 	float duration = distance / MOVE_SPEED;
@@ -313,5 +313,5 @@ void Palette::Move(void)
 	time_ += SceneManager::GetInstance().GetDeltaTime();
 
 	//座標計算
-	pos_.x = Utility::EaseOutQuad (time_, ANIM_TIME, startPos_.x, finishPos_.x);
+	pos_.x =static_cast<int>( Utility::EaseOutQuad (time_, ANIM_TIME,static_cast<float>( startPos_.x),static_cast<float>( finishPos_.x)));
 }

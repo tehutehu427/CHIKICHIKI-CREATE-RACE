@@ -85,11 +85,11 @@ private:
 	//UIî•ñ
 	struct Info
 	{
-		int image;
-		Vector2 pos;
-		float rate;
-		float alpha;
-		bool isDisplay;
+		int image = 0;
+		Vector2 pos = {};
+		float rate = 0.0f;
+		float alpha = 0.0f;
+		bool isDisplay = false;
 	};
 
 	//ƒvƒŒƒCƒ„[”Ô†

@@ -280,7 +280,7 @@ void MultiReady::DrawFinalCheck(void)
 	}
 
 	//アルファ値を変え
-	mesAlpha_ = Utility::PingPongUpdate(mesAlpha_, ALPHA_STEP, Utility::ALPHA_MAX, ALPHA_MIN, alphaDir_);
+	mesAlpha_ = static_cast<int>(Utility::PingPongUpdate(static_cast<float>(mesAlpha_), ALPHA_STEP, static_cast<float>(Utility::ALPHA_MAX), ALPHA_MIN, alphaDir_));
 
 	//ボタンを押してね画像の描画
 	if (state_ != STATE::FINAL_CHECK) { return; }

@@ -204,7 +204,7 @@ const bool SoundManager::LoadResource(const SRC _src)
 void SoundManager::Play(const SRC _src, const PLAYTYPE _playType)
 {
 	//‰¹Œ¹‚ª“Ç‚İ‚Ü‚ê‚Ä‚¢‚È‚¢ê‡‚ÍƒGƒ‰[
-	assert(loadedMap_[_src].handleId != -1, "‰¹Œ¹‚ª“Ç‚İ‚Ü‚ê‚Ä‚È‚¢‚Å‚·");
+	assert(loadedMap_[_src].handleId != -1&& "‰¹Œ¹‚ª“Ç‚İ‚Ü‚ê‚Ä‚È‚¢‚Å‚·");
 
     //‰¹Œ¹‚ªÄ¶Ï‚İ‚©’²‚×‚é
 	if (CheckSoundMem(loadedMap_[_src].handleId) == 1 &&

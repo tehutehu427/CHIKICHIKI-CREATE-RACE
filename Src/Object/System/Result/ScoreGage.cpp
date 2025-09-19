@@ -10,6 +10,7 @@
 ScoreGage::ScoreGage(const int _playerIndex) : 
 	playerIndex_(_playerIndex)
 {
+	scoreMax_ = 0;
 	imgGages_ = nullptr;
 	bonus_ = nullptr;
 	imgGageOutline_ = -1;
@@ -18,7 +19,7 @@ ScoreGage::ScoreGage(const int _playerIndex) :
 	imgScoreGage_ = 0;
 	animStep_ = 0.0f;
 	lengthPerPoint_ = 0.0f;
-	updateLength_  = 0.0f; 
+	updateLength_  = 0; 
 	state_ = STATE::NONE;
 	stateChanges_.emplace(STATE::NONE, std::bind(&ScoreGage::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::WAIT, std::bind(&ScoreGage::ChangeStateWait, this));
@@ -62,7 +63,7 @@ void ScoreGage::Init(void)
 	scoreMax_ = DateBank::GetInstance().GetMultiClearScore();
 
 	//1スコア当たりのゲージ長さ
-	lengthPerPoint_ = GAGE_LENGTH_MAX / scoreMax_;
+	lengthPerPoint_ = static_cast<float>(GAGE_LENGTH_MAX / scoreMax_);
 
 	bonus_->Init();
 }
@@ -114,7 +115,7 @@ void ScoreGage::ChangeState(const STATE _state)
 
 void ScoreGage::SetLengthPerPoint(const int _lengthPerPoint)
 {
-	lengthPerPoint_ = _lengthPerPoint;
+	lengthPerPoint_ = static_cast<float>(_lengthPerPoint);
 }
 
 void ScoreGage::ChangeStateNone(void)
@@ -141,10 +142,10 @@ void ScoreGage::ChangeStateAnimation(void)
 	scoreMax_ = scoreMax_ > nowScore ? scoreMax_ : nowScore;
 
 	//1点に対するスコアの増幅値を計算
-	lengthPerPoint_ = GAGE_LENGTH_MAX / scoreMax_;
+	lengthPerPoint_ = static_cast<float>(GAGE_LENGTH_MAX / scoreMax_);
 
 	//長さの更新値を決定
-	updateLength_ = size_.x + ScoreManager::GetInstance().GetScore(playerIndex_) * lengthPerPoint_;
+	updateLength_ = static_cast<int>(size_.x + ScoreManager::GetInstance().GetScore(playerIndex_) * lengthPerPoint_);
 
 
 	bonus_->SetBonus();

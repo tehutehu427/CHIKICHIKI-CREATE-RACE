@@ -95,12 +95,12 @@ void BonusUis::Draw(void)
 			continue;
 		}
 
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, ui.alpha);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA,static_cast<int>( ui.alpha));
 		DrawRotaGraph(
 			ui.pos.x,
 			ui.pos.y,
-			ui.rate,
-			0.0f,
+			static_cast<double>(ui.rate),
+			0.0,
 			ui.image,
 			true,
 			false

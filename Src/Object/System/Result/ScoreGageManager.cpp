@@ -103,7 +103,7 @@ void ScoreGageManager::DrawGageDecoration(void)
 		ScoreGage::GAGE_SIZE_X + ScoreGage::GAGE_POS_P1_X,
 		ScoreGage::GAGE_POS_P1_Y + LENGTH,
 		Utility::BLACK,
-		THICKNESS
+		static_cast<int>(THICKNESS)
 		);
 
 	//クリアライン
@@ -113,7 +113,7 @@ void ScoreGageManager::DrawGageDecoration(void)
 		ScoreGage::GAGE_SIZE_X + ScoreGage::GAGE_POS_P1_X + ScoreGage::GAGE_LENGTH_MAX,
 		ScoreGage::GAGE_POS_P1_Y + LENGTH,
 		Utility::BLACK,
-		THICKNESS
+		static_cast<int>(THICKNESS)
 	);
 
 }
@@ -124,7 +124,7 @@ void ScoreGageManager::DrawPushButton(void)
 	constexpr float ALPHA_MIN = 50.0f; //アルファ値の変化量
 
 	//アルファ値を変え
-	mesAlpha_ = Utility::PingPongUpdate(mesAlpha_, ALPHA_STEP, Utility::ALPHA_MAX, ALPHA_MIN, alphaDir_);
+	mesAlpha_ = static_cast<int>(Utility::PingPongUpdate(static_cast<float>(mesAlpha_), ALPHA_STEP, static_cast<float>(Utility::ALPHA_MAX), ALPHA_MIN, alphaDir_));
 
 	//ボタンを押してね画像の描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, mesAlpha_);

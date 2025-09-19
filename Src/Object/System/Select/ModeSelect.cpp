@@ -268,8 +268,8 @@ void ModeSelect::RotateUpdate(SelectScene&)
 		arc_[i].angle = currentAngle_ + ROTATE_STEP * i;
 
 		// à íuåvéZ
-		arc_[i].pos.x = ROTATE_CENTER_X + std::cos(arc_[i].angle) * ORBIT_RADIUS;
-		arc_[i].pos.y = ROTATE_CENTER_Y + std::sin(arc_[i].angle) * ORBIT_RADIUS;
+		arc_[i].pos.x = ROTATE_CENTER_X + static_cast<int>(std::cos(arc_[i].angle) * ORBIT_RADIUS);
+		arc_[i].pos.y = ROTATE_CENTER_Y + static_cast<int>(std::sin(arc_[i].angle) * ORBIT_RADIUS);
 	}
 }
 

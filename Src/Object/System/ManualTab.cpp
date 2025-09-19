@@ -189,7 +189,7 @@ void ManualTab::UpdateFreeMode(void)
 
 	if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1))
 	{
-		index_ = (index_ - 1 + imgs_.size()) % imgs_.size();
+		index_ = static_cast<int>((index_ - 1 + imgs_.size()) % imgs_.size());
 		return;
 	}
 	else if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))

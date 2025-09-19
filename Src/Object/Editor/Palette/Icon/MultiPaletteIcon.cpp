@@ -302,7 +302,7 @@ void MultiPaletteIcon::DrawItemIcon(void)
 		}
 
 		//–¼‘O‚ð•`‰æ
-		int offSetX = name.size() * NAME_FONT_SIZE / 4;
+		int offSetX = static_cast<int>(name.size()) * NAME_FONT_SIZE / 4;
 		constexpr int OFFSET_Y = ICON_SIZE / 2 + 20;
 		DrawFormatStringToHandle(
 			i.pos.x - offSetX,
