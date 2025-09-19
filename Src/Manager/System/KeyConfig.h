@@ -158,44 +158,146 @@ public:
 		MAX,
 	};
 
-	// インスタンスを明示的に生成
+	/// <summary>
+	/// インスタンスを明示的に生成
+	/// </summary>
+	/// <param name=""></param>
 	static void CreateInstance(void);
 
-	// インスタンスの取得
+	/// <summary>
+	/// インスタンスの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>インスタンス</returns>
 	static KeyConfig& GetInstance(void);
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name=""></param>
 	void Init(void);
+
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void);
 
-	//操作の種類別にキーの状態を取得
-	bool IsNew(CONTROL_TYPE cType, KeyConfig::JOYPAD_NO no ,TYPE type = TYPE::ALL);
-	bool IsTrgDown(CONTROL_TYPE cType, KeyConfig::JOYPAD_NO no,TYPE type = TYPE::ALL);
-	bool IsTrgUp(CONTROL_TYPE cType, KeyConfig::JOYPAD_NO no, TYPE type = TYPE::ALL);
+	/// <summary>
+	/// 操作の種類別にキーの状態を取得
+	/// </summary>
+	/// <param name="_cType">操作の種類</param>
+	/// <param name="_no">パッド番号</param>
+	/// <param name="_type">入力デバイスの選択</param>
+	/// <returns>押されていたらtrue</returns>
+	bool IsNew(CONTROL_TYPE _cType, KeyConfig::JOYPAD_NO _no ,TYPE _type = TYPE::ALL);
+	/// <summary>
+	/// 操作の種類別にキーの状態を取得
+	/// </summary>
+	/// <param name="_cType">操作の種類</param>
+	/// <param name="_no">パッド番号</param>
+	/// <param name="_type">入力デバイスの選択</param>
+	/// <returns>押された瞬間ならtrue</returns>
+	bool IsTrgDown(CONTROL_TYPE _cType, KeyConfig::JOYPAD_NO _no,TYPE _type = TYPE::ALL);
+	/// <summary>
+	/// 操作の種類別にキーの状態を取得
+	/// </summary>
+	/// <param name="_cType">操作の種類</param>
+	/// <param name="_no">パッド番号</param>
+	/// <param name="_type">入力デバイスの選択</param>
+	/// <returns>離された瞬間ならtrue</returns>
+	bool IsTrgUp(CONTROL_TYPE _cType, KeyConfig::JOYPAD_NO _no, TYPE _type = TYPE::ALL);
 
-	//操作の種類別にキーを追加	
-	void Add(CONTROL_TYPE type, int key);
-	void Add(CONTROL_TYPE type, JOYPAD_BTN key);
-	void Add(CONTROL_TYPE type, JOYPAD_STICK key);
-	void Add(CONTROL_TYPE type, MOUSE key);
+	//操作の種類別にキーを追加
+	/// <summary>
+	/// キーボードのキーと操作の種類を追加
+	/// </summary>
+	/// <param name="_type">操作の種類</param>
+	/// <param name="_key">キーボードのキー</param>
+	void Add(CONTROL_TYPE _type, int _key);
+	/// <summary>
+	/// パッドのボタンと操作の種類を追加
+	/// </summary>
+	/// <param name="_type">操作の種類</param>
+	/// <param name="_key">パッドのボタン</param>
+	void Add(CONTROL_TYPE _type, JOYPAD_BTN _key);
+	/// <summary>
+	/// パッドのスティックと操作の種類を追加
+	/// </summary>
+	/// <param name="_type">操作の種類</param>
+	/// <param name="_key">パッドのスティック</param>
+	void Add(CONTROL_TYPE _type, JOYPAD_STICK _key);
+	/// <summary>
+	/// マウスと操作の種類を追加
+	/// </summary>
+	/// <param name="_type">操作の種類</param>
+	/// <param name="_key">マウス</param>
+	void Add(CONTROL_TYPE _type, MOUSE _key);
 
-	// マウス座標の取得
+	/// <summary>
+	/// マウス座標の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>マウス座標</returns>
 	Vector2 GetMousePos(void) const;
-	//マウスの移動量を取得
+	/// <summary>
+	/// マウスの移動量を取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>マウスの移動量</returns>
 	Vector2 GetMouseMove(void) const;
 
-	//マウスの座標を設定
+	/// <summary>
+	/// マウスの座標を設定
+	/// </summary>
+	/// <param name=""></param>
 	void SetMousePosScreen(void);
 
-	void SetMousePos(const Vector2& pos);
-	float GetLStickDeg(KeyConfig::JOYPAD_NO no) const;
+	/// <summary>
+	/// マウスの座標を設定
+	/// </summary>
+	/// <param name="_pos">設定する座標</param>
+	void SetMousePos(const Vector2& _pos);
 
-	float GetRStickDeg(KeyConfig::JOYPAD_NO no) const;
 	//上を0.0度として角度を渡す
-	Vector2 GetKnockLStickSize(KeyConfig::JOYPAD_NO no) const;
-	Vector2 GetKnockRStickSize(KeyConfig::JOYPAD_NO no) const;
-	//指定の方向に倒れた度合い0から1000
-	int PadStickOverSize(KeyConfig::JOYPAD_NO no, KeyConfig::JOYPAD_STICK stick)const;
-	// リソースの破棄
+	/// <summary>
+	/// 左スティックの倒れた角度を取得
+	/// </summary>
+	/// <param name="_no">パッド番号</param>
+	/// <returns>角度</returns>
+	float GetLStickDeg(KeyConfig::JOYPAD_NO _no) const;
+	/// <summary>
+	/// 右スティックの倒れた角度を取得
+	/// </summary>
+	/// <param name="_no">パッド番号</param>
+	/// <returns>角度</returns>
+	float GetRStickDeg(KeyConfig::JOYPAD_NO _no) const;
+
+	/// <summary>
+	/// 左スティックの倒れた度合いを取得
+	/// </summary>
+	/// <param name="_no">パッド番号</param>
+	/// <returns>倒れ具合を渡す</returns>
+	Vector2 GetKnockLStickSize(KeyConfig::JOYPAD_NO _no) const;
+	/// <summary>
+	/// 右スティックの倒れた度合いを取得
+	/// </summary>
+	/// <param name="_no">パッド番号</param>
+	/// <returns>倒れた具合を渡す</returns>
+	Vector2 GetKnockRStickSize(KeyConfig::JOYPAD_NO _no) const;
+
+	/// <summary>
+	/// 指定の方向に倒れた度合い0から1000
+	/// </summary>
+	/// <param name="_no">パッド番号</param>
+	/// <param name="_stick">スティック方向</param>
+	/// <returns>倒れ度合い</returns>
+	int PadStickOverSize(KeyConfig::JOYPAD_NO _no, KeyConfig::JOYPAD_STICK _stick)const;
+
+	/// <summary>
+	/// リソースの破棄
+	/// </summary>
+	/// <param name=""></param>
 	void Destroy(void);
 	/// <summary>
 	/// パッドを振動する
@@ -207,21 +309,27 @@ public:
 	/// <summary>
 	/// 振動を止める
 	/// </summary>
-	/// <param name="_no"></param>
+	/// <param name="_no">パッド番号</param>
 	void StopPadVibration(KeyConfig::JOYPAD_NO _no);
-private:
-	std::unique_ptr<InputManager> inputManager_;	//入力管理クラスのインスタンス
 
+private:
+
+	//入力管理クラスのインスタンス
+	std::unique_ptr<InputManager> inputManager_;	
+
+	// シングルトン用インスタンス
+	static KeyConfig* instance_;
+
+	// 操作の種類ごとにキーの状態を格納する配列
 	std::map<CONTROL_TYPE, std::vector<int>>keyInput_;								//操作の種類とキーの種類でキーボードの状態を格納
 	std::map<CONTROL_TYPE, std::vector<JOYPAD_BTN>>conInput_;			//操作の種類とボタンの種類でコントローラーの状態を格納
 	std::map<CONTROL_TYPE, std::vector<JOYPAD_STICK>>stickInput_;		//操作の種類とスティックの種類でコントローラーの状態を格納
 	std::map < CONTROL_TYPE, std::vector<MOUSE>>mouseInput_;			//操作の種類とマウスの種類でマウスの状態を格納
 
-	// シングルトン用インスタンス
-	static KeyConfig* instance_;
+
 
 	KeyConfig(void);
-	KeyConfig(const KeyConfig& manager);
+	KeyConfig(const KeyConfig& _manager);
 	~KeyConfig(void) = default;
 };
 

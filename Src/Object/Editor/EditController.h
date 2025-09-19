@@ -11,6 +11,7 @@ class EditItemReady;
 
 class EditController
 {
+
 public:
 
 	static constexpr float PAD_STICK_RATE = 0.0125f;	//パッドスティックの感度
@@ -81,66 +82,157 @@ public:
 		MAX,
 	};
 
-	//コンストラクタ
-	EditController(int playerNum);
-	//デストラクタ
-	~EditController();
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_playerNum">プレイヤー番号</param>
+	EditController(int _playerNum);
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~EditController(void);
 
-	void Init(void);		//初期化
-	void Update(void);		//更新
-	void Draw(void);		//描画
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name=""></param>
+	void Init(void);
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name=""></param>
+	void Update(void);
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name=""></param>
+	void Draw(void);	
+	/// <summary>
+	/// UI描画処理
+	/// </summary>
+	/// <param name=""></param>
+	void DrawUI(void);	
 
-	void DrawUI(void);	//UI描画
+	/// <summary>
+	/// リセットする
+	/// </summary>
+	/// <param name=""></param>
+	void Reset(void);	
+	/// <summary>
+	/// モードを変更する
+	/// </summary>
+	/// <param name="_mode">変更するモード</param>
+	void ChangeMode(MODE _mode);
+	/// <summary>
+	/// アイテム設定
+	/// </summary>
+	/// <param name="_itemType">アイテムの種類</param>
+	void SetItemType(ItemBase::ITEM_TYPE _itemType);
 
-	void Reset(void);	//リセット
-	//モード変更
-	void ChangeMode(MODE mode);
-	//アイテム設定
-	void SetItemType(ItemBase::ITEM_TYPE itemType);
+	/// <summary>
+	/// カーソル位置取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>カーソル位置</returns>
+	Vector2 GetCursorPos(void) const { return cursorPos_; }	
 
-	Vector2 GetCursorPos(void) const { return cursorPos_; }	//カーソル位置取得
+	/// <summary>
+	/// マルチ時にアイテムを置き終わったか
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>置き終わっていたらtrue</returns>
+	bool GetReady(void) const;	
 
-	bool GetReady(void) const;	//マルチ時にアイテムを置き終わったか
+	/// <summary>
+	/// パッド番号取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>パッド番号</returns>
+	KeyConfig::JOYPAD_NO GetPadNum(void) const { return padNum_; }
 
-	KeyConfig::JOYPAD_NO GetPadNum(void) const { return padNum_; }	//パッド番号取得
+	/// <summary>
+	/// スクリーンサイズ取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>スクリーンの大きさを取得</returns>
+	Vector2 GetScreenSize(void) const { return screenSize_; }
 
-	Vector2 GetScreenSize(void) const { return screenSize_; }	//スクリーンサイズ取得
+	/// <summary>
+	/// マルチ時に準備完了の処理
+	/// </summary>
+	/// <param name=""></param>
+	void SetReady(void);
 
-	void SetReady(void);	//マルチ時に準備完了の処理
+	/// <summary>
+	/// カーソル更新
+	/// </summary>
+	/// <param name=""></param>
+	void UpdateCursor(void);
 
-	void UpdateCursor(void);	//カーソル更新
+	/// <summary>
+	/// エラー関係の更新
+	/// </summary>
+	/// <param name=""></param>
+	void UpdateError(void);
 
-	void UpdateError(void);	//エラー関係の更新
+	/// <summary>
+	/// エラーかどうか
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns></returns>
+	int IsError(void) const;
 
-	int IsError(void) const;	//エラーかどうか
-
-	void SetError(int errorType);	//エラーの種類を設定
+	/// <summary>
+	/// エラーの種類を設定
+	/// </summary>
+	/// <param name="_errorType">エラーの種類</param>
+	void SetError(int _errorType);
 
 protected:
 
 private:
 
-	std::unique_ptr<EditItemReady> ready_;	//マルチ時にアイテムを置き終わったか
-	ERROR_TYPE errorType_;	//エラーの種類
-	float errorStringTime_;	//エラー文字列の表示時間
-	int playerNum_;	//プレイヤー番号
-	int playerMaxNum_;	//プレイヤーの最大数
-	KeyConfig::JOYPAD_NO padNum_;	//パッド番号
+	//マルチ時にアイテムを置き終わったか
+	std::unique_ptr<EditItemReady> ready_;
+	//エラーの種類
+	ERROR_TYPE errorType_;
+	//エラー文字列の表示時間
+	float errorStringTime_;	
+	//プレイヤー番号
+	int playerNum_;
+	//プレイヤーの最大数
+	int playerMaxNum_;	
+	//パッド番号
+	KeyConfig::JOYPAD_NO padNum_;	
 
-	Vector2 screenSize_;	//スクリーンサイズ
+	//スクリーンサイズ
+	Vector2 screenSize_;	
 
+	//座標関係
 	Vector2 mousePos_;	//2Dのマウス座標
 	Vector2 cursorPos_;	//2Dのカーソル座標
 	IntVector3 mapPos_;	//3Dのマップ座標
 	IntVector3 initMapPos_;	//初期マップ座標
 
-	CAMERA_MODE cameraMode_;	//カメラのモード
+	//カメラのモード
+	CAMERA_MODE cameraMode_;	
 
-	MODE mode_;	//モード
-	ItemBase::ITEM_TYPE itemType_;	//アイテムの種類
-	bool isClickObject_;	//オブジェクトをクリックしたか
-	MOVE_DIR moveDir_;	//移動方向
-	IntVector3 mapPosObject_; //マウスがオブジェクトに当たった座標
+	//モード
+	MODE mode_;	
+	//アイテムの種類
+	ItemBase::ITEM_TYPE itemType_;	
+	//オブジェクトをクリックしたか
+	bool isClickObject_;	
+	//移動方向
+	MOVE_DIR moveDir_;	
+	//マウスがオブジェクトに当たった座標
+	IntVector3 mapPosObject_; 
+
+	//カメラ関係
+	VECTOR cPos_;		//カメラの座標
+	VECTOR cAngles_;	//カメラの回転
+	VECTOR cTargetPos_;	//カメラの注視点
+
 	//モード管理(遷移時の初期処理)
 	std::map<MODE, std::function<void(void)>> modeChanges_;
 
@@ -173,29 +265,28 @@ private:
 
 	//移動方向を取得
 	MOVE_DIR GetMoveDir(void) ;		//クリックした方向の円錐をもとに算出
-
 	MOVE_DIR GetMoveDirTwo(void);	//カメラの方向をもとに算出
+	//移動方向を変えていいか -1 :NONE　0: 元のまま 1:変える
+	int IsChangeMoveDir(void) const;
 
-	int IsChangeMoveDir(void) const;	//移動方向を変えていいか -1 :NONE　0: 元のまま 1:変える
+	//デバッグ関係
 	void DebugUpdate(void);	//デバッグ用更新
 	void DebugDraw(void) const;	//デバッグ用描画
+	//オブジェクト回転
+	void RotateObject(void) const;
+	//範囲内のアイテムを削除
+	void DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY) const;	
+	//ベクトルの方向が変わったか　変わったら　true
+	bool IsChangeVecDir(const VECTOR _vec1, const VECTOR _vec2) const;
 
-	void RotateObject(void) const;	//オブジェクト回転
+	//矢印関係
+	void DrawXArrow(VECTOR _worldPos, bool _isBig);	//X方向の矢印を描画
+	void DrawYArrow(VECTOR _worldPos, bool _isBig);	//Y方向の矢印を描画
+	void DrawZArrow(VECTOR _worldPos, bool _isBig);	//Z方向の矢印を描画
 
-	void DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector3 _hitSize, float _rotY) const;	//範囲内のアイテムを削除
-
-	bool IsChangeVecDir(const VECTOR vec1, const VECTOR vec2) const;	//ベクトルの方向が変わったか　変わったら　true
-
-	void DrawXArrow(VECTOR worldPos, bool isBig);	//X方向の矢印を描画
-	void DrawYArrow(VECTOR worldPos, bool isBig);	//Y方向の矢印を描画
-	void DrawZArrow(VECTOR worldPos, bool isBig);	//Z方向の矢印を描画
-
+	//カメラ関係
 	void SetCameraPosToDummyObject(void) const;	//ダミーオブジェクトにカメラを近づける
-
 	void ChangeCameraMode(void);	//カメラのモードを変える
-	void ChangeCameraMode(CAMERA_MODE mode);	//カメラのモードを変える
-	VECTOR cPos_;		//カメラの座標
-	VECTOR cAngles_;	//カメラの回転
-	VECTOR cTargetPos_;	//カメラの中止店
+	void ChangeCameraMode(CAMERA_MODE _mode);	//カメラのモードを変える
 };
 

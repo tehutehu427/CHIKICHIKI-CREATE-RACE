@@ -2,6 +2,7 @@
 #include <cmath>
 #include "../Application.h"
 #include "InputManager.h"
+
 void InputManager::Init(void)
 {
 
@@ -160,15 +161,15 @@ void InputManager::Release(void)
 	stickInfos_.clear();
 }
 
-void InputManager::Add(int key)
+void InputManager::Add(int _key)
 {
 	InputManager::Info info = InputManager::Info();
-	info.key = key;
+	info.key = _key;
 	info.keyOld = false;
 	info.keyNew = false;
 	info.keyTrgDown = false;
 	info.keyTrgUp = false;
-	keyInfos_.emplace(key, info);
+	keyInfos_.emplace(_key, info);
 }
 
 void InputManager::Clear(void)
@@ -176,19 +177,19 @@ void InputManager::Clear(void)
 	keyInfos_.clear();
 }
 
-bool InputManager::IsNew(int key) const
+bool InputManager::IsNew(int _key) const
 {
-	return Find(key).keyNew;
+	return Find(_key).keyNew;
 }
 
-bool InputManager::IsTrgDown(int key) const
+bool InputManager::IsTrgDown(int _key) const
 {
-	return Find(key).keyTrgDown;
+	return Find(_key).keyTrgDown;
 }
 
-bool InputManager::IsTrgUp(int key) const
+bool InputManager::IsTrgUp(int _key) const
 {
-	return Find(key).keyTrgUp;
+	return Find(_key).keyTrgUp;
 }
 
 Vector2 InputManager::GetMousePos(void) const
@@ -210,10 +211,10 @@ void InputManager::SetMousePosScreen(void)
 	SetMousePoint(static_cast<int>(mousePos_.x), static_cast<int>(mousePos_.y));
 }
 
-void InputManager::SetMousePos(const Vector2& pos)
+void InputManager::SetMousePos(const Vector2& _pos)
 {
-	mousePos_ = pos;
-	mousePrePos_ = pos;
+	mousePos_ = _pos;
+	mousePrePos_ = _pos;
 	SetMousePoint(static_cast<int>(mousePos_.x), static_cast<int>(mousePos_.y));
 }
 
@@ -230,10 +231,10 @@ InputManager::~InputManager(void)
 {
 }
 
-const InputManager::Info& InputManager::Find(int key) const
+const InputManager::Info& InputManager::Find(int _key) const
 {
 
-	auto it = keyInfos_.find(key);
+	auto it = keyInfos_.find(_key);
 	if (it != keyInfos_.end())
 	{
 		return it->second;
@@ -243,9 +244,9 @@ const InputManager::Info& InputManager::Find(int key) const
 
 }
 
-const InputManager::MouseInfo& InputManager::FindMouse(KeyConfig::MOUSE key) const
+const InputManager::MouseInfo& InputManager::FindMouse(KeyConfig::MOUSE _key) const
 {
-	auto it = mouseInfos_.find(key);
+	auto it = mouseInfos_.find(_key);
 	if (it != mouseInfos_.end())
 	{
 		return it->second;
@@ -254,30 +255,30 @@ const InputManager::MouseInfo& InputManager::FindMouse(KeyConfig::MOUSE key) con
 	return mouseInfoEmpty_;
 }
 
-InputManager::JOYPAD_TYPE InputManager::GetJPadType(KeyConfig::JOYPAD_NO no)
+InputManager::JOYPAD_TYPE InputManager::GetJPadType(KeyConfig::JOYPAD_NO _no)
 {
-	return static_cast<InputManager::JOYPAD_TYPE>(GetJoypadType(static_cast<int>(no)));
+	return static_cast<InputManager::JOYPAD_TYPE>(GetJoypadType(static_cast<int>(_no)));
 }
 
-DINPUT_JOYSTATE InputManager::GetJPadDInputState(KeyConfig::JOYPAD_NO no)
+DINPUT_JOYSTATE InputManager::GetJPadDInputState(KeyConfig::JOYPAD_NO _no)
 {
 	// コントローラ情報
-	GetJoypadDirectInputState(static_cast<int>(no), &joyDInState_);
+	GetJoypadDirectInputState(static_cast<int>(_no), &joyDInState_);
 	return joyDInState_;
 }
 
-XINPUT_STATE InputManager::GetJPadXInputState(KeyConfig::JOYPAD_NO no)
+XINPUT_STATE InputManager::GetJPadXInputState(KeyConfig::JOYPAD_NO _no)
 {
 	// コントローラ情報
-	GetJoypadXInputState(static_cast<int>(no), &joyXInState_);
+	GetJoypadXInputState(static_cast<int>(_no), &joyXInState_);
 	return joyXInState_;
 }
 
-void InputManager::SetJPadInState(KeyConfig::JOYPAD_NO jpNo)
+void InputManager::SetJPadInState(KeyConfig::JOYPAD_NO _jpNo)
 {
 
-	int no = static_cast<int>(jpNo);
-	auto stateNew = GetJPadInputState(jpNo);
+	int no = static_cast<int>(_jpNo);
+	auto stateNew = GetJPadInputState(_jpNo);
 	auto& stateNow = padInfos_[no];
 
 	int max = static_cast<int>(KeyConfig::JOYPAD_BTN::MAX);
@@ -304,12 +305,12 @@ void InputManager::SetJPadInState(KeyConfig::JOYPAD_NO jpNo)
 
 }
 
-InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(KeyConfig::JOYPAD_NO no)
+InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(KeyConfig::JOYPAD_NO _no)
 {
 
 	JOYPAD_IN_STATE ret = JOYPAD_IN_STATE();
 
-	auto type = GetJPadType(no);
+	auto type = GetJPadType(_no);
 
 	switch (type)
 	{
@@ -322,8 +323,8 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(KeyConfig::JOYPAD_
 	case InputManager::JOYPAD_TYPE::XBOX_ONE:
 	{
 
-		auto d = GetJPadDInputState(no);
-		auto x = GetJPadXInputState(no);
+		auto d = GetJPadDInputState(_no);
+		auto x = GetJPadXInputState(_no);
 
 		int idx;
 
@@ -394,7 +395,7 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(KeyConfig::JOYPAD_
 	case InputManager::JOYPAD_TYPE::DUAL_SENSE:
 	{
 
-		auto d = GetJPadDInputState(no);
+		auto d = GetJPadDInputState(_no);
 		int idx;
 
 		//   △
@@ -437,32 +438,32 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(KeyConfig::JOYPAD_
 
 }
 
-bool InputManager::IsPadBtnNew(KeyConfig::JOYPAD_NO no, KeyConfig::JOYPAD_BTN btn) const
+bool InputManager::IsPadBtnNew(KeyConfig::JOYPAD_NO _no, KeyConfig::JOYPAD_BTN _btn) const
 {
-	return padInfos_[static_cast<int>(no)].IsNew[static_cast<int>(btn)];
+	return padInfos_[static_cast<int>(_no)].IsNew[static_cast<int>(_btn)];
 }
 
-bool InputManager::IsPadBtnTrgDown(KeyConfig::JOYPAD_NO no, KeyConfig::JOYPAD_BTN btn) const
+bool InputManager::IsPadBtnTrgDown(KeyConfig::JOYPAD_NO _no, KeyConfig::JOYPAD_BTN _btn) const
 {
-	return padInfos_[static_cast<int>(no)].IsTrgDown[static_cast<int>(btn)];
+	return padInfos_[static_cast<int>(_no)].IsTrgDown[static_cast<int>(_btn)];
 }
 
-bool InputManager::IsPadBtnTrgUp(KeyConfig::JOYPAD_NO no, KeyConfig::JOYPAD_BTN btn) const
+bool InputManager::IsPadBtnTrgUp(KeyConfig::JOYPAD_NO _no, KeyConfig::JOYPAD_BTN _btn) const
 {
-	return padInfos_[static_cast<int>(no)].IsTrgUp[static_cast<int>(btn)];
+	return padInfos_[static_cast<int>(_no)].IsTrgUp[static_cast<int>(_btn)];
 }
 
-bool InputManager::IsStickNew(KeyConfig::JOYPAD_NO no, KeyConfig::JOYPAD_STICK stick) const
+bool InputManager::IsStickNew(KeyConfig::JOYPAD_NO _no, KeyConfig::JOYPAD_STICK _stick) const
 {
 	for (auto& stickInfo : stickInfos_)
 	{
-		if (stickInfo.first != no)
+		if (stickInfo.first != _no)
 		{
 			continue;
 		}
 		for (auto& stickI : stickInfo.second)
 		{
-			if (stickI.key != stick)
+			if (stickI.key != _stick)
 			{
 				continue;
 			}
@@ -472,17 +473,17 @@ bool InputManager::IsStickNew(KeyConfig::JOYPAD_NO no, KeyConfig::JOYPAD_STICK s
 	return false;
 }
 
-bool InputManager::IsStickDown(KeyConfig::JOYPAD_NO no, KeyConfig::JOYPAD_STICK stick) const
+bool InputManager::IsStickDown(KeyConfig::JOYPAD_NO _no, KeyConfig::JOYPAD_STICK _stick) const
 {
 	for (auto& stickInfo : stickInfos_)
 	{
-		if (stickInfo.first != no)
+		if (stickInfo.first != _no)
 		{
 			continue;
 		}
 		for (auto& stickI : stickInfo.second)
 		{
-			if (stickI.key != stick)
+			if (stickI.key != _stick)
 			{
 				continue;
 			}
@@ -492,17 +493,17 @@ bool InputManager::IsStickDown(KeyConfig::JOYPAD_NO no, KeyConfig::JOYPAD_STICK 
 	return false;
 }
 
-bool InputManager::IsStickUp(KeyConfig::JOYPAD_NO no, KeyConfig::JOYPAD_STICK stick) const
+bool InputManager::IsStickUp(KeyConfig::JOYPAD_NO _no, KeyConfig::JOYPAD_STICK _stick) const
 {
 	for (auto& stickInfo : stickInfos_)
 	{
-		if (stickInfo.first != no)
+		if (stickInfo.first != _no)
 		{
 			continue;
 		}
 		for (auto& stickI : stickInfo.second)
 		{
-			if (stickI.key != stick)
+			if (stickI.key != _stick)
 			{
 				continue;
 			}
@@ -512,19 +513,19 @@ bool InputManager::IsStickUp(KeyConfig::JOYPAD_NO no, KeyConfig::JOYPAD_STICK st
 	return false;
 }
 
-bool InputManager::IsMouseNew(KeyConfig::MOUSE mouse)
+bool InputManager::IsMouseNew(KeyConfig::MOUSE _mouse)
 {
-	return FindMouse(mouse).keyNew;
+	return FindMouse(_mouse).keyNew;
 }
 
-bool InputManager::IsMouseTrgUp(KeyConfig::MOUSE mouse)
+bool InputManager::IsMouseTrgUp(KeyConfig::MOUSE _mouse)
 {
-	return FindMouse(mouse).keyTrgUp;
+	return FindMouse(_mouse).keyTrgUp;
 }
 
-bool InputManager::IsMouseTrgDown(KeyConfig::MOUSE mouse)
+bool InputManager::IsMouseTrgDown(KeyConfig::MOUSE _mouse)
 {
-	return FindMouse(mouse).keyTrgDown;
+	return FindMouse(_mouse).keyTrgDown;
 }
 
 
