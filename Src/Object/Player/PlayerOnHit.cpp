@@ -1,11 +1,16 @@
 #include "../../Object/Common/Geometry/Sphere.h"
+
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SoundManager.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/Game/ScoreManager.h"
+#include "../../Manager/System/DateBank.h"
+
 #include "../../Object/Common/Geometry/Line.h"
 #include"../../Object/Common/Geometry/Model.h"
+
 #include"../../Utility/Utility.h"
+
 #include"./Player.h"
 #include "PlayerOnHit.h"
 
@@ -32,8 +37,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	colUpdates_.emplace(TAG::SHADOW, [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); });
 	colUpdates_.emplace(TAG::COIN, [this](const std::weak_ptr<Collider> _hitCol) {CollCoin(); });
 
-	
-
+	//プレイヤー同士の当たり判定のタグをNoneに設定
 	int playerNum = DateBank::GetInstance().GetPlayerNum();
 	for (int i = static_cast<int>(TAG::PLAYER1); i < playerNum; i++)
 	{
@@ -41,6 +45,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 		if (static_cast<int>(tag_)== i)continue;
 		colUpdates_[static_cast<TAG>(i)] = [this](const std::weak_ptr<Collider> _hitCol) {CollNone(); };
 	}
+
 	isGoal_ = false;
 	isDeath_ = false;
 	isLandHit_ = false;
@@ -50,6 +55,7 @@ PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam
 	movedPos_ = Utility::VECTOR_ZERO;
 	isSide_ = false;
 	coinNum_ = 0;
+	springJumpPow_ = 0.0f;
 }
 
 PlayerOnHit::~PlayerOnHit(void)
@@ -75,8 +81,12 @@ void PlayerOnHit::Init(void)
 
 void PlayerOnHit::Update(void)
 {
+	//移動後座標の更新
 	movedPos_ = VAdd(trans_.pos, action_.GetMovePow());
 	movedPos_ = VAdd(movedPos_, action_.GetJumpPow());
+
+	//バネジャンプ力の初期化
+	springJumpPow_ = 0.0f;
 
 	//移動量ラインの更新
 	VECTOR moveVec = VSub(movedPos_, trans_.pos);
@@ -98,7 +108,7 @@ void PlayerOnHit::Update(void)
 	moveDiff_ = trans_.pos;
 	//移動
 	trans_.pos = movedPos_;
-	
+	//ラインの情報を取得
 	Line& upDownLine = dynamic_cast<Line&>(colParam_[UP_AND_DOWN_LINE_COL_NO].collider_->GetGeometry());
 	//アクションに渡すフラグの初期化
 	if (!colParam_[UP_AND_DOWN_LINE_COL_NO].collider_->IsHit())
@@ -153,7 +163,7 @@ void PlayerOnHit::CollKillerItemSpecific(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::CollKillerItemAll(void)
 {
-	if (action_.GetAct() != PlayerAction::ATK_ACT::PUNCH)
+	if (action_.GetAct() != PlayerAction::ACTION_TYPE::PUNCH)
 	{
 		//当たったら死ぬ
 		isDeath_ = true;
@@ -171,7 +181,7 @@ void PlayerOnHit::CollWind(const std::weak_ptr<Collider> _hitCol)
 
 void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 {
-	if (action_.GetAct() == PlayerAction::ATK_ACT::KNOCKBACK)return;
+	if (action_.GetAct() == PlayerAction::ACTION_TYPE::KNOCKBACK)return;
 	//リソースID
 	auto& res = ResourceManager::GetInstance();
 	//パンチしたプレイヤーの向いてる方向をセットする
@@ -181,7 +191,7 @@ void PlayerOnHit::ColPunch(const std::weak_ptr<Collider> _hitCol)
 	action_.SetDir(Utility::GetMoveVec(punchedPlayerPos, trans_.pos));
 
 	//ノックバック状態遷移
-	action_.ChangeAction(PlayerAction::ATK_ACT::KNOCKBACK);
+	action_.ChangeAction(PlayerAction::ACTION_TYPE::KNOCKBACK);
 }
 
 void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
@@ -195,8 +205,8 @@ void PlayerOnHit::ColSpring(const std::weak_ptr<Collider> _hitCol)
 		//バネジャンプ音再生
 		action_.SetStepJump(0.0f);
 		SoundManager::GetInstance().Play(SoundManager::SRC::SPRING_SE, SoundManager::PLAYTYPE::BACK);
-		action_.SetJumpDecel(SPRING_JUMP_POW);
-		action_.ChangeAction(PlayerAction::ATK_ACT::JUMP);
+		springJumpPow_ = ADD_SPRING_JUMP_POW;
+		action_.ChangeAction(PlayerAction::ACTION_TYPE::JUMP);
 	}
 }
 
@@ -243,8 +253,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	//球の当たり判定(プレイヤーの周囲)
 	auto& bodyShere = colParam_[BODY_SPHERE_COL_NO].collider_;
 
-	//
-	//isLandHit_ = false;
 	isHitSlimeFloor_ = false;
 
 	if (moveLineCol->IsHit())
@@ -261,9 +269,12 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 	//プレイヤーの接地
 	if (upDownLine->IsHit())
 	{
+		//ライン情報の取得
 		Line& upDown = dynamic_cast<Line&>(upDownLine->GetGeometry());
 		Collider::TAG tag = upDownLine->GetTags()[0];
 		VECTOR hitLinePos = upDown.GetHitInfo().HitPosition;
+
+		//座標が当たっているライン座標より上のとき、地面と当たる
 		if (movedPos_.y > hitLinePos.y)
 		{
 			movedPos_.y = hitLinePos.y + Player::RADIUS + POSITION_OFFSET;
@@ -271,6 +282,8 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 			isLandHit_ = true;
 			action_.SetJumpPow(Utility::VECTOR_ZERO);
 		}
+
+		//移動後座標が当たっているライン座標より下の場合、上に押し出す
 		if(movedPos_.y < hitLinePos.y)
 		{
 			movedPos_.y = hitLinePos.y - Player::RADIUS - POSITION_OFFSET;
@@ -295,8 +308,11 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 		for (int i = 0; i < hitInfo.HitNum; i++)
 		{
 			isSide_ = true;
+			//当たっている部分の情報を取得
 			auto hit = hitInfo.Dim[i];
 			VECTOR hitPos = hit.HitPosition;
+			
+			//一定回数の押し出し処理をする
 			for (int tryCnt = 0; tryCnt < COL_TRY_CNT_MAX; tryCnt++)
 			{
 				int pHit = HitCheck_Sphere_Triangle(trans.pos, RADIUS
@@ -315,9 +331,10 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 				}
 				break;
 			}
-			
 		}
-		if(isSide_&&_hitCol.lock()->GetTags()[0]!=Collider::TAG::KILLER_SPECIFIC)
+
+		//一部分と当たったら死ぬオブジェクトと当たっていたら
+		if(isSide_&&_hitCol.lock()->GetTags()[UP_AND_DOWN_LINE_COL_NO]!=Collider::TAG::KILLER_SPECIFIC)
 		{
 			int modelId = _hitCol.lock()->GetParent().GetTransform().modelId;
 			VECTOR pos1 = movedPos_;
@@ -332,8 +349,6 @@ void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 			}
 		}
 	}
-
-
 
 	////移動前の座標を格納する
 	moveDiff_ = trans_.pos;

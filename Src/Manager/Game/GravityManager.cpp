@@ -53,14 +53,6 @@ void GravityManager::CalcGravity(VECTOR& _dir, VECTOR& _pow, float _per)
 	_pow = VAdd(_pow, gravity);
 
 	Calculate();
-
-	//// 内積
-	//float dot = VDot(dirGravity, _pow);
-	//if (dot >= 0.0f)
-	//{
-	//	//重力方向と反対方向(マイナス)でなければ、ジャンプ力を無くす
-	//	_pow = gravity;
-	//}
 }
 
 void GravityManager::Calculate(void)

@@ -3,20 +3,19 @@
 #include<vector>
 #include"../../Object/Common/Transform.h"
 #include"../../Object/Player/Player.h"
-#include"../../Object/Player/Process/PlayerInput.h"
-//#include"../../Object/Common/Capsule.h"
+#include"../../Object/Player/PlayerInput.h"
+
 class Player;
+
 class PlayerManager
 {
-public:
-	//**************************************
-	//定数
-	//**************************************
-	static constexpr int PLAYER_NUM_MAX = 4;
 
+public:
+
+	//プレイヤー最大人数
+	static constexpr int PLAYER_NUM_MAX = 4;
 	//プレイヤー1人
 	static constexpr int PLAYER_SINGLE = 1;
-
 	//プレイヤーカラー
 	static constexpr COLOR_F PLAYER_COLOR[PLAYER_NUM_MAX] =
 	{		
@@ -26,7 +25,7 @@ public:
 		{1.0f,1.0f,0.7f,1.0f},
 	};
 
-	
+	//プレイヤーナンバー
 	enum class PLAYER
 	{
 		PLAYER_ONE,
@@ -34,9 +33,6 @@ public:
 		PLAYER_THREE,
 		PLAYER_FOUR
 	};
-
-
-	//**************************************
 	
 
 	/// <summary>
@@ -45,39 +41,75 @@ public:
 	/// <param name="_playerNum">プレイヤー人数</param>
 	static void CreateInstance(void);
 
-	//解放
+	/// <summary>
+	/// 解放
+	/// </summary>
+	/// <param name=""></param>
 	void Destroy(void);
 
-	//静的にインスタンスを取得する
+	/// <summary>
+	/// 静的にインスタンスを取得する
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns></returns>
 	static PlayerManager& GetInstance(void);
+
+	/// <summary>
+	/// ロード
+	/// </summary>
+	/// <param name=""></param>
 	void Load(void);
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name=""></param>
 	void Init(void);
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void);
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void);
 
-	//*****************************************
-	//ゲッタ
-	//*****************************************
-	//モデル情報ゲッタ
+	/// <summary>
+	/// モデル情報の取得
+	/// </summary>
+	/// <param name="_num">プレイヤー番号</param>
+	/// <returns>モデル情報の取得</returns>
 	const Transform& GetPlayerTransform(const int _num) { return players_[_num]->GetTransform(); }
 
-	//プレイヤー情報
+	/// <summary>
+	/// プレイヤー情報の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>プレイヤー情報</returns>
 	std::vector<std::unique_ptr<Player>>&GetPlayers(void) { return players_; }
 
 	/// <summary>
 	///プレイヤーコイン枚数
 	/// </summary>
 	/// <param name="_num">プレイヤー番号</param>
-	/// <returns></returns>
+	/// <returns>コイン枚数</returns>
 	inline const int GetPlayerCoinNum(const int _num) { return players_[_num]->GetCoinNum(); }
 
-	//ゴールタイムのゲッタ
+	/// <summary>
+	/// ゴールタイムの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>ゴールタイム</returns>
 	const std::vector<float> GetGoalTime(void);
 
-	//****************************************
-	//セッタ
-	//****************************************
-	//初期座標に戻す
+	/// <summary>
+	/// 初期座標に戻す
+	/// </summary>
+	/// <param name="_worldPos">戻したい座標</param>
 	void SetInitPos(VECTOR _worldPos);
 
 	/// <summary>
@@ -98,7 +130,7 @@ public:
 	///　全てのプレイヤーが操作を終えているか
 	/// </summary>
 	/// <returns>終えてたらtrue,なければfalse</returns>
-	bool IsPlayersEnd();
+	bool IsPlayersEnd(void);
 
 	/// <summary>
 	/// 各プレイヤーごとのUIを描画
@@ -107,55 +139,40 @@ public:
 	void DrawUI(const int _playerIndex);
 
 private:
+
 	//プレイヤーの大きさ
 	static constexpr VECTOR MODEL_SCL = { 1.0f,1.0f,1.0f };
-
 	//ハート画像サイズ
-	static constexpr float HEART_IMG_SCL = 0.05f;
-	static constexpr int HEART_IMG_SIZE_X = 640 * HEART_IMG_SCL;
-	static constexpr int HEART_IMG_SIZE_Y = 640 * HEART_IMG_SCL;
+	static constexpr float HEART_IMG_SCL = 0.05f;				//画像の大きさ
+	static constexpr int HEART_IMG_SIZE_X = static_cast<int>(640 * HEART_IMG_SCL);//Xの画像サイズ
+	static constexpr int HEART_IMG_SIZE_Y = static_cast<int>(640 * HEART_IMG_SCL);//Yの画像サイズ
 
 	//初期座標
 	static constexpr float START_POS = 50.0f;
-
 	//静的インスタンス
 	static PlayerManager* instance_;
-
-	//始まってからの総タイム
-	//float time_;
-
 	//ゴール時間
 	std::vector<float>goalTime_;
 
-	//*****************************************
-	//メンバ変数
-	//*****************************************
 	//プレイヤー
 	std::vector<std::unique_ptr<Player>> players_;
-
 	//プレイヤー人数
 	int playerNum_;
+	//リスポーンハートの画像番号
+	int imgRespawnHeart_; 
 
-	int imgRespawnHeart_; //リスポーンハートの画像番号
-
-	//*****************************************
-	//メンバ関数
-	//*****************************************
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	PlayerManager(void);
+	PlayerManager(const PlayerManager& instance_) = default;
+	~PlayerManager(void);
 
 	//プレイヤー番号ごとでモデル情報を決定する
 	Transform FixTrans(int _playerNum);
 
 	//プレイヤーカラーを設定
 	void InitPlayerColor();
-
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="playerNum">データバンクから人数を持ってくる</param>
-	PlayerManager(void);
-	PlayerManager(const PlayerManager& instance_) = default;
-	~PlayerManager(void);
-	
-
 };
 
