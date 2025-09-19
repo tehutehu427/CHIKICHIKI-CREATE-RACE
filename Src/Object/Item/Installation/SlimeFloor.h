@@ -4,6 +4,7 @@
 
 class SlimeFloor : public ItemBase
 {
+
 public:
 
 
@@ -11,17 +12,31 @@ public:
 	static constexpr IntVector3 MAP_SIZE = { 4,1,4 };				//マップサイズ
 	static constexpr VECTOR MAP_LOCALPOS = { 200.0f,15.0f,200.0f };	//マップとの相対座標
 
-	//サイズ
-	static constexpr VECTOR MODEL_SIZE = { 400.0f,30.0f,400.0f };	//モデルのサイズ
+	//モデルのサイズ
+	static constexpr VECTOR MODEL_SIZE = { 400.0f,30.0f,400.0f };	
 
-	//コンストラクタ
-	SlimeFloor();
-	//デストラクタ
-	~SlimeFloor()override;
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	SlimeFloor(void);
 
-	//個人設定
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	~SlimeFloor(void)override;
+
+	/// <summary>
+	/// 個人設定
+	/// </summary>
+	/// <param name=""></param>
 	void SetParam(void)override;
-	//更新
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void)override;
 
 	/// <summary>
@@ -29,6 +44,5 @@ public:
 	/// </summary>
 	/// <param name="_hitColTag">相手側の当たり判定</param>
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
-
 };
 

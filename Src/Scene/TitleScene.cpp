@@ -20,12 +20,13 @@ TitleScene::TitleScene(void)
 	//描画関数のセット
 	func_.drawFunc_ = std::bind(&TitleScene::LoadingDraw, this);
 
-	int i = -1;
-
 	imgTitleLogo_ = -1;
 	imgMessage_ = -1;
 	imgDemoMessage_ = -1;
+
+	int i = -1;
 	imgBalloons_ = &i;
+
 	for (int i = 0; i < BALLOON_NUM; i++)
 	{
 		balloonPos_[i] = { 0,0 };
@@ -44,11 +45,13 @@ TitleScene::TitleScene(void)
 
 TitleScene::~TitleScene(void)
 {
+	//フォント解放
 	DeleteFontToHandle(buttnFontHandle_);
 }
 
 void TitleScene::Load(void)
 {
+	//リソースマネージャー
 	ResourceManager& res = ResourceManager::GetInstance();	
 	
 	//フォントの登録
@@ -66,9 +69,8 @@ void TitleScene::Load(void)
 	sndMng_.LoadResource(SoundManager::SRC::TITLE_SCENE_CHANGE);
 	sndMng_.LoadResource(SoundManager::SRC::CHICKEN_SE);
 
+	//音量設定
 	sndMng_.SetLoadedSoundsVolume();
-
-
 
 	//スカイドーム
 	skyDome_ = std::make_unique<SkyDome>();
@@ -77,6 +79,7 @@ void TitleScene::Load(void)
 
 void TitleScene::Init(void)
 {
+	//アルファ値初期化
 	mesAlpha_ = Utility::ALPHA_MAX;
 	
 	//BGMを再生
@@ -84,12 +87,17 @@ void TitleScene::Init(void)
 
 	//スカイドーム初期化
 	skyDome_->Init();
+
+	//カメラ設定
 	auto camera = scnMng_.GetCamera(0).lock();
 	camera->ChangeMode(Camera::MODE::FIXED_POINT);
 }
 
 void TitleScene::NormalUpdate(void)
 {	
+	//デルタタイム
+	float delta = SceneManager::GetInstance().GetDeltaTime();
+
 	//状態別更新処理
 	titleUpdateFunc_();
 
@@ -99,13 +107,16 @@ void TitleScene::NormalUpdate(void)
 	//風船更新
 	BalloonUpdate();
 
-	float delta = SceneManager::GetInstance().GetDeltaTime();
+	//カウンタ更新
 	balloonStep_ += delta;
-
 }
 
 void TitleScene::DemoUpdate(void)
 {
+	//インスタンス取得
+	KeyConfig& ins = KeyConfig::GetInstance();
+	SoundManager& snd = SoundManager::GetInstance();
+
 	//デルタタイム
 	float delta = SceneManager::GetInstance().GetDeltaTime();
 
@@ -129,8 +140,6 @@ void TitleScene::DemoUpdate(void)
 	BalloonUpdate();
 
 	// シーン遷移
-	KeyConfig& ins = KeyConfig::GetInstance();
-	SoundManager& snd = SoundManager::GetInstance();
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::DEMO_TO_TITLE_BACK, KeyConfig::JOYPAD_NO::PAD1))
 	{
 		//カウンタの初期化
@@ -151,7 +160,6 @@ void TitleScene::NormalDraw(void)
 	//風船描画
 	DrawBalloon();
 
-
 	//タイトルロゴ
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
@@ -171,7 +179,6 @@ void TitleScene::DemoDraw(void)
 {
 	//スカイドーム描画
 	skyDome_->Draw();
-
 
 	//透明度追加
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, DEMO_IMAGE_ALPHA);
@@ -232,6 +239,7 @@ void TitleScene::ChangeDemo(void)
 
 void TitleScene::DrawMessage(void)
 {
+	//メッセージの動作関係
 	constexpr float RATE = 0.6f;
 	constexpr float ALPHA_STEP = 3.0f;
 	constexpr float SHAKE_SPEED = 5.0f;
@@ -244,8 +252,10 @@ void TitleScene::DrawMessage(void)
 	//アルファ値を変え
 	mesAlpha_ = Utility::PingPongUpdate(mesAlpha_, ALPHA_STEP, Utility::ALPHA_MAX, Utility::ALPHA_MAX / 2, alphaDir_);
 
-	//メッセージ
+	//アルファ値ブレンド
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, mesAlpha_);
+
+	//メッセージ
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
 		mesPosY_,
@@ -255,11 +265,14 @@ void TitleScene::DrawMessage(void)
 		true,
 		false
 	);
+
+	//元に戻す
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void TitleScene::DemoMessage(void)
 {
+	//メッセージの動作関係
 	constexpr float RATE = 0.6f;
 	constexpr float ALPHA_STEP = 3.0f;
 	constexpr float SHAKE_SPEED = 5.0f;
@@ -270,8 +283,10 @@ void TitleScene::DemoMessage(void)
 	mesPosY_ = DEMO_MES_POS_Y;
 	mesPosY_ = Utility::GetShake(mesPosY_, step_, SHAKE_SPEED, SHAKE_AMPLITUDE);
 
-	//デモメッセージ
+	//アルファ値ブレンド
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, DEMO_IMAGE_ALPHA);
+
+	//デモメッセージ
 	DrawRotaGraph(
 		DEMO_MES_POS_X,
 		mesPosY_,
@@ -281,6 +296,8 @@ void TitleScene::DemoMessage(void)
 		true,
 		false
 	);
+
+	//元に戻す
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
@@ -319,9 +336,12 @@ void TitleScene::UpdateWait()
 
 void TitleScene::UpdatePlaySe()
 {
+	//SEが終わったら
 	if (!sndMng_.IsPlay(SoundManager::SRC::CHICKEN_SE))
 	{
+		//セレクトに遷移
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::SELECT);
+
 		//更新処理の変更
 		titleUpdateFunc_ = std::bind(&TitleScene::UpdateNone, this);
 		return;
@@ -330,10 +350,12 @@ void TitleScene::UpdatePlaySe()
 
 void TitleScene::UpdateNone()
 {
+	//何もしない
 }
 
 void TitleScene::BalloonUpdate(void)
 {
+	//全バルーン
 	for (int i = 0; i < BALLOON_NUM; i++)
 	{
 		//風船の座標を画面下よりどれだけ下げるか
@@ -344,6 +366,7 @@ void TitleScene::BalloonUpdate(void)
 		//バルーンが死んでおり、間隔が1.0秒以上言ったら
 		if (!isBalloonAlive_[i] && balloonStep_ > BALLOON_STEP_MAX)
 		{
+			//新しいバルーンを生成
 			balloonType_[i] = GetRand(BALLOON_TYPE);
 			isBalloonAlive_[i] = true;
 			balloonPos_[i].x = std::rand() % Application::SCREEN_SIZE_X + BALLOON_SIZE_ONE_HALF_X;
@@ -355,27 +378,30 @@ void TitleScene::BalloonUpdate(void)
 		//バルーンが生きている間の処理
 		if (isBalloonAlive_[i])
 		{
+			//バルーンを上昇
 			balloonPos_[i].y -= speed_[i];
 		}
 
 		//バルーンが上まで上がったら
 		if (balloonPos_[i].y < BALLOON_POS_MAX_Y)
 		{
+			//バルーンの消去
 			balloonType_[i] = -1;
 			balloonPos_[i] = { 0,-BALLOON_SIZE_ONE_Y };
 			isBalloonAlive_[i] = false;
 		}
-
 	}
 }
 
 void TitleScene::DrawBalloon(void)
 {
-
+	//全バルーンの描画
 	for (int i = 0; i < BALLOON_NUM; i++)
 	{
+		//バルーンが生きているなら
 		if (isBalloonAlive_[i])
 		{
+			//描画
 			DrawRotaGraph(
 				balloonPos_[i].x,
 				balloonPos_[i].y,

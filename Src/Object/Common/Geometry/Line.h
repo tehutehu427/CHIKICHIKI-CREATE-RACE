@@ -1,9 +1,9 @@
 #pragma once
-
 #include"Geometry.h"
 
 class Line : public Geometry
 {
+
 public:
 
 	/// <summary>
@@ -23,48 +23,119 @@ public:
 	/// <param name="_rot">追従する親の回転</param>
 	Line(const Line& _copyBase, const VECTOR& _pos, const Quaternion& _rot);
 
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	~Line(void)override;
 
-	// 描画
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void)override;
 
-	//各種当たり判定
-	const bool IsHit(Geometry& _geometry)override;
-	const bool IsHit(Model& _model)override;
-	const bool IsHit(Cube& _cube)override;
-	const bool IsHit(Sphere& _sphere)override;
+	/// <summary>
+	/// 形状当たり判定
+	/// </summary>
+	/// <param name="_geometry">形状情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Geometry& _geometry) override;
+
+	/// <summary>
+	/// モデルとの当たり判定
+	/// </summary>
+	/// <param name="_geometry">モデル情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Model& _model) override;
+
+	/// <summary>
+	/// 箱との当たり判定
+	/// </summary>
+	/// <param name="_geometry">箱情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Cube& _cube) override;
+
+	/// <summary>
+	/// 球との当たり判定
+	/// </summary>
+	/// <param name="_geometry">球情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Sphere& _sphere) override;
+
+	/// <summary>
+	/// カプセルとの当たり判定
+	/// </summary>
+	/// <param name="_geometry">カプセル情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
 	const bool IsHit(Capsule& _capsule) override;
+
+	/// <summary>
+	/// 線分との当たり判定
+	/// </summary>
+	/// <param name="_geometry">線分情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
 	const bool IsHit(Line& _line) override;
 
-	//1つ目の点の座標を取得
+	/// <summary>
+	/// 1つ目の点の座標を取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>1つ目の点の座標</returns>
 	inline const VECTOR GetLocalPosPoint1(void)const { return localPosPoint1_; }
 
-	//2つ目の点の座標を取得
+	/// <summary>
+	/// 2つ目の点の座標を取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>2つ目の点の座標</returns>
 	inline const VECTOR GetLocalPosPoint2(void)const { return localPosPoint2_; }
 
-	// 回転済みの1つ目の点の座標を取得
+	/// <summary>
+	/// 回転済みの1つ目の点の座標を取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>回転済みの1つ目の点の座標</returns>
 	inline const VECTOR GetPosPoint1(void) const { return GetRotPos(localPosPoint1_); }
 
-	// 回転済みの2つ目の点の座標を取得
+	/// <summary>
+	/// 回転済みの2つ目の点の座標を取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>回転済みの2つ目の点の座標</returns>
 	inline const VECTOR GetPosPoint2(void) const { return GetRotPos(localPosPoint2_); }
 
-	//1つ目の点の座標の設定
+	/// <summary>
+	/// 1つ目の点の座標の設定
+	/// </summary>
+	/// <param name="_pos">1つ目の点の座標</param>
 	inline void SetLocalPosPoint1(const VECTOR _pos) { localPosPoint1_ = _pos; }
 
-	//2つ目の点の座標の設定
+	/// <summary>
+	/// 2つ目の点の座標の設定
+	/// </summary>
+	/// <param name="_pos">2つ目の点の座標</param>
 	inline void SetLocalPosPoint2(const VECTOR _pos) { localPosPoint2_ = _pos; }
 
-	//当たった時の情報取得
+	/// <summary>
+	/// 当たった時の情報の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>当たった時の情報</returns>
 	inline const MV1_COLL_RESULT_POLY& GetHitInfo(void)const { return hitInfo_; }
 
-	//当たった時の情報設定
+	/// <summary>
+	/// 当たった時の情報の設定
+	/// </summary>
+	/// <param name="_hitInfo">当たった時の情報</param>
 	inline void SetHitInfo(const MV1_COLL_RESULT_POLY _hitInfo) { hitInfo_ = _hitInfo; }
 
 private:
 
+	//線分の要素
 	VECTOR localPosPoint1_;	//1つ目の点の座標
 	VECTOR localPosPoint2_;	//2つ目の点の座標
 
-	MV1_COLL_RESULT_POLY hitInfo_;	//当たった時の情報(モデル)
+	//当たった時の情報(モデル)
+	MV1_COLL_RESULT_POLY hitInfo_;	
 };

@@ -127,6 +127,7 @@ public:
 	/// </summary>
 	/// <returns>メインスクリーン</returns>
 	int GetMainScreen() const { return mainScreen_; }
+
 	/// <summary>
 	/// スクリーンを返す
 	/// </summary>

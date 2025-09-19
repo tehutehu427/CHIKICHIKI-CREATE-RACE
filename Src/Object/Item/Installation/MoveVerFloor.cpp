@@ -7,7 +7,7 @@
 #include"../../Common/ToonStyle.h"
 #include "MoveVerFloor.h"
 
-MoveVerFloor::MoveVerFloor()
+MoveVerFloor::MoveVerFloor(void)
 {
 	routeNum_ = 0;
 	for (int i = 0; i < ROUTE; i++)
@@ -21,7 +21,7 @@ MoveVerFloor::MoveVerFloor()
 	moveVec_ = Utility::VECTOR_ZERO;
 }
 
-MoveVerFloor::~MoveVerFloor()
+MoveVerFloor::~MoveVerFloor(void)
 {
 }
 
@@ -83,7 +83,10 @@ void MoveVerFloor::Draw(void)
 		return;	//•`‰æ‚ðs‚í‚È‚¢
 	}
 
+	//ˆÚ“®‹O“¹
 	DrawLine3D(VAdd(route_[0], MAP_LOCALPOS), VAdd(route_[1], MAP_LOCALPOS), Utility::BLACK);
+	
+	//ƒ‚ƒfƒ‹
 	toonStyle_->Draw();
 }
 

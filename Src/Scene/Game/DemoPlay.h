@@ -4,30 +4,54 @@ class DemoPlay
 {
 public:
 
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	DemoPlay(void);
 
-	//デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	~DemoPlay(void);
 
-	//ロード
+	/// <summary>
+	/// ロード
+	/// </summary>
+	/// <param name=""></param>
 	void Load(void);
-	//初期化
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name=""></param>
 	void Init(void);
-	//更新
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void);
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void);
 
 private:
 
+	//カメラ関係
 	static constexpr float CAMERA_SUB_Z = 100.0f;										//カメラのZ位置を下げる用
 	static constexpr VECTOR CAMERA_POS = { 600.0f,1000.0f,-600.0f - CAMERA_SUB_Z };		//カメラ位置
 	static constexpr VECTOR CAMERA_TARGET_POS = { 600.0f,-100.0,600.0 - CAMERA_SUB_Z };	//カメラターゲット位置
 
-	float step_;	//カウンタ
+	//カウンタ
+	float step_;	
 
-	std::vector<VECTOR> revivalPos_;	//復活座標
+	//復活座標
+	std::vector<VECTOR> revivalPos_;	
 
 	//デモステージの生成
 	void CreateDemoStage(void);

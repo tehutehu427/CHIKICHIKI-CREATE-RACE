@@ -3,11 +3,11 @@
 #include"../../Common/Geometry/Model.h"
 #include "StartFlag.h"
 
-StartFlag::StartFlag()
+StartFlag::StartFlag(void)
 {
 }
 
-StartFlag::~StartFlag()
+StartFlag::~StartFlag(void)
 {
 }
 

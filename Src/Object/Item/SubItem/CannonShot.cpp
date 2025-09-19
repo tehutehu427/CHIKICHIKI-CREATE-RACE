@@ -21,7 +21,7 @@ CannonShot::CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR
 	invincible_ = 0.0f;
 }
 
-CannonShot::~CannonShot()
+CannonShot::~CannonShot(void)
 {
 	update_.clear();
 	draw_.clear();

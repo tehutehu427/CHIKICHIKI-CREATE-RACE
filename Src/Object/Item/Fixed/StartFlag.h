@@ -1,8 +1,9 @@
 #pragma once
 #include "../ItemBase.h"
-class StartFlag :
-    public ItemBase
+
+class StartFlag : public ItemBase
 {
+
 public:
 
 	//マップ
@@ -10,21 +11,38 @@ public:
 	static constexpr IntVector3 HIT_SIZE = { 0,2,0 };					//当たり判定用サイズ
 	static constexpr VECTOR MAP_LOCALPOS = { 3500.0f,3500.0f,3500.0f };	//マップとの相対座標
 
+	//モデルのサイズ
+	static constexpr VECTOR MODEL_SIZE = { 7000.0f,7000.0f,7000.0f };	
 
-	//サイズ
-	static constexpr VECTOR MODEL_SIZE = { 7000.0f,7000.0f,7000.0f };	//モデルのサイズ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	StartFlag(void);
 
-	//コンストラクタ
-	StartFlag();
-	//デストラクタ
-	~StartFlag()override;
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	~StartFlag(void)override;
 
-	//個人設定
+	/// <summary>
+	/// 個人設定
+	/// </summary>
+	/// <param name=""></param>
 	void SetParam(void)override;
-	//更新
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void)override;
 
-	//当たり判定サイズ
+	/// <summary>
+	/// 当たり判定サイズの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>当たり判定サイズ(マップ座標基準)</returns>
 	const IntVector3 GetHitSize(void)const override { return MAP_SIZE + HIT_SIZE; }
 
 	/// <summary>
@@ -35,6 +53,7 @@ public:
 
 private:
 
-	Transform colModelTrans_;	//当たり判定用モデル
+	//当たり判定用モデル
+	Transform colModelTrans_;	
 };
 

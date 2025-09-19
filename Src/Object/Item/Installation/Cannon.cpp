@@ -11,7 +11,7 @@
 #include "../SubItem/CannonShot.h"
 #include "Cannon.h"
 
-Cannon::Cannon()
+Cannon::Cannon(void)
 {
 	shotCreateCnt_ = 0.0f;
 	targetPos_ = INIT_TARGET_POS;
@@ -19,7 +19,7 @@ Cannon::Cannon()
 	barrelAddRot_ = Utility::VECTOR_ZERO;
 }
 
-Cannon::~Cannon()
+Cannon::~Cannon(void)
 {
 }
 
@@ -282,6 +282,7 @@ void Cannon::DeleteShot(void)
 
 void Cannon::InitShader(void)
 {
+	//シェーダーの初期化
 	toonStyle_ = std::make_unique<ToonStyle>();
 	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::NO_TEXTURE);
 	toonStyle_->Init();

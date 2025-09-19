@@ -1,9 +1,9 @@
 #pragma once
-
 #include"Geometry.h"
 
 class Model : public Geometry
 {
+
 public:
 
 	/// <summary>
@@ -23,40 +23,102 @@ public:
 	/// <param name="_modelId">追従する親のモデルID</param>
 	Model(const Model& _copyBase, const VECTOR& _pos, const Quaternion& _rot);
 
-	//デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	~Model(void)override;
 
-	//描画
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void)override;
 
-	//各種当たり判定
-	const bool IsHit(Geometry& _geometry)override;
-	const bool IsHit(Model& _model)override;
-	const bool IsHit(Cube& _cube)override;
-	const bool IsHit(Sphere& _sphere)override;
-	const bool IsHit(Capsule& _capsule)override;
+	/// <summary>
+	/// 形状当たり判定
+	/// </summary>
+	/// <param name="_geometry">形状情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Geometry& _geometry) override;
+
+	/// <summary>
+	/// モデルとの当たり判定
+	/// </summary>
+	/// <param name="_geometry">モデル情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Model& _model) override;
+
+	/// <summary>
+	/// 箱との当たり判定
+	/// </summary>
+	/// <param name="_geometry">箱情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Cube& _cube) override;
+
+	/// <summary>
+	/// 球との当たり判定
+	/// </summary>
+	/// <param name="_geometry">球情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Sphere& _sphere) override;
+
+	/// <summary>
+	/// カプセルとの当たり判定
+	/// </summary>
+	/// <param name="_geometry">カプセル情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Capsule& _capsule) override;
+
+	/// <summary>
+	/// 線分との当たり判定
+	/// </summary>
+	/// <param name="_geometry">線分情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
 	const bool IsHit(Line& _line) override;
 
-	//ヒット後の処理
+	/// <summary>
+	/// ヒット後の処理
+	/// </summary>
+	/// <param name=""></param>
 	void HitAfter(void)override;
 
-	//親モデルIDの取得
+	/// <summary>
+	/// 親のモデルIDの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>親のモデルID</returns>
 	inline const int GetParentModel(void)const { return parentModelId_; };
 
-	//当たった時の情報取得
+	/// <summary>
+	/// 当たった時の情報の取得(線分)
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>当たった時の情報</returns>
 	inline const MV1_COLL_RESULT_POLY& GetHitLineInfo(void)const { return hitLineInfo_; }
 
-	//当たった時の情報取得
-	inline const MV1_COLL_RESULT_POLY_DIM& GetHitInfo(void)const { return hitInfo_; }
-
-	//当たった時の情報設定
+	/// <summary>
+	/// 当たった時の情報の設定(線分)
+	/// </summary>
+	/// <param name="_hitInfo">当たった時の情報</param>
 	inline void SetHitLineInfo(const MV1_COLL_RESULT_POLY _hitInfo) { hitLineInfo_ = _hitInfo; }
 
-	//当たった時の情報設定
+	/// <summary>
+	/// 当たった時の情報の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>当たった時の情報</returns>
+	inline const MV1_COLL_RESULT_POLY_DIM& GetHitInfo(void)const { return hitInfo_; }
+
+	/// <summary>
+	/// 当たった時の情報の設定
+	/// </summary>
+	/// <param name="_hitInfo">当たった時の情報</param>
 	inline void SetHitInfo(MV1_COLL_RESULT_POLY_DIM _hitInfo) { std::swap(hitInfo_, _hitInfo); }
 
 private:
 
+	//モデルの要素
 	int parentModelId_;					//親のモデルID
 	MV1_COLL_RESULT_POLY hitLineInfo_;	//当たった時の情報(線)
 	MV1_COLL_RESULT_POLY_DIM hitInfo_;	//当たった時の情報(球、カプセル)

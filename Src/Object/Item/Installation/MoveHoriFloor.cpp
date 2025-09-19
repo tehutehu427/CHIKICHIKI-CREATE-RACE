@@ -7,7 +7,7 @@
 #include"../../Common/ToonStyle.h"
 #include "MoveHoriFloor.h"
 
-MoveHoriFloor::MoveHoriFloor()
+MoveHoriFloor::MoveHoriFloor(void)
 {
 	routeNum_ = 0;
 	for (int i = 0 ; i< ROUTE;i++)
@@ -21,7 +21,7 @@ MoveHoriFloor::MoveHoriFloor()
 	moveVec_ = Utility::VECTOR_ZERO;
 }
 
-MoveHoriFloor::~MoveHoriFloor()
+MoveHoriFloor::~MoveHoriFloor(void)
 {
 }
 
@@ -83,7 +83,10 @@ void MoveHoriFloor::Draw(void)
 		return;	//•`‰æ‚ðs‚í‚È‚¢
 	}
 
+	//ˆÚ“®‹O“¹
 	DrawLine3D(VAdd(route_[0], MAP_LOCALPOS), VAdd(route_[1], MAP_LOCALPOS), Utility::BLACK);
+	
+	//ƒ‚ƒfƒ‹
 	toonStyle_->Draw();
 }
 

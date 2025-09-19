@@ -14,6 +14,7 @@ Collider::Collider(ObjectBase& _parent, const std::vector<TAG> _tags, Geometry& 
 
 Collider::~Collider(void)
 {
+	//ƒ^ƒO‚Ìíœ
 	notHitTags_.clear();
 	tags_.clear();
 }

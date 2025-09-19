@@ -7,6 +7,7 @@ class ToonStyle;
 
 class Cannon : public ItemBase
 {
+
 public:
 
 	//弾
@@ -17,35 +18,57 @@ public:
 	static constexpr IntVector3 HIT_SIZE = { 0,0,0 };				//当たり判定用サイズ
 	static constexpr VECTOR MAP_LOCALPOS = { 60.0f,0.0f,40.0f };	//マップとの相対座標
 
-	//サイズ
-	static constexpr VECTOR MODEL_SIZE = { 120.0f,100.0f,80.0f };	//モデルのサイズ
+	//モデルのサイズ
+	static constexpr VECTOR MODEL_SIZE = { 120.0f,100.0f,80.0f };	
 
 	//エイム
-	static constexpr VECTOR INIT_TARGET_POS = { -1000.0f,-1000.0f,-1000.0f };	//狙う範囲半径
-	static constexpr float  AIM_RADIUS = 1200.0f;	//狙う範囲半径
-	static constexpr float AIM_TIME_TURRET = 1.0f;	//対象に向くまでの時間
-	static constexpr float AIM_TIME_BARREL = 1.0f;	//対象に向くまでの時間
+	static constexpr VECTOR INIT_TARGET_POS = { -1000.0f,-1000.0f,-1000.0f };	//初期ターゲット補正
+	static constexpr float  AIM_RADIUS = 1200.0f;								//狙う範囲半径
+	static constexpr float AIM_TIME_TURRET = 1.0f;								//砲台が対象に向くまでの時間
+	static constexpr float AIM_TIME_BARREL = 1.0f;								//砲身が対象に向くまでの時間
 
 	//砲身
 	static constexpr VECTOR BARREL_LOCAL_POS = { 0.0f, 75.0f, -0.0f };	//砲身の相対座標
 	static constexpr VECTOR BARREL_LOCAL_ROT = { 0.0f, 0.0f, 0.0f };	//砲身の相対回転
 
 	//コライダ
-	static constexpr int AIM_COL_NUM = 2;	//エイムのコライダ番号
+	static constexpr int AIM_COL_NUM = 2;	//エイム範囲のコライダ番号
 
-	//コンストラクタ
-	Cannon();
-	//デストラクタ
-	~Cannon()override;
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	Cannon(void);
 
-	//個人設定
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	~Cannon(void)override;
+
+	/// <summary>
+	/// 個人設定
+	/// </summary>
+	/// <param name=""></param>
 	void SetParam(void)override;
-	//更新
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void)override;
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void)override;
 
-	//当たり判定サイズ
+	/// <summary>
+	/// 当たり判定サイズの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>当たり判定</returns>
 	const IntVector3 GetHitSize(void)const override { return MAP_SIZE + HIT_SIZE; }
 
 	/// <summary>
@@ -63,10 +86,16 @@ public:
 	/// <param name="_a">アルファ値</param>
 	void SetModelColor(const float _r, const float _g, const float _b, const float _a) override;
 
-	//アイテムの値リセット
+	/// <summary>
+	/// アイテムの値リセット
+	/// </summary>
+	/// <param name=""></param>
 	void ResetValue(void)override;
 
-	//砲台の値合わせ
+	/// <summary>
+	/// 砲台の値合わせ
+	/// </summary>
+	/// <param name=""></param>
 	void BarrelValueToTurret(void);
 
 private:
@@ -75,7 +104,7 @@ private:
 	std::unique_ptr<ToonStyle> toonBarrel_;
 
 	//弾関係
-	std::unique_ptr<CannonShot> shot_;		//弾
+	std::unique_ptr<CannonShot> shot_;	//弾
 	float shotCreateCnt_;					//弾の生成間隔カウンタ
 	
 	//モデル関係

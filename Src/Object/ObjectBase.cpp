@@ -23,15 +23,18 @@ ObjectBase::~ObjectBase(void)
 		colParam.collider_->Kill();
 	}
 
+	//当たり判定情報の削除
 	colParam_.clear();
 }
 
 void ObjectBase::ChangeModelColor(const COLOR_F _colorScale)
 {
+	//モデルの色変更
 	if (MV1SetDifColorScale(trans_.modelId, _colorScale))
 	{
 #ifdef _DEBUG
 
+		//エラー
 		OutputDebugString("ChangeModelColorの失敗");
 
 #endif // _DEBUG
@@ -72,8 +75,13 @@ void ObjectBase::DeleteAllCollider(void)
 {
 	for (auto& col : colParam_)
 	{
+		//当たり判定が存在しないならスキップ
 		if (col.collider_ == nullptr)continue;
+		
+		//コライダの削除
 		col.collider_->Kill();
 	}
+	
+	//当たり判定情報の削除
 	colParam_.clear();
 }
