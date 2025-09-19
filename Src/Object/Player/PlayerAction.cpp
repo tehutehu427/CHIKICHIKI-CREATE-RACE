@@ -1,13 +1,16 @@
-#include"../Utility/Utility.h"
-#include"Player.h"
-#include"Process/PlayerInput.h"
+#include "../Utility/Utility.h"
+
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/System/Camera.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SoundManager.h"
+
 #include "../../Object/Common/EffectController.h"
 #include "../../Object/Common/AnimationController.h"
+
+#include "./Player.h"
+#include "./PlayerInput.h"
 
 #include "PlayerAction.h"
 
@@ -18,13 +21,13 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 {
 	//操作関連
 	//----------------------------------------------------
-	changeAction_.emplace(ATK_ACT::NONE, [this]() {ChangeNone(); });
-	changeAction_.emplace(ATK_ACT::MOVE, [this]() {ChangeMove(); });
-	changeAction_.emplace(ATK_ACT::DASHMOVE, [this]() {ChangeDashMove(); });
-	changeAction_.emplace(ATK_ACT::INPUT, [this]() {ChangeInput(); });
- 	changeAction_.emplace(ATK_ACT::JUMP, [this]() {ChangeJump(); });
-	changeAction_.emplace(ATK_ACT::PUNCH, [this]() {ChangePunch(); });
-	changeAction_.emplace(ATK_ACT::KNOCKBACK, [this]() {ChangeKnockBack(); });
+	changeAction_.emplace(ACTION_TYPE::NONE, [this]() {ChangeNone(); });
+	changeAction_.emplace(ACTION_TYPE::MOVE, [this]() {ChangeMove(); });
+	changeAction_.emplace(ACTION_TYPE::DASHMOVE, [this]() {ChangeDashMove(); });
+	changeAction_.emplace(ACTION_TYPE::ACTION_INPUT, [this]() {ChangeActionInput(); });
+ 	changeAction_.emplace(ACTION_TYPE::JUMP, [this]() {ChangeJump(); });
+	changeAction_.emplace(ACTION_TYPE::PUNCH, [this]() {ChangePunch(); });
+	changeAction_.emplace(ACTION_TYPE::KNOCKBACK, [this]() {ChangeKnockBack(); });
 
 	//エフェクト
 	effect_ = std::make_unique<EffectController>();
@@ -45,8 +48,6 @@ PlayerAction::PlayerAction(Player& _player, SceneManager& _scnMng, AnimationCont
 	//移動関連
 	moveSpd_ = MOVE_SPEED;
 	dashSpd_ = DASH_SPEED;
-
-	effectArrayNum_ = 0.0f;
 
 	dashSeCnt_ = 0.0f;
 
@@ -94,11 +95,9 @@ void PlayerAction::Init(void)
 	punchedCnt_ = PUNCHED_TIME;
 
 
-	effectArrayNum_ = 0.0f;
 
 
-
-	//エフェクトの追加(タイトルシーンで生き返るため初期処理でかく)
+	//エフェクトの追加(タイトルシーンで生き返るため初期処理でする)
 	auto& res = ResourceManager::GetInstance();
 	effect_->Add(res.Load(ResourceManager::SRC::DASH_EFF).handleId_, EffectController::EFF_TYPE::DASH);
 	effect_->Add(res.Load(ResourceManager::SRC::JUMP_EFF).handleId_, EffectController::EFF_TYPE::JUMP);
@@ -113,8 +112,8 @@ void PlayerAction::Init(void)
 	{
 		cameraNo_ = player_.GetPlayerNum();
 	}
-	act_ = ATK_ACT::INPUT;
-	ChangeAction(ATK_ACT::NONE);
+	act_ = ACTION_TYPE::ACTION_INPUT;
+	ChangeAction(ACTION_TYPE::NONE);
 }
 
 
@@ -126,8 +125,6 @@ void PlayerAction::Load(void)
 	actSE_.emplace(ACT_SE::PUNCH, SoundManager::SRC::PLAYER_PUNCH_MOTION);
 	actSE_.emplace(ACT_SE::SLIME, SoundManager::SRC::SLIME_SE);
 	actSE_.emplace(ACT_SE::PUNCH_HIT, SoundManager::SRC::PLAYER_PUNCH_HIT);
-
-
 }
 
 void PlayerAction::Update(void)
@@ -160,55 +157,55 @@ void PlayerAction::DrawDebug(void)
 	DrawFormatString(0, 300, 0x000000, "dir(%f,%f,%f)", dir.x, dir.y, dir.z);
 }
 
-void PlayerAction::NoneUpdate(void)
+void PlayerAction::UpdateNone(void)
 {
 	//何もしない(初期位置に落ちているときは操作を受け付けない)
 	if (player_.GetIsLandHit())
 	{
-		ChangeAction(ATK_ACT::INPUT);
+		ChangeAction(ACTION_TYPE::ACTION_INPUT);
 		return;
 	}
 }
 
 void PlayerAction::ChangeNone(void)
 {
-	actionUpdate_ = [this]() {NoneUpdate(); };
+	actionUpdate_ = [this]() {UpdateNone(); };
 }
 
-void PlayerAction::ActionInputUpdate(void)
+void PlayerAction::UpdateActionInput(void)
 {
 	//入力に応じてアクションを変える
 	using ACT_CNTL = PlayerInput::ACT_CNTL;
 	if (input_->CheckAct(ACT_CNTL::MOVE))
 	{
-		ChangeAction(ATK_ACT::MOVE);
+		ChangeAction(ACTION_TYPE::MOVE);
 		return;
 	}
 	if (input_->CheckAct(ACT_CNTL::DASHMOVE))
 	{
-		ChangeAction(ATK_ACT::DASHMOVE);
+		ChangeAction(ACTION_TYPE::DASHMOVE);
 		return;
 	}
 	if (input_->CheckAct(ACT_CNTL::PUNCH))
 	{
-		ChangeAction(ATK_ACT::PUNCH);
+		ChangeAction(ACTION_TYPE::PUNCH);
 		return;
 	}
 	if (CheckJumpInput())
 	{
-		ChangeAction(ATK_ACT::JUMP);
+		ChangeAction(ACTION_TYPE::JUMP);
 		return;
 	}
 }
 
-void PlayerAction::ChangeAction(ATK_ACT _act)
+void PlayerAction::ChangeAction(ACTION_TYPE _act)
 {
 	if (act_ == _act)return;
 	act_ = _act;
 	changeAction_[act_]();
  }
 
-void PlayerAction::ChangeInput(void)
+void PlayerAction::ChangeActionInput(void)
 {
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::IDLE));
 	isJump_ = false;
@@ -219,39 +216,39 @@ void PlayerAction::ChangeInput(void)
 	}
 
 	SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
-	actionUpdate_ = std::bind(&PlayerAction::ActionInputUpdate, this);
+	actionUpdate_ = std::bind(&PlayerAction::UpdateActionInput, this);
 }
 
 
 
-void PlayerAction::MoveUpdate(void)
+void PlayerAction::UpdateMove(void)
 {
-	Speed();
+	DesideSpeed();
 	//移動中に入力が入った時の状態遷移
 	if (CheckJumpInput())
 	{
-		ChangeAction(ATK_ACT::JUMP);
+		ChangeAction(ACTION_TYPE::JUMP);
 		return;
 	}
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
 	{
-		ChangeAction(ATK_ACT::MOVE);
+		ChangeAction(ACTION_TYPE::MOVE);
 	}
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
 	{
-		ChangeAction(ATK_ACT::DASHMOVE);
+		ChangeAction(ACTION_TYPE::DASHMOVE);
 	}
 	else if (input_->CheckAct(PlayerInput::ACT_CNTL::PUNCH))
 	{
 		speed_ = 0.0f;
-		ChangeAction(ATK_ACT::PUNCH);
+		ChangeAction(ACTION_TYPE::PUNCH);
 		return;
 	}
 	else if (!input_->CheckAct(PlayerInput::ACT_CNTL::MOVE)
 		&&!input_->CheckAct(PlayerInput::ACT_CNTL::DASHMOVE))
 	{
 		speed_ = 0.0f;
-		ChangeAction(ATK_ACT::INPUT);
+		ChangeAction(ACTION_TYPE::ACTION_INPUT);
 		return;
 	}
 
@@ -263,7 +260,7 @@ void PlayerAction::MoveUpdate(void)
 	animationController_.SetAnimSpeed(animationSpeed);
 
 	//ダッシュカウント
-	if (act_ == ATK_ACT::DASHMOVE)
+	if (act_ == ACTION_TYPE::DASHMOVE)
 	{
 		if (dashSeCnt_ >= DASH_SE_TIME)
 		{
@@ -300,19 +297,19 @@ void PlayerAction::MoveDirFronInput(void)
 void PlayerAction::ChangeMove(void)
 {
 	speed_ = moveSpd_;
+	//アニメーションの再生
 	animationController_.Play(static_cast<int>(Player::ANIM_TYPE::WALK));
 	if (player_.GetIsSlimeFloor())
 	{
 		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
 	}
-
+	//エフェクトの取得
 	int effNum = effect_->GetPlayNum(EffectController::EFF_TYPE::DASH);
 	for (int i = 0; i < effNum; i++)
 	{
 		effect_->Delete(EffectController::EFF_TYPE::DASH, i);
 	}
-
-	actionUpdate_ = std::bind(&PlayerAction::MoveUpdate, this);
+	actionUpdate_ = std::bind(&PlayerAction::UpdateMove, this);
 }
 
 void PlayerAction::ChangeDashMove(void)
@@ -330,7 +327,7 @@ void PlayerAction::ChangeDashMove(void)
 		SoundManager::GetInstance().Stop(actSE_[ACT_SE::DASH]);
 		SoundManager::GetInstance().Play(actSE_[ACT_SE::SLIME], SoundManager::PLAYTYPE::BACK);
 	}
-	actionUpdate_ = [this]() {MoveUpdate(); };
+	actionUpdate_ = [this]() {UpdateMove(); };
 }
 
 
@@ -343,8 +340,9 @@ void PlayerAction::UpdateMoveDirAndPow(void)
 	movePow_ = VScale(moveDir_, speed_);
 }
 
-void PlayerAction::Speed(void)
+void PlayerAction::DesideSpeed(void)
 {
+	//入力によってスピードを決める
 	if (input_->CheckAct(PlayerInput::ACT_CNTL::MOVE))
 	{
 		speed_ = moveSpd_;
@@ -365,10 +363,10 @@ void PlayerAction::Speed(void)
 	}
 }
 
-void PlayerAction::JumpUpdate(void)
+void PlayerAction::UpdateJump(void)
 {
 	//移動入力があったらスピードセット
-	Speed();
+	DesideSpeed();
 	//ジャンプ処理
 	Jump();
 }
@@ -416,7 +414,7 @@ void PlayerAction::Jump(void)
 
 		//動いていた場合の移動量リセット
 		speed_ = 0.0f;
-		ChangeAction(ATK_ACT::INPUT);
+		ChangeAction(ACTION_TYPE::ACTION_INPUT);
 		return;
 	}
 }
@@ -426,7 +424,7 @@ void PlayerAction::ChangeJump(void)
 	//ジャンプ関係
   	isJump_ = true;
 	stepJump_ = 0.0f;
-	jumpDeceralation_ = jumpDecelMax_ + player_.GetSpringJumpPow();
+	jumpDeceralation_ = jumpDecelMax_+player_.GetSpringJumpPow();
 	//プレイヤーの情報
 	Transform trans = player_.GetTransform();
 	//エフェクトのスケール
@@ -447,7 +445,7 @@ void PlayerAction::ChangeJump(void)
 	player_.KillPunchCol();
 
 	//状態遷移
-	actionUpdate_ = [this]() {JumpUpdate(); };
+	actionUpdate_ = [this]() {UpdateJump(); };
 }
 
 bool PlayerAction::CheckJumpInput(void)
@@ -455,7 +453,7 @@ bool PlayerAction::CheckJumpInput(void)
 	return input_->CheckAct(PlayerInput::ACT_CNTL::JUMP);
 }
 
-void PlayerAction::Punch(void)
+void PlayerAction::UpdatePunch(void)
 {
 	//プレイヤーの手の座標を設定する
 	punchPos_ = MV1GetFramePosition(player_.GetTransform().modelId, HAND_FRAME_NUM);
@@ -481,7 +479,7 @@ void PlayerAction::Punch(void)
 	{
 		//パンチクールタイムセット
 		punchCoolCnt_ = PUNCH_COOL_TIME;
-		ChangeAction(ATK_ACT::INPUT);
+		ChangeAction(ACTION_TYPE::ACTION_INPUT);
 	}
 }
 
@@ -494,10 +492,10 @@ void PlayerAction::ChangePunch(void)
 
 	SoundManager::GetInstance().Play(actSE_[ACT_SE::PUNCH], SoundManager::PLAYTYPE::BACK);
 
-	actionUpdate_ = [this]() {Punch(); };
+	actionUpdate_ = [this]() {UpdatePunch(); };
 }
 
-void PlayerAction::KnockBack(void)
+void PlayerAction::UpdateKnockBack(void)
 {
 	//カウントの減算
 	punchedCnt_ -= scnMng_.GetDeltaTime();
@@ -509,7 +507,7 @@ void PlayerAction::KnockBack(void)
 	{
 		punchedCnt_ = PUNCHED_TIME;
 		speed_ = 0.0f;
-		ChangeAction(ATK_ACT::INPUT);
+		ChangeAction(ACTION_TYPE::ACTION_INPUT);
 	}
 }
 
@@ -527,10 +525,10 @@ void PlayerAction::ChangeKnockBack(void)
 	player_.KillPunchCol();
 	stepJump_ = 0.0f;
 	jumpDeceralation_ = jumpDecelMax_;
-	actionUpdate_ = [this]() {KnockBack(); };
+	actionUpdate_ = [this]() {UpdateKnockBack(); };
 }
 
-VECTOR PlayerAction::AddPosRotate(VECTOR _followPos, Quaternion _followRot, VECTOR _localPos)
+VECTOR PlayerAction::AddPosRotate(const VECTOR _followPos, const Quaternion _followRot, const VECTOR _localPos)
 {
 	//座標回転
 	VECTOR addPos = _followRot.PosAxis(_localPos);
@@ -567,8 +565,9 @@ void PlayerAction::SetGoalRotate(double _deg)
 	 //現在設定されている回転との角度差を取る
 	double angleDiff = Quaternion::Angle(axis, goalQuaRot_);
 
+	//しきい値
 	constexpr float ANGLE_THRESHOLD = 0.1;
-	// しきい値
+	// 角度がしきい値を上回ったら
 	if (angleDiff > ANGLE_THRESHOLD)
 	{
 		stepRotTime_ = TIME_ROT;

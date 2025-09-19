@@ -36,7 +36,6 @@ void PlayerInput::Update(void)
 void PlayerInput::InputAll(void)
 {
 	auto& ins = KeyConfig::GetInstance();
-	using ATK_ACT = Player::ATK_ACT;
 	actCntl_ = ACT_CNTL::NONE;
 	//移動入力処理
 	//キーボード
@@ -66,7 +65,6 @@ void PlayerInput::InputAll(void)
 void PlayerInput::InputPad(void)
 {
 	auto& ins = KeyConfig::GetInstance();
-	using ATK_ACT = Player::ATK_ACT;
 	actCntl_ = ACT_CNTL::NONE;
 	//パッドの移動入力処理
 	PadMove();

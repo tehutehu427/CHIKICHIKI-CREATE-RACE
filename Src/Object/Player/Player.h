@@ -2,7 +2,7 @@
 #include <map>
 #include <functional>
 #include "../Object/item/ItemBase.h"
-#include"./Process/PlayerInput.h"
+#include"./PlayerInput.h"
 #include"./PlayerAction.h"
 #include "../ObjectBase.h"
 #include"../../Common/Vector2.h"
@@ -41,17 +41,6 @@ public:
 	//残機
 	static constexpr float RESPAWN_CNT = 1;
 
-
-	enum class ATK_ACT
-	{
-		NONE,		//何もなし
-		INPUT,		//入力
-		MOVE,		//移動
-		PUNCH,		//パンチ
-		KNOCKBACK,	//パンチされた状態
-		JUMP		//ジャンプ	
-	};
-
 	//プレイヤーの生存状態
 	enum class PLAYER_STATE
 	{
@@ -74,7 +63,6 @@ public:
 		LAND=14,			//着地
 	};
 
-	
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -301,6 +289,7 @@ private:
 	//アウトライン
 	std::unique_ptr<ModelMaterial> material_;	//マテリアル
 	std::unique_ptr<ModelRenderer> renderer_;	//レンダラ
+
 	//影
 	std::unique_ptr<Shadow>shadow_;
 	// アニメーション
@@ -337,9 +326,9 @@ private:
 	void ChangeState(PLAYER_STATE _state);
 
 	//更新系
-	void AliveUpdate(void);		//生存
-	void DeathUpdate(void);		//死亡
-	void GoalUpdate(void);		//ゴール
+	void UpdateAlive(void);		//生存
+	void UpdateDeath(void);		//死亡
+	void UpdateGoal(void);		//ゴール
 
 	//遷移系
 	void ChangeAlive(void);		//生存

@@ -11,6 +11,7 @@ PlayerManager* PlayerManager::instance_ = nullptr;
 
 PlayerManager::PlayerManager(void)
 {
+	imgRespawnHeart_ = -1;
 	playerNum_ = 0;
 }
 

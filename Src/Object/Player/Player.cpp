@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "../../Utility/Utility.h"
 
 #include "../../Manager/Game/GravityManager.h"
@@ -6,30 +7,28 @@
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SoundManager.h"
 #include "../../Manager/System/SceneManager.h"
-#include"../../Manager/System/DateBank.h"
-
+#include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/Camera.h"
+#include "../../Manager/Game/ItemManager.h"
 
 #include "../../Renderer/ModelMaterial.h"
 #include "../../Renderer/ModelRenderer.h"
 
 #include "../../Object/Common/Geometry/Sphere.h"
 #include "../../Object/Common/Geometry/Line.h"
-#include"../../Object/Common/Geometry/Model.h"
-#include"../../Object/Common/EffectController.h"
-
+#include "../../Object/Common/Geometry/Model.h"
+#include "../../Object/Common/EffectController.h"
 #include "../../Object/Common/AnimationController.h"
-#include"../Item/Installation/MoveHoriFloor.h"
-#include"../Item/Installation/MoveVerFloor.h"
-
 #include "../../Object/Editor/EditController.h"
 
-#include "../../Manager/Game/ItemManager.h"
-#include"./PlayerAction.h"
-#include"./PlayerOnHit.h"
-#include "./Process/PlayerInput.h"
+#include "../Item/Installation/MoveHoriFloor.h"
+#include "../Item/Installation/MoveVerFloor.h"
+
+#include "./PlayerAction.h"
+#include "./PlayerOnHit.h"
+#include "./PlayerInput.h"
 #include "./Shadow.h"
-#include<algorithm>
+
 
 
 #include "Player.h"
@@ -42,13 +41,11 @@ Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
 	material_ = nullptr;
 	renderer_ = nullptr;
 
-
 	//初めのJOYPADがkey_padなのでパッドの番号に合わせる
 	//パッド番号を設定
 	padNum_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum_ + 1);
 
-
-	//プレイヤー状態
+	//プレイヤー状態の格納
 	changeStates_.emplace(PLAYER_STATE::ALIVE, [this]() {ChangeAlive();});
 	changeStates_.emplace(PLAYER_STATE::DEATH, [this]() {ChangeDeath(); });
 	changeStates_.emplace(PLAYER_STATE::GOAL, [this]() {ChangeGoal(); });
@@ -84,7 +81,6 @@ void Player::Load(void)
 	action_ = std::make_unique<PlayerAction>(*this, scnMng_, *animationController_);
 	action_->Load();
 
-
 	//影
 	shadow_ = std::make_unique<Shadow>(trans_);
 	shadow_->Load();
@@ -116,7 +112,7 @@ void Player::Init(void)
 	colParam_.clear();
 
 	//コライダ作成
-	//*****************************************************
+	//----------------------------------------------------
 	//接地しているときのライン(床上にとどまっているとき)
 	//Lineを引くための上と下の座標をとる
 	std::unique_ptr<Line>lineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, LOCAL_DOWN_POS, LOCAL_UP_POS);
@@ -129,8 +125,8 @@ void Player::Init(void)
 	//現在の座標と移動後座標を結んだ線のコライダ(落下時の当たり判定)
 	std::unique_ptr<Line>moveLineGeo = std::make_unique<Line>(trans_.pos,trans_.quaRot, Utility::VECTOR_ZERO,Utility::VECTOR_ZERO);
 	MakeCollider({ tag_ }, std::move(moveLineGeo));
-	//*****************************************************
-
+	//----------------------------------------------------
+	
 	//Transformの設定
 	trans_.quaRot = Quaternion();
 	trans_.scl = MODEL_SCL;
@@ -138,33 +134,21 @@ void Player::Init(void)
 		Quaternion::Euler({ 0.0f, Utility::Deg2RadF(MODEL_LOCAL_DEG), 0.0f });
 	trans_.localPos = { 0.0f,-Player::RADIUS,0.0f };
 
-
-
-
 	//生存状態
 	ChangeState(PLAYER_STATE::ALIVE);
-
 	time_ = 0.0f;
-
 	action_->Init();
-
 	goalTime_ = 0.0f;
-
 	finishDelay_ = 0.0f;
-
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-
 	//バッファー設定
 	material_->AddConstBufVS(FLOAT4{ 3.0f,0.0f,0.0f ,0.0f });	//輪郭線太さ
 	material_->AddConstBufPS(FLOAT4{ 0.0f,0.0f,0.0f ,1.0f });	//輪郭線カラー
-
 	//当たり判定
 	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_,tag_);
 	onHitCol_->Init();
-
 	//更新
 	trans_.Update();
-
 	shadow_->Init();
 }
 
@@ -172,9 +156,6 @@ void Player::Update(void)
 {
 	animationController_->Update();
 	shadow_->Update();
-#ifdef DEBUG_ON
-	//CubeMove();
-#endif // DEBUG_ON
 
 	//プレイヤー状態更新
 	stateUpdate_();
@@ -188,7 +169,9 @@ void Player::Update(void)
 
 void Player::Draw(void)
 {
+	//死んだら描画しない
 	if (IsDeath())return;
+
 	//モデル描画のZBufferを無効にする
 	MV1SetWriteZBuffer(trans_.modelId, false);
 
@@ -259,9 +242,9 @@ void Player::ChangeState(PLAYER_STATE _state)
 }
 void Player::ChangeAlive(void)
 {
-	stateUpdate_ = [this]() {AliveUpdate(); };
+	stateUpdate_ = [this]() {UpdateAlive(); };
 }
-void Player::AliveUpdate(void)
+void Player::UpdateAlive(void)
 {
 	//奈落に落ちたら死に状態へ遷移
 	if (trans_.pos.y <= DEATH_POS_Y || onHitCol_->GetIsDeath())
@@ -285,15 +268,23 @@ void Player::AliveUpdate(void)
 }
 void Player::ChangeDeath(void)
 {
+	//ゴールしてないときは-1を代入
 	goalTime_ = -1;
+
+	//パンチの当たり判定の消去
 	KillPunchCol();
+
+	//プレイヤーの当たり判定を全消去
 	for (auto& col : colParam_)
 	{
 		col.collider_->Kill();
 	}
-	colParam_.clear();
-	action_->StopResource();
 
+	//配列クリア
+	colParam_.clear();
+
+	action_->StopResource();
+	//リスポーンカウントがあった場合、リスポーンする
 	if (respawnCnt_ > 0)
 	{
 		float SCL = 50.0f;
@@ -310,20 +301,21 @@ void Player::ChangeDeath(void)
 	//パッド振動
 	KeyConfig::GetInstance().PadVibration(padNum_, DEATH_PAD_VIBRATION_TIME, DEATH_PAD_VIBRATION_POW);
 
-	stateUpdate_ = [this]() {DeathUpdate(); };
+	stateUpdate_ = [this]() {UpdateDeath(); };
 }
-void Player::DeathUpdate(void)
+void Player::UpdateDeath(void)
 {
 	//死んだ時の処理
 	//終了からの遅延時間を計測
 	finishDelay_ += scnMng_.GetInstance().GetDeltaTime();
-	//アニメーションループ
-	//落ちているアニメーション再生
+
+	//落ちているアニメーションをループ再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::FALL), true);
 	if (animationController_->GetAnimStep() >= FALL_ANIM_START)
 	{
 		animationController_->SetEndLoop(FALL_ANIM_START, FALL_ANIM_END, DEFAULT_ANIM_SPD);
 	}
+
 	//残機があればリスポーン
 	if (respawnCnt_ > 0)
 	{
@@ -334,9 +326,6 @@ void Player::DeathUpdate(void)
 		}
 		return;
 	}
-	
-
-
 }
 void Player::ChangeGoal(void)
 {
@@ -348,10 +337,9 @@ void Player::ChangeGoal(void)
 	}
 	colParam_.clear();
 	action_->StopResource();
-	stateUpdate_ = [this]() {GoalUpdate(); };
-
+	stateUpdate_ = [this]() {UpdateGoal(); };
 }
-void Player::GoalUpdate(void)
+void Player::UpdateGoal(void)
 {
 	//終了からの遅延時間を計測
 	finishDelay_ += scnMng_.GetInstance().GetDeltaTime();
@@ -368,7 +356,7 @@ void Player::Action(void)
 	if (IsDeath())
 	{
 		//何もできないようにする
-		action_->ChangeAction(PlayerAction::ATK_ACT::NONE);
+		action_->ChangeAction(PlayerAction::ACTION_TYPE::NONE);
 	}
 }
 
@@ -461,7 +449,6 @@ void Player::KillPunchCol(void)
 {
 	//事前に配列のサイズを取得する
 	auto ParamSize = colParam_.size();
-
 	for (int i = 0; i < ParamSize; i++)
 	{
 		auto tags = colParam_[i].collider_->GetTags();
@@ -486,6 +473,7 @@ void Player::Respawn(void)
 	Init();
 	//リスポーン処理
 	SetPos(respawnPos_);
+	//移動後座標の更新
 	onHitCol_->SetMovedPos(respawnPos_);
 	//リスポーンカウントを１減らす
 	respawnCnt_--;
