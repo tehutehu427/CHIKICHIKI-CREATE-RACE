@@ -141,7 +141,7 @@ void PlayerInput::PadMove(void)
 		stickDeg_ = ins.GetLStickDeg(padNum_);
 		//スティックの角度によって移動方向を決める
 		moveDeg_ = stickDeg_;
-		VECTOR stickDir = { LStickAngleSize_.x ,0.0f,-LStickAngleSize_.y };
+		VECTOR stickDir = { static_cast<float>(LStickAngleSize_.x) ,0.0f,static_cast<float>(-LStickAngleSize_.y) };
 		moveDir_ = VNorm(stickDir);
 	}
 }

@@ -558,15 +558,14 @@ void PlayerAction::SetGoalRotate(double _deg)
 {
 	//ƒJƒƒ‰‚ÌŠp“x‚ðŽæ“¾
 	VECTOR cameraRot = scnMng_.GetCamera(cameraNo_).lock()->GetAngles();
-	Quaternion axis = Quaternion::AngleAxis(
-		(double)cameraRot.y + Utility::Deg2RadF(_deg), Utility::AXIS_Y);
+	Quaternion axis = Quaternion::AngleAxis(cameraRot.y + Utility::Deg2RadD(_deg), Utility::AXIS_Y);
 
 
 	 //Œ»ÝÝ’è‚³‚ê‚Ä‚¢‚é‰ñ“]‚Æ‚ÌŠp“x·‚ðŽæ‚é
 	double angleDiff = Quaternion::Angle(axis, goalQuaRot_);
 
 	//‚µ‚«‚¢’l
-	constexpr float ANGLE_THRESHOLD = 0.1;
+	const double ANGLE_THRESHOLD = 0.1;
 	// Šp“x‚ª‚µ‚«‚¢’l‚ðã‰ñ‚Á‚½‚ç
 	if (angleDiff > ANGLE_THRESHOLD)
 	{
