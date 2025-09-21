@@ -12,6 +12,7 @@ class YesNoResponder;
 
 class MapDataIO
 {
+
 public:
 
 	//フォントサイズ
@@ -42,38 +43,38 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~MapDataIO();
+	~MapDataIO(void);
 
 	/// <summary>
 	/// 読みこみ
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(void);
 	
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// エディットに制限を掛ける
 	/// </summary>
 	/// <returns>制限中はtrue,　それ以外はfalse</returns>
-	const bool IsEdit() const;
+	const bool IsEdit(void) const;
 
 	/// <summary>
 	/// リセット
 	/// </summary>
-	void Reset();
+	void Reset(void);
 
 private:	
 
@@ -83,12 +84,33 @@ private:
 	//マルチステージ種類
 	static constexpr int MULTI_STAGE_TYPES = 4;
 
+	//メッセージの拡大率
+	static constexpr float MESSAGE_RATE = 0.7f;	
+
+	//終了メッセージの拡大率
+	static constexpr float FINISH_MESSAGE_RATE = 2.0f;
+
 	//カーソル座標
 	const Vector2& padCursorPos_;
 
 	//メッセージ画像インデックス
 	static constexpr int IMG_EXPORT_INDEX = 0;	//出力
-	static constexpr int IMG_IMPORT_INDEX = 1;	//入力
+	static constexpr int IMG_IMPORT_INDEX = 1;	//入力	
+	
+	// 状態ごとの構造体（更新と描画を分けて保持）
+	struct StateFuncs
+	{
+		std::function<void(void)> updateFunc;
+		std::function<void(void)> drawFunc;
+	};
+
+	//入力データ
+	struct ImportData
+	{
+		std::vector<VECTOR> positions;
+		std::vector<VECTOR> rotations;
+		std::vector<Quaternion> quaternions;
+	};
 
 	//画像関係 
 	int imgSave_;	//セーブ
@@ -107,21 +129,6 @@ private:
 	//システムメッセージ画像用インデックス
 	int systemMessageIndex_;
 	
-	// 状態ごとの構造体（更新と描画を分けて保持）
-	struct StateFuncs
-	{
-		std::function<void()> updateFunc;
-		std::function<void()> drawFunc;
-	};
-
-	//入力データ
-	struct ImportData
-	{
-		std::vector<VECTOR> positions;
-		std::vector<VECTOR> rotations;
-		std::vector<Quaternion> quaternions;
-	};
-
 	//入出力確認用ステップ
 	int checkStep_;
 
@@ -151,16 +158,16 @@ private:
 	void ChangeState(const STATE _state) { state_ = _state; }
 
 	//状態別更新
-	void UpdateWait();
-	void UpdateCheckExport();
-	void UpdateCheckImport();
+	void UpdateWait(void);
+	void UpdateCheckExport(void);
+	void UpdateCheckImport(void);
 	void UpdateFinish();
 
 	//状態別描画
-	void DrawWait();
-	void DrawCheckExport();
-	void DrawCheckImport();
-	void DrawFinish();
+	void DrawWait(void);
+	void DrawCheckExport(void);
+	void DrawCheckImport(void);
+	void DrawFinish(void);
 
 	//ファイルを読み込んでboolで返す
 	bool ReadFileBool(std::string &_file);
@@ -169,21 +176,19 @@ private:
 	void ExportJsonFile(const std::string _fileName);
 
 	//JSONファイルを読み込む
-	void ImportJsonFile();
+	void ImportJsonFile(void);
 
 	//出力を行うトリガーの条件を満たしたか
-	bool IsTriggerExport() const;
+	bool IsTriggerExport(void) const;
 
 	//入力を行うトリガーの条件を満たしたか
-	bool IsTriggerImport() const;
+	bool IsTriggerImport(void) const;
 
 	//JSONからアイテム種類ごとに座標を読み込む
 	std::unordered_map<ItemBase::ITEM_TYPE, ImportData> LoadItemsFromJson(const std::string& _filepath);
 
 	//ファイルネームを取得
-	std::string GetFreeFileName();
-	std::string GetSoloFileName();
-	std::string GetMultiFileName();
-
-
+	std::string GetFreeFileName(void);
+	std::string GetSoloFileName(void);
+	std::string GetMultiFileName(void);
 };

@@ -28,11 +28,11 @@ EditorPaletteBase::EditorPaletteBase(std::vector<std::unique_ptr<EditController>
 	state_ = STATE::NONE;
 }
 
-EditorPaletteBase::~EditorPaletteBase()
+EditorPaletteBase::~EditorPaletteBase(void)
 {
 }
 
-void EditorPaletteBase::Load()
+void EditorPaletteBase::Load(void)
 {
 	//リソースの読み込み
 	ResourceManager& res = ResourceManager::GetInstance();
@@ -50,7 +50,7 @@ void EditorPaletteBase::Load()
 	LoadSounds();
 }
 
-void EditorPaletteBase::Init()
+void EditorPaletteBase::Init(void)
 {
 	//パレット
 	pal_->Init();
@@ -63,12 +63,12 @@ void EditorPaletteBase::Init()
 	ChangeState(STATE::WAIT);
 }
 
-void EditorPaletteBase::Update()
+void EditorPaletteBase::Update(void)
 {
 	stateUpdate_();
 }
 
-void EditorPaletteBase::Draw()
+void EditorPaletteBase::Draw(void)
 {
 	//パレット
 	pal_->Draw();
@@ -77,7 +77,7 @@ void EditorPaletteBase::Draw()
 	palIcon_->Draw();
 }
 
-void EditorPaletteBase::DebagDraw()
+void EditorPaletteBase::DebagDraw(void)
 {
 #ifdef _DEBUG
 	palIcon_->DebagDraw();
@@ -96,17 +96,17 @@ void EditorPaletteBase::ChangeState(const STATE _state)
 	stateChanges_[state_]();
 }
 
-void EditorPaletteBase::ChangeStateNone()
+void EditorPaletteBase::ChangeStateNone(void)
 {
 	stateUpdate_ = std::bind(&EditorPaletteBase::UpdateNone, this);
 }
 
-void EditorPaletteBase::ChangeStateWait()
+void EditorPaletteBase::ChangeStateWait(void)
 {
 	stateUpdate_ = std::bind(&EditorPaletteBase::UpdateWait, this);	
 }
 
-void EditorPaletteBase::ChangeStateSelect()
+void EditorPaletteBase::ChangeStateSelect(void)
 {
 	stateUpdate_ = std::bind(&EditorPaletteBase::UpdateSelect, this);
 
@@ -114,7 +114,7 @@ void EditorPaletteBase::ChangeStateSelect()
 	palIcon_->ChangeState(PaletteIcon::STATE::SELCT);
 }
 
-void EditorPaletteBase::ChangeStatePaletteAnim()
+void EditorPaletteBase::ChangeStatePaletteAnim(void)
 {
 	stateUpdate_ = std::bind(&EditorPaletteBase::UpdatePaletteAnim, this);
 
@@ -122,12 +122,12 @@ void EditorPaletteBase::ChangeStatePaletteAnim()
 	palIcon_->ChangeState(PaletteIcon::STATE::NONE);
 }
 
-void EditorPaletteBase::UpdateNone()
+void EditorPaletteBase::UpdateNone(void)
 {
 	//処理はなし
 }
 
-void EditorPaletteBase::UpdateWait()
+void EditorPaletteBase::UpdateWait(void)
 {
 	KeyConfig& ins = KeyConfig::GetInstance();
 	
@@ -144,7 +144,7 @@ void EditorPaletteBase::UpdateWait()
 	}
 }
 
-void EditorPaletteBase::UpdateSelect()
+void EditorPaletteBase::UpdateSelect(void)
 {	
 	KeyConfig& ins = KeyConfig::GetInstance();
 
@@ -190,7 +190,7 @@ void EditorPaletteBase::UpdateSelect()
 	}
 }
 
-void EditorPaletteBase::UpdatePaletteAnim()
+void EditorPaletteBase::UpdatePaletteAnim(void)
 {
 	//前状態を保持
 	Palette::STATE preState = pal_->GetState();
@@ -223,7 +223,7 @@ void EditorPaletteBase::UpdatePaletteAnim()
 	}
 }
 
-void EditorPaletteBase::LoadSounds()
+void EditorPaletteBase::LoadSounds(void)
 {
 	SoundManager& sndMng = SoundManager::GetInstance();
 	sndMng.LoadResource(SoundManager::SRC::PALETTE_OPEN);

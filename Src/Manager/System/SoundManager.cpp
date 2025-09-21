@@ -5,7 +5,7 @@
 
 SoundManager* SoundManager::instance_ = nullptr;
 
-SoundManager::SoundManager()
+SoundManager::SoundManager(void)
 {  
 	// ‰¹—Ê‚Ì‰Šú‰»
 	for (int i = 0; i < TYPE_MAX; ++i)
@@ -14,7 +14,7 @@ SoundManager::SoundManager()
 	}
 }
 
-SoundManager::~SoundManager()
+SoundManager::~SoundManager(void)
 {
 }
 
@@ -33,7 +33,7 @@ SoundManager& SoundManager::GetInstance(void)
     return *instance_;
 }
 
-void SoundManager::Destroy()
+void SoundManager::Destroy(void)
 {
     Release();
 	resourcesMap_.clear();
@@ -44,7 +44,7 @@ void SoundManager::Destroy()
     }
 }
 
-void SoundManager::Release()
+void SoundManager::Release(void)
 {
     for (auto& p : loadedMap_)
     {
@@ -54,7 +54,7 @@ void SoundManager::Release()
     loadedMap_.clear();
 }
 
-void SoundManager::Init()
+void SoundManager::Init(void)
 {
     SoundResource res = { -1, TYPE::BGM,"" };
 	std::string path_Bgm = Application::PATH_SOUND_BGM;
@@ -204,7 +204,7 @@ const bool SoundManager::LoadResource(const SRC _src)
 void SoundManager::Play(const SRC _src, const PLAYTYPE _playType)
 {
 	//‰¹Œ¹‚ª“Ç‚İ‚Ü‚ê‚Ä‚¢‚È‚¢ê‡‚ÍƒGƒ‰[
-	assert(loadedMap_[_src].handleId != -1, "‰¹Œ¹‚ª“Ç‚İ‚Ü‚ê‚Ä‚È‚¢‚Å‚·");
+	assert(loadedMap_[_src].handleId != -1&& "‰¹Œ¹‚ª“Ç‚İ‚Ü‚ê‚Ä‚È‚¢‚Å‚·");
 
     //‰¹Œ¹‚ªÄ¶Ï‚İ‚©’²‚×‚é
 	if (CheckSoundMem(loadedMap_[_src].handleId) == 1 &&

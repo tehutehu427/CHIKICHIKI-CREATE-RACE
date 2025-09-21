@@ -7,17 +7,17 @@
 #include "../../Manager/System/SceneManager.h"
 #include "../../Utility/Utility.h"
 
-MultiInputCheck::MultiInputCheck() : key_(KeyConfig::GetInstance())
+MultiInputCheck::MultiInputCheck(void) : key_(KeyConfig::GetInstance())
 {
 	players_.clear();
 	imgOk_ = -1;
 }
 
-MultiInputCheck::~MultiInputCheck()
+MultiInputCheck::~MultiInputCheck(void)
 {
 }
 
-void MultiInputCheck::Load()
+void MultiInputCheck::Load(void)
 {
 	//リソースの読み込み
 	ResourceManager& res = ResourceManager::GetInstance();
@@ -27,12 +27,12 @@ void MultiInputCheck::Load()
 	sndMng.LoadResource(SoundManager::SRC::CHICKEN_SE_3);
 }
 
-void MultiInputCheck::Init()
+void MultiInputCheck::Init(void)
 {
 	Reset();
 }
 
-void MultiInputCheck::Update()
+void MultiInputCheck::Update(void)
 {
 	SoundManager& sndMng = SoundManager::GetInstance();
 
@@ -69,7 +69,7 @@ void MultiInputCheck::Update()
 	}
 }
 
-void MultiInputCheck::Draw()
+void MultiInputCheck::Draw(void)
 {
 	for (auto& player : players_)
 	{
@@ -86,27 +86,30 @@ void MultiInputCheck::Draw()
 	}
 }
 
-void MultiInputCheck::Reset()
+void MultiInputCheck::Reset(void)
 {
+	//Y座標の調整
+	constexpr int OFFSET_Y = 100;
+
 	//人数を取得
-	const int playerNum = DateBank::GetInstance().GetPlayerNum();
+	const int PLAYER_NUM = DateBank::GetInstance().GetPlayerNum();
 
 	//中身がある場合削除する
 	if (!players_.empty()) { players_.clear(); }
 
 	//リサイズ
 	PlayerCheckInput p;
-	players_.resize(playerNum, p);
+	players_.resize(PLAYER_NUM, p);
 
 	//座標設定
-	for (int i = 0; i < playerNum; i++)
+	for (int i = 0; i < PLAYER_NUM; i++)
 	{
-		players_[i].uiPos.x = Application::SCREEN_SIZE_X / (playerNum + 1) * (i + 1);
-		players_[i].uiPos.y = Application::SCREEN_SIZE_Y - 100;
+		players_[i].uiPos.x = Application::SCREEN_SIZE_X / (PLAYER_NUM + 1) * (i + 1);
+		players_[i].uiPos.y = Application::SCREEN_SIZE_Y - OFFSET_Y;
 	}
 }
 
-bool MultiInputCheck::IsAllInput()
+bool MultiInputCheck::IsAllInput(void)
 {
 	//空の場合はfalse
 	if (players_.empty()) { return false; }
@@ -120,7 +123,7 @@ bool MultiInputCheck::IsAllInput()
 	return true;
 }
 
-void MultiInputCheck::ResetInput()
+void MultiInputCheck::ResetInput(void)
 {
 	for (auto& player : players_)
 	{

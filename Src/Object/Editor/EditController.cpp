@@ -14,12 +14,12 @@
 #include "EditItemReady.h"
 #include "EditController.h"
 
-EditController::EditController(int playerNum)
+EditController::EditController(int _playerNum)
 {
 	ready_ = std::make_unique<EditItemReady>(*this);
-	playerNum_ = playerNum;
+	playerNum_ = _playerNum;
 	playerMaxNum_ = DateBank::GetInstance().GetPlayerNum();
-	padNum_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum + 1);
+	padNum_ = static_cast<KeyConfig::JOYPAD_NO>(_playerNum + 1);
 	mousePos_ = Vector2();
 	screenSize_ = playerMaxNum_ == 1 ?Vector2(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y) :
 		playerMaxNum_ == 2 ? Vector2(Application::SCREEN_HALF_X, Application::SCREEN_SIZE_Y) : 
@@ -41,9 +41,9 @@ EditController::EditController(int playerNum)
 	errorType_ = ERROR_TYPE::NONE;
 	errorStringTime_ = 0.0f;	//エラー文字列の表示時間初期化
 	cameraMode_ = CAMERA_MODE::FREE;
-	cPos_ = SceneManager::GetInstance().GetCamera(playerNum).lock()->GetPos();
-	cAngles_ = SceneManager::GetInstance().GetCamera(playerNum).lock()->GetAngles();
-	cTargetPos_ = SceneManager::GetInstance().GetCamera(playerNum).lock()->GetTargetPos();
+	cPos_ = SceneManager::GetInstance().GetCamera(_playerNum).lock()->GetPos();
+	cAngles_ = SceneManager::GetInstance().GetCamera(_playerNum).lock()->GetAngles();
+	cTargetPos_ = SceneManager::GetInstance().GetCamera(_playerNum).lock()->GetTargetPos();
 
 	SoundManager & sndMng = SoundManager::GetInstance();
 	sndMng.LoadResource(SoundManager::SRC::CLICK_OBJECT_SE);	//オブジェクトをクリック
@@ -51,7 +51,7 @@ EditController::EditController(int playerNum)
 	sndMng.LoadResource(SoundManager::SRC::ERROR_SE);			//エラー
 }
 
-EditController::~EditController()
+EditController::~EditController(void)
 {
 	ready_.reset();
 }
@@ -238,16 +238,16 @@ void EditController::Reset(void)
 	ready_->Init();
 }
 
-void EditController::ChangeMode(MODE mode)
+void EditController::ChangeMode(MODE _mode)
 {
-	if (mode_ != mode)
+	if (mode_ != _mode)
 	{
-		mode_ = mode;
+		mode_ = _mode;
 		modeChanges_[mode_]();
 	}
 }
 
-void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
+void EditController::SetItemType(ItemBase::ITEM_TYPE _itemType)
 {
 	//if (playerMaxNum_ == 1)
 	//{
@@ -262,7 +262,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	//	//カーソル位置を取得
 	//	mousePos_ = cursorPos_;
 	//}
-	if (itemType == ItemBase::ITEM_TYPE::NONE)
+	if (_itemType == ItemBase::ITEM_TYPE::NONE)
 	{
 		if (playerMaxNum_ != 1)
 		{
@@ -291,7 +291,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 	MapEditer::STATUS status;
 	status.mapPos = mapPos_;
 	status.type = itemType_;
-	itemType_ = itemType;
+	itemType_ = _itemType;
 
 	if (itemMIns.GetDummyItemStatus(playerNum_).effType == ItemBase::EFFECT_TYPE::DESTROYER)
 	{
@@ -302,7 +302,7 @@ void EditController::SetItemType(ItemBase::ITEM_TYPE itemType)
 		MapEditer::GetInstance().AddItem(status, itemMIns.GetDummyItemSize(playerNum_), itemMIns.GetDummyItemHitSize(playerNum_), itemMIns.GetDummyItemRotY(playerNum_));
 	}
 	itemMIns.DummyItemAddItems(playerNum_);
-	itemMIns.CreateDummyItem({}, {}, itemType, playerNum_);
+	itemMIns.CreateDummyItem({}, {}, _itemType, playerNum_);
 	IntVector3 mapPos = playerMaxNum_ == 1 ? NearObjectFrontPos({screenSize_.x / 2 , screenSize_.y / 2}) : initMapPos_;
 	Quaternion rot = {};
 	if (mapPos == ERROR_POS)
@@ -402,9 +402,9 @@ int EditController::IsError(void) const
 	return errorType;
 }
 
-void EditController::SetError(int errorType)
+void EditController::SetError(int _errorType)
 {
-	errorType_ = static_cast<ERROR_TYPE>((abs(errorType)));
+	errorType_ = static_cast<ERROR_TYPE>((abs(_errorType)));
 }
 
 void EditController::ChangeModeItemSelect(void)
@@ -581,13 +581,13 @@ void EditController::ItemNotSelect(void)
 	}
 }
 
-IntVector3 EditController::NearObjectFrontPos(Vector2 cursorPos)
+IntVector3 EditController::NearObjectFrontPos(Vector2 _cursorPos)
 {
 	isClickObject_ = false;
 	IntVector3 mapPos = ERROR_POS;
-	VECTOR mousePosNear3D = { static_cast<float>(cursorPos.x),static_cast<float>(cursorPos.y), 0.0f };
+	VECTOR mousePosNear3D = { static_cast<float>(_cursorPos.x),static_cast<float>(_cursorPos.y), 0.0f };
 	VECTOR nearWorldPos = ConvScreenPosToWorldPos(mousePosNear3D);	//近いほうのワールド座標
-	VECTOR mousePosFar3D = { static_cast<float>(cursorPos.x),static_cast<float>(cursorPos.y), 1.0f };
+	VECTOR mousePosFar3D = { static_cast<float>(_cursorPos.x),static_cast<float>(_cursorPos.y), 1.0f };
 	VECTOR farWorldPos = ConvScreenPosToWorldPos(mousePosFar3D);	//遠いほうのワールド座標
 	VECTOR normalmousePos3D = VNorm(VSub(farWorldPos, nearWorldPos));
 	//近いほうをマップの中に入れる
@@ -1070,36 +1070,36 @@ void EditController::DeleteItems(IntVector3 _mapPos, IntVector3 _size, IntVector
 	itemM.DeleteDummyItem(playerNum_);
 }
 
-bool EditController::IsChangeVecDir(const VECTOR vec1, const VECTOR vec2) const
+bool EditController::IsChangeVecDir(const VECTOR _vec1, const VECTOR _vec2) const
 {
-	if (Utility::GetSign(vec1.x) != Utility::GetSign(vec2.x) ||
-		Utility::GetSign(vec1.y) != Utility::GetSign(vec2.y) ||
-		Utility::GetSign(vec1.z) != Utility::GetSign(vec2.z))
+	if (Utility::GetSign(_vec1.x) != Utility::GetSign(_vec2.x) ||
+		Utility::GetSign(_vec1.y) != Utility::GetSign(_vec2.y) ||
+		Utility::GetSign(_vec1.z) != Utility::GetSign(_vec2.z))
 	{
 		return true;
 	}
 	return false;
 }
 
-void EditController::DrawXArrow(VECTOR worldPos, bool isBig)
+void EditController::DrawXArrow(VECTOR _worldPos, bool _isBig)
 {
-	DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_R,isBig?MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), Utility::RED);	//X軸の線
-	//DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE,32, 0x0000ff, 0x0000ff,true);	//X軸の先端
-	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_R, (isBig ? MOVED_ARROW_SIZE : MOVE_ARROW_SIZE) + (isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH))), VAdd(worldPos, VScale(Utility::DIR_R, isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), isBig ? MOVED_ARROW_RADIUS : MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::RED, Utility::RED, true);	//X軸の先端
+	DrawLine3D(_worldPos, VAdd(_worldPos, VScale(Utility::DIR_R,_isBig?MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), Utility::RED);	//X軸の線
+	//DrawSphere3D(VAdd(_worldPos, VScale(Utility::DIR_R, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE,32, 0x0000ff, 0x0000ff,true);	//X軸の先端
+	DrawCone3D(VAdd(_worldPos, VScale(Utility::DIR_R, (_isBig ? MOVED_ARROW_SIZE : MOVE_ARROW_SIZE) + (_isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH))), VAdd(_worldPos, VScale(Utility::DIR_R, _isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), _isBig ? MOVED_ARROW_RADIUS : MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::RED, Utility::RED, true);	//X軸の先端
 }
 
-void EditController::DrawYArrow(VECTOR worldPos, bool isBig)
+void EditController::DrawYArrow(VECTOR _worldPos, bool _isBig)
 {
-	DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_U, isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), Utility::GREEN);	//Y軸の線
-	//DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE, 32, 0x00ff00, 0x00ff00, true);	//Y軸の先端
-	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_U, (isBig ? MOVED_ARROW_SIZE : MOVE_ARROW_SIZE) + (isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH))), VAdd(worldPos, VScale(Utility::DIR_U, isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), isBig ? MOVED_ARROW_RADIUS : MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::GREEN, Utility::GREEN, true);	//Y軸の先端
+	DrawLine3D(_worldPos, VAdd(_worldPos, VScale(Utility::DIR_U, _isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), Utility::GREEN);	//Y軸の線
+	//DrawSphere3D(VAdd(_worldPos, VScale(Utility::DIR_U, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE, 32, 0x00ff00, 0x00ff00, true);	//Y軸の先端
+	DrawCone3D(VAdd(_worldPos, VScale(Utility::DIR_U, (_isBig ? MOVED_ARROW_SIZE : MOVE_ARROW_SIZE) + (_isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH))), VAdd(_worldPos, VScale(Utility::DIR_U, _isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), _isBig ? MOVED_ARROW_RADIUS : MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::GREEN, Utility::GREEN, true);	//Y軸の先端
 }
 
-void EditController::DrawZArrow(VECTOR worldPos, bool isBig)
+void EditController::DrawZArrow(VECTOR _worldPos, bool _isBig)
 {
-	DrawLine3D(worldPos, VAdd(worldPos, VScale(Utility::DIR_F, isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), Utility::BLUE);	//Z軸の線
-	//DrawSphere3D(VAdd(worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE, 32, 0xff0000, 0xff0000, true);	//Z軸の先端
-	DrawCone3D(VAdd(worldPos, VScale(Utility::DIR_F, (isBig ? MOVED_ARROW_SIZE : MOVE_ARROW_SIZE) + (isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH))), VAdd(worldPos, VScale(Utility::DIR_F, isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), isBig ? MOVED_ARROW_RADIUS : MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::BLUE, Utility::BLUE, true);	//Z軸の先端
+	DrawLine3D(_worldPos, VAdd(_worldPos, VScale(Utility::DIR_F, _isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), Utility::BLUE);	//Z軸の線
+	//DrawSphere3D(VAdd(_worldPos, VScale(Utility::DIR_F, MOVE_ARROW_LENGTH)), MOVE_ARROW_SIZE, 32, 0xff0000, 0xff0000, true);	//Z軸の先端
+	DrawCone3D(VAdd(_worldPos, VScale(Utility::DIR_F, (_isBig ? MOVED_ARROW_SIZE : MOVE_ARROW_SIZE) + (_isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH))), VAdd(_worldPos, VScale(Utility::DIR_F, _isBig ? MOVED_ARROW_LENGTH : MOVE_ARROW_LENGTH)), _isBig ? MOVED_ARROW_RADIUS : MOVE_ARROW_RADIUS, MOVE_ARROW_VARTEXNUM, Utility::BLUE, Utility::BLUE, true);	//Z軸の先端
 }
 
 void EditController::SetCameraPosToDummyObject(void) const
@@ -1159,11 +1159,11 @@ void EditController::ChangeCameraMode(void)
 	}
 }
 
-void EditController::ChangeCameraMode(CAMERA_MODE mode)
+void EditController::ChangeCameraMode(CAMERA_MODE _mode)
 {
 	auto& sceneM = SceneManager::GetInstance();
 	auto camera = sceneM.GetCamera(playerNum_).lock();
-	cameraMode_ = mode;
+	cameraMode_ = _mode;
 	const Transform& dummyTran = ItemManager::GetInstance().GetDummyItemTransform(playerNum_);
 	switch (cameraMode_)
 	{

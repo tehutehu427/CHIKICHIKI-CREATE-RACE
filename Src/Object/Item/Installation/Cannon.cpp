@@ -11,7 +11,7 @@
 #include "../SubItem/CannonShot.h"
 #include "Cannon.h"
 
-Cannon::Cannon()
+Cannon::Cannon(void)
 {
 	shotCreateCnt_ = 0.0f;
 	targetPos_ = INIT_TARGET_POS;
@@ -19,7 +19,7 @@ Cannon::Cannon()
 	barrelAddRot_ = Utility::VECTOR_ZERO;
 }
 
-Cannon::~Cannon()
+Cannon::~Cannon(void)
 {
 }
 
@@ -150,10 +150,10 @@ void Cannon::OnHit(const std::weak_ptr<Collider> _hitCol)
 			for (auto compPos : compPos_)
 			{
 				//元の距離
-				float preDis = Utility::Distance(genePos, barrelTrans_.pos);
+				float preDis = static_cast<float>(Utility::Distance(genePos, barrelTrans_.pos));
 				
 				//比較距離
-				float dis = Utility::Distance(compPos.second, barrelTrans_.pos);
+				float dis = static_cast<float>(Utility::Distance(compPos.second, barrelTrans_.pos));
 
 				//近いほうを狙う
 				genePos = dis > preDis ? genePos : compPos.second;
@@ -282,6 +282,7 @@ void Cannon::DeleteShot(void)
 
 void Cannon::InitShader(void)
 {
+	//シェーダーの初期化
 	toonStyle_ = std::make_unique<ToonStyle>();
 	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::NO_TEXTURE);
 	toonStyle_->Init();

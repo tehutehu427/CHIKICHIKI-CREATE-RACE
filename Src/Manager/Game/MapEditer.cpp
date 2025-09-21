@@ -37,10 +37,10 @@ void MapEditer::Destroy(void)
 	}
 }
 
-bool MapEditer::IsObjectAtMapPos(IntVector3 mapPos) const
+bool MapEditer::IsObjectAtMapPos(IntVector3 _mapPos) const
 {
 	//オブジェクトがあるかを判定して返す
-	return GetItemType(mapPos) != ItemBase::ITEM_TYPE::NONE;
+	return GetItemType(_mapPos) != ItemBase::ITEM_TYPE::NONE;
 }
 
 int MapEditer::IsObjectAtMapPos(IntVector3 _mapPos, IntVector3 _size,IntVector3 _hitSize,float _rotY)
@@ -184,12 +184,12 @@ void MapEditer::DeleteAllItem(void)
 	}
 }
 
-bool MapEditer::IsMapPosInRange(IntVector3 mapPos) const
+bool MapEditer::IsMapPosInRange(IntVector3 _mapPos) const
 {
 	//マップ座標が範囲内かを判定
-	if (mapPos.x < 0 || mapPos.x >= MAP_SIZE.x ||
-		mapPos.y < 0 || mapPos.y >= MAP_SIZE.y ||
-		mapPos.z < 0 || mapPos.z >= MAP_SIZE.z)
+	if (_mapPos.x < 0 || _mapPos.x >= MAP_SIZE.x ||
+		_mapPos.y < 0 || _mapPos.y >= MAP_SIZE.y ||
+		_mapPos.z < 0 || _mapPos.z >= MAP_SIZE.z)
 	{
 		return false;	//範囲外
 	}

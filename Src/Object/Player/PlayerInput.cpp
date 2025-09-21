@@ -31,12 +31,9 @@ void PlayerInput::Update(void)
 	inputUpdates_[cntl_]();
 }
 
-
-
 void PlayerInput::InputAll(void)
 {
 	auto& ins = KeyConfig::GetInstance();
-	using ATK_ACT = Player::ATK_ACT;
 	actCntl_ = ACT_CNTL::NONE;
 	//移動入力処理
 	//キーボード
@@ -66,7 +63,6 @@ void PlayerInput::InputAll(void)
 void PlayerInput::InputPad(void)
 {
 	auto& ins = KeyConfig::GetInstance();
-	using ATK_ACT = Player::ATK_ACT;
 	actCntl_ = ACT_CNTL::NONE;
 	//パッドの移動入力処理
 	PadMove();
@@ -143,7 +139,7 @@ void PlayerInput::PadMove(void)
 		stickDeg_ = ins.GetLStickDeg(padNum_);
 		//スティックの角度によって移動方向を決める
 		moveDeg_ = stickDeg_;
-		VECTOR stickDir = { LStickAngleSize_.x ,0.0f,-LStickAngleSize_.y };
+		VECTOR stickDir = { static_cast<float>(LStickAngleSize_.x) ,0.0f,static_cast<float>(-LStickAngleSize_.y) };
 		moveDir_ = VNorm(stickDir);
 	}
 }

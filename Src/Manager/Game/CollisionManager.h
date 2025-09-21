@@ -1,5 +1,4 @@
 #pragma once
-
 #include<vector>
 #include<memory>
 #include<map>
@@ -10,6 +9,7 @@ class Geometry;
 
 class CollisionManager
 {
+
 public:
 
 	//当たり判定をする範囲
@@ -20,38 +20,57 @@ public:
 	static constexpr float HIT_RANGE_WIND = 300.0f;		//風用の当たり判定距離
 
 	//更新用
-	static constexpr int COL_UPDATE_FRAME = 0;		//更新ディレイフレーム
+	static constexpr int COL_UPDATE_FRAME = 0;			//更新ディレイフレーム
 	
-	//インスタンス生成
+	/// <summary>
+	/// インスタンス生成
+	/// </summary>
+	/// <param name=""></param>
 	static void CreateInstance(void);
 
-	//インスタンスの取得
+	/// <summary>
+	/// インスタンスの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>インスタンス</returns>
 	static CollisionManager& GetInstance(void) { return *instance_; }
 
-	//コライダの追加
+	/// <summary>
+	/// コライダの追加
+	/// </summary>
+	/// <param name="_collider">コライダ</param>
 	void AddCollider(const std::shared_ptr<Collider> _collider);
 
-	//必要なくなったコライダの削除(更新の最後に置く)
+	/// <summary>
+	/// 必要なくなったコライダの削除(更新の最後に置く)
+	/// </summary>
+	/// <param name=""></param>
 	void Sweep(void);
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void);
 
-	//削除
+	/// <summary>
+	/// 削除
+	/// </summary>
+	/// <param name=""></param>
 	void Destroy(void);
 
 	/// <summary>
 	/// そのタグがプレイヤーかどうか調べる
 	/// </summary>
 	/// <param name="_tag">調べるタグ</param>
-	/// <returns>true:プレイヤーだった</returns>
+	/// <returns>タグとの比較の結果(true:プレイヤーだった)</returns>
 	const bool IsPlayer(const Collider::TAG _tag)const;
 
 	/// <summary>
 	/// そのタグがアイテムかどうか調べる
 	/// </summary>
 	/// <param name="_tag">調べるタグ</param>
-	/// <returns>true:アイテムだった</returns>
+	/// <returns>タグとの比較の結果(true:アイテムだった)</returns>
 	const bool IsItem(const Collider::TAG _tag)const;
 
 private:

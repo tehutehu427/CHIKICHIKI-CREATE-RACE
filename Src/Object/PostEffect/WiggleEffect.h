@@ -3,32 +3,33 @@
 
 class WiggleEffect : public PostEffectBase
 {
+
 public:
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	WiggleEffect();
+	WiggleEffect(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~WiggleEffect() override;
+	~WiggleEffect(void) override = default;
 
 	/// <summary>
 	/// 読み込み処理
 	/// </summary>
-	void Load()override;
+	void Load(void)override;
 
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Init()override;
+	void Init(void)override;
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	void Draw()override;
+	void Draw(void)override;
 
 private:
 

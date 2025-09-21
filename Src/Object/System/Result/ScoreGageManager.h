@@ -7,37 +7,38 @@ class ScoreGage;
 
 class ScoreGageManager
 {
+
 public:
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	ScoreGageManager();
+	ScoreGageManager(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~ScoreGageManager();
+	~ScoreGageManager(void);
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 	 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();	
+	void Init(void);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// 状態遷移
@@ -52,19 +53,19 @@ public:
 	const bool IsFinishAnimation() const;
 
 	//装飾類の描画
-	void DrawGageDecoration();
+	void DrawGageDecoration(void);
 
 	//ボタンを押してねの描画
-	void DrawPushButton();
+	void DrawPushButton(void);
 
 	//タイトルの描画
-	void DrawTitle();
+	void DrawTitle(void);
 
 	//勝っているかの描画
-	void DrawIsWinning();
-
+	void DrawIsWinning(void);
 
 private:
+
 	// タイトル画像
 	int imgTitle_;
 
@@ -88,6 +89,5 @@ private:
 
 	// スコアゲージのリスト
 	std::vector<std::unique_ptr<ScoreGage>> scoreGages_; 
-
 };
 

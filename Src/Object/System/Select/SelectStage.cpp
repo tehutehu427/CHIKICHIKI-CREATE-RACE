@@ -7,7 +7,7 @@
 #include "../../../Utility/Utility.h"
 #include "../../../Scene/SelectScene.h"
 
-SelectStage::SelectStage()
+SelectStage::SelectStage(void)
 {
 	stageIndex_ = 0;
 	selectIcon_ = -1;
@@ -16,20 +16,12 @@ SelectStage::SelectStage()
 	imgMessages_ = nullptr;
 }
 
-SelectStage::~SelectStage()
-{
-}
-
-void SelectStage::Load()
+void SelectStage::Load(void)
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgMessages_ = res.Load(ResourceManager::SRC::SELECT_MESSAGES).handleIds_;
 	imgArrow_ = res.Load(ResourceManager::SRC::SCROLL_ARROW_ICON).handleId_;
 	imgLevels_ = res.Load(ResourceManager::SRC::LEVEL_SELECTS).handleIds_;
-}
-
-void SelectStage::Init()
-{
 }
 
 void SelectStage::Update(SelectScene& _parent)
@@ -75,12 +67,14 @@ void SelectStage::Update(SelectScene& _parent)
 	}
 }
 
-void SelectStage::Draw()
+void SelectStage::Draw(void)
 {
 	//矢印の位置を調整
 	constexpr int OFFSET_POS_X = 350;
 	constexpr float LEVEL_RATE = 1.5f;
 	constexpr int LEVEL_POS_Y = 350;
+	constexpr float RIGHT_ANGLE = 90.0f;
+	constexpr float LEFT_ANGLE = 270.0f;
 
 	//メッセージの描画
 	DrawMessage();
@@ -89,11 +83,11 @@ void SelectStage::Draw()
 	{
 		//反転用
 		int rev = 1;
-		float angle = 90.0f;
+		float angle = RIGHT_ANGLE;
 		if (i == 0)
 		{ 
 			rev *= -1;
-			angle += 180.0f;
+			angle = LEFT_ANGLE;
 		}
 
 		DrawRotaGraph(
@@ -119,7 +113,7 @@ void SelectStage::Draw()
 
 }
 
-void SelectStage::DrawMessage()
+void SelectStage::DrawMessage(void)
 {
 	constexpr float RATE = 0.7f;
 	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * RATE / 2 + Application::SCREEN_HALF_X - 280);

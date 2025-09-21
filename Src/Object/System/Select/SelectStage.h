@@ -4,6 +4,7 @@ class SelectScene;
 
 class SelectStage
 {
+
 public:
 
 	/// <summary>
@@ -26,22 +27,17 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	SelectStage();
+	SelectStage(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~SelectStage();
+	~SelectStage(void) = default;
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
-
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	void Init();
+	void Load(void);
 
 	/// <summary>
 	/// 更新
@@ -52,7 +48,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 private:	
 	
@@ -75,7 +71,5 @@ private:
 	int stageIndex_;
 
 	//メッセージの描画
-	void DrawMessage();
-
+	void DrawMessage(void);
 };
-

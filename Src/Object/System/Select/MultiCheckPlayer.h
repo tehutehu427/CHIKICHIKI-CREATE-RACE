@@ -10,6 +10,7 @@ class ToonStyle;
 
 class MultiCheckPlayer
 {
+
 public:
 
 	//アニメーションインデックス
@@ -27,12 +28,12 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	MultiCheckPlayer();
+	MultiCheckPlayer(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~MultiCheckPlayer();
+	~MultiCheckPlayer(void);
 
 	/// <summary>
 	/// 生成
@@ -42,12 +43,12 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// 状態変更処理
@@ -58,17 +59,17 @@ public:
 	/// <summary>
 	/// ラウンド毎にリセット
 	/// </summary>
-	void Reset();
+	void Reset(void);
 
 	/// <summary>
 	/// ゲーム開始時のアニメーションを設定
 	/// </summary>
-	void SetGameStartAnimation();
+	void SetGameStartAnimation(void);
 
 	/// <summary>
 	/// ゲーム開始時のアニメーションが終了したら返す
 	/// </summary>
-	bool IsFinishGameStartAnimation();
+	bool IsFinishGameStartAnimation(void);
 
 private:
 
@@ -112,11 +113,11 @@ private:
 	void RegisterStateUpdate(const STATE _state, std::function<void()>_update);
 
 	//状態別更新
-	void UpdateSmoke();
-	void UpdateAnimation();
+	void UpdateSmoke(void);
+	void UpdateAnimation(void);
 
 	//プレイヤー番号別設定
-	void SetParamByPlayerIndex();
+	void SetParamByPlayerIndex(void);
 
 };
 

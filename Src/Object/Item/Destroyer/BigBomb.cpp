@@ -3,11 +3,11 @@
 #include"../../Common/Geometry/Model.h"
 #include "BigBomb.h"
 
-BigBomb::BigBomb()
+BigBomb::BigBomb(void)
 {
 }
 
-BigBomb::~BigBomb()
+BigBomb::~BigBomb(void)
 {
 }
 

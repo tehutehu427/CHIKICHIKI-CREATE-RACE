@@ -8,18 +8,27 @@
 namespace
 {
 	//画面外座標
-	Vector2 screenOutPos ={ 
+	Vector2 screenOutPos =
+	{ 
 		static_cast<int>(Application::SCREEN_SIZE_X + Palette::SIZE_X * Palette::RATE_MAX / 2),
 		Application::SCREEN_HALF_Y };
 
 	//中央座標
-	Vector2 centerPos = { Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y };
+	Vector2 centerPos = 
+	{
+		Application::SCREEN_HALF_X,
+		Application::SCREEN_HALF_Y
+	};
 
 	//エディット用画面端座標
-	Vector2 edgePos = { Application::SCREEN_SIZE_X + Palette::EDGE_OFFSET, centerPos.y };
+	Vector2 edgePos = 
+	{ 
+		Application::SCREEN_SIZE_X + Palette::EDGE_OFFSET,
+		centerPos.y 
+	};
 }
 
-Palette::Palette()
+Palette::Palette(void)
 {
 	stateChanges_.emplace(STATE::NONE, std::bind(&Palette::ChangeStateNone, this));
 	stateChanges_.emplace(STATE::ADMISSION, std::bind(&Palette::ChangeStateAdmission, this));
@@ -41,29 +50,25 @@ Palette::Palette()
 	time_ = 0.0f;
 }
 
-Palette::~Palette()
-{
-}
-
-void Palette::Load()
+void Palette::Load(void)
 {
 	//リソースの読み込み
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgPalette_ = res.Load(ResourceManager::SRC::PALETTE).handleId_;
 }
 
-void Palette::Init()
+void Palette::Init(void)
 {
 	//初期状態
 	ChangeState(STATE::NONE);
 }
 
-void Palette::Update()
+void Palette::Update(void)
 {
 	stateUpdate_();
 }
 
-void Palette::Draw()
+void Palette::Draw(void)
 {
 	if (state_ == STATE::NONE) { return; }	
 
@@ -97,7 +102,7 @@ bool Palette::IsInsidePalette(const Vector2& _pos)
 	return Utility::IsPointInRect(_pos, leftTop, rightBottom);
 }
 
-void Palette::ChangeStateNone()
+void Palette::ChangeStateNone(void)
 {
 	//座標を初期化
 	pos_ = screenOutPos;
@@ -105,7 +110,7 @@ void Palette::ChangeStateNone()
 	stateUpdate_ = std::bind(&Palette::UpdateStateNone, this);
 }
 
-void Palette::ChangeStateExpansion()
+void Palette::ChangeStateExpansion(void)
 {
 	//座標を中心へ設定
 	pos_ = centerPos;
@@ -119,7 +124,7 @@ void Palette::ChangeStateExpansion()
 	stateUpdate_ = std::bind(&Palette::UpdateStateExpansion, this);
 }
 
-void Palette::ChangeStateReduction()
+void Palette::ChangeStateReduction(void)
 {
 	//座標を中心へ設定
 	pos_ = centerPos;
@@ -133,7 +138,7 @@ void Palette::ChangeStateReduction()
 	stateUpdate_ = std::bind(&Palette::UpdateStateReduction, this);
 }
 
-void Palette::ChangeStateAdmission()
+void Palette::ChangeStateAdmission(void)
 {
 	//座標を画面外へ設定
 	pos_ = screenOutPos;
@@ -156,7 +161,7 @@ void Palette::ChangeStateAdmission()
 	stateUpdate_ = std::bind(&Palette::UpdateStateAdmission, this);
 }
 
-void Palette::ChangeStateAdmissionEdge()
+void Palette::ChangeStateAdmissionEdge(void)
 {
 	//座標を端へ設定
 	pos_ = edgePos;
@@ -179,7 +184,7 @@ void Palette::ChangeStateAdmissionEdge()
 	stateUpdate_ = std::bind(&Palette::UpdateStateAdmission, this);
 }
 
-void Palette::ChangeStateExit()
+void Palette::ChangeStateExit(void)
 {
 	//座標を中心へ設定
 	pos_ = centerPos;
@@ -202,7 +207,7 @@ void Palette::ChangeStateExit()
 	stateUpdate_ = std::bind(&Palette::UpdateStateExit, this);
 }
 
-void Palette::ChangeStateExitEdge()
+void Palette::ChangeStateExitEdge(void)
 {
 	//座標を中心へ設定
 	pos_ = centerPos;
@@ -225,7 +230,7 @@ void Palette::ChangeStateExitEdge()
 	stateUpdate_ = std::bind(&Palette::UpdateStateExit, this);
 }
 
-void Palette::ChangeStateCenter()
+void Palette::ChangeStateCenter(void)
 {
 	//座標を中心へ設定
 	pos_ = centerPos;
@@ -236,7 +241,7 @@ void Palette::ChangeStateCenter()
 	stateUpdate_ = std::bind(&Palette::UpdateStateNone, this);
 }
 
-void Palette::ChangeStateEdge()
+void Palette::ChangeStateEdge(void)
 {
 	//座標を端の方へ設定
 	pos_ = edgePos;
@@ -247,12 +252,7 @@ void Palette::ChangeStateEdge()
 	stateUpdate_ = std::bind(&Palette::UpdateStateNone, this);
 }
 
-void Palette::UpdateStateNone()
-{
-	//処理は実行しない
-}
-
-void Palette::UpdateStateExpansion()
+void Palette::UpdateStateExpansion(void)
 {
 	rate_ += RATE_SPEED;
 
@@ -262,7 +262,7 @@ void Palette::UpdateStateExpansion()
 	}
 }
 
-void Palette::UpdateStateReduction()
+void Palette::UpdateStateReduction(void)
 {
 	rate_ -= RATE_SPEED;
 
@@ -272,7 +272,7 @@ void Palette::UpdateStateReduction()
 	}
 }
 
-void Palette::UpdateStateAdmission()
+void Palette::UpdateStateAdmission(void)
 {
 	//移動処理
 	Move();
@@ -284,7 +284,7 @@ void Palette::UpdateStateAdmission()
 	}
 }
 
-void Palette::UpdateStateExit()
+void Palette::UpdateStateExit(void)
 {
 	constexpr int OFFSET_POS_X = 1;	//ゴール調整用
 
@@ -298,13 +298,13 @@ void Palette::UpdateStateExit()
 	}
 }
 
-void Palette::Move()
+void Palette::Move(void)
 {	
 	//アニメーション時間
 	constexpr float ANIM_TIME = 1.5f;
 
 	// 目的地との距離
-	float distance = fabs(finishPos_.x - startPos_.x);
+	float distance = static_cast<float>(fabs(finishPos_.x - startPos_.x));
 
 	//アニメーション総時間
 	float duration = distance / MOVE_SPEED;
@@ -313,6 +313,5 @@ void Palette::Move()
 	time_ += SceneManager::GetInstance().GetDeltaTime();
 
 	//座標計算
-	pos_.x = Utility::EaseOutQuad (time_, ANIM_TIME, startPos_.x, finishPos_.x);
-
+	pos_.x =static_cast<int>( Utility::EaseOutQuad (time_, ANIM_TIME,static_cast<float>( startPos_.x),static_cast<float>( finishPos_.x)));
 }

@@ -20,7 +20,7 @@ namespace
     };
 }
 
-YesNoResponder::YesNoResponder()
+YesNoResponder::YesNoResponder(void)
 {
 	index_ = 0;
     imgs_ = nullptr;
@@ -29,12 +29,12 @@ YesNoResponder::YesNoResponder()
     respon_ = RESPON::NONE;
 }
 
-YesNoResponder::~YesNoResponder()
+YesNoResponder::~YesNoResponder(void)
 {
     DeleteFontToHandle(font_);
 }
 
-void YesNoResponder::Load()
+void YesNoResponder::Load(void)
 {
     ResourceManager& res = ResourceManager::GetInstance();
     imgBack_ = res.Load(ResourceManager::SRC::EXPLAN_BACK).handleId_;
@@ -42,12 +42,12 @@ void YesNoResponder::Load()
     font_ = CreateFontToHandle(FontRegistry::BOKUTATI.c_str(), FONT_SIZE, 0);
 }
 
-void YesNoResponder::Init()
+void YesNoResponder::Init(void)
 {
     Reset();
 }
 
-void YesNoResponder::Update()
+void YesNoResponder::Update(void)
 {
 	KeyConfig& key = KeyConfig::GetInstance();
 	SoundManager& sndMng = SoundManager::GetInstance();
@@ -133,7 +133,7 @@ void YesNoResponder::Update()
     }
 }
 
-void YesNoResponder::Draw()
+void YesNoResponder::Draw(void)
 {
     constexpr int ALPHA = 128;    
     const Vector2 OFFSET_POS = { 150, 40 };
@@ -172,7 +172,7 @@ void YesNoResponder::Draw()
     }
 }
 
-void YesNoResponder::Reset()
+void YesNoResponder::Reset(void)
 {
     index_ = 0;
     respon_ = RESPON::NONE;

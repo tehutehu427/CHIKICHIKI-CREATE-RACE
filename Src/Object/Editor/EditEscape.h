@@ -9,6 +9,7 @@ class YesNoResponder;
 
 class EditEscape
 {
+
 public:	
 	
 	//アイコンのサイズ
@@ -33,33 +34,33 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~EditEscape();
+	~EditEscape(void);
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// 編集可能か返す
 	/// </summary>
 	/// <returns>trueなら編集可、falseのときは不可</returns>
-	const bool IsEdit() const; 
+	const bool IsEdit(void) const;
 
 private:
 
@@ -101,12 +102,11 @@ private:
 	void RegisterStateFunction(const STATE _state, SceneBase::ProcessFunction _func);
 
 	//状態別更新処理
-	void UpdateWait();
-	void UpdateCheck();
+	void UpdateWait(void);
+	void UpdateCheck(void);
 
 	//状態別描画処理
-	void DrawWait();
-	void DrawCheck();
-
+	void DrawWait(void);
+	void DrawCheck(void);
 };
 

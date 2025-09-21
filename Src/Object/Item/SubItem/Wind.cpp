@@ -14,8 +14,9 @@ Wind::Wind(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl, const
 	radius_ = 0.0f;
 }
 
-Wind::~Wind()
+Wind::~Wind(void)
 {
+	//エフェクト
 	effect_->AllDelete();
 }
 
@@ -63,7 +64,6 @@ void Wind::Update(void)
 
 void Wind::Draw(void)
 {
-	//colParam_[0].geometry_->Draw();
 }
 
 void Wind::OnHit(const std::weak_ptr<Collider> _hitCol)

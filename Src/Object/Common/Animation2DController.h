@@ -8,12 +8,12 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Animation2DController();
+	Animation2DController(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~Animation2DController();
+	~Animation2DController(void) = default;
 
 	/// <summary>
 	/// アニメーションパラメーターの設定
@@ -27,24 +27,24 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();	
+	void Update(void);
 	
 	/// <summary>
 	/// アニメーションの開始
 	/// </summary>
-	void PlayAnimation();
+	void PlayAnimation(void);
 
 	/// <summary>
 	/// 再生判定
 	/// </summary>
 	/// <returns>再生中か判定を返す</returns>
-	const bool IsPlay()const { return isPlay_; }
+	const bool IsPlay(void) const { return isPlay_; }
 
 	/// <summary>
 	/// アニメーションインデックスを返す
 	/// </summary>
 	/// <returns>アニメーションインデックス</returns>
-	const int GetAnimationIndex()const { return animIndex_; }
+	const int GetAnimationIndex(void) const { return animIndex_; }
 
 private:
 

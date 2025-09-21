@@ -11,6 +11,7 @@ class SystemSetting;
 
 class SelectScene : public SceneBase
 {
+
 public:
 
 	//セレクトメニュー
@@ -36,11 +37,11 @@ public:
 	//メッセージ種類
 	enum class SELECT_MES
 	{
-		MODE_SELECT,	
-		STAGE_SELECT,
-		PLAYER_NUM,
-		PUSH_BUTTON,
-		GAME_START,
+		MODE_SELECT,	//モードセレクト
+		STAGE_SELECT,	//ステージセレクト
+		PLAYER_NUM,		//プレイヤー人数
+		PUSH_BUTTON,	//ボタン
+		GAME_START,		//ゲーム開始
 		MAX
 	};
 
@@ -50,22 +51,22 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	SelectScene();
+	SelectScene(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~SelectScene() override;
+	~SelectScene(void) override;
 
 	/// <summary>
 	/// 読み込み中
 	/// </summary>
-	void Load() override;
+	void Load(void) override;
 
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Init() override;
+	void Init(void) override;
 
 	/// <summary>
 	/// メニュー項目を実行
@@ -85,7 +86,7 @@ private:
 	STATE state_;
 
 	//メニュー項目を管理するテーブル
-	std::unordered_map <SELECT_MENU, std::function<void()>> menuFuncTable_;
+	std::unordered_map <SELECT_MENU, std::function<void(void)>> menuFuncTable_;
 
 	//状態別処理を管理するテーブル
 	std::unordered_map <STATE, ProcessFunction> funcTable_;
@@ -109,29 +110,24 @@ private:
 	void RegisterProcessFunc(const STATE _state, ProcessFunction _funcs);
 
 	//更新関数
-	void NormalUpdate() override;
+	void NormalUpdate(void) override;
 
 	//状態別更新関数
-	void UpdateSelectMenu();
-	void UpdateSelectStage();
-	void UpdateCheckPlayer();
-	void UpdateSetting();
+	void UpdateSelectMenu(void);
+	void UpdateSelectStage(void);
+	void UpdateCheckPlayer(void);
+	void UpdateSetting(void);
 
 	//状態別描画関数
-	void DrawSelectMenu();
-	void DrawSelectStage();
-	void DrawCheckPlayer();
-	void DrawSetting();
+	void DrawSelectMenu(void);
+	void DrawSelectStage(void);
+	void DrawCheckPlayer(void);
+	void DrawSetting(void);
 
 	//描画関数
-	void NormalDraw() override;
+	void NormalDraw(void) override;
 
 	//処理の変更
-	void ChangeNormal() override;	
-
-	//デバッグ
-	void DebugUpdate();	//更新
-	void DebugDraw();	//描画
-
+	void ChangeNormal(void) override;
 };
 

@@ -3,6 +3,7 @@
 
 class SoloChallenge : public GameScene
 {
+
 public:
 
 	// コンストラクタ
@@ -32,6 +33,6 @@ private:
 	void LoadSound(void) override;
 
 	//ステージ別イベント処理
-	void SetEventByStage();
+	void SetEventByStage(void);
 };
 

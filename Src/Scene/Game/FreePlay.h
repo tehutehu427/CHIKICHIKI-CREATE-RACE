@@ -8,6 +8,7 @@ class EditorExplanation;
 
 class FreePlay : public GameScene
 {
+
 public:
 
 	// コンストラクタ
@@ -21,9 +22,6 @@ public:
 
 	//初期化処理
 	void Init(void) override;
-
-	//プレイヤーは一人のみ生成
-	//マップデータの入出力はここでのみ使う
 
 private:
 
@@ -58,10 +56,9 @@ private:
 	void NormalDraw(void) override;
 
 	//エディット中の描画
-	void DrawEdit() override;
+	void DrawEdit(void) override;
 
 	//音源の読み込み
-	void LoadSound() override;
-
+	void LoadSound(void) override;
 };
 

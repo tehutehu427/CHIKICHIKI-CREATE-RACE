@@ -5,6 +5,7 @@ class ToonStyle;
 
 class ItemBase : public ObjectBase
 {
+
 public:
 
 	//アイテムの種類
@@ -65,58 +66,126 @@ public:
 	//アイテム数
 	static constexpr int ITEM_NUM_MAX = static_cast<int>(ITEM_TYPE::MAX) - 1;	//アイテムの種類数
 
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	ItemBase(void);
-	//デストラクタ
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	virtual ~ItemBase(void)override;
 
-	//アイテムの個別設定
+	/// <summary>
+	/// アイテムの個別設定
+	/// </summary>
+	/// <param name=""></param>
 	virtual void SetParam(void) = 0;
 
-	//読み込み
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	/// <param name=""></param>
 	void Load(void)override;
 
-	//初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="_mapPos">座標(マップサイズ基準)</param>
+	/// <param name="_quaRot">回転</param>
+	/// <param name="_itemType">アイテムの種類</param>
 	virtual void Init(IntVector3 _mapPos ,Quaternion _quaRot, ITEM_TYPE _itemType);
+	
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name=""></param>
 	virtual void Init(void)override;
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	virtual void Update(void)override = 0;
 
-	//描画
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	virtual void Draw(void)override;
 
-	//全モデルの取得
+	/// <summary>
+	/// 全モデルの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>モデル配列</returns>
 	const std::vector<int*> GetModels(void)const { return models_; }
 
-	//アイテムのステータス取得
+	/// <summary>
+	/// アイテムのステータス取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>アイテムのステータス</returns>
 	inline const Status GetStatus(void)const { return status_; }
 
-	//当たり判定サイズ
+	/// <summary>
+	/// 当たり判定サイズ
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>当たり判定サイズ(マップ座標基準)</returns>
 	virtual const IntVector3 GetHitSize(void)const { return size_; }
 
-	//初期マップ座標の取得
+	/// <summary>
+	/// 初期マップ座標の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>初期マップ座標</returns>
 	inline const IntVector3 GetInitMapPos(void)const { return initMapPos_; }
 
-	//Y回転の取得
+	/// <summary>
+	/// Y回転の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>Y回転</returns>
 	inline const float GetRotY(void)const { return rotY_; }
 
-	//移動量の取得
+	/// <summary>
+	/// 移動量の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>移動量</returns>
 	inline const VECTOR GetMovePow(void)const { return movePow_; }
 
-	//座標の設定
+	/// <summary>
+	/// 座標の設定
+	/// </summary>
+	/// <param name="mapPos">座標(マップ座標基準)</param>
 	void SetPos(IntVector3 mapPos);
 
-	//回転の設定
+	/// <summary>
+	/// 回転の設定
+	/// </summary>
+	/// <param name="rot">回転</param>
 	void SetRotate(Quaternion rot);
 
-	//Y回転の設定
+	/// <summary>
+	/// Y回転の設定
+	/// </summary>
+	/// <param name="_rotY">Y回転</param>
 	inline void SetRotY(const float _rotY) { rotY_ = _rotY; }
 
-	//アイテムの値リセット
+	/// <summary>
+	/// アイテムの値リセット
+	/// </summary>
+	/// <param name=""></param>
 	virtual void ResetValue(void);
 
-	//マネージャからエフェクトを停止する用
+	/// <summary>
+	/// マネージャからエフェクトを停止する用
+	/// </summary>
+	/// <param name=""></param>
 	void EffectAllStop(void);
 
 	/// <summary>
@@ -141,10 +210,17 @@ protected:
 	//トゥーンスタイル
 	std::unique_ptr<ToonStyle> toonStyle_;
 
-	//サイズの倍率調整
+	/// <summary>
+	/// サイズの倍率調整
+	/// </summary>
+	/// <param name="_modelSize">サイズ倍率</param>
+	/// <returns></returns>
 	const VECTOR AdjustSizePer(const VECTOR _modelSize)const;	
 	
-	//シェーダーの設定
+	/// <summary>
+	/// シェーダーの設定
+	/// </summary>
+	/// <param name=""></param>
 	virtual void InitShader(void);
 
 	/// <summary>

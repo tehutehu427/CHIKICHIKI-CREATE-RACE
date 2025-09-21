@@ -21,7 +21,7 @@ CannonShot::CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR
 	invincible_ = 0.0f;
 }
 
-CannonShot::~CannonShot()
+CannonShot::~CannonShot(void)
 {
 	update_.clear();
 	draw_.clear();
@@ -207,9 +207,6 @@ void CannonShot::HitPunch(const VECTOR _colliderPos)
 {
 	//パンチに連続で当たらないように無敵時間を設ける
 	if (invincible_ <= PUNCH_INVINCIBLE)return;
-
-	//移動方向
-	VECTOR moveVec;
 
 	//対象から自分までのベクトル
 	movePow_ = Utility::GetMoveVec(_colliderPos, trans_.pos, SPEED);

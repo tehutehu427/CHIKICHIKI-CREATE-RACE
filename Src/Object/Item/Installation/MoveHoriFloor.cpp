@@ -7,7 +7,7 @@
 #include"../../Common/ToonStyle.h"
 #include "MoveHoriFloor.h"
 
-MoveHoriFloor::MoveHoriFloor()
+MoveHoriFloor::MoveHoriFloor(void)
 {
 	routeNum_ = 0;
 	for (int i = 0 ; i< ROUTE;i++)
@@ -21,7 +21,7 @@ MoveHoriFloor::MoveHoriFloor()
 	moveVec_ = Utility::VECTOR_ZERO;
 }
 
-MoveHoriFloor::~MoveHoriFloor()
+MoveHoriFloor::~MoveHoriFloor(void)
 {
 }
 
@@ -83,7 +83,10 @@ void MoveHoriFloor::Draw(void)
 		return;	//描画を行わない
 	}
 
+	//移動軌道
 	DrawLine3D(VAdd(route_[0], MAP_LOCALPOS), VAdd(route_[1], MAP_LOCALPOS), Utility::BLACK);
+	
+	//モデル
 	toonStyle_->Draw();
 }
 
@@ -133,9 +136,9 @@ void MoveHoriFloor::InitRoute(void)
 	VECTOR movePos = trans_.quaRot.PosAxis(intPos);
 
 	//(微妙な小数点を消すために四捨五入処理)
-	movePos.x = Utility::Round(movePos.x);
-	movePos.y = Utility::Round(movePos.y);
-	movePos.z = Utility::Round(movePos.z);
+	movePos.x = static_cast<float>(Utility::Round(movePos.x));
+	movePos.y = static_cast<float>(Utility::Round(movePos.y));
+	movePos.z = static_cast<float>(Utility::Round(movePos.z));
 	
 	//目標地点
 	VECTOR goalPos = VAdd(route_[routeNum_], movePos);
@@ -144,7 +147,7 @@ void MoveHoriFloor::InitRoute(void)
 	route_[routeNum_ + 1] = goalPos;
 
 	//距離を取得(微妙な小数点を消すために四捨五入処理)
-	distance_ = static_cast<float>(Utility::Round(Utility::Distance(route_[routeNum_], route_[routeNum_ + 1])));
+	distance_ = static_cast<float>(Utility::Round(static_cast<float>(Utility::Distance(route_[routeNum_], route_[routeNum_ + 1]))));
 
 	//速度設定
 	speed_ = distance_ / ONE_POINT_SEC * SceneManager::GetInstance().GetDeltaTime();

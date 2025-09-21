@@ -55,9 +55,9 @@ void Camera::SetBeforeDraw(void)
 	case Camera::MODE::SELF_SHOT:
 		SetBeforeDrawSelfShot();
 		break;
-	case Camera::MODE::FPS:
-		SetBeforeDrawFPS();
-		break;
+	//case Camera::MODE::FPS:
+	//	SetBeforeDrawFPS();
+	//	break;
 	case Camera::MODE::FREE_CONTROLL:
 		SetBeforeDrawFreeControll();
 		break;
@@ -77,7 +77,7 @@ void Camera::SetBeforeDraw(void)
 
 }
 
-void Camera::CameraSetting()
+void Camera::CameraSetting(void)
 {
 	// カメラの設定(位置と注視点による制御)
 	SetCameraPositionAndTargetAndUpVec(
@@ -91,9 +91,9 @@ void Camera::Draw(void)
 {
 }
 
-void Camera::SetFollow(const Transform* follow)
+void Camera::SetFollow(const Transform* _follow)
 {
-	followTransform_ = follow;
+	followTransform_ = _follow;
 }
 
 VECTOR Camera::GetPos(void) const
@@ -126,14 +126,14 @@ VECTOR Camera::GetForward(void) const
 	return VNorm(VSub(targetPos_, pos_));
 }
 
-void Camera::ChangeMode(MODE mode)
+void Camera::ChangeMode(MODE _mode)
 {
 
 	// カメラの初期設定
 	SetDefault();
 
 	// カメラモードの変更
-	mode_ = mode;
+	mode_ = _mode;
 
 	// 変更時の初期化処理
 	switch (mode_)
@@ -283,26 +283,26 @@ void Camera::ProcessZoom(void)
 	}
 }
 
-void Camera::ProcessRotMause(float* x_m, float* y_m, const float fov_per)
-{
-	int x_t, y_t;
-	GetMousePoint(&x_t, &y_t);
-	*x_m += float(std::clamp(x_t - Application::SCREEN_SIZE_X / 2, -120, 120)) * fov_per / GetFPS();
-	*y_m += float(std::clamp(y_t - Application::SCREEN_SIZE_Y / 2, -120, 120)) * fov_per / GetFPS();
-	SetMousePoint(Application::SCREEN_SIZE_X / 2, Application::SCREEN_SIZE_Y / 2);
-
-	// マウスを表示状態にする
-	SetMouseDispFlag(FALSE);
-
-	if (angles_.x <= FPS_LIMIT_X_UP_RAD)
-	{
-		angles_.x = FPS_LIMIT_X_UP_RAD;
-	}
-	if (angles_.x >= FPS_LIMIT_X_DW_RAD)
-	{
-		angles_.x = FPS_LIMIT_X_DW_RAD;
-	}
-}
+//void Camera::ProcessRotMause(float* x_m, float* y_m, const float fov_per)
+//{
+//	int x_t, y_t;
+//	GetMousePoint(&x_t, &y_t);
+//	*x_m += float(std::clamp(x_t - Application::SCREEN_SIZE_X / 2, -120, 120)) * fov_per / GetFPS();
+//	*y_m += float(std::clamp(y_t - Application::SCREEN_SIZE_Y / 2, -120, 120)) * fov_per / GetFPS();
+//	SetMousePoint(Application::SCREEN_SIZE_X / 2, Application::SCREEN_SIZE_Y / 2);
+//
+//	// マウスを表示状態にする
+//	SetMouseDispFlag(FALSE);
+//
+//	if (angles_.x <= FPS_LIMIT_X_UP_RAD)
+//	{
+//		angles_.x = FPS_LIMIT_X_UP_RAD;
+//	}
+//	if (angles_.x >= FPS_LIMIT_X_DW_RAD)
+//	{
+//		angles_.x = FPS_LIMIT_X_DW_RAD;
+//	}
+//}
 
 void Camera::SetBeforeDrawFixedPoint(void)
 {
@@ -368,14 +368,14 @@ void Camera::SetBeforeDrawSelfShot(void)
 
 }
 
-void Camera::SetBeforeDrawFPS(void)
-{
-	//マウスでのカメラ操作
-	ProcessRotMause(&angles_.y, &angles_.x, 0.2f);
-
-	// 追従対象との相対位置を同期
-	SyncFollowFPS();
-}
+//void Camera::SetBeforeDrawFPS(void)
+//{
+//	//マウスでのカメラ操作
+//	ProcessRotMause(&angles_.y, &angles_.x, 0.2f);
+//
+//	// 追従対象との相対位置を同期
+//	SyncFollowFPS();
+//}
 
 void Camera::SetBeforeDrawFreeControll(void)
 {

@@ -3,11 +3,11 @@
 #include"../../Common/Geometry/Model.h"
 #include "Spiky.h"
 
-Spiky::Spiky()
+Spiky::Spiky(void)
 {
 }
 
-Spiky::~Spiky()
+Spiky::~Spiky(void)
 {
 }
 

@@ -84,7 +84,7 @@ void SoloChallenge::LoadSound(void)
 	sndMng_.LoadResource(SoundManager::SRC::PLAY_BGM_1);
 }
 
-void SoloChallenge::SetEventByStage()
+void SoloChallenge::SetEventByStage(void)
 {
 	int index = DateBank::GetInstance().GetStageNo();
 	auto& eventMng = EventManager::GetInstance();

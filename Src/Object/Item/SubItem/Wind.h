@@ -1,7 +1,9 @@
 #pragma once
 #include "../ItemBase.h"
+
 class Wind : public ItemBase
 {
+
 public:
 
 	//風の強さ
@@ -18,14 +20,29 @@ public:
 	/// <param name="_scl">親の大きさ</param>
 	/// <param name="_size">親のサイズ</param>
 	Wind(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl, const VECTOR _size);
-	//デストラクタ
-	~Wind()override;
 
-	//個人設定
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	~Wind(void)override;
+
+	/// <summary>
+	/// 個人設定
+	/// </summary>
+	/// <param name=""></param>
 	void SetParam(void)override;
-	//更新
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void)override;
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void)override;
 
 	/// <summary>
@@ -36,9 +53,9 @@ public:
 
 private:
 
-	VECTOR size_;	//サイズ
-	float radius_;	//半径
-
+	//基本情報
+	VECTOR size_;		//サイズ
+	float radius_;		//半径
 	VECTOR parentPos_;	//親座標
 };
 

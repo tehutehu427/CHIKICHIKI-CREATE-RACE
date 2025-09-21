@@ -34,22 +34,22 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	MultiReady();
+	MultiReady(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~MultiReady();
+	~MultiReady(void);
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新処理
@@ -60,7 +60,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 private:
 
@@ -140,15 +140,15 @@ private:
 	const void ChangeState(const STATE _state) { state_ = _state; }
 
 	//状態別更新処理
-	void UpdateNumCheck();
-	void UpdatePadCheck();
-	void UpdateFinalCheck();
-	void UpdatePlayerAnimation();
+	void UpdateNumCheck(void);
+	void UpdatePadCheck(void);
+	void UpdateFinalCheck(void);
+	void UpdatePlayerAnimation(void);
 
 	//状態別描画処理
-	void DrawNumCheck();
-	void DrawPadCheck();
-	void DrawFinalCheck();
+	void DrawNumCheck(void);
+	void DrawPadCheck(void);
+	void DrawFinalCheck(void);
 
 	//メッセージの描画
 	void DrawMessage(const int _posX, const int _posY, const int _imgIndex_);

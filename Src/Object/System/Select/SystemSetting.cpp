@@ -15,7 +15,7 @@ namespace
 	constexpr IntVector3 SELECT_ADD_COLOR = { 128,0,0 };	//選択色
 }
 
-SystemSetting::SystemSetting()
+SystemSetting::SystemSetting(void)
 {
 	//初期化
 	stateIndex_ = -1;
@@ -162,11 +162,7 @@ SystemSetting::SystemSetting()
 	};
 }
 
-SystemSetting::~SystemSetting()
-{
-}
-
-void SystemSetting::Load()
+void SystemSetting::Load(void)
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgTitle_ = res.Load(ResourceManager::SRC::SYSTEM_SETTING).handleId_; 
@@ -180,7 +176,7 @@ void SystemSetting::Load()
 	imgApplyMes_ = res.Load(ResourceManager::SRC::SYSTEM_MESSAGES).handleIds_;
 }
 
-void SystemSetting::Init()
+void SystemSetting::Init(void)
 {	
 	DateBank& data = DateBank::GetInstance();
 	SoundManager& sound = SoundManager::GetInstance();
@@ -199,7 +195,7 @@ void SystemSetting::Update(SelectScene& _parent)
 	updateMap_[updateType_](_parent); //更新処理を呼び出す
 }
 
-void SystemSetting::Draw()
+void SystemSetting::Draw(void)
 {
 	//タイトルの描画
 	DrawTitle();
@@ -236,7 +232,7 @@ void SystemSetting::Draw()
 
 }
 
-void SystemSetting::DrawTitle()
+void SystemSetting::DrawTitle(void)
 {
 	//タイトルの描画
 	constexpr int POS_Y = 50; //Y座標
@@ -251,7 +247,7 @@ void SystemSetting::DrawTitle()
 	);
 }
 
-void SystemSetting::DrawSettingFinish()
+void SystemSetting::DrawSettingFinish(void)
 {
 	constexpr int POS_X = Application::SCREEN_SIZE_X - 106; //X座標
 	constexpr int POS_Y = Application::SCREEN_SIZE_Y - 32;	//Y座標
@@ -303,14 +299,14 @@ void SystemSetting::UpdateSelect(SelectScene& _parent)
 		return;
 	}
 	//右
-	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1) && stateIndex_ != static_cast<int>(STATE::APPLY))
 	{
 		rightStateMap_[static_cast<STATE>(stateIndex_)](); //右の処理を実行
 		sound.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK); //クリック音を再生
 		return;
 	}
 	//左
-	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1))
+	else if (key.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1) && stateIndex_ != static_cast<int>(STATE::APPLY))
 	{
 		leftStateMap_[static_cast<STATE>(stateIndex_)](); //左の処理を実行
 		sound.Play(SoundManager::SRC::CLICK_OBJECT_SE, SoundManager::PLAYTYPE::BACK); //クリック音を再生
@@ -342,7 +338,7 @@ void SystemSetting::UpdateApply(SelectScene& _parent)
 	}
 }
 
-void SystemSetting::ApplyData()
+void SystemSetting::ApplyData(void)
 {
 	DateBank& data = DateBank::GetInstance();
 	SoundManager& sound = SoundManager::GetInstance();
@@ -363,55 +359,64 @@ void SystemSetting::ApplyData()
 	data.SetRoundLimit(roundCnt_);
 }
 
-void SystemSetting::DrawCursor()
+void SystemSetting::DrawCursor(void)
 {
-	constexpr int POS_X = 50;	//カーソルのX座標
-	int posX = POS_X; //カーソルのX座標（初期値）
+	constexpr int POS_X = 50;		//カーソルのX座標
+	constexpr float ANGLE = 90.0f;	//角度
+	constexpr int INDEX = 0;		//画像インデックス
+	int posX = POS_X;				//カーソルのX座標（初期値）
 	int posY = START_POS_Y + stateIndex_ * HEIGHT_MARGIN; //カーソルのY座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
 
 	if (stateIndex_ == static_cast<int>(STATE::APPLY))
 	{
-		posX = Application::SCREEN_SIZE_X - 250;	//Y座標
-		posY = Application::SCREEN_SIZE_Y - 32;	//X座標
+		constexpr int APPLY_POS_X = Application::SCREEN_SIZE_X - 250;
+		constexpr int APPLY_POS_Y = Application::SCREEN_SIZE_Y - 32;
+
+		//座標の設定
+		posX = APPLY_POS_X;	//X座標
+		posY = APPLY_POS_Y;	//Y座標
 	}
 
 	DrawRotaGraph(
 		posX,
 		posY,
 		1.0f,
-		Utility::Deg2RadF(90.0f),
-		imgCursor_[0],
+		Utility::Deg2RadF(ANGLE),
+		imgCursor_[INDEX],
 		true
 	);
 }
 
-void SystemSetting::DrawSelectTriangle()
+void SystemSetting::DrawSelectTriangle(void)
 {	
 	if (stateIndex_ == static_cast<int>(STATE::APPLY))
 	{
 		return; //適用状態では描画しない
 	}
 
-	constexpr int DRAW_NUM = 2;	//描画する数
-	constexpr int POS_X = 720;	//カーソルのX座標
-	constexpr float RATE = 0.7f;
-	const int posY = START_POS_Y + stateIndex_ * HEIGHT_MARGIN; //カーソルのY座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
+	constexpr int DRAW_NUM = 2;			//描画する数
+	constexpr int POS_X = 720;			//カーソルのX座標
+	constexpr int LEFT_OFFSET_X = 250;	//左の座標調整
+	constexpr float RATE = 0.7f;		//拡大率
+	constexpr float RIGHT_ROT = 270.0f;	//右の回転
+	constexpr float LEFT_ROT = 90.0f;	//左の回転
+	const int POS_Y = START_POS_Y + stateIndex_ * HEIGHT_MARGIN; //カーソルのY座標
 
 	for (int i = 0; i < DRAW_NUM; i++)
 	{
 		int posX = POS_X;
-		float angle = 270.0f;
+		float angle = RIGHT_ROT;
 		if (i == 1)
 		{
-			posX += 250; //左側の位置調整
-			angle = 90.0f; //左側の矢印は90度回
+			posX += LEFT_OFFSET_X; //左側の位置調整
+			angle = LEFT_ROT; //左側の矢印は90度回す
 		}
 
 
 		//矢印の描画
 		DrawRotaGraph(
 			posX,
-			posY,
+			POS_Y,
 			RATE,
 			Utility::Deg2RadF(angle),
 			imgTriangle_,
@@ -424,17 +429,17 @@ void SystemSetting::DrawClearScore()
 	constexpr int POS_X = 900; //X座標
 	constexpr int MARGIN_X = 64 ; //数字の間隔	
 	constexpr int OFFSET_X = 90; //数字の位置を調整
-	const int posY = START_POS_Y + static_cast<int>(STATE::CLEAR_SCORE) * HEIGHT_MARGIN; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
-	const int numberDigit = Utility::GetDigitCount(clearScore_); //数字の桁数
+	const int POS_Y = START_POS_Y + static_cast<int>(STATE::CLEAR_SCORE) * HEIGHT_MARGIN; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
+	const int NUMBER_DIGIT = Utility::GetDigitCount(clearScore_); //数字の桁数
 
 	//数字の描画
-	for (int i = 0; i < numberDigit; i++)
+	for (int i = 0; i < NUMBER_DIGIT; i++)
 	{
-		int index = Utility::GetDigit(clearScore_, numberDigit - 1 - i);
+		int index = Utility::GetDigit(clearScore_, NUMBER_DIGIT - 1 - i);
 
 		DrawRotaGraph(
 			POS_X + i * MARGIN_X - OFFSET_X,
-			posY,
+			POS_Y,
 			0.7f,
 			0.0f,
 			imgNumbers_[index],
@@ -447,12 +452,12 @@ void SystemSetting::DrawClearScore()
 void SystemSetting::DrawSwitch(const STATE _state, const bool _flag)
 {
 	constexpr int POS_X = 850; //X座標
-	const int posY = START_POS_Y + static_cast<int>(_state) * HEIGHT_MARGIN; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
+	const int POS_Y = START_POS_Y + static_cast<int>(_state) * HEIGHT_MARGIN; //Y座標
 
 	//スキップ設定の描画
 	DrawRotaGraph(
 		POS_X,
-		posY,
+		POS_Y,
 		1.0f,
 		0.0f,
 		imgOnOff_[_flag ? 0 : 1],
@@ -463,21 +468,22 @@ void SystemSetting::DrawSwitch(const STATE _state, const bool _flag)
 
 void SystemSetting::DrawSoundVolume(const STATE _state, const int _type)
 {
-	constexpr int POS_X = 900; //X座標
-	constexpr int MARGIN_X = 64; //数字の間隔	
-	constexpr int OFFSET_X = 90; //数字の位置を調整
-	const int posY = START_POS_Y + static_cast<int>(_state) * HEIGHT_MARGIN; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
-	const int numberDigit = Utility::GetDigitCount(soundVolume_[_type]); //数字の桁数
+	constexpr int POS_X = 900;		//X座標
+	constexpr int MARGIN_X = 64;	//数字の間隔	
+	constexpr int OFFSET_X = 90;	//数字の位置を調整
+	constexpr float RATE = 0.7f;	//拡大率
+	const int POS_Y = START_POS_Y + static_cast<int>(_state) * HEIGHT_MARGIN; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
+	const int NUM_DIGIT = Utility::GetDigitCount(soundVolume_[_type]); //数字の桁数
 
 	//数字の描画
-	for (int i = 0; i < numberDigit; i++)
+	for (int i = 0; i < NUM_DIGIT; i++)
 	{
-		int index = Utility::GetDigit(soundVolume_[_type], numberDigit - 1 - i);
+		int index = Utility::GetDigit(soundVolume_[_type], NUM_DIGIT - 1 - i);
 
 		DrawRotaGraph(
 			POS_X + i * MARGIN_X - OFFSET_X,
-			posY,
-			0.7f,
+			POS_Y,
+			RATE,
 			0.0f,
 			imgNumbers_[index],
 			true,
@@ -486,19 +492,21 @@ void SystemSetting::DrawSoundVolume(const STATE _state, const int _type)
 	};
 }
 
-void SystemSetting::DrawRound()
+void SystemSetting::DrawRound(void)
 {
-	constexpr int POS_X = 900; //X座標
-	constexpr int MARGIN_X = 64; //数字の間隔	
-	constexpr int OFFSET_X = 90; //数字の位置を調整
-	const int posY = START_POS_Y + static_cast<int>(STATE::ROUND) * HEIGHT_MARGIN; //Y座標（項目の開始Y座標 + 選択項目のインデックス * 項目間隔）
-	const int numberDigit = Utility::GetDigitCount(roundCnt_); //数字の桁数
+	constexpr int ONOFF_POS_X = 850;	//スイッチのX座標
+	constexpr int NUM_POS_X = 900;		//数字のX座標
+	constexpr int MARGIN_X = 64;		//数字の間隔	
+	constexpr int OFFSET_X = 90;		//数字の位置を調整
+	constexpr float NUM_RATE = 0.7f;	//数字の拡大率
+	const int POS_Y = START_POS_Y + static_cast<int>(STATE::ROUND) * HEIGHT_MARGIN; //Y座標
+	const int NUM_DIGIT = Utility::GetDigitCount(roundCnt_); //数字の桁数
 
 	if (roundCnt_ == 0)
 	{
 		DrawRotaGraph(
-			850,
-			posY,
+			ONOFF_POS_X,
+			POS_Y,
 			1.0f,
 			0.0f,
 			imgOnOff_[1],
@@ -509,14 +517,14 @@ void SystemSetting::DrawRound()
 	else
 	{
 		//数字の描画
-		for (int i = 0; i < numberDigit; i++)
+		for (int i = 0; i < NUM_DIGIT; i++)
 		{
-			int index = Utility::GetDigit(roundCnt_, numberDigit - 1 - i);
+			int index = Utility::GetDigit(roundCnt_, NUM_DIGIT - 1 - i);
 
 			DrawRotaGraph(
-				POS_X + i * MARGIN_X - OFFSET_X,
-				posY,
-				0.7f,
+				NUM_POS_X + i * MARGIN_X - OFFSET_X,
+				POS_Y,
+				NUM_RATE,
 				0.0f,
 				imgNumbers_[index],
 				true,
@@ -526,20 +534,23 @@ void SystemSetting::DrawRound()
 	}
 }
 
-void SystemSetting::DrawApplyMessage()
+void SystemSetting::DrawApplyMessage(void)
 {
 	if (updateType_ == UPDATE_TYPE::SELECT)
 	{
 		return;
 	}
 
+	constexpr float RATE = 3.0f;
+	constexpr int INDEX = 0;
+
 	//適用メッセージの描画
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
 		Application::SCREEN_HALF_Y,
-		3.0f,
+		RATE,
 		0.0f,
-		imgApplyMes_[0],
+		imgApplyMes_[INDEX],
 		true,
 		false
 	);
