@@ -117,5 +117,6 @@ void ToonStyle::NormalDrawModel()
 void ToonStyle::ToonDrawModel()
 {
 	//•`‰æ
-	toonRenderer_->Draw();
+	//toonRenderer_->Draw();
+	MV1DrawModel(model_);
 }
