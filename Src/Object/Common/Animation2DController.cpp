@@ -1,7 +1,7 @@
 #include "Animation2DController.h"
 #include <DxLib.h>
 
-Animation2DController::Animation2DController()
+Animation2DController::Animation2DController(void)
 {
 	animIndex_ = -1;
 	startIndex_ = -1;
@@ -10,10 +10,6 @@ Animation2DController::Animation2DController()
 	animSpeed_ = 0.0f;
 	isLoop_ = false;
 	isPlay_ = false;
-}
-
-Animation2DController::~Animation2DController()
-{
 }
 
 void Animation2DController::SetAnimParam(const int startIndex, const int finishIndex, const float animSpeed, const bool isLoop)
@@ -36,7 +32,7 @@ void Animation2DController::SetAnimParam(const int startIndex, const int finishI
 	animIndex_ = startIndex_;
 }
 
-void Animation2DController::Update()
+void Animation2DController::Update(void)
 {	
 	//アニメーションが非再生の場合
 	if (!isPlay_) { return; }	
@@ -59,7 +55,7 @@ void Animation2DController::Update()
 	animIndex_ = startIndex_ + static_cast<int>(animStep_) % animMax;
 }
 
-void Animation2DController::PlayAnimation()
+void Animation2DController::PlayAnimation(void)
 {
 	isPlay_ = true; //再生フラグを立てる
 	animStep_ = 0.0f; //ステップを初期化

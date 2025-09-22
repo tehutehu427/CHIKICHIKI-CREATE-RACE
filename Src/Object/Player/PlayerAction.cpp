@@ -150,15 +150,12 @@ void PlayerAction::Update(void)
 	//プレイヤーの方向とスピードの更新
 	UpdateMoveDirAndPow();
 }
-#ifdef _DEBUG
+
 void PlayerAction::DrawDebug(void)
 {
 	VECTOR dir = input_->GetDir();
 	DrawFormatString(0, 300, 0x000000, "dir(%f,%f,%f)", dir.x, dir.y, dir.z);
 }
-#endif // _DEBUG
-
-
 
 void PlayerAction::UpdateNone(void)
 {

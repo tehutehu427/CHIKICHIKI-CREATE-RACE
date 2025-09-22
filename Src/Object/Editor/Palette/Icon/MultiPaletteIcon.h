@@ -5,7 +5,35 @@ class PaletteCursor;
 
 class MultiPaletteIcon : public PaletteIcon
 {
+
 public:
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	MultiPaletteIcon(void);
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~MultiPaletteIcon(void) override;
+
+	/// <summary>
+	/// 読み込み処理
+	/// </summary>
+	void Load(void) override;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Init(void)override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw(void) override;
+
+private:
 
 	//生成数
 	static constexpr int CREATE_NUM = 6;
@@ -16,33 +44,7 @@ public:
 	//アイコン配置開始座標
 	static constexpr int MULTI_ICON_POS_X = 350;
 
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	MultiPaletteIcon();
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~MultiPaletteIcon() override;
-
-	/// <summary>
-	/// 読み込み処理
-	/// </summary>
-	void Load() override;
-
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	void Init()override;
-
-	/// <summary>
-	/// 描画
-	/// </summary>
-	void Draw() override;
-
-private:
-
+	//アイテム出現率の重み
 	static constexpr int ITEM_WEIGHT = 3;
 	
 	//カーソル画像
@@ -57,13 +59,13 @@ private:
 	std::vector<std::unique_ptr<PaletteCursor>> cursors_;
 
 	//除外番号を除いてアイテム配列を生成
-	void SetExcludingItemTypeArray()override;
+	void SetExcludingItemTypeArray(void)override;
 
 	//指定された範囲から除外番号を除いてランダムで値を返す関数
-	int GetRandTypeExcluding();
+	int GetRandTypeExcluding(void);
 
 	//選択時の更新処理
-	void UpdateSelect();
+	void UpdateSelect(void);
 
 	//アイテムアイコンをクリックしたか調べる
 	bool CheckItemIcon(const Vector2 _cPos, const int _playerIndex = 0) override;
@@ -72,6 +74,5 @@ private:
 	bool IsChosenByOtherPlayer(const int _iconIndex, const int _playerIndex);
 
 	//アイコンを描画する
-	void DrawItemIcon()override;
+	void DrawItemIcon(void)override;
 };
-

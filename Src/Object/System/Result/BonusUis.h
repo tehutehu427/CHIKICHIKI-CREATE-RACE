@@ -1,9 +1,9 @@
 #pragma once
 #include "../../../Common/Vector2.h"
 
-
 class BonusUis
 {
+
 public:
 
 	/// <summary>
@@ -15,42 +15,42 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~BonusUis();
+	~BonusUis(void) = default;
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(void);
 
 	/// <summary>
 	/// UIを揺らす処理
 	/// </summary>
-	void UpdateShake();
+	void UpdateShake(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// ボーナス設定
 	/// </summary>
-	void SetBonus();
+	void SetBonus(void);
 
 	/// <summary>
 	/// リセット
 	/// </summary>
-	void Reset();
+	void Reset(void);
 
 private:
 
@@ -85,11 +85,11 @@ private:
 	//UI情報
 	struct Info
 	{
-		int image;
-		Vector2 pos;
-		float rate;
-		float alpha;
-		bool isDisplay;
+		int image = 0;
+		Vector2 pos = {};
+		float rate = 0.0f;
+		float alpha = 0.0f;
+		bool isDisplay = false;
 	};
 
 	//プレイヤー番号

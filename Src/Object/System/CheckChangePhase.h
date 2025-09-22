@@ -14,7 +14,9 @@ public:
 	static constexpr int ICON_SIZE_X = 160;
 	static constexpr int ICON_SIZE_Y = 80;
 
-	//アイコンの種類
+	/// <summary>
+	/// アイコンの種類
+	/// </summary>
 	enum class ICON_TYPE
 	{
 		PLAY,
@@ -25,22 +27,22 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	CheckChangePhase(const Vector2& _padCursolPos = {});
+	CheckChangePhase(const Vector2& _padCursorPos = {});
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~CheckChangePhase();
+	~CheckChangePhase(void) = default;
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
@@ -51,7 +53,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// 次のフェーズ遷移を設定

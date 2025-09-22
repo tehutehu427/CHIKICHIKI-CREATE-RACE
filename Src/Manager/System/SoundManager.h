@@ -11,63 +11,63 @@ public:
 	/// </summary>
 	enum class SRC
 	{
-		NONE,					//なし
+		NONE,						//なし
 
 		//BGM
-		TITLE_BGM,				//タイトルBGM
-		SELECT_BGM,				//セレクトBGM		
-		EDIT_BGM,				//エディットBGM
-		PLAY_BGM_1,				//プレイBGM1
-		PLAY_BGM_2,				//プレイBGM2
-		MULTI_BGM_1,			//マルチBGM1
-		MULTI_BGM_2,			//マルチBGM2
-		MULTI_CLEAR_BGM,		//マルチクリアBGM
+		TITLE_BGM,					//タイトルBGM
+		SELECT_BGM,					//セレクトBGM		
+		EDIT_BGM,					//エディットBGM
+		PLAY_BGM_1,					//プレイBGM1
+		PLAY_BGM_2,					//プレイBGM2
+		MULTI_BGM_1,				//マルチBGM1
+		MULTI_BGM_2,				//マルチBGM2
+		MULTI_CLEAR_BGM,			//マルチクリアBGM
 
 		//システム効果音
-		TITLE_SCENE_CHANGE,		//タイトルシーン遷移
-		SELECT_SCENE_CHANGE,	//セレクトシーン遷移
-		DECISION,				//決定
-		CANCEL,					//キャンセル
-		OK,						//OK
+		TITLE_SCENE_CHANGE,			//タイトルシーン遷移
+		SELECT_SCENE_CHANGE,		//セレクトシーン遷移
+		DECISION,					//決定
+		CANCEL,						//キャンセル
+		OK,							//OK
 
 		//マルチモード効果音
-		ROUND_JINGLE,			//ラウンドジングル
-		DRUM_ROLL,				//ドラムロール
-		DRUM_ROLL_END,			//ドラムロール終了
-		MULTI_CLEAR_JINGLE,		//マルチクリアジングル
+		ROUND_JINGLE,				//ラウンドジングル
+		DRUM_ROLL,					//ドラムロール
+		DRUM_ROLL_END,				//ドラムロール終了
+		MULTI_CLEAR_JINGLE,			//マルチクリアジングル
 
 		//プレイヤー効果音
-		PLAYER_PUNCH_HIT,		//プレイヤーパンチヒット
-		PLAYER_PUNCH_MOTION,	//プレイヤーパンチモーション
-		PLAYER_DASH_START,		//プレイヤーダッシュスタート
-		PLAYER_JUMP,			//プレイヤージャンプ
-		DELON,					//デロンSE
-		SPRING_SE,				//スプリングSE
-		SLIME_SE,				//スライムSE
-		COIN_GET_SE,			//コインゲットSE
+		PLAYER_PUNCH_HIT,			//プレイヤーパンチヒット
+		PLAYER_PUNCH_MOTION,		//プレイヤーパンチモーション
+		PLAYER_DASH_START,			//プレイヤーダッシュスタート
+		PLAYER_JUMP,				//プレイヤージャンプ
+		DELON,						//デロンSE
+		SPRING_SE,					//スプリングSE
+		SLIME_SE,					//スライムSE
+		COIN_GET_SE,				//コインゲットSE
 
 		//エディット効果音
-		CLICK_OBJECT_SE,		//クリックオブジェクトSE
-		CREATE_OBJECT_SE,		//オブジェクト生成SE
-		ERROR_SE,				//エラーSE
-		PALETTE_CLICK,			//パレットクリックSE
-		PALETTE_OPEN,			//パレット開く
-		PALETTE_CLOSE,			//パレット閉じる
-		EDIT_SYSTEM_ICON_CLICK,	//エディットシステムアイコンクリック
+		CLICK_OBJECT_SE,			//クリックオブジェクトSE
+		CREATE_OBJECT_SE,			//オブジェクト生成SE
+		ERROR_SE,					//エラーSE
+		PALETTE_CLICK,				//パレットクリックSE
+		PALETTE_OPEN,				//パレット開く
+		PALETTE_CLOSE,				//パレット閉じる
+		EDIT_SYSTEM_ICON_CLICK,		//エディットシステムアイコンクリック
 		CHANGE_PHASE_ICON_CLICK,	//フェーズアイコンクリック
-		BOMB_SE,	//爆発音
-		COUNTDOWN_SE,	//笛の音
-		RESPAWN_SE,	//リスポーン音
+		BOMB_SE,					//爆発音
+		COUNTDOWN_SE,				//笛の音
+		RESPAWN_SE,					//リスポーン音
 
 		//プレイモード効果音
-		GAME_OVER,			//ゲームオーバー
-		CLEAR,				//クリア
+		GAME_OVER,					//ゲームオーバー
+		CLEAR,						//クリア
 
 		//チキン鳴き声
-		CHICKEN_SE,				//チキンSE
-		CHICKEN_SE_2,			//チキンSE2
-		CHICKEN_SE_3,			//チキンSE3
-		CHICKEN_SE_4,			//チキンSE4
+		CHICKEN_SE,					//チキンSE
+		CHICKEN_SE_2,				//チキンSE2
+		CHICKEN_SE_3,				//チキンSE3
+		CHICKEN_SE_4,				//チキンSE4
 	};
 
 	/// <summary>
@@ -75,8 +75,8 @@ public:
 	/// </summary>
 	enum class TYPE
 	{
-		BGM,				//BGM
-		SE,					//効果音
+		BGM,						//BGM
+		SE,							//効果音
 		MAX
 	};
 
@@ -99,35 +99,35 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~SoundManager();
+	~SoundManager(void);
 
 	/// <summary>
 	/// 明示的にインスタンス生成する
 	/// </summary>
 	/// <param name=""></param>
-	static void CreateInstance();
+	static void CreateInstance(void);
 
 	/// <summary>
 	/// 静的インスタンスの取得
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns></returns>インスタンス
-	static SoundManager& GetInstance();
+	static SoundManager& GetInstance(void);
 
 	/// <summary>
 	/// 解放
 	/// </summary>
-	void Destroy();
+	void Destroy(void);
 
 	/// <summary>
 	/// リソースの解放
 	/// </summary>
-	void Release();
+	void Release(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// リソースの読み込み
@@ -160,7 +160,7 @@ public:
 	/// 読み込んだ音量を設定する
 	/// </summary>
 	/// <returns></returns>
-	const void SetLoadedSoundsVolume() { for (int i = 0; i < TYPE_MAX; i++) { SetSystemVolume(volume_[i], i); } };
+	const void SetLoadedSoundsVolume(void) { for (int i = 0; i < TYPE_MAX; i++) { SetSystemVolume(volume_[i], i); } };
 
 	/// <summary>
 	/// 音量の設定
@@ -198,7 +198,7 @@ private:
 	std::unordered_map<SRC, SoundResource> loadedMap_;
 
 	// コンストラクタ
-	SoundManager();
+	SoundManager(void);
 
 	// デフォルトコンストラクタは使用不可
 	SoundManager(const SoundManager&) = delete;

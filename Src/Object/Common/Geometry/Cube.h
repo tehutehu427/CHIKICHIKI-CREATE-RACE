@@ -1,9 +1,9 @@
 #pragma once
-
 #include"Geometry.h"
 
 class Cube : public Geometry
 {
+
 public:
 
 	//バウンディングボックス
@@ -39,51 +39,126 @@ public:
 	/// <param name="_rot">追従する親の回転</param>
 	Cube(const Cube& _copyBase, const VECTOR& _pos, const Quaternion& _rot);
 
-	//デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	~Cube(void)override;
 
-	//描画
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void)override;
 
-	//各種当たり判定
-	const bool IsHit(Geometry& _geometry)override;
-	const bool IsHit(Model& _model)override;
-	const bool IsHit(Cube& _cube)override;
-	const bool IsHit(Sphere& _sphere)override;
-	const bool IsHit(Capsule& _capsule)override;
-	const bool IsHit(Line& _line)override;
+	/// <summary>
+	/// 形状当たり判定
+	/// </summary>
+	/// <param name="_geometry">形状情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Geometry& _geometry) override;
 
-	//回転バウンティボックスの取得
+	/// <summary>
+	/// モデルとの当たり判定
+	/// </summary>
+	/// <param name="_geometry">モデル情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Model& _model) override;
+
+	/// <summary>
+	/// 箱との当たり判定
+	/// </summary>
+	/// <param name="_geometry">箱情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Cube& _cube) override;
+
+	/// <summary>
+	/// 球との当たり判定
+	/// </summary>
+	/// <param name="_geometry">球情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Sphere& _sphere) override;
+
+	/// <summary>
+	/// カプセルとの当たり判定
+	/// </summary>
+	/// <param name="_geometry">カプセル情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Capsule& _capsule) override;
+
+	/// <summary>
+	/// 線分との当たり判定
+	/// </summary>
+	/// <param name="_geometry">線分情報</param>
+	/// <returns>当たり判定(true:当たった)</returns>
+	const bool IsHit(Line& _line) override;
+
+	/// <summary>
+	/// 回転バウンティボックスの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>回転バウンティボックス</returns>
 	inline const OBB& GetObb(void)const { return obb_; }
 
-	//箱の最小地点の取得
-	inline const VECTOR GetVecMin(void)const { return obb_.vMin; }
-
-	//箱の最大地点の取得
-	inline const VECTOR GetVecMax(void)const { return obb_.vMax; }
-
-	//回転バウンティボックスの設定
+	/// <summary>
+	/// 回転バウンティボックスの設定
+	/// </summary>
+	/// <param name="_obb">回転バウンティボックス</param>
 	inline void SetObb(const OBB& _obb) { obb_ = _obb; }
 
-	//箱の最小地点の設定
+	/// <summary>
+	/// 箱の最小地点の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>箱の最小地点</returns>
+	inline const VECTOR GetVecMin(void)const { return obb_.vMin; }
+
+	/// <summary>
+	/// 箱の最大地点の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>箱の最大地点</returns>
+	inline const VECTOR GetVecMax(void)const { return obb_.vMax; }
+
+	/// <summary>
+	/// 箱の最小地点の設定
+	/// </summary>
+	/// <param name="_min">箱の最小地点</param>
 	inline void SetVecMin(const VECTOR& _min) { obb_.vMin = _min; }
 
-	//箱の最大地点の設定
+	/// <summary>
+	/// 箱の最大地点の設定
+	/// </summary>
+	/// <param name="_max">箱の最大地点</param>
 	inline void SetVecMax(const VECTOR& _max){ obb_.vMax = _max; }
 
-	//サイズの半分の設定
+	/// <summary>
+	/// サイズの半分の設定
+	/// </summary>
+	/// <param name="_halfSize">サイズの半分</param>
 	inline void SetHalfSize(const VECTOR& _halfSize);
 
 private:
 
-	OBB obb_;			//回転バウンディングボックス
+	//回転バウンディングボックス
+	OBB obb_;			
 
-	//箱の回転情報の取得
+	/// <summary>
+	/// 箱の回転情報の取得
+	/// </summary>
+	/// <param name="_num">回転軸の番号</param>
+	/// <returns>箱の回転情報</returns>
 	inline const VECTOR GetAxis(const int _num)const { return obb_.axis[_num]; }
 
-	// クォータニオンから回転軸を計算
+	/// <summary>
+	/// クォータニオンから回転軸を計算
+	/// </summary>
+	/// <param name=""></param>
 	void UpdateObbAxis(void);
 
-	// 各頂点の計算（ワールド座標）
+	/// <summary>
+	/// 各頂点の計算（ワールド座標）
+	/// </summary>
+	/// <param name="outVertices">頂点</param>
 	void CalculateVertices(VECTOR outVertices[8]) const;
 };

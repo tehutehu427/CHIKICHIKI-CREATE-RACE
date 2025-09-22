@@ -3,11 +3,11 @@
 #include"../../Common/Geometry/Model.h"
 #include "Spring.h"
 
-Spring::Spring()
+Spring::Spring(void)
 {
 }
 
-Spring::~Spring()
+Spring::~Spring(void)
 {
 }
 
@@ -40,9 +40,6 @@ void Spring::SetParam(void)
 	trans_.localPos.y = MAP_LOCALPOS.y * trans_.scl.y;
 	trans_.localPos.z = MAP_LOCALPOS.z * trans_.scl.z;
 
-	//ˆÚ“®—Í‰Šú‰»
-	InitMovePow();
-
 	//ƒRƒ‰ƒCƒ_‚Ìì¬
 	std::unique_ptr<Model> geo = std::make_unique<Model>(trans_.overAllPos, trans_.quaRot, trans_.modelId);
 	MakeCollider({ Collider::TAG::SPRING }, std::move(geo), { Collider::TAG::PUNCH });
@@ -57,10 +54,4 @@ void Spring::Update(void)
 
 void Spring::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-}
-
-void Spring::InitMovePow(void)
-{
-	//ˆÚ“®—Í‰Šú‰»
-	movePow_ = VScale(trans_.quaRot.PosAxis(trans_.quaRot.GetUp()), MOVE_POW);
 }

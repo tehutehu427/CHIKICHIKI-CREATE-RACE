@@ -3,6 +3,7 @@
 
 class MoveVerFloor : public ItemBase
 {
+
 public:
 
 	//マップ
@@ -12,19 +13,37 @@ public:
 	static constexpr int ROUTE = 2;									//ルート数
 	static constexpr VECTOR MAP_LOCALPOS = { 220.0f,15.0f,220.0f };	//マップとの相対座標
 
-	//サイズ
-	static constexpr VECTOR MODEL_SIZE = { 440.0f,30.0f,440.0f };	//モデルのサイズ
+	//モデルのサイズ
+	static constexpr VECTOR MODEL_SIZE = { 440.0f,30.0f,440.0f };	
 
-	//コンストラクタ
-	MoveVerFloor();
-	//デストラクタ
-	~MoveVerFloor()override;
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	MoveVerFloor(void);
 
-	//個人設定
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	~MoveVerFloor(void)override;
+
+	/// <summary>
+	/// 個人設定
+	/// </summary>
+	/// <param name=""></param>
 	void SetParam(void)override;
-	//更新
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void)override;
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void)override;
 
 	/// <summary>
@@ -33,10 +52,19 @@ public:
 	/// <param name="_hitColTag">相手側の当たり判定</param>
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
-	//サイズの取得
+	/// <summary>
+	/// サイズの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>サイズ(マップ座標基準)</returns>
 	inline const IntVector3 GetHitSize(void)const override;
 
+	/// <summary>
+	/// 値リセット
+	/// </summary>
+	/// <param name=""></param>
 	void ResetValue(void)override;
+
 private:
 
 	//ルート関係
@@ -61,6 +89,5 @@ private:
 
 	//ルートを超えたかの判定
 	bool IsBeyondRoute(void);
-
 };
 

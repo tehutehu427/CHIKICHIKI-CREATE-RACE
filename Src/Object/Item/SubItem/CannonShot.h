@@ -1,14 +1,15 @@
 #pragma once
-#include "../ItemBase.h"
 
 #include<memory>
 #include<functional>
 #include<map>
+#include "../ItemBase.h"
 
 class EffectController;
 
 class CannonShot : public ItemBase
 {
+
 public:
 
 	//ステータス
@@ -33,17 +34,35 @@ public:
 	/// <param name="_scl">親の大きさ</param>
 	CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl);
 
-	//デストラクタ
-	~CannonShot()override;
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	~CannonShot(void)override;
 
-	//個人設定
+	/// <summary>
+	/// 個人設定
+	/// </summary>
+	/// <param name=""></param>
 	void SetParam(void)override;
-	//更新
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void)override;
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void)override;
 
-	//弾の生存判定
+	/// <summary>
+	/// 弾の生存判定
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>弾の生存判定</returns>
 	inline const bool IsAlive(void)const { return isAlive_; }
 
 	/// <summary>
@@ -62,24 +81,25 @@ private:
 		DEAD,	//死亡
 	};
 
+	//状態管理
 	STATE state_;		//状態
 	float cnt_;			//生存カウンタ
 	bool isAlive_;		//生存判定
 	float invincible_;	//無敵時間
 
 	//関数ポインタ
-	std::map<STATE,std::function<void(void)>> update_;			//更新
-	std::map<STATE, std::function<void(void)>>draw_;			//描画
+	std::map<STATE,std::function<void(void)>> update_;	//更新
+	std::map<STATE, std::function<void(void)>>draw_;	//描画
 
 	//状態ごとの更新
-	void UpdateAlive(void);
-	void UpdateBlast(void);
-	void UpdateDead(void);
+	void UpdateAlive(void);	//生存
+	void UpdateBlast(void);	//爆発
+	void UpdateDead(void);	//死亡
 
 	//状態ごとの描画
-	void DrawAlive(void);
-	void DrawBlast(void);
-	void DrawDead(void);
+	void DrawAlive(void);	//生存
+	void DrawBlast(void);	//爆発
+	void DrawDead(void);	//死亡
 
 	//移動処理
 	inline void Move(void);
@@ -92,8 +112,6 @@ private:
 
 	//シェーダーの初期化
 	void InitShader() override;
-
-	//当たり判定
 
 	//プレイヤーと当たった処理
 	void HitPlayer(void);

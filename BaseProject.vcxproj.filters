@@ -40,13 +40,11 @@
     <ClCompile Include="Src\Object\Common\Geometry\Capsule.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\PaletteCursor.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.cpp" />
-    <ClCompile Include="Src\Object\Item\Installation\FerrisWheel.cpp" />
     <ClCompile Include="Src\Object\System\Select\ModeSelect.cpp" />
     <ClCompile Include="Src\Object\System\GameClear.cpp" />
     <ClCompile Include="Src\Common\FontRegistry.cpp" />
     <ClCompile Include="Src\Object\Editor\Palette\MultiPalette.cpp" />
     <ClCompile Include="Src\Object\Item\Installation\Spring.cpp" />
-    <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp" />
     <ClCompile Include="Src\Object\Item\Destroyer\SmallBomb.cpp" />
     <ClCompile Include="Src\Object\Item\Fixed\GoalFlag.cpp" />
     <ClCompile Include="Src\Object\Item\SubItem\CannonShot.cpp" />
@@ -131,6 +129,7 @@
     <ClCompile Include="Src\Object\PostEffect\PostEffectBase.cpp" />
     <ClCompile Include="Src\Object\PostEffect\SandStormEffect.cpp" />
     <ClCompile Include="Src\Object\PostEffect\WiggleEffect.cpp" />
+    <ClCompile Include="Src\Object\Item\Destroyer\BigBomb.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Common\Geometry\Cube.h" />
@@ -151,7 +150,6 @@
     <ClInclude Include="Src\Manager\System\KeyConfig.h" />
     <ClInclude Include="Src\Object\Editor\Palette\PaletteCursor.h" />
     <ClInclude Include="Src\Object\Editor\Palette\Icon\MultiPaletteIcon.h" />
-    <ClInclude Include="Src\Object\Item\Installation\FerrisWheel.h" />
     <ClInclude Include="Src\Manager\Game\PlayerManager.h" />
     <ClInclude Include="Src\Object\Item\Installation\Floor.h" />
     <ClInclude Include="Src\Object\Item\Installation\Cannon.h" />
@@ -160,7 +158,6 @@
     <ClInclude Include="Src\Object\Item\Installation\MoveVerFloor.h" />
     <ClInclude Include="Src\Object\Item\Installation\SlimeFloor.h" />
     <ClInclude Include="Src\Object\Item\Installation\Spring.h" />
-    <ClInclude Include="Src\Object\Item\Destroyer\BigBomb.h" />
     <ClInclude Include="Src\Object\Item\Destroyer\SmallBomb.h" />
     <ClInclude Include="Src\Object\Item\Fixed\StartFlag.h" />
     <ClInclude Include="Src\Object\Item\Fixed\GoalFlag.h" />
@@ -302,6 +299,7 @@
     <ClInclude Include="Src\Object\PostEffect\PostEffectBase.h" />
     <ClInclude Include="Src\Object\PostEffect\SandStormEffect.h" />
     <ClInclude Include="Src\Object\PostEffect\WiggleEffect.h" />
+    <ClInclude Include="Src\Object\Item\Destroyer\BigBomb.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

@@ -6,24 +6,20 @@
 #include "../Common/Vector2.h"
 #include "../Application.h"
 
-WiggleEffect::WiggleEffect()
+WiggleEffect::WiggleEffect(void)
 {
 	renderer_ = nullptr;
 	material_ = nullptr;
 	timer_ = 0.0f;
 }
 
-WiggleEffect::~WiggleEffect()
-{
-}
-
-void WiggleEffect::Load()
+void WiggleEffect::Load(void)
 {
 	material_ = std::make_unique<PixelMaterial>("Wiggle.cso", BUFFER_SIZE);
 	renderer_ = std::make_unique<PixelRenderer>(*material_);
 }
 
-void WiggleEffect::Init()
+void WiggleEffect::Init(void)
 {
 	//バッファー追加
 	material_->AddConstBuf(FLOAT4{ 1.0f,0.0f,0.0f,0.0f });
@@ -37,10 +33,9 @@ void WiggleEffect::Init()
 		Vector2(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y));
 
 	timer_ = 0.0f;
-
 }
 
-void WiggleEffect::Draw()
+void WiggleEffect::Draw(void)
 {
 	auto& scn = SceneManager::GetInstance();
 

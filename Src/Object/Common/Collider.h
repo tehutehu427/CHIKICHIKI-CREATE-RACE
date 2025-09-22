@@ -1,5 +1,4 @@
 #pragma once
-
 #include<vector>
 #include"Geometry/Geometry.h"
 
@@ -17,14 +16,11 @@ public :
 		PLAYER2,		//プレイヤー2
 		PLAYER3,		//プレイヤー3
 		PLAYER4,		//プレイヤー4
-
 		PUNCH,			//パンチ
-
 		SHADOW,			//影
 
-		START,			//開始地点
-		GOAL,			//終了地点
-
+		START,				//開始地点
+		GOAL,				//終了地点
 		NORMAL_ITEM,		//通常アイテム		
 		MOVE_VER_FLOOR,		//縦移動床
 		MOVE_HORI_FLOOR,	//横移動床
@@ -37,8 +33,6 @@ public :
 		KILLER_ALL,			//接触すると死ぬモデル
 		KILLER_SPECIFIC,	//一定の場所に当たると死ぬモデル
 		
-		
-
 		DESTROYER,		//アイテムオブジェクトを破壊する
 	};
 
@@ -50,28 +44,58 @@ public :
 	/// <param name="_notHitTags">衝突させないタグ</param>
 	Collider(ObjectBase& _parent, const std::vector<TAG> _tags, Geometry& _geometry, const std::vector<TAG> _notHitTags);
 
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	~Collider(void);
 
-	//衝突用タグの取得
+	/// <summary>
+	/// 衝突用タグの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>衝突用タグ</returns>
 	inline const std::vector<TAG> GetTags(void)const { return tags_; }
 
-	//当たり判定の形状を取得
+	/// <summary>
+	/// 当たり判定の形状を取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>当たり判定形状</returns>
 	inline Geometry& GetGeometry(void)const { return geometry_; }
 
-	//衝突させないタグの取得
+	/// <summary>
+	/// 衝突させないタグの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>衝突させないタグ</returns>
 	inline const std::vector<TAG> GetNotHitTags(void)const { return notHitTags_; }
 
-	//親を取得
+	/// <summary>
+	/// 親を取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>親オブジェクト</returns>
 	inline const ObjectBase& GetParent(void)const { return parent_; }
 
-	//当たったかの判定の取得
+	/// <summary>
+	/// 当たり判定の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>当たり判定(true:当たった)</returns>
 	inline const bool IsHit(void)const { return isHit_; }
 
-	//終了判定の取得
+	/// <summary>
+	/// 終了判定の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>終了判定(true:終了)</returns>
 	inline const bool IsDead(void)const { return isDead_; }
 
-	//終了処理(所持者の解放時に置く)
+	/// <summary>
+	/// 終了処理(所持者の解放時に置く)
+	/// </summary>
+	/// <param name=""></param>
 	inline void Kill(void) { isDead_ = true; }
 
 	/// <summary>

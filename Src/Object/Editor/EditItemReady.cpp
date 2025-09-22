@@ -5,7 +5,7 @@
 #include "EditController.h"
 #include "EditItemReady.h"
 
-EditItemReady::EditItemReady(EditController& parent) : parent_(parent)
+EditItemReady::EditItemReady(EditController& _parent) : parent_(_parent)
 {
 	ready_ = READY_PHASE::NOT_READY;
 	hitSize_ = { HIT_WIDTH,HIT_HEIGHT };
@@ -18,21 +18,21 @@ EditItemReady::EditItemReady(EditController& parent) : parent_(parent)
 	readyImg_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::READY_IMG).handleId_;
 }
 
-EditItemReady::~EditItemReady()
+EditItemReady::~EditItemReady(void)
 {
 }
 
-void EditItemReady::Init()
+void EditItemReady::Init(void)
 {
 	ChangeReady(READY_PHASE::NOT_READY);
 }
 
-void EditItemReady::Update()
+void EditItemReady::Update(void)
 {
 	phaseUpdate_();
 }
 
-void EditItemReady::Draw()
+void EditItemReady::Draw(void)
 {
 	phaseDraw_();
 }

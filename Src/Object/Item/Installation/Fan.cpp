@@ -6,12 +6,13 @@
 #include "../SubItem/Wind.h"
 #include "Fan.h"
 
-Fan::Fan()
+Fan::Fan(void)
 {
 }
 
-Fan::~Fan()
+Fan::~Fan(void)
 {
+	//風の削除
 	wind_.reset();
 }
 
@@ -79,7 +80,7 @@ void Fan::OnHit(const std::weak_ptr<Collider> _hitCol)
 
 void Fan::ResetValue(void)
 {
-	//風の消去
+	//風の削除
 	wind_.reset();
 
 	//共通
@@ -97,6 +98,7 @@ void Fan::CreateWind(void)
 
 void Fan::InitShader()
 {
+	//シェーダーの初期化
 	toonStyle_ = std::make_unique<ToonStyle>();
 	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::NO_TEXTURE);
 	toonStyle_->Init();

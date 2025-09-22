@@ -3,6 +3,7 @@
 
 class SandStormEffect : public PostEffectBase
 {
+
 public:
 
 	/// <summary>
@@ -13,7 +14,7 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~SandStormEffect() override;
+	~SandStormEffect() override = default;
 
 	/// <summary>
 	/// 読み込み処理

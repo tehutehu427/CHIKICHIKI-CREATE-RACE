@@ -15,7 +15,7 @@
 #include "../../../Scene/SelectScene.h"
 #include "../ManualTab.h"
 #include "SelectSceneActors.h"
-
+#include "ModeSelect.h"
 
 namespace
 {
@@ -23,8 +23,8 @@ namespace
 	Vector2 imgArcDivs = { ResourceManager::IMG_ARCS_DIV_X, ResourceManager::IMG_ARCS_DIV_Y };
 }
 
-ModeSelect::ModeSelect()
-	: scnMng_(SceneManager::GetInstance()),
+ModeSelect::ModeSelect(void) :
+	scnMng_(SceneManager::GetInstance()),
 	dateBank_(DateBank::GetInstance())
 {
 	//状態別更新関数のセット
@@ -54,7 +54,7 @@ ModeSelect::~ModeSelect()
 {
 }
 
-void ModeSelect::Load()
+void ModeSelect::Load(void)
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 
@@ -76,7 +76,7 @@ void ModeSelect::Load()
 	actors_->Load();
 }
 
-void ModeSelect::Init()
+void ModeSelect::Init(void)
 {
 	//初期化
 	//画像分割り当て
@@ -105,7 +105,7 @@ void ModeSelect::Init()
 	manual_->Init();
 
 	//バッファーの設定
-	material_->AddConstBuf(FLOAT4{ 1.0f,0.8f,0.0f,0.7f });
+	material_->AddConstBuf(BUFFER);
 	material_->AddConstBuf(FLOAT4{ 
 		ResourceManager::IMG_ARC_SIZE,
 		ResourceManager::IMG_ARC_SIZE,
@@ -121,15 +121,10 @@ void ModeSelect::Init()
 
 	//アクター初期化
 	actors_->Init();
-
 }
 
 void ModeSelect::Update(SelectScene& _parent)
 {
-#ifdef _DEBUG
-	DebugUpdate();
-#endif
-
 	// 毎フレームのUpdate処理
 	if (selectUpdateFunc_ && !manual_->IsDisplay()) selectUpdateFunc_(_parent);
 
@@ -140,12 +135,8 @@ void ModeSelect::Update(SelectScene& _parent)
 	actors_->Update();
 }
 
-void ModeSelect::Draw()
+void ModeSelect::Draw(void)
 {
-#ifdef _DEBUG
-	DebugDraw();
-#endif
-
 	//アクターの描画
 	actors_->Draw();
 
@@ -277,8 +268,8 @@ void ModeSelect::RotateUpdate(SelectScene&)
 		arc_[i].angle = currentAngle_ + ROTATE_STEP * i;
 
 		// 位置計算
-		arc_[i].pos.x = ROTATE_CENTER_X + std::cos(arc_[i].angle) * ORBIT_RADIUS;
-		arc_[i].pos.y = ROTATE_CENTER_Y + std::sin(arc_[i].angle) * ORBIT_RADIUS;
+		arc_[i].pos.x = ROTATE_CENTER_X + static_cast<int>(std::cos(arc_[i].angle) * ORBIT_RADIUS);
+		arc_[i].pos.y = ROTATE_CENTER_Y + static_cast<int>(std::sin(arc_[i].angle) * ORBIT_RADIUS);
 	}
 }
 
@@ -292,7 +283,7 @@ void ModeSelect::SetMenuItem(const int _imgIndex, const int _arcIndex)
 	arc_[arcIndex].img = imgArcs_[imgIndex];
 }
 
-void ModeSelect::DrawMessage()
+void ModeSelect::DrawMessage(void)
 {
 	//描画位置
 	constexpr float RATE = 0.5f;
@@ -373,7 +364,7 @@ void ModeSelect::DrawGlow(const int _index)
 		false);
 }
 
-void ModeSelect::DrawArrow()
+void ModeSelect::DrawArrow(void)
 {
 	for (int i = 0; i < ARROWS; i++)
 	{
@@ -389,12 +380,4 @@ void ModeSelect::DrawArrow()
 			true,
 			false);
 	}
-}
-
-void ModeSelect::DebugUpdate()
-{
-}
-
-void ModeSelect::DebugDraw()
-{
 }

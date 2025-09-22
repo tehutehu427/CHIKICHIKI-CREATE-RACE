@@ -22,8 +22,8 @@ using json = nlohmann::json;
 
 namespace
 {
-	constexpr int MARGIN = 200;    	 //間
-	constexpr int OFFSET_Y = 120; //座標調整用
+	constexpr int MARGIN = 200;    	                        //間
+	constexpr int OFFSET_Y = 120;                           //座標調整用
     const std::string path_json = Application::PATH_JSON;   //パス
 }
 
@@ -56,13 +56,13 @@ MapDataIO::MapDataIO(const Vector2& _padCursorPos):
     RegisterGetFileName(SceneManager::SCENE_ID::MULTI, [&]() {return GetMultiFileName(); });
 }
 
-MapDataIO::~MapDataIO()
+MapDataIO::~MapDataIO(void)
 {
     DeleteFontToHandle(exportFont_);
     DeleteFontToHandle(font_);
 }
 
-void MapDataIO::Load()
+void MapDataIO::Load(void)
 {
     //ファイルパスの指定
     selectFile_ = Application::PATH_JSON + getFileNameMap_[SceneManager::GetInstance().GetSceneID()]();
@@ -91,7 +91,7 @@ void MapDataIO::Load()
 	sndMng.LoadResource(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK); //アイコンのクリック音
 }
 
-void MapDataIO::Init()
+void MapDataIO::Init(void)
 {
     //メッセージ表示カウントを初期化
     messageDisplayCnt_ = 0.0f;
@@ -103,7 +103,7 @@ void MapDataIO::Init()
     ChangeState(STATE::WAIT); 
 }
 
-void MapDataIO::Update()
+void MapDataIO::Update(void)
 {
     if (stateMap_.count(state_)) 
     {
@@ -114,7 +114,7 @@ void MapDataIO::Update()
     }
 }
 
-void MapDataIO::Draw()
+void MapDataIO::Draw(void)
 {
     if (stateMap_.count(state_))
     {
@@ -125,12 +125,12 @@ void MapDataIO::Draw()
     }
 }
 
-const bool MapDataIO::IsEdit() const
+const bool MapDataIO::IsEdit(void) const
 {
     return state_ == STATE::NONE || state_ == STATE::WAIT;
 }
 
-void MapDataIO::Reset()
+void MapDataIO::Reset(void)
 {
     //ファイルパスの指定
     selectFile_ = Application::PATH_JSON + getFileNameMap_[SceneManager::GetInstance().GetSceneID()]();
@@ -237,7 +237,7 @@ void MapDataIO::ExportJsonFile(const std::string _fileName)
     }
 }
 
-void MapDataIO::ImportJsonFile()
+void MapDataIO::ImportJsonFile(void)
 {
     ItemManager& itemMng = ItemManager::GetInstance();
 
@@ -269,18 +269,18 @@ void MapDataIO::ImportJsonFile()
     }
 }
 
-bool MapDataIO::IsTriggerExport() const
+bool MapDataIO::IsTriggerExport(void) const
 {
     KeyConfig& ins = KeyConfig::GetInstance();
 
     //アイコンクリック用
-    const Vector2 rightPos = { ICON_SIZE_X * 2, 0 };
-    const Vector2 leftDown = { ICON_SIZE_X * 3, ICON_SIZE_Y };
+    const Vector2 RIGHT_UP = { ICON_SIZE_X * 2, 0 };
+    const Vector2 LEFT_DOWN = { ICON_SIZE_X * 3, ICON_SIZE_Y };
 
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EXPORT_FILE, KeyConfig::JOYPAD_NO::PAD1) || 
         ins.IsTrgDown(KeyConfig::CONTROL_TYPE::EXPORT_FILE_CLICK, KeyConfig::JOYPAD_NO::PAD1) && 
-       ( Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown) || Utility::IsPointInRect(padCursorPos_, rightPos, leftDown)))
+       ( Utility::IsPointInRect(ins.GetMousePos(), RIGHT_UP, LEFT_DOWN) || Utility::IsPointInRect(padCursorPos_, RIGHT_UP, LEFT_DOWN)))
     {
         return true;
     }
@@ -288,18 +288,18 @@ bool MapDataIO::IsTriggerExport() const
     return false;
 }
 
-inline bool MapDataIO::IsTriggerImport() const
+bool MapDataIO::IsTriggerImport(void) const
 {
     KeyConfig& ins = KeyConfig::GetInstance();
 
     //アイコンクリック用
-    const Vector2 rightPos = { ICON_SIZE_X, 0 };
-    const Vector2 leftDown = { ICON_SIZE_X * 2, ICON_SIZE_Y };
+    const Vector2 RIGHT_UP = { ICON_SIZE_X, 0 };
+    const Vector2 LEFT_DOWN = { ICON_SIZE_X * 2, ICON_SIZE_Y };
 
     //特定のキーを押す、もしくはUIをクリックしたら処理を実行する
     if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::IMPORT_FILE, KeyConfig::JOYPAD_NO::PAD1) ||
         ins.IsTrgDown(KeyConfig::CONTROL_TYPE::IMPORT_FILE_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
-        (Utility::IsPointInRect(ins.GetMousePos(), rightPos, leftDown) || Utility::IsPointInRect(padCursorPos_, rightPos, leftDown)))
+        (Utility::IsPointInRect(ins.GetMousePos(), RIGHT_UP, LEFT_DOWN) || Utility::IsPointInRect(padCursorPos_, RIGHT_UP, LEFT_DOWN)))
     {
         return true;
     }
@@ -382,12 +382,12 @@ std::unordered_map<ItemBase::ITEM_TYPE, MapDataIO::ImportData> MapDataIO::LoadIt
     return items;
 }
 
-std::string MapDataIO::GetFreeFileName()
+std::string MapDataIO::GetFreeFileName(void)
 {
     return "DefaultStage.json";
 }
 
-std::string MapDataIO::GetSoloFileName()
+std::string MapDataIO::GetSoloFileName(void)
 {
     //配列を生成
     const std::string stages[static_cast<int>(SelectStage::STAGE_TYPE::MAX)] =
@@ -407,7 +407,7 @@ std::string MapDataIO::GetSoloFileName()
     return stages[selectNum];
 }
 
-std::string MapDataIO::GetMultiFileName()
+std::string MapDataIO::GetMultiFileName(void)
 {
     //配列を生成
     const std::string stages[MULTI_STAGE_TYPES] =
@@ -435,7 +435,7 @@ void MapDataIO::RegisterState(const STATE _state, std::function<void()> _update,
     stateMap_[_state] = StateFuncs{ _update, _draw };
 }
 
-void MapDataIO::UpdateWait()
+void MapDataIO::UpdateWait(void)
 {
     KeyConfig& ins = KeyConfig::GetInstance();
 	SoundManager& sndMng = SoundManager::GetInstance();
@@ -488,9 +488,9 @@ void MapDataIO::UpdateWait()
     messageDisplayCnt_ -= SceneManager::GetInstance().GetDeltaTime();
 }
 
-void MapDataIO::UpdateCheckExport()
+void MapDataIO::UpdateCheckExport(void)
 {  
-    YesNoResponder::RESPON res = responder_->GetRespon();
+    YesNoResponder::RESPON res = responder_->GetRespond();
     if (res == YesNoResponder::RESPON::NONE)
     {
         //選択処理
@@ -517,9 +517,9 @@ void MapDataIO::UpdateCheckExport()
     }
 }
 
-void MapDataIO::UpdateCheckImport()
+void MapDataIO::UpdateCheckImport(void)
 {
-    YesNoResponder::RESPON res = responder_->GetRespon();
+    YesNoResponder::RESPON res = responder_->GetRespond();
     if (res == YesNoResponder::RESPON::NONE)
     {
         //選択処理
@@ -547,7 +547,7 @@ void MapDataIO::UpdateCheckImport()
     }
 }
 
-void MapDataIO::UpdateFinish()
+void MapDataIO::UpdateFinish(void)
 {
 	KeyConfig& ins = KeyConfig::GetInstance();
 
@@ -559,7 +559,7 @@ void MapDataIO::UpdateFinish()
     }
 }
 
-void MapDataIO::DrawWait()
+void MapDataIO::DrawWait(void)
 {
     DrawRotaGraph(
         ICON_SIZE_X + ICON_SIZE_X / 2,
@@ -582,7 +582,7 @@ void MapDataIO::DrawWait()
     );
 }
 
-void MapDataIO::DrawCheckExport()
+void MapDataIO::DrawCheckExport(void)
 {
     //確認画面の描画
     responder_->Draw();
@@ -591,13 +591,13 @@ void MapDataIO::DrawCheckExport()
     DrawRotaGraph(
         Application::SCREEN_HALF_X,
         Application::SCREEN_HALF_Y - OFFSET_Y,
-        0.7f,
+        MESSAGE_RATE,
         0.0f,
         imgEditMessages_[IMG_EXPORT_INDEX],
         true);
 }
 
-void MapDataIO::DrawCheckImport()
+void MapDataIO::DrawCheckImport(void)
 {
     //確認画面の描画
     responder_->Draw();
@@ -606,19 +606,19 @@ void MapDataIO::DrawCheckImport()
     DrawRotaGraph(
         Application::SCREEN_HALF_X,
         Application::SCREEN_HALF_Y - OFFSET_Y,
-        0.7f,
+        MESSAGE_RATE,
         0.0f,
         imgEditMessages_[IMG_IMPORT_INDEX],
         true);
 }
 
-void MapDataIO::DrawFinish()
+void MapDataIO::DrawFinish(void)
 {
     //メッセージの描画
     DrawRotaGraph(
         Application::SCREEN_HALF_X,
         Application::SCREEN_HALF_Y,
-        2.0f,
+        FINISH_MESSAGE_RATE,
         0.0f,
         imgSystemMessages_[systemMessageIndex_],
         true);

@@ -31,8 +31,6 @@ void PlayerInput::Update(void)
 	inputUpdates_[cntl_]();
 }
 
-
-
 void PlayerInput::InputAll(void)
 {
 	auto& ins = KeyConfig::GetInstance();

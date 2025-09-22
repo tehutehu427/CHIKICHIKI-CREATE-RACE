@@ -32,12 +32,12 @@ EditEscape::EditEscape(const Vector2& _padCursorPos):
 	RegisterStateFunction(STATE::CHECK, SceneBase::ProcessFunction{ [&]() { UpdateCheck(); },  [&]() { DrawCheck(); } });
 }
 
-EditEscape::~EditEscape()
+EditEscape::~EditEscape(void)
 {
 	DeleteFontToHandle(font_);
 }
 
-void EditEscape::Load()
+void EditEscape::Load(void)
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgIcon_ = res.Load(ResourceManager::SRC::CANCEL_ICON).handleId_;
@@ -51,7 +51,7 @@ void EditEscape::Load()
 	SoundManager::GetInstance().LoadResource(SoundManager::SRC::EDIT_SYSTEM_ICON_CLICK);
 }
 
-void EditEscape::Init()
+void EditEscape::Init(void)
 {
 	//座標設定
 	pos_ = iconHalfSize;
@@ -59,13 +59,13 @@ void EditEscape::Init()
 	responder_->Init();
 }
 
-void EditEscape::Update()
+void EditEscape::Update(void)
 {
 	//更新
 	stateFunc_[state_].updataFunc_();
 }
 
-void EditEscape::Draw()
+void EditEscape::Draw(void)
 {
 	//描画
 	stateFunc_[state_].drawFunc_();
@@ -82,7 +82,7 @@ void EditEscape::RegisterStateFunction(const STATE _state, SceneBase::ProcessFun
 	stateFunc_[_state] = _func;
 }
 
-void EditEscape::UpdateWait()
+void EditEscape::UpdateWait(void)
 {
 	//座標設定
 	Vector2 leftTop = Vector2::SubVector2(pos_, iconHalfSize);
@@ -104,9 +104,9 @@ void EditEscape::UpdateWait()
 	}
 }
 
-void EditEscape::UpdateCheck()
+void EditEscape::UpdateCheck(void)
 {
-	YesNoResponder::RESPON res = responder_->GetRespon();
+	YesNoResponder::RESPON res = responder_->GetRespond();
 
 	if (res == YesNoResponder::RESPON::NONE)
 	{
@@ -126,10 +126,9 @@ void EditEscape::UpdateCheck()
 		ChangeState(STATE::WAIT);
 		return;
 	}
-
 }
 
-void EditEscape::DrawWait()
+void EditEscape::DrawWait(void)
 {
 	DrawRotaGraph(
 		pos_.x,
@@ -142,18 +141,22 @@ void EditEscape::DrawWait()
 	);
 }
 
-void EditEscape::DrawCheck()
+void EditEscape::DrawCheck(void)
 {
 	//背景含め回答ボックスの描画
 	responder_->Draw();
 
-	//メッセージの描画
+	//メッセージのYオフセット
 	constexpr int OFFSET_Y = 120;
 
+	//拡大率
+	constexpr float RATE = 0.7f;	
+
+	//メッセージの描画
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
 		Application::SCREEN_HALF_Y - OFFSET_Y,
-		0.7f,
+		RATE,
 		0.0f,
 		imgSystemMessages_[SYS_MES_INDEX],
 		true,

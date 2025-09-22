@@ -6,47 +6,48 @@ class KeyConfig;
 
 class MultiInputCheck
 {
+
 public:
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	MultiInputCheck();
+	MultiInputCheck(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~MultiInputCheck();
+	~MultiInputCheck(void);
 
 	/// <summary>
 	/// 読み込み
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(void);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// リセット
 	/// </summary>
-	void Reset();	
+	void Reset(void);
 	
 	/// <summary>
 	/// 入力状況のみリセットする
 	/// </summary>
-	void ResetInput();
+	void ResetInput(void);
 
 	//ボタンが押されたか返す
 	const bool IsInput(const int _playerIndex) const { return players_[_playerIndex].isProcess; }
@@ -55,7 +56,7 @@ public:
 	/// 全体入力が終えたか返す
 	/// </summary>
 	/// <returns>全員が終えてたらtrue, そうでなければfalse</returns>
-	bool IsAllInput();
+	bool IsAllInput(void);
 
 private:
 
@@ -63,7 +64,17 @@ private:
 	static constexpr int SIZE = 128;
 
 	//拡大率
-	static constexpr float RATE = 0.75f;
+	static constexpr float RATE = 0.75f;	
+	
+	//各プレイヤーの入力確認構造体
+	struct PlayerCheckInput
+	{
+		bool isInput = false;	//入力確認
+		bool isProcess = false;	//処理を実行
+		Vector2 uiPos = {};		//UI座標位置
+		float rate = 0.0f;		//拡大率
+		float step = 0.0f;		//ステップ
+	};
 
 	//入力マネージャー
 	KeyConfig& key_;
@@ -71,27 +82,6 @@ private:
 	//画像
 	int imgOk_;
 
-	//各プレイヤーの入力確認構造体
-	struct PlayerCheckInput
-	{
-		//入力確認
-		bool isInput = false;
-
-		//処理を実行
-		bool isProcess = false;
-
-		//UI座標位置
-		Vector2 uiPos = {};
-
-		//拡大率
-		float rate = 0.0f;
-
-		//ステップ
-		float step = 0.0f;
-	};
-
 	//各プレイヤーの入力確認配列
 	std::vector<PlayerCheckInput> players_;
-
 };
-

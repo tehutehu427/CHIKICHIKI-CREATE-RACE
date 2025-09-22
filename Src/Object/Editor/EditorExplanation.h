@@ -1,32 +1,33 @@
 #pragma once
 class EditorExplanation
 {
+
 public:
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	EditorExplanation();
+	EditorExplanation(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~EditorExplanation();
+	~EditorExplanation(void) = default;
 
 	/// <summary>
 	/// 読み込み処理
 	/// </summary>
-	void Load();
+	void Load(void);
 
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Init();
+	void Init(void) {};
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 private:
 

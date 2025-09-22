@@ -21,19 +21,40 @@ public:
 		std::shared_ptr<Collider> collider_;	//全体の当たり判定情報
 	};
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	ObjectBase(void);
 
-	// デストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
 	virtual ~ObjectBase(void);
 
-	//読み込み
+	/// <summary>
+	/// 読み込み
+	/// </summary>
+	/// <param name=""></param>
 	virtual void Load(void) = 0;
-	//初期化
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name=""></param>
 	virtual void Init(void) = 0;
-	//更新
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	virtual void Update(void) = 0;
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	virtual void Draw(void) = 0;
 
 	/// <summary>
@@ -42,20 +63,31 @@ public:
 	/// <param name="_hitColTag">相手側の当たり判定タグ</param>
 	virtual void OnHit(const std::weak_ptr<Collider> _hitCol) = 0;
 
-	//モデル情報の取得
+	/// <summary>
+	/// モデル情報の取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>モデル情報</returns>
 	inline const Transform& GetTransform(void) const { return trans_; }
 
-	//サイズの取得
+	/// <summary>
+	/// サイズの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>サイズ(マップ座標基準)</returns>
 	const IntVector3 GetSize(void)const { return size_; }
 
-	//モデルの色を変える
+	/// <summary>
+	/// モデルの色を変える
+	/// </summary>
+	/// <param name="_colorScale">色</param>
 	virtual void ChangeModelColor(const COLOR_F _colorScale);
 
 protected:
 
 	// シングルトン参照
-	ResourceManager& resMng_;
-	SceneManager& scnMng_;
+	ResourceManager& resMng_;	//リソースマネージャー
+	SceneManager& scnMng_;		//シーンマネージャー
 
 	// モデル制御の基本情報
 	Transform trans_;
@@ -77,9 +109,10 @@ protected:
 	/// <param name="_notHitTags">衝突させないタグ</param>
 	void MakeCollider(const std::vector<Collider::TAG> _tag, std::unique_ptr<Geometry> _geometry, const std::vector<Collider::TAG> _notHitTags = {});
 
-	//特定の配列番号の当たり判定削除
+	//特定の配列番号の当たり判定の削除
 	void DeleteCollider(const int _arrayNum);
 
+	//全当たり判定の削除
 	void DeleteAllCollider(void);
 };
 

@@ -13,11 +13,7 @@ PaletteCursor::PaletteCursor(const int _plNum, const int _img) :
 	rate_ = -1.0f;
 }
 
-PaletteCursor::~PaletteCursor()
-{
-}
-
-void PaletteCursor::Init()
+void PaletteCursor::Init(void)
 {
 	//パッド情報
 	pad_ = static_cast<KeyConfig::JOYPAD_NO>(playerNum_ + 1);
@@ -26,17 +22,16 @@ void PaletteCursor::Init()
 	Reset();
 }
 
-void PaletteCursor::Update()
+void PaletteCursor::Update(void)
 {
 	//決定済みの場合
 	if (decide_) { return; }
 
+	//キーコンフィグのインスタンス
 	auto& ins = KeyConfig::GetInstance();
 
 	//スティック
 	Vector2 stick = ins.GetKnockLStickSize(pad_);
-	//int stickX = ins.GetJPadInputState(pad_).AKeyLX;
-	//int stickY = ins.GetJPadInputState(pad_).AKeyLY;
 
 	//操作処理
 	if (stick.x > 0)
@@ -79,13 +74,13 @@ void PaletteCursor::Update()
 	}
 }
 
-void PaletteCursor::Draw()
+void PaletteCursor::Draw(void)
 {
+	//決定済みの場合は描画しない
+	if (decide_) { return; }	
+	
 	//角度
 	float angle = Utility::Deg2RadF(ANGLE);
-
-	//決定済みの場合は描画しない
-	if (decide_) { return; }
 
 	//アイコン描画
 	DrawRotaGraph(
@@ -98,7 +93,7 @@ void PaletteCursor::Draw()
 		false);
 }
 
-void PaletteCursor::Reset()
+void PaletteCursor::Reset(void)
 {
 	//決定
 	decide_ = false;

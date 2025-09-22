@@ -10,11 +10,13 @@ ItemBase::ItemBase(void)
 	, rotY_(0.0f)
 	, movePow_(Utility::VECTOR_ZERO)
 	, toonStyle_(nullptr)
+	, mapSize_(INT_VECTOR_ZERO)
 {
 }
 
 ItemBase::~ItemBase(void)
 {
+	//モデル削除
 	for (auto model : models_)
 	{
 		model = nullptr;
@@ -28,7 +30,7 @@ void ItemBase::Load(void)
 
 void ItemBase::Init(IntVector3 _mapPos, Quaternion _quaRot, ITEM_TYPE _itemType)
 {
-
+	//マップエディタ
 	MapEditer& map = MapEditer::GetInstance();
 
 	//マップ座標をワールド座標に変換して配置
@@ -72,22 +74,33 @@ void ItemBase::Draw(void)
 	}
 
 	//モデル描画
-	//MV1DrawModel(trans_.modelId);
 	toonStyle_->Draw();
 }
 
 void ItemBase::SetPos(IntVector3 _mapPos)
 {
+	//座標をワールド座標に変換する
 	trans_.pos = MapEditer::GetInstance().MapToWorldPos(_mapPos);
+	
+	//初期位置に保存
 	initMapPos_ = _mapPos;
+	
+	//値リセット
 	ResetValue();
+
+	//モデル更新
 	trans_.Update();
 }
 
 void ItemBase::SetRotate(Quaternion _rot)
 {
+	//回転
 	trans_.quaRot = _rot;
+
+	//値リセット
 	ResetValue();
+
+	//モデル更新
 	trans_.Update();
 }
 
@@ -137,6 +150,7 @@ const VECTOR ItemBase::AdjustSizePer(const VECTOR _modelSize)const
 
 void ItemBase::InitShader(void)
 {
+	//シェーダーの初期化
 	toonStyle_ = std::make_unique<ToonStyle>();
 	toonStyle_->Load(trans_.modelId, ToonStyle::MESH_TYPE::MESH);
 	toonStyle_->Init();
@@ -150,7 +164,7 @@ const bool ItemBase::IsInCameraView(void)
 	//座標２
 	IntVector3 initPos = initMapPos_;
 	IntVector3 hitSize = GetHitSize();
-	MapEditer::GetInstance().ApplyRotation(initPos, size_, hitSize, rotY_);
+	MapEditer::GetInstance().ApplyRotation(initPos, size_, hitSize, static_cast<int>(rotY_));
 	VECTOR boxPos2 = MapEditer::GetInstance().MapToWorldPos(initPos + hitSize);
 
 	//カメラ内か

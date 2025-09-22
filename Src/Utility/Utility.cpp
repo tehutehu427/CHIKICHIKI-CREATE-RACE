@@ -566,7 +566,7 @@ bool Utility::IsTimeOver(float& totalTime, const float& waitTime)
 void Utility::DrawStringPlace(std::string _str, int _line, int _posY, int _color, STRING_PLACE _place)
 {
     //文字列の長さを取得
-    int width = GetDrawStringWidth(_str.c_str(), strlen(_str.c_str()));
+    int width = GetDrawStringWidth(_str.c_str(), static_cast<int>(strlen(_str.c_str())));
 
     //表示するX座標を求める
     int posX = _line;
@@ -674,7 +674,7 @@ bool Utility::IsPointInRectCircle(const Vector2 _pos, const Vector2 _circlePos, 
 VECTOR Utility::GetWorldPosAtScreen(const Vector2 screenPos, const float distance, const VECTOR cameraPos, const VECTOR cameraDir)
 {
     // スクリーン中心の方向ベクトルを取得 (depth = 0.5で中間点)
-    VECTOR sPos = VGet(screenPos.x, screenPos.y, 0.5f);
+    VECTOR sPos = VGet(static_cast<float>(screenPos.x), static_cast<float>(screenPos.y), 0.5f);
     VECTOR screenDir = ConvScreenPosToWorldPos(sPos);
 
     // カメラ位置から見たスクリーン中心方向へのベクトルを作成
@@ -751,7 +751,7 @@ float Utility::ReverseValue(float _f)
 
 IntVector3 Utility::ReverseValue(IntVector3 _iv)
 {
-    return _iv * REVERSE_SCALE;
+    return _iv * static_cast<int>(REVERSE_SCALE);
 }
 
 

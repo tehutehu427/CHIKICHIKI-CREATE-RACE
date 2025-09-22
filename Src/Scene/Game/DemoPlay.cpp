@@ -45,8 +45,6 @@ void DemoPlay::Init(void)
 	itemMng.Init();
 	plMng.Init();
 
-	//カメラ変更
-
 	//固定
 	camera->ChangeMode(Camera::MODE::FIXED_POINT);
 
@@ -124,6 +122,7 @@ void DemoPlay::CreateDemoStage(void)
 
 	//生成座標
 	IntVector3 mapPos = { 0,0,0 };
+
 	//生成角度
 	Quaternion rot = Quaternion();
 	float rotY = 0.0f;

@@ -5,8 +5,6 @@
 #include "../../Manager/System/SoundManager.h"
 #include "../../Utility/Utility.h"
 
-
-
 ManualTab::ManualTab(const Vector2& _padCursolPos) :
 	key_(KeyConfig::GetInstance()),
 	padCursorPos_(_padCursolPos)
@@ -29,11 +27,7 @@ ManualTab::ManualTab(const Vector2& _padCursolPos) :
 	RegisterLoadBySceneFunction(SceneManager::SCENE_ID::SELECT, [this]() { LoadSelectResource(); });
 }
 
-ManualTab::~ManualTab()
-{
-}
-
-void ManualTab::Load()
+void ManualTab::Load(void)
 {
 	//シーンの設定
 	sceneId_ = SceneManager::GetInstance().GetSceneID();
@@ -44,20 +38,21 @@ void ManualTab::Load()
 	loadFunc_[sceneId_]();
 }
 
-void ManualTab::Init()
+void ManualTab::Init(void)
 {
-	uiPos_ = {
+	uiPos_ =
+	{
 		Application::SCREEN_SIZE_X - ICON_SIZE / 2,
 		ICON_SIZE / 2,
 	};
 }
 
-void ManualTab::Update()
+void ManualTab::Update(void)
 {
 	stateFunc_[state_].updataFunc_();
 }
 
-void ManualTab::Draw()
+void ManualTab::Draw(void)
 {
 	stateFunc_[state_].drawFunc_();
 }
@@ -77,9 +72,8 @@ void ManualTab::RegisterLoadBySceneFunction(const SceneManager::SCENE_ID _scene,
 	loadFunc_[_scene] = _func;
 }
 
-void ManualTab::UpdateWait()
+void ManualTab::UpdateWait(void)
 {
-	
 	if(key_.IsTrgDown(KeyConfig::CONTROL_TYPE::MANUAL, KeyConfig::JOYPAD_NO::PAD1) ||
 		key_.IsTrgDown(KeyConfig::CONTROL_TYPE::MANUAL_ICON_CLICK, KeyConfig::JOYPAD_NO::PAD1) &&
 		(Utility::IsPointInRectCircle(key_.GetMousePos(), uiPos_, RADIUS) || 
@@ -90,12 +84,12 @@ void ManualTab::UpdateWait()
 	}
 }
 
-void ManualTab::UpdateDisplay()
+void ManualTab::UpdateDisplay(void)
 {
 	updateFunc_[sceneId_]();
 }
 
-void ManualTab::DrawWait()
+void ManualTab::DrawWait(void)
 {
 	//アイコンを描画
 	DrawRotaGraph(
@@ -109,22 +103,22 @@ void ManualTab::DrawWait()
 	);
 }
 
-void ManualTab::DrawDisplay()
+void ManualTab::DrawDisplay(void)
 {
 	constexpr int OFFSET_POS_Y = 50;
 	constexpr int ALPHA = 128;
+	constexpr float RATE = 0.7f;
 
 	//背景を黒くする
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, ALPHA);
 	DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, Utility::BLACK, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-
 	//マニュアルを描画
 	DrawRotaGraph(
 		Application::SCREEN_HALF_X,
 		Application::SCREEN_HALF_Y + OFFSET_POS_Y,
-		0.7f,
+		RATE,
 		0.0f,
 		imgs_[index_],
 		true,
@@ -135,30 +129,31 @@ void ManualTab::DrawDisplay()
 	{
 		for (int i = 0; i < TRIANGLE_NUM; i++)
 		{
+			constexpr float RIGHT_ROT = 270.0f;
+			constexpr float LEFT_ROT = 90.0f;
+
 			DrawRotaGraph(
 				trianglePos_[i].x,
 				trianglePos_[i].y,
 				1.0f,
-				Utility::Deg2RadF(i == 0 ? 270.0f : 90.0f),
+				Utility::Deg2RadF(i == 0 ? RIGHT_ROT : LEFT_ROT),
 				imgTriangle_,
 				true,
 				false
 			);
 		}
-		
 	}
 }
 
-void ManualTab::LoadSelectResource()
+void ManualTab::LoadSelectResource(void)
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgs_.push_back(res.Load(ResourceManager::SRC::SELECT_MANUAL_KEY).handleId_);
 	imgs_.push_back(res.Load(ResourceManager::SRC::SELECT_MANUAL_PAD).handleId_);
-
 	index_ = GetJoypadNum() == 0 ? 0 : 1;
 }
 
-void ManualTab::LoadFreeResource()
+void ManualTab::LoadFreeResource(void)
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgs_.push_back(res.Load(ResourceManager::SRC::FREE_MANUAL).handleId_);
@@ -175,7 +170,7 @@ void ManualTab::LoadFreeResource()
 	}
 }
 
-void ManualTab::UpdateSelectScene()
+void ManualTab::UpdateSelectScene(void)
 {
 	//インデックスの設定
 	index_ = GetJoypadNum() == 0 ? 0 : 1;
@@ -189,17 +184,18 @@ void ManualTab::UpdateSelectScene()
 	}
 }
 
-void ManualTab::UpdateFreeMode()
+void ManualTab::UpdateFreeMode(void)
 {	
+	int size = static_cast<int>(imgs_.size());
 
 	if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_LEFT, KeyConfig::JOYPAD_NO::PAD1))
 	{
-		index_ = (index_ - 1 + imgs_.size()) % imgs_.size();
+		index_ = (index_ - 1 + size) % size;
 		return;
 	}
 	else if (key_.IsTrgDown(KeyConfig::CONTROL_TYPE::SELECT_RIGHT, KeyConfig::JOYPAD_NO::PAD1))
 	{
-		index_ = (index_ + 1) % imgs_.size();
+		index_ = (index_ + 1) % size;
 		return;
 	}
 

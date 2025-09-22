@@ -3,11 +3,11 @@
 #include"../../Common/Geometry/Model.h"
 #include "GoalFlag.h"
 
-GoalFlag::GoalFlag()
+GoalFlag::GoalFlag(void)
 {
 }
 
-GoalFlag::~GoalFlag()
+GoalFlag::~GoalFlag(void)
 {
 }
 

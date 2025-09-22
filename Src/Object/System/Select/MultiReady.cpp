@@ -10,7 +10,7 @@
 #include "MultiCheckPlayer.h"
 
 
-MultiReady::MultiReady() :
+MultiReady::MultiReady(void) :
 	 keyConfig_(KeyConfig::GetInstance()),
 	sndMng_(SoundManager::GetInstance())
 {
@@ -30,11 +30,11 @@ MultiReady::MultiReady() :
 
 }
 
-MultiReady::~MultiReady()
+MultiReady::~MultiReady(void)
 {
 }
 
-void MultiReady::Load()
+void MultiReady::Load(void)
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgMessages_ = res.Load(ResourceManager::SRC::SELECT_MESSAGES).handleIds_;
@@ -47,7 +47,7 @@ void MultiReady::Load()
 
 }
 
-void MultiReady::Init()
+void MultiReady::Init(void)
 {
 	//初期化
 	multiInputChecks_->Init();
@@ -88,7 +88,7 @@ void MultiReady::Update(SelectScene& _parent)
 	}
 }
 
-void MultiReady::Draw()
+void MultiReady::Draw(void)
 {
 	stateTables_[state_].drawFunc_();
 }
@@ -98,7 +98,7 @@ void MultiReady::RegisterProcessFunc(const STATE _state, SceneBase::ProcessFunct
 	stateTables_[_state] = _funcs;
 }
 
-void MultiReady::UpdateNumCheck()
+void MultiReady::UpdateNumCheck(void)
 {
 	static constexpr int PLAYER_NUM_MAX = PlayerManager::PLAYER_NUM_MAX;//選べるプレイヤー人数の最大
 	static constexpr int PLAYER_NUM_CHOICES = PLAYER_NUM_MAX - PLAYER_NUM_MIN + 1;//定数：選べるプレイヤー人数の数
@@ -144,7 +144,7 @@ void MultiReady::UpdateNumCheck()
 	}
 }
 
-void MultiReady::UpdatePadCheck()
+void MultiReady::UpdatePadCheck(void)
 {
 	//更新処理
 	multiInputChecks_->Update();
@@ -162,7 +162,7 @@ void MultiReady::UpdatePadCheck()
 	}
 }
 
-void MultiReady::UpdateFinalCheck()
+void MultiReady::UpdateFinalCheck(void)
 {
 	for (int i = 0; i < players_.size(); i++)
 	{
@@ -186,7 +186,7 @@ void MultiReady::UpdateFinalCheck()
 	}
 }
 
-void MultiReady::UpdatePlayerAnimation()
+void MultiReady::UpdatePlayerAnimation(void)
 {	
 	//一人だけ確認
 	if (players_[0]->IsFinishGameStartAnimation())
@@ -207,7 +207,7 @@ void MultiReady::UpdatePlayerAnimation()
 	}
 }
 
-void MultiReady::DrawNumCheck()
+void MultiReady::DrawNumCheck(void)
 {
 	//描画位置
 	constexpr int POS_X = static_cast<int>(ResourceManager::SELECT_MES_SIZE_X * MESSAGE_RATE / 2 + 200);
@@ -248,7 +248,7 @@ void MultiReady::DrawNumCheck()
 	);
 }
 
-void MultiReady::DrawPadCheck()
+void MultiReady::DrawPadCheck(void)
 {
 	multiInputChecks_->Draw();
 	//描画位置
@@ -263,7 +263,7 @@ void MultiReady::DrawPadCheck()
 	}
 }
 
-void MultiReady::DrawFinalCheck()
+void MultiReady::DrawFinalCheck(void)
 {
 	multiInputChecks_->Draw();
 	//描画位置
@@ -280,7 +280,7 @@ void MultiReady::DrawFinalCheck()
 	}
 
 	//アルファ値を変え
-	mesAlpha_ = Utility::PingPongUpdate(mesAlpha_, ALPHA_STEP, Utility::ALPHA_MAX, ALPHA_MIN, alphaDir_);
+	mesAlpha_ = static_cast<int>(Utility::PingPongUpdate(static_cast<float>(mesAlpha_), ALPHA_STEP, static_cast<float>(Utility::ALPHA_MAX), ALPHA_MIN, alphaDir_));
 
 	//ボタンを押してね画像の描画
 	if (state_ != STATE::FINAL_CHECK) { return; }

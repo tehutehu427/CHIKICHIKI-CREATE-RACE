@@ -11,12 +11,6 @@
 #include "../../Scene/Game/GameScene.h"
 #include "../../Utility/Utility.h"
 
-namespace
-{
-	Vector2 defaultPos = { Application::SCREEN_HALF_X, Application::SCREEN_HALF_Y };
-	Vector2 uiFirstPos = { Application::SCREEN_HALF_X, Application::SCREEN_SIZE_Y + 200 };
-}
-
 GameClear::GameClear():
 	scnMng_(SceneManager::GetInstance()),
 	keyConfig_(KeyConfig::GetInstance()),
@@ -103,7 +97,7 @@ void GameClear::Init()
 	waitStep_ = 0.0f;
 
 	//クリアuiの初期位置設定
-	clearPos_ = uiFirstPos;
+	clearPos_ = UI_FIRST_POS;
 
 	//モード毎に状態を初期化
 	InitStateByMode();
@@ -162,7 +156,7 @@ void GameClear::UpdateWaiting(GameScene& _parent)
 	//UIアニメーション(下から出す)
 	constexpr float END = (float)Application::SCREEN_HALF_Y;
 	waitStep_ += SceneManager::GetInstance().GetDeltaTime();	//アニメーション用ステップ
-	clearPos_.y = Utility::EaseInOutBack(waitStep_, ANIM_TIME, uiFirstPos.y, END);
+	clearPos_.y = static_cast<int>(Utility::EaseInOutBack(waitStep_, ANIM_TIME, static_cast<float>(UI_FIRST_POS.y), END));
 
 	//スキップ
 	if (ins.IsTrgDown(KeyConfig::CONTROL_TYPE::ENTER, KeyConfig::JOYPAD_NO::PAD1))

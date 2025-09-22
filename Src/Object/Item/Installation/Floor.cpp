@@ -2,11 +2,11 @@
 #include"../../Common/Geometry/Model.h"
 #include "Floor.h"
 
-Floor::Floor()
+Floor::Floor(void)
 {
 }
 
-Floor::~Floor()
+Floor::~Floor(void)
 {
 }
 

@@ -5,25 +5,44 @@ class Wind;
 
 class Fan : public ItemBase
 {
+
 public:
 
 	//マップ
 	static constexpr IntVector3 MAP_SIZE = { 3,3,3 };					//マップサイズ
 	static constexpr VECTOR MAP_LOCALPOS = { 150.0f,160.0f,110.0f };	//マップとの相対座標
 
-	//サイズ
-	static constexpr VECTOR MODEL_SIZE = { 300.0f,320.0f,220.0f };		//モデルのサイズ
+	//モデルのサイズ
+	static constexpr VECTOR MODEL_SIZE = { 300.0f,320.0f,220.0f };		
 
-	//コンストラクタ
-	Fan();
-	//デストラクタ
-	~Fan()override;
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	Fan(void);
 
-	//個人設定
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	~Fan(void)override;
+
+	/// <summary>
+	/// 個人設定
+	/// </summary>
+	/// <param name=""></param>
 	void SetParam(void)override;
-	//更新
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name=""></param>
 	void Update(void)override;
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name=""></param>
 	void Draw(void)override;
 
 	/// <summary>
@@ -32,17 +51,27 @@ public:
 	/// <param name="_hitColTag">相手側の当たり判定</param>
 	void OnHit(const std::weak_ptr<Collider> _hitCol)override;
 
-	//アイテムの値リセット
+	/// <summary>
+	/// アイテムの値リセット
+	/// </summary>
+	/// <param name=""></param>
 	void ResetValue(void)override;
 
 private:
 
-	std::unique_ptr<Wind> wind_;	//風オブジェクト
+	//風オブジェクト
+	std::unique_ptr<Wind> wind_;	
 
-	//風の生成
+	/// <summary>
+	/// 風の生成
+	/// </summary>
+	/// <param name=""></param>
 	void CreateWind(void);
 
-	//シェーダ初期化
-	void InitShader() override;
+	/// <summary>
+	/// シェーダ初期化
+	/// </summary>
+	/// <param name=""></param>
+	void InitShader(void) override;
 };
 

@@ -6,10 +6,9 @@
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SoundManager.h"
 #include "../../Utility/Utility.h"
-//#include "../../Scene/Game/GameScene.h"
 
-CheckChangePhase::CheckChangePhase(const Vector2& _padCursolPos) :
-	padCursolPos_(_padCursolPos)
+CheckChangePhase::CheckChangePhase(const Vector2& _padCursorPos) :
+	padCursolPos_(_padCursorPos)
 {
 	int i = -1;
 	imgIcons_ = &i;
@@ -17,11 +16,7 @@ CheckChangePhase::CheckChangePhase(const Vector2& _padCursolPos) :
 	nextPhase_ = GameScene::PHASE::EDIT_PHASE;
 }
 
-CheckChangePhase::~CheckChangePhase()
-{
-}
-
-void CheckChangePhase::Load()
+void CheckChangePhase::Load(void)
 {
 	ResourceManager& res = ResourceManager::GetInstance();
 	imgIcons_ = res.Load(ResourceManager::SRC::CHANGE_PHASE_ICONS).handleIds_;
@@ -29,10 +24,11 @@ void CheckChangePhase::Load()
 	SoundManager::GetInstance().LoadResource(SoundManager::SRC::CHANGE_PHASE_ICON_CLICK);
 }
 
-void CheckChangePhase::Init()
+void CheckChangePhase::Init(void)
 {
 	//ç¿ïW
-	pos_ = {
+	pos_ =
+	{
 		ICON_SIZE_X / 2,
 		Application::SCREEN_SIZE_Y - ICON_SIZE_Y / 2,
 	};
@@ -51,7 +47,7 @@ void CheckChangePhase::Update(GameScene& _parent)
 	}
 }
 
-void CheckChangePhase::Draw()
+void CheckChangePhase::Draw(void)
 {
 	DrawRotaGraph(
 		pos_.x,
@@ -84,12 +80,14 @@ void CheckChangePhase::SetNextPhase(const GameScene::PHASE _nextPhase)
 bool CheckChangePhase::IsCheckChangePhase(GameScene& _parent)
 {
 	KeyConfig& key = KeyConfig::GetInstance();
-	Vector2 rightTop = {
+	Vector2 rightTop = 
+	{
 		pos_.x - ICON_SIZE_X / 2,
 		pos_.y - ICON_SIZE_Y / 2,
 	};
 
-	Vector2 leftBottom = {
+	Vector2 leftBottom =
+	{
 		pos_.x + ICON_SIZE_X / 2,
 		pos_.y + ICON_SIZE_Y / 2,
 	};

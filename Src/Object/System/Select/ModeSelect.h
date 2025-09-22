@@ -15,6 +15,7 @@ class PixelRenderer;
 
 class ModeSelect
 {
+
 public:
 
 	/// <summary>
@@ -50,6 +51,7 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
+	/// <param name="_parent">親クラス</param>
 	void Update(SelectScene& _parent);
 
 	/// <summary>
@@ -75,14 +77,11 @@ private:
 
 	//矢印の位置
 	static constexpr int ARROW_POS_X = 320;
-	static constexpr int ARROW_POS_Y[ARROWS] = { 50, 600 };
+	static constexpr int ARROW_POS_Y[ARROWS] = { 50, 600 };	
 
-	//シーン管理
-	SceneManager& scnMng_;
-
-	//データ管理
-	DateBank& dateBank_;
-
+	//設定するバッファー
+	const FLOAT4 BUFFER = { 1.0f,0.8f,0.0f,0.7f };
+	
 	//円弧
 	struct Arc
 	{
@@ -90,6 +89,12 @@ private:
 		Vector2 pos = {};			//座標
 		float angle = 0.0f;			//角度
 	};
+
+	//シーン管理
+	SceneManager& scnMng_;
+
+	//データ管理
+	DateBank& dateBank_;
 
 	//画像のハンドル
 	int* imgMessages_;
@@ -148,7 +153,7 @@ private:
 	void SetMenuItem(const int _imgIndex, const int _arcIndex);
 
 	//メッセージを描画させる関数
-	void DrawMessage();
+	void DrawMessage(void);
 
 	//画像を暗く描画する
 	void DrawDarkly(const int _index);
@@ -157,10 +162,6 @@ private:
 	void DrawGlow(const int _index);
 
 	//矢印の描画
-	void DrawArrow();
-
-	//デバッグ
-	void DebugUpdate();	//更新
-	void DebugDraw();	//描画
+	void DrawArrow(void);
 };
 

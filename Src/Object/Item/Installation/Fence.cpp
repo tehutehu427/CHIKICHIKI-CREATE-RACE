@@ -3,11 +3,11 @@
 #include"../../Common/Geometry/Model.h"
 #include "Fence.h"
 
-Fence::Fence()
+Fence::Fence(void)
 {
 }
 
-Fence::~Fence()
+Fence::~Fence(void)
 {
 }
 

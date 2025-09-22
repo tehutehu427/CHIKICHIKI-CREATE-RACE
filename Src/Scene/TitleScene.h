@@ -10,17 +10,29 @@ class TitleScene : public SceneBase
 {
 public:
 
-	// コンストラクタ
-	TitleScene();
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	TitleScene(void);
 
-	// デストラクタ
-	~TitleScene() override;
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	/// <param name=""></param>
+	~TitleScene(void) override;
 
-	//読み込み処理
-	void Load() override;
+	/// <summary>
+	/// 読み込み処理
+	/// </summary>
+	/// <param name=""></param>
+	void Load(void) override;
 
-	//初期化処理
-	void Init() override;
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name=""></param>
+	void Init(void) override;
 
 private:
 
@@ -42,30 +54,24 @@ private:
 	static constexpr float DEMO_MES_POS_Y = 750.0f;		//デモメッセージのY座標
 
 	//風船
-	static constexpr int BALLOON_NUM = 20;				//風船を描画する最大数
-	static constexpr int BALLOON_TYPE = 8;				//風船の種類
-	static constexpr int BALLOON_SIZE_ONE_X = 160;				//風船1つのサイズX
+	static constexpr int BALLOON_NUM = 20;							//風船を描画する最大数
+	static constexpr int BALLOON_TYPE = 8;							//風船の種類
+	static constexpr int BALLOON_SIZE_ONE_X = 160;					//風船1つのサイズX
 	static constexpr int BALLOON_SIZE_ONE_HALF_X = 80;				//風船1つのサイズX
-	static constexpr int BALLOON_SIZE_ONE_Y = 240;				//風船1つのサイズY
+	static constexpr int BALLOON_SIZE_ONE_Y = 240;					//風船1つのサイズY
 	static constexpr int BALLOON_SIZE_ONE_HALF_Y = 120;				//風船1つのサイズY
-	static constexpr int BALLOON_NUM_X = 4;			//風船のXの個数
-	static constexpr int BALLOON_NUM_Y = 2;			//風船のYの個数
-	static constexpr int BALLOON_POS_MAX_Y = -BALLOON_SIZE_ONE_Y;
-	static constexpr float BALLOON_STEP_MAX = 1.0f;//風船の出現間隔
-	static constexpr int SPEED_MIN = 2;//風船の出現間隔
-	static constexpr int SPEED_MAX = 5;//風船の出現間隔
+	static constexpr int BALLOON_NUM_X = 4;							//風船のXの個数
+	static constexpr int BALLOON_NUM_Y = 2;							//風船のYの個数
+	static constexpr int BALLOON_POS_MAX_Y = -BALLOON_SIZE_ONE_Y;	//風船のYの最大座標
+	static constexpr float BALLOON_STEP_MAX = 1.0f;					//風船の出現間隔
+	static constexpr int SPEED_MIN = 2;								//風船の出現間隔
+	static constexpr int SPEED_MAX = 5;								//風船の出現間隔
 
-	//タイトル画像
-	int imgTitleLogo_;
-
-	//タイトルロゴサイズ
-	float logoSize_;
-
-	//メッセージ画像
-	int imgMessage_;
-
-	//デモメッセージ画像
-	int imgDemoMessage_;
+	//画像関係
+	int imgTitleLogo_;		//タイトル画像
+	float logoSize_;		//タイトルロゴサイズ
+	int imgMessage_;		//メッセージ画像
+	int imgDemoMessage_;	//デモメッセージ画像
 
 	//BGM
 	int bgm_;
@@ -76,11 +82,11 @@ private:
 	bool isBalloonAlive_[BALLOON_NUM];	//風船の生存判定
 	float balloonStep_;					//風船の間隔カウント
 	Vector2 balloonPos_[BALLOON_NUM];	//風船座標
-	int speed_[BALLOON_NUM];
+	int speed_[BALLOON_NUM];			//風船の速度
 
 	//ステップの更新
-	float step_;
-	float demoUIStep_;
+	float step_;		//カウンタ
+	float demoUIStep_;	//UIカウンタ
 
 	//アルファ値
 	int mesAlpha_;
@@ -125,9 +131,9 @@ private:
 	void DemoMessage(void);
 
 	//状態別更新処理
-	void UpdateWait();
-	void UpdatePlaySe();
-	void UpdateNone();
+	void UpdateWait(void);
+	void UpdatePlaySe(void);
+	void UpdateNone(void);
 
 	//風船の更新
 	void BalloonUpdate(void);

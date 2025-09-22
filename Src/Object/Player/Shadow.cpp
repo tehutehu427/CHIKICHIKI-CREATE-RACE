@@ -5,7 +5,7 @@
 #include "../Common/Geometry/Model.h"
 #include "Shadow.h"
 
-Shadow::Shadow(Transform& trans) : parentTrans_(trans)
+Shadow::Shadow(Transform& _trans) : parentTrans_(_trans)
 {
 	alpha_ = 1.0f;
 
@@ -61,7 +61,7 @@ void Shadow::Draw(void)
 	}
 	if (ALPHA_MIN != 0.0f)
 	{
-		alpha_ = alpha_ / (1.0 / ALPHA_MIN);
+		alpha_ = alpha_ / (1.0f / ALPHA_MIN);
 		alpha_ += ALPHA_MIN;
 	}
 	//影の描画
@@ -98,7 +98,7 @@ void Shadow::OnHit(const std::weak_ptr<Collider> _hitCol)
 		VECTOR hitPos = hitModel.GetHitLineInfo().HitPosition;
 		pos_ = (pos_.y > hitPos.y) ? pos_ :hitPos;
 		pos_.y += 0.5f; //少し上に表示する
-		alpha_ =1.0 - (abs(VSub(parentTrans_.pos, pos_).y)/ LINE_RANGE); //親の位置からの距離で透明度を変える
+		alpha_ =1.0f - (abs(VSub(parentTrans_.pos, pos_).y)/ LINE_RANGE); //親の位置からの距離で透明度を変える
 		radius_ = RADIUS_MAX - ( alpha_ * (RADIUS_MAX - RADIUS)) + RADIUS; //透明度で半径を変える - RADIUS_MAX) + 
 	}
 }

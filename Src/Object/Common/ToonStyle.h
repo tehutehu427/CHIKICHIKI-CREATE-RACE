@@ -7,6 +7,7 @@
 
 class ToonStyle
 {
+
 public:
 
 	/// <summary>
@@ -14,21 +15,21 @@ public:
 	/// </summary>
 	enum class MESH_TYPE
 	{
-		CHICKEN,
-		MESH,
-		NO_TEXTURE,
-		SKIN_MESH,
+		CHICKEN,		//チキン
+		MESH,			//通常
+		NO_TEXTURE,		//テクスチャなし
+		SKIN_MESH,		//スキンメッシュ
 	};
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	ToonStyle();
+	ToonStyle(void);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~ToonStyle();
+	~ToonStyle(void) = default;
 
 	/// <summary>
 	/// 読み込み処理
@@ -40,12 +41,12 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Init();
+	void Init(void);
 	
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// アウトラインの色を指定
@@ -82,13 +83,13 @@ private:
 	std::unique_ptr<ModelRenderer> outlineRenderer_;//アウトライン用
 
 	//描画管理
-	std::function<void()> drawFunc_;
+	std::function<void(void)> drawFunc_;
 
 	//通常描画
-	void NormalDrawModel();
+	void NormalDrawModel(void);
 
 	//トゥーン描画
-	void ToonDrawModel();
+	void ToonDrawModel(void);
 
 };
 
