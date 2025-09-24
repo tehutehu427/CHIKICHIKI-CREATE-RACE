@@ -151,11 +151,6 @@ void PlayerAction::Update(void)
 	UpdateMoveDirAndPow();
 }
 
-void PlayerAction::DrawDebug(void)
-{
-	VECTOR dir = input_->GetDir();
-	DrawFormatString(0, 300, 0x000000, "dir(%f,%f,%f)", dir.x, dir.y, dir.z);
-}
 
 void PlayerAction::UpdateNone(void)
 {
@@ -589,3 +584,8 @@ void PlayerAction::StopResource(void)
 	effect_->AllDelete();
 	
 }
+#ifdef _DEBUG
+void PlayerAction::DrawDebug(void)
+{
+}
+#endif // _DEBUG
