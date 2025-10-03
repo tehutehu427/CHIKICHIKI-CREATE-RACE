@@ -1,13 +1,13 @@
-#include<algorithm>
-#include"../Manager/System/ResourceManager.h"
-#include"../Manager/System/SoundManager.h"
-#include"../Manager/Game/ItemManager.h"
-#include"../Manager/Game/MapEditer.h"
-#include"../Utility/Utility.h"
-#include"../../Common/Geometry/Sphere.h"
-#include"../../Common/EffectController.h"
-#include"CoinFollower.h"
-#include"../../Player/Player.h"
+#include <algorithm>
+#include "../Utility/Utility.h"
+#include "../Manager/System/ResourceManager.h"
+#include "../Manager/System/SoundManager.h"
+#include "../Manager/Game/ItemManager.h"
+#include "../Manager/Game/MapEditer.h"
+#include "../../Common/Geometry/Sphere.h"
+#include "../../Common/EffectController.h"
+#include "../../Player/Player.h"
+#include "CoinFollower.h"
 #include "Coin.h"
 
 Coin::Coin(void)
