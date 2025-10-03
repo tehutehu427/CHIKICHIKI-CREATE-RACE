@@ -1,4 +1,5 @@
 #include "../Utility/Utility.h"
+#include "MapEditer.h"
 #include "../Object/Item/Fixed/StartFlag.h"
 #include "../Object/Item/Fixed/GoalFlag.h"
 #include "../Object/Item/Installation/Floor.h"
@@ -14,7 +15,6 @@
 #include "../Object/Item/Destroyer/SmallBomb.h"
 #include "../Object/Item/Destroyer/BigBomb.h"
 #include "../Object/Editor/EditController.h"
-#include "MapEditer.h"
 #include "ItemManager.h"
 
 

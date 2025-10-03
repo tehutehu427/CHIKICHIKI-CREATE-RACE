@@ -1,6 +1,5 @@
-#include <DxLib.h>
-#include "../Manager/Game/MapEditer.h"
 #include "../Utility/Utility.h"
+#include "../Manager/Game/MapEditer.h"
 #include "Grid.h"
 
 Grid::Grid(void)

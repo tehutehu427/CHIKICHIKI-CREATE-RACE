@@ -1,11 +1,9 @@
 #pragma once
 #include <DxLib.h>
 #include <functional>
-#include "../../Common/Vector2.h"
-#include "../../Common/IntVector3.h"
-#include "../../Object/Item/ItemBase.h"
 #include "../../Manager/System/KeyConfig.h"
 #include "../../Manager/Game/MapEditer.h"
+#include "../../Common/Vector2.h"
 
 class EditItemReady;
 

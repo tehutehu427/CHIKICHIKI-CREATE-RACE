@@ -1,10 +1,4 @@
 #pragma once
-#include <DxLib.h>
-#include <vector>
-#include <map>
-#include <memory>
-#include "../../Common/Quaternion.h"
-#include "../../Common/IntVector3.h"
 #include "../../Object/Item/ItemBase.h"
 
 class ItemManager

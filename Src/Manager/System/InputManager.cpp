@@ -1,4 +1,3 @@
-#include <DxLib.h>
 #include <cmath>
 #include "../Application.h"
 #include "InputManager.h"

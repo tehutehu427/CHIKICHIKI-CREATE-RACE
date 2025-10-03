@@ -1,5 +1,4 @@
 #pragma once
-#include <DxLib.h>
 #include "../../Common/Quaternion.h"
 #include "KeyConfig.h"
 
