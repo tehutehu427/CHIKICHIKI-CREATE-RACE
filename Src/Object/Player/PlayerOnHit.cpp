@@ -1,20 +1,19 @@
-#include "../../Object/Common/Geometry/Sphere.h"
-
-#include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SoundManager.h"
 #include "../../Manager/System/SceneManager.h"
-#include "../../Manager/Game/ScoreManager.h"
-#include "../../Manager/System/DateBank.h"
-
+#include "../../Object/Common/Geometry/Sphere.h"
+#include "../../Manager/System/ResourceManager.h"
 #include "../../Object/Common/Geometry/Line.h"
 #include"../../Object/Common/Geometry/Model.h"
 
 #include"../../Utility/Utility.h"
 
 #include"./Player.h"
+#include"./PlayerAction.h"
 #include "PlayerOnHit.h"
 
-PlayerOnHit::PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>& _colParam, Transform& _trans,Collider::TAG _tag):
+PlayerOnHit::PlayerOnHit(VECTOR& _movedPos, VECTOR& _moveDiff, PlayerAction& _action, std::vector<ObjectBase::ColParam>& _colParam, Transform& _trans, Collider::TAG _tag):
+	movedPos_(_movedPos),
+	moveDiff_(_moveDiff),
 	action_(_action),
 	colParam_(_colParam),
 	trans_(_trans),
@@ -79,47 +78,8 @@ void PlayerOnHit::Init(void)
 	movedPos_ = Utility::VECTOR_ZERO;
 }
 
-void PlayerOnHit::Update(void)
-{
-	//移動後座標の更新
-	movedPos_ = VAdd(trans_.pos, action_.GetMovePow());
-	movedPos_ = VAdd(movedPos_, action_.GetJumpPow());
 
-	//バネジャンプ力の初期化
-	springJumpPow_ = 0.0f;
-
-	//移動量ラインの更新
-	VECTOR moveVec = VSub(movedPos_, trans_.pos);
-	moveVec.y -= MOVE_LINE_Y_OFFSET;
-	if (moveVec.x != 0.0f || moveVec.y != MOVE_LINE_Y_CHECK_VALUE || moveVec.z != 0.0f)
-	{
-		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
-		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
-		moveLine.SetLocalPosPoint2(moveVec);
-	}
-	
-	//2つのオブジェクトに挟まった時(上と下)
-	if (isLandHit_ && isHitOverHead_&&moveVec.y<0.0f)
-	{
-		isDeath_ = true;
-	}
-
-	//移動前の座標を格納する
-	moveDiff_ = trans_.pos;
-	//移動
-	trans_.pos = movedPos_;
-	//ラインの情報を取得
-	Line& upDownLine = dynamic_cast<Line&>(colParam_[UP_AND_DOWN_LINE_COL_NO].collider_->GetGeometry());
-	//アクションに渡すフラグの初期化
-	if (!colParam_[UP_AND_DOWN_LINE_COL_NO].collider_->IsHit())
-	{
-		isHitOverHead_ = false;
-		isLandHit_ = false;
-	}
-
-}
-
-void PlayerOnHit::ColUpdate(const std::weak_ptr<Collider> _hitCol)
+void PlayerOnHit::OnHitUpdate(const std::weak_ptr<Collider> _hitCol)
 {
 	for (const auto tag : _hitCol.lock()->GetTags())
 	{
@@ -239,6 +199,12 @@ void PlayerOnHit::DrawDebug(void)
 #endif // DEBUG_ON
 
 
+
+void PlayerOnHit::InitIsVerticalSandWitched(void)
+{
+	isHitOverHead_ = false;
+	isLandHit_ = false;
+}
 
 void PlayerOnHit::HitModelCommon(const std::weak_ptr<Collider> _hitCol)
 {

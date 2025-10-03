@@ -1,8 +1,4 @@
 #pragma once
-#include<DxLib.h>
-#include<memory>
-#include<functional>
-#include<map>
 #include"../Manager/System/SoundManager.h"
 
 class Player;

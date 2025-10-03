@@ -1,14 +1,11 @@
 #include "../Utility/Utility.h"
-
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/System/Camera.h"
 #include "../../Manager/System/SceneManager.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SoundManager.h"
-
 #include "../../Object/Common/EffectController.h"
 #include "../../Object/Common/AnimationController.h"
-
 #include "./Player.h"
 #include "./PlayerInput.h"
 

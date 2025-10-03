@@ -1,9 +1,10 @@
 #pragma once
 #include<DxLib.h>
 #include<memory>
-#include"../Manager/System/DateBank.h"
-#include"../Manager/System/SceneManager.h"
-#include"../Manager/System/InputManager.h"
+#include"../Manager/System/DateBank.h"      //Ç±ÇÍè¡ÇµÇΩÇ¢
+#include"../Manager/System/KeyConfig.h"
+#include"../Manager/System/SceneManager.h"  //Ç±ÇÍè¡ÇµÇΩÇ¢
+#include"../Manager/System/InputManager.h"  //Ç±ÇÍè¡ÇµÇΩÇ¢
 
 //#define DEBUG_ON
 

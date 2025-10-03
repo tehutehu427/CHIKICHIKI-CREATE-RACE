@@ -1,11 +1,4 @@
 #pragma once
-#include<DxLib.h>
-#include<vector>
-#include<map>
-#include<functional>
-#include<memory>
-#include"../ObjectBase.h"
-
 class PlayerAction;
 
 class PlayerOnHit
@@ -20,7 +13,7 @@ public:
 	/// <param name="_colParam">当たり判定情報</param>
 	/// <param name="_trans">モデル情報</param>
 	/// <param name="_tag">当たり判定タグ</param>
-	PlayerOnHit(PlayerAction& _action, std::vector<ObjectBase::ColParam>&_colParam,Transform& _trans,Collider::TAG _tag);
+	PlayerOnHit(VECTOR& _movedPos,VECTOR& _moveDiff,PlayerAction& _action, std::vector<ObjectBase::ColParam>&_colParam,Transform& _trans,Collider::TAG _tag);
 
 	/// <summary>
 	/// デストラクタ
@@ -40,15 +33,9 @@ public:
 	void Load(void);
 
 	/// <summary>
-	/// 毎フレーム更新
-	/// </summary>
-	/// <param name=""></param>
-	void Update(void);
-
-	/// <summary>
 	/// 当たった処理の更新
 	/// </summary>
-	void ColUpdate(const std::weak_ptr<Collider> _hitCol);
+	void OnHitUpdate(const std::weak_ptr<Collider> _hitCol);
 
 	/// <summary>
 	/// デバッグ表示
@@ -111,6 +98,13 @@ public:
 	inline const float GetSpringJumpPow(void) { return springJumpPow_; }
 
 	/// <summary>
+	/// プレイヤーが上下に挟まれたか
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns></returns>
+	inline const bool IsVerticalSandwiched(void) { return isLandHit_ && isHitOverHead_; }
+
+	/// <summary>
 	/// 移動後座標のセット
 	/// </summary>
 	/// <param name="_movedPos">移動後座標のセット</param>
@@ -121,6 +115,24 @@ public:
 	/// </summary>
 	/// <param name="_num">コイン枚数</param>
 	inline void SetCoinNum(const int _num) { coinNum_ = _num; }
+
+	/// <summary>
+	/// ばねジャンプ力の初期化
+	/// </summary>
+	/// <param name=""></param>
+	inline void InitSpringJumpPow(void) { springJumpPow_ = 0.0f; }
+
+	/// <summary>
+	/// 死んだことをセットする
+	/// </summary>
+	/// <param name=""></param>
+	inline void SetIsDeath(void) { isDeath_ = true; }
+
+	/// <summary>
+	/// 挟まれる関連の情報の初期化
+	/// </summary>
+	/// <param name=""></param>
+	void InitIsVerticalSandWitched(void);
 
 private:
 
@@ -166,9 +178,9 @@ private:
 	//プレイヤー
 	PlayerAction& action_;
 	//移動量
-	VECTOR movedPos_;
+	VECTOR& movedPos_;
 	//移動前
-	VECTOR moveDiff_;
+	VECTOR& moveDiff_;
 	//プレイヤーの情報
 	Transform& trans_;
 

@@ -1,11 +1,7 @@
 #pragma once
-#include <map>
-#include <functional>
-#include "../Object/item/ItemBase.h"
-#include"./PlayerInput.h"
-#include"./PlayerAction.h"
+#include "./PlayerInput.h"	//こいつを消したい
+#include "../Manager/System/KeyConfig.h"
 #include "../ObjectBase.h"
-#include"../../Common/Vector2.h"
 
 //#define DEBUG_ON
 class AnimationController;
@@ -40,6 +36,14 @@ public:
 	static constexpr float BUFF_DASH_SPEED = 30.0f;
 	//残機
 	static constexpr float RESPAWN_CNT = 1;
+	//接地しているときのラインのコライダ
+	static constexpr int UP_AND_DOWN_LINE_COL_NO = 0;
+	//プレイヤーの体の球
+	static constexpr int BODY_SPHERE_COL_NO = 1;
+	//現在の座標と移動後座標を結んだ線のコライダ
+	static constexpr int MOVE_LINE_COL_NO = 2;
+	//プレイヤーの手の座標
+	static constexpr int HAND_SPHERE_COL_NO = 4;
 
 	//プレイヤーの生存状態
 	enum class PLAYER_STATE
@@ -243,6 +247,12 @@ public:
 	/// <param name=""></param>
 	void KillPunchCol(void);
 
+	/// <summary>
+	/// プレイヤーのステータスを上げる
+	/// </summary>
+	/// <param name=""></param>
+	void BuffPlayer(void);
+
 private:
 
 	//重力の割合
@@ -269,6 +279,10 @@ private:
 	static constexpr float PUNCH_RADIUS = 50.0f;
 	//当たり判定のラインの長さ
 	static constexpr float LINE_RANGE = 10.0f;
+	//移動量ラインオフセット
+	static constexpr float MOVE_LINE_Y_OFFSET = Player::RADIUS - 1.0f;
+	//移動量更新条件の移動ラインの長さ
+	static constexpr float MOVE_LINE_Y_CHECK_VALUE = Player::RADIUS + 1.5f;
 	//プレイヤーの当たり判定ラインの上端と下端
 	static constexpr VECTOR LOCAL_UP_POS = { 0.0f,RADIUS+ LINE_RANGE,0.0f };		//上端
 	static constexpr VECTOR LOCAL_DOWN_POS = { 0.0f,-RADIUS- LINE_RANGE,0.0f };		//下端
@@ -317,13 +331,19 @@ private:
 	//プレイヤーの当たり判定タグ
 	Collider::TAG tag_;	
 	//リスポーン位置
-	VECTOR respawnPos_;		
+	VECTOR respawnPos_;	
+	//移動量
+	VECTOR movedPos_;
+	//移動前
+	VECTOR moveDiff_;
 
 #ifdef DEBUG_ON
 	void DrawDebug(void);
 #endif // DEBUG_ON
 	/// 状態遷移
 	void ChangeState(PLAYER_STATE _state);
+	//座標関連の更新
+	void UpdatePost(void);
 
 	//更新系
 	void UpdateAlive(void);		//生存

@@ -1,35 +1,23 @@
 #include <algorithm>
 #include "../../Utility/Utility.h"
-
 #include "../../Manager/Game/GravityManager.h"
-#include "../../Manager/Game/MapEditer.h"
 #include "../../Manager/Game/PlayerManager.h"
 #include "../../Manager/System/ResourceManager.h"
 #include "../../Manager/System/SoundManager.h"
 #include "../../Manager/System/SceneManager.h"
-#include "../../Manager/System/DateBank.h"
 #include "../../Manager/System/Camera.h"
-#include "../../Manager/Game/ItemManager.h"
-
 #include "../../Renderer/ModelMaterial.h"
 #include "../../Renderer/ModelRenderer.h"
-
 #include "../../Object/Common/Geometry/Sphere.h"
 #include "../../Object/Common/Geometry/Line.h"
 #include "../../Object/Common/Geometry/Model.h"
 #include "../../Object/Common/EffectController.h"
 #include "../../Object/Common/AnimationController.h"
 #include "../../Object/Editor/EditController.h"
-
-#include "../Item/Installation/MoveHoriFloor.h"
-#include "../Item/Installation/MoveVerFloor.h"
-
 #include "./PlayerAction.h"
 #include "./PlayerOnHit.h"
 #include "./PlayerInput.h"
 #include "./Shadow.h"
-
-
 
 #include "Player.h"
 Player::Player(int _playerNum, KeyConfig::TYPE _cntl, const Collider::TAG _tag)
@@ -86,7 +74,7 @@ void Player::Load(void)
 	shadow_->Load();
 
 	//当たり判定
-	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_, tag_);
+	onHitCol_ = std::make_unique<PlayerOnHit>(movedPos_,moveDiff_,*action_, colParam_, trans_, tag_);
 	onHitCol_->Load();
 
 	//トゥーンにする
@@ -144,8 +132,7 @@ void Player::Init(void)
 	//バッファー設定
 	material_->AddConstBufVS(FLOAT4{ 3.0f,0.0f,0.0f ,0.0f });	//輪郭線太さ
 	material_->AddConstBufPS(FLOAT4{ 0.0f,0.0f,0.0f ,1.0f });	//輪郭線カラー
-	//当たり判定
-	onHitCol_ = std::make_unique<PlayerOnHit>(*action_, colParam_, trans_,tag_);
+
 	onHitCol_->Init();
 	//更新
 	trans_.Update();
@@ -194,7 +181,7 @@ void Player::Draw(void)
 
 void Player::OnHit(const std::weak_ptr<Collider> _hitCol)
 {
-	onHitCol_->ColUpdate(_hitCol);
+	onHitCol_->OnHitUpdate(_hitCol);
 }
 
 #ifdef DEBUG_ON
@@ -240,6 +227,43 @@ void Player::ChangeState(PLAYER_STATE _state)
 	state_ = _state;
 	changeStates_[state_]();
 }
+void Player::UpdatePost(void)
+{
+	//移動後座標の更新
+	movedPos_ = VAdd(trans_.pos, action_->GetMovePow());
+	movedPos_ = VAdd(movedPos_, action_->GetJumpPow());
+
+	//バネジャンプ力の初期化
+	onHitCol_->InitSpringJumpPow();
+
+	//移動量ラインの更新
+	VECTOR moveVec = VSub(movedPos_, trans_.pos);
+	moveVec.y -= MOVE_LINE_Y_OFFSET;
+	if (moveVec.x != 0.0f || moveVec.y != MOVE_LINE_Y_CHECK_VALUE || moveVec.z != 0.0f)
+	{
+		Line& moveLine = dynamic_cast<Line&>(colParam_[MOVE_LINE_COL_NO].collider_->GetGeometry());
+		moveLine.SetLocalPosPoint1(Utility::VECTOR_ZERO);
+		moveLine.SetLocalPosPoint2(moveVec);
+	}
+
+	//2つのオブジェクトに挟まった時(上と下)
+	if (onHitCol_->IsVerticalSandwiched() && moveVec.y < 0.0f)
+	{
+		onHitCol_->SetIsDeath();
+	}
+
+	//移動前の座標を格納する
+	moveDiff_ = trans_.pos;
+	//移動
+	trans_.pos = movedPos_;
+	//ラインの情報を取得
+	Line& upDownLine = dynamic_cast<Line&>(colParam_[UP_AND_DOWN_LINE_COL_NO].collider_->GetGeometry());
+	//アクションに渡すフラグの初期化
+	if (!colParam_[UP_AND_DOWN_LINE_COL_NO].collider_->IsHit())
+	{
+		onHitCol_->InitIsVerticalSandWitched();
+	}
+}
 void Player::ChangeAlive(void)
 {
 	stateUpdate_ = [this]() {UpdateAlive(); };
@@ -264,7 +288,7 @@ void Player::UpdateAlive(void)
 	TimeUpdate();
 
 	//移動後座標の更新
-	onHitCol_->Update();
+	UpdatePost();
 }
 void Player::ChangeDeath(void)
 {
@@ -465,6 +489,13 @@ void Player::KillPunchCol(void)
 			}
 		}
 	}
+}
+
+void Player::BuffPlayer(void)
+{
+	SetPunchPow(Player::BUFF_KNOCKBACK_CNT_MAX, Player::BUFF_KNOCKBACK_SPEED_MAX);
+	SetJumpDecelMax(Player::BUFF_JUMP_POW_MAX);
+	SetSpeed(Player::BUFF_MOVE_SPEED, Player::BUFF_DASH_SPEED);
 }
 
 void Player::Respawn(void)

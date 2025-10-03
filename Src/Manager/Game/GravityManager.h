@@ -1,5 +1,4 @@
 #pragma once
-#include <memory>
 #include"../Object/Common/Transform.h"
 
 class GravityManager

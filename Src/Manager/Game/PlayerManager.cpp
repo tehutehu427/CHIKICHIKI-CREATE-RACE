@@ -1,10 +1,11 @@
-#include<cmath>
-#include"../../Application.h"
-#include"../../Utility/Utility.h"
-#include"../../Manager/System/ResourceManager.h"
-#include"../../Manager/System/Camera.h"
-#include"../../Manager/System/SoundManager.h"
-#include"../System/DateBank.h"
+#include <cmath>
+#include "../../Application.h"
+#include "../../Utility/Utility.h"
+#include "../../Manager/System/ResourceManager.h"
+#include "../../Manager/System/Camera.h"
+#include "../../Manager/System/SoundManager.h"
+#include "../System/DateBank.h"
+#include "../Object/Player/Player.h"
 #include "PlayerManager.h"
 PlayerManager* PlayerManager::instance_ = nullptr;
 
@@ -129,16 +130,6 @@ void PlayerManager::Update(void)
 			}
 		}
 	}
-	//PlayersCollision();
-
-	//for (int i = 0; i < playerNum_; i++)
-	//{
-	//	if (goalTime_[i] >= 0.0f)
-	//	{
-	//		continue;
-	//	}
-	//}
-
 }
 
 void PlayerManager::Draw(void)
@@ -147,6 +138,21 @@ void PlayerManager::Draw(void)
 	{
 		p->Draw();
 	}
+}
+
+const Transform& PlayerManager::GetPlayerTransform(const int _num)
+{
+	return players_[_num]->GetTransform(); 
+}
+
+std::vector<std::unique_ptr<Player>>& PlayerManager::GetPlayers(void)
+{
+	return players_;
+}
+
+const int PlayerManager::GetPlayerCoinNum(const int _num)
+{
+	{ return players_[_num]->GetCoinNum(); }
 }
 
 const std::vector<float> PlayerManager::GetGoalTime(void) 
@@ -167,6 +173,17 @@ void PlayerManager::SetInitPos(VECTOR _worldPos)
 		players_[i]->SetPos({ posX + _worldPos.x, _worldPos.y, posZ + _worldPos.z });
 		players_[i]->SetRespawnPos({ posX + _worldPos.x, _worldPos.y, posZ + _worldPos.z });
 	}
+}
+
+const bool PlayerManager::IsPlayerGoal(const int _playerIndex)
+{
+	return players_[_playerIndex]->IsGoal();
+}
+
+
+const bool PlayerManager::IsPlayerDeath(const int _playerIndex)
+{
+	return players_[_playerIndex]->IsDeath();
 }
 
 bool PlayerManager::IsPlayersEnd(void)
@@ -198,6 +215,14 @@ void PlayerManager::DrawUI(const int _playerIndex)
 			0.0f,
 			imgRespawnHeart_,
 			true);
+	}
+}
+
+void PlayerManager::BuffPlayer(void)
+{
+	for (auto& player : players_)
+	{
+		player->BuffPlayer();
 	}
 }
 

@@ -1,9 +1,10 @@
-#include<DxLib.h>
+//#include<DxLib.h>
 #include"../Utility/Utility.h"
 #include "GravityManager.h"
 
 GravityManager* GravityManager::instance_ = nullptr;
-GravityManager::GravityManager(void)
+GravityManager::GravityManager(void):
+	slerpPow_()
 {
 }
 

@@ -1,9 +1,5 @@
 #pragma once
-#include<memory>
-#include<vector>
-#include"../../Object/Common/Transform.h"
-#include"../../Object/Player/Player.h"
-#include"../../Object/Player/PlayerInput.h"
+#include"../../Object/Player/Player.h"		//これ消したい
 
 class Player;
 
@@ -83,21 +79,21 @@ public:
 	/// </summary>
 	/// <param name="_num">プレイヤー番号</param>
 	/// <returns>モデル情報の取得</returns>
-	const Transform& GetPlayerTransform(const int _num) { return players_[_num]->GetTransform(); }
+	const Transform& GetPlayerTransform(const int _num);
 
 	/// <summary>
 	/// プレイヤー情報の取得
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns>プレイヤー情報</returns>
-	std::vector<std::unique_ptr<Player>>&GetPlayers(void) { return players_; }
+	std::vector<std::unique_ptr<Player>>& GetPlayers(void);
 
 	/// <summary>
 	///プレイヤーコイン枚数
 	/// </summary>
 	/// <param name="_num">プレイヤー番号</param>
 	/// <returns>コイン枚数</returns>
-	inline const int GetPlayerCoinNum(const int _num) { return players_[_num]->GetCoinNum(); }
+	const int GetPlayerCoinNum(const int _num);
 
 	/// <summary>
 	/// ゴールタイムの取得
@@ -117,14 +113,14 @@ public:
 	/// </summary>
 	/// <param name="_playerIndex">プレイヤーインデックス</param>
 	/// <returns>ゴールしてたらtrue,してなければfalse</returns>
-	const bool IsPlayerGoal(const int _playerIndex) { return players_[_playerIndex]->IsGoal(); }
+	const bool IsPlayerGoal(const int _playerIndex);
 	
 	/// <summary>
 	/// 指定したプレイヤーが倒れたか調べる
 	/// </summary>
 	/// <param name="_playerIndex">プレイヤーインデックス</param>
 	/// <returns>倒れてたらtrue,なければfalse</returns>
-	const bool IsPlayerDeath(const int _playerIndex) { return players_[_playerIndex]->IsDeath(); }
+	const bool IsPlayerDeath(const int _playerIndex);
 
 	/// <summary>
 	///　全てのプレイヤーが操作を終えているか
@@ -137,6 +133,12 @@ public:
 	/// </summary>
 	/// <param name="_playerIndex">プレイヤーインデックス</param>
 	void DrawUI(const int _playerIndex);
+
+	/// <summary>
+	/// 複数プレイヤーのステータスアップ
+	/// </summary>
+	/// <param name=""></param>
+	void BuffPlayer(void);
 
 private:
 
