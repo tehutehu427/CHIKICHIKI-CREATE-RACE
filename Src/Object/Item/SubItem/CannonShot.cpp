@@ -3,10 +3,10 @@
 #include "../Manager/System/Resource.h"
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/System/SoundManager.h"
-#include"../../Common/Geometry/Capsule.h"
-#include"../../Common/Geometry/Sphere.h"
-#include"../../Common/EffectController.h"
-#include"../../Common/ToonStyle.h"
+#include "../../Common/Geometry/Capsule.h"
+#include "../../Common/Geometry/Sphere.h"
+#include "../../Common/EffectController.h"
+#include "../../Common/ToonStyle.h"
 #include "CannonShot.h"
 
 CannonShot::CannonShot(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl)

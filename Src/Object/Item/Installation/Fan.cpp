@@ -1,8 +1,8 @@
-#include"../Utility/Utility.h"
-#include"../Manager/System/Resource.h"
-#include"../Manager/System/ResourceManager.h"
-#include"../../Common/Geometry/Model.h"
-#include"../../Common/ToonStyle.h"
+#include "../Utility/Utility.h"
+#include "../Manager/System/Resource.h"
+#include "../Manager/System/ResourceManager.h"
+#include "../../Common/Geometry/Model.h"
+#include "../../Common/ToonStyle.h"
 #include "../SubItem/Wind.h"
 #include "Fan.h"
 
