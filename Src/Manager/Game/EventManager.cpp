@@ -1,7 +1,7 @@
-#include "EventManager.h"
+#include "../System/ResourceManager.h"
 #include "PlayerManager.h"
 #include "PostEffectManager.h"
-#include "../System/ResourceManager.h"
+#include "EventManager.h"
 
 EventManager* EventManager::instance_ = nullptr;
 
