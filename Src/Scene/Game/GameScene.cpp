@@ -40,6 +40,7 @@ GameScene::GameScene(void)
 	gameClear_ = nullptr;
 	mapIO_ = nullptr;
 	actionStartTime_ = 0.0f;
+	phase_ = PHASE::ROUND_PHASE;
 
 	//フェーズの状態遷移処理を登録
 	phaseChanges_.emplace(PHASE::EDIT_PHASE, std::bind(&GameScene::ChangePhaseEdit, this));

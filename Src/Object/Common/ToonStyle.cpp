@@ -4,6 +4,7 @@
 
 ToonStyle::ToonStyle(void)
 {
+	type_ = MESH_TYPE::NO_TEXTURE;
 	model_ = -1;
 	drawFunc_ = std::bind(&ToonStyle::ToonDrawModel, this);
 	outlineMaterial_ = nullptr;
@@ -112,6 +113,5 @@ void ToonStyle::NormalDrawModel(void)
 void ToonStyle::ToonDrawModel(void)
 {
 	//•`‰æ
-	//toonRenderer_->Draw();
-	MV1DrawModel(model_);
+	toonRenderer_->Draw();
 }

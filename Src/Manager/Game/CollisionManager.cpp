@@ -48,7 +48,7 @@ void CollisionManager::Update(void)
 		return;
 	}
 
-	for (int i = 0; i < colliders_.size() - 1; i++)
+ 	for (int i = 0; i < colliders_.size() - 1; i++)
 	{
 		//ƒRƒ‰ƒCƒ_‚ªŽ€–SÏ‚Ý‚È‚ç
 		if (colliders_[i]->IsDead())

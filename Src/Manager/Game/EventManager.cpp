@@ -94,6 +94,8 @@ void EventManager::SetRandomEvent(void)
 	//ƒ‰ƒ“ƒ_ƒ€‚Å’læ“¾
 	index = 1 + GetRand(static_cast<int>(EVENT_TYPE::MAX) - 2);
 
+	index = 3;
+
 	//İ’è
 	SetEventType(static_cast<EVENT_TYPE>(index));
 }

@@ -867,7 +867,8 @@ std::string Utility::ShowSaveJsonDialog()
       // GetCurrentDirectoryA で必要なバッファサイズを取得
     DWORD buffer_size = GetCurrentDirectoryA(0, nullptr);
     std::string original_cwd;
-    if (buffer_size != 0) {
+    if (buffer_size != 0)
+    {
         std::vector<char> current_dir_buffer(buffer_size);
         if (GetCurrentDirectoryA(buffer_size, current_dir_buffer.data()) != 0) {
             original_cwd = current_dir_buffer.data();
