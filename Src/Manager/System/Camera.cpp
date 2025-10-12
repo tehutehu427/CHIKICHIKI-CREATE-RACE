@@ -1,11 +1,10 @@
 #include <math.h>
-#include <DxLib.h>
 #include <EffekseerForDXLib.h>
+#include "../../Application.h"
 #include "../../Utility/Utility.h"
-#include "../../Object/Common/Transform.h"
 #include "../../Manager/Game/GravityManager.h"
 #include "../../Manager/System/DateBank.h"
-#include "../../Application.h"
+#include "../../Object/Common/Transform.h"
 #include "Camera.h"
 
 Camera::Camera(int _playerNum)

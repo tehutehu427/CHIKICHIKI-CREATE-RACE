@@ -1,5 +1,5 @@
 #include "../Manager/System/ResourceManager.h"
-#include"../../Common/Geometry/Model.h"
+#include "../../Common/Geometry/Model.h"
 #include "SlimeFloor.h"
 
 SlimeFloor::SlimeFloor(void)

@@ -1,6 +1,4 @@
 #pragma once
-#include <map>
-#include <vector>
 #include <Dxlib.h>
 #include "../../Common/Vector2.h"
 #include "KeyConfig.h"

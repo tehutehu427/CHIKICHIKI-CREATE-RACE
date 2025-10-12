@@ -1,7 +1,7 @@
+#include "../../../Utility/Utility.h"
 #include "../../../Manager/System/ResourceManager.h"
 #include "../../Common/EffectController.h"
-#include"../../Common/Geometry/Sphere.h"
-#include"../../../Utility/Utility.h"
+#include "../../Common/Geometry/Sphere.h"
 #include "Wind.h"
 
 Wind::Wind(const VECTOR _pos, const Quaternion _quaRot, const VECTOR _scl, const VECTOR _size)

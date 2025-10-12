@@ -1,10 +1,10 @@
 #include "../Utility/Utility.h"
-#include "../Common/Quaternion.h"
 #include "../Manager/Game/MapEditer.h"
 #include "../Manager/System/SceneManager.h"
 #include "../Manager/System/ResourceManager.h"
-#include"../../Common/Geometry/Model.h"
-#include"../../Common/ToonStyle.h"
+#include "../Common/Quaternion.h"
+#include "../../Common/Geometry/Model.h"
+#include "../../Common/ToonStyle.h"
 #include "MoveHoriFloor.h"
 
 MoveHoriFloor::MoveHoriFloor(void)

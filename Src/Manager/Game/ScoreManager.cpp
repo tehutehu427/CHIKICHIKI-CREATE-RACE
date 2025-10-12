@@ -1,8 +1,8 @@
-#include "ScoreManager.h"
 #include <cassert>
 #include <algorithm>
 #include "../System/DateBank.h"
 #include "PlayerManager.h"
+#include "ScoreManager.h"
 
 ScoreManager* ScoreManager::instance_ = nullptr;
 

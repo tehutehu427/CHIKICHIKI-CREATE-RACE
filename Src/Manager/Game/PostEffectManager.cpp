@@ -1,11 +1,11 @@
 #include <DxLib.h>
-#include "PostEffectManager.h"
 #include "../Application.h"
 #include "../Manager//System/SceneManager.h"
 #include "../Object/PostEffect/PostEffectBase.h"
 #include "../Object/PostEffect/WiggleEffect.h"
 #include "../Object/PostEffect/FishEyeEffect.h"
 #include "../Object/PostEffect/SandStormEffect.h"
+#include "PostEffectManager.h"
 
 PostEffectManager* PostEffectManager::instance_ = nullptr;
 
@@ -24,11 +24,14 @@ PostEffectManager& PostEffectManager::GetInstance(void)
 }
 
 void PostEffectManager::Destroy(void)
-{
+{	
+	//スクリーン削除
+	DeleteGraph(postEffectScreen_);
+	
 	//自身のインスタンス削除
 	delete instance_;
 	instance_ = nullptr;
-	DeleteGraph(postEffectScreen_);
+
 }
 
 void PostEffectManager::Load(void)

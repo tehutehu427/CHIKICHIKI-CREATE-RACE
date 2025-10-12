@@ -1,4 +1,3 @@
-#include"../Manager/System/Resource.h"
 #include"../Manager/System/ResourceManager.h"
 #include"../../Common/Geometry/Model.h"
 #include "StartFlag.h"
