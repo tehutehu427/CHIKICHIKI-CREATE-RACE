@@ -119,7 +119,7 @@ public:
 private:
 
 	//モデルの要素
-	int parentModelId_;					//親のモデルID
+	int parentModelId_;					//親のモデルID	aaaaaaaaa
 	MV1_COLL_RESULT_POLY hitLineInfo_;	//当たった時の情報(線)
 	MV1_COLL_RESULT_POLY_DIM hitInfo_;	//当たった時の情報(球、カプセル)
 };

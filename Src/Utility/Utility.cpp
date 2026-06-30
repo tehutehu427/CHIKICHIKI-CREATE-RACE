@@ -863,20 +863,22 @@ int Utility::GetDigitCount(const int _value)
 
 std::string Utility::ShowSaveJsonDialog()
 {
-    // --- 現在のカレントディレクトリを保存 ---
-      // GetCurrentDirectoryA で必要なバッファサイズを取得
-    DWORD buffer_size = GetCurrentDirectoryA(0, nullptr);
-    std::string original_cwd;
-    if (buffer_size != 0) {
-        std::vector<char> current_dir_buffer(buffer_size);
-        if (GetCurrentDirectoryA(buffer_size, current_dir_buffer.data()) != 0) {
-            original_cwd = current_dir_buffer.data();
+    //現在のカレントディレクトリを保存
+    //必要なバッファサイズを取得
+    DWORD bufferSize = GetCurrentDirectoryA(0, nullptr);
+	//元のカレントディレクトリを保存
+    std::string originalCwd;
+    if (bufferSize != 0)
+    {
+        std::vector<char> currentDirBuffer(bufferSize);
+        if (GetCurrentDirectoryA(bufferSize, currentDirBuffer.data()) != 0)
+        {
+            originalCwd = currentDirBuffer.data();
         }
     }
-    // ここでエラーチェックを省略していますが、実際のアプリケーションではエラーハンドリングをしっかり行うことを推奨します。
 
     // 構造体をゼロ初期化
-    OPENFILENAMEA ofn = {}; // Aサフィックスの構造体を使用
+    OPENFILENAMEA ofn = {}; 
 
     // ファイル名バッファをマルチバイト文字 (char) に変更
     char fileName[MAX_PATH] = "";
@@ -886,24 +888,23 @@ std::string Utility::ShowSaveJsonDialog()
     ofn.lpstrFile = fileName;
     ofn.nMaxFile = MAX_PATH;
     ofn.Flags = OFN_OVERWRITEPROMPT;
-    ofn.lpstrDefExt = "json"; // 既定の拡張子もマルチバイト文字
+    ofn.lpstrDefExt = "json";
 
-    std::string selected_path = ""; // 選択されたパスを保持する変数
+    // 選択されたパスを保持用
+    std::string selectedPath = "";
 
-    if (GetSaveFileNameA(&ofn)) // Aサフィックスの関数を使用
+    if (GetSaveFileNameA(&ofn)) 
     {
-        // 取得したパスは、システムの現在のANSIコードページ (通常はSJIS) でエンコードされています。
-        // そのまま std::string に変換して返します。
-        selected_path = std::string(fileName);
+        selectedPath = std::string(fileName);
     }
 
-    // --- 元のカレントディレクトリに戻す ---
-    if (!original_cwd.empty()) {
-        SetCurrentDirectoryA(original_cwd.c_str());
+    //元のカレントディレクトリに戻す
+    if (!originalCwd.empty()) 
+    {
+        SetCurrentDirectoryA(originalCwd.c_str());
     }
-    // ここでもエラーチェックを省略していますが、SetCurrentDirectoryA が失敗する可能性も考慮してください。
 
-    return selected_path; // キャンセルされたときには空文字列が返る
+    return selectedPath; // キャンセルされたときには空文字列が返る
 }
 
 std::string Utility::WideToUtf8(const std::wstring& wstr)

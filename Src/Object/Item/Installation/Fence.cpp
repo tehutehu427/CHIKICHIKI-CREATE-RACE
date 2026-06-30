@@ -1,6 +1,6 @@
 #include "../Manager/System/ResourceManager.h"
 #include "../Manager/Game./MapEditer.h"
-#include"../../Common/Geometry/Model.h"
+#include "../../Common/Geometry/Model.h"
 #include "Fence.h"
 
 Fence::Fence(void)

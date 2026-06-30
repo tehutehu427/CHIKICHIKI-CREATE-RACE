@@ -280,6 +280,7 @@ void MultiParty::ChangePhaseRound(void)
 	sndMng_.Play(SoundManager::SRC::ROUND_JINGLE, SoundManager::PLAYTYPE::BACK);
 
 	//イベントの設定(最初のラウンドは行わない)
+	EventManager::GetInstance().SetRandomEvent();
 	if (round_->GetNumberIndex() != 1)
 	{
 		EventManager::GetInstance().SetRandomEvent();

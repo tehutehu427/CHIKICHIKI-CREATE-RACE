@@ -1,6 +1,5 @@
-#include"../Manager/System/Resource.h"
-#include"../Manager/System/ResourceManager.h"
-#include"../../Common/Geometry/Model.h"
+#include "../Manager/System/ResourceManager.h"
+#include "../../Common/Geometry/Model.h"
 #include "Spring.h"
 
 Spring::Spring(void)
