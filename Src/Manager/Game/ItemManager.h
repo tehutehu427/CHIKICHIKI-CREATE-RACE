@@ -208,6 +208,13 @@ public:
 	VECTOR GetStartWorldPos(void) const;
 
 	/// <summary>
+	/// プレイヤーのゴールワールド座標を返す
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns>ゴールの座標</returns>
+	VECTOR GetGoalWorldPos(void) const;
+
+	/// <summary>
 	/// すべてのプレイヤーのダミーアイテムをアイテムに移す
 	/// </summary>
 	/// <param name=""></param>
@@ -238,20 +245,6 @@ public:
 	/// <param name="_playerNum">プレイヤー番号</param>
 	/// <param name="_rotY">設定する値</param>
 	void SetDummyItemRotY(int _playerNum , float _rotY);
-
-	/// <summary>
-	/// スタートオブジェクトの位置
-	/// </summary>
-	/// <param name=""></param>
-	/// <returns>スタートのワールド座標</returns>
-	const VECTOR GetStartObjectPos(void);
-
-	/// <summary>
-	/// ゴールオブジェクトの位置
-	/// </summary>
-	/// <param name=""></param>
-	/// <returns>ゴールのワールド座標</returns>
-	const VECTOR GetGoalObjectPos(void);
 
 protected:
 

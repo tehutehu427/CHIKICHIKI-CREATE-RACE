@@ -255,7 +255,7 @@ void GameScene::ChangePhaseAction(void)
 		camera->SetFollow(&PlayerManager::GetInstance().GetPlayerTransform(i));
 
 		//ゴール座標
-		VECTOR goalPos = ItemManager::GetInstance().GetGoalObjectPos();
+		VECTOR goalPos = ItemManager::GetInstance().GetGoalWorldPos();
 		//ゴールまでのベクトル
 		VECTOR vec = Utility::GetMoveVec(PlayerManager::GetInstance().GetPlayerTransform(i).pos, goalPos);
 		//ベクトルをアングルに変換

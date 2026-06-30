@@ -531,6 +531,30 @@ VECTOR ItemManager::GetStartWorldPos(void) const
 	return startPos;
 }
 
+VECTOR ItemManager::GetGoalWorldPos(void) const
+{
+	VECTOR goalPos = { static_cast<float>(EditController::ERROR_POS.x),static_cast<float>(EditController::ERROR_POS.y),static_cast<float>(EditController::ERROR_POS.z) };
+	auto it = items_.find(ItemBase::ITEM_TYPE::GOAL);
+	if (it != items_.end())
+	{
+		for (auto& item : it->second)
+		{
+			if (item == nullptr)
+			{
+				continue;
+			}
+			IntVector3 mapPos = item->GetInitMapPos();
+			//マップ座標からワールド座標に変換
+			IntVector3 startMapSize = item->GetSize();
+			goalPos = MapEditer::GetInstance().MapToWorldPos(mapPos + IntVector3{ startMapSize.x / 2,startMapSize.y,startMapSize.z / 2 });
+			goalPos.x += startMapSize.x % 2 == 0 ? 0.0f : MapEditer::GRID_SIZE / 2.0f;
+			goalPos.y += startMapSize.y % 2 == 0 ? 0.0f : MapEditer::GRID_SIZE / 2.0f;
+			goalPos.z += startMapSize.z % 2 == 0 ? 0.0f : MapEditer::GRID_SIZE / 2.0f;
+		}
+	}
+	return goalPos;
+}
+
 bool ItemManager::AllDummyItemAddItems(void)
 {
 	bool isClear = true;	//アイテムをすべて移せたか
@@ -623,32 +647,6 @@ void ItemManager::SetDummyItemRotY(int _playerNum , float _rotY)
 		dummyItems_[_playerNum]->SetRotY(_rotY);
 	}
 	return;
-}
-
-const VECTOR ItemManager::GetStartObjectPos(void)
-{
-	//スタートが見つからなかった
-	if (items_.find(ItemBase::ITEM_TYPE::START) == items_.end())
-	{
-		//デフォルトを返す
-		return VECTOR();
-	}
-
-	//見つかったので位置返す
-	return items_[ItemBase::ITEM_TYPE::START][0]->GetTransform().pos;
-}
-
-const VECTOR ItemManager::GetGoalObjectPos(void)
-{
-	//ゴールが見つからなかった
-	if (items_.find(ItemBase::ITEM_TYPE::GOAL) == items_.end())
-	{
-		//デフォルトを返す
-		return VECTOR();
-	}
-
-	//見つかったので位置返す
-	return items_[ItemBase::ITEM_TYPE::GOAL][0]->GetTransform().pos;
 }
 
 ItemManager::ItemManager(void)

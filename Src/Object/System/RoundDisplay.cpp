@@ -114,10 +114,10 @@ void RoundDisplay::CameraOverLooking(void)
 	auto camera = SceneManager::GetInstance().GetCamera(0).lock();
 
 	//スタート地点の座標
-	VECTOR startPos = itemMng.GetStartObjectPos();
+	VECTOR startPos = itemMng.GetStartWorldPos();
 	
 	//ゴール地点の座標
-	VECTOR goalPos = itemMng.GetGoalObjectPos();
+	VECTOR goalPos = itemMng.GetGoalWorldPos();
 	
 	//中心座標
 	VECTOR centerPos = VScale(VAdd(startPos, goalPos), 0.5f);
